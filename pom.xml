@@ -97,26 +97,31 @@
 			<groupId>net.minecraft</groupId>
 			<artifactId>GriefPrevention</artifactId>
 			<version>1.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>LogBlock</artifactId>
 			<version>1.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>PreciousStones</artifactId>
 			<version>1.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>TagAPI</artifactId>
 			<version>1.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>Towny</artifactId>
 			<version>1.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
