@@ -1,0 +1,136 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.avatar-realms</groupId>
+	<artifactId>avatarBending</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>avatarBending</name>
+	<url>http://maven.apache.org</url>
+
+	<!-- Build -->
+	<build>
+		<!-- Resources -->
+		<resources>
+			<resource>
+				<directory>src/main/java/</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources/</directory>
+				<includes>
+					<include>plugin.yml</include>
+				</includes>
+			</resource>
+		</resources>
+		<defaultGoal>clean install</defaultGoal>
+		<!-- Plugins -->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-shade-plugin</artifactId>
+		        <version>2.2</version>
+		        <executions>
+		          <execution>
+		            <phase>package</phase>
+		            <goals>
+		              <goal>shade</goal>
+		            </goals>
+		            <configuration>
+		              <filters>
+		                <filter>
+		                </filter>
+		              </filters>
+		            </configuration>
+		          </execution>
+		        </executions>
+		      </plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>bukkit-repo</id>
+			<url>http://repo.bukkit.org/content/groups/public/</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.cbversion>1.7.2-R0.3</project.cbversion>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${project.cbversion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>Factions</artifactId>
+			<version>Factions</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>mcore</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>GriefPrevention</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>LogBlock</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>PreciousStones</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>TagAPI</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>Towny</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>WorldEdit</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>WorldGuard</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>
+
+
