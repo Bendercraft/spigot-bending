@@ -233,10 +233,11 @@ public class Catapult {
 	}
 
 	public static String getDescription() {
-		return "Pour l'utiliser, faites un clic-gauche pendant que vous regarder dans la direction où vous souhaitez aller. "
-				+ "Un pilier de terre va se soulever en dessous de vous et vous lancer dans cette direction - "
-				+ "Si et seulement si il y a assez de terre à l'opposé de là où vous regardez. "
-				+ "La maîtrise de cette abilité prend beaucoup de temps et de travail et résulte souvent "
-				+ "par la mort du Maître de la terre débutant. ";
+		return "To use, left-click while looking in the direction you want to be launched. "
+				+ "A pillar of earth will jut up from under you and launch you in that direction - "
+				+ "if and only if there is enough earth behind where you're looking to launch you. "
+				+ "Skillful use of this ability takes much time and work, and it does result in the "
+				+ "death of certain gung-ho earthbenders. If you plan to use this ability, be sure "
+				+ "you've read about your passive ability you innately have as an earthbender.";
 	}
 }
