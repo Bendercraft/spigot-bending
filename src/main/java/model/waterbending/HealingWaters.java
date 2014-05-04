@@ -1,12 +1,15 @@
 package model.waterbending;
 
 import model.Abilities;
+import model.BendingPlayer;
+import model.BendingType;
 import model.TempBlock;
 
 import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -39,6 +42,12 @@ public class HealingWaters {
 				Entity entity = Tools.getTargettedEntity(player, range);
 				if (entity instanceof LivingEntity && inWater(entity)) {
 					giveHPToEntity((LivingEntity) entity);
+					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
+						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+						if (bPlayer != null) {
+							bPlayer.earnXP(BendingType.Water);
+						}
+					}
 				}
 			} else {
 				giveHP(player);

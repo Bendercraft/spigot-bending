@@ -4,6 +4,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.AvatarState;
+import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -11,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
@@ -169,6 +172,12 @@ public class Fireball {
 			entity.setFireTicks(120);
 			if (entity instanceof LivingEntity) {
 				explode();
+				if ((entity instanceof Player) ||(entity instanceof Monster)) {
+					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+					if (bPlayer != null) {
+						bPlayer.earnXP(BendingType.Fire);
+					}
+				}
 				return;
 			}
 		}

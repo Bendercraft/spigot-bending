@@ -4,10 +4,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.AvatarState;
+import model.BendingPlayer;
 import model.BendingType;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 import dataAccess.ConfigManager;
@@ -22,7 +25,8 @@ public class Paralyze {
 	private static final long duration = ConfigManager.paralyzeDuration;
 
 	public Paralyze(Player sourceplayer, Entity targetentity) {
-		if (Tools.isBender(sourceplayer.getName(), BendingType.ChiBlocker)
+		if (targetentity != null && sourceplayer != null) {
+			if (Tools.isBender(sourceplayer.getName(), BendingType.ChiBlocker)
 				&& Tools.getBendingAbility(sourceplayer) == Abilities.Paralyze
 				&& Tools.canBend(sourceplayer, Abilities.Paralyze)) {
 			if (cooldowns.containsKey(targetentity)) {
@@ -33,9 +37,17 @@ public class Paralyze {
 					cooldowns.remove(targetentity);
 				}
 			}
+			
+			if ((targetentity instanceof Player) ||(targetentity instanceof Monster)) {
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(sourceplayer);
+				if (bPlayer != null) {
+					bPlayer.earnXP(BendingType.ChiBlocker);
+				}
+			}
 			paralyze(targetentity);
 			cooldowns.put(targetentity, System.currentTimeMillis());
-		}
+			}
+		}	
 	}
 
 	private static void paralyze(Entity entity) {

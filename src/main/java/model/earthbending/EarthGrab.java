@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import model.Abilities;
 import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -83,8 +84,11 @@ public class EarthGrab {
 				}
 			}
 
-			if (!blocks.isEmpty())
+			if (!blocks.isEmpty()) {
 				bPlayer.cooldown(Abilities.EarthGrab);
+				bPlayer.receiveXP(BendingType.Earth,2);
+			}
+				
 		}
 	}
 

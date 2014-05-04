@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
+import model.BendingPlayer;
+import model.BendingType;
 import model.TempBlock;
 
 import org.bukkit.Location;
@@ -11,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -169,6 +172,12 @@ public class TorrentBurst {
 		direction.normalize();
 		entity.setVelocity(entity.getVelocity().clone()
 				.add(direction.multiply(factor)));
+		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+			if (bPlayer != null) {
+				bPlayer.earnXP(BendingType.Water);
+			}
+		}
 	}
 
 	private void remove() {

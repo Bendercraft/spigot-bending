@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import model.Abilities;
@@ -152,10 +153,10 @@ public class Tools {
 
 	private static boolean allowharmless = true;
 	private static boolean respectWorldGuard = true;
-	private static boolean respectPreciousStones = true;
-	private static boolean respectFactions = true;
-	private static boolean respectTowny = true;
-	private static boolean respectGriefPrevention = true;
+	private static boolean respectPreciousStones = false;
+	private static boolean respectFactions = false;
+	private static boolean respectTowny = false;
+	private static boolean respectGriefPrevention = false;
 
 	// private static boolean logblockhook = true;
 
@@ -808,8 +809,18 @@ public class Tools {
 		return false;
 	}
 
-	public static boolean canPlantbend(Player player) {
-		return player.hasPermission("bending.water.plantbending");
+	public static boolean canPlantbend(Player player) {	
+			BendingPlayer bPlayer =BendingPlayer.getBendingPlayer(player);
+			if (bPlayer == null) {
+				return false;
+			}
+			
+			if (player.hasPermission("bending.water.plantbending") || bPlayer.hasLevel("plantbending")) {
+				return true;
+			}
+			else {
+				return false;
+			}	
 	}
 
 	public static boolean hasAbility(Player player, Abilities ability) {
@@ -829,15 +840,11 @@ public class Tools {
 	// }
 
 	public static boolean isBender(String player, BendingType type) {
-		// return config.isBender(player, type);
-		// if (Bending.benders.contains(player))
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null)
 			return false;
 		return bPlayer.isBender(type);
-		// if (Bending.benders.containsKey(player))
-		// return Bending.benders.get(player).contains(type);
-		// return false;
+
 	}
 
 	public static boolean isBender(String player) {
@@ -1111,48 +1118,50 @@ public class Tools {
 	}
 
 	public static boolean canBend(Player player, Abilities ability) {
-		if (ability == null)
+		if (ability == null) {
 			return false;
+		}
+		
+		if (player == null) {
+			return false;
+		}
+		
 		if (hasPermission(player, ability) && ability == Abilities.AvatarState)
 			return true;
 
-		if (!hasPermission(player, ability))
+		if (!hasPermission(player, ability)) {
 			return false;
-
+		}
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player)))
 			return false;
 
-		if (Abilities.isAirbending(ability)
-				&& !isBender(player.getName(), BendingType.Air)) {
+		 if (Abilities.isAirbending(ability)
+				 && !isBender(player.getName(), BendingType.Air)) {
 			return false;
 		}
-
 		if (Abilities.isChiBlocking(ability)
-				&& !isBender(player.getName(), BendingType.ChiBlocker)) {
+				 && !isBender(player.getName(), BendingType.ChiBlocker)) {
 			return false;
 		}
-
-		if (Abilities.isEarthbending(ability)
-				&& !isBender(player.getName(), BendingType.Earth)) {
-			return false;
-		}
-
-		if (Abilities.isFirebending(ability)
-				&& !isBender(player.getName(), BendingType.Fire)) {
-			return false;
-		}
-
-		if (Abilities.isWaterbending(ability)
-				&& !isBender(player.getName(), BendingType.Water)) {
-			return false;
-		}
-
+		 if (Abilities.isEarthbending(ability)
+				 && !isBender(player.getName(), BendingType.Earth)) {
+			 return false;
+		 }
+		 if (Abilities.isFirebending(ability)
+				 && !isBender(player.getName(), BendingType.Fire)) {
+			 return false;
+		 }
+		 if (Abilities.isWaterbending(ability)
+				 && !isBender(player.getName(), BendingType.Water)) {
+			 return false;
+		 }
 		if (hasPermission(player, ability)
 				&& (!isLocalAbility(ability) || !isRegionProtectedFromBuild(
 						player, Abilities.AirBlast, player.getLocation()))
-				&& !toggledBending(player))
+				&& !toggledBending(player)) {
 			return true;
-
+		}
+			
 		if (allowharmless && Tools.isHarmlessAbility(ability)
 				&& !toggledBending(player))
 			return true;
@@ -1576,10 +1585,20 @@ public class Tools {
 	// }
 
 	public static boolean canBendPassive(Player player, BendingType type) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player))
 				&& !AvatarState.isAvatarState(player))
 			return false;
 		if (!player.hasPermission("bending." + type + ".passive")) {
+			if (type == BendingType.Earth && bPlayer.getLevel(type) >= ConfigManager.earthPassiveLevelRequired) {
+				return true;
+			}
+			if (type == BendingType.Air && bPlayer.getLevel(type) >= ConfigManager.airPassiveLevelRequired) {
+				return true;
+			}
+			if (type == BendingType.ChiBlocker && bPlayer.getLevel(type) >= 1) {
+				return true;
+			}
 			return false;
 		}
 		if (allowharmless && type != BendingType.Earth)
@@ -1594,6 +1613,7 @@ public class Tools {
 				&& player.hasPermission("bending.admin.AvatarState")) {
 			return true;
 		}
+		
 		if (Abilities.isAirbending(ability)
 				&& player.hasPermission("bending.air." + ability)) {
 			return true;
@@ -1616,6 +1636,11 @@ public class Tools {
 		}
 		if (Abilities.isChiBlocking(ability)
 				&& player.hasPermission("bending.chiblocking." + ability)) {
+			return true;
+		}
+		
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer.hasLevel(ability)) {
 			return true;
 		}
 		return false;
@@ -1752,6 +1777,7 @@ public class Tools {
 		removeSpouts(location, 1.5, sourceplayer);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static Block getEarthSourceBlock(Player player, double range) {
 		Block testblock = player.getTargetBlock(getTransparentEarthbending(),
 				(int) range);

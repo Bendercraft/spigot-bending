@@ -6,11 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import model.BendingPlayer;
+import model.BendingType;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -69,6 +73,12 @@ public class SpikeField {
 			for (Entity entity : entities) {
 				if (entity instanceof LivingEntity
 						&& entity.getEntityId() != p.getEntityId()) {
+					if ((entity instanceof Player)) {
+						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
+						if (bPlayer != null) {
+							bPlayer.earnXP(BendingType.Water);
+						}
+					}
 					for (Block block : iceblocks) {
 						if (block.getX() == entity.getLocation().getBlockX()
 								&& block.getZ() == entity.getLocation()

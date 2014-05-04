@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -24,6 +26,7 @@ public class BendingPlayer implements CustomSerializable {
 	private static ConcurrentHashMap<String, BendingPlayer> players = new ConcurrentHashMap<String, BendingPlayer>();
 
 	private static Map<Abilities, Long> abilityCooldowns = new HashMap<Abilities, Long>();
+	private static int maxlevel = ConfigManager.maxlevel;
 	private static long globalCooldown = 250;
 	private static BendingPlayers config = Tools.config;
 
@@ -33,7 +36,7 @@ public class BendingPlayer implements CustomSerializable {
 	private List<Integer> slotAbilities = initializeEmptySlots();
 	private List<Integer> itemAbilities = initializeEmptyItems();
 
-	private List<Integer> bendingType = new ArrayList<Integer>();
+	private Map<BendingType, BendingLevel> bendings = new HashMap<BendingType,BendingLevel>();
 
 	private Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
 
@@ -189,23 +192,105 @@ public class BendingPlayer implements CustomSerializable {
 	}
 
 	public boolean isBender() {
-		return !bendingType.isEmpty();
+		return !bendings.isEmpty();
 	}
 
 	public boolean isBender(BendingType type) {
 		// lasttime = System.currentTimeMillis();
-		return bendingType.contains(BendingType.getIndex(type));
+		return bendings.containsKey(type);
+	}
+	
+	public boolean hasLevel(String ability) {
+		
+		if (bendings == null) {
+			return false;
+		}
+		
+		if (ability.equalsIgnoreCase("plantbending")) {
+			if (!bendings.containsKey(BendingType.Water)) {
+				return false;
+			}
+			if (bendings.get(BendingType.Water).getLevel() < ConfigManager.plantbendingLevelRequired){
+				return false;
+			}
+			
+			return true;
+		}
+		
+		return true;
+	}
+	
+	public boolean hasLevel(Abilities ability) {
+		if (bendings == null) {
+			return false;
+		}
+		
+		if (Abilities.isAirbending(ability)) {
+			if (!bendings.containsKey(BendingType.Air)) {
+				return false;
+			}
+			
+			if (bendings.get(BendingType.Air).getLevel() < ConfigManager.getLevelRequired(ability)){
+				return false;
+			}
+			return true;
+		}
+		
+		if (Abilities.isEarthbending(ability)) {
+			if (!bendings.containsKey(BendingType.Earth)) {
+				return false;
+			}
+			if (bendings.get(BendingType.Earth).getLevel() < ConfigManager.getLevelRequired(ability)){
+				return false;
+			}
+			return true;
+		}
+		
+		if (Abilities.isFirebending(ability)) {
+			if (!bendings.containsKey(BendingType.Fire)) {
+				return false;
+			}
+			if (bendings.get(BendingType.Fire).getLevel() < ConfigManager.getLevelRequired(ability)){
+				return false;
+			}
+			
+			return true;
+		}
+		
+		if (Abilities.isWaterbending(ability)){
+			if (!bendings.containsKey(BendingType.Water)) {
+				return false;
+			}
+			if (bendings.get(BendingType.Water).getLevel() < ConfigManager.getLevelRequired(ability)){
+				return false;
+			}
+			
+			return true;
+		}
+		
+		if (Abilities.isChiBlocking(ability)) {
+			if (!bendings.containsKey(BendingType.ChiBlocker)) {
+				return false;
+			}
+			if (bendings.get(BendingType.ChiBlocker).getLevel() < ConfigManager.getLevelRequired(ability)){
+				return false;
+			}
+			return true;
+		}
+		
+		
+		return true;
 	}
 
 	public void setBender(BendingType type) {
 		removeBender();
-		bendingType.add(BendingType.getIndex(type));
+		bendings.put(type, new BendingLevel (type, this));
 	}
 
 	public void addBender(BendingType type) {
 		permaremoved = false;
-		if (!bendingType.contains(type))
-			bendingType.add(BendingType.getIndex(type));
+		if (!bendings.containsKey(type))
+			bendings.put(type, new BendingLevel(type,this));
 	}
 
 	public void clearAbilities() {
@@ -214,7 +299,7 @@ public class BendingPlayer implements CustomSerializable {
 	}
 
 	public void removeBender() {
-		bendingType.clear();
+		bendings.clear();
 		clearAbilities();
 	}
 
@@ -307,10 +392,18 @@ public class BendingPlayer implements CustomSerializable {
 
 	public List<BendingType> getBendingTypes() {
 		List<BendingType> list = new ArrayList<BendingType>();
-		for (int index : bendingType) {
-			list.add(BendingType.getType(index));
+		for (BendingType index : bendings.keySet()) {
+			list.add(index);
 		}
 		return list;
+	}
+	
+	public String bendingsToString() {
+		String str = "";
+		for (BendingType type : bendings.keySet()) {
+			str+=bendings.get(type).toString()+"\n";
+		}
+		return str;
 	}
 
 	public void setLanguage(String language) {
@@ -357,7 +450,7 @@ public class BendingPlayer implements CustomSerializable {
 		String string = "BendingPlayer{";
 		string += "Player=" + playername;
 		string += ", ";
-		string += "BendingType=" + bendingType;
+		string += "Bendings=" + bendings;
 		string += ", ";
 		string += "Language=" + language;
 		string += ", ";
@@ -372,13 +465,19 @@ public class BendingPlayer implements CustomSerializable {
 
 	@SuppressWarnings("unchecked")
 	public BendingPlayer(Map<String, Object> map) {
+		List<BendingLevel> bending;
 		playername = (String) map.get("PlayerName");
 
 		if (players.containsKey(playername)) {
 			players.remove(playername);
 		}
-
-		bendingType = (List<Integer>) map.get("BendingTypes");
+		
+		bending = (List<BendingLevel>) map.get("Bendings");
+		
+		for (BendingLevel bend: bending) {
+			bendings.put(bend.getBendingType(), bend);
+			bend.setBendingPlayer(this);
+		}
 		language = (String) map.get("Language");
 		bendToItem = (Boolean) map.get("BendToItem");
 		itemAbilities = (List<Integer>) map.get("ItemAbilities");
@@ -394,8 +493,13 @@ public class BendingPlayer implements CustomSerializable {
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
+		List<BendingLevel> bending = new ArrayList<BendingLevel>();
+		
+		for (BendingType bLev : bendings.keySet()) {
+			bending.add(bendings.get(bLev));
+		}
 		map.put("PlayerName", playername);
-		map.put("BendingTypes", bendingType);
+		map.put("Bendings", bending);
 		map.put("Language", language);
 		map.put("BendToItem", bendToItem);
 		map.put("ItemAbilities", itemAbilities);
@@ -412,5 +516,74 @@ public class BendingPlayer implements CustomSerializable {
 	public static BendingPlayer valueOf(Map<String, Object> map) {
 		return deserialize(map);
 	}
-
+	
+	public void resetXP() {	
+		for (BendingType type : bendings.keySet()) {
+			bendings.get(type).setXP(bendings.get(type).getXP()*0.95);
+		}
+	}
+	
+	public double getCriticalHit(BendingType type, double damage){
+		double newDamage = damage;
+		int level = bendings.get(type).getLevel();
+		double prc = ((level)/(level+2))*0.4;
+		
+		Random rand = new Random();
+		
+		if (rand.nextDouble() < prc) {
+			newDamage += 1;
+			
+			if (level >= 25) {
+				prc = ((level)/(level+2))*0.2;
+				if (rand.nextDouble() < prc) {
+					newDamage += 1;
+				}
+			}		
+		}
+		
+		return newDamage;
+	}
+	
+	public void increaseAllBendingCpt() {
+		for (BendingType type : bendings.keySet()) {
+			bendings.get(type).increaseCpt();
+		}
+	}
+	
+	public void resetBendingCpt(BendingType type) {
+		if (bendings.get(type) != null)
+			bendings.get(type).resetCpt();
+	}
+	
+	public void earnXP(BendingType type) {
+		bendings.get(type).earnXP();
+	}
+	
+	public Integer getLevel (BendingType type) {
+		BendingLevel bLvl = bendings.get(type);
+		if (bLvl == null) {
+			return 0;
+		}
+		else {
+			return bLvl.getLevel();
+		}
+	}
+	
+	public void receiveXP(BendingType type, Integer amount) {
+		bendings.get(type).giveXP(amount);
+	}
+	
+	public void setBendingLevel(BendingType type, Integer level) {
+		bendings.get(type).setLevel(level);
+	}
+	
+	public int getMaxLevel() {
+		int max = 0;
+		for (BendingType type : bendings.keySet()) {
+			if (bendings.get(type).getLevel() > max) {
+				max = bendings.get(type).getLevel();
+			}
+		}	
+		return max;
+	}
 }

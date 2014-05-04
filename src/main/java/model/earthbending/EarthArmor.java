@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.BendingPlayer;
+import model.BendingType;
 import model.TempBlock;
 import model.TempPotionEffect;
 
@@ -201,6 +202,8 @@ public class EarthArmor {
 		// strength - 1));
 		formed = true;
 		starttime = System.currentTimeMillis();
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		bPlayer.receiveXP(BendingType.Earth,2);
 	}
 
 	public static void moveArmor(Player player) {

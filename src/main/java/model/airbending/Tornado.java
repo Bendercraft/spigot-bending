@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
+import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -123,6 +126,12 @@ public class Tornado {
 						vx = (x * Math.cos(angle) - z * Math.sin(angle)) / mag;
 						vz = (x * Math.sin(angle) + z * Math.cos(angle)) / mag;
 
+						if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId()!= player.getEntityId())) {
+							BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+							if (bPlayer != null) {
+								bPlayer.earnXP(BendingType.Air);
+							}
+						}
 						if (entity instanceof Player) {
 							vy = 0.05 * PCpushfactor;
 						}

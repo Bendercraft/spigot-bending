@@ -6,11 +6,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import model.Abilities;
 import model.AvatarState;
 import model.BendingPlayer;
+import model.BendingType;
 import model.waterbending.WaterSpout;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -182,6 +184,13 @@ public class AirSuction {
 			// continue;
 			// affectedentities.add(entity);
 			if (entity.getEntityId() != player.getEntityId() || otherorigin) {
+				
+				if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
+					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+					if (bPlayer != null) {
+						bPlayer.earnXP(BendingType.Air);
+					}
+				}
 				// Vector velocity = entity.getVelocity();
 				// double mag = Math.abs(velocity.getY());
 				// double max = maxspeed;

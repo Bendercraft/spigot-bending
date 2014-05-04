@@ -3,10 +3,12 @@ package model.airbending;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 import model.Abilities;
 import model.AvatarState;
 import model.BendingPlayer;
+import model.BendingType;
 import model.earthbending.EarthBlast;
 import model.firebending.FireBlast;
 import model.firebending.Illumination;
@@ -18,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -118,6 +121,7 @@ public class AirSwipe {
 
 			elements.put(direction, origin);
 		}
+		
 	}
 
 	public boolean progress() {
@@ -144,12 +148,13 @@ public class AirSwipe {
 				double factor = 1;
 				if (System.currentTimeMillis() >= time + maxchargetime) {
 					factor = maxfactor;
+					Logger.getLogger("Bending").info(player.getName() + " has launched his aiswipe");
 				} else {
 					factor = maxfactor
 							* (double) (System.currentTimeMillis() - time)
 							/ (double) maxchargetime;
 				}
-				charging = false;
+				charging = false;				
 				launch();
 				if (factor < 1)
 					factor = 1;
@@ -239,6 +244,7 @@ public class AirSwipe {
 
 	private void affectPeople(Location location, Vector direction) {
 		Tools.removeSpouts(location, player);
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		for (Entity entity : Tools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
@@ -255,8 +261,14 @@ public class AirSwipe {
 				if (entity instanceof LivingEntity
 						&& !affectedentities.contains(entity)) {
 					if (damage != 0)
-						Tools.damageEntity(player, entity, damage);
+						Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
 					affectedentities.add(entity);
+					
+					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			
+						if (bPlayer != null) {
+							bPlayer.earnXP(BendingType.Air);
+						}
+					}
 				}
 
 				if (entity instanceof Player) {

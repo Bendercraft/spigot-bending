@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.BendingPlayer;
+import model.BendingType;
 import model.TempPotionEffect;
 
 import org.bukkit.Location;
@@ -16,6 +17,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -241,13 +243,18 @@ public class IceSpike {
 	}
 
 	private void affect(LivingEntity entity) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		entity.setVelocity(thrown);
-		entity.damage(damage);
+		entity.damage(bPlayer.getCriticalHit(BendingType.Water,damage));
 		damaged.add(entity);
 		long slowCooldown = IceSpike2.slowCooldown;
 		int mod = 2;
+		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
+			if (bPlayer != null) {
+				bPlayer.earnXP(BendingType.Water);
+			}
+		}
 		if (entity instanceof Player) {
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 			if (bPlayer.canBeSlowed()) {
 				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW,
 						70, mod);

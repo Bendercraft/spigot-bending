@@ -6,9 +6,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 import dataAccess.ConfigManager;
@@ -52,11 +54,19 @@ public class RapidPunch {
 	}
 
 	public void startPunch(Player p) {
-		if (numpunches >= punches)
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
+		if (numpunches >= punches) {
 			instance.remove(p);
-		if (target instanceof LivingEntity && target != null) {
+		}
+		if ((target instanceof Player) ||(target instanceof Monster)) {	
+			if (bPlayer != null) {
+				bPlayer.earnXP(BendingType.ChiBlocker);
+			}
+		}
+					
+		if (target != null && target instanceof LivingEntity) {
 			LivingEntity lt = (LivingEntity) target;
-			Tools.damageEntity(p, target, damage);
+			Tools.damageEntity(p, target, bPlayer.getCriticalHit(BendingType.ChiBlocker,damage));
 			if (target instanceof Player)
 				Tools.blockChi((Player) target, System.currentTimeMillis());
 			lt.setNoDamageTicks(0);

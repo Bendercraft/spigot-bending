@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.AvatarState;
+import model.BendingPlayer;
+import model.BendingType;
 import model.TempBlock;
 
 import org.bukkit.Location;
@@ -14,6 +16,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -533,6 +536,7 @@ public class Torrent {
 	}
 
 	private void affect(Entity entity, Vector direction) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity.getEntityId() == player.getEntityId())
 			return;
 		if (direction.getY() > ylimit) {
@@ -546,8 +550,13 @@ public class Torrent {
 			if (Tools.isNight(world)) {
 				damagedealt = (int) (Tools.getWaterbendingNightAugment(world) * (double) damage);
 			}
+			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){	
+				if (bPlayer != null) {
+					bPlayer.earnXP(BendingType.Water);
+				}
+			}
 			// if (((LivingEntity) entity).getNoDamageTicks() == 0) {
-			Tools.damageEntity(player, entity, damagedealt);
+			Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damagedealt));
 			// Tools.verbose("Hit! Health at "
 			// + ((LivingEntity) entity).getHealth());
 			hurtentities.add(entity);

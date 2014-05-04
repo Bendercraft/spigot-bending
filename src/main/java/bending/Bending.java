@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import model.Abilities;
+import model.BendingLevel;
 import model.BendingPlayer;
 import model.BendingType;
 
@@ -26,14 +27,12 @@ import dataAccess.BendingPlayersSaver;
 import dataAccess.ConfigManager;
 import dataAccess.Metrics;
 import dataAccess.Metrics.Graph;
-import dataAccess.Metrics.Plotter;
 import de.diddiz.LogBlock.Consumer;
 import de.diddiz.LogBlock.LogBlock;
 
 public class Bending extends JavaPlugin {
 
 	public static long time_step = 1; // in ms
-	// public static Logger log = Logger.getLogger("Minecraft");
 	public static Logger log = Logger.getLogger("Bending");
 
 	public static Bending plugin;
@@ -41,8 +40,6 @@ public class Bending extends JavaPlugin {
 	public final BendingManager manager = new BendingManager(this);
 	public final BendingListener listener = new BendingListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
-	// private final PlayerStorageWriter playerStorageWriter = new
-	// PlayerStorageWriter();
 	private final BendingPlayersSaver saver = new BendingPlayersSaver();
 	public final TagAPIListener Taglistener = new TagAPIListener();
 	public static Consumer logblock = null;
@@ -79,10 +76,10 @@ public class Bending extends JavaPlugin {
 	public void onEnable() {
 
 		plugin = this;
-
 		ConfigurationSerialization.registerClass(BendingPlayer.class,
 				"BendingPlayer");
-
+		ConfigurationSerialization.registerClass(BendingLevel.class,
+				"BendingLevel");
 		configManager.load(new File(getDataFolder(), "config.yml"));
 		language.load(new File(getDataFolder(), "language.yml"));
 
@@ -121,7 +118,7 @@ public class Bending extends JavaPlugin {
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin,
 				revertChecker, 0, 200);
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin, saver, 0,
-				20 * 60 * 5);
+				20 * 60 * 3);
 
 		Tools.printHooks();
 		Tools.verbose("Bending v" + this.getDescription().getVersion()
@@ -189,29 +186,6 @@ public class Bending extends JavaPlugin {
 				}
 
 			});
-
-			// bending.addPlotter(new Metrics.Plotter("Non-Bender") {
-			//
-			// @Override
-			// public int getValue() {
-			// int i = 0;
-			// for (OfflinePlayer p : Bukkit.getServer()
-			// .getOfflinePlayers()) {
-			//
-			// if (!Tools.isBender(p.getName(), BendingType.ChiBlocker)
-			// && !Tools.isBender(p.getName(), BendingType.Air)
-			// && !Tools.isBender(p.getName(),
-			// BendingType.Fire)
-			// && !Tools.isBender(p.getName(),
-			// BendingType.Water)
-			// && !Tools.isBender(p.getName(),
-			// BendingType.Earth))
-			// i++;
-			// }
-			// return i;
-			// }
-
-			// });
 
 			metrics.start();
 			log.info("Bending is sending data for Plugin Metrics.");

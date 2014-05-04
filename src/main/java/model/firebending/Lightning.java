@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.AvatarState;
+import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -12,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 import dataAccess.ConfigManager;
@@ -76,8 +79,15 @@ public class Lightning {
 					&& player.getLocation().distance(targetlocation) > target
 							.getLocation().distance(player.getLocation())) {
 				targetlocation = target.getLocation();
-				if (target.getVelocity().length() < threshold)
+				if (target.getVelocity().length() < threshold) {
 					misschance = 0;
+				}
+				if (((target instanceof Player) ||(target instanceof Monster)) && (target.getEntityId() != player.getEntityId())) {
+					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+					if (bPlayer != null) {
+						bPlayer.earnXP(BendingType.Fire);
+					}
+				}
 			}
 		} else {
 			misschance = 0;

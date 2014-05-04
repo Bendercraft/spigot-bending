@@ -114,8 +114,8 @@
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>TagAPI</artifactId>
-			<version>1.0</version>
 			<scope>provided</scope>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>

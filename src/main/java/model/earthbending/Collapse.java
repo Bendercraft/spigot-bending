@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -55,8 +56,13 @@ public class Collapse {
 			bPlayer.cooldown(Abilities.Collapse);
 		}
 
+		int cpt = 0;
 		for (Block block : baseblocks.keySet()) {
 			new CompactColumn(player, block.getLocation());
+			cpt++;
+		}
+		if (cpt > 2) {
+			bPlayer.receiveXP(BendingType.Earth,2);
 		}
 	}
 

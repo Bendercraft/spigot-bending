@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
+import model.BendingPlayer;
+import model.BendingType;
 import model.TempBlock;
 
 import org.bukkit.Location;
@@ -12,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -128,6 +131,7 @@ public class OctopusForm {
 	}
 
 	private void affect(Location location) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		for (Entity entity : Tools.getEntitiesAroundPoint(location, 2.5)) {
 			if (entity.getEntityId() == player.getEntityId())
 				continue;
@@ -139,11 +143,16 @@ public class OctopusForm {
 			// continue;
 			if (Tools.isObstructed(location, entity.getLocation()))
 				continue;
+			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
+				if (bPlayer != null) {
+					bPlayer.earnXP(BendingType.Water);
+				}
+			}
 			entity.setVelocity(Tools
 					.getDirection(player.getLocation(), location).normalize()
 					.multiply(1.75));
 			if (entity instanceof LivingEntity)
-				Tools.damageEntity(player, entity, damage);
+				Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damage));
 		}
 	}
 

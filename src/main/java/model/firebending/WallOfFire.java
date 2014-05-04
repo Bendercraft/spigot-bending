@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import model.Abilities;
 import model.AvatarState;
 import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -14,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -169,16 +171,23 @@ public class WallOfFire {
 				if (entity.getLocation().distance(block.getLocation()) <= 1.5) {
 					affect(entity);
 					break;
+				}			
+			}
+			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+				if (bPlayer != null) {
+					bPlayer.earnXP(BendingType.Fire);
 				}
 			}
 		}
 	}
 
 	private void affect(Entity entity) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		entity.setFireTicks(50);
 		entity.setVelocity(new Vector(0, 0, 0));
 		if (entity instanceof LivingEntity) {
-			Tools.damageEntity(player, entity, damage);
+			Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Fire,damage));
 			new Enflamed(entity, player);
 		}
 	}

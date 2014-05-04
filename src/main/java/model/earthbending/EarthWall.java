@@ -3,6 +3,7 @@ package model.earthbending;
 import model.Abilities;
 import model.AvatarState;
 import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -55,8 +56,8 @@ public class EarthWall {
 		World world = origin.getWorld();
 
 		boolean cooldown = false;
-
-		for (int i = -halfwidth; i <= halfwidth; i++) {
+		int cpt = 0;
+		for (int i = -halfwidth; i <= halfwidth; i++, cpt++) {
 			Block block = world.getBlockAt(origin.clone().add(
 					orth.clone().multiply((double) i)));
 			// if (block.getType() == Material.AIR || block.isLiquid()) {
@@ -93,6 +94,9 @@ public class EarthWall {
 			}
 		}
 
+		if (cpt>0) {
+			bPlayer.receiveXP(BendingType.Earth, 2);
+		}
 		if (cooldown)
 			bPlayer.cooldown(Abilities.RaiseEarth);
 

@@ -45,13 +45,17 @@ public class BendingCommand {
 	private final String[] airbendingAliases = { "air", "a", "airbender",
 			"airbending", "airbend" };
 	private final String[] earthbendingAliases = { "earth", "e", "earthbender",
-			"earthbending", "earthbend" };
+			"earthbending", "earthbend", "terre" };
 	private final String[] firebendingAliases = { "fire", "f", "firebender",
-			"firebending", "firebend" };
+			"firebending", "firebend", "feu" };
 	private final String[] waterbendingAliases = { "water", "w", "waterbender",
-			"waterbending", "waterbend" };
+			"waterbending", "waterbend", "eau" };
 	private final String[] chiblockingAliases = { "chi", "c", "chiblock",
 			"chiblocker", "chiblocking" };
+	
+	private final String[] levelAliases = {"level","lvl"};
+	private final String[] setlevelAliases = {"setlevel","slvl"};
+	private final String[] givexpAliases = {"givexp","gxp","xp"};
 
 	private final String[] itemAliases = { "item", "ite", "it", "i" };
 	private final String[] slotAliases = { "slot", "slo", "sl", "s" };
@@ -212,17 +216,6 @@ public class BendingCommand {
 
 			String arg = args[0];
 
-			// if (arg.equalsIgnoreCase("test")) {
-			// try {
-			// Tools.verbose("Sleeping for 5000ms");
-			// Thread.sleep(5000);
-			// Tools.verbose("Done sleeping.");
-			// } catch (InterruptedException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// }
-
 			if (Arrays.asList(bindAliases).contains(arg)) {
 				bind(player, args);
 			} else if (Arrays.asList(clearAliases).contains(arg)) {
@@ -253,6 +246,12 @@ public class BendingCommand {
 				bindMode(player, args);
 			} else if (Arrays.asList(versionAliases).contains(arg)) {
 				version(player, args);
+			} else if (Arrays.asList(levelAliases).contains(arg)) {
+				level (player, args);
+			} else if (Arrays.asList(setlevelAliases).contains(arg)) {
+				setlevel(player, args);
+			} else if (Arrays.asList(givexpAliases).contains(arg)) {
+				giveXP(player, args);
 			} else {
 				printHelpDialogue(player);
 			}
@@ -2097,7 +2096,7 @@ public class BendingCommand {
 			printBindUsage(player);
 			return;
 		}
-
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (!Tools.hasPermission(player, ability)) {
 			printNoPermissions(player);
 			return;
@@ -2125,27 +2124,6 @@ public class BendingCommand {
 				item = true;
 			}
 		}
-
-		// if (args.length == 3 && ConfigManager.bendToItem) {
-		// mat = Material.matchMaterial(args[2]);
-		// if (mat == null) {
-		// printNoPermissions(player);
-		// return;
-		// }
-		// } else if (args.length == 3) {
-		// try {
-		// slot = Integer.parseInt(args[2]);
-		//
-		// if (slot <= 0 || slot >= 10) {
-		// printNoPermissions(player);
-		// return;
-		// }
-		// slot--;
-		// } catch (NumberFormatException e) {
-		// printBindUsage(player);
-		// return;
-		// }
-		// }
 
 		ChatColor color = ChatColor.WHITE;
 		ChatColor white = ChatColor.WHITE;
@@ -2294,6 +2272,98 @@ public class BendingCommand {
 		}
 
 	}
+	
+	private void level(Player player, String args[]) {
+		//b lvl
+		//b lvl Nokorikatsu
+		BendingPlayer bPlayer;
+		if (args.length <=1){
+			bPlayer = BendingPlayer.getBendingPlayer(player);
+		}
+		else  {
+			Player target = server.getPlayer(args[1]);
+			if (target == null) {
+				return;
+			}
+			bPlayer = BendingPlayer.getBendingPlayer(target);
+		}
+		player.sendMessage(bPlayer.bendingsToString());
+			
+	}
+	
+	private void setlevel(Player player, String args[]) {
+		if (player!= null) {
+			if (player.hasPermission("bending.admin")) {
+				//b slvl Nokorikatsu Fire 50
+				if (args.length == 4){
+					BendingType type;
+					Player target = server.getPlayer(args[1]);
+					String element = args[2].toLowerCase();
+					int level = Integer.parseInt(args[3]);
+					
+					if (Arrays.asList(firebendingAliases).contains(element)){
+						type = BendingType.Fire;
+					}
+					else if (Arrays.asList(waterbendingAliases).contains(element)){
+						type = BendingType.Water;
+					}
+					else if (Arrays.asList(earthbendingAliases).contains(element)){
+						type = BendingType.Earth;
+					}
+					else if (Arrays.asList(airbendingAliases).contains(element)){
+						type = BendingType.Air;
+					}
+					else if (Arrays.asList(chiblockingAliases).contains(element)){
+						type = BendingType.ChiBlocker;
+					}
+					else {
+						return;
+					}
+					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
+					bPlayer.setBendingLevel(type,level);
+				}
+				else {
+					player.sendMessage("Bad use of the setlevel command.");
+				}
+			}	
+		}
+	}
+	
+	private void giveXP(Player player, String args[]) {
+		if (player.hasPermission("bending.admin")) {
+			//b givexp Nokorikatsu Fire 5000
+			if (args.length == 4){
+				BendingType type;
+				Player target = server.getPlayer(args[1]);
+				String element = args[2].toLowerCase();
+				int level = Integer.parseInt(args[3]);
+				
+				if (Arrays.asList(firebendingAliases).contains(element)){
+					type = BendingType.Fire;
+				}
+				else if (Arrays.asList(waterbendingAliases).contains(element)){
+					type = BendingType.Water;
+				}
+				else if (Arrays.asList(earthbendingAliases).contains(element)){
+					type = BendingType.Earth;
+				}
+				else if (Arrays.asList(airbendingAliases).contains(element)){
+					type = BendingType.Air;
+				}
+				else if (Arrays.asList(chiblockingAliases).contains(element)){
+					type = BendingType.ChiBlocker;
+				}
+				else {
+					return;
+				}
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
+				bPlayer.receiveXP(type,level);
+			}
+			else {
+				player.sendMessage("Bad use of the givexp command.");
+			}
+		}
+	}
 
 	private boolean hasPermission(Player player, String permission) {
 		if (player == null)
@@ -2373,7 +2443,6 @@ public class BendingCommand {
 			sendMessage(player, "/bending bindmode [slot/item]");
 		if (hasHelpPermission(player, "bending.command.version"))
 			sendMessage(player, "/bending version");
-
 	}
 
 }

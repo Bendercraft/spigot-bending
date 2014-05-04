@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.BendingPlayer;
+import model.BendingType;
 import model.firebending.FireBlast;
 import model.waterbending.WaterManipulation;
 
@@ -14,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -362,7 +364,7 @@ public class EarthBlast {
 						return false;
 					}
 				}
-
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 				for (Entity entity : Tools.getEntitiesAroundPoint(location,
 						FireBlast.affectingradius)) {
 					if (Tools.isRegionProtectedFromBuild(player,
@@ -375,7 +377,6 @@ public class EarthBlast {
 						// Block block2 = ((LivingEntity)
 						// entity).getEyeLocation()
 						// .getBlock();
-						//
 						// if (testblock.equals(block1)
 						// || testblock.equals(block2)) {
 //						entity.setVelocity(entity.getVelocity().clone()
@@ -383,9 +384,13 @@ public class EarthBlast {
 						Location location = player.getEyeLocation();
 				 		Vector vector = location.getDirection();
 				 		entity.setVelocity(vector.normalize().multiply(pushfactor));
-						Tools.damageEntity(player, entity, damage);
+						Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Earth,damage));
 						progressing = false;
-						
+						if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
+							if (bPlayer != null) {
+								bPlayer.earnXP(BendingType.Earth);
+							}
+						}
 						// }
 					}
 				}

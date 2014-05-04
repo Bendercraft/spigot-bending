@@ -2,8 +2,10 @@ package model.chiblocking;
 
 import model.Abilities;
 import model.BendingPlayer;
+import model.BendingType;
 
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -27,6 +29,9 @@ public class HighJump {
 		// .currentTimeMillis())
 		// return;
 		jump(p);
+			if (bPlayer != null) {
+				bPlayer.earnXP(BendingType.ChiBlocker);
+			}
 	}
 
 	private void jump(Player p) {
@@ -38,6 +43,7 @@ public class HighJump {
 		p.setVelocity(vec);
 		// cooldowns.put(p.getName(), System.currentTimeMillis());
 		BendingPlayer.getBendingPlayer(p).cooldown(Abilities.HighJump);
+		
 		return;
 	}
 

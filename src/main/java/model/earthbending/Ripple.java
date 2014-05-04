@@ -3,12 +3,16 @@ package model.earthbending;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import model.BendingPlayer;
+import model.BendingType;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -244,8 +248,16 @@ public class Ripple {
 					.getLocation().clone().add(0, 1, 0), 2)) {
 				if (entity.getEntityId() != player.getEntityId()
 						&& !entities.contains(entity)) {
-					if (!(entity instanceof FallingBlock))
-						entities.add(entity);
+					if (!(entity instanceof FallingBlock)){
+						entities.add(entity); 
+					}
+					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
+						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+						if (bPlayer != null) {
+							bPlayer.earnXP(BendingType.Earth);
+						}
+					}
+					
 				}
 			}
 			return true;
@@ -254,9 +266,9 @@ public class Ripple {
 	}
 
 	private void affect(Entity entity) {
-
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity instanceof LivingEntity) {
-			Tools.damageEntity(player, entity, damage);
+			Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Earth,damage));
 		}
 
 		Vector vector = direction.clone();

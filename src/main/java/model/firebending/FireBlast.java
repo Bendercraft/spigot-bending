@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import model.Abilities;
 import model.AvatarState;
 import model.BendingPlayer;
+import model.BendingType;
 import model.earthbending.EarthBlast;
 import model.waterbending.Plantbending;
 import model.waterbending.WaterManipulation;
@@ -18,6 +19,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -200,13 +202,14 @@ public class FireBlast {
 			// Block block1 = entity.getLocation().getBlock();
 			// if (bblock.equals(block1))
 			affect(entity);
+			
 			if (entity instanceof LivingEntity) {
-				// Block block2 = ((LivingEntity) entity).getEyeLocation()
-				// .getBlock();
-				// if (bblock.equals(block1))
-				// break;
-				// if (bblock.equals(block2)) {
-				// affect(entity);
+				if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
+					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+					if (bPlayer != null) {
+						bPlayer.earnXP(BendingType.Fire);
+					}
+				}
 				break;
 				// }
 			}
@@ -252,6 +255,7 @@ public class FireBlast {
 	}
 
 	private void affect(Entity entity) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity.getEntityId() != player.getEntityId()) {
 			if (AvatarState.isAvatarState(player)) {
 				entity.setVelocity(direction.clone().multiply(
@@ -261,9 +265,9 @@ public class FireBlast {
 			}
 			if (entity instanceof LivingEntity) {
 				entity.setFireTicks(50);
-				Tools.damageEntity(player, entity, (int) Tools
+				Tools.damageEntity(player, entity,  bPlayer.getCriticalHit(BendingType.Fire,Tools
 						.firebendingDayAugment((double) damage,
-								entity.getWorld()));
+								entity.getWorld())));
 				new Enflamed(entity, player);
 				instances.remove(id);
 			}

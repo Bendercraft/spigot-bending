@@ -32,8 +32,8 @@ public class BendingPlayers {
 	// }
 
 	public BendingPlayers(File file) {
-		load();
 		dataFolder = file;
+		load();
 	}
 
 	public String getKey(String s) {
@@ -75,21 +75,6 @@ public class BendingPlayers {
 		return list;
 	}
 
-	// public void purgeOldPlayers(long timelimitdays) {
-	// if (timelimitdays == 0)
-	// return;
-	// long nowtime = System.currentTimeMillis();
-	// long timelimit = timelimitdays * (1000 * 60 * 60 * 24);
-	// for (BendingPlayer player : BendingPlayer.getBendingPlayers()) {
-	// long time = player.getLastTime();
-	// if (nowtime - time >= timelimit) {
-	// player.delete();
-	// if (bendingPlayers != null) {
-	// bendingPlayers.set(player.getName(), null);
-	// }
-	// }
-	// }
-	// }
 
 	public Boolean checkKeys(String s) {
 		if (!(bendingPlayers == null))

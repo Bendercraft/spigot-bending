@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import model.Abilities;
 import model.AvatarState;
 import model.BendingPlayer;
+import model.BendingType;
 import model.TempBlock;
 import model.earthbending.EarthBlast;
 import model.firebending.FireBlast;
@@ -16,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -357,6 +359,7 @@ public class WaterManipulation {
 				}
 
 				if (!displacing) {
+					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 					for (Entity entity : Tools.getEntitiesAroundPoint(location,
 							FireBlast.affectingradius)) {
 						if (entity instanceof LivingEntity
@@ -377,11 +380,18 @@ public class WaterManipulation {
 //									.add(direction));
 							if (AvatarState.isAvatarState(player))
 								damage = AvatarState.getValue(damage);
-							Tools.damageEntity(player, entity, (int) Tools
-									.waterbendingNightAugment(damage,
-											player.getWorld()));
+							Tools.damageEntity(player, entity,
+									bPlayer.getCriticalHit(BendingType.Water,Tools
+											.waterbendingNightAugment(damage,
+													player.getWorld())));
 							progressing = false;
 							// }
+							
+							if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){	
+								if (bPlayer != null) {
+									bPlayer.earnXP(BendingType.Water);
+								}
+							}
 						}
 					}
 				}

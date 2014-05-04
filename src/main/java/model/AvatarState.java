@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 import business.Tools;
 import controller.Flight;
 
-public class AvatarState {
+public class AvatarState implements IAbility{
 
 	public static ConcurrentHashMap<Player, AvatarState> instances = new ConcurrentHashMap<Player, AvatarState>();
 
@@ -29,18 +29,14 @@ public class AvatarState {
 			instances.put(player, this);
 		}
 	}
-
-	public static void manageAvatarStates() {
+	
+	public static void progressAll() {
 		for (Player player : instances.keySet()) {
-			progress(player);
+			instances.get(player).progress();
 		}
 	}
 
-	public static boolean progress(Player player) {
-		return instances.get(player).progress();
-	}
-
-	private boolean progress() {
+	public boolean progress() {
 		if (!Tools.canBend(player, Abilities.AvatarState)) {
 			instances.remove(player);
 			return false;

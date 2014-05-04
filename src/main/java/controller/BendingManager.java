@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import model.Abilities;
 import model.AvatarState;
+import model.BendingPlayer;
 import model.BendingType;
 import model.TempPotionEffect;
 import model.airbending.AirBlast;
@@ -58,6 +59,7 @@ import model.waterbending.WaterWall;
 import model.waterbending.Wave;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -103,7 +105,6 @@ public class BendingManager implements Runnable {
 	public void run() {
 
 		try {
-
 			interval = System.currentTimeMillis() - time;
 			time = System.currentTimeMillis();
 			Bending.time_step = interval;
@@ -115,10 +116,15 @@ public class BendingManager implements Runnable {
 			manageChiBlocking();
 			// manageMessages();
 			TempPotionEffect.progressAll();
-			AvatarState.manageAvatarStates();
+			AvatarState.progressAll();
 			// handleFlying();
 			Flight.handle();
 			handleDayNight();
+			
+			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+				bPlayer.increaseAllBendingCpt();
+			}
 
 			if (verbose
 					&& System.currentTimeMillis() > verbosetime
