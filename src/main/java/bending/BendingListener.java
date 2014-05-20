@@ -894,36 +894,6 @@ public class BendingListener implements Listener {
 
 	}
 
-	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	// public void onEntityDamage(EntityDamageByBlockEvent event) {
-	// Tools.verbose(event.getCause());
-	// if (event.getEntity() instanceof LivingEntity) {
-	// if (event.getCause() == DamageCause.FIRE
-	// && FireStream.ignitedblocks.contains(event.getDamager())) {
-	// event.setDamage(0);
-	// Tools.damageEntity(
-	// FireStream.ignitedblocks.get(event.getDamager()),
-	// event.getEntity(), FireStream.firedamage);
-	// }
-	//
-	// if (event.getCause() == DamageCause.FIRE_TICK
-	// && FireStream.ignitedblocks.contains(event.getEntity())) {
-	// event.setDamage(0);
-	// Tools.damageEntity(
-	// FireStream.ignitedblocks.get(event.getDamager()),
-	// event.getEntity(), FireStream.tickdamage);
-	// }
-	// }
-	//
-	// }
-	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	// public void onEntityCombust(EntityCombustByBlockEvent event) {
-	// if (FireStream.ignitedblocks.contains(event.getCombuster())) {
-	// FireStream.ignitedentities.put((LivingEntity) event.getEntity(),
-	// FireStream.ignitedblocks.get(event.getCombuster()));
-	// }
-	// }
-
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockFlowTo(BlockFromToEvent event) {
 		Block toblock = event.getToBlock();
@@ -1273,11 +1243,6 @@ public class BendingListener implements Listener {
 			event.getDrops().clear();
 			event.getDrops().addAll(newdrops);
 			EarthArmor.removeEffect(event.getEntity());
-		}
-		
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getEntity());
-		if (bPlayer != null) {
-			bPlayer.resetXP();
 		}
 	}
 }

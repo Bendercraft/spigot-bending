@@ -52,7 +52,7 @@ public class AirShield {
 
 	private void rotateShield() {
 		Location origin = player.getLocation();
-
+		
 		FireBlast.removeFireBlastsAroundPoint(origin, radius);
 
 		for (Entity entity : Tools.getEntitiesAroundPoint(origin, radius)) {
