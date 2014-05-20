@@ -5,4 +5,3 @@ Add more customizations
 Add some abilities
 
 Modifications done to fit with the french server : www.avatar-state.net
-Test Koudja
