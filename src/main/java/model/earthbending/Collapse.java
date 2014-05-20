@@ -61,9 +61,6 @@ public class Collapse {
 			new CompactColumn(player, block.getLocation());
 			cpt++;
 		}
-		if (cpt > 2) {
-			bPlayer.receiveXP(BendingType.Earth,2);
-		}
 	}
 
 	private void getAffectedBlocks(Block block) {
