@@ -1,7 +1,6 @@
 package net.avatarrealms.minecraft.bending;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -12,13 +11,9 @@ import net.avatarrealms.minecraft.bending.controller.RevertChecker;
 import net.avatarrealms.minecraft.bending.data.BendingPlayers;
 import net.avatarrealms.minecraft.bending.data.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
-import net.avatarrealms.minecraft.bending.data.Metrics;
-import net.avatarrealms.minecraft.bending.data.Metrics.Graph;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingLevel;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -106,75 +101,6 @@ public class Bending extends JavaPlugin {
 		Tools.printHooks();
 		Tools.verbose("Bending v" + this.getDescription().getVersion()
 				+ " has been loaded.");
-
-		try {
-			Metrics metrics = new Metrics(this);
-
-			Graph bending = metrics.createGraph("Bending");
-
-			for (String p : config.getSavedPlayers()) {
-				if (Tools.isBender(p, BendingType.Air))
-					air++;
-				if (Tools.isBender(p, BendingType.Earth))
-					earth++;
-				if (Tools.isBender(p, BendingType.Water))
-					water++;
-				if (Tools.isBender(p, BendingType.Fire))
-					fire++;
-				if (Tools.isBender(p, BendingType.ChiBlocker))
-					chi++;
-			}
-
-			bending.addPlotter(new Metrics.Plotter("Air") {
-
-				@Override
-				public int getValue() {
-					return air;
-				}
-
-			});
-
-			bending.addPlotter(new Metrics.Plotter("Fire") {
-
-				@Override
-				public int getValue() {
-					return fire;
-				}
-
-			});
-
-			bending.addPlotter(new Metrics.Plotter("Water") {
-
-				@Override
-				public int getValue() {
-					return water;
-				}
-
-			});
-
-			bending.addPlotter(new Metrics.Plotter("Earth") {
-
-				@Override
-				public int getValue() {
-					return earth;
-				}
-
-			});
-
-			bending.addPlotter(new Metrics.Plotter("Chi Blocker") {
-
-				@Override
-				public int getValue() {
-					return chi;
-				}
-
-			});
-
-			metrics.start();
-			log.info("Bending is sending data for Plugin Metrics.");
-		} catch (IOException e) {
-			// Failed to submit the stats :-(
-		}
 
 		registerCommands();
 
