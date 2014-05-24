@@ -156,9 +156,7 @@ public class EarthBlast {
 				Entity target = Tools.getTargettedEntity(player, range);
 				// Tools.verbose(target);
 				if (target == null) {
-					destination = player.getTargetBlock(
-							Tools.getTransparentEarthbending(), (int) range)
-							.getLocation();
+					destination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 					firstdestination = sourceblock.getLocation().clone();
 					firstdestination.setY(destination.getY());
 				} else {

@@ -38,8 +38,7 @@ public class Collapse {
 		Block sblock = Tools.getEarthSourceBlock(player, range);
 		Location location;
 		if (sblock == null) {
-			location = player.getTargetBlock(
-					Tools.getTransparentEarthbending(), range).getLocation();
+			location = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 		} else {
 			location = sblock.getLocation();
 		}
@@ -55,10 +54,8 @@ public class Collapse {
 			bPlayer.cooldown(Abilities.Collapse);
 		}
 
-		int cpt = 0;
 		for (Block block : baseblocks.keySet()) {
 			new CompactColumn(player, block.getLocation());
-			cpt++;
 		}
 	}
 

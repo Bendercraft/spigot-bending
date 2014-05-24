@@ -47,8 +47,7 @@ public class EarthWall {
 		Block sblock = Tools.getEarthSourceBlock(player, range);
 		Location origin;
 		if (sblock == null) {
-			origin = player.getTargetBlock(Tools.getTransparentEarthbending(),
-					range).getLocation();
+			origin = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 		} else {
 			origin = sblock.getLocation();
 		}

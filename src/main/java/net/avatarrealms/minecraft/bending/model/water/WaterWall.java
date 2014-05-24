@@ -1,6 +1,8 @@
 package net.avatarrealms.minecraft.bending.model.water;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.business.Tools;
@@ -184,9 +186,7 @@ public class WaterWall {
 
 	public void moveWater() {
 		if (sourceblock != null) {
-			targetdestination = player.getTargetBlock(
-					Tools.getTransparentEarthbending(), (int) range)
-					.getLocation();
+			targetdestination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 
 			if (targetdestination.distance(location) <= 1) {
 				progressing = false;
@@ -274,8 +274,12 @@ public class WaterWall {
 
 			if (forming) {
 				ArrayList<Block> blocks = new ArrayList<Block>();
+				Set<Material> transparentForSelection = new HashSet<Material>();
+				transparentForSelection.add(Material.WATER);
+				transparentForSelection.add(Material.STATIONARY_WATER);
+				transparentForSelection.add(Material.SNOW);
 				Location loc = Tools.getTargetedLocation(player, (int) range,
-						8, 9, 79);
+						transparentForSelection);
 				location = loc.clone();
 				Vector dir = player.getEyeLocation().getDirection();
 				Vector vec;

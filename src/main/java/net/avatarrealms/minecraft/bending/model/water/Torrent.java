@@ -293,8 +293,7 @@ public class Torrent {
 		}
 
 		Entity target = Tools.getTargettedEntity(player, range, hurtentities);
-		Location targetloc = player.getTargetBlock(
-				Tools.getTransparentEarthbending(), (int) range).getLocation();
+		Location targetloc = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 		// Location targetloc = Tools.getTargetedLocation(player, range,
 		// Tools.transparentEarthbending);
 		if (target != null) {

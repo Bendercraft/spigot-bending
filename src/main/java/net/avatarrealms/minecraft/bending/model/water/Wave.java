@@ -138,9 +138,7 @@ public class Wave {
 				factor = AvatarState.getValue(factor);
 			Entity target = Tools.getTargettedEntity(player, range);
 			if (target == null) {
-				targetdestination = player.getTargetBlock(
-						Tools.getTransparentEarthbending(), (int) range)
-						.getLocation();
+				targetdestination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 			} else {
 				targetdestination = ((LivingEntity) target).getEyeLocation();
 			}

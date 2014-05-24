@@ -3,14 +3,15 @@ package net.avatarrealms.minecraft.bending.business;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.data.BendingPlayers;
@@ -83,6 +84,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import com.massivecraft.factions.listeners.FactionsListenerMain;
@@ -99,31 +101,126 @@ public class Tools {
 
 	private static final Map<String, ChatColor> colors;
 
-	private static Abilities[] harmlessAbilities = { Abilities.AirScooter,
-			Abilities.AirSpout, Abilities.HealingWaters, Abilities.HighJump,
-			Abilities.Illumination, Abilities.Tremorsense, Abilities.WaterSpout };
+	private static Set<Abilities> harmlessAbilities = new HashSet<Abilities>();
+	static { 
+		harmlessAbilities.add(Abilities.AirScooter);
+		harmlessAbilities.add(Abilities.AirSpout);
+		harmlessAbilities.add(Abilities.HealingWaters);
+		harmlessAbilities.add(Abilities.HighJump);
+		harmlessAbilities.add(Abilities.Illumination);
+		harmlessAbilities.add(Abilities.Tremorsense);
+		harmlessAbilities.add(Abilities.WaterSpout);
+	}
 
-	private static Abilities[] localAbilities = { Abilities.AirScooter,
-			Abilities.AirSpout, Abilities.HealingWaters, Abilities.HighJump,
-			Abilities.Illumination, Abilities.Tremorsense,
-			Abilities.WaterSpout, Abilities.AvatarState, Abilities.FireJet,
-			Abilities.Paralyze, Abilities.RapidPunch };
+	private static Set<Abilities> localAbilities = new HashSet<Abilities>();
+	static { 
+		localAbilities.add(Abilities.AirScooter);
+		localAbilities.add(Abilities.AirSpout);
+		localAbilities.add(Abilities.HealingWaters);
+		localAbilities.add(Abilities.HighJump);
+		localAbilities.add(Abilities.Illumination);
+		localAbilities.add(Abilities.Tremorsense);
+		localAbilities.add(Abilities.WaterSpout);
+		localAbilities.add(Abilities.AvatarState);
+		localAbilities.add(Abilities.FireJet);
+		localAbilities.add(Abilities.Paralyze);
+		localAbilities.add(Abilities.RapidPunch);
+	}
 
-	public static Integer[] transparentEarthbending = { 0, 6, 8, 9, 10, 11, 30,
-			31, 32, 37, 38, 39, 40, 50, 51, 59, 78, 83, 106 };
+	public static Set<Material> transparentEarthbending = new HashSet<Material>();
+	static {
+		transparentEarthbending.add(Material.AIR);
+		transparentEarthbending.add(Material.SAPLING);
+		transparentEarthbending.add(Material.WATER);
+		transparentEarthbending.add(Material.STATIONARY_WATER);
+		transparentEarthbending.add(Material.LAVA);
+		transparentEarthbending.add(Material.STATIONARY_LAVA);
+		transparentEarthbending.add(Material.WEB); // Not sure here, previously ID 30
+		transparentEarthbending.add(Material.GRASS); // Not sure here, previously ID 31
+		transparentEarthbending.add(Material.DEAD_BUSH); 
+		transparentEarthbending.add(Material.YELLOW_FLOWER); 
+		transparentEarthbending.add(Material.RED_ROSE);
+		transparentEarthbending.add(Material.BROWN_MUSHROOM); 
+		transparentEarthbending.add(Material.RED_MUSHROOM); 
+		transparentEarthbending.add(Material.TORCH);
+		transparentEarthbending.add(Material.FIRE); 
+		transparentEarthbending.add(Material.CROPS); 
+		transparentEarthbending.add(Material.SNOW); 
+		transparentEarthbending.add(Material.SUGAR_CANE);
+		transparentEarthbending.add(Material.VINE);
+	}
 
-	public static Integer[] nonOpaque = { 0, 6, 8, 9, 10, 11, 27, 28, 30, 31,
-			32, 37, 38, 39, 40, 50, 51, 55, 59, 66, 68, 69, 70, 72, 75, 76, 77,
-			78, 83, 90, 93, 94, 104, 105, 106, 111, 115, 119, 127, 131, 132 };
+	public static Set<Material> nonOpaque = new HashSet<Material>();
+	static {
+		nonOpaque.add(Material.AIR);
+		nonOpaque.add(Material.SAPLING);
+		nonOpaque.add(Material.WATER);
+		nonOpaque.add(Material.STATIONARY_WATER);
+		nonOpaque.add(Material.LAVA);
+		nonOpaque.add(Material.STATIONARY_LAVA);
+		nonOpaque.add(Material.POWERED_RAIL);
+		nonOpaque.add(Material.DETECTOR_RAIL);
+		nonOpaque.add(Material.WEB); // Not sure here, previously ID 30
+		nonOpaque.add(Material.GRASS); // Not sure here, previously ID 31
+		nonOpaque.add(Material.DEAD_BUSH);
+		nonOpaque.add(Material.YELLOW_FLOWER);
+		nonOpaque.add(Material.RED_ROSE);
+		nonOpaque.add(Material.BROWN_MUSHROOM);
+		nonOpaque.add(Material.RED_MUSHROOM);
+		nonOpaque.add(Material.TORCH);
+		nonOpaque.add(Material.FIRE);
+		nonOpaque.add(Material.REDSTONE_WIRE);
+		nonOpaque.add(Material.CROPS);
+		nonOpaque.add(Material.RAILS);
+		nonOpaque.add(Material.WALL_SIGN);
+		nonOpaque.add(Material.LEVER);
+		nonOpaque.add(Material.STONE_PLATE);
+		nonOpaque.add(Material.WOOD_PLATE);
+		nonOpaque.add(Material.REDSTONE_TORCH_OFF);
+		nonOpaque.add(Material.REDSTONE_TORCH_ON);
+		nonOpaque.add(Material.STONE_BUTTON);
+		nonOpaque.add(Material.SNOW);
+		nonOpaque.add(Material.SUGAR_CANE);
+		nonOpaque.add(Material.PORTAL);
+		// 93, REDSTONE REPEATER OFF TODO
+		// 94, REDSTONE REPEATER ON TODO
+		nonOpaque.add(Material.PUMPKIN_STEM);
+		nonOpaque.add(Material.MELON_STEM);
+		nonOpaque.add(Material.VINE);
+		// 111, LILY PAD TODO
+		nonOpaque.add(Material.NETHER_WARTS);
+		nonOpaque.add(Material.ENDER_PORTAL);
+		nonOpaque.add(Material.COCOA);
+		nonOpaque.add(Material.TRIPWIRE_HOOK);
+		nonOpaque.add(Material.TRIPWIRE);
+	}
 
-	private static Integer[] plantIds = { 6, 18, 31, 32, 37, 38, 39, 40, 59,
-			81, 83, 86, 99, 100, 103, 104, 105, 106, 111 };
+	private static Set<Material> plantIds = new HashSet<Material>();
+	static {
+		plantIds.add(Material.SAPLING);
+		plantIds.add(Material.LEAVES);
+		plantIds.add(Material.GRASS); // Not sure here ID 31
+		plantIds.add(Material.DEAD_BUSH);
+		plantIds.add(Material.YELLOW_FLOWER);
+		plantIds.add(Material.RED_ROSE);
+		plantIds.add(Material.BROWN_MUSHROOM);
+		plantIds.add(Material.RED_MUSHROOM);
+		plantIds.add(Material.CROPS);
+		plantIds.add(Material.CACTUS);
+		plantIds.add(Material.SUGAR_CANE);
+		plantIds.add(Material.PUMPKIN);
+		// 99, BROWN MUSHROOM CAP TODO
+		// 100, RED MUSHROOM CAP TODO
+		plantIds.add(Material.MELON_BLOCK);
+		plantIds.add(Material.PUMPKIN_STEM);
+		plantIds.add(Material.MELON_STEM);
+		plantIds.add(Material.VINE);
+		// 111 LILY PAD TODO
+	}
 
 	public static final long timeinterval = ConfigManager.globalCooldown;
 
 	public static ConcurrentHashMap<Block, Information> movedearth = new ConcurrentHashMap<Block, Information>();
-	// public static ConcurrentHashMap<Block, Block> tempearthblocks = new
-	// ConcurrentHashMap<Block, Block>();
 	public static ConcurrentHashMap<Integer, Information> tempair = new ConcurrentHashMap<Integer, Information>();
 	public static ConcurrentHashMap<Player, Long> blockedchis = new ConcurrentHashMap<Player, Long>();
 	public static ConcurrentHashMap<Player, Player> tempflyers = new ConcurrentHashMap<Player, Player>();
@@ -135,16 +232,14 @@ public class Tools {
 	private static boolean respectWorldGuard = true;
 	private static boolean respectFactions = false;
 
-	// private static boolean logblockhook = true;
-
 	public Tools(BendingPlayers config2) {
 		config = config2;
 	}
 
-	public static HashSet<Byte> getTransparentEarthbending() {
-		HashSet<Byte> set = new HashSet<Byte>();
-		for (int i : transparentEarthbending) {
-			set.add((byte) i);
+	public static Set<Material> getTransparentEarthbending() {
+		Set<Material> set = new HashSet<Material>();
+		for (Material i : transparentEarthbending) {
+			set.add(i);
 		}
 		return set;
 	}
@@ -158,7 +253,7 @@ public class Tools {
 		if (Tools.isRegionProtectedFromBuild(player, ability,
 				block.getLocation()))
 			return false;
-		if (Arrays.asList(transparentEarthbending).contains(block.getTypeId()))
+		if (transparentEarthbending.contains(block.getType()))
 			return true;
 		return false;
 	}
@@ -196,35 +291,51 @@ public class Tools {
 			loc = location1.clone().add(direction.clone().multiply(i));
 			Material type = loc.getBlock().getType();
 			if (type != Material.AIR
-					&& !Arrays.asList(transparentEarthbending).contains(
-							type.getId()))
+					&& !transparentEarthbending.contains(type))
 				return true;
 		}
 
 		return false;
 	}
 
-	public static Location getTargetedLocation(Player player, int range) {
-		return getTargetedLocation(player, range, 0);
+	public static Block getTargetBlock(Player player, int range) {
+		return getTargetBlock(player, range,
+				Collections.singleton(Material.AIR));
+	}
+
+	public static Block getTargetBlock(Player player,
+			double originselectrange, Set<Material> nonOpaque2) {
+		BlockIterator iter = new BlockIterator(player,
+				(int) originselectrange + 1);
+		Block block = iter.next();
+		while (iter.hasNext()) {
+			block = iter.next();
+			if (nonOpaque2.contains(block.getType())) {
+				break;
+			}
+		}
+		return block;
+	}
+
+	public static Location getTargetedLocation(Player player, double range) {
+		return getTargetedLocation(player, range,
+				Collections.singleton(Material.AIR));
 	}
 
 	public static Location getTargetedLocation(Player player,
-			double originselectrange, Integer... nonOpaque2) {
+			double originselectrange, Set<Material> nonOpaque2) {
 		Location origin = player.getEyeLocation();
 		Vector direction = origin.getDirection();
 
-		HashSet<Byte> trans = new HashSet<Byte>();
-		trans.add((byte) 0);
-
-		if (nonOpaque2 == null) {
-			trans = null;
-		} else {
-			for (int i : nonOpaque2) {
-				trans.add((byte) i);
+		BlockIterator iter = new BlockIterator(player,
+				(int) originselectrange + 1);
+		Block block = iter.next();
+		while (iter.hasNext()) {
+			block = iter.next();
+			if (nonOpaque2.contains(block.getType())) {
+				break;
 			}
 		}
-
-		Block block = player.getTargetBlock(trans, (int) originselectrange + 1);
 		double distance = block.getLocation().distance(origin) - 1.5;
 		Location location = origin.add(direction.multiply(distance));
 
@@ -786,18 +897,18 @@ public class Tools {
 		return false;
 	}
 
-	public static boolean canPlantbend(Player player) {	
-			BendingPlayer bPlayer =BendingPlayer.getBendingPlayer(player);
-			if (bPlayer == null) {
-				return false;
-			}
-			
-			if (player.hasPermission("bending.water.plantbending") || bPlayer.hasLevel("plantbending")) {
-				return true;
-			}
-			else {
-				return false;
-			}	
+	public static boolean canPlantbend(Player player) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer == null) {
+			return false;
+		}
+
+		if (player.hasPermission("bending.water.plantbending")
+				|| bPlayer.hasLevel("plantbending")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public static boolean hasAbility(Player player, Abilities ability) {
@@ -806,7 +917,7 @@ public class Tools {
 	}
 
 	public static boolean isPlant(Block block) {
-		if (Arrays.asList(plantIds).contains(block.getTypeId()))
+		if (plantIds.contains(block.getType()))
 			return true;
 		return false;
 	}
@@ -892,13 +1003,6 @@ public class Tools {
 		}
 		return false;
 	}
-
-	// public static void updatePhysics(Block block) {
-	// Tools.verbose(Bending.plugin.getServer().getBukkitVersion());
-	// // CraftWorld world = (CraftWorld) block.getWorld();
-	// // world.getHandle().applyPhysics(block.getX(), block.getY(),
-	// // block.getZ(), block.getTypeId());
-	// }
 
 	public static Entity getTargettedEntity(Player player, double range) {
 		return getTargettedEntity(player, range, new ArrayList<Entity>());
@@ -1098,11 +1202,11 @@ public class Tools {
 		if (ability == null) {
 			return false;
 		}
-		
+
 		if (player == null) {
 			return false;
 		}
-		
+
 		if (hasPermission(player, ability) && ability == Abilities.AvatarState)
 			return true;
 
@@ -1112,33 +1216,33 @@ public class Tools {
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player)))
 			return false;
 
-		 if (Abilities.isAirbending(ability)
-				 && !isBender(player.getName(), BendingType.Air)) {
+		if (Abilities.isAirbending(ability)
+				&& !isBender(player.getName(), BendingType.Air)) {
 			return false;
 		}
 		if (Abilities.isChiBlocking(ability)
-				 && !isBender(player.getName(), BendingType.ChiBlocker)) {
+				&& !isBender(player.getName(), BendingType.ChiBlocker)) {
 			return false;
 		}
-		 if (Abilities.isEarthbending(ability)
-				 && !isBender(player.getName(), BendingType.Earth)) {
-			 return false;
-		 }
-		 if (Abilities.isFirebending(ability)
-				 && !isBender(player.getName(), BendingType.Fire)) {
-			 return false;
-		 }
-		 if (Abilities.isWaterbending(ability)
-				 && !isBender(player.getName(), BendingType.Water)) {
-			 return false;
-		 }
+		if (Abilities.isEarthbending(ability)
+				&& !isBender(player.getName(), BendingType.Earth)) {
+			return false;
+		}
+		if (Abilities.isFirebending(ability)
+				&& !isBender(player.getName(), BendingType.Fire)) {
+			return false;
+		}
+		if (Abilities.isWaterbending(ability)
+				&& !isBender(player.getName(), BendingType.Water)) {
+			return false;
+		}
 		if (hasPermission(player, ability)
 				&& (!isLocalAbility(ability) || !isRegionProtectedFromBuild(
 						player, Abilities.AirBlast, player.getLocation()))
 				&& !toggledBending(player)) {
 			return true;
 		}
-			
+
 		if (allowharmless && Tools.isHarmlessAbility(ability)
 				&& !toggledBending(player))
 			return true;
@@ -1158,11 +1262,11 @@ public class Tools {
 	}
 
 	public static boolean isHarmlessAbility(Abilities ability) {
-		return Arrays.asList(harmlessAbilities).contains(ability);
+		return harmlessAbilities.contains(ability);
 	}
 
 	public static boolean isLocalAbility(Abilities ability) {
-		return Arrays.asList(localAbilities).contains(ability);
+		return localAbilities.contains(ability);
 	}
 
 	public static boolean isRangedAbility(Abilities ability) {
@@ -1223,10 +1327,7 @@ public class Tools {
 		PluginManager pm = Bukkit.getPluginManager();
 
 		Plugin wgp = pm.getPlugin("WorldGuard");
-		Plugin psp = pm.getPlugin("PreciousStone");
 		Plugin fcp = pm.getPlugin("Factions");
-		Plugin twnp = pm.getPlugin("Towny");
-		Plugin gpp = pm.getPlugin("GriefPrevention");
 		Plugin mcore = pm.getPlugin("mcore");
 
 		for (Location location : new Location[] { loc, player.getLocation() }) {
@@ -1444,10 +1545,12 @@ public class Tools {
 				&& !AvatarState.isAvatarState(player))
 			return false;
 		if (!player.hasPermission("bending." + type + ".passive")) {
-			if (type == BendingType.Earth && bPlayer.getLevel(type) >= ConfigManager.earthPassiveLevelRequired) {
+			if (type == BendingType.Earth
+					&& bPlayer.getLevel(type) >= ConfigManager.earthPassiveLevelRequired) {
 				return true;
 			}
-			if (type == BendingType.Air && bPlayer.getLevel(type) >= ConfigManager.airPassiveLevelRequired) {
+			if (type == BendingType.Air
+					&& bPlayer.getLevel(type) >= ConfigManager.airPassiveLevelRequired) {
 				return true;
 			}
 			if (type == BendingType.ChiBlocker && bPlayer.getLevel(type) >= 1) {
@@ -1467,7 +1570,7 @@ public class Tools {
 				&& player.hasPermission("bending.admin.AvatarState")) {
 			return true;
 		}
-		
+
 		if (Abilities.isAirbending(ability)
 				&& player.hasPermission("bending.air." + ability)) {
 			return true;
@@ -1492,7 +1595,7 @@ public class Tools {
 				&& player.hasPermission("bending.chiblocking." + ability)) {
 			return true;
 		}
-		
+
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer.hasLevel(ability)) {
 			return true;
@@ -1552,7 +1655,7 @@ public class Tools {
 	}
 
 	public static boolean isSolid(Block block) {
-		if (Arrays.asList(nonOpaque).contains(block.getTypeId()))
+		if (nonOpaque.contains(block.getType()))
 			return false;
 		return true;
 	}
@@ -1631,10 +1734,9 @@ public class Tools {
 		removeSpouts(location, 1.5, sourceplayer);
 	}
 
-	@SuppressWarnings("deprecation")
 	public static Block getEarthSourceBlock(Player player, double range) {
-		Block testblock = player.getTargetBlock(getTransparentEarthbending(),
-				(int) range);
+		Block testblock = getTargetBlock(player, (int) range,
+				getTransparentEarthbending());
 		if (Tools.isEarthbendable(player, testblock))
 			return testblock;
 		Location location = player.getEyeLocation();
@@ -1652,7 +1754,6 @@ public class Tools {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static Block getWaterSourceBlock(Player player, double range,
 			boolean plantbending) {
 		// byte full = 0x0;
@@ -1671,8 +1772,8 @@ public class Tools {
 					TempBlock tb = TempBlock.get(block);
 					byte full = 0x0;
 					if (tb.getState().getRawData() != full
-							&& (tb.getState().getType() != Material.WATER || 
-									tb.getState().getType() != Material.STATIONARY_WATER)) {
+							&& (tb.getState().getType() != Material.WATER || tb
+									.getState().getType() != Material.STATIONARY_WATER)) {
 						continue;
 					}
 				}
@@ -1777,7 +1878,6 @@ public class Tools {
 
 	public static int getIntCardinalDirection(Vector vector) {
 		BlockFace face = getCardinalDirection(vector);
-
 		switch (face) {
 		case SOUTH:
 			return 7;
@@ -1795,10 +1895,10 @@ public class Tools {
 			return 5;
 		case SOUTH_EAST:
 			return 8;
+		default:
+			break;
 		}
-
 		return 4;
-
 	}
 
 	static {
