@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
-
 import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
@@ -15,56 +13,11 @@ import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
-import net.avatarrealms.minecraft.bending.model.air.AirBlast;
-import net.avatarrealms.minecraft.bending.model.air.AirBubble;
-import net.avatarrealms.minecraft.bending.model.air.AirBurst;
-import net.avatarrealms.minecraft.bending.model.air.AirScooter;
-import net.avatarrealms.minecraft.bending.model.air.AirShield;
-import net.avatarrealms.minecraft.bending.model.air.AirSpout;
-import net.avatarrealms.minecraft.bending.model.air.AirSuction;
-import net.avatarrealms.minecraft.bending.model.air.AirSwipe;
-import net.avatarrealms.minecraft.bending.model.air.Speed;
-import net.avatarrealms.minecraft.bending.model.air.Tornado;
-import net.avatarrealms.minecraft.bending.model.chi.HighJump;
-import net.avatarrealms.minecraft.bending.model.chi.Paralyze;
-import net.avatarrealms.minecraft.bending.model.chi.RapidPunch;
-import net.avatarrealms.minecraft.bending.model.earth.Catapult;
-import net.avatarrealms.minecraft.bending.model.earth.Collapse;
-import net.avatarrealms.minecraft.bending.model.earth.CompactColumn;
-import net.avatarrealms.minecraft.bending.model.earth.EarthArmor;
-import net.avatarrealms.minecraft.bending.model.earth.EarthBlast;
-import net.avatarrealms.minecraft.bending.model.earth.EarthColumn;
-import net.avatarrealms.minecraft.bending.model.earth.EarthGrab;
-import net.avatarrealms.minecraft.bending.model.earth.EarthPassive;
-import net.avatarrealms.minecraft.bending.model.earth.EarthTunnel;
-import net.avatarrealms.minecraft.bending.model.earth.EarthWall;
-import net.avatarrealms.minecraft.bending.model.earth.Shockwave;
-import net.avatarrealms.minecraft.bending.model.earth.Tremorsense;
-import net.avatarrealms.minecraft.bending.model.fire.ArcOfFire;
-import net.avatarrealms.minecraft.bending.model.fire.Cook;
-import net.avatarrealms.minecraft.bending.model.fire.Enflamed;
-import net.avatarrealms.minecraft.bending.model.fire.Extinguish;
-import net.avatarrealms.minecraft.bending.model.fire.FireBlast;
-import net.avatarrealms.minecraft.bending.model.fire.FireBurst;
-import net.avatarrealms.minecraft.bending.model.fire.FireJet;
-import net.avatarrealms.minecraft.bending.model.fire.FireShield;
-import net.avatarrealms.minecraft.bending.model.fire.FireStream;
-import net.avatarrealms.minecraft.bending.model.fire.Fireball;
-import net.avatarrealms.minecraft.bending.model.fire.Illumination;
-import net.avatarrealms.minecraft.bending.model.fire.Lightning;
-import net.avatarrealms.minecraft.bending.model.fire.RingOfFire;
-import net.avatarrealms.minecraft.bending.model.fire.WallOfFire;
-import net.avatarrealms.minecraft.bending.model.water.Bloodbending;
-import net.avatarrealms.minecraft.bending.model.water.FreezeMelt;
-import net.avatarrealms.minecraft.bending.model.water.IceSpike2;
-import net.avatarrealms.minecraft.bending.model.water.Melt;
-import net.avatarrealms.minecraft.bending.model.water.OctopusForm;
-import net.avatarrealms.minecraft.bending.model.water.Torrent;
-import net.avatarrealms.minecraft.bending.model.water.WaterManipulation;
-import net.avatarrealms.minecraft.bending.model.water.WaterPassive;
-import net.avatarrealms.minecraft.bending.model.water.WaterSpout;
-import net.avatarrealms.minecraft.bending.model.water.WaterWall;
-import net.avatarrealms.minecraft.bending.model.water.Wave;
+import net.avatarrealms.minecraft.bending.model.air.*;
+import net.avatarrealms.minecraft.bending.model.chi.*;
+import net.avatarrealms.minecraft.bending.model.earth.*;
+import net.avatarrealms.minecraft.bending.model.fire.*;
+import net.avatarrealms.minecraft.bending.model.water.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -893,36 +846,6 @@ public class BendingListener implements Listener {
 
 	}
 
-	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	// public void onEntityDamage(EntityDamageByBlockEvent event) {
-	// Tools.verbose(event.getCause());
-	// if (event.getEntity() instanceof LivingEntity) {
-	// if (event.getCause() == DamageCause.FIRE
-	// && FireStream.ignitedblocks.contains(event.getDamager())) {
-	// event.setDamage(0);
-	// Tools.damageEntity(
-	// FireStream.ignitedblocks.get(event.getDamager()),
-	// event.getEntity(), FireStream.firedamage);
-	// }
-	//
-	// if (event.getCause() == DamageCause.FIRE_TICK
-	// && FireStream.ignitedblocks.contains(event.getEntity())) {
-	// event.setDamage(0);
-	// Tools.damageEntity(
-	// FireStream.ignitedblocks.get(event.getDamager()),
-	// event.getEntity(), FireStream.tickdamage);
-	// }
-	// }
-	//
-	// }
-	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	// public void onEntityCombust(EntityCombustByBlockEvent event) {
-	// if (FireStream.ignitedblocks.contains(event.getCombuster())) {
-	// FireStream.ignitedentities.put((LivingEntity) event.getEntity(),
-	// FireStream.ignitedblocks.get(event.getCombuster()));
-	// }
-	// }
-
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockFlowTo(BlockFromToEvent event) {
 		Block toblock = event.getToBlock();
@@ -1273,30 +1196,5 @@ public class BendingListener implements Listener {
 			event.getDrops().addAll(newdrops);
 			EarthArmor.removeEffect(event.getEntity());
 		}
-		
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getEntity());
-		if (bPlayer != null) {
-			bPlayer.resetXP();
-		}
 	}
 }
-// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-// public void onPlayerInteract(PlayerInteractEntityEvent event){
-// Entity rightclicked = event.getRightClicked();
-// Player player = event.getPlayer();
-// if (!Tools.isBender(player, BendingType.Air))
-// return;
-// if (!(player.getItemInHand().getType() == Material.AIR))
-// return;
-// EntityType type = event.getRightClicked().getType();
-// if (type == EntityType.COW || type == EntityType.CHICKEN || type ==
-// EntityType.SHEEP
-// || type == EntityType.PIG){
-// rightclicked.setPassenger(player);
-// }
-// if (rightclicked.getPassenger() == player){
-// rightclicked.setPassenger(null);
-// }
-//
-// }
-

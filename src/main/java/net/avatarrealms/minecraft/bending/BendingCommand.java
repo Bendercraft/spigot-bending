@@ -21,6 +21,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
+
 public class BendingCommand {
 
 	private final String[] bindAliases = { "bind", "b" };
@@ -52,7 +53,7 @@ public class BendingCommand {
 	private final String[] chiblockingAliases = { "chi", "c", "chiblock",
 			"chiblocker", "chiblocking" };
 	
-	private final String[] levelAliases = {"level","lvl"};
+	private final String[] levelAliases = {"level","lvl","lv","l"};
 	private final String[] setlevelAliases = {"setlevel","slvl"};
 	private final String[] givexpAliases = {"givexp","gxp","xp"};
 

@@ -113,7 +113,7 @@ public class ConfigManager {
 
 	// ChiBlocker
 	// HighJump
-	public static int jumpheight = 2;
+	public static double jumpheight = 1.5;
 	public static long highJumpCooldown = 5000;
 	public static int highJumpLevelRequired = 1;
 
@@ -450,7 +450,7 @@ public class ConfigManager {
 				globalCooldown);
 
 		// HighJump
-		jumpheight = config.getInt("Properties.ChiBlocker.HighJump.Height",
+		jumpheight = config.getDouble("Properties.ChiBlocker.HighJump.Height",
 				jumpheight);
 		highJumpCooldown = config.getLong(
 				"Properties.ChiBlocker.HighJump.Cooldown", highJumpCooldown);

@@ -11,7 +11,6 @@ import net.avatarrealms.minecraft.bending.model.BendingType;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 

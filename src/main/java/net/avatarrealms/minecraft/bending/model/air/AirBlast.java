@@ -10,16 +10,15 @@ import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
 
 public class AirBlast {
 
@@ -177,19 +176,6 @@ public class AirBlast {
 			}
 			if (((block.getType() == Material.LEVER) || (block.getType() == Material.STONE_BUTTON))
 					&& !affectedlevers.contains(block)) {
-				// BlockState state = block.getState();
-				// Lever lever = (Lever) (state.getData());
-				// lever.setPowered(!lever.isPowered());
-				// state.setData(lever);
-				// state.update(true, true);
-				//
-				// Block relative = block.getRelative(((Attachable) block
-				// .getState().getData()).getFacing(), -1);
-				// relative.getState().update(true, true);
-				//
-				// for (Block block2 : Tools.getBlocksAroundPoint(
-				// relative.getLocation(), 2))
-				// block2.getState().update(true, true);
 
 				affectedlevers.add(block);
 			}
@@ -217,13 +203,6 @@ public class AirBlast {
 
 		for (Entity entity : Tools.getEntitiesAroundPoint(location,
 				affectingradius)) {
-			// if (source == null) {
-			// if (affectedentities.contains(entity))
-			// continue;
-			// } else {
-			// if (source.isAffectedEntity(entity))
-			// continue;
-			// }
 			affect(entity);
 		}
 
@@ -243,13 +222,6 @@ public class AirBlast {
 		// else
 		// source.addAffectedEntity(entity);
 		boolean isUser = entity.getEntityId() == player.getEntityId();
-		
-		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Air);
-			}
-		}
 
 		if (!isUser || otherorigin) {
 			Vector velocity = entity.getVelocity();
@@ -290,22 +262,6 @@ public class AirBlast {
 			} else {
 				velocity.add(push.clone().multiply(factor * .5));
 			}
-
-			// velocity =
-			// velocity.clone().add(direction.clone().multiply(factor));
-			// double newmag = Math.abs(velocity.getY());
-			// if (newmag > mag) {
-			// if (mag > max) {
-			// velocity = velocity.clone().multiply(mag / newmag);
-			// } else if (newmag > max) {
-			// velocity = velocity.clone().multiply(max / newmag);
-			// }
-			// }
-			//
-			// velocity.multiply(1 - location.distance(origin) / (2 * range));
-			//
-			// if (entity instanceof Player)
-			// velocity.multiply(2);
 
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);

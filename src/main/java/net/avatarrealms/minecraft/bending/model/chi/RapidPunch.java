@@ -57,9 +57,11 @@ public class RapidPunch {
 		if (numpunches >= punches) {
 			instance.remove(p);
 		}
-		if ((target instanceof Player) ||(target instanceof Monster)) {	
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.ChiBlocker);
+		if (numpunches%2 == 0) {
+			if ((target instanceof Player) ||(target instanceof Monster)) {	
+				if (bPlayer != null) {
+					bPlayer.earnXP(BendingType.ChiBlocker);
+				}
 			}
 		}
 					

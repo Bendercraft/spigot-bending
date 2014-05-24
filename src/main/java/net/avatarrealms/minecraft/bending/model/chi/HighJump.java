@@ -4,16 +4,14 @@ import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class HighJump {
 
-	private int jumpheight = ConfigManager.jumpheight;
+	private double jumpheight = ConfigManager.jumpheight;
 	private long cooldown = ConfigManager.highJumpCooldown;
 
 	// private Map<String, Long> cooldowns = new HashMap<String, Long>();
@@ -28,9 +26,6 @@ public class HighJump {
 		// .currentTimeMillis())
 		// return;
 		jump(p);
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.ChiBlocker);
-			}
 	}
 
 	private void jump(Player p) {

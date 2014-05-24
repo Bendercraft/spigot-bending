@@ -1,18 +1,18 @@
 package net.avatarrealms.minecraft.bending.model.earth;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import net.avatarrealms.minecraft.bending.business.Tools;
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+
+import net.avatarrealms.minecraft.bending.business.Tools;
+import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 
 public class Collapse {
 
@@ -60,15 +60,12 @@ public class Collapse {
 			new CompactColumn(player, block.getLocation());
 			cpt++;
 		}
-		if (cpt > 2) {
-			bPlayer.receiveXP(BendingType.Earth,2);
-		}
 	}
 
 	private void getAffectedBlocks(Block block) {
 		Block baseblock = block;
 		int tall = 0;
-		ArrayList<Block> bendableblocks = new ArrayList<Block>();
+		List<Block> bendableblocks = new ArrayList<Block>();
 		bendableblocks.add(block);
 		for (int i = 1; i <= height; i++) {
 			Block blocki = block.getRelative(BlockFace.DOWN, i);
