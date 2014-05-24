@@ -1,6 +1,7 @@
 package net.avatarrealms.minecraft.bending.model.air;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.Bending;
@@ -21,7 +22,6 @@ import org.bukkit.util.Vector;
 
 
 public class AirBlast {
-
 	public static ConcurrentHashMap<Integer, AirBlast> instances = new ConcurrentHashMap<Integer, AirBlast>();
 	private static ConcurrentHashMap<Player, Location> origins = new ConcurrentHashMap<Player, Location>();
 	// private static ConcurrentHashMap<Player, Long> timers = new
@@ -51,20 +51,9 @@ public class AirBlast {
 	private boolean otherorigin = false;
 	private int ticks = 0;
 
-	private ArrayList<Block> affectedlevers = new ArrayList<Block>();
-	private ArrayList<Entity> affectedentities = new ArrayList<Entity>();
-
-	private AirBurst source = null;
-
-	// private long time;
+	private List<Block> affectedlevers = new ArrayList<Block>();
 
 	public AirBlast(Player player) {
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
-		// return;
-		// }
-		// }
-
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.AirBlast))
@@ -73,7 +62,7 @@ public class AirBlast {
 		if (player.getEyeLocation().getBlock().isLiquid()) {
 			return;
 		}
-		// timers.put(player, System.currentTimeMillis());
+		
 		this.player = player;
 		if (origins.containsKey(player)) {
 			otherorigin = true;
@@ -107,8 +96,6 @@ public class AirBlast {
 		if (location.getBlock().isLiquid()) {
 			return;
 		}
-
-		source = burst;
 
 		this.player = player;
 		origin = location.clone();

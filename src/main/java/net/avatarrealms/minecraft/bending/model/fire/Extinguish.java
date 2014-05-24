@@ -27,14 +27,14 @@ public class Extinguish {
 
 		double range = Tools.firebendingDayAugment(defaultrange,
 				player.getWorld());
-		if (Tools.isMeltable(player.getTargetBlock(null, (int) range))) {
+		if (Tools.isMeltable(Tools.getTargetBlock(player, range))) {
 			new HeatMelt(player);
 			return;
 		}
 		double radius = Tools.firebendingDayAugment(defaultradius,
 				player.getWorld());
 		for (Block block : Tools.getBlocksAroundPoint(
-				player.getTargetBlock(null, (int) range).getLocation(), radius)) {
+				Tools.getTargetBlock(player, range).getLocation(), radius)) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze,
 					block.getLocation()))
 				continue;

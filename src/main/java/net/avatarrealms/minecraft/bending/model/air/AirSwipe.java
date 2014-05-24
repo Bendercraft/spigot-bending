@@ -2,6 +2,8 @@ package net.avatarrealms.minecraft.bending.model.air;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -50,8 +52,20 @@ public class AirSwipe {
 
 	private double speedfactor;
 
-	private static Integer[] breakables = { 6, 31, 32, 37, 38, 39, 40, 59, 81,
-			83, 106 };
+	private static Set<Material> breakables = new HashSet<Material>();
+	static {
+		breakables.add(Material.SAPLING);
+		breakables.add(Material.GRASS);
+		breakables.add(Material.DEAD_BUSH);
+		breakables.add(Material.YELLOW_FLOWER);
+		breakables.add(Material.RED_ROSE);
+		breakables.add(Material.BROWN_MUSHROOM);
+		breakables.add(Material.RED_MUSHROOM);
+		breakables.add(Material.CROPS);
+		breakables.add(Material.CACTUS);
+		breakables.add(Material.SUGAR_CANE);
+		breakables.add(Material.VINE);
+	}
 
 	private Location origin;
 	private Player player;
@@ -282,8 +296,7 @@ public class AirSwipe {
 	}
 
 	private boolean isBlockBreakable(Block block) {
-		Integer id = block.getTypeId();
-		if (Arrays.asList(breakables).contains(id)
+		if (breakables.contains(block.getType())
 				&& !Illumination.blocks.containsKey(block)) {
 			return true;
 		}

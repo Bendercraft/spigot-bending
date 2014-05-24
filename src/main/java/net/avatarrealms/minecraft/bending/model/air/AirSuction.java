@@ -1,6 +1,5 @@
 package net.avatarrealms.minecraft.bending.model.air;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.Bending;
@@ -46,11 +45,8 @@ public class AirSuction {
 	private boolean otherorigin = false;
 	private int id;
 	private int ticks = 0;
-	// private long time;
 
 	private double speedfactor;
-
-	private ArrayList<Entity> affectedentities = new ArrayList<Entity>();
 
 	public AirSuction(Player player) {
 		// if (timers.containsKey(player)) {

@@ -303,7 +303,7 @@ public class Tools {
 		return false;
 	}
 
-	public static Block getTargetBlock(Player player, int range) {
+	public static Block getTargetBlock(Player player, double range) {
 		return getTargetBlock(player, range,
 				Collections.singleton(Material.AIR));
 	}

@@ -291,7 +291,7 @@ public class WaterManipulation {
 
 				Block block = location.getBlock();
 				if (displacing) {
-					Block targetblock = player.getTargetBlock(null, displrange);
+					Block targetblock = Tools.getTargetBlock(player, displrange);
 					direction = Tools.getDirection(location,
 							targetblock.getLocation()).normalize();
 					if (!location.getBlock().equals(targetblock.getLocation())) {

@@ -89,7 +89,7 @@ public class IceSpike {
 				this.block = temptestingblock;
 				// }
 			} else {
-				this.block = player.getTargetBlock(null, (int) range);
+				this.block = Tools.getTargetBlock(player, range);
 			}
 			origin = block.getLocation();
 			location = origin.clone();

@@ -1,7 +1,6 @@
 package net.avatarrealms.minecraft.bending.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,15 +24,14 @@ public class BendingPlayer implements CustomSerializable {
 	private static ConcurrentHashMap<String, BendingPlayer> players = new ConcurrentHashMap<String, BendingPlayer>();
 
 	private static Map<Abilities, Long> abilityCooldowns = new HashMap<Abilities, Long>();
-	private static int maxlevel = ConfigManager.maxlevel;
 	private static long globalCooldown = 250;
 	private static BendingPlayers config = Tools.config;
 
 	private String playername;
 	private String language;
 
-	private List<Integer> slotAbilities = initializeEmptySlots();
-	private List<Integer> itemAbilities = initializeEmptyItems();
+	private Map<Integer, Integer> slotAbilities = new HashMap<Integer, Integer>();
+	private Map<Material, Integer> itemAbilities = new HashMap<Material, Integer>();
 
 	private Map<BendingType, BendingLevel> bendings = new HashMap<BendingType,BendingLevel>();
 
@@ -49,18 +47,6 @@ public class BendingPlayer implements CustomSerializable {
 	private boolean permaremoved = false;
 
 	private boolean tremorsense = true;
-
-	private static List<Integer> initializeEmptySlots() {
-		Integer[] array = new Integer[10];
-		Arrays.fill(array, -1);
-		return Arrays.asList(array);
-	}
-
-	private static List<Integer> initializeEmptyItems() {
-		Integer[] array = new Integer[500];
-		Arrays.fill(array, -1);
-		return Arrays.asList(array);
-	}
 
 	public BendingPlayer(String player) {
 		if (players.containsKey(player)) {
@@ -297,8 +283,8 @@ public class BendingPlayer implements CustomSerializable {
 	}
 
 	public void clearAbilities() {
-		slotAbilities = initializeEmptySlots();
-		itemAbilities = initializeEmptyItems();
+		slotAbilities = new HashMap<Integer, Integer>();
+		itemAbilities = new HashMap<Material, Integer>();
 	}
 
 	public void removeBender() {
@@ -339,23 +325,15 @@ public class BendingPlayer implements CustomSerializable {
 	}
 
 	public Abilities getAbility(Material item) {
-		int id = item.getId();
-		if (id > 450) {
-			id = id - 2200 + 400;
-		}
-		return Abilities.getAbility(itemAbilities.get(id));
+		return Abilities.getAbility(itemAbilities.get(item));
 	}
 
 	public void setAbility(int slot, Abilities ability) {
-		slotAbilities.set(slot, Abilities.getIndex(ability));
+		slotAbilities.put(slot, Abilities.getIndex(ability));
 	}
 
 	public void setAbility(Material item, Abilities ability) {
-		int id = item.getId();
-		if (id > 450) {
-			id = id - 2200 + 400;
-		}
-		itemAbilities.set(id, Abilities.getIndex(ability));
+		itemAbilities.put(item, Abilities.getIndex(ability));
 	}
 
 	public void removeSelectedAbility() {
@@ -483,8 +461,8 @@ public class BendingPlayer implements CustomSerializable {
 		}
 		language = (String) map.get("Language");
 		bendToItem = (Boolean) map.get("BendToItem");
-		itemAbilities = (List<Integer>) map.get("ItemAbilities");
-		slotAbilities = (List<Integer>) map.get("SlotAbilities");
+		itemAbilities = (Map<Material, Integer>) map.get("ItemAbilities");
+		slotAbilities = (Map<Integer, Integer>) map.get("SlotAbilities");
 
 		permaremoved = (Boolean) map.get("Permaremove");
 

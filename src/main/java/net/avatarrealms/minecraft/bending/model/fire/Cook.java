@@ -95,21 +95,23 @@ public class Cook {
 	private Material getCooked(Material material) {
 		Material cooked = Material.AIR;
 		switch (material) {
-		case RAW_BEEF:
-			cooked = Material.COOKED_BEEF;
-			break;
-		case RAW_FISH:
-			cooked = Material.COOKED_FISH;
-			break;
-		case RAW_CHICKEN:
-			cooked = Material.COOKED_CHICKEN;
-			break;
-		case PORK:
-			cooked = Material.GRILLED_PORK;
-			break;
-		case POTATO_ITEM:
-			cooked = Material.BAKED_POTATO;
-			break;
+			case RAW_BEEF:
+				cooked = Material.COOKED_BEEF;
+				break;
+			case RAW_FISH:
+				cooked = Material.COOKED_FISH;
+				break;
+			case RAW_CHICKEN:
+				cooked = Material.COOKED_CHICKEN;
+				break;
+			case PORK:
+				cooked = Material.GRILLED_PORK;
+				break;
+			case POTATO_ITEM:
+				cooked = Material.BAKED_POTATO;
+				break;
+			default:
+				break;
 		}
 		return cooked;
 	}

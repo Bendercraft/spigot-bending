@@ -39,7 +39,7 @@ public class Melt {
 		}
 		boolean evaporate = false;
 		Location location = Tools.getTargetedLocation(player, range);
-		if (Tools.isWater(player.getTargetBlock(null, range))
+		if (Tools.isWater(Tools.getTargetBlock(player, range))
 				&& !(player.getEyeLocation().getBlockY() <= 62)) {
 			evaporate = true;
 			radius = (int) Tools.waterbendingNightAugment(

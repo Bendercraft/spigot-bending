@@ -47,7 +47,8 @@ public class Tornado {
 		this.player = player;
 		// canfly = player.getAllowFlight();
 		// player.setAllowFlight(true);
-		origin = player.getTargetBlock(null, (int) range).getLocation();
+		
+		origin = Tools.getTargetBlock(player, range).getLocation();
 		origin.setY(origin.getY() - 1. / 10. * height);
 
 		int angle = 0;
@@ -92,7 +93,7 @@ public class Tornado {
 	}
 
 	private void rotateTornado() {
-		origin = player.getTargetBlock(null, (int) range).getLocation();
+		origin = Tools.getTargetBlock(player, range).getLocation();
 
 		double timefactor = height / maxheight;
 		radius = timefactor * maxradius;
