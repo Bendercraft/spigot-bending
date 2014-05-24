@@ -81,60 +81,6 @@
 			<version>${project.cbversion}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>Factions</artifactId>
-			<version>Factions</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>mcore</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>GriefPrevention</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>LogBlock</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>PreciousStones</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>TagAPI</artifactId>
-			<scope>provided</scope>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>Towny</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>WorldEdit</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.minecraft</groupId>
-			<artifactId>WorldGuard</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 </project>
 

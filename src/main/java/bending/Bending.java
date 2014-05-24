@@ -11,12 +11,10 @@ import model.BendingLevel;
 import model.BendingPlayer;
 import model.BendingType;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import business.Tools;
@@ -27,8 +25,6 @@ import dataAccess.BendingPlayersSaver;
 import dataAccess.ConfigManager;
 import dataAccess.Metrics;
 import dataAccess.Metrics.Graph;
-import de.diddiz.LogBlock.Consumer;
-import de.diddiz.LogBlock.LogBlock;
 
 public class Bending extends JavaPlugin {
 
@@ -41,8 +37,6 @@ public class Bending extends JavaPlugin {
 	public final BendingListener listener = new BendingListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
 	private final BendingPlayersSaver saver = new BendingPlayersSaver();
-	public final TagAPIListener Taglistener = new TagAPIListener();
-	public static Consumer logblock = null;
 
 	static Map<String, String> commands = new HashMap<String, String>();
 	// public static ConcurrentHashMap<String, List<BendingType>> benders = new
@@ -83,11 +77,6 @@ public class Bending extends JavaPlugin {
 		configManager.load(new File(getDataFolder(), "config.yml"));
 		language.load(new File(getDataFolder(), "language.yml"));
 
-		Plugin lb = getServer().getPluginManager().getPlugin("LogBlock");
-		if (lb != null) {
-			logblock = ((LogBlock) lb).getConsumer();
-		}
-
 		config = new BendingPlayers(getDataFolder());
 		BendingPlayer.initializeCooldowns();
 
@@ -106,11 +95,6 @@ public class Bending extends JavaPlugin {
 		chiblockingabilities = Abilities.getChiBlockingAbilities();
 
 		getServer().getPluginManager().registerEvents(listener, this);
-
-		if (Bukkit.getPluginManager().getPlugin("TagAPI") != null
-				&& ConfigManager.useTagAPI) {
-			getServer().getPluginManager().registerEvents(Taglistener, this);
-		}
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, manager, 0,
 				1);

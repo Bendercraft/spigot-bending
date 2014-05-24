@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import model.Abilities;
 import model.AvatarState;
 import model.BendingPlayer;
@@ -62,8 +61,6 @@ import model.waterbending.WaterReturn;
 import model.waterbending.WaterSpout;
 import model.waterbending.WaterWall;
 import model.waterbending.Wave;
-import net.sacredlabyrinth.Phaed.PreciousStones.FieldFlag;
-import net.sacredlabyrinth.Phaed.PreciousStones.PreciousStones;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,19 +87,6 @@ import bending.Bending;
 
 import com.massivecraft.factions.listeners.FactionsListenerMain;
 import com.massivecraft.mcore.ps.PS;
-import com.palmergames.bukkit.towny.Towny;
-import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.TownySettings;
-import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.bukkit.towny.object.PlayerCache;
-import com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus;
-import com.palmergames.bukkit.towny.object.TownyPermission;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
-import com.palmergames.bukkit.towny.object.TownyWorld;
-import com.palmergames.bukkit.towny.object.WorldCoord;
-import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
-import com.palmergames.bukkit.towny.war.flagwar.TownyWar;
-import com.palmergames.bukkit.towny.war.flagwar.TownyWarConfig;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
@@ -1322,26 +1306,6 @@ public class Tools {
 				}
 			}
 
-			if (psp != null && respectPreciousStones) {
-				PreciousStones ps = (PreciousStones) psp;
-
-				if (ignite.contains(ability)) {
-					if (ps.getForceFieldManager().hasSourceField(location,
-							FieldFlag.PREVENT_FIRE))
-						return true;
-				}
-
-				if (explode.contains(ability)) {
-					if (ps.getForceFieldManager().hasSourceField(location,
-							FieldFlag.PREVENT_EXPLOSIONS))
-						return true;
-				}
-
-				if (ps.getForceFieldManager().hasSourceField(location,
-						FieldFlag.PREVENT_PLACE))
-					return true;
-			}
-
 			if (fcp != null && mcore != null && respectFactions) {
 				if (ignite.contains(ability)) {
 
@@ -1360,79 +1324,6 @@ public class Tools {
 				// location, "build", true)) {
 				// return true;
 				// }
-			}
-
-			if (twnp != null && respectTowny) {
-				Towny twn = (Towny) twnp;
-
-				WorldCoord worldCoord;
-
-				try {
-					TownyWorld world = TownyUniverse.getDataSource().getWorld(
-							location.getWorld().getName());
-					worldCoord = new WorldCoord(world.getName(),
-							Coord.parseCoord(location));
-
-					boolean bBuild = PlayerCacheUtil.getCachePermission(player,
-							location, 3, (byte) 0,
-							TownyPermission.ActionType.BUILD);
-
-					if (ignite.contains(ability)) {
-
-					}
-
-					if (explode.contains(ability)) {
-
-					}
-
-					if (!bBuild) {
-						PlayerCache cache = twn.getCache(player);
-						TownBlockStatus status = cache.getStatus();
-
-						if (((status == TownBlockStatus.ENEMY) && TownyWarConfig
-								.isAllowingAttacks())) {
-
-							try {
-								TownyWar.callAttackCellEvent(twn, player,
-										location.getBlock(), worldCoord);
-							} catch (Exception e) {
-								TownyMessaging.sendErrorMsg(player,
-										e.getMessage());
-							}
-
-							return true;
-
-						} else if (status == TownBlockStatus.WARZONE) {
-						} else {
-							return true;
-						}
-
-						if ((cache.hasBlockErrMsg()))
-							TownyMessaging.sendErrorMsg(player,
-									cache.getBlockErrMsg());
-					}
-
-				} catch (Exception e1) {
-					TownyMessaging.sendErrorMsg(player, TownySettings
-							.getLangString("msg_err_not_configured"));
-				}
-
-			}
-
-			if (gpp != null && respectGriefPrevention) {
-				String reason = GriefPrevention.instance.allowBuild(player,
-						location);
-
-				if (ignite.contains(ability)) {
-
-				}
-
-				if (explode.contains(ability)) {
-
-				}
-
-				if (reason != null)
-					return true;
 			}
 		}
 
