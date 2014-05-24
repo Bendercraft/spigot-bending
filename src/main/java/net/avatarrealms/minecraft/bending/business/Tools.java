@@ -148,6 +148,7 @@ public class Tools {
 		transparentEarthbending.add(Material.SNOW); 
 		transparentEarthbending.add(Material.SUGAR_CANE);
 		transparentEarthbending.add(Material.VINE);
+		
 	}
 
 	public static Set<Material> nonOpaque = new HashSet<Material>();
@@ -216,6 +217,10 @@ public class Tools {
 		plantIds.add(Material.MELON_STEM);
 		plantIds.add(Material.VINE);
 		// 111 LILY PAD TODO
+		plantIds.add(Material.CARROT);
+		plantIds.add(Material.POTATO);
+		plantIds.add(Material.LEAVES_2); //Wut acacia here ? (Wanted ID 162)
+		//plantIds.add(); SUN FLOWER wanted here (ID 175)
 	}
 
 	public static final long timeinterval = ConfigManager.globalCooldown;
