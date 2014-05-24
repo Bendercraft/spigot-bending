@@ -11,8 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.data.BendingPlayers;
@@ -135,10 +133,7 @@ public class Tools {
 
 	private static boolean allowharmless = true;
 	private static boolean respectWorldGuard = true;
-	private static boolean respectPreciousStones = false;
 	private static boolean respectFactions = false;
-	private static boolean respectTowny = false;
-	private static boolean respectGriefPrevention = false;
 
 	// private static boolean logblockhook = true;
 
@@ -1191,16 +1186,6 @@ public class Tools {
 			}
 		}
 
-		Plugin psp = Bukkit.getPluginManager().getPlugin("PreciousStone");
-		if (psp != null) {
-			verbose("Recognized PreciousStones...");
-			if (respectPreciousStones) {
-				verbose("Bending is set to respect PreciousStones' build flags.");
-			} else {
-				verbose("But Bending is set to ignore PreciousStones' flags.");
-			}
-		}
-
 		Plugin fcp = Bukkit.getPluginManager().getPlugin("Factions");
 		if (fcp != null) {
 			verbose("Recognized Factions...");
@@ -1210,26 +1195,6 @@ public class Tools {
 				verbose("But Bending is set to ignore Factions' claimed lands.");
 			}
 		}
-
-		Plugin twnp = Bukkit.getPluginManager().getPlugin("Towny");
-		if (twnp != null) {
-			verbose("Recognized Towny...");
-			if (respectTowny) {
-				verbose("Bending is set to respect Towny's towns.");
-			} else {
-				verbose("But Bending is set to ignore Towny.");
-			}
-		}
-
-		// Plugin lgbk = Bukkit.getPluginManager().getPlugin("LogBlock");
-		// if (lgbk != null) {
-		// verbose("Recognized LogBlock...");
-		// if (logblockhook) {
-		// verbose("Bending is set to log to LogBlock.");
-		// } else {
-		// verbose("But Bending isn't set to hook into LogBlock.");
-		// }
-		// }
 	}
 
 	public static boolean isRegionProtectedFromBuild(Player player,

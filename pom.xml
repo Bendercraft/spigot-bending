@@ -2,12 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.avatar-realms</groupId>
-	<artifactId>avatarBending</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>net.avatarrealms.minecraft</groupId>
+	<artifactId>bending</artifactId>
+	<version>2.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>avatarBending</name>
+	<name>Minecraft Avatar bending</name>
 	<url>http://maven.apache.org</url>
 
 	<!-- Build -->
@@ -79,6 +79,30 @@
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
 			<version>${project.cbversion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>factions</artifactId>
+			<version>2.3.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>mcore</artifactId>
+			<version>7.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>worldedit</artifactId>
+			<version>5.5.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>worldguard</artifactId>
+			<version>5.8.1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
