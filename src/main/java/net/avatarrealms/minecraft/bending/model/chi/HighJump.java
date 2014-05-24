@@ -1,0 +1,52 @@
+package net.avatarrealms.minecraft.bending.model.chi;
+
+import net.avatarrealms.minecraft.bending.business.Tools;
+import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
+
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
+public class HighJump {
+
+	private int jumpheight = ConfigManager.jumpheight;
+	private long cooldown = ConfigManager.highJumpCooldown;
+
+	// private Map<String, Long> cooldowns = new HashMap<String, Long>();
+
+	public HighJump(Player p) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
+
+		if (bPlayer.isOnCooldown(Abilities.HighJump))
+			return;
+		// if (cooldowns.containsKey(p.getName())
+		// && cooldowns.get(p.getName()) + cooldown >= System
+		// .currentTimeMillis())
+		// return;
+		jump(p);
+			if (bPlayer != null) {
+				bPlayer.earnXP(BendingType.ChiBlocker);
+			}
+	}
+
+	private void jump(Player p) {
+		if (!Tools.isSolid(p.getLocation().getBlock()
+				.getRelative(BlockFace.DOWN)))
+			return;
+		Vector vec = p.getVelocity();
+		vec.setY(jumpheight);
+		p.setVelocity(vec);
+		// cooldowns.put(p.getName(), System.currentTimeMillis());
+		BendingPlayer.getBendingPlayer(p).cooldown(Abilities.HighJump);
+		
+		return;
+	}
+
+	public static String getDescription() {
+		return "To use this ability, simply click. You will jump quite high. This ability has a short cooldown.";
+	}
+}
