@@ -183,12 +183,13 @@ public class Tools {
 		nonOpaque.add(Material.SNOW);
 		nonOpaque.add(Material.SUGAR_CANE);
 		nonOpaque.add(Material.PORTAL);
-		// 93, REDSTONE REPEATER OFF TODO
-		// 94, REDSTONE REPEATER ON TODO
+		nonOpaque.add(Material.DIODE);
+		nonOpaque.add(Material.DIODE_BLOCK_ON); // 93 ? 
+		nonOpaque.add(Material.DIODE_BLOCK_OFF); // 94 ?
 		nonOpaque.add(Material.PUMPKIN_STEM);
 		nonOpaque.add(Material.MELON_STEM);
 		nonOpaque.add(Material.VINE);
-		// 111, LILY PAD TODO
+		nonOpaque.add(Material.WATER_LILY);
 		nonOpaque.add(Material.NETHER_WARTS);
 		nonOpaque.add(Material.ENDER_PORTAL);
 		nonOpaque.add(Material.COCOA);
@@ -210,13 +211,13 @@ public class Tools {
 		plantIds.add(Material.CACTUS);
 		plantIds.add(Material.SUGAR_CANE);
 		plantIds.add(Material.PUMPKIN);
-		// 99, BROWN MUSHROOM CAP TODO
-		// 100, RED MUSHROOM CAP TODO
+		plantIds.add(Material.HUGE_MUSHROOM_1);// 99, BROWN MUSHROOM CAP
+		plantIds.add(Material.HUGE_MUSHROOM_2);// 100, RED MUSHROOM CAP
 		plantIds.add(Material.MELON_BLOCK);
 		plantIds.add(Material.PUMPKIN_STEM);
 		plantIds.add(Material.MELON_STEM);
 		plantIds.add(Material.VINE);
-		// 111 LILY PAD TODO
+		plantIds.add(Material.WATER_LILY);
 		plantIds.add(Material.CARROT);
 		plantIds.add(Material.POTATO);
 		plantIds.add(Material.LEAVES_2); //Wut acacia here ? (Wanted ID 162)
@@ -316,8 +317,9 @@ public class Tools {
 		while (iter.hasNext()) {
 			block = iter.next();
 			if (nonOpaque2.contains(block.getType())) {
-				break;
+				continue;
 			}
+			break;
 		}
 		return block;
 	}
