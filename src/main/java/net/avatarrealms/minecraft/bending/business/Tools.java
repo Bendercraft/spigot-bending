@@ -113,7 +113,7 @@ public class Tools {
 	}
 
 	private static Set<Abilities> localAbilities = new HashSet<Abilities>();
-	static { 
+	static {
 		localAbilities.add(Abilities.AirScooter);
 		localAbilities.add(Abilities.AirSpout);
 		localAbilities.add(Abilities.HealingWaters);

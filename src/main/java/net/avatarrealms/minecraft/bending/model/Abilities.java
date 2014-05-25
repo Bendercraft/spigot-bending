@@ -46,18 +46,6 @@ public enum Abilities {
 		return null;
 	}
 
-	public static int getIndex(Abilities ability) {
-		if (ability == null)
-			return -1;
-		return Arrays.asList(Abilities.values()).indexOf(ability);
-	}
-
-	public static Abilities getAbility(int index) {
-		if (index == -1)
-			return null;
-		return Arrays.asList(Abilities.values()).get(index);
-	}
-
 	public static boolean isAirbending(Abilities ability) {
 		for (AirbendingAbilities a : AirbendingAbilities.values()) {
 			if (a.name().equalsIgnoreCase(ability.name()))

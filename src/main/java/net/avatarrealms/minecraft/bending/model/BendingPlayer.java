@@ -30,8 +30,8 @@ public class BendingPlayer implements CustomSerializable {
 	private String playername;
 	private String language;
 
-	private Map<Integer, Integer> slotAbilities = new HashMap<Integer, Integer>();
-	private Map<Material, Integer> itemAbilities = new HashMap<Material, Integer>();
+	private Map<Integer, Abilities> slotAbilities = new HashMap<Integer, Abilities>();
+	private Map<Material, Abilities> itemAbilities = new HashMap<Material, Abilities>();
 
 	private Map<BendingType, BendingLevel> bendings = new HashMap<BendingType,BendingLevel>();
 
@@ -283,8 +283,8 @@ public class BendingPlayer implements CustomSerializable {
 	}
 
 	public void clearAbilities() {
-		slotAbilities = new HashMap<Integer, Integer>();
-		itemAbilities = new HashMap<Material, Integer>();
+		slotAbilities = new HashMap<Integer, Abilities>();
+		itemAbilities = new HashMap<Material, Abilities>();
 	}
 
 	public void removeBender() {
@@ -321,19 +321,19 @@ public class BendingPlayer implements CustomSerializable {
 	}
 
 	public Abilities getAbility(int slot) {
-		return Abilities.getAbility(slotAbilities.get(slot));
+		return slotAbilities.get(slot);
 	}
 
 	public Abilities getAbility(Material item) {
-		return Abilities.getAbility(itemAbilities.get(item));
+		return itemAbilities.get(item);
 	}
 
 	public void setAbility(int slot, Abilities ability) {
-		slotAbilities.put(slot, Abilities.getIndex(ability));
+		slotAbilities.put(slot, ability);
 	}
 
 	public void setAbility(Material item, Abilities ability) {
-		itemAbilities.put(item, Abilities.getIndex(ability));
+		itemAbilities.put(item, ability);
 	}
 
 	public void removeSelectedAbility() {
@@ -461,8 +461,8 @@ public class BendingPlayer implements CustomSerializable {
 		}
 		language = (String) map.get("Language");
 		bendToItem = (Boolean) map.get("BendToItem");
-		itemAbilities = (Map<Material, Integer>) map.get("ItemAbilities");
-		slotAbilities = (Map<Integer, Integer>) map.get("SlotAbilities");
+		itemAbilities = (Map<Material, Abilities>) map.get("ItemAbilities");
+		slotAbilities = (Map<Integer, Abilities>) map.get("SlotAbilities");
 
 		permaremoved = (Boolean) map.get("Permaremove");
 
