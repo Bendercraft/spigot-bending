@@ -136,19 +136,19 @@ public class Tools {
 		transparentEarthbending.add(Material.LAVA);
 		transparentEarthbending.add(Material.STATIONARY_LAVA);
 		transparentEarthbending.add(Material.WEB); // Not sure here, previously ID 30
-		transparentEarthbending.add(Material.GRASS); // Not sure here, previously ID 31
+		transparentEarthbending.add(Material.LONG_GRASS); // Not sure here, previously ID 31
+		transparentEarthbending.add(Material.DOUBLE_PLANT);
 		transparentEarthbending.add(Material.DEAD_BUSH); 
 		transparentEarthbending.add(Material.YELLOW_FLOWER); 
 		transparentEarthbending.add(Material.RED_ROSE);
 		transparentEarthbending.add(Material.BROWN_MUSHROOM); 
 		transparentEarthbending.add(Material.RED_MUSHROOM); 
 		transparentEarthbending.add(Material.TORCH);
-		transparentEarthbending.add(Material.FIRE); 
+		transparentEarthbending.add(Material.FIRE);
 		transparentEarthbending.add(Material.CROPS); 
 		transparentEarthbending.add(Material.SNOW); 
 		transparentEarthbending.add(Material.SUGAR_CANE);
 		transparentEarthbending.add(Material.VINE);
-		
 	}
 
 	public static Set<Material> nonOpaque = new HashSet<Material>();
@@ -162,7 +162,8 @@ public class Tools {
 		nonOpaque.add(Material.POWERED_RAIL);
 		nonOpaque.add(Material.DETECTOR_RAIL);
 		nonOpaque.add(Material.WEB); // Not sure here, previously ID 30
-		nonOpaque.add(Material.GRASS); // Not sure here, previously ID 31
+		nonOpaque.add(Material.LONG_GRASS); // Not sure here, previously ID 31
+		nonOpaque.add(Material.DOUBLE_PLANT);
 		nonOpaque.add(Material.DEAD_BUSH);
 		nonOpaque.add(Material.YELLOW_FLOWER);
 		nonOpaque.add(Material.RED_ROSE);
@@ -201,7 +202,8 @@ public class Tools {
 	static {
 		plantIds.add(Material.SAPLING);
 		plantIds.add(Material.LEAVES);
-		plantIds.add(Material.GRASS); // Not sure here ID 31
+		plantIds.add(Material.LONG_GRASS); // Not sure here, previously ID 31
+		plantIds.add(Material.DOUBLE_PLANT);
 		plantIds.add(Material.DEAD_BUSH);
 		plantIds.add(Material.YELLOW_FLOWER);
 		plantIds.add(Material.RED_ROSE);
