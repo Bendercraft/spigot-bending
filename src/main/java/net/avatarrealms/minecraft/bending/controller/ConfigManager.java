@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.data;
+package net.avatarrealms.minecraft.bending.controller;
 
 import java.io.File;
 import java.io.IOException;

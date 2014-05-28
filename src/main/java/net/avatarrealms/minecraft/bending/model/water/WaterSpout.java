@@ -3,8 +3,8 @@ package net.avatarrealms.minecraft.bending.model.water;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.TempBlock;

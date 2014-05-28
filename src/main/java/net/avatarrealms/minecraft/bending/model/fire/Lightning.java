@@ -3,7 +3,7 @@ package net.avatarrealms.minecraft.bending.model.fire;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;

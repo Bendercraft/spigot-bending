@@ -3,7 +3,7 @@ package net.avatarrealms.minecraft.bending.model;
 import java.util.Random;
 import java.lang.Math;
 
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 
 public class BendingLevel {
 

@@ -1,6 +1,6 @@
 package net.avatarrealms.minecraft.bending.model.fire;
 
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.water.Melt;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 

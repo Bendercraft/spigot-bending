@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.avatarrealms.minecraft.bending.data.BendingPlayersSaver;
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;

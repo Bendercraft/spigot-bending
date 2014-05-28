@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.utils.Tools;

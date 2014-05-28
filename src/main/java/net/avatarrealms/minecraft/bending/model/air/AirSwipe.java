@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.Bending;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;

@@ -2,7 +2,7 @@ package net.avatarrealms.minecraft.bending.model.air;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.water.WaterManipulation;

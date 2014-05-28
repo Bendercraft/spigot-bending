@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.data;
+package net.avatarrealms.minecraft.bending.controller;
 
 public class StorageManager {
 	public BendingPlayers config;

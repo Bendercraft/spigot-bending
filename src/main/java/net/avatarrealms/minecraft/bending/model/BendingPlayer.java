@@ -8,8 +8,8 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.Bending;
-import net.avatarrealms.minecraft.bending.data.BendingPlayers;
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
+import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Material;

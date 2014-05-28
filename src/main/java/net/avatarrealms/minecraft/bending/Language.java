@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
-import net.avatarrealms.minecraft.bending.data.StorageManager;
+import net.avatarrealms.minecraft.bending.controller.StorageManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.air.AirBlast;

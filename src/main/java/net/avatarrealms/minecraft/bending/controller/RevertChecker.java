@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 import net.avatarrealms.minecraft.bending.Bending;
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Information;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 

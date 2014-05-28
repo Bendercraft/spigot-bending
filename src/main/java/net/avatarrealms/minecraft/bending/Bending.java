@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
+import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
+import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
-import net.avatarrealms.minecraft.bending.data.BendingPlayers;
-import net.avatarrealms.minecraft.bending.data.BendingPlayersSaver;
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.Tools;

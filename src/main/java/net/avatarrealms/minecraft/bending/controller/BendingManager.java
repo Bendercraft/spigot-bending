@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.Bending;
-import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
