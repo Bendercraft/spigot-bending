@@ -10,7 +10,6 @@ import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
-import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -41,25 +40,8 @@ public class Bending extends JavaPlugin {
 	public static Language language = new Language();
 	public BendingPlayers config;
 	public Tools tools;
-
-	public String[] waterbendingabilities;
-	public String[] airbendingabilities;
-	public String[] earthbendingabilities;
-	public String[] firebendingabilities;
-	public String[] chiblockingabilities;
-
-	static int air = 0, earth = 0, water = 0, fire = 0, chi = 0;
-
-	public void onDisable() {
-
-		Tools.stopAllBending();
-		// PlayerStorageWriter.finish();
-		BendingPlayersSaver.save();
-
-		getServer().getScheduler().cancelTasks(plugin);
-
-	}
-
+	
+	@Override
 	public void onEnable() {
 		plugin = this;
 		configManager.load(new File(getDataFolder(), "config.yml"));
@@ -69,18 +51,6 @@ public class Bending extends JavaPlugin {
 		BendingPlayer.initializeCooldowns();
 
 		tools = new Tools(config);
-
-		// for (OfflinePlayer player : Bukkit.getServer().getOfflinePlayers()) {
-		// benders.put(player.getName(),
-		// config.getBendingTypes(player.getName()));
-		// BendingPlayer.getBendingPlayer(player);
-		// }
-
-		waterbendingabilities = Abilities.getWaterbendingAbilities();
-		airbendingabilities = Abilities.getAirbendingAbilities();
-		earthbendingabilities = Abilities.getEarthbendingAbilities();
-		firebendingabilities = Abilities.getFirebendingAbilities();
-		chiblockingabilities = Abilities.getChiBlockingAbilities();
 
 		getServer().getPluginManager().registerEvents(listener, this);
 
@@ -99,11 +69,18 @@ public class Bending extends JavaPlugin {
 		registerCommands();
 
 	}
+	
+	@Override
+	public void onDisable() {
+		Tools.stopAllBending();
+		// PlayerStorageWriter.finish();
+		BendingPlayersSaver.save();
+		getServer().getScheduler().cancelTasks(plugin);
+	}
 
 	public void reloadConfiguration() {
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-
 	}
 
 	private void registerCommands() {
@@ -132,7 +109,6 @@ public class Bending extends JavaPlugin {
 			new BendingCommand(player, args, getDataFolder(), getServer());
 
 		}
-
 		return true;
 	}
 }

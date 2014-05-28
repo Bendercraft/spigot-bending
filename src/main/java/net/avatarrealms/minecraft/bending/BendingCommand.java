@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 
 
 public class BendingCommand {
-
 	private final String[] bindAliases = { "bind", "b" };
 	private final String[] clearAliases = { "clear", "cl" };
 	private final String[] chooseAliases = { "choose", "ch" };
@@ -65,7 +64,6 @@ public class BendingCommand {
 	private String[] chiblockingabilities = Abilities.getChiBlockingAbilities();
 
 	private File dataFolder;
-	// private Bending config;
 	private Server server;
 	private boolean verbose = true;
 	private BendingPlayer bPlayer;

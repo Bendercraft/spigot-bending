@@ -3,15 +3,15 @@ package net.avatarrealms.minecraft.bending.controller;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.avatarrealms.minecraft.bending.abilities.air.AirScooter;
+import net.avatarrealms.minecraft.bending.abilities.air.AirSpout;
+import net.avatarrealms.minecraft.bending.abilities.air.Speed;
+import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
+import net.avatarrealms.minecraft.bending.abilities.earth.Catapult;
+import net.avatarrealms.minecraft.bending.abilities.fire.FireJet;
+import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
+import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.model.air.AirScooter;
-import net.avatarrealms.minecraft.bending.model.air.AirSpout;
-import net.avatarrealms.minecraft.bending.model.air.Speed;
-import net.avatarrealms.minecraft.bending.model.air.Tornado;
-import net.avatarrealms.minecraft.bending.model.earth.Catapult;
-import net.avatarrealms.minecraft.bending.model.fire.FireJet;
-import net.avatarrealms.minecraft.bending.model.water.Bloodbending;
-import net.avatarrealms.minecraft.bending.model.water.WaterSpout;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
