@@ -2,8 +2,8 @@ package net.avatarrealms.minecraft.bending.data;
 
 import java.util.List;
 
-import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 public class BendingPlayersSaver implements Runnable {
 

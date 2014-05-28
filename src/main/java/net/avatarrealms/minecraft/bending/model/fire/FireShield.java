@@ -3,11 +3,11 @@ package net.avatarrealms.minecraft.bending.model.fire;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.model.water.WaterManipulation;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;

@@ -1,17 +1,11 @@
 package net.avatarrealms.minecraft.bending.model;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.lang.Math;
 
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
-import net.avatarrealms.minecraft.bending.data.CustomSerializable;
 
-import org.bukkit.configuration.serialization.SerializableAs;
-
-@SerializableAs("BendingLevel")
-public class BendingLevel implements CustomSerializable{
+public class BendingLevel {
 
 		private BendingPlayer bPlayer;
 		private BendingType bendingType;
@@ -91,27 +85,26 @@ public class BendingLevel implements CustomSerializable{
 			return xpArr;
 		}
 		
-		public BendingLevel(Map<String, Object> map) {
-			bendingType = BendingType.getType((Integer) map.get("BendingType"));
-			level = (Integer) map.get("Level");
-			experience = (Integer) map.get("Experience");
+		public BendingLevel(BendingLevelData data) {
+			bendingType = data.getBendingType();
+			level = data.getLevel();
+			experience = data.getExperience();
 		}
 
-		@Override
-		public Map<String, Object> serialize() {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("BendingType", BendingType.getIndex(bendingType));
-			map.put("Level", level);
-			map.put("Experience", experience);
-			return map;
+		public BendingLevelData serialize() {
+			BendingLevelData result = new BendingLevelData();
+			result.setBendingType(bendingType);
+			result.setLevel(level);
+			result.setExperience(experience);
+			return result;
 		}
 
-		public static BendingLevel deserialize(Map<String, Object> map) {
-			return new BendingLevel(map);
+		public static BendingLevel deserialize(BendingLevelData data) {
+			return new BendingLevel(data);
 		}
 
-		public static BendingLevel valueOf(Map<String, Object> map) {
-			return deserialize(map);
+		public static BendingLevel valueOf(BendingLevelData data) {
+			return deserialize(data);
 		}
 		
 		public void setLevel (Integer level) {

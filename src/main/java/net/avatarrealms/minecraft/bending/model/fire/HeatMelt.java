@@ -1,8 +1,8 @@
 package net.avatarrealms.minecraft.bending.model.fire;
 
-import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.water.Melt;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

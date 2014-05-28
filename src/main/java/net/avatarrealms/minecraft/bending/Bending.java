@@ -5,18 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
 import net.avatarrealms.minecraft.bending.data.BendingPlayers;
 import net.avatarrealms.minecraft.bending.data.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingLevel;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.Tools;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -62,12 +61,7 @@ public class Bending extends JavaPlugin {
 	}
 
 	public void onEnable() {
-
 		plugin = this;
-		ConfigurationSerialization.registerClass(BendingPlayer.class,
-				"BendingPlayer");
-		ConfigurationSerialization.registerClass(BendingLevel.class,
-				"BendingLevel");
 		configManager.load(new File(getDataFolder(), "config.yml"));
 		language.load(new File(getDataFolder(), "language.yml"));
 

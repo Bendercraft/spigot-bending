@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.data.StorageManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -50,6 +49,7 @@ import net.avatarrealms.minecraft.bending.model.water.Torrent;
 import net.avatarrealms.minecraft.bending.model.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.model.water.WaterSpout;
 import net.avatarrealms.minecraft.bending.model.water.WaterWall;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;

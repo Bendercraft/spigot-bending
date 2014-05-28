@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.business;
+package net.avatarrealms.minecraft.bending.utils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

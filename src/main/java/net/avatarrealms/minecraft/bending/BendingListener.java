@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import net.avatarrealms.minecraft.bending.business.Tools;
+
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -18,6 +18,7 @@ import net.avatarrealms.minecraft.bending.model.chi.*;
 import net.avatarrealms.minecraft.bending.model.earth.*;
 import net.avatarrealms.minecraft.bending.model.fire.*;
 import net.avatarrealms.minecraft.bending.model.water.*;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

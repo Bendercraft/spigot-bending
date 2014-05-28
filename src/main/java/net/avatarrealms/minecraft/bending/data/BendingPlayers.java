@@ -1,48 +1,35 @@
 package net.avatarrealms.minecraft.bending.data;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileWriter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingPlayerData;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class BendingPlayers {
-
-	private FileConfiguration bendingPlayers = null;
+	private Map<String, BendingPlayerData> bendingPlayers;
 	private File bendingPlayersFile = null;
-
 	private File dataFolder;
-
-	private int version = 1;
-
-	// private InputStream defConfigStream;
-
-	// public BendingPlayers(File file, InputStream inputStream) {
-	// load();
-	// dataFolder = file;
-	// defConfigStream = inputStream;
-	// }
 
 	public BendingPlayers(File file) {
 		dataFolder = file;
 		load();
 	}
 
-	public String getKey(String s) {
-		if (!(bendingPlayers == null))
-			return bendingPlayers.getString(s, "");
-		return "";
-	}
-
-	public Object get(String s) {
+	public BendingPlayerData get(String s) {
 		if (bendingPlayers != null) {
 			return bendingPlayers.get(s);
 		}
@@ -51,67 +38,54 @@ public class BendingPlayers {
 
 	public void setPlayer(String playername, BendingPlayer player) {
 		if (bendingPlayers != null) {
-			bendingPlayers.set(playername, player);
-			// Tools.verbose(playername + ": " + player.serialize());
+			bendingPlayers.put(playername, player.serialize());
+			this.save();
 		}
 		return;
 	}
 
 	public BendingPlayer getBendingPlayer(String playername) {
 		if (bendingPlayers != null) {
-			if (bendingPlayers.contains(playername))
-				return new BendingPlayer(bendingPlayers
-						.getConfigurationSection(playername).getValues(false));
+			if (bendingPlayers.containsKey(playername)) {
+				return BendingPlayer.deserialize(bendingPlayers.get(playername));
+			}
 		}
 		return null;
 	}
 
-	public List<String> getSavedPlayers() {
-		List<String> list = new ArrayList<String>();
+	public Set<String> getSavedPlayers() {
+		Set<String> result = new HashSet<String>();
 		if (bendingPlayers != null) {
-			list = new ArrayList<String>(bendingPlayers.getKeys(false));
-			list.remove("version");
+			result = bendingPlayers.keySet();
 		}
-		return list;
-	}
-
-
-	public Boolean checkKeys(String s) {
-		if (!(bendingPlayers == null))
-			return bendingPlayers.getKeys(false).contains(s);
-		return false;
-	}
-
-	public Set<String> getKeys() {
-		return bendingPlayers.getKeys(false);
-	}
-
-	public void setKey(String key, String field) {
-		if (!(bendingPlayers == null)) {
-			bendingPlayers.set(key, field);
-			save();
-		}
-		// if (bendingPlayers == null)
-		// Tools.verbose("Uh oh?");
-		// Tools.verbose(key);
-		// Tools.verbose(field);
+		return result;
 	}
 
 	public void reload() {
 		if (bendingPlayersFile == null) {
-			bendingPlayersFile = new File(dataFolder, "bendingPlayers.yml");
+			bendingPlayersFile = new File(dataFolder, "benders.json");
 		}
-		bendingPlayers = YamlConfiguration
-				.loadConfiguration(bendingPlayersFile);
-		if (bendingPlayers.contains("version")) {
-			if (bendingPlayers.getInt("version", 0) == version) {
-				return;
+		try {
+			if(!bendingPlayersFile.exists()) {
+				bendingPlayersFile.createNewFile();
+				FileWriter content = new FileWriter(bendingPlayersFile);
+				content.write("{}");
+				content.close();
 			}
+			bendingPlayers = new HashMap<String, BendingPlayerData>();
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode root = mapper.readTree(bendingPlayersFile);
+			Iterator<Entry<String, JsonNode>> it = root.fields();
+			while(it.hasNext()) {
+				Entry<String, JsonNode> entry = it.next();
+				BendingPlayerData data = mapper.readValue(entry.getValue().traverse(), BendingPlayerData.class);
+				bendingPlayers.put(entry.getKey(), data);
+			}
+		} catch(Exception e) {
+			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
+					"Could not load config from " + bendingPlayersFile, e);
+			bendingPlayers = new HashMap<String, BendingPlayerData>();
 		}
-		bendingPlayers = new YamlConfiguration();
-		bendingPlayers.set("version", version);
-		save();
-		return;
 	}
 
 	private void load() {
@@ -124,11 +98,18 @@ public class BendingPlayers {
 		if (bendingPlayers == null || bendingPlayersFile == null) {
 			return;
 		}
+		if (bendingPlayersFile == null) {
+			bendingPlayersFile = new File(dataFolder, "benders.json");
+		}
 		try {
-			bendingPlayers.save(bendingPlayersFile);
-		} catch (IOException ex) {
+			if(!bendingPlayersFile.exists()) {
+				bendingPlayersFile.createNewFile();
+			}
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.writeValue(bendingPlayersFile, bendingPlayers);
+		} catch(Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
-					"Could not save config to " + bendingPlayersFile, ex);
+					"Could not save config from " + bendingPlayersFile, e);
 		}
 	}
 

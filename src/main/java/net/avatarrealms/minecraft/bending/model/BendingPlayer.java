@@ -8,18 +8,15 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.Bending;
-import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.data.BendingPlayers;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
-import net.avatarrealms.minecraft.bending.data.CustomSerializable;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
-@SerializableAs("BendingPlayer")
-public class BendingPlayer implements CustomSerializable {
+public class BendingPlayer {
 
 	private static ConcurrentHashMap<String, BendingPlayer> players = new ConcurrentHashMap<String, BendingPlayer>();
 
@@ -444,58 +441,55 @@ public class BendingPlayer implements CustomSerializable {
 		return string;
 	}
 
-	@SuppressWarnings("unchecked")
-	public BendingPlayer(Map<String, Object> map) {
-		List<BendingLevel> bending;
-		playername = (String) map.get("PlayerName");
-
+	public BendingPlayer(BendingPlayerData data) {
+		playername = data.getPlayerName();
 		if (players.containsKey(playername)) {
 			players.remove(playername);
 		}
 		
-		bending = (List<BendingLevel>) map.get("Bendings");
+		List<BendingLevelData> bendingData = data.getBendings();
 		
-		for (BendingLevel bend: bending) {
-			bendings.put(bend.getBendingType(), bend);
-			bend.setBendingPlayer(this);
+		for (BendingLevelData bend: bendingData) {
+			BendingLevel bendingLevel = BendingLevel.deserialize(bend);
+			bendings.put(bend.getBendingType(), bendingLevel);
+			bendingLevel.setBendingPlayer(this);
 		}
-		language = (String) map.get("Language");
-		bendToItem = (Boolean) map.get("BendToItem");
-		itemAbilities = (Map<Material, Abilities>) map.get("ItemAbilities");
-		slotAbilities = (Map<Integer, Abilities>) map.get("SlotAbilities");
+		language = data.getLanguage();
+		bendToItem = data.isBendToItem();
+		itemAbilities = data.getItemAbilities();
+		slotAbilities = data.getSlotAbilities();
 
-		permaremoved = (Boolean) map.get("Permaremove");
+		permaremoved = data.isPermaRemoved();
 
-		lasttime = (Long) map.get("LastTime");
+		lasttime = data.getLastTime();
 
 		players.put(playername, this);
 	}
 
-	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		List<BendingLevel> bending = new ArrayList<BendingLevel>();
-		
+	public BendingPlayerData serialize() {
+		BendingPlayerData result = new BendingPlayerData();
+		List<BendingLevelData> bending = new ArrayList<BendingLevelData>();
 		for (BendingType bLev : bendings.keySet()) {
-			bending.add(bendings.get(bLev));
+			bending.add(bendings.get(bLev).serialize());
 		}
-		map.put("PlayerName", playername);
-		map.put("Bendings", bending);
-		map.put("Language", language);
-		map.put("BendToItem", bendToItem);
-		map.put("ItemAbilities", itemAbilities);
-		map.put("SlotAbilities", slotAbilities);
-		map.put("Permaremove", permaremoved);
-		map.put("LastTime", lasttime);
-		return map;
+		result.setBendings(bending);
+		result.setBendToItem(bendToItem);
+		result.setItemAbilities(itemAbilities);
+		result.setLanguage(language);
+		result.setLastTime(lasttime);
+		result.setPermaRemoved(permaremoved);
+		result.setPlayerName(playername);
+		result.setSlotAbilities(slotAbilities);
+
+		return result;
 	}
 
-	public static BendingPlayer deserialize(Map<String, Object> map) {
-		return new BendingPlayer(map);
+	public static BendingPlayer deserialize(BendingPlayerData data) {
+		return new BendingPlayer(data);
 	}
 
-	public static BendingPlayer valueOf(Map<String, Object> map) {
-		return deserialize(map);
+	public static BendingPlayer valueOf(BendingPlayerData data) {
+		return deserialize(data);
 	}
 	
 	public void resetXP() {	

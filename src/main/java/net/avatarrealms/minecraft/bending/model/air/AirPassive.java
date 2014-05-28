@@ -2,9 +2,9 @@ package net.avatarrealms.minecraft.bending.model.air;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.avatarrealms.minecraft.bending.business.Tools;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Server;
 import org.bukkit.World;

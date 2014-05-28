@@ -2,7 +2,7 @@ package net.avatarrealms.minecraft.bending.model;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.avatarrealms.minecraft.bending.business.Tools;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -4,20 +4,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
-import net.avatarrealms.minecraft.bending.business.Tools;
-import net.avatarrealms.minecraft.bending.data.BendingPlayers;
 import net.avatarrealms.minecraft.bending.data.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.data.ConfigManager;
-import net.avatarrealms.minecraft.bending.data.StorageManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
@@ -236,8 +232,6 @@ public class BendingCommand {
 				reload(player, args);
 			} else if (Arrays.asList(helpAliases).contains(arg)) {
 				help(player, args);
-			} else if (Arrays.asList(importAliases).contains(arg)) {
-				importBending(player, args);
 			} else if (Arrays.asList(whoAliases).contains(arg)) {
 				who(player, args);
 			} else if (Arrays.asList(languageAliases).contains(arg)) {
@@ -805,104 +799,6 @@ public class BendingCommand {
 			return;
 		}
 		printUsageMessage(player, "/bending import", "General.import_usage");
-
-	}
-
-	private void importBending(Player player, String[] args) {
-		if (!hasPermission(player, "bending.admin.import"))
-			return;
-
-		if (StorageManager.useFlatFile) {
-			sendMessage(
-					player,
-					ChatColor.AQUA
-							+ Tools.getMessage(player, "General.import_noSQL"));
-			return;
-		}
-		BendingPlayers temp = new BendingPlayers(dataFolder);
-		Set<String> keys = temp.getKeys();
-
-		for (String s : keys) {
-			if (s.contains("<")) {
-				// String[] getplayername = s.split("<");
-				// String playername = getplayername[0];
-				String[] getSetter = s.split("<");
-				String Setter = getSetter[1];
-				OfflinePlayer oPlayer = server.getOfflinePlayer(getSetter[0]);
-				String binded = Setter.replace("Bind", "").replace(">", "");
-				Tools.verbose(getSetter[0] + ": " + binded);
-				String ability = temp.getKey(s);
-				if ((binded.equalsIgnoreCase("0")
-						|| binded.equalsIgnoreCase("1")
-						|| binded.equalsIgnoreCase("2")
-						|| binded.equalsIgnoreCase("3")
-						|| binded.equalsIgnoreCase("4")
-						|| binded.equalsIgnoreCase("5")
-						|| binded.equalsIgnoreCase("6")
-						|| binded.equalsIgnoreCase("7") || binded
-							.equalsIgnoreCase("8"))) {
-					int slot = Integer.parseInt(binded);
-					// config.setAbility(playername, ability, slot);
-					// PlayerStorageWriter.bindSlot(oPlayer, slot,
-					// Abilities.getAbility(ability));
-					BendingPlayer.getBendingPlayer(oPlayer).setAbility(slot,
-							Abilities.getAbility(ability));
-				} else if (binded.equalsIgnoreCase("Language")) {
-					// PlayerStorageWriter.setLanguage(oPlayer, ability);
-					BendingPlayer.getBendingPlayer(oPlayer)
-							.setLanguage(ability);
-				} else {
-					// config.setAbility(playername, ability,
-					// Material.matchMaterial(binded));
-					// PlayerStorageWriter.bindItem(oPlayer,
-					// Material.matchMaterial(binded),
-					// Abilities.getAbility(ability));
-					BendingPlayer.getBendingPlayer(oPlayer).setAbility(
-							Material.matchMaterial(binded),
-							Abilities.getAbility(binded));
-				}
-			} else {
-				// String playerName = s;
-				String bending = temp.getKey(s);
-				OfflinePlayer oPlayer = server.getOfflinePlayer(s);
-				if (bending.contains("a"))
-					// config.addBending(playerName, BendingType.Air);
-					// PlayerStorageWriter.addBending(oPlayer, BendingType.Air);
-					BendingPlayer.getBendingPlayer(oPlayer).addBender(
-							BendingType.Air);
-				if (bending.contains("w"))
-					// config.addBending(playerName, BendingType.Water);
-					// PlayerStorageWriter.addBending(oPlayer,
-					// BendingType.Water);
-					BendingPlayer.getBendingPlayer(oPlayer).addBender(
-							BendingType.Water);
-				if (bending.contains("f"))
-					// config.addBending(playerName, BendingType.Fire);
-					// PlayerStorageWriter.addBending(oPlayer,
-					// BendingType.Fire);
-					BendingPlayer.getBendingPlayer(oPlayer).addBender(
-							BendingType.Fire);
-				if (bending.contains("e"))
-					// config.addBending(playerName, BendingType.Earth);
-					// PlayerStorageWriter.addBending(oPlayer,
-					// BendingType.Earth);
-					BendingPlayer.getBendingPlayer(oPlayer).addBender(
-							BendingType.Earth);
-				if (bending.contains("c"))
-					// config.addBending(playerName, BendingType.ChiBlocker);
-					// PlayerStorageWriter.addBending(oPlayer,
-					// BendingType.ChiBlocker);
-					BendingPlayer.getBendingPlayer(oPlayer).addBender(
-							BendingType.ChiBlocker);
-
-			}
-
-		}
-		temp = null;
-		sendMessage(
-				player,
-				ChatColor.AQUA
-						+ Tools.getMessage(player, "General.import_success"));
 
 	}
 
