@@ -1344,7 +1344,6 @@ public class BendingCommand {
 					}
 				}
 			} else {
-
 				for (Material mat : Material.values()) {
 					// Abilities a = config.getAbility(player, mat);
 					Abilities a = bPlayer.getAbility(mat);
@@ -1400,7 +1399,7 @@ public class BendingCommand {
 
 			if (abilitylist != null) {
 				for (String ability : abilitylist) {
-					if (Tools.hasPermission(player,
+					if (this.hasBendingPermission(player,
 							Abilities.getAbility(ability))) {
 						sendMessage(player, color + ability);
 					}
@@ -2257,6 +2256,39 @@ public class BendingCommand {
 				player.sendMessage("Bad use of the givexp command.");
 			}
 		}
+	}
+	
+	private boolean hasBendingPermission(Player player, Abilities ability) {
+		if (ability == Abilities.AvatarState
+				&& player.hasPermission("bending.admin.AvatarState")) {
+			return true;
+		}
+
+		if (Abilities.isAirbending(ability)
+				&& player.hasPermission("bending.air." + ability)) {
+			return true;
+		}
+		if (Abilities.isWaterbending(ability)
+				&& player.hasPermission("bending.water." + ability)) {
+			return true;
+		}
+		if (Abilities.isEarthbending(ability)
+				&& player.hasPermission("bending.earth." + ability)) {
+			return true;
+		}
+		if (Abilities.isFirebending(ability)
+				&& player.hasPermission("bending.fire." + ability)) {
+			return true;
+		}
+		if (Abilities.isChiBlocking(ability)
+				&& player.hasPermission("bending.chiblocker." + ability)) {
+			return true;
+		}
+		if (Abilities.isChiBlocking(ability)
+				&& player.hasPermission("bending.chiblocking." + ability)) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean hasPermission(Player player, String permission) {
