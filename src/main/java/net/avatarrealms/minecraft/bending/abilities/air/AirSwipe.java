@@ -52,21 +52,6 @@ public class AirSwipe {
 
 	private double speedfactor;
 
-	private static Set<Material> breakables = new HashSet<Material>();
-	static {
-		breakables.add(Material.SAPLING);
-		breakables.add(Material.GRASS);
-		breakables.add(Material.DEAD_BUSH);
-		breakables.add(Material.YELLOW_FLOWER);
-		breakables.add(Material.RED_ROSE);
-		breakables.add(Material.BROWN_MUSHROOM);
-		breakables.add(Material.RED_MUSHROOM);
-		breakables.add(Material.CROPS);
-		breakables.add(Material.CACTUS);
-		breakables.add(Material.SUGAR_CANE);
-		breakables.add(Material.VINE);
-	}
-
 	private Location origin;
 	private Player player;
 	private boolean charging = false;
@@ -296,7 +281,7 @@ public class AirSwipe {
 	}
 
 	private boolean isBlockBreakable(Block block) {
-		if (breakables.contains(block.getType())
+		if (Tools.isPlant(block)
 				&& !Illumination.blocks.containsKey(block)) {
 			return true;
 		}
