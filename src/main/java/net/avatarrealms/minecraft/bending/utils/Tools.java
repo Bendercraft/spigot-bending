@@ -336,8 +336,9 @@ public class Tools {
 		while (iter.hasNext()) {
 			block = iter.next();
 			if (nonOpaque2.contains(block.getType())) {
-				break;
+				continue;
 			}
+			break;
 		}
 		double distance = block.getLocation().distance(origin) - 1.5;
 		Location location = origin.add(direction.multiply(distance));
