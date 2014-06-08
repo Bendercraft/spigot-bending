@@ -1180,19 +1180,23 @@ public class BendingListener implements Listener {
 			List<ItemStack> drops = event.getDrops();
 			List<ItemStack> newdrops = new ArrayList<ItemStack>();
 			for (int i = 0; i < drops.size(); i++) {
+				//Remove eartharmor from items drops
 				if (!(drops.get(i).getType() == Material.LEATHER_BOOTS
 						|| drops.get(i).getType() == Material.LEATHER_CHESTPLATE
 						|| drops.get(i).getType() == Material.LEATHER_HELMET
-						|| drops.get(i).getType() == Material.LEATHER_LEGGINGS || drops
-						.get(i).getType() == Material.AIR))
+						|| drops.get(i).getType() == Material.LEATHER_LEGGINGS 
+						|| drops.get(i).getType() == Material.AIR))
 					newdrops.add((drops.get(i)));
 			}
+			//Koudja : Since "EarthArmor.removeEffect" already restore player armor, do not drop it again !
+			/*
 			if (EarthArmor.instances.get(event.getEntity()).oldarmor != null) {
 				for (ItemStack is : EarthArmor.instances.get(event.getEntity()).oldarmor) {
 					if (!(is.getType() == Material.AIR))
 						newdrops.add(is);
 				}
 			}
+			*/
 			event.getDrops().clear();
 			event.getDrops().addAll(newdrops);
 			EarthArmor.removeEffect(event.getEntity());

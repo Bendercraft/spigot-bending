@@ -71,7 +71,6 @@ public class Flight {
 	}
 
 	public static void handle() {
-
 		ArrayList<Player> players = new ArrayList<Player>();
 		ArrayList<Player> newflyingplayers = new ArrayList<Player>();
 		ArrayList<Player> avatarstateplayers = new ArrayList<Player>();
