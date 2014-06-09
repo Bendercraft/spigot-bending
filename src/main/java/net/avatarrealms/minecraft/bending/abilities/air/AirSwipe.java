@@ -1,9 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -33,11 +31,22 @@ import org.bukkit.util.Vector;
 public class AirSwipe {
 
 	public static ConcurrentHashMap<Integer, AirSwipe> instances = new ConcurrentHashMap<Integer, AirSwipe>();
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
-	// static final long soonesttime = ConfigManager.airSwipeCooldown;
 
 	private static int ID = Integer.MIN_VALUE;
+	private static List<Material> breakables = new ArrayList<Material>();
+	static {
+		breakables.add(Material.SAPLING);
+		breakables.add(Material.DEAD_BUSH);
+		breakables.add(Material.LONG_GRASS);
+		breakables.add(Material.YELLOW_FLOWER);
+		breakables.add(Material.RED_ROSE);
+		breakables.add(Material.BROWN_MUSHROOM);
+		breakables.add(Material.RED_MUSHROOM);
+		breakables.add(Material.CROPS);
+		breakables.add(Material.CACTUS);
+		breakables.add(Material.SUGAR_CANE);
+		breakables.add(Material.VINE);
+	};
 
 	private static int defaultdamage = ConfigManager.airdmg;
 	private static double affectingradius = ConfigManager.airSwipeRadius;
@@ -281,7 +290,7 @@ public class AirSwipe {
 	}
 
 	private boolean isBlockBreakable(Block block) {
-		if (Tools.isPlant(block)
+		if (breakables.contains(block.getType())
 				&& !Illumination.blocks.containsKey(block)) {
 			return true;
 		}
