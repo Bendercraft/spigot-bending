@@ -13,6 +13,7 @@ import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -186,7 +187,8 @@ public class WaterWall {
 
 	public void moveWater() {
 		if (sourceblock != null) {
-			targetdestination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
+			targetdestination = Tools.getTargetedLocation(player, range, Tools.getTransparentEarthbending());
+			//targetdestination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 
 			if (targetdestination.distance(location) <= 1) {
 				progressing = false;
@@ -275,9 +277,11 @@ public class WaterWall {
 			if (forming) {
 				ArrayList<Block> blocks = new ArrayList<Block>();
 				Set<Material> transparentForSelection = new HashSet<Material>();
+				transparentForSelection.add(Material.AIR);
 				transparentForSelection.add(Material.WATER);
 				transparentForSelection.add(Material.STATIONARY_WATER);
 				transparentForSelection.add(Material.SNOW);
+				transparentForSelection.add(Material.ICE);
 				Location loc = Tools.getTargetedLocation(player, (int) range,
 						transparentForSelection);
 				location = loc.clone();
@@ -504,7 +508,7 @@ public class WaterWall {
 			return;
 		} else {
 			if (Tools.isWaterbendable(
-					player.getTargetBlock(null, (int) Wave.defaultrange),
+					Tools.getTargetBlock(player, (int) Wave.defaultrange),
 					player)) {
 				new Wave(player);
 				return;

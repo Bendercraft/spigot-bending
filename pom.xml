@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.avatarrealms.minecraft</groupId>
-	<artifactId>bending</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<artifactId>minecraft-bending</artifactId>
+	<version>2.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Minecraft Avatar bending</name>
