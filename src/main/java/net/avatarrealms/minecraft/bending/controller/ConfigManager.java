@@ -33,13 +33,13 @@ public class ConfigManager {
 	public static String dbDB = "minecraft";
 	public static String dbPort = "3306";
 
-	public static int seaLevel = 62;
+	public static int seaLevel = 63;
 
 	public static long globalCooldown = 500;
 
 	public static long chiblockduration = 3000;
-	public static double dodgechance = 0;
-	public static double punchdamage = 7;
+	public static double dodgechance = 10;
+	public static double punchdamage = 2;
 	public static double falldamagereduction = 1;
 
 	public static boolean reverseearthbending = true;
@@ -52,10 +52,11 @@ public class ConfigManager {
 	
 	public static int maxlevel = 50;
 	private static Map<Abilities,Integer> levelsRequired;
-	public static int ticksBeforeLoseXP = 12000;
-	public static int xpLost = 2;
+	/*public static int ticksBeforeLoseXP = 12000;
+	public static int xpLost = 2; */
 
 	public static int avatarStateLevelRequired = 51;
+	
 	// Air
 	// AirBlast
 	public static double airBlastSpeed = 25;
@@ -64,6 +65,7 @@ public class ConfigManager {
 	public static double airBlastPush = 3.0;
 	public static int airBlastLevelRequired = 1;
 	
+	//AirBurst
 	public static int airBurstLevelRequired = 1;
 
 	// AirBubble
@@ -75,11 +77,11 @@ public class ConfigManager {
 	public static int airPassiveLevelRequired = 1;
 
 	// AirScooter
-	public static double airScooterSpeed = .675;
+	public static double airScooterSpeed = 0.675;
 	public static int airScooterLevelRequired = 1;
 
 	// AirShield
-	public static double airShieldRadius = 7;
+	public static double airShieldRadius = 5;
 	public static int airShieldLevelRequired = 1;
 
 	// AirSpout
@@ -94,7 +96,7 @@ public class ConfigManager {
 	public static int airSuctionLevelRequired = 1;
 
 	// AirSwipe
-	public static int airdmg = 2;
+	public static int airSwipeDamage = 4;
 	public static double airSwipeRange = 16;
 	public static int airSwipeArc = 20;
 	public static double airSwipeSpeed = 25;
@@ -110,11 +112,19 @@ public class ConfigManager {
 	public static double tornadoMobPush = 1;
 	public static double tornadoPlayerPush = 1;
 	public static int tornadoLevelRequired = 45;
-
+	
+	// Air Manipulation
+	public static int airManipulationDamage = 2;
+	public static int airManipulationRange = 25;
+	public static int airManipulationLevelRequired = 5;
+	
+	// Lungs control
+	public static int lungsControlLevelRequired = 45;
+	
 	// ChiBlocker
 	// HighJump
-	public static double jumpheight = 1.5;
-	public static long highJumpCooldown = 5000;
+	public static double jumpHeight = 1.5;
+	public static long highJumpCooldown = 4000;
 	public static int highJumpLevelRequired = 1;
 
 	// Paralyze
@@ -123,11 +133,22 @@ public class ConfigManager {
 	public static int paralyzeLevelRequired = 1;
 
 	// RapidPunch
-	public static int rapidPunchDamage = 4;
-	public static int rapidPunchDistance = 4;
+	public static int rapidPunchDamage = 2;
+	public static int rapidPunchDistance = 1;
 	public static long rapidPunchCooldown = 3000;
-	public static int rapidPunchPunches = 5;
+	public static int rapidPunchPunches = 4;
 	public static int rapidPunchLevelRequired = 1;
+	
+	//Smoke Bomb
+	public static int smokeRadius = 5;
+	public static int smokeBombLevelRequired = 5;
+	public static int smokeDuration = 10;    // time in secs
+	
+	//Poisonned dart
+	public static int dartRange = 10;
+	public static int dartDamage = 2;
+	public static int poisonLevel = 1;
+	public static int poisonnedDartLevelRequired = 5;
 
 	// Earth
 	// Catapult
@@ -150,20 +171,23 @@ public class ConfigManager {
 	public static int compactColumnLevelRequired = 1;
 
 	// EarthArmor
-	public static long eartharmorduration = 60000;
-	public static int eartharmorstrength = 2;
-	public static long eartharmorcooldown = 60000;
+	public static long earthArmorDuration = 60000;
+	public static int earthArmorStrength = 2;
+	public static long earthArmorCooldown = 60000;
 	public static int earthArmorLevelRequired = 1;
+	public static int  ironArmorLevelRequired = 20;
 
 	// EarthBlast
-	public static int earthdmg = 8;
+	public static int earthBlastDamage = 3;
+	public static int ironBlastDamage = 5;
 	public static boolean earthBlastHitSelf = false;
-	public static double earthBlastPrepareRange = 7;
+	public static double earthBlastPrepareRange = 10;
 	public static double earthBlastRange = 20;
 	public static double earthBlastSpeed = 35;
 	public static boolean earthBlastRevert = true;
-	public static double EarthBlastPush = .3;
+	public static double earthBlastPush = 0.3;
 	public static int earthBlastLevelRequired = 1;
+	public static int ironBlastLevelRequired = 15;
 
 	// EarthColumn
 	public static int earthColumnHeight = 6;
@@ -175,6 +199,7 @@ public class ConfigManager {
 
 	// EarthPassive
 	public static long earthPassive = 3000;
+	public static int passiveResistanceLevel = 1;
 	public static int earthPassiveLevelRequired = 1;
 
 	// EarthTunnel
@@ -197,6 +222,14 @@ public class ConfigManager {
 	public static int tremorsenseRadius = 5;
 	public static byte tremorsenseLightThreshold = 7;
 	public static int tremorsenseLevelRequired = 1;
+	
+	//EarthMelt
+	
+	public static long earthMeltCooldown = 15000;
+	public static int earthMeltRange = 15;
+	public static int earthMeltDamage = 10;
+	public static int earthMeltChargeTime = 3000; // time in millisecs.
+	public static int earthMeltLevelRequired = 50;
 
 	// Fire
 	// ArcOfFire
@@ -219,7 +252,7 @@ public class ConfigManager {
 	public static double fireBlastRange = 25;
 	public static double fireBlastRadius = 2;
 	public static double fireBlastPush = .3;
-	public static int fireBlastDamage = 6;
+	public static int fireBlastDamage = 7;
 	public static long fireBlastCooldown = 1500;
 	public static boolean fireBlastDissipate = false;
 	public static int fireBlastLevelRequired = 1;
@@ -234,7 +267,7 @@ public class ConfigManager {
 	public static double fireJetSpeed = 0.7;
 	public static long fireJetDuration = 1500;
 	public static long fireJetCooldown = 6000;
-	public static int fireJetLevelRequired = 45;
+	public static int fireJetLevelRequired = 15;
 
 	// FireStream
 	public static double fireStreamSpeed = 15;
@@ -251,9 +284,9 @@ public class ConfigManager {
 	public static int illuminationLevelRequired = 1;
 
 	// Lightning
-	public static long lightningwarmup = 3500;
-	public static int lightningrange = 50;
-	public static double lightningmisschance = 5;
+	public static long lightningWarmup = 3500;
+	public static int lightningRange = 50;
+	public static double lightningMissChance = 5;
 	public static int lightningLevelRequired = 45;
 
 	// RingOfFire
@@ -268,10 +301,22 @@ public class ConfigManager {
 	public static int wallOfFireDamage = 2;
 	public static long wallOfFireInterval = 500;
 	public static long wallOfFireCooldown = 7500;
-	public static int wallOfFireLevelRequired = 1;
+	public static int wallOfFireLevelRequired = 5;
+	
+	//ThunderArmor
+	public static int thunderArmorThornsLevel = 2;
+	public static int thunderArmorLevelRequired = 50;
+	
+	//MentalExplosion
+	public static int mentalExplosionDamage = 5;
+	public static int mentalExplosionRange = 20;
+	public static int mentalExplosionSpeed = 25;
+	public static int mentalExplosionChargeTime = 1000; //time in millisecs
+	public static int mentalExplosionCooldown = 2000;
+	public static int mentalExplosionLevelRequired = 50;
 
 	// Day
-	public static double dayFactor = 1.0;
+	public static double dayFactor = 1.5;
 
 	// Water
 	// Bloodbending
@@ -294,10 +339,10 @@ public class ConfigManager {
 	public static int healingWatersLevelRequired = 1;
 
 	// IceSpike
-	public static long icespikecooldown = 2000;
-	public static int icespikedamage = 2;
-	public static int icespikerange = 20;
-	public static double icespikethrowingmult = 0.7;
+	public static long icespikeCooldown = 2000;
+	public static int icespikeDamage = 2;
+	public static int icespikeRange = 20;
+	public static double icespikeThrowingMult = 0.7;
 	public static int icespikeLevelRequired = 1;
 
 	// Plantbending
@@ -305,21 +350,21 @@ public class ConfigManager {
 	public static int plantbendingLevelRequired = 1;
 
 	// SpikeField
-	public static long icespikeareacooldown = 3000;
-	public static int icespikeareadamage = 2;
-	public static int icespikearearadius = 6;
-	public static double icespikeareathrowingmult = 1;
+	public static long icespikeAreaCooldown = 3000;
+	public static int icespikeAreaDamage = 2;
+	public static int icespikeAreaRadius = 6;
+	public static double icespikeAreaThrowingMult = 1;
 	
 	// WaterBubble
 	public static double waterBubbleRadius = airBubbleRadius;
 	public static int waterBubbleLevelRequired = 1;
 
 	// WaterManipulation
-	public static int waterdmg = 7;
+	public static int waterManipulationDamage = 3;
 	public static double waterManipulationRange = 25;
 	public static double waterManipulationSpeed = 35;
 	public static double WaterManipulationPush = .3;
-	public static int watermanipulationLevelRequired = 1;
+	public static int waterManipulationLevelRequired = 1;
 
 	// WaterSpout
 	public static int waterSpoutHeight = 16;
@@ -342,6 +387,16 @@ public class ConfigManager {
 	//OctopusForm
 	
 	public static int octopusFormLevelRequired = 45;
+	
+	//IceSwipe
+	public static int iceSwipeDamage = 4;
+	public static int iceSwipeRange = 16;
+	public static int iceSwipeArc = 20;
+	public static double iceSwipeSpeed = 25;
+	public static double iceSwipeRadius = 2;
+	public static double iceSwipePush = 1;
+	public static long iceSwipeCooldown = 1500;
+	public static int iceSwipeLevelRequired = 1;
 
 	// Night
 	public static double nightFactor = 1.5;
@@ -389,16 +444,12 @@ public class ConfigManager {
 				config.getString("Chat.Color.ChiBlocker", "GOLD"));
 
 		// Bending
-		// Damage
-		airdmg = config.getInt("Bending.Damage.AirSwipe", airdmg);
-		earthdmg = config.getInt("Bending.Damage.EarthBlast", earthdmg);
-		waterdmg = config.getInt("Bending.Damage.WaterManipulation", waterdmg);
 
 		// Option
 		earthbendable = defaultearthbendable;
 		maxlevel = config.getInt("Bending.Option.max-level");
-		ticksBeforeLoseXP = 20*config.getInt("Bending.Option.lose-experience.seconds");
-		xpLost = config.getInt("Bending.Option.lose-experience.amount");
+		/*ticksBeforeLoseXP = 20*config.getInt("Bending.Option.lose-experience.seconds");
+		xpLost = config.getInt("Bending.Option.lose-experience.amount");*/
 		if (config.contains("Bending.Option.EarthBendable"))
 			earthbendable = config
 					.getStringList("Bending.Option.EarthBendable");
@@ -450,8 +501,8 @@ public class ConfigManager {
 				globalCooldown);
 
 		// HighJump
-		jumpheight = config.getDouble("Properties.ChiBlocker.HighJump.Height",
-				jumpheight);
+		jumpHeight = config.getDouble("Properties.ChiBlocker.HighJump.Height",
+				jumpHeight);
 		highJumpCooldown = config.getLong(
 				"Properties.ChiBlocker.HighJump.Cooldown", highJumpCooldown);
 		highJumpLevelRequired = config.getInt(
@@ -481,6 +532,17 @@ public class ConfigManager {
 		rapidPunchLevelRequired = config.getInt(
 				"Properties.ChiBlocker.RapidPunch.level-required", rapidPunchLevelRequired);
 		levelsRequired.put(Abilities.RapidPunch, rapidPunchLevelRequired);
+		
+		//Poisonned Dart
+		dartRange = config.getInt("Properties.ChiBlocker.PoisonnedDart.Range",dartRange);
+		dartDamage = config.getInt("Properties.ChiBlocker.PoisonnedDart.Damage",dartDamage);
+		poisonLevel = config.getInt("Properties.ChiBlocker.PoisonnedDart.poison-level",poisonLevel);
+		poisonnedDartLevelRequired = config.getInt("Properties.ChiBlocker.PoisonnedDart.level-required",poisonnedDartLevelRequired);
+		
+		//Smoke bomb
+		smokeRadius = config.getInt("Properties.ChiBlocker.SmokeBomb.Radius",smokeRadius);
+		smokeDuration = config.getInt("Properties.ChiBlocker.SmokeBomb.Duration",smokeDuration);
+		smokeBombLevelRequired = config.getInt("Properties.ChiBlocker.SmokeBomb.level-required",smokeBombLevelRequired);
 
 		// Air
 		// AirBlast
@@ -535,6 +597,7 @@ public class ConfigManager {
 		levelsRequired.put(Abilities.AirSuction, airSuctionLevelRequired);
 
 		// AirSwipe
+		airSwipeDamage = config.getInt("Properties.Air.AirSwipe.Damage", airSwipeDamage);
 		airSwipeRange = config.getDouble("Properties.Air.AirSwipe.Range",
 				airSwipeRange);
 		airSwipeArc = config.getInt("Properties.Air.AirSwipe.Arc", airSwipeArc);
@@ -578,6 +641,13 @@ public class ConfigManager {
 		airSpoutLevelRequired = config.getInt(
 				"Properties.Air.AirSpout.level-required", airSpoutLevelRequired);
 		levelsRequired.put(Abilities.AirSpout, airSpoutLevelRequired);
+		
+		//Air Manipulation
+		airManipulationDamage = config.getInt("Properties.Air.AirManipulation.Damage",airManipulationDamage);
+		airManipulationRange = config.getInt("Properties.Air.AirManipulation.Range",airManipulationRange);
+		airManipulationLevelRequired  = config.getInt("Properties.Air.AirManipulation.level-required",airManipulationLevelRequired);
+		//Lungs Control
+		lungsControlLevelRequired = config.getInt("Properties.Air.LungsControl.level-required", lungsControlLevelRequired);
 
 		// Earth
 		// Catapult
@@ -605,6 +675,7 @@ public class ConfigManager {
 		levelsRequired.put(Abilities.Collapse, compactColumnLevelRequired);
 
 		// EarthBlast
+		earthBlastDamage = config.getInt("Properties.Earth.EarthBlast.Damage", earthBlastDamage);
 		earthBlastHitSelf = config.getBoolean(
 				"Properties.Earth.EarthBlast.Hit-Self", earthBlastHitSelf);
 		earthBlastPrepareRange = config.getDouble(
@@ -616,10 +687,15 @@ public class ConfigManager {
 				earthBlastSpeed);
 		earthBlastRevert = config.getBoolean(
 				"Properties.Earth.EarthBlast.Revert", earthBlastRevert);
-		EarthBlastPush = config.getDouble("Properties.Earth.EarthBlast.Push", EarthBlastPush);
+		earthBlastPush = config.getDouble("Properties.Earth.EarthBlast.Push", earthBlastPush);
 		earthBlastLevelRequired = config.getInt(
 				"Properties.Earth.EarthBlast.level-required", earthBlastLevelRequired);
 		levelsRequired.put(Abilities.EarthBlast, earthBlastLevelRequired);
+		
+		//IronBlast
+		ironBlastDamage = config.getInt("Properties.Earth.IronBlast.Damage",ironBlastDamage);
+		ironBlastLevelRequired = config.getInt("Properties.Earth.IronBlast.level-required",ironBlastLevelRequired);
+				
 
 		// EarthColumn
 		earthColumnHeight = config.getInt(
@@ -641,6 +717,7 @@ public class ConfigManager {
 				earthPassive);
 		earthPassiveLevelRequired = config.getInt(
 				"Properties.Earth.EarthPassive.level-required", earthPassiveLevelRequired);
+		passiveResistanceLevel = config.getInt("Properties.Earth.EarthPassive.resistance-level",passiveResistanceLevel);
 
 		// EarthTunnel
 		earthTunnelMaxRadius = config
@@ -691,16 +768,25 @@ public class ConfigManager {
 		levelsRequired.put(Abilities.Tremorsense, tremorsenseLevelRequired);
 
 		// EarthArmor
-		eartharmorduration = config.getLong(
-				"Properties.Earth.EarthArmor.Duration", eartharmorduration);
-		eartharmorstrength = config.getInt(
-				"Properties.Earth.EarthArmor.Strength", eartharmorstrength);
-		eartharmorcooldown = config.getLong(
-				"Properties.Earth.EarthArmor.Cooldown", eartharmorcooldown);
+		earthArmorDuration = config.getLong(
+				"Properties.Earth.EarthArmor.Duration", earthArmorDuration);
+		earthArmorStrength = config.getInt(
+				"Properties.Earth.EarthArmor.Strength", earthArmorStrength);
+		earthArmorCooldown = config.getLong(
+				"Properties.Earth.EarthArmor.Cooldown", earthArmorCooldown);
 		earthArmorLevelRequired = config.getInt(
 				"Properties.Earth.EarthArmor.level-required", earthArmorLevelRequired);
 		levelsRequired.put(Abilities.EarthArmor, earthArmorLevelRequired);
-
+		
+		//Iron Armor
+		ironArmorLevelRequired = config.getInt("Properties.Earth.IronAmor.level-required",ironArmorLevelRequired);
+		
+		//EarthMelt
+		earthMeltCooldown = config.getLong("Properties.Earth.EarthMelt.Cooldown",earthMeltCooldown);
+		earthMeltRange = config.getInt("Properties.Earth.EarthMelt.Range",earthMeltRange);
+		earthMeltRange = config.getInt("Properties.Earth.EarthMelt.Damage",earthMeltDamage);
+		earthMeltChargeTime = config.getInt("Properties.Earth.EarthMelt.ChargeTime",earthMeltChargeTime);
+		earthMeltLevelRequired = config.getInt("Properties.Earth.EarthMelt.level-required",earthMeltLevelRequired);
 		// Fire
 		// FireBlast
 		fireBlastRange = config.getDouble("Properties.Fire.FireBlast.Range",
@@ -815,15 +901,37 @@ public class ConfigManager {
 		levelsRequired.put(Abilities.Illumination, illuminationLevelRequired);
 
 		// Lightning
-		lightningwarmup = config.getLong("Properties.Fire.Lightning.Warmup",
-				lightningwarmup);
-		lightningrange = config.getInt("Properties.Fire.Lightning.Range",
-				lightningrange);
-		lightningmisschance = config.getDouble(
-				"Properties.Fire.Lightning.Miss-Chance", lightningmisschance);
+		lightningWarmup = config.getLong("Properties.Fire.Lightning.Warmup",
+				lightningWarmup);
+		lightningRange = config.getInt("Properties.Fire.Lightning.Range",
+				lightningRange);
+		lightningMissChance = config.getDouble(
+				"Properties.Fire.Lightning.Miss-Chance", lightningMissChance);
 		lightningLevelRequired = config.getInt(
 				"Properties.Fire.Lightning.level-required", lightningLevelRequired);
 		levelsRequired.put(Abilities.Lightning, lightningLevelRequired);
+		
+		//ThunderArmor
+		thunderArmorThornsLevel= config.getInt(
+				"Properties.Fire.ThunderArmor.thorns-level", thunderArmorThornsLevel);
+		thunderArmorLevelRequired = config.getInt(
+				"Properties.Fire.ThunderArmor.level-required", thunderArmorLevelRequired);
+		
+		//Mental Explosion
+		mentalExplosionDamage = config.getInt(
+				"Properties.Fire.MentalExplosion.Damage", mentalExplosionDamage);
+		mentalExplosionRange = config.getInt(
+				"Properties.Fire.MentalExplosion.Range", mentalExplosionRange);
+		mentalExplosionRange = config.getInt(
+				"Properties.Fire.MentalExplosion.Range", mentalExplosionRange);
+		mentalExplosionSpeed = config.getInt(
+				"Properties.Fire.MentalExplosion.Speed", mentalExplosionSpeed);
+		mentalExplosionChargeTime = config.getInt(
+				"Properties.Fire.MentalExplosion.ChargeTime", mentalExplosionChargeTime);
+		mentalExplosionDamage = config.getInt(
+				"Properties.Fire.MentalExplosion.Cooldown", mentalExplosionCooldown);
+		mentalExplosionLevelRequired = config.getInt(
+				"Properties.Fire.MentalExplosion.level-required", mentalExplosionLevelRequired);
 
 		// Day
 		dayFactor = config.getDouble("Properties.Fire.Day-Power-Factor",
@@ -872,6 +980,7 @@ public class ConfigManager {
 				"Properties.Water.Plantbending.level-required", plantbendingLevelRequired);
 
 		// WaterManipulation
+		waterManipulationDamage = config.getInt("Properties.Water.WaterManipulation.Damage", waterManipulationDamage);
 		waterManipulationRange = config.getDouble(
 				"Properties.Water.WaterManipulation.Range",
 				waterManipulationRange);
@@ -880,9 +989,9 @@ public class ConfigManager {
 				waterManipulationSpeed);
 		WaterManipulationPush = config.getDouble("Properties.Water.WaterManipulation.Push",
 				WaterManipulationPush);
-		watermanipulationLevelRequired = config.getInt(
-				"Properties.Water.WaterManipulation.level-required", watermanipulationLevelRequired);
-		levelsRequired.put(Abilities.WaterManipulation, watermanipulationLevelRequired);
+		waterManipulationLevelRequired = config.getInt(
+				"Properties.Water.WaterManipulation.level-required", waterManipulationLevelRequired);
+		levelsRequired.put(Abilities.WaterManipulation, waterManipulationLevelRequired);
 
 		// WaterSpout
 		waterSpoutHeight = config.getInt("Properties.Water.WaterSpout.Height",
@@ -918,23 +1027,23 @@ public class ConfigManager {
 				"Properties.Water.FastSwimming.level-required", fastSwimmingLevelRequired);
 
 		// IceSpike
-		icespikecooldown = config.getLong("Properties.Water.IceSpike.Cooldown",
-				icespikecooldown);
-		icespikedamage = config.getInt("Properties.Water.IceSpike.Damage",
-				icespikedamage);
-		icespikerange = config.getInt("Properties.Water.IceSpike.Range",
-				icespikerange);
-		icespikethrowingmult = config.getDouble(
-				"Properties.Water.IceSpike.ThrowingMult", icespikethrowingmult);
-		icespikeareacooldown = config.getLong(
-				"Properties.Water.IceSpike.AreaCooldown", icespikeareacooldown);
-		icespikeareadamage = config.getInt(
-				"Properties.Water.IceSpike.AreaDamage", icespikeareadamage);
-		icespikearearadius = config.getInt(
-				"Properties.Water.IceSpike.AreaRadius", icespikearearadius);
-		icespikeareathrowingmult = config.getDouble(
+		icespikeCooldown = config.getLong("Properties.Water.IceSpike.Cooldown",
+				icespikeCooldown);
+		icespikeDamage = config.getInt("Properties.Water.IceSpike.Damage",
+				icespikeDamage);
+		icespikeRange = config.getInt("Properties.Water.IceSpike.Range",
+				icespikeRange);
+		icespikeThrowingMult = config.getDouble(
+				"Properties.Water.IceSpike.ThrowingMult", icespikeThrowingMult);
+		icespikeAreaCooldown = config.getLong(
+				"Properties.Water.IceSpike.AreaCooldown", icespikeAreaCooldown);
+		icespikeAreaDamage = config.getInt(
+				"Properties.Water.IceSpike.AreaDamage", icespikeAreaDamage);
+		icespikeAreaRadius = config.getInt(
+				"Properties.Water.IceSpike.AreaRadius", icespikeAreaRadius);
+		icespikeAreaThrowingMult = config.getDouble(
 				"Properties.Water.IceSpike.AreaThrowingMult",
-				icespikeareathrowingmult);
+				icespikeAreaThrowingMult);
 		icespikeLevelRequired = config.getInt(
 				"Properties.Water.IceSpike.level-required", icespikeLevelRequired);
 		levelsRequired.put(Abilities.IceSpike, icespikeLevelRequired);
@@ -948,6 +1057,21 @@ public class ConfigManager {
 		octopusFormLevelRequired = config.getInt("Properties.Water.OctopusForm.level-required",octopusFormLevelRequired);
 		levelsRequired.put(Abilities.OctopusForm, octopusFormLevelRequired);
 		
+		//IceSwipe
+		iceSwipeDamage = config.getInt("Properties.Water.IceSwipe.Damage", iceSwipeDamage);
+		iceSwipeRange = config.getInt("Properties.Water.IceSwipe.Range",
+				iceSwipeRange);
+		iceSwipeArc = config.getInt("Properties.Water.IceSwipe.Arc", iceSwipeArc);
+		iceSwipeSpeed = config.getDouble("Properties.Water.IceSwipe.Speed",
+				iceSwipeSpeed);
+		iceSwipeRadius = config.getDouble(
+				"Properties.Water.IceSwipe.Affecting-Radius", iceSwipeRadius);
+		iceSwipePush = config.getDouble("Properties.Water.IceSwipe.Push-Factor",
+				iceSwipePush);
+		iceSwipeCooldown = config.getLong("Properties.Water.IceSwipe.Cooldown",
+				iceSwipeCooldown);
+		iceSwipeLevelRequired = config.getInt(
+				"Properties.Water.IceSwipe.level-required", iceSwipeLevelRequired);
 		// Night
 		nightFactor = config.getDouble("Properties.Water.Night-Power-Factor",
 				nightFactor);
@@ -982,10 +1106,6 @@ public class ConfigManager {
 		config.set("Chat.Color.Water", color.get("Water"));
 		config.set("Chat.Color.ChiBlocker", color.get("ChiBlocker"));
 		// Bending
-		// Damage
-		config.set("Bending.Damage.AirSwipe", airdmg);
-		config.set("Bending.Damage.EarthBlast", earthdmg);
-		config.set("Bending.Damage.WaterManipulation", waterdmg);
 		// Option
 
 		config.set("Bending.Option.Bend-To-Item", bendToItem);
@@ -996,8 +1116,8 @@ public class ConfigManager {
 		config.set("Bending.Option.Firebending-Dissipate-Time", dissipateAfter);
 		config.set("Bending.Option.Sea-Level", seaLevel);
 		config.set("Bending.Option.max-level", maxlevel);
-		config.set("Bending.Option.lose-experience.seconds", ticksBeforeLoseXP/20);
-		config.set("Bending.Option.lose-experience.amount", xpLost);
+		/* config.set("Bending.Option.lose-experience.seconds", ticksBeforeLoseXP/20);
+		config.set("Bending.Option.lose-experience.amount", xpLost); */
 
 		// Properties
 		// ChiBlocker
@@ -1008,7 +1128,7 @@ public class ConfigManager {
 				falldamagereduction);
 		config.set("Properties.GlobalCooldown", globalCooldown);
 		// HighJump
-		config.set("Properties.ChiBlocker.HighJump.Height", jumpheight);
+		config.set("Properties.ChiBlocker.HighJump.Height", jumpHeight);
 		config.set("Properties.ChiBlocker.HighJump.Cooldown", highJumpCooldown);
 		config.set("Properties.ChiBlocker.HighJump.level-required", highJumpLevelRequired);
 		// Paralyze
@@ -1024,6 +1144,15 @@ public class ConfigManager {
 		config.set("Properties.ChiBlocker.RapidPunch.Punches",
 				rapidPunchPunches);
 		config.set("Properties.ChiBlocker.RapidPunch.level-required", rapidPunchLevelRequired);
+		//SmokeBomb
+		config.set("Properties.ChiBlocker.SmokeBomb.Radius", smokeRadius);
+		config.set("Properties.ChiBlocker.SmokeBomb.Duration", smokeDuration);
+		config.set("Properties.ChiBlocker.SmokeBomb.level-required", smokeBombLevelRequired);
+		//Poisonned Dart
+		config.set("Properties.ChiBlocker.PoisonnedDart.Range", dartRange);
+		config.set("Properties.ChiBlocker.PoisonnedDart.Damage", dartDamage);
+		config.set("Properties.ChiBlocker.PoisonnedDart.poison-level", poisonLevel);
+		config.set("Properties.ChiBlocker.PoisonnedDart.level-required", poisonnedDartLevelRequired);
 		// Air
 		// AirBlast
 		config.set("Properties.Air.AirBlast.Speed", airBlastSpeed);
@@ -1050,6 +1179,7 @@ public class ConfigManager {
 		config.set("Properties.Air.AirSuction.Push-Factor", airSuctionPush);
 		config.set("Properties.Air.AirSuction.level-required", airSuctionLevelRequired);
 		// AirSwipe
+		config.set("Properties.Air.AirSwipe.Damage", airSwipeDamage);
 		config.set("Properties.Air.AirSwipe.Range", airSwipeRange);
 		config.set("Properties.Air.AirSwipe.Arc", airSwipeArc);
 		config.set("Properties.Air.AirSwipe.Speed", airSwipeSpeed);
@@ -1071,6 +1201,13 @@ public class ConfigManager {
 		// Air Spout
 		config.set("Properties.Air.AirSpout.Height", airSpoutHeight);
 		config.set("Properties.Air.AirSpout.level-required", airSpoutLevelRequired);
+		
+		//Air manipulation
+		config.set("Properties.Air.AirManipulation.Damage", airManipulationDamage);
+		config.set("Properties.Air.AirManipulation.Range", airManipulationRange);
+		config.set("Properties.Air.AirManipulation.level-required", airManipulationLevelRequired);
+		//LungsControl
+		config.set("Properties.Air.LungsControl.level-required", lungsControlLevelRequired);
 		// Earth
 		// Catapult
 		config.set("Properties.Earth.Catapult.Length", catapultLength);
@@ -1082,14 +1219,20 @@ public class ConfigManager {
 		config.set("Properties.Earth.CompactColumn.Speed", compactColumnSpeed);
 		config.set("Properties.Earth.CompactColumn.level-required", compactColumnLevelRequired);
 		// EarthBlast
+		config.set("Properties.Earth.EarthBlast.Damage", earthBlastDamage);
 		config.set("Properties.Earth.EarthBlast.Hit-Self", earthBlastHitSelf);
 		config.set("Properties.Earth.EarthBlast.Prepare-Range",
 				earthBlastPrepareRange);
 		config.set("Properties.Earth.EarthBlast.Range", earthBlastRange);
 		config.set("Properties.Earth.EarthBlast.Speed", earthBlastSpeed);
 		config.set("Properties.Earth.EarthBlast.Revert", earthBlastRevert);
-		config.set("Properties.Earth.EarthBlast.Push", EarthBlastPush);
+		config.set("Properties.Earth.EarthBlast.Push", earthBlastPush);
 		config.set("Properties.Earth.EarthBlast.level-required", earthBlastLevelRequired);
+		//Iron Armor
+		config.set("Properties.Earth.IronArmor.level-required", ironArmorLevelRequired);
+		//IronBlast
+		config.set("Properties.Earth.IronBlast.Damage", ironBlastDamage);
+		config.set("Properties.Earth.IronBlast.level-required", ironBlastLevelRequired);
 		// EarthColumn
 		config.set("Properties.Earth.EarthColumn.Height", earthColumnHeight);
 		config.set("Properties.Earth.EarthColumn.level-required", earthColumnLevelRequired);
@@ -1100,6 +1243,7 @@ public class ConfigManager {
 		config.set("Properties.Earth.EarthPassive.Wait-Before-Reverse-Changes",
 				earthPassive);
 		config.set("Properties.Earth.EarthPassive.level-required", earthPassiveLevelRequired);
+		config.set("Properties.Earth.EarthPassive.resistance-level", passiveResistanceLevel);
 		// EarthTunnel
 		config.set("Properties.Earth.EarthTunnel.Max-Radius",
 				earthTunnelMaxRadius);
@@ -1126,10 +1270,16 @@ public class ConfigManager {
 				tremorsenseLightThreshold);
 		config.set("Properties.Earth.Tremorsense.level-required", tremorsenseLevelRequired);
 		// EarthArmor
-		config.set("Properties.Earth.EarthArmor.Duration", eartharmorduration);
-		config.set("Properties.Earth.EarthArmor.Strength", eartharmorstrength);
-		config.set("Properties.Earth.EarthArmor.Cooldown", eartharmorcooldown);
+		config.set("Properties.Earth.EarthArmor.Duration", earthArmorDuration);
+		config.set("Properties.Earth.EarthArmor.Strength", earthArmorStrength);
+		config.set("Properties.Earth.EarthArmor.Cooldown", earthArmorCooldown);
 		config.set("Properties.Earth.EarthArmor.level-required", earthArmorLevelRequired);
+		//EarthMelt
+		config.set("Properties.Earth.EarthMelt.Cooldown", earthMeltCooldown);
+		config.set("Properties.Earth.EarthMelt.Range", earthMeltRange);
+		config.set("Properties.Earth.EarthMelt.Damage", earthMeltDamage);
+		config.set("Properties.Earth.EarthMelt.ChargeTime", earthMeltChargeTime);
+		config.set("Properties.Earth.EarthMelt.level-required", earthMeltLevelRequired);
 		// Fire
 		// FireBlast
 		config.set("Properties.Fire.FireBlast.Range", fireBlastRange);
@@ -1182,10 +1332,20 @@ public class ConfigManager {
 		config.set("Properties.Fire.Illumination.Range", illuminationRange);
 		config.set("Properties.Fire.Illumination.level-required", illuminationLevelRequired);
 		// Lightning
-		config.set("Properties.Fire.Lightning.Warmup", lightningwarmup);
-		config.set("Properties.Fire.Lightning.Range", lightningrange);
-		config.set("Properties.Fire.Lightning.Miss-Chance", lightningmisschance);
+		config.set("Properties.Fire.Lightning.Warmup", lightningWarmup);
+		config.set("Properties.Fire.Lightning.Range", lightningRange);
+		config.set("Properties.Fire.Lightning.Miss-Chance", lightningMissChance);
 		config.set("Properties.Fire.Lightning.level-required", lightningLevelRequired);
+		//ThunderArmor
+		config.set("Properties.Fire.ThunderArmor.thorns-level", thunderArmorThornsLevel);
+		config.set("Properties.Fire.ThunderArmor.level-required", thunderArmorLevelRequired);
+		//MentalExplosion
+		config.set("Properties.Fire.MentalExplosion.Damage", mentalExplosionDamage);
+		config.set("Properties.Fire.MentalExplosion.Range", mentalExplosionRange);
+		config.set("Properties.Fire.MentalExplosion.Speed", mentalExplosionSpeed);
+		config.set("Properties.Fire.MentalExplosion.ChargeTime", mentalExplosionChargeTime);
+		config.set("Properties.Fire.MentalExplosion.Cooldown", mentalExplosionCooldown);
+		config.set("Properties.Fire.MentalExplosion.level-required", mentalExplosionLevelRequired);
 		// Day
 		config.set("Properties.Fire.Day-Power-Factor", dayFactor);
 		// Water
@@ -1210,12 +1370,13 @@ public class ConfigManager {
 				plantbendingRegrowTime);
 		config.set("Properties.Water.Plantbending.level-required", plantbendingLevelRequired);
 		// WaterManipulation
+		config.set("Properties.Water.WaterManipulation.Damage", waterManipulationDamage);
 		config.set("Properties.Water.WaterManipulation.Range",
 				waterManipulationRange);
 		config.set("Properties.Water.WaterManipulation.Speed",
 				waterManipulationSpeed);
 		config.set("Properties.Water.WaterManipulation.Push", WaterManipulationPush);
-		config.set("Properties.Water.WaterManipulation.level-required", watermanipulationLevelRequired);
+		config.set("Properties.Water.WaterManipulation.level-required", waterManipulationLevelRequired);
 		// WaterSpout
 		config.set("Properties.Water.WaterSpout.Height", waterSpoutHeight);
 		config.set("Properties.Water.WaterSpout.level-required", waterSpoutLevelRequired);
@@ -1234,20 +1395,29 @@ public class ConfigManager {
 		config.set("Properties.Water.FastSwimming.Factor", fastSwimmingFactor);
 		config.set("Properties.Water.FastSwimming.level-required", fastSwimmingLevelRequired);
 		// IceSpike
-		config.set("Properties.Water.IceSpike.Cooldown", icespikecooldown);
-		config.set("Properties.Water.IceSpike.Damage", icespikedamage);
-		config.set("Properties.Water.IceSpike.Range", icespikerange);
+		config.set("Properties.Water.IceSpike.Cooldown", icespikeCooldown);
+		config.set("Properties.Water.IceSpike.Damage", icespikeDamage);
+		config.set("Properties.Water.IceSpike.Range", icespikeRange);
 		config.set("Properties.Water.IceSpike.ThrowingMult",
-				icespikethrowingmult);
+				icespikeThrowingMult);
 		config.set("Properties.Water.IceSpike.AreaCooldown",
-				icespikeareacooldown);
-		config.set("Properties.Water.IceSpike.AreaDamage", icespikeareadamage);
-		config.set("Properties.Water.IceSpike.AreaRadius", icespikearearadius);
+				icespikeAreaCooldown);
+		config.set("Properties.Water.IceSpike.AreaDamage", icespikeAreaDamage);
+		config.set("Properties.Water.IceSpike.AreaRadius", icespikeAreaRadius);
 		config.set("Properties.Water.IceSpike.AreaThrowingMult",
-				icespikeareathrowingmult);
+				icespikeAreaThrowingMult);
 		config.set("Properties.Water.IceSpike.level-required", icespikeLevelRequired);		
 		//Torrent
 		config.set("Properties.Water.Torrent.level-required", torrentLevelRequired);
+		//IceSwipe
+		config.set("Properties.Water.IceSwipe.Damage", iceSwipeDamage);
+		config.set("Properties.Water.IceSwipe.Range", iceSwipeRange);
+		config.set("Properties.Water.IceSwipe.Arc", iceSwipeArc);
+		config.set("Properties.Water.IceSwipe.Speed", iceSwipeSpeed);
+		config.set("Properties.Water.IceSwipe.Affecting-Radius", iceSwipeRadius);
+		config.set("Properties.Water.IceSwipe.Push-Factor", iceSwipePush);
+		config.set("Properties.Water.IceSwipe.Cooldown", iceSwipeCooldown);
+		config.set("Properties.Water.IceSwipe.level-required", iceSwipeLevelRequired);
 		// Night
 		config.set("Properties.Water.Night-Power-Factor", nightFactor);
 		// MySQL

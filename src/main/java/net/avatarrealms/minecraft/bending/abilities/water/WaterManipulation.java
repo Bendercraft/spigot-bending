@@ -36,7 +36,7 @@ public class WaterManipulation {
 
 	static double range = ConfigManager.waterManipulationRange;
 	private static double pushfactor = ConfigManager.WaterManipulationPush;
-	private static int defaultdamage = ConfigManager.waterdmg;
+	private static int defaultdamage = ConfigManager.waterManipulationDamage;
 	private static double speed = ConfigManager.waterManipulationSpeed;
 	private static final double deflectrange = 3;
 	// private static double speed = 1.5;

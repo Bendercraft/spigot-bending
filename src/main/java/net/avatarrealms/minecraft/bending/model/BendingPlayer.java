@@ -120,7 +120,7 @@ public class BendingPlayer {
 						cd = ConfigManager.fireJetCooldown;
 						break;
 					case IceSpike:
-						cd = ConfigManager.icespikecooldown;
+						cd = ConfigManager.icespikeCooldown;
 						break;
 					default:
 						//TODO Throw exception here

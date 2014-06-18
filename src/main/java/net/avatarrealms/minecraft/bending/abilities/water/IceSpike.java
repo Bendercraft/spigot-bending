@@ -38,8 +38,8 @@ public class IceSpike {
 
 	private static int ID = Integer.MIN_VALUE;
 
-	private static double range = ConfigManager.icespikerange;
-	private long cooldown = ConfigManager.icespikecooldown;
+	private static double range = ConfigManager.icespikeRange;
+	private long cooldown = ConfigManager.icespikeCooldown;
 	private static double speed = 25;
 	private static final Vector direction = new Vector(0, 1, 0);
 
@@ -50,11 +50,11 @@ public class IceSpike {
 	private Block block;
 	private Player player;
 	private int progress = 0;
-	private int damage = ConfigManager.icespikedamage;
+	private int damage = ConfigManager.icespikeDamage;
 	int id;
 	private long time;
 	int height = 2;
-	private Vector thrown = new Vector(0, ConfigManager.icespikethrowingmult, 0);
+	private Vector thrown = new Vector(0, ConfigManager.icespikeThrowingMult, 0);
 	private ConcurrentHashMap<Block, Block> affectedblocks = new ConcurrentHashMap<Block, Block>();
 	private List<LivingEntity> damaged = new ArrayList<LivingEntity>();
 

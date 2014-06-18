@@ -48,7 +48,7 @@ public class AirSwipe {
 		breakables.add(Material.VINE);
 	};
 
-	private static int defaultdamage = ConfigManager.airdmg;
+	private static int defaultdamage = ConfigManager.airSwipeDamage;
 	private static double affectingradius = ConfigManager.airSwipeRadius;
 	private static double defaultpushfactor = ConfigManager.airSwipePush;
 	private static double range = ConfigManager.airSwipeRange;

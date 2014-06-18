@@ -21,15 +21,15 @@ import org.bukkit.util.Vector;
 
 public class SpikeField {
 
-	private static int radius = ConfigManager.icespikearearadius;
+	private static int radius = ConfigManager.icespikeAreaRadius;
 	public static int numofspikes = ((radius * 2) * (radius * 2)) / 16;
-	private static long cooldown = ConfigManager.icespikeareacooldown;
+	private static long cooldown = ConfigManager.icespikeAreaCooldown;
 	public static Map<Player, Long> cooldowns = new HashMap<Player, Long>();
 
 	Random ran = new Random();
-	private int damage = ConfigManager.icespikeareadamage;
+	private int damage = ConfigManager.icespikeAreaDamage;
 	private Vector thrown = new Vector(0,
-			ConfigManager.icespikeareathrowingmult, 0);
+			ConfigManager.icespikeAreaThrowingMult, 0);
 
 	public SpikeField(Player p) {
 		if (cooldowns.containsKey(p))

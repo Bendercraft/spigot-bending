@@ -11,7 +11,7 @@ import org.bukkit.util.Vector;
 
 public class HighJump {
 
-	private double jumpheight = ConfigManager.jumpheight;
+	private double jumpheight = ConfigManager.jumpHeight;
 
 	// private Map<String, Long> cooldowns = new HashMap<String, Long>();
 

@@ -35,19 +35,13 @@ public class BendingLevel {
 		
 		public void increaseCpt() {
 			cpt++;
-			if (cpt >= ConfigManager.ticksBeforeLoseXP) {
+			/*if (cpt >= ConfigManager.ticksBeforeLoseXP) {
 				experience -= ConfigManager.xpLost;
 				cpt = 0;
-				if (experience <= 0) {
-					if (level > 1) {
-						level --;
-						experience = getExperienceNeeded() + experience;
-					}
-					else {
+				if (experience <= 0) {		
 						experience = 0;
-					}
 				}
-			}
+			}*/
 		}
 
 		public String toString() {

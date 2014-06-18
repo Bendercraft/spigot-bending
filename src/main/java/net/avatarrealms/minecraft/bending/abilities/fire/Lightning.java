@@ -21,9 +21,9 @@ import org.bukkit.entity.Player;
 
 public class Lightning {
 
-	public static int defaultdistance = ConfigManager.lightningrange;
-	private static long defaultwarmup = ConfigManager.lightningwarmup;
-	private static double misschance = ConfigManager.lightningmisschance;
+	public static int defaultdistance = ConfigManager.lightningRange;
+	private static long defaultwarmup = ConfigManager.lightningWarmup;
+	private static double misschance = ConfigManager.lightningMissChance;
 	private static double threshold = 0.1;
 	private static double blockdistance = 4;
 

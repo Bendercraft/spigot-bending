@@ -30,12 +30,12 @@ public class EarthBlast {
 	private static boolean hitself = ConfigManager.earthBlastHitSelf;
 	private static double preparerange = ConfigManager.earthBlastPrepareRange;
 	private static double range = ConfigManager.earthBlastRange;
-	private static int damage = ConfigManager.earthdmg;
+	private static int damage = ConfigManager.earthBlastDamage;
 	private static double speed = ConfigManager.earthBlastSpeed;
 	private static final double deflectrange = 3;
 
 	private static boolean revert = ConfigManager.earthBlastRevert;
-	private static double pushfactor = ConfigManager.EarthBlastPush;
+	private static double pushfactor = ConfigManager.earthBlastPush;
 	// private static double speed = 1.5;
 
 	private static long interval = (long) (1000. / speed);

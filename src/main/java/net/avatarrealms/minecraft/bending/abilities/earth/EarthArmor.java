@@ -22,9 +22,9 @@ import org.bukkit.util.Vector;
 
 public class EarthArmor {
 
-	private static long duration = ConfigManager.eartharmorduration;
-	private static int strength = ConfigManager.eartharmorstrength;
-	private static long cooldown = ConfigManager.eartharmorcooldown;
+	private static long duration = ConfigManager.earthArmorDuration;
+	private static int strength = ConfigManager.earthArmorStrength;
+	private static long cooldown = ConfigManager.earthArmorCooldown;
 	private static int range = 7;
 
 	private Player player;
