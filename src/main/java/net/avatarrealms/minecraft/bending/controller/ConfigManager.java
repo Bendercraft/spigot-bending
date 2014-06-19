@@ -66,7 +66,7 @@ public class ConfigManager {
 	public static int airBlastLevelRequired = 1;
 	
 	//AirBurst
-	public static int airBurstLevelRequired = 5;
+	public static int airBurstLevelRequired = 1;
 
 	// AirBubble
 	public static int airBubbleRadius = 4;
@@ -561,7 +561,7 @@ public class ConfigManager {
 		levelsRequired.put(Abilities.AirBlast, airBlastLevelRequired);
 		
 		//AirBurst	
-		airBlastLevelRequired = config.getInt(
+		airBurstLevelRequired = config.getInt(
 				"Properties.Air.AirBurst.level-required", airBurstLevelRequired);
 		levelsRequired.put(Abilities.AirBurst, airBurstLevelRequired);
 
