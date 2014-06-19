@@ -29,6 +29,7 @@ public class WaterSpout {
 	// private static final double threshold = .05;
 	// private static final byte half = 0x4;
 	private static final byte full = 0x0;
+	private static int currentCardinalPoint = 0;
 	private Player player;
 	private Block base;
 	private TempBlock baseblock;
@@ -120,7 +121,9 @@ public class WaterSpout {
 		// + affectedblocks.size());
 		if (height != -1) {
 			location = spout.base.getLocation();
-			for (int i = 1; i <= height; i++) {
+			for (int i = 1, cardinalPoint = (int)(currentCardinalPoint/12); i <= height; i++, cardinalPoint++) {
+				if (cardinalPoint == 8) {cardinalPoint = 0;}
+				
 				block = location.clone().add(0, i, 0).getBlock();
 				if (!TempBlock.isTempBlock(block)) {
 					new TempBlock(block, Material.WATER, full);
@@ -131,6 +134,28 @@ public class WaterSpout {
 					affectedblocks.put(block, block);
 				}
 				newaffectedblocks.put(block, block);
+				
+				switch (cardinalPoint) {
+				case 0 : block = location.clone().add(0, i, -1).getBlock(); break;
+				case 1 : block = location.clone().add(-1, i, -1).getBlock(); break;
+				case 2 : block = location.clone().add(-1, i, 0).getBlock(); break;
+				case 3 : block = location.clone().add(-1, i, 1).getBlock(); break;
+				case 4 : block = location.clone().add(0, i, 1).getBlock(); break;
+				case 5 : block = location.clone().add(1, i, 1).getBlock(); break;
+				case 6 : block = location.clone().add(1, i, 0).getBlock(); break;
+				case 7 : block = location.clone().add(1, i, -1).getBlock(); break;
+				}
+				currentCardinalPoint ++;
+				if (currentCardinalPoint == 12*8) {
+					currentCardinalPoint = 0;
+				}
+				if (!TempBlock.isTempBlock(block)) {
+					new TempBlock(block, Material.WATER, full);
+				}
+				if (!affectedblocks.containsKey(block)) {
+					affectedblocks.put(block, block);
+				}
+				newaffectedblocks.put(block, block);	
 			}
 			if (player.getLocation().getBlockY() > block.getY()) {
 				player.setFlying(false);
