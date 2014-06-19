@@ -163,12 +163,12 @@ public class ConfigManager {
 	// Collapse
 	public static int collapseRange = 20;
 	public static double collapseRadius = 7;
-	public static int collapseLevelRequired = 3;
+	public static int collapseLevelRequired = 1;
 
 	// CompactColumn
 	public static double compactColumnRange = 20;
 	public static double compactColumnSpeed = 8;
-	public static int compactColumnLevelRequired = 2;
+	public static int compactColumnLevelRequired = 1;
 
 	// EarthArmor
 	public static long earthArmorDuration = 60000;
@@ -675,7 +675,7 @@ public class ConfigManager {
 		compactColumnSpeed = config.getDouble(
 				"Properties.Earth.CompactColumn.Speed", compactColumnSpeed);
 		compactColumnLevelRequired = config.getInt(
-				"Properties.Earth.ComptactColumn.level-required", compactColumnLevelRequired);
+				"Properties.Earth.CompactColumn.level-required", compactColumnLevelRequired);
 		levelsRequired.put(Abilities.Collapse, compactColumnLevelRequired);
 
 		// EarthBlast
