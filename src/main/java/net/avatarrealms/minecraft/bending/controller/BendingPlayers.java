@@ -75,7 +75,6 @@ public class BendingPlayers {
 	@Deprecated
 	public boolean convert(Player player) {
 		try {
-			//If this file does not exist, does not matter, it is just a fallback
 			if(oldBendingPlayers != null) {
 				if(oldBendingPlayers.containsKey(player.getName())) {
 					BendingPlayerOldData oldData = oldBendingPlayers.get(player.getName());
@@ -100,7 +99,7 @@ public class BendingPlayers {
 					//Translation is done, so save it !
 					this.save();
 					
-					Bending.plugin.getLogger().info("Player: "+player.getName()+" with UUID : "+uuid+" was translated from old file to new one");
+					Bending.plugin.getLogger().info("Player: "+player.getName()+" with UUID : "+uuid+" was converted from old file to new one");
 					return true;
 				}
 			}
