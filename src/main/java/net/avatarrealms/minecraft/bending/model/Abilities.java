@@ -50,7 +50,7 @@ public enum Abilities {
 	public static String[] getAirbendingAbilities() {
 		ArrayList<String> list = new ArrayList<String>();
 		for (Abilities a : Abilities.values()) {
-			if (isAirbending(a)) {
+			if (isAirbending(a) && !isSecret(a)) {
 				list.add(a.name());
 			}
 		}
@@ -80,7 +80,7 @@ public enum Abilities {
 	public static String[] getWaterbendingAbilities() {
 		ArrayList<String> list = new ArrayList<String>();
 		for (Abilities a : Abilities.values()) {
-			if (isWaterbending(a)) {
+			if (isWaterbending(a) && !isSecret(a)) {
 				list.add(a.name());
 			}
 		}
@@ -108,7 +108,7 @@ public enum Abilities {
 	public static String[] getEarthbendingAbilities() {
 		ArrayList<String> list = new ArrayList<String>();
 		for (Abilities a : Abilities.values()) {
-			if (isEarthbending(a)) {
+			if (isEarthbending(a) && !isSecret(a)) {
 				list.add(a.name());
 			}
 		}
@@ -137,7 +137,7 @@ public enum Abilities {
 	public static String[] getFirebendingAbilities() {
 		ArrayList<String> list = new ArrayList<String>();
 		for (Abilities a : Abilities.values()) {
-			if (isFirebending(a)) {
+			if (isFirebending(a) && !isSecret(a)) {
 				list.add(a.name());
 			}
 		}
@@ -161,7 +161,7 @@ public enum Abilities {
 	public static String[] getChiBlockingAbilities() {
 		ArrayList<String> list = new ArrayList<String>();
 		for (Abilities a : Abilities.values()) {
-			if (isChiBlocking(a)) {
+			if (isChiBlocking(a) && !isSecret(a)) {
 				list.add(a.name());
 			}
 		}
@@ -170,4 +170,18 @@ public enum Abilities {
 		return abilities;
 	}
 
+	public static boolean isSecret(Abilities ability) {
+		// Temp method to make players not see new abilities
+		switch (ability) {
+		case AirManipulation :
+		case LungsControl :
+		case EarthMelt :
+		case MentalExplosion :
+		case ThunderArmor :
+		case IceSwipe :
+		case SmokeBomb :
+		case PoisonnedDart: return true;			
+		default : return false;
+		}
+	}
 }
