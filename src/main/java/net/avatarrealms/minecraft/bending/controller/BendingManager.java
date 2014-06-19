@@ -120,7 +120,7 @@ public class BendingManager implements Runnable {
 			handleDayNight();
 			
 			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player.getUniqueId());
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 				bPlayer.increaseAllBendingCpt();
 			}
 

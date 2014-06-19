@@ -903,7 +903,7 @@ public class Tools {
 	}
 
 	public static boolean canPlantbend(Player player) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player.getUniqueId());
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return false;
 		}
@@ -1529,7 +1529,7 @@ public class Tools {
 	// }
 
 	public static boolean canBendPassive(Player player, BendingType type) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player.getUniqueId());
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player))
 				&& !AvatarState.isAvatarState(player))
 			return false;
@@ -1585,7 +1585,7 @@ public class Tools {
 			return true;
 		}
 
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player.getUniqueId());
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer.hasLevel(ability)) {
 			return true;
 		}
@@ -1850,7 +1850,7 @@ public class Tools {
 	public static String getLanguage(Player player) {
 		String language = getDefaultLanguage();
 		if (player != null)
-			language = BendingPlayer.getBendingPlayer(player.getUniqueId()).getLanguage();
+			language = BendingPlayer.getBendingPlayer(player).getLanguage();
 		return language;
 	}
 

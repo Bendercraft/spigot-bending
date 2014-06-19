@@ -52,15 +52,10 @@ public class BendingPlayer {
 		}
 
 		language = Tools.getDefaultLanguage();
-
 		this.player = player;
-
 		lasttime = System.currentTimeMillis();
 
 		players.put(player, this);
-
-		// Tools.verbose(playername + " slot size: " + slotAbilities.size());
-		// Tools.verbose(playername + " item size: " + itemAbilities.size());
 	}
 
 	public static List<BendingPlayer> getBendingPlayers() {
@@ -69,21 +64,21 @@ public class BendingPlayer {
 		return bPlayers;
 	}
 
-	public static BendingPlayer getBendingPlayer(UUID playerID) {
-		if (players.containsKey(playerID)) {
-			return players.get(playerID);
+	public static BendingPlayer getBendingPlayer(Player player) {
+		if (players.containsKey(player.getUniqueId())) {
+			return players.get(player.getUniqueId());
 		}
 
 		if (config == null) {
 			config = Tools.config;
 		}
 
-		BendingPlayer player = config.getBendingPlayer(playerID);
-		if (player != null) {
-			players.put(playerID, player);
-			return player;
+		BendingPlayer bender = config.getBendingPlayer(player);
+		if (bender != null) {
+			players.put(player.getUniqueId(), bender);
+			return bender;
 		} else {
-			return new BendingPlayer(playerID);
+			return new BendingPlayer(player.getUniqueId());
 		}
 	}
 
@@ -559,7 +554,4 @@ public class BendingPlayer {
 		return max;
 	}
 
-	public static BendingPlayer getBendingPlayer(Player player) {
-		return players.get(player.getUniqueId());
-	}
 }

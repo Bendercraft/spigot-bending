@@ -7,6 +7,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 
 import org.bukkit.Material;
 
+@Deprecated
 public class BendingPlayerOldData {
 	private String playerName;
 	private List<BendingLevelData> bendings;
