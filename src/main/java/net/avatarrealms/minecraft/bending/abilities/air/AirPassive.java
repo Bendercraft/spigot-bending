@@ -34,7 +34,7 @@ public class AirPassive {
 	public static void handlePassive(Server server) {
 		for (World world : server.getWorlds()) {
 			for (Player player : world.getPlayers()) {
-				if (Tools.isBender(player.getName(), BendingType.Air)) {
+				if (Tools.isBender(player, BendingType.Air)) {
 					player.setExhaustion(getFoodExhaustionLevel(player,
 							player.getExhaustion()));
 				}

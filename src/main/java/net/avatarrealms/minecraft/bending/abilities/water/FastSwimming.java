@@ -33,7 +33,7 @@ public class FastSwimming {
 	public static void HandleSwim(Server server) {
 		for (Player player : server.getOnlinePlayers()) {
 			Abilities ability = Tools.getBendingAbility(player);
-			if (Tools.isBender(player.getName(), BendingType.Water)
+			if (Tools.isBender(player, BendingType.Water)
 					&& Tools.canBendPassive(player, BendingType.Water)
 					&& player.isSneaking()
 					&& Tools.isWater(player.getLocation().getBlock())

@@ -24,7 +24,7 @@ public class Paralyze {
 
 	public Paralyze(Player sourceplayer, Entity targetentity) {
 		if (targetentity != null && sourceplayer != null) {
-			if (Tools.isBender(sourceplayer.getName(), BendingType.ChiBlocker)
+			if (Tools.isBender(sourceplayer, BendingType.ChiBlocker)
 				&& Tools.getBendingAbility(sourceplayer) == Abilities.Paralyze
 				&& Tools.canBend(sourceplayer, Abilities.Paralyze)) {
 			if (cooldowns.containsKey(targetentity)) {

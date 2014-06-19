@@ -16,7 +16,7 @@ public class WaterPassive {
 
 	public static void handlePassive(Server server) {
 		for (Player player : server.getOnlinePlayers()) {
-			if (Tools.isBender(player.getName(), BendingType.Water)
+			if (Tools.isBender(player, BendingType.Water)
 					&& Tools.canBendPassive(player, BendingType.Water)) {
 				if (player.getLocation().getBlock().isLiquid()) {
 					for (Block block : Tools.getBlocksAroundPoint(

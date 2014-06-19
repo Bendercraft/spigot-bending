@@ -4,6 +4,7 @@ import java.util.Random;
 import java.lang.Math;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 
 public class BendingLevel {
 

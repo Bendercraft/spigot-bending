@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.Bending;
@@ -902,7 +903,7 @@ public class Tools {
 	}
 
 	public static boolean canPlantbend(Player player) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player.getUniqueId());
 		if (bPlayer == null) {
 			return false;
 		}
@@ -926,30 +927,17 @@ public class Tools {
 		return false;
 	}
 
-	// public static boolean isBender(Player player, BendingType type) {
-	// //return config.isBender(player, type);
-	// return Bending.benders.get(player.getName()).contains(type);
-	// }
-
-	public static boolean isBender(String player, BendingType type) {
+	public static boolean isBender(Player player, BendingType type) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null)
 			return false;
 		return bPlayer.isBender(type);
-
 	}
-
-	public static boolean isBender(String player) {
-		// return config.isBender(player, type);
+	public static boolean isBender(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null)
 			return false;
-		return bPlayer.isBender();
-		// if (Bending.benders.containsKey(player)) {
-		// if (Bending.benders.get(player).size() > 0)
-		// return true;
-		// }
-		// return false;
+		return true;
 	}
 
 	public static Abilities getBendingAbility(Player player) {
@@ -957,7 +945,6 @@ public class Tools {
 		if (bPlayer == null)
 			return null;
 		return bPlayer.getAbility();
-		// return config.getAbility(player);
 	}
 
 	public static List<BendingType> getBendingTypes(Player player) {
@@ -965,12 +952,10 @@ public class Tools {
 		if (bPlayer == null)
 			return null;
 		return bPlayer.getBendingTypes();
-		// return config.getBendingTypes(player);
 	}
 
 	public static double getDistanceFromLine(Vector line, Location pointonline,
 			Location point) {
-
 		Vector AP = new Vector();
 		double Ax, Ay, Az;
 		Ax = pointonline.getX();
@@ -1221,23 +1206,23 @@ public class Tools {
 			return false;
 
 		if (Abilities.isAirbending(ability)
-				&& !isBender(player.getName(), BendingType.Air)) {
+				&& !isBender(player, BendingType.Air)) {
 			return false;
 		}
 		if (Abilities.isChiBlocking(ability)
-				&& !isBender(player.getName(), BendingType.ChiBlocker)) {
+				&& !isBender(player, BendingType.ChiBlocker)) {
 			return false;
 		}
 		if (Abilities.isEarthbending(ability)
-				&& !isBender(player.getName(), BendingType.Earth)) {
+				&& !isBender(player, BendingType.Earth)) {
 			return false;
 		}
 		if (Abilities.isFirebending(ability)
-				&& !isBender(player.getName(), BendingType.Fire)) {
+				&& !isBender(player, BendingType.Fire)) {
 			return false;
 		}
 		if (Abilities.isWaterbending(ability)
-				&& !isBender(player.getName(), BendingType.Water)) {
+				&& !isBender(player, BendingType.Water)) {
 			return false;
 		}
 		if (hasPermission(player, ability)
@@ -1544,7 +1529,7 @@ public class Tools {
 	// }
 
 	public static boolean canBendPassive(Player player, BendingType type) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player.getUniqueId());
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player))
 				&& !AvatarState.isAvatarState(player))
 			return false;
@@ -1600,7 +1585,7 @@ public class Tools {
 			return true;
 		}
 
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player.getUniqueId());
 		if (bPlayer.hasLevel(ability)) {
 			return true;
 		}
@@ -1865,7 +1850,7 @@ public class Tools {
 	public static String getLanguage(Player player) {
 		String language = getDefaultLanguage();
 		if (player != null)
-			language = BendingPlayer.getBendingPlayer(player).getLanguage();
+			language = BendingPlayer.getBendingPlayer(player.getUniqueId()).getLanguage();
 		return language;
 	}
 
@@ -1873,12 +1858,6 @@ public class Tools {
 		return (Bending.language.getSupportedLanguages().contains(language
 				.toLowerCase()));
 	}
-
-	// public static void logBending(Player player, Abilities ability) {
-	// if (Bending.logblock != null) {
-	//
-	// }
-	// }
 
 	public static int getIntCardinalDirection(Vector vector) {
 		BlockFace face = getCardinalDirection(vector);
@@ -1976,6 +1955,26 @@ public class Tools {
 		tmpMap.put("k", ChatColor.MAGIC);
 
 		colors = Collections.unmodifiableMap(tmpMap);
+	}
+	
+	public static Entity getEntityByUUID(UUID uuid) {
+		for(World world : Bukkit.getServer().getWorlds()) {
+			for(Entity entity : world.getEntities()) {
+				if(entity.getUniqueId().equals(uuid)) {
+					return entity;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static Player getOnlinePlayerByUUID(UUID uuid) {
+		for(Player entity : Bukkit.getServer().getOnlinePlayers()) {
+			if(entity.getUniqueId().equals(uuid)) {
+				return entity;
+			}
+		}
+		return null;
 	}
 
 }

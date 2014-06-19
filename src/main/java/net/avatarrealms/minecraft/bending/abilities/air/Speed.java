@@ -37,13 +37,13 @@ public class Speed {
 		// && !AvatarState.isAvatarState(player))
 		// player.setFlying(false);
 		if (player.isSprinting()
-				&& Tools.isBender(player.getName(), BendingType.Air)
+				&& Tools.isBender(player, BendingType.Air)
 				&& Tools.canBendPassive(player, BendingType.Air)) {
 			applySpeed();
 			return true;
 		}
 		if (player.isSprinting()
-				&& Tools.isBender(player.getName(), BendingType.ChiBlocker)) {
+				&& Tools.isBender(player, BendingType.ChiBlocker)) {
 			applySpeed();
 			return true;
 		}
@@ -54,7 +54,7 @@ public class Speed {
 
 	private void applySpeed() {
 		int factor = 0;
-		if (Tools.isBender(player.getName(), BendingType.Air)
+		if (Tools.isBender(player, BendingType.Air)
 				&& Tools.canBendPassive(player, BendingType.Air)) {
 			factor = 1;
 		}

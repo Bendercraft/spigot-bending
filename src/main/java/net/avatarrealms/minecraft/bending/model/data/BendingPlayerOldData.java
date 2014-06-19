@@ -1,11 +1,13 @@
-package net.avatarrealms.minecraft.bending.model;
+package net.avatarrealms.minecraft.bending.model.data;
 
 import java.util.List;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.model.Abilities;
+
 import org.bukkit.Material;
 
-public class BendingPlayerData {
+public class BendingPlayerOldData {
 	private String playerName;
 	private List<BendingLevelData> bendings;
 	private String language;

@@ -38,18 +38,18 @@ public class AirBubble {
 	}
 
 	private void pushWater() {
-		if (Tools.isBender(player.getName(), BendingType.Air)) {
+		if (Tools.isBender(player, BendingType.Air)) {
 			radius = defaultAirRadius;
 		} else {
 			radius = defaultWaterRadius;
 		}
-		if (Tools.isBender(player.getName(), BendingType.Water)
+		if (Tools.isBender(player, BendingType.Water)
 				&& Tools.isNight(player.getWorld())) {
 			radius = Tools.waterbendingNightAugment(defaultWaterRadius,
 					player.getWorld());
 		}
 		if (defaultAirRadius > radius
-				&& Tools.isBender(player.getName(), BendingType.Air))
+				&& Tools.isBender(player, BendingType.Air))
 			radius = defaultAirRadius;
 		Location location = player.getLocation();
 

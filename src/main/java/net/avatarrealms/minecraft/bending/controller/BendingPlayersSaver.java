@@ -29,17 +29,15 @@ public class BendingPlayersSaver implements Runnable {
 		for (BendingPlayer player : players) {
 			long time = player.getLastTime();
 			if (nowtime - time >= timelimit && timelimitdays != 0) {
-				Tools.verbose("Old player: " + player.getName() + " deleted.");
+				Tools.verbose("Old player: " + player.getPlayerID() + " deleted.");
 				player.delete();
-				config.setPlayer(player.getName(), null);
+				config.setPlayer(player.getPlayerID(), null);
 			} else {
-				config.setPlayer(player.getName(), player);
+				config.setPlayer(player.getPlayerID(), player);
 			}
 		}
 
 		config.save();
-
-		// Tools.verbose("Players length: " + players.size());
 	}
 
 }

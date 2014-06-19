@@ -5,26 +5,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
+import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class BendingPlayer {
 
-	private static ConcurrentHashMap<String, BendingPlayer> players = new ConcurrentHashMap<String, BendingPlayer>();
+	private static ConcurrentHashMap<UUID, BendingPlayer> players = new ConcurrentHashMap<UUID, BendingPlayer>();
 
 	private static Map<Abilities, Long> abilityCooldowns = new HashMap<Abilities, Long>();
 	private static long globalCooldown = 250;
 	private static BendingPlayers config = Tools.config;
 
-	private String playername;
+	private UUID player;
 	private String language;
 
 	private Map<Integer, Abilities> slotAbilities = new HashMap<Integer, Abilities>();
@@ -45,14 +46,14 @@ public class BendingPlayer {
 
 	private boolean tremorsense = true;
 
-	public BendingPlayer(String player) {
+	public BendingPlayer(UUID player) {
 		if (players.containsKey(player)) {
 			players.remove(player);
 		}
 
 		language = Tools.getDefaultLanguage();
 
-		playername = player;
+		this.player = player;
 
 		lasttime = System.currentTimeMillis();
 
@@ -68,25 +69,21 @@ public class BendingPlayer {
 		return bPlayers;
 	}
 
-	public static BendingPlayer getBendingPlayer(OfflinePlayer player) {
-		return getBendingPlayer(player.getName());
-	}
-
-	public static BendingPlayer getBendingPlayer(String playername) {
-		if (players.containsKey(playername)) {
-			return players.get(playername);
+	public static BendingPlayer getBendingPlayer(UUID playerID) {
+		if (players.containsKey(playerID)) {
+			return players.get(playerID);
 		}
 
 		if (config == null) {
 			config = Tools.config;
 		}
 
-		BendingPlayer player = config.getBendingPlayer(playername);
+		BendingPlayer player = config.getBendingPlayer(playerID);
 		if (player != null) {
-			players.put(playername, player);
+			players.put(playerID, player);
 			return player;
 		} else {
-			return new BendingPlayer(playername);
+			return new BendingPlayer(playerID);
 		}
 	}
 
@@ -173,8 +170,8 @@ public class BendingPlayer {
 		lasttime = time;
 	}
 
-	public String getName() {
-		return playername;
+	public UUID getPlayerID() {
+		return player;
 	}
 
 	public boolean isBender() {
@@ -303,7 +300,7 @@ public class BendingPlayer {
 	}
 
 	public Abilities getAbility() {
-		Player player = Bending.plugin.getServer().getPlayerExact(playername);
+		Player player = this.getPlayer();
 		if (player == null)
 			return null;
 		if (!player.isOnline() || player.isDead())
@@ -334,7 +331,7 @@ public class BendingPlayer {
 	}
 
 	public void removeSelectedAbility() {
-		Player player = Bending.plugin.getServer().getPlayerExact(playername);
+		Player player = this.getPlayer();
 		if (player == null)
 			return;
 		if (!player.isOnline() || player.isDead())
@@ -357,7 +354,7 @@ public class BendingPlayer {
 	}
 
 	public Player getPlayer() {
-		return Bending.plugin.getServer().getPlayerExact(playername);
+		return (Player) Tools.getEntityByUUID(this.player);
 	}
 
 	// public static ArrayList<BendingPlayer> getBendingPlayers() {
@@ -421,12 +418,12 @@ public class BendingPlayer {
 	}
 
 	public void delete() {
-		players.remove(playername);
+		players.remove(this.player);
 	}
 
 	public String toString() {
 		String string = "BendingPlayer{";
-		string += "Player=" + playername;
+		string += "Player=" + this.player.toString();
 		string += ", ";
 		string += "Bendings=" + bendings;
 		string += ", ";
@@ -442,9 +439,9 @@ public class BendingPlayer {
 	}
 
 	public BendingPlayer(BendingPlayerData data) {
-		playername = data.getPlayerName();
-		if (players.containsKey(playername)) {
-			players.remove(playername);
+		this.player = data.getPlayer();
+		if (players.containsKey(this.player)) {
+			players.remove(this.player);
 		}
 		
 		List<BendingLevelData> bendingData = data.getBendings();
@@ -463,7 +460,7 @@ public class BendingPlayer {
 
 		lasttime = data.getLastTime();
 
-		players.put(playername, this);
+		players.put(this.player, this);
 	}
 
 	public BendingPlayerData serialize() {
@@ -478,7 +475,7 @@ public class BendingPlayer {
 		result.setLanguage(language);
 		result.setLastTime(lasttime);
 		result.setPermaRemoved(permaremoved);
-		result.setPlayerName(playername);
+		result.setPlayer(this.player);
 		result.setSlotAbilities(slotAbilities);
 
 		return result;
@@ -560,5 +557,9 @@ public class BendingPlayer {
 			}
 		}	
 		return max;
+	}
+
+	public static BendingPlayer getBendingPlayer(Player player) {
+		return players.get(player.getUniqueId());
 	}
 }

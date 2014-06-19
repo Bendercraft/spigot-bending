@@ -120,7 +120,7 @@ public class BendingManager implements Runnable {
 			handleDayNight();
 			
 			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player.getUniqueId());
 				bPlayer.increaseAllBendingCpt();
 			}
 
@@ -389,7 +389,7 @@ public class BendingManager implements Runnable {
 			boolean day = days.get(world);
 			if (Tools.isDay(world) && !day) {
 				for (Player player : world.getPlayers()) {
-					if (Tools.isBender(player.getName(), BendingType.Fire)
+					if (Tools.isBender(player, BendingType.Fire)
 							&& player
 									.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
@@ -403,7 +403,7 @@ public class BendingManager implements Runnable {
 
 			if (!Tools.isDay(world) && day) {
 				for (Player player : world.getPlayers()) {
-					if (Tools.isBender(player.getName(), BendingType.Fire)
+					if (Tools.isBender(player, BendingType.Fire)
 							&& player
 									.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
@@ -417,7 +417,7 @@ public class BendingManager implements Runnable {
 
 			if (Tools.isNight(world) && !night) {
 				for (Player player : world.getPlayers()) {
-					if (Tools.isBender(player.getName(), BendingType.Water)
+					if (Tools.isBender(player, BendingType.Water)
 							&& player
 									.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
@@ -431,7 +431,7 @@ public class BendingManager implements Runnable {
 
 			if (!Tools.isNight(world) && night) {
 				for (Player player : world.getPlayers()) {
-					if (Tools.isBender(player.getName(), BendingType.Water)
+					if (Tools.isBender(player, BendingType.Water)
 							&& player
 									.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;

@@ -1,4 +1,6 @@
-package net.avatarrealms.minecraft.bending.model;
+package net.avatarrealms.minecraft.bending.model.data;
+
+import net.avatarrealms.minecraft.bending.model.BendingType;
 
 
 public class BendingLevelData {

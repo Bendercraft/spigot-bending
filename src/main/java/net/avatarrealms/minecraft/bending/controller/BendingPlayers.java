@@ -8,19 +8,24 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingPlayerData;
+import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
+import net.avatarrealms.minecraft.bending.model.data.BendingPlayerOldData;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BendingPlayers {
-	private Map<String, BendingPlayerData> bendingPlayers;
+	public static String FILE_NAME = "benders.json";
+	
+	private Map<UUID, BendingPlayerData> bendingPlayers;
 	private File bendingPlayersFile = null;
 	private File dataFolder;
 
@@ -28,42 +33,84 @@ public class BendingPlayers {
 		dataFolder = file;
 		load();
 	}
-
-	public BendingPlayerData get(String s) {
+	
+	public BendingPlayerData get(UUID id) {
 		if (bendingPlayers != null) {
-			return bendingPlayers.get(s);
+			return bendingPlayers.get(id);
 		}
 		return null;
 	}
 
-	public void setPlayer(String playername, BendingPlayer player) {
+	public void setPlayer(UUID playerID, BendingPlayer player) {
 		if (bendingPlayers != null) {
-			bendingPlayers.put(playername, player.serialize());
+			bendingPlayers.put(playerID, player.serialize());
 			this.save();
 		}
 		return;
 	}
 
-	public BendingPlayer getBendingPlayer(String playername) {
+	public BendingPlayer getBendingPlayer(UUID playerID) {
 		if (bendingPlayers != null) {
-			if (bendingPlayers.containsKey(playername)) {
-				return BendingPlayer.deserialize(bendingPlayers.get(playername));
+			if (bendingPlayers.containsKey(playerID)) {
+				return BendingPlayer.deserialize(bendingPlayers.get(playerID));
 			}
 		}
 		return null;
 	}
 
-	public Set<String> getSavedPlayers() {
-		Set<String> result = new HashSet<String>();
+	public Set<UUID> getSavedPlayers() {
+		Set<UUID> result = new HashSet<UUID>();
 		if (bendingPlayers != null) {
 			result = bendingPlayers.keySet();
 		}
 		return result;
 	}
 
+	
 	public void reload() {
+		bendingPlayers = new HashMap<UUID, BendingPlayerData>();
+		//First load old one -- THIS FRAGMENT WILL BE REMOVED after 1.8
+		File bendingPlayersOldFile = new File(dataFolder, FILE_NAME+".old");
+		try {
+			//If this file does not exist, does not matter, it is just a fallback
+			if(bendingPlayersOldFile.exists()) {
+				ObjectMapper mapper = new ObjectMapper();
+				JsonNode root = mapper.readTree(bendingPlayersOldFile);
+				Iterator<Entry<String, JsonNode>> it = root.fields();
+				while(it.hasNext()) {
+					Entry<String, JsonNode> entry = it.next();
+					BendingPlayerOldData oldData = mapper.readValue(entry.getValue().traverse(), BendingPlayerOldData.class);
+					//Transform player name into UUID
+					String playerName = entry.getKey();
+					UUID uuid = Bukkit.getServer().getPlayer(playerName).getUniqueId();
+					//Transformat OLD DATA into new one
+					BendingPlayerData data = new BendingPlayerData();
+					data.setBendings(oldData.getBendings());
+					data.setBendToItem(oldData.isBendToItem());
+					data.setItemAbilities(oldData.getItemAbilities());
+					data.setLanguage(oldData.getLanguage());
+					data.setLastTime(oldData.getLastTime());
+					data.setPermaRemoved(oldData.isPermaRemoved());
+					data.setPlayer(uuid);
+					data.setSlotAbilities(oldData.getSlotAbilities());
+					
+					bendingPlayers.put(uuid, data);
+				}
+				
+				//Since we have loaded and translated old file, no longer necessary to keep this one
+				bendingPlayersOldFile.renameTo(new File(dataFolder, FILE_NAME+".old.used"));
+			}
+		} catch(Exception e) {
+			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
+					"Could not load config from " + bendingPlayersOldFile, e);
+		}
+		
+		
+		
+		
+		//Then, look at file with UUID (most recent one)
 		if (bendingPlayersFile == null) {
-			bendingPlayersFile = new File(dataFolder, "benders.json");
+			bendingPlayersFile = new File(dataFolder, FILE_NAME);
 		}
 		try {
 			if(!bendingPlayersFile.exists()) {
@@ -72,19 +119,18 @@ public class BendingPlayers {
 				content.write("{}");
 				content.close();
 			}
-			bendingPlayers = new HashMap<String, BendingPlayerData>();
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode root = mapper.readTree(bendingPlayersFile);
 			Iterator<Entry<String, JsonNode>> it = root.fields();
 			while(it.hasNext()) {
 				Entry<String, JsonNode> entry = it.next();
 				BendingPlayerData data = mapper.readValue(entry.getValue().traverse(), BendingPlayerData.class);
-				bendingPlayers.put(entry.getKey(), data);
+				UUID uuid = UUID.fromString(entry.getKey());
+				bendingPlayers.put(uuid, data);
 			}
 		} catch(Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
 					"Could not load config from " + bendingPlayersFile, e);
-			bendingPlayers = new HashMap<String, BendingPlayerData>();
 		}
 	}
 
@@ -99,7 +145,7 @@ public class BendingPlayers {
 			return;
 		}
 		if (bendingPlayersFile == null) {
-			bendingPlayersFile = new File(dataFolder, "benders.json");
+			bendingPlayersFile = new File(dataFolder, FILE_NAME);
 		}
 		try {
 			if(!bendingPlayersFile.exists()) {
