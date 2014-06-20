@@ -1,8 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -22,10 +24,10 @@ import org.bukkit.potion.PotionEffectType;
 
 public class WaterSpout {
 
-	public static ConcurrentHashMap<Player, WaterSpout> instances = new ConcurrentHashMap<Player, WaterSpout>();
-	public static ConcurrentHashMap<Block, Block> affectedblocks = new ConcurrentHashMap<Block, Block>();
-	public static ConcurrentHashMap<Block, Block> newaffectedblocks = new ConcurrentHashMap<Block, Block>();
-	public static ConcurrentHashMap<Block, Block> baseblocks = new ConcurrentHashMap<Block, Block>();
+	public static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
+	public static List<Block> affectedblocks = new LinkedList<Block>();
+	public static List<Block> newaffectedblocks = new LinkedList<Block>();
+	public static List<Block> baseblocks = new LinkedList<Block>();
 
 	private static final int defaultheight = ConfigManager.waterSpoutHeight;
 
@@ -74,8 +76,8 @@ public class WaterSpout {
 			}
 		}
 
-		for (Block block : affectedblocks.keySet()) {
-			if (!newaffectedblocks.containsKey(block)) {
+		for (Block block : affectedblocks) {
+			if (!newaffectedblocks.contains(block)) {
 				remove(block);
 			}
 		}
@@ -111,10 +113,10 @@ public class WaterSpout {
 				}
 				// block.setType(Material.WATER);
 				// block.setData(full);
-				if (!affectedblocks.containsKey(block)) {
-					affectedblocks.put(block, block);
+				if (!affectedblocks.contains(block)) {
+					affectedblocks.add(block);
 				}
-				newaffectedblocks.put(block, block);
+				newaffectedblocks.add(block);
 				
 				switch (cardinalPoint) {
 				case 0 : block = location.clone().add(0, i, -1).getBlock(); break;
@@ -133,10 +135,10 @@ public class WaterSpout {
 				if (!TempBlock.isTempBlock(block)) {
 					new TempBlock(block, Material.WATER, full);
 				}
-				if (!affectedblocks.containsKey(block)) {
-					affectedblocks.put(block, block);
+				if (!affectedblocks.contains(block)) {
+					affectedblocks.add(block);
 				}
-				newaffectedblocks.put(block, block);	
+				newaffectedblocks.add(block);	
 			}
 			if (player.getLocation().getBlockY() > block.getY()) {
 				player.setFlying(false);
@@ -211,7 +213,7 @@ public class WaterSpout {
 		for (Player player : instances.keySet()) {
 			instances.get(player).remove();
 		}
-		for (Block block : affectedblocks.keySet()) {
+		for (Block block : affectedblocks) {
 			// block.setType(Material.AIR);
 			TempBlock.revertBlock(block, Material.AIR);
 			affectedblocks.remove(block);

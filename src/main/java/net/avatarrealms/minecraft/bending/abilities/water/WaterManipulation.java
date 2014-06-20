@@ -563,8 +563,8 @@ public class WaterManipulation {
 			// Tools.verbose("affectedblocks");
 			return false;
 		}
-		if (WaterSpout.affectedblocks.containsKey(to)
-				|| WaterSpout.affectedblocks.containsKey(from)) {
+		if (WaterSpout.affectedblocks.contains(to)
+				|| WaterSpout.affectedblocks.contains(from)) {
 			// Tools.verbose("waterspout");
 			return false;
 		}
@@ -598,7 +598,7 @@ public class WaterManipulation {
 	public static boolean canPhysicsChange(Block block) {
 		if (affectedblocks.containsKey(block))
 			return false;
-		if (WaterSpout.affectedblocks.containsKey(block))
+		if (WaterSpout.affectedblocks.contains(block))
 			return false;
 		if (WaterWall.affectedblocks.containsKey(block))
 			return false;
