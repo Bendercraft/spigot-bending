@@ -29,10 +29,11 @@ public class WaterSpout {
 	// private static final double threshold = .05;
 	// private static final byte half = 0x4;
 	private static final byte full = 0x0;
-	private static int currentCardinalPoint = 0;
+	private int currentCardinalPoint = 0;
 	private Player player;
 	private Block base;
 	private TempBlock baseblock;
+	
 
 	public WaterSpout(Player player) {
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
@@ -121,7 +122,7 @@ public class WaterSpout {
 		// + affectedblocks.size());
 		if (height != -1) {
 			location = spout.base.getLocation();
-			for (int i = 1, cardinalPoint = (int)(currentCardinalPoint/12); i <= height; i++, cardinalPoint++) {
+			for (int i = 1, cardinalPoint = (int)(spout.currentCardinalPoint/10); i <= height; i++, cardinalPoint++) {
 				if (cardinalPoint == 8) {cardinalPoint = 0;}
 				
 				block = location.clone().add(0, i, 0).getBlock();
@@ -145,9 +146,9 @@ public class WaterSpout {
 				case 6 : block = location.clone().add(1, i, 0).getBlock(); break;
 				case 7 : block = location.clone().add(1, i, -1).getBlock(); break;
 				}
-				currentCardinalPoint ++;
-				if (currentCardinalPoint == 12*8) {
-					currentCardinalPoint = 0;
+				spout.currentCardinalPoint ++;
+				if (spout.currentCardinalPoint == 10*8) {
+					spout.currentCardinalPoint = 0;
 				}
 				if (!TempBlock.isTempBlock(block)) {
 					new TempBlock(block, Material.WATER, full);
