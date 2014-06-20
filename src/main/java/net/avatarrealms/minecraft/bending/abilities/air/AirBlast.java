@@ -1,9 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
@@ -24,11 +24,8 @@ import org.bukkit.util.Vector;
 
 
 public class AirBlast {
-	public static ConcurrentHashMap<Integer, AirBlast> instances = new ConcurrentHashMap<Integer, AirBlast>();
-	private static ConcurrentHashMap<Player, Location> origins = new ConcurrentHashMap<Player, Location>();
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
-	// static final long soonesttime = Tools.timeinterval;
+	private static Map<Integer, AirBlast> instances = new HashMap<Integer, AirBlast>();
+	private static Map<Player, Location> origins = new HashMap<Player, Location>();
 
 	private static int ID = Integer.MIN_VALUE;
 	static final int maxticks = 10000;
@@ -120,11 +117,7 @@ public class AirBlast {
 				location))
 			return;
 
-		if (origins.containsKey(player)) {
-			origins.replace(player, location);
-		} else {
-			origins.put(player, location);
-		}
+		origins.put(player, location);
 	}
 
 	public boolean progress() {
@@ -258,8 +251,8 @@ public class AirBlast {
 	}
 
 	public static void progressAll() {
-		for (int id : instances.keySet())
-			instances.get(id).progress();
+		for (AirBlast blast : instances.values())
+			blast.progress();
 		for (Player player : origins.keySet()) {
 			playOriginEffect(player);
 		}
@@ -290,9 +283,7 @@ public class AirBlast {
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			instances.remove(id);
-		}
+		instances.clear();
 	}
 
 	public static String getDescription() {
