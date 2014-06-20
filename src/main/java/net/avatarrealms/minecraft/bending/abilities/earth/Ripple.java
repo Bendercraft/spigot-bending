@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -54,7 +56,7 @@ public class Ripple {
 		initializeLocations();
 		maxstep = locations.size();
 
-		if (Tools.isEarthbendable(player, origin.getBlock())) {
+		if (BlockTools.isEarthbendable(player, origin.getBlock())) {
 			id = ID++;
 			if (ID >= Integer.MAX_VALUE)
 				ID = Integer.MIN_VALUE;
@@ -76,8 +78,8 @@ public class Ripple {
 			loc = location.clone().add(0, i, 0);
 			Block topblock = loc.getBlock();
 			Block botblock = loc.clone().add(0, -1, 0).getBlock();
-			if (Tools.isTransparentToEarthbending(player, topblock)
-					&& Tools.isEarthbendable(player, botblock)) {
+			if (BlockTools.isTransparentToEarthbending(player, topblock)
+					&& BlockTools.isEarthbendable(player, botblock)) {
 				location = loc.clone().add(0, -1, 0);
 				return location;
 			}
@@ -202,9 +204,9 @@ public class Ripple {
 				loc = location.clone().add(0, i, 0);
 				Block topblock = loc.getBlock();
 				Block botblock = loc.clone().add(0, -1, 0).getBlock();
-				if (Tools.isTransparentToEarthbending(player, topblock)
+				if (BlockTools.isTransparentToEarthbending(player, topblock)
 						&& !topblock.isLiquid()
-						&& Tools.isEarthbendable(player, botblock)) {
+						&& BlockTools.isEarthbendable(player, botblock)) {
 					location = loc.clone().add(0, -1, 0);
 					locations.add(location);
 					break;
@@ -223,11 +225,11 @@ public class Ripple {
 		setMoved(block);
 		Block botblock = block.getRelative(BlockFace.DOWN);
 		int length = 1;
-		if (Tools.isEarthbendable(player, botblock)) {
+		if (BlockTools.isEarthbendable(player, botblock)) {
 			length = 2;
 			block = botblock;
 		}
-		return Tools.moveEarth(player, block, new Vector(0, -1, 0), length,
+		return BlockTools.moveEarth(player, block, new Vector(0, -1, 0), length,
 				false);
 	}
 
@@ -239,11 +241,11 @@ public class Ripple {
 		setMoved(block);
 		Block botblock = block.getRelative(BlockFace.DOWN);
 		int length = 1;
-		if (Tools.isEarthbendable(player, botblock)) {
+		if (BlockTools.isEarthbendable(player, botblock)) {
 			length = 2;
 		}
-		if (Tools.moveEarth(player, block, new Vector(0, 1, 0), length, false)) {
-			for (Entity entity : Tools.getEntitiesAroundPoint(block
+		if (BlockTools.moveEarth(player, block, new Vector(0, 1, 0), length, false)) {
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(block
 					.getLocation().clone().add(0, 1, 0), 2)) {
 				if (entity.getEntityId() != player.getEntityId()
 						&& !entities.contains(entity)) {
@@ -267,7 +269,7 @@ public class Ripple {
 	private void affect(Entity entity) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity instanceof LivingEntity) {
-			Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Earth,damage));
+			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Earth,damage));
 		}
 
 		Vector vector = direction.clone();

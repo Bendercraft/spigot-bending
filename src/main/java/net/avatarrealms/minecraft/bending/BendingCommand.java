@@ -10,7 +10,8 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -294,7 +295,7 @@ public class BendingCommand {
 					mode = "slot";
 				}
 				sendMessage(player,
-						Tools.getMessage(player, "General.server_bind_mode")
+						PluginTools.getMessage(player, "General.server_bind_mode")
 								+ "" + mode);
 			} else {
 				bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -305,7 +306,7 @@ public class BendingCommand {
 					mode = "slot";
 				}
 				sendMessage(player,
-						Tools.getMessage(player, "General.your_bind_mode") + ""
+						PluginTools.getMessage(player, "General.your_bind_mode") + ""
 								+ mode);
 			}
 			return;
@@ -318,12 +319,12 @@ public class BendingCommand {
 			if (Arrays.asList(slotAliases).contains(choice)) {
 				bPlayer.setBendToItem(false);
 				sendMessage(player,
-						Tools.getMessage(player, "General.bind_mode_change")
+						PluginTools.getMessage(player, "General.bind_mode_change")
 								+ "slot");
 			} else if (Arrays.asList(itemAliases).contains(choice)) {
 				bPlayer.setBendToItem(true);
 				sendMessage(player,
-						Tools.getMessage(player, "General.bind_mode_change")
+						PluginTools.getMessage(player, "General.bind_mode_change")
 								+ "item");
 			} else {
 				printBindModeUsage(player);
@@ -358,24 +359,24 @@ public class BendingCommand {
 			return;
 		} else if (args.length == 2) {
 			String language = args[1];
-			if (Tools.isLanguageSupported(language)) {
+			if (PluginTools.isLanguageSupported(language)) {
 				// config.setLanguage(player, language);
 				// PlayerStorageWriter.setLanguage(player, language);
 				BendingPlayer.getBendingPlayer(player).setLanguage(language);
-				Tools.sendMessage(player, "General.language_success");
+				PluginTools.sendMessage(player, "General.language_success");
 			} else {
-				Tools.sendMessage(player, "General.language_not_supported");
+				PluginTools.sendMessage(player, "General.language_not_supported");
 			}
 		} else {
 			sendMessage(player,
-					Tools.getMessage(player, "General.your_language") + " "
-							+ Tools.getLanguage(player));
+					PluginTools.getMessage(player, "General.your_language") + " "
+							+ PluginTools.getLanguage(player));
 			sendMessage(player,
-					Tools.getMessage(player, "General.default_language") + " "
-							+ Tools.getDefaultLanguage());
+					PluginTools.getMessage(player, "General.default_language") + " "
+							+ PluginTools.getDefaultLanguage());
 			sendMessage(player,
-					Tools.getMessage(player, "General.supported_languages")
-							+ " " + Tools.getSupportedLanguages());
+					PluginTools.getMessage(player, "General.supported_languages")
+							+ " " + PluginTools.getSupportedLanguages());
 		}
 	}
 
@@ -415,17 +416,16 @@ public class BendingCommand {
 						continue;
 				}
 				ChatColor color = ChatColor.WHITE;
-				if (Tools.isBender(p, BendingType.Air))
-					color = Tools.getColor(ConfigManager.getColor("Air"));
-				if (Tools.isBender(p, BendingType.Water))
-					color = Tools.getColor(ConfigManager.getColor("Water"));
-				if (Tools.isBender(p, BendingType.Fire))
-					color = Tools.getColor(ConfigManager.getColor("Fire"));
-				if (Tools.isBender(p, BendingType.Earth))
-					color = Tools.getColor(ConfigManager.getColor("Earth"));
-				if (Tools.isBender(p, BendingType.ChiBlocker))
-					color = Tools
-							.getColor(ConfigManager.getColor("ChiBlocker"));
+				if (EntityTools.isBender(p, BendingType.Air))
+					color = PluginTools.getColor(ConfigManager.getColor("Air"));
+				if (EntityTools.isBender(p, BendingType.Water))
+					color = PluginTools.getColor(ConfigManager.getColor("Water"));
+				if (EntityTools.isBender(p, BendingType.Fire))
+					color = PluginTools.getColor(ConfigManager.getColor("Fire"));
+				if (EntityTools.isBender(p, BendingType.Earth))
+					color = PluginTools.getColor(ConfigManager.getColor("Earth"));
+				if (EntityTools.isBender(p, BendingType.ChiBlocker))
+					color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
 				sendMessage(player, color + p.getName());
 			}
 		} else if (args.length == 2) {
@@ -435,7 +435,7 @@ public class BendingCommand {
 						player,
 						args[1]
 								+ " "
-								+ Tools.getMessage(player,
+								+ PluginTools.getMessage(player,
 										"General.who_not_on_server"));
 			} else if (player != null) {
 				if (!player.canSee(p)) {
@@ -443,68 +443,63 @@ public class BendingCommand {
 							player,
 							args[1]
 									+ " "
-									+ Tools.getMessage(player,
+									+ PluginTools.getMessage(player,
 											"General.who_not_on_server"));
 				} else {
 					sendMessage(player, p.getDisplayName());
-					if (!Tools.isBender(p)) {
+					if (!EntityTools.isBender(p)) {
 						sendMessage(player, "-No bending");
 					} else {
-						if (Tools.isBender(p, BendingType.Air))
-							sendMessage(
-									player,
-									Tools.getColor(ConfigManager
+						if (EntityTools.isBender(p, BendingType.Air))
+							sendMessage(player,
+									PluginTools.getColor(ConfigManager
 											.getColor("Air")) + "-Airbending");
-						if (Tools.isBender(p, BendingType.Water))
-							sendMessage(
-									player,
-									Tools.getColor(ConfigManager
+						if (EntityTools.isBender(p, BendingType.Water))
+							sendMessage(player,
+									PluginTools.getColor(ConfigManager
 											.getColor("Water"))
 											+ "-Waterbending");
-						if (Tools.isBender(p, BendingType.Fire))
-							sendMessage(
-									player,
-									Tools.getColor(ConfigManager
+						if (EntityTools.isBender(p, BendingType.Fire))
+							sendMessage(player,
+									PluginTools.getColor(ConfigManager
 											.getColor("Fire")) + "-Firebending");
-						if (Tools.isBender(p, BendingType.Earth))
-							sendMessage(
-									player,
-									Tools.getColor(ConfigManager
+						if (EntityTools.isBender(p, BendingType.Earth))
+							sendMessage(player,
+									PluginTools.getColor(ConfigManager
 											.getColor("Earth"))
 											+ "-Earthbending");
-						if (Tools.isBender(p, BendingType.ChiBlocker))
-							sendMessage(
-									player,
-									Tools.getColor(ConfigManager
+						if (EntityTools.isBender(p, BendingType.ChiBlocker))
+							sendMessage(player,
+									PluginTools.getColor(ConfigManager
 											.getColor("ChiBlocker"))
 											+ "-Chiblocking");
 					}
 				}
 			} else {
 				sendMessage(player, p.getDisplayName());
-				if (!Tools.isBender(p)) {
+				if (!EntityTools.isBender(p)) {
 					sendMessage(player, "-No bending");
 				} else {
-					if (Tools.isBender(p, BendingType.Air))
+					if (EntityTools.isBender(p, BendingType.Air))
 						sendMessage(player,
-								Tools.getColor(ConfigManager.getColor("Air"))
+								PluginTools.getColor(ConfigManager.getColor("Air"))
 										+ "-Airbending");
-					if (Tools.isBender(p, BendingType.Water))
+					if (EntityTools.isBender(p, BendingType.Water))
 						sendMessage(player,
-								Tools.getColor(ConfigManager.getColor("Water"))
+								PluginTools.getColor(ConfigManager.getColor("Water"))
 										+ "-Waterbending");
-					if (Tools.isBender(p, BendingType.Fire))
+					if (EntityTools.isBender(p, BendingType.Fire))
 						sendMessage(player,
-								Tools.getColor(ConfigManager.getColor("Fire"))
+								PluginTools.getColor(ConfigManager.getColor("Fire"))
 										+ "-Firebending");
-					if (Tools.isBender(p, BendingType.Earth))
+					if (EntityTools.isBender(p, BendingType.Earth))
 						sendMessage(player,
-								Tools.getColor(ConfigManager.getColor("Earth"))
+								PluginTools.getColor(ConfigManager.getColor("Earth"))
 										+ "-Earthbending");
-					if (Tools.isBender(p, BendingType.ChiBlocker))
+					if (EntityTools.isBender(p, BendingType.ChiBlocker))
 						sendMessage(
 								player,
-								Tools.getColor(ConfigManager
+								PluginTools.getColor(ConfigManager
 										.getColor("ChiBlocker"))
 										+ "-Chiblocking");
 				}
@@ -516,8 +511,8 @@ public class BendingCommand {
 
 	private void printUsageMessage(Player player, String command, String key) {
 		ChatColor color = ChatColor.AQUA;
-		String usage = Tools.getMessage(player, "General.usage");
-		String description = Tools.getMessage(player, key);
+		String usage = PluginTools.getMessage(player, "General.usage");
+		String description = PluginTools.getMessage(player, key);
 		sendMessage(player, color + usage + ": " + command);
 		sendMessage(player, color + "-" + description);
 	}
@@ -563,7 +558,7 @@ public class BendingCommand {
 				printNoPermissions(player);
 				return;
 			}
-			if (Tools.isBender(player)
+			if (EntityTools.isBender(player)
 					&& !player.hasPermission("bending.admin.rechoose")) {
 				printNoPermissions(player);
 				return;
@@ -571,10 +566,10 @@ public class BendingCommand {
 			String choice = args[1].toLowerCase();
 			if (Arrays.asList(airbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.air")) {
-					Tools.sendMessage(player, "General.no_perms_air");
+					PluginTools.sendMessage(player, "General.no_perms_air");
 					return;
 				}
-				Tools.sendMessage(player, "General.choosen_air");
+				PluginTools.sendMessage(player, "General.choosen_air");
 				// config.removeBending(player);
 				// config.setBending(player, "air");
 				// PlayerStorageWriter.removeBending(player);
@@ -585,10 +580,10 @@ public class BendingCommand {
 			}
 			if (Arrays.asList(firebendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.fire")) {
-					Tools.sendMessage(player, "General.no_perms_fire");
+					PluginTools.sendMessage(player, "General.no_perms_fire");
 					return;
 				}
-				Tools.sendMessage(player, "General.choosen_fire");
+				PluginTools.sendMessage(player, "General.choosen_fire");
 				// config.removeBending(player);
 				// config.setBending(player, "fire");
 				// PlayerStorageWriter.removeBending(player);
@@ -599,10 +594,10 @@ public class BendingCommand {
 			}
 			if (Arrays.asList(earthbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.earth")) {
-					Tools.sendMessage(player, "General.no_perms_earth");
+					PluginTools.sendMessage(player, "General.no_perms_earth");
 					return;
 				}
-				Tools.sendMessage(player, "General.choosen_earth");
+				PluginTools.sendMessage(player, "General.choosen_earth");
 				// config.removeBending(player);
 				// config.setBending(player, "earth");
 				// PlayerStorageWriter.removeBending(player);
@@ -613,10 +608,10 @@ public class BendingCommand {
 			}
 			if (Arrays.asList(waterbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.water")) {
-					Tools.sendMessage(player, "General.no_perms_water");
+					PluginTools.sendMessage(player, "General.no_perms_water");
 					return;
 				}
-				Tools.sendMessage(player, "General.choosen_water");
+				PluginTools.sendMessage(player, "General.choosen_water");
 				// config.removeBending(player);
 				// config.setBending(player, "water");
 				// PlayerStorageWriter.removeBending(player);
@@ -627,10 +622,10 @@ public class BendingCommand {
 			}
 			if (Arrays.asList(chiblockingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.chiblocking")) {
-					Tools.sendMessage(player, "General.no_perms_chiblocking");
+					PluginTools.sendMessage(player, "General.no_perms_chiblocking");
 					return;
 				}
-				Tools.sendMessage(player, "General.choosen_chi");
+				PluginTools.sendMessage(player, "General.choosen_chi");
 				// config.removeBending(player);
 				// config.setBending(player, "chiblocker");
 				// PlayerStorageWriter.removeBending(player);
@@ -651,7 +646,7 @@ public class BendingCommand {
 				return;
 			}
 
-			String senderName = Tools.getMessage(targetplayer,
+			String senderName = PluginTools.getMessage(targetplayer,
 					"General.the_server");
 			if (player != null)
 				senderName = player.getName();
@@ -659,19 +654,19 @@ public class BendingCommand {
 			String choice = args[2].toLowerCase();
 			if (Arrays.asList(airbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.air")) {
-					Tools.sendMessage(player, "General.other_no_perms_air");
+					PluginTools.sendMessage(player, "General.other_no_perms_air");
 					return;
 				}
 				sendMessage(player,
-						Tools.getMessage(player, "General.you_changed") + " "
+						PluginTools.getMessage(player, "General.you_changed") + " "
 								+ targetplayer.getName() + "'s bending.");
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
-				Tools.sendMessage(targetplayer, "General.choosen_air");
+				PluginTools.sendMessage(targetplayer, "General.choosen_air");
 				// config.removeBending(targetplayer);
 				// config.setBending(targetplayer, "air");
 				// PlayerStorageWriter.removeBending(targetplayer);
@@ -683,19 +678,19 @@ public class BendingCommand {
 			}
 			if (Arrays.asList(firebendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.fire")) {
-					Tools.sendMessage(player, "General.other_no_perms_fire");
+					PluginTools.sendMessage(player, "General.other_no_perms_fire");
 					return;
 				}
 				sendMessage(player,
-						Tools.getMessage(player, "General.you_changed") + " "
+						PluginTools.getMessage(player, "General.you_changed") + " "
 								+ targetplayer.getName() + "'s bending.");
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
-				Tools.sendMessage(targetplayer, "General.choosen_fire");
+				PluginTools.sendMessage(targetplayer, "General.choosen_fire");
 				// config.removeBending(targetplayer);
 				// config.setBending(targetplayer, "fire");
 				// PlayerStorageWriter.removeBending(targetplayer);
@@ -707,19 +702,19 @@ public class BendingCommand {
 			}
 			if (Arrays.asList(earthbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.earth")) {
-					Tools.sendMessage(player, "General.other_no_perms_earth");
+					PluginTools.sendMessage(player, "General.other_no_perms_earth");
 					return;
 				}
 				sendMessage(player,
-						Tools.getMessage(player, "General.you_changed") + " "
+						PluginTools.getMessage(player, "General.you_changed") + " "
 								+ targetplayer.getName() + "'s bending.");
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
-				Tools.sendMessage(targetplayer, "General.choosen_earth");
+				PluginTools.sendMessage(targetplayer, "General.choosen_earth");
 				// config.removeBending(targetplayer);
 				// config.setBending(targetplayer, "earth");
 				// PlayerStorageWriter.removeBending(targetplayer);
@@ -731,19 +726,19 @@ public class BendingCommand {
 			}
 			if (Arrays.asList(waterbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.water")) {
-					Tools.sendMessage(player, "General.other_no_perms_water");
+					PluginTools.sendMessage(player, "General.other_no_perms_water");
 					return;
 				}
 				sendMessage(player,
-						Tools.getMessage(player, "General.you_changed") + " "
+						PluginTools.getMessage(player, "General.you_changed") + " "
 								+ targetplayer.getName() + "'s bending.");
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
-				Tools.sendMessage(targetplayer, "General.choosen_water");
+				PluginTools.sendMessage(targetplayer, "General.choosen_water");
 				// config.removeBending(targetplayer);
 				// config.setBending(targetplayer, "water");
 				// PlayerStorageWriter.removeBending(targetplayer);
@@ -759,15 +754,15 @@ public class BendingCommand {
 					return;
 				}
 				sendMessage(player,
-						Tools.getMessage(player, "General.you_changed") + " "
+						PluginTools.getMessage(player, "General.you_changed") + " "
 								+ targetplayer.getName() + "'s bending.");
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
-				Tools.sendMessage(targetplayer, "General.choosen_chi");
+				PluginTools.sendMessage(targetplayer, "General.choosen_chi");
 				// config.removeBending(targetplayer);
 				// config.setBending(targetplayer, "chiblocker");
 				// PlayerStorageWriter.removeBending(targetplayer);
@@ -804,7 +799,7 @@ public class BendingCommand {
 		sendMessage(
 				player,
 				ChatColor.RED
-						+ Tools.getMessage(player, "General.no_execute_perms"));
+						+ PluginTools.getMessage(player, "General.no_execute_perms"));
 
 	}
 
@@ -824,26 +819,26 @@ public class BendingCommand {
 				ChatColor cc = ChatColor.GOLD;
 				String element = "Other";
 				if (Abilities.isAirbending(Abilities.getAbility(args[1]))) {
-					cc = Tools.getColor(ConfigManager.color.get("Air"));
+					cc = PluginTools.getColor(ConfigManager.color.get("Air"));
 					element = "Air";
 				}
 				if (Abilities.isFirebending(Abilities.getAbility(args[1]))) {
-					cc = Tools.getColor(ConfigManager.color.get("Fire"));
+					cc = PluginTools.getColor(ConfigManager.color.get("Fire"));
 					element = "Fire";
 				}
 				if (Abilities.isEarthbending(Abilities.getAbility(args[1]))) {
-					cc = Tools.getColor(ConfigManager.color.get("Earth"));
+					cc = PluginTools.getColor(ConfigManager.color.get("Earth"));
 					element = "Earth";
 				}
 				if (Abilities.isWaterbending(Abilities.getAbility(args[1]))) {
-					cc = Tools.getColor(ConfigManager.color.get("Water"));
+					cc = PluginTools.getColor(ConfigManager.color.get("Water"));
 					element = "Water";
 				}
 				if (Abilities.isChiBlocking(Abilities.getAbility(args[1]))) {
-					cc = Tools.getColor(ConfigManager.color.get("ChiBlocker"));
+					cc = PluginTools.getColor(ConfigManager.color.get("ChiBlocker"));
 					element = "Chiblocker";
 				}
-				if (Tools.hasPermission(player, Abilities.getAbility(args[1]))) {
+				if (EntityTools.hasPermission(player, Abilities.getAbility(args[1]))) {
 
 					sendMessage(
 							player,
@@ -852,135 +847,135 @@ public class BendingCommand {
 
 					switch (Abilities.getAbility(args[1])) {
 					case AirBlast:
-						Tools.sendMessage(player, cc, element + ".AirBlast");
+						PluginTools.sendMessage(player, cc, element + ".AirBlast");
 						break;
 					case AirBubble:
-						Tools.sendMessage(player, cc, element + ".AirBubble");
+						PluginTools.sendMessage(player, cc, element + ".AirBubble");
 						break;
 					case AirShield:
-						Tools.sendMessage(player, cc, element + ".AirShield");
+						PluginTools.sendMessage(player, cc, element + ".AirShield");
 						break;
 					case AirSuction:
-						Tools.sendMessage(player, cc, element + ".AirSuction");
+						PluginTools.sendMessage(player, cc, element + ".AirSuction");
 						break;
 					case AirSwipe:
-						Tools.sendMessage(player, cc, element + ".AirSwipe");
+						PluginTools.sendMessage(player, cc, element + ".AirSwipe");
 						break;
 					case AirBurst:
-						Tools.sendMessage(player, cc, element + ".AirBurst");
+						PluginTools.sendMessage(player, cc, element + ".AirBurst");
 						break;
 					case Tornado:
-						Tools.sendMessage(player, cc, element + ".Tornado");
+						PluginTools.sendMessage(player, cc, element + ".Tornado");
 						break;
 					case AirScooter:
-						Tools.sendMessage(player, cc, element + ".AirScooter");
+						PluginTools.sendMessage(player, cc, element + ".AirScooter");
 						break;
 					case Shockwave:
-						Tools.sendMessage(player, cc, element + ".Shockwave");
+						PluginTools.sendMessage(player, cc, element + ".Shockwave");
 						break;
 					case Catapult:
-						Tools.sendMessage(player, cc, element + ".Catapult");
+						PluginTools.sendMessage(player, cc, element + ".Catapult");
 						break;
 					case RaiseEarth:
-						Tools.sendMessage(player, cc, element + ".RaiseEarth");
+						PluginTools.sendMessage(player, cc, element + ".RaiseEarth");
 						break;
 					case EarthGrab:
-						Tools.sendMessage(player, cc, element + ".EarthGrab");
+						PluginTools.sendMessage(player, cc, element + ".EarthGrab");
 						break;
 					case EarthTunnel:
-						Tools.sendMessage(player, cc, element + ".EarthTunnel");
+						PluginTools.sendMessage(player, cc, element + ".EarthTunnel");
 						break;
 					case EarthBlast:
-						Tools.sendMessage(player, cc, element + ".EarthBlast");
+						PluginTools.sendMessage(player, cc, element + ".EarthBlast");
 						break;
 					case Collapse:
-						Tools.sendMessage(player, cc, element + ".Collapse");
+						PluginTools.sendMessage(player, cc, element + ".Collapse");
 						break;
 					case Tremorsense:
-						Tools.sendMessage(player, cc, element + ".Tremorsense");
+						PluginTools.sendMessage(player, cc, element + ".Tremorsense");
 						break;
 					case Blaze:
-						Tools.sendMessage(player, cc, element + ".Blaze");
+						PluginTools.sendMessage(player, cc, element + ".Blaze");
 						break;
 					case HeatControl:
-						Tools.sendMessage(player, cc, element + ".HeatControl");
+						PluginTools.sendMessage(player, cc, element + ".HeatControl");
 						break;
 					case FireBlast:
-						Tools.sendMessage(player, cc, element + ".FireBlast");
+						PluginTools.sendMessage(player, cc, element + ".FireBlast");
 						break;
 					case FireJet:
-						Tools.sendMessage(player, cc, element + ".FireJet");
+						PluginTools.sendMessage(player, cc, element + ".FireJet");
 						break;
 					case FireBurst:
-						Tools.sendMessage(player, cc, element + ".FireBurst");
+						PluginTools.sendMessage(player, cc, element + ".FireBurst");
 						break;
 					case Illumination:
-						Tools.sendMessage(player, cc, element + ".Illumination");
+						PluginTools.sendMessage(player, cc, element + ".Illumination");
 						break;
 					case Lightning:
-						Tools.sendMessage(player, cc, element + ".Lightning");
+						PluginTools.sendMessage(player, cc, element + ".Lightning");
 						break;
 					case FireShield:
-						Tools.sendMessage(player, cc, element + ".FireShield");
+						PluginTools.sendMessage(player, cc, element + ".FireShield");
 						break;
 					case WallOfFire:
-						Tools.sendMessage(player, cc, element + ".WallOfFire");
+						PluginTools.sendMessage(player, cc, element + ".WallOfFire");
 						break;
 					case Bloodbending:
-						Tools.sendMessage(player, cc, element + ".Bloodbending");
+						PluginTools.sendMessage(player, cc, element + ".Bloodbending");
 						break;
 					case WaterBubble:
-						Tools.sendMessage(player, cc, element + ".WaterBubble");
+						PluginTools.sendMessage(player, cc, element + ".WaterBubble");
 						break;
 					case PhaseChange:
-						Tools.sendMessage(player, cc, element + ".PhaseChange");
+						PluginTools.sendMessage(player, cc, element + ".PhaseChange");
 						break;
 					case HealingWaters:
-						Tools.sendMessage(player, cc, element
+						PluginTools.sendMessage(player, cc, element
 								+ ".HealingWaters");
 						break;
 					case WaterManipulation:
-						Tools.sendMessage(player, cc, element
+						PluginTools.sendMessage(player, cc, element
 								+ ".WaterManipulation");
 						break;
 					case WaterSpout:
-						Tools.sendMessage(player, cc, element + ".WaterSpout");
+						PluginTools.sendMessage(player, cc, element + ".WaterSpout");
 						break;
 					case OctopusForm:
-						Tools.sendMessage(player, cc, element + ".OctopusForm");
+						PluginTools.sendMessage(player, cc, element + ".OctopusForm");
 						break;
 					case Surge:
-						Tools.sendMessage(player, cc, element + ".Surge");
+						PluginTools.sendMessage(player, cc, element + ".Surge");
 						break;
 					case Torrent:
-						Tools.sendMessage(player, cc, element + ".Torrent");
+						PluginTools.sendMessage(player, cc, element + ".Torrent");
 						break;
 					case AvatarState:
-						Tools.sendMessage(player, cc, element + ".AvatarState");
+						PluginTools.sendMessage(player, cc, element + ".AvatarState");
 						break;
 					case EarthArmor:
-						Tools.sendMessage(player, cc, element + ".EarthArmor");
+						PluginTools.sendMessage(player, cc, element + ".EarthArmor");
 						break;
 					case RapidPunch:
-						Tools.sendMessage(player, cc, element + ".RapidPunch");
+						PluginTools.sendMessage(player, cc, element + ".RapidPunch");
 						break;
 					case HighJump:
-						Tools.sendMessage(player, cc, element + ".HighJump");
+						PluginTools.sendMessage(player, cc, element + ".HighJump");
 						break;
 					case IceSpike:
-						Tools.sendMessage(player, cc, element + ".IceSpike");
+						PluginTools.sendMessage(player, cc, element + ".IceSpike");
 						break;
 					case AirSpout:
-						Tools.sendMessage(player, cc, element + ".AirSpout");
+						PluginTools.sendMessage(player, cc, element + ".AirSpout");
 						break;
 					case Paralyze:
-						Tools.sendMessage(player, cc, element + ".Paralyze");
+						PluginTools.sendMessage(player, cc, element + ".Paralyze");
 						break;
 					}
 					return;
 				} else {
 					sendMessage(player,
-							Tools.getMessage(player, "General.no_bind_perms")
+							PluginTools.getMessage(player, "General.no_bind_perms")
 									+ " " + cc + ability + ChatColor.WHITE
 									+ ".");
 				}
@@ -1277,11 +1272,11 @@ public class BendingCommand {
 				new BendingPlayersSaver());
 		// String append = StorageManager.useMySQL ? " Database "
 		// : "Players file ";
-		Tools.stopAllBending();
+		PluginTools.stopAllBending();
 		sendMessage(
 				player,
 				ChatColor.AQUA + "Bending "
-						+ Tools.getMessage(player, "General.reload_success"));
+						+ PluginTools.getMessage(player, "General.reload_success"));
 
 	}
 
@@ -1322,24 +1317,24 @@ public class BendingCommand {
 						none = false;
 						ChatColor color = ChatColor.WHITE;
 						if (Abilities.isAirbending(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("Air"));
 						} else if (Abilities.isChiBlocking(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("ChiBlocker"));
 						} else if (Abilities.isEarthbending(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("Earth"));
 						} else if (Abilities.isFirebending(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("Fire"));
 						} else if (Abilities.isWaterbending(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("Water"));
 						}
 						String ability = a.name();
 						sendMessage(player,
-								Tools.getMessage(player, "General.slot") + " "
+								PluginTools.getMessage(player, "General.slot") + " "
 										+ (i + 1) + ": " + color + ability);
 					}
 				}
@@ -1351,19 +1346,19 @@ public class BendingCommand {
 						none = false;
 						ChatColor color = ChatColor.WHITE;
 						if (Abilities.isAirbending(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("Air"));
 						} else if (Abilities.isChiBlocking(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("ChiBlocker"));
 						} else if (Abilities.isEarthbending(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("Earth"));
 						} else if (Abilities.isFirebending(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("Fire"));
 						} else if (Abilities.isWaterbending(a)) {
-							color = Tools.getColor(ConfigManager
+							color = PluginTools.getColor(ConfigManager
 									.getColor("Water"));
 						}
 						String ability = a.name();
@@ -1373,7 +1368,7 @@ public class BendingCommand {
 				}
 			}
 			if (none)
-				Tools.sendMessage(player, "General.display_no_abilities");
+				PluginTools.sendMessage(player, "General.display_no_abilities");
 		}
 
 		if (args.length == 2) {
@@ -1382,19 +1377,19 @@ public class BendingCommand {
 			ChatColor color = ChatColor.WHITE;
 			if (Arrays.asList(airbendingAliases).contains(choice)) {
 				abilitylist = airbendingabilities;
-				color = Tools.getColor(ConfigManager.getColor("Air"));
+				color = PluginTools.getColor(ConfigManager.getColor("Air"));
 			} else if (Arrays.asList(waterbendingAliases).contains(choice)) {
 				abilitylist = waterbendingabilities;
-				color = Tools.getColor(ConfigManager.getColor("Water"));
+				color = PluginTools.getColor(ConfigManager.getColor("Water"));
 			} else if (Arrays.asList(earthbendingAliases).contains(choice)) {
 				abilitylist = earthbendingabilities;
-				color = Tools.getColor(ConfigManager.getColor("Earth"));
+				color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 			} else if (Arrays.asList(firebendingAliases).contains(choice)) {
 				abilitylist = firebendingabilities;
-				color = Tools.getColor(ConfigManager.getColor("Fire"));
+				color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 			} else if (Arrays.asList(chiblockingAliases).contains(choice)) {
 				abilitylist = chiblockingabilities;
-				color = Tools.getColor(ConfigManager.getColor("ChiBlocker"));
+				color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
 			}
 
 			if (abilitylist != null) {
@@ -1429,12 +1424,12 @@ public class BendingCommand {
 				printNotFromConsole();
 				return;
 			}
-			if (!Tools.toggledBending.contains(player)) {
-				Tools.toggledBending.add(player);
-				Tools.sendMessage(player, ChatColor.AQUA, "General.toggle_off");
+			if (!EntityTools.toggledBending.contains(player)) {
+				EntityTools.toggledBending.add(player);
+				PluginTools.sendMessage(player, ChatColor.AQUA, "General.toggle_off");
 			} else {
-				Tools.toggledBending.remove(player);
-				Tools.sendMessage(player, ChatColor.AQUA, "General.toggle_on");
+				EntityTools.toggledBending.remove(player);
+				PluginTools.sendMessage(player, ChatColor.AQUA, "General.toggle_on");
 			}
 		} else {
 			if (!hasPermission(player, "bending.admin.toggle"))
@@ -1443,17 +1438,17 @@ public class BendingCommand {
 			for (int i = 1; i < args.length; i++) {
 				String name = args[i];
 				Player targetplayer = server.getPlayer(name);
-				String senderName = Tools.getMessage(targetplayer,
+				String senderName = PluginTools.getMessage(targetplayer,
 						"General.the_server");
 				if (player != null)
 					senderName = player.getName();
 				if (targetplayer != null) {
-					if (!Tools.toggledBending.contains(targetplayer)) {
-						Tools.toggledBending.add(targetplayer);
+					if (!EntityTools.toggledBending.contains(targetplayer)) {
+						EntityTools.toggledBending.add(targetplayer);
 						sendMessage(targetplayer, senderName + " "
 								+ "General.admin_toggle_off");
 					} else {
-						Tools.toggledBending.remove(targetplayer);
+						EntityTools.toggledBending.remove(targetplayer);
 						sendMessage(targetplayer, senderName + " "
 								+ "General.admin_toggle_on");
 					}
@@ -1462,14 +1457,14 @@ public class BendingCommand {
 				}
 			}
 			sendMessage(player,
-					Tools.getMessage(player, "General.admin_toggle") + " "
+					PluginTools.getMessage(player, "General.admin_toggle") + " "
 							+ playerlist);
 		}
 
 	}
 
 	private void printNotFromConsole() {
-		Tools.sendMessage(null, "General.not_from_console");
+		PluginTools.sendMessage(null, "General.not_from_console");
 
 	}
 
@@ -1500,12 +1495,12 @@ public class BendingCommand {
 						.permaremoveBender();
 				targetplayer.sendMessage(senderName
 						+ " "
-						+ Tools.getMessage(targetplayer,
+						+ PluginTools.getMessage(targetplayer,
 								"General.permaremove_you"));
 				playerlist = playerlist + targetplayer.getName() + " ";
 			}
 		}
-		sendMessage(player, Tools.getMessage(player, "General.you_permaremove")
+		sendMessage(player, PluginTools.getMessage(player, "General.you_permaremove")
 				+ " " + playerlist);
 	}
 
@@ -1525,7 +1520,7 @@ public class BendingCommand {
 		for (int i = 1; i < args.length; i++) {
 			String playername = args[i];
 			Player targetplayer = server.getPlayer(playername);
-			String senderName = Tools.getMessage(targetplayer,
+			String senderName = PluginTools.getMessage(targetplayer,
 					"General.the_server");
 			if (player != null)
 				senderName = player.getName();
@@ -1534,11 +1529,11 @@ public class BendingCommand {
 				// PlayerStorageWriter.removeBending(targetplayer);
 				BendingPlayer.getBendingPlayer(targetplayer).removeBender();
 				targetplayer.sendMessage(senderName + " "
-						+ Tools.getMessage(targetplayer, "General.remove_you"));
+						+ PluginTools.getMessage(targetplayer, "General.remove_you"));
 				playerlist = playerlist + targetplayer.getName() + " ";
 			}
 		}
-		sendMessage(player, Tools.getMessage(player, "General.you_remove")
+		sendMessage(player, PluginTools.getMessage(player, "General.you_remove")
 				+ " " + playerlist);
 
 	}
@@ -1562,15 +1557,15 @@ public class BendingCommand {
 			// printAddUsage(player);
 			String choice = args[1].toLowerCase();
 			if (Arrays.asList(airbendingAliases).contains(choice)) {
-				if (Tools.isBender(player, BendingType.Air)) {
-					Tools.sendMessage(player, "General.you_already_air");
+				if (EntityTools.isBender(player, BendingType.Air)) {
+					PluginTools.sendMessage(player, "General.you_already_air");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.air")) {
-					Tools.sendMessage(player, "General.no_perms_air");
+					PluginTools.sendMessage(player, "General.no_perms_air");
 					return;
 				}
-				Tools.sendMessage(player, "General.add_air");
+				PluginTools.sendMessage(player, "General.add_air");
 				// config.addBending(player, "air");
 				// PlayerStorageWriter.addBending(player, BendingType.Air);
 				BendingPlayer.getBendingPlayer(player).addBender(
@@ -1578,15 +1573,15 @@ public class BendingCommand {
 				return;
 			}
 			if (Arrays.asList(firebendingAliases).contains(choice)) {
-				if (Tools.isBender(player, BendingType.Fire)) {
-					Tools.sendMessage(player, "General.you_already_fire");
+				if (EntityTools.isBender(player, BendingType.Fire)) {
+					PluginTools.sendMessage(player, "General.you_already_fire");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.fire")) {
-					Tools.sendMessage(player, "General.no_perms_fire");
+					PluginTools.sendMessage(player, "General.no_perms_fire");
 					return;
 				}
-				Tools.sendMessage(player, "General.add_fire");
+				PluginTools.sendMessage(player, "General.add_fire");
 				// config.addBending(player, "fire");
 				// PlayerStorageWriter.addBending(player, BendingType.Fire);
 				BendingPlayer.getBendingPlayer(player).addBender(
@@ -1594,15 +1589,15 @@ public class BendingCommand {
 				return;
 			}
 			if (Arrays.asList(earthbendingAliases).contains(choice)) {
-				if (Tools.isBender(player, BendingType.Earth)) {
-					Tools.sendMessage(player, "General.you_already_earth");
+				if (EntityTools.isBender(player, BendingType.Earth)) {
+					PluginTools.sendMessage(player, "General.you_already_earth");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.earth")) {
-					Tools.sendMessage(player, "General.no_perms_earth");
+					PluginTools.sendMessage(player, "General.no_perms_earth");
 					return;
 				}
-				Tools.sendMessage(player, "General.add_earth");
+				PluginTools.sendMessage(player, "General.add_earth");
 				// config.addBending(player, "earth");
 				// PlayerStorageWriter.addBending(player, BendingType.Earth);
 				BendingPlayer.getBendingPlayer(player).addBender(
@@ -1610,15 +1605,15 @@ public class BendingCommand {
 				return;
 			}
 			if (Arrays.asList(waterbendingAliases).contains(choice)) {
-				if (Tools.isBender(player, BendingType.Water)) {
-					Tools.sendMessage(player, "General.you_already_water");
+				if (EntityTools.isBender(player, BendingType.Water)) {
+					PluginTools.sendMessage(player, "General.you_already_water");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.water")) {
-					Tools.sendMessage(player, "General.no_perms_water");
+					PluginTools.sendMessage(player, "General.no_perms_water");
 					return;
 				}
-				Tools.sendMessage(player, "General.add_water");
+				PluginTools.sendMessage(player, "General.add_water");
 				// config.addBending(player, "water");
 				// PlayerStorageWriter.addBending(player, BendingType.Water);
 				BendingPlayer.getBendingPlayer(player).addBender(
@@ -1626,18 +1621,15 @@ public class BendingCommand {
 				return;
 			}
 			if (Arrays.asList(chiblockingAliases).contains(choice)) {
-				if (Tools.isBender(player, BendingType.ChiBlocker)) {
-					Tools.sendMessage(player, "General.you_already_chi");
+				if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
+					PluginTools.sendMessage(player, "General.you_already_chi");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.chiblocking")) {
-					Tools.sendMessage(player, "General.no_perms_chi");
+					PluginTools.sendMessage(player, "General.no_perms_chi");
 					return;
 				}
-				Tools.sendMessage(player, "General.add_chi");
-				// config.addBending(player, "chiblocker");
-				// PlayerStorageWriter.addBending(player,
-				// BendingType.ChiBlocker);
+				PluginTools.sendMessage(player, "General.add_chi");
 				BendingPlayer.getBendingPlayer(player).addBender(
 						BendingType.ChiBlocker);
 				return;
@@ -1651,70 +1643,67 @@ public class BendingCommand {
 				return;
 			}
 
-			String senderName = Tools.getMessage(targetplayer,
+			String senderName = PluginTools.getMessage(targetplayer,
 					"General.the_server");
 			if (player != null)
 				senderName = player.getName();
 
 			String choice = args[2].toLowerCase();
 			if (Arrays.asList(airbendingAliases).contains(choice)) {
-				if (Tools.isBender(targetplayer, BendingType.Air)) {
+				if (EntityTools.isBender(targetplayer, BendingType.Air)) {
 					sendMessage(
 							player,
 							targetplayer.getName()
 									+ " "
-									+ Tools.getMessage(player,
+									+ PluginTools.getMessage(player,
 											"General.they_already_air"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.air")) {
-					Tools.sendMessage(player, "General.no_perms_air");
+					PluginTools.sendMessage(player, "General.no_perms_air");
 					return;
 				}
 				sendMessage(
 						player,
 						targetplayer.getName()
 								+ " "
-								+ Tools.getMessage(player,
+								+ PluginTools.getMessage(player,
 										"General.you_add_air"));
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_air"));
-				// config.addBending(targetplayer, "air");
-				// PlayerStorageWriter.addBending(targetplayer,
-				// BendingType.Air);
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(
 						BendingType.Air);
 				return;
 			}
 			if (Arrays.asList(firebendingAliases).contains(choice)) {
-				if (Tools.isBender(targetplayer, BendingType.Fire)) {
+				if (EntityTools.isBender(targetplayer, BendingType.Fire)) {
 					sendMessage(
 							player,
 							targetplayer.getName()
 									+ " "
-									+ Tools.getMessage(player,
+									+ PluginTools.getMessage(player,
 											"General.they_already_fire"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.fire")) {
-					Tools.sendMessage(player, "General.no_perms_fire");
+					PluginTools.sendMessage(player, "General.no_perms_fire");
 					return;
 				}
 				sendMessage(
 						player,
 						targetplayer.getName()
 								+ " "
-								+ Tools.getMessage(player,
+								+ PluginTools.getMessage(player,
 										"General.you_add_fire"));
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_fire"));
 				// config.addBending(targetplayer, "fire");
 				// PlayerStorageWriter.addBending(targetplayer,
@@ -1724,30 +1713,30 @@ public class BendingCommand {
 				return;
 			}
 			if (Arrays.asList(earthbendingAliases).contains(choice)) {
-				if (Tools.isBender(targetplayer, BendingType.Earth)) {
+				if (EntityTools.isBender(targetplayer, BendingType.Earth)) {
 					sendMessage(
 							player,
 							targetplayer.getName()
 									+ " "
-									+ Tools.getMessage(player,
+									+ PluginTools.getMessage(player,
 											"General.they_already_earth"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.earth")) {
-					Tools.sendMessage(player, "General.no_perms_earth");
+					PluginTools.sendMessage(player, "General.no_perms_earth");
 					return;
 				}
 				sendMessage(
 						player,
 						targetplayer.getName()
 								+ " "
-								+ Tools.getMessage(player,
+								+ PluginTools.getMessage(player,
 										"General.you_add_earth"));
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_earth"));
 				// config.addBending(targetplayer, "earth");
 				// PlayerStorageWriter.addBending(targetplayer,
@@ -1757,29 +1746,29 @@ public class BendingCommand {
 				return;
 			}
 			if (Arrays.asList(waterbendingAliases).contains(choice)) {
-				if (Tools.isBender(targetplayer, BendingType.Water)) {
+				if (EntityTools.isBender(targetplayer, BendingType.Water)) {
 					sendMessage(
 							player,
 							targetplayer.getName()
 									+ " "
-									+ Tools.getMessage(player,
+									+ PluginTools.getMessage(player,
 											"General.they_already_water"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.water")) {
-					Tools.sendMessage(player, "General.no_perms_water");
+					PluginTools.sendMessage(player, "General.no_perms_water");
 				}
 				sendMessage(
 						player,
 						targetplayer.getName()
 								+ " "
-								+ Tools.getMessage(player,
+								+ PluginTools.getMessage(player,
 										"General.you_add_water"));
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_water"));
 				// config.addBending(targetplayer, "water");
 				// PlayerStorageWriter.addBending(targetplayer,
@@ -1789,31 +1778,31 @@ public class BendingCommand {
 				return;
 			}
 			if (Arrays.asList(chiblockingAliases).contains(choice)) {
-				if (Tools.isBender(targetplayer,
+				if (EntityTools.isBender(targetplayer,
 						BendingType.ChiBlocker)) {
 					sendMessage(
 							player,
 							targetplayer.getName()
 									+ " "
-									+ Tools.getMessage(player,
+									+ PluginTools.getMessage(player,
 											"General.they_already_chi"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.chiblocking")) {
-					Tools.sendMessage(player, "General.no_perms_chi");
+					PluginTools.sendMessage(player, "General.no_perms_chi");
 					return;
 				}
 				sendMessage(
 						player,
 						targetplayer.getName()
 								+ " "
-								+ Tools.getMessage(player,
+								+ PluginTools.getMessage(player,
 										"General.you_add_chi"));
 				sendMessage(
 						targetplayer,
 						senderName
 								+ " "
-								+ Tools.getMessage(targetplayer,
+								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_chi"));
 				// config.addBending(targetplayer, "chiblocker");
 				// PlayerStorageWriter.addBending(targetplayer,
@@ -1864,7 +1853,7 @@ public class BendingCommand {
 			// }
 			// }
 			BendingPlayer.getBendingPlayer(player).clearAbilities();
-			Tools.sendMessage(player, "General.cleared_message");
+			PluginTools.sendMessage(player, "General.cleared_message");
 		} else if (args.length == 2) {
 			try {
 				int slot = Integer.parseInt(args[1]);
@@ -1874,11 +1863,11 @@ public class BendingCommand {
 							slot - 1);
 					sendMessage(
 							player,
-							Tools.getMessage(player, "General.slot")
+							PluginTools.getMessage(player, "General.slot")
 									+ " "
 									+ args[1]
 									+ " "
-									+ Tools.getMessage(player,
+									+ PluginTools.getMessage(player,
 											"General.slot_item_cleared"));
 					return;
 				}
@@ -1894,7 +1883,7 @@ public class BendingCommand {
 							"Item "
 									+ args[1]
 									+ " "
-									+ Tools.getMessage(player,
+									+ PluginTools.getMessage(player,
 											"General.slot_item_cleared"));
 					return;
 				} else {
@@ -1987,7 +1976,7 @@ public class BendingCommand {
 			return;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (!Tools.hasPermission(player, ability)) {
+		if (!EntityTools.hasPermission(player, ability)) {
 			printNoPermissions(player);
 			return;
 		}
@@ -2019,13 +2008,13 @@ public class BendingCommand {
 		ChatColor white = ChatColor.WHITE;
 
 		if (Abilities.isWaterbending(ability)) {
-			if (!Tools.isBender(player, BendingType.Water)) {
+			if (!EntityTools.isBender(player, BendingType.Water)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = Tools.getColor(ConfigManager.getColor("Water"));
-				Tools.sendMessage(player, color2, "General.not_water");
+				color2 = PluginTools.getColor(ConfigManager.getColor("Water"));
+				PluginTools.sendMessage(player, color2, "General.not_water");
 				return;
 			}
-			color = Tools.getColor(ConfigManager.getColor("Water"));
+			color = PluginTools.getColor(ConfigManager.getColor("Water"));
 			if (!item) {
 				// config.setAbility(player, ability, slot);
 				// PlayerStorageWriter.bindSlot(player, slot, ability);
@@ -2043,13 +2032,13 @@ public class BendingCommand {
 			return;
 		}
 		if (Abilities.isAirbending(ability)) {
-			if (!Tools.isBender(player, BendingType.Air)) {
+			if (!EntityTools.isBender(player, BendingType.Air)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = Tools.getColor(ConfigManager.getColor("Air"));
-				Tools.sendMessage(player, color2, "General.not_air");
+				color2 = PluginTools.getColor(ConfigManager.getColor("Air"));
+				PluginTools.sendMessage(player, color2, "General.not_air");
 				return;
 			}
-			color = Tools.getColor(ConfigManager.getColor("Air"));
+			color = PluginTools.getColor(ConfigManager.getColor("Air"));
 			if (!item) {
 				// config.setAbility(player, ability, slot);
 				// PlayerStorageWriter.bindSlot(player, slot, ability);
@@ -2067,13 +2056,13 @@ public class BendingCommand {
 			return;
 		}
 		if (Abilities.isEarthbending(ability)) {
-			if (!Tools.isBender(player, BendingType.Earth)) {
+			if (!EntityTools.isBender(player, BendingType.Earth)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = Tools.getColor(ConfigManager.getColor("Earth"));
-				Tools.sendMessage(player, color2, "General.not_earth");
+				color2 = PluginTools.getColor(ConfigManager.getColor("Earth"));
+				PluginTools.sendMessage(player, color2, "General.not_earth");
 				return;
 			}
-			color = Tools.getColor(ConfigManager.getColor("Earth"));
+			color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 			if (!item) {
 				// config.setAbility(player, ability, slot);
 				// PlayerStorageWriter.bindSlot(player, slot, ability);
@@ -2091,13 +2080,13 @@ public class BendingCommand {
 			return;
 		}
 		if (Abilities.isChiBlocking(ability)) {
-			if (!Tools.isBender(player, BendingType.ChiBlocker)) {
+			if (!EntityTools.isBender(player, BendingType.ChiBlocker)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = Tools.getColor(ConfigManager.getColor("ChiBlocker"));
-				Tools.sendMessage(player, color2, "General.not_chi");
+				color2 = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+				PluginTools.sendMessage(player, color2, "General.not_chi");
 				return;
 			}
-			color = Tools.getColor(ConfigManager.getColor("ChiBlocker"));
+			color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
 			if (!item) {
 				// config.setAbility(player, ability, slot);
 				// PlayerStorageWriter.bindSlot(player, slot, ability);
@@ -2115,13 +2104,13 @@ public class BendingCommand {
 			return;
 		}
 		if (Abilities.isFirebending(ability)) {
-			if (!Tools.isBender(player, BendingType.Fire)) {
+			if (!EntityTools.isBender(player, BendingType.Fire)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = Tools.getColor(ConfigManager.getColor("Fire"));
-				Tools.sendMessage(player, color2, "General.not_fire");
+				color2 = PluginTools.getColor(ConfigManager.getColor("Fire"));
+				PluginTools.sendMessage(player, color2, "General.not_fire");
 				return;
 			}
-			color = Tools.getColor(ConfigManager.getColor("Fire"));
+			color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 			if (!item) {
 				// config.setAbility(player, ability, slot);
 				// PlayerStorageWriter.bindSlot(player, slot, ability);
@@ -2274,19 +2263,19 @@ public class BendingCommand {
 	}
 
 	private void printHelpDialogue(Player player) {
-		Tools.sendMessage(player, ChatColor.RED, "General.help_list");
-		Tools.sendMessage(player, ChatColor.RED, "General.command_list");
-		Tools.sendMessage(player, ChatColor.RED, "General.ability_list");
+		PluginTools.sendMessage(player, ChatColor.RED, "General.help_list");
+		PluginTools.sendMessage(player, ChatColor.RED, "General.command_list");
+		PluginTools.sendMessage(player, ChatColor.RED, "General.ability_list");
 	}
 
 	private void sendNoCommandPermissionMessage(Player player, String command) {
-		sendMessage(player, Tools.getMessage(player, "General.no_use_perms")
+		sendMessage(player, PluginTools.getMessage(player, "General.no_use_perms")
 				+ " /bending " + command + ".");
 	}
 
 	private void printCommands(Player player) {
 		sendMessage(player, "Bending aliases: bending bend b mtla tla");
-		String slot = Tools.getMessage(player, "General.slot") + "#";
+		String slot = PluginTools.getMessage(player, "General.slot") + "#";
 		if (player != null)
 			if (bPlayer.getBendToItem())
 				slot = "item";

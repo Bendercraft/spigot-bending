@@ -2,6 +2,9 @@ package net.avatarrealms.minecraft.bending.abilities.fire;
 
 import net.avatarrealms.minecraft.bending.abilities.water.Melt;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -15,11 +18,11 @@ public class HeatMelt {
 	private static final int radius = ConfigManager.heatMeltRadius;
 
 	public HeatMelt(Player player) {
-		Location location = Tools.getTargetedLocation(player,
-				(int) Tools.firebendingDayAugment(range, player.getWorld()));
-		for (Block block : Tools.getBlocksAroundPoint(location,
-				(int) Tools.firebendingDayAugment(radius, player.getWorld()))) {
-			if (Tools.isMeltable(block)) {
+		Location location = EntityTools.getTargetedLocation(player,
+				(int) PluginTools.firebendingDayAugment(range, player.getWorld()));
+		for (Block block : BlockTools.getBlocksAroundPoint(location,
+				(int) PluginTools.firebendingDayAugment(radius, player.getWorld()))) {
+			if (BlockTools.isMeltable(block)) {
 				Melt.melt(player, block);
 			} else if (isHeatable(block)) {
 				heat(block);

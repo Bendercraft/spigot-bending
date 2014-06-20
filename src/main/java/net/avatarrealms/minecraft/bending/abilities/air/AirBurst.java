@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -106,8 +107,8 @@ public class AirBurst {
 	}
 
 	public static void fallBurst(Player player) {
-		if (!Tools.canBend(player, Abilities.AirBurst)
-				|| Tools.getBendingAbility(player) != Abilities.AirBurst
+		if (!EntityTools.canBend(player, Abilities.AirBurst)
+				|| EntityTools.getBendingAbility(player) != Abilities.AirBurst
 				|| instances.containsKey(player)
 				|| player.getFallDistance() < threshold) {
 			return;
@@ -139,8 +140,8 @@ public class AirBurst {
 	}
 
 	private void progress() {
-		if (!Tools.canBend(player, Abilities.AirBurst)
-				|| Tools.getBendingAbility(player) != Abilities.AirBurst) {
+		if (!EntityTools.canBend(player, Abilities.AirBurst)
+				|| EntityTools.getBendingAbility(player) != Abilities.AirBurst) {
 			instances.remove(player);
 			return;
 		}

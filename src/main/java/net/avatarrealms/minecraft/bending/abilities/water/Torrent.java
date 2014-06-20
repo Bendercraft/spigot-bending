@@ -9,6 +9,9 @@ import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -71,8 +74,8 @@ public class Torrent {
 		}
 		this.player = player;
 		time = System.currentTimeMillis();
-		sourceblock = Tools.getWaterSourceBlock(player, selectrange,
-				Tools.canPlantbend(player));
+		sourceblock = BlockTools.getWaterSourceBlock(player, selectrange,
+				EntityTools.canPlantbend(player));
 		if (sourceblock != null) {
 			sourceselected = true;
 			instances.put(player, this);
@@ -82,11 +85,11 @@ public class Torrent {
 	private void freeze() {
 		if (layer == 0)
 			return;
-		if (!Tools.hasAbility(player, Abilities.PhaseChange))
+		if (!EntityTools.hasAbility(player, Abilities.PhaseChange))
 			return;
-		List<Block> ice = Tools.getBlocksAroundPoint(location, layer);
+		List<Block> ice = BlockTools.getBlocksAroundPoint(location, layer);
 		for (Block block : ice) {
-			if (Tools.isTransparentToEarthbending(player, block)
+			if (BlockTools.isTransparentToEarthbending(player, block)
 					&& block.getType() != Material.ICE) {
 				TempBlock tblock = new TempBlock(block, Material.ICE, (byte) 0);
 				frozenblocks.put(tblock, player);
@@ -100,12 +103,12 @@ public class Torrent {
 			return;
 		}
 
-		if (!Tools.canBend(player, Abilities.Torrent)) {
+		if (!EntityTools.canBend(player, Abilities.Torrent)) {
 			remove();
 			return;
 		}
 
-		if (Tools.getBendingAbility(player) != Abilities.Torrent) {
+		if (EntityTools.getBendingAbility(player) != Abilities.Torrent) {
 			remove();
 			if (location != null)
 				returnWater(location);
@@ -129,10 +132,10 @@ public class Torrent {
 				if (player.isSneaking()) {
 					sourceselected = false;
 					settingup = true;
-					if (Tools.isPlant(sourceblock)) {
+					if (BlockTools.isPlant(sourceblock)) {
 						new Plantbending(sourceblock);
 						sourceblock.setType(Material.AIR);
-					} else if (!Tools.adjacentToThreeOrMoreSources(sourceblock)) {
+					} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 						sourceblock.setType(Material.AIR);
 					}
 					source = new TempBlock(sourceblock, Material.WATER, full);
@@ -190,7 +193,7 @@ public class Torrent {
 						source.revertBlock();
 						source = null;
 						Block block = location.getBlock();
-						if (!Tools.isTransparentToEarthbending(player, block)
+						if (!BlockTools.isTransparentToEarthbending(player, block)
 								|| block.isLiquid()) {
 							remove();
 							return;
@@ -275,13 +278,12 @@ public class Torrent {
 				if (!doneblocks.contains(block)
 						&& !Tools.isRegionProtectedFromBuild(player,
 								Abilities.Torrent, blockloc)) {
-					if (Tools.isTransparentToEarthbending(player, block)
+					if (BlockTools.isTransparentToEarthbending(player, block)
 							&& !block.isLiquid()) {
 						launchblocks.add(new TempBlock(block, Material.WATER,
 								full));
 						doneblocks.add(block);
-					} else if (!Tools
-							.isTransparentToEarthbending(player, block))
+					} else if (!BlockTools.isTransparentToEarthbending(player, block))
 						break;
 				}
 			}
@@ -292,17 +294,17 @@ public class Torrent {
 			}
 		}
 
-		Entity target = Tools.getTargettedEntity(player, range, hurtentities);
-		Location targetloc = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
-		// Location targetloc = Tools.getTargetedLocation(player, range,
-		// Tools.transparentEarthbending);
+		Entity target = EntityTools.getTargettedEntity(player, range, hurtentities);
+		Location targetloc = EntityTools.getTargetBlock(player, range, 
+				BlockTools.getTransparentEarthbending()).getLocation();
+
 		if (target != null) {
 			targetloc = target.getLocation();
 		}
 
 		ArrayList<TempBlock> newblocks = new ArrayList<TempBlock>();
 
-		List<Entity> entities = Tools.getEntitiesAroundPoint(
+		List<Entity> entities = EntityTools.getEntitiesAroundPoint(
 				player.getLocation(), range + 5);
 		List<Entity> affectedentities = new ArrayList<Entity>();
 
@@ -333,7 +335,7 @@ public class Torrent {
 				returnWater(location);
 				return false;
 			}
-		} else if (!Tools.isTransparentToEarthbending(player, b)) {
+		} else if (!BlockTools.isTransparentToEarthbending(player, b)) {
 			// b.setType(Material.GLASS);
 			if (layer < maxlayer) {
 				// Tools.verbose(layer);
@@ -411,7 +413,7 @@ public class Torrent {
 		startangle += 30;
 		Location loc = player.getEyeLocation();
 		ArrayList<Block> doneblocks = new ArrayList<Block>();
-		List<Entity> entities = Tools.getEntitiesAroundPoint(loc, radius + 2);
+		List<Entity> entities = EntityTools.getEntitiesAroundPoint(loc, radius + 2);
 		List<Entity> affectedentities = new ArrayList<Entity>();
 		for (double theta = startangle; theta < angle + startangle; theta += 20) {
 			double phi = Math.toRadians(theta);
@@ -423,7 +425,7 @@ public class Torrent {
 			if (!doneblocks.contains(block)
 					&& !Tools.isRegionProtectedFromBuild(player,
 							Abilities.Torrent, blockloc)) {
-				if (Tools.isTransparentToEarthbending(player, block)
+				if (BlockTools.isTransparentToEarthbending(player, block)
 						&& !block.isLiquid()) {
 					blocks.add(new TempBlock(block, Material.WATER, full));
 					doneblocks.add(block);
@@ -474,8 +476,8 @@ public class Torrent {
 			Location eyeloc = player.getEyeLocation();
 			Block block = eyeloc.add(eyeloc.getDirection().normalize())
 					.getBlock();
-			if (Tools.isTransparentToEarthbending(player, block)
-					&& Tools.isTransparentToEarthbending(player,
+			if (BlockTools.isTransparentToEarthbending(player, block)
+					&& BlockTools.isTransparentToEarthbending(player,
 							eyeloc.getBlock())) {
 				block.setType(Material.WATER);
 				block.setData(full);
@@ -527,9 +529,9 @@ public class Torrent {
 			World world = player.getWorld();
 			int damagedealt = deflectdamage;
 			if (Tools.isNight(world)) {
-				damagedealt = (int) (Tools.getWaterbendingNightAugment(world) * (double) deflectdamage);
+				damagedealt = (int) (PluginTools.getWaterbendingNightAugment(world) * (double) deflectdamage);
 			}
-			Tools.damageEntity(player, entity, damagedealt);
+			EntityTools.damageEntity(player, entity, damagedealt);
 		}
 	}
 
@@ -546,7 +548,7 @@ public class Torrent {
 			World world = player.getWorld();
 			int damagedealt = damage;
 			if (Tools.isNight(world)) {
-				damagedealt = (int) (Tools.getWaterbendingNightAugment(world) * (double) damage);
+				damagedealt = (int) (PluginTools.getWaterbendingNightAugment(world) * (double) damage);
 			}
 			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){	
 				if (bPlayer != null) {
@@ -554,7 +556,7 @@ public class Torrent {
 				}
 			}
 			// if (((LivingEntity) entity).getNoDamageTicks() == 0) {
-			Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damagedealt));
+			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damagedealt));
 			// Tools.verbose("Hit! Health at "
 			// + ((LivingEntity) entity).getHealth());
 			hurtentities.add(entity);
@@ -578,7 +580,7 @@ public class Torrent {
 				continue;
 			}
 			if (block.getLocation().distance(player.getLocation()) > range
-					|| !Tools.canBend(player, Abilities.Torrent)) {
+					|| !EntityTools.canBend(player, Abilities.Torrent)) {
 				thaw(block);
 			}
 		}

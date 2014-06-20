@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -41,7 +42,7 @@ public class Cook {
 		}
 
 		if (!player.isSneaking()
-				|| Tools.getBendingAbility(player) != Abilities.HeatControl) {
+				|| EntityTools.getBendingAbility(player) != Abilities.HeatControl) {
 			cancel();
 			return;
 		}
@@ -86,7 +87,6 @@ public class Cook {
 		if (amount == 1) {
 			player.getInventory()
 					.clear(player.getInventory().getHeldItemSlot());
-			// items.setType(Material.AIR);
 		} else {
 			items.setAmount(amount - 1);
 		}

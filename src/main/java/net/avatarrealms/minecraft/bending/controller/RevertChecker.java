@@ -9,7 +9,8 @@ import java.util.concurrent.Future;
 
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.model.Information;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.Chunk;
@@ -66,29 +67,16 @@ public class RevertChecker implements Runnable {
 
 		if (ConfigManager.reverseearthbending) {
 
-			// ArrayList<Chunk> chunks = new ArrayList<Chunk>();
-			// Player[] players = plugin.getServer().getOnlinePlayers();
-			//
-			// for (Player player : players) {
-			// Chunk chunk = player.getLocation().getChunk();
-			// if (!chunks.contains(chunk))
-			// chunks.add(chunk);
-			// }
-
 			try {
-				// Tools.verbose("Calling future at t="
-				// + System.currentTimeMillis());
 				returnFuture = plugin
 						.getServer()
 						.getScheduler()
 						.callSyncMethod(plugin,
 								new getOccupiedChunks(plugin.getServer()));
 				ArrayList<Chunk> chunks = returnFuture.get();
-				// Tools.verbose("Future called, t=" +
-				// System.currentTimeMillis());
 
 				Map<Block, Information> earth = new HashMap<Block, Information>();
-				earth.putAll(Tools.movedearth);
+				earth.putAll(BlockTools.movedEarth);
 
 				for (Block block : earth.keySet()) {
 					if (revertQueue.containsKey(block))
@@ -105,7 +93,7 @@ public class RevertChecker implements Runnable {
 				}
 
 				Map<Integer, Information> air = new HashMap<Integer, Information>();
-				air.putAll(Tools.tempair);
+				air.putAll(BlockTools.tempAir);
 
 				for (Integer i : air.keySet()) {
 					if (airRevertQueue.containsKey(i))
@@ -123,7 +111,7 @@ public class RevertChecker implements Runnable {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				Tools.writeToLog(ExceptionUtils.getStackTrace(e));
+				PluginTools.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
 
 			// for (Block block : Tools.tempearthblocks.keySet()) {
@@ -168,12 +156,6 @@ public class RevertChecker implements Runnable {
 			airRevertQueue.put(i, i);
 
 	}
-
-	// void addToMovedEarthQueue(Block block, Material type) {
-	// if (!movedEarthQueue.containsKey(block))
-	// movedEarthQueue.put(block, type);
-	//
-	// }
 
 	void addToRevertQueue(Block block) {
 		if (!revertQueue.containsKey(block))

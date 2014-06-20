@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.avatarrealms.minecraft.bending.abilities.water.Plantbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -22,8 +24,6 @@ public class FireStream {
 	public static ConcurrentHashMap<Block, Player> ignitedblocks = new ConcurrentHashMap<Block, Player>();
 	public static ConcurrentHashMap<Block, Long> ignitedtimes = new ConcurrentHashMap<Block, Long>();
 	public static ConcurrentHashMap<LivingEntity, Player> ignitedentities = new ConcurrentHashMap<LivingEntity, Player>();
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
 	static final long soonesttime = Tools.timeinterval;
 
 	public static int firedamage = 3;
@@ -31,7 +31,6 @@ public class FireStream {
 
 	private static int ID = Integer.MIN_VALUE;
 	private static double speed = ConfigManager.fireStreamSpeed;
-	// private static double defaultrange = ConfigManager.fireStreamRange;
 	private static long interval = (long) (1000. / speed);
 
 	private static long dissipateAfter = ConfigManager.dissipateAfter;
@@ -44,37 +43,10 @@ public class FireStream {
 	private long time;
 	private double range;
 
-	//
-	// public FireStream(Player player) {
-	// if (timers.containsKey(player)) {
-	// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
-	// return;
-	// }
-	// }
-	// range = Tools.firebendingDayAugment(defaultrange, player.getWorld());
-	// this.player = player;
-	// location = player.getLocation();
-	// direction = player.getEyeLocation().getDirection();
-	// origin = location.clone();
-	// this.location = origin.clone();
-	// this.direction = direction.clone();
-	// this.direction.setY(0);
-	// this.direction = this.direction.clone().normalize();
-	// this.location = this.location.clone().add(this.direction);
-	// id = ID;
-	// if (ID >= Integer.MAX_VALUE) {
-	// ID = Integer.MIN_VALUE;
-	// }
-	// ID++;
-	// time = System.currentTimeMillis();
-	// instances.put(id, this);
-	// timers.put(player, System.currentTimeMillis());
-	//
-	// }
 
 	public FireStream(Location location, Vector direction, Player player,
 			int range) {
-		this.range = Tools.firebendingDayAugment(range, player.getWorld());
+		this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		this.player = player;
 		origin = location.clone();
 		this.location = origin.clone();
@@ -125,7 +97,7 @@ public class FireStream {
 	}
 
 	private void ignite(Block block) {
-		if (Tools.isPlant(block)) {
+		if (BlockTools.isPlant(block)) {
 			new Plantbending(block);
 		}
 		block.setType(Material.FIRE);

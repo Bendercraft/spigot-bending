@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.controller.Flight;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.entity.Player;
@@ -37,7 +38,7 @@ public class AvatarState implements IAbility{
 	}
 
 	public boolean progress() {
-		if (!Tools.canBend(player, Abilities.AvatarState)) {
+		if (!EntityTools.canBend(player, Abilities.AvatarState)) {
 			instances.remove(player);
 			return false;
 		}

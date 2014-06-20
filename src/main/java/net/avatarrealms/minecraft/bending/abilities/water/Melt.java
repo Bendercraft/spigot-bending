@@ -5,6 +5,9 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -28,9 +31,9 @@ public class Melt {
 		if (bPlayer.isOnCooldown(Abilities.PhaseChange))
 			return;
 
-		int range = (int) Tools.waterbendingNightAugment(defaultrange,
+		int range = (int) PluginTools.waterbendingNightAugment(defaultrange,
 				player.getWorld());
-		int radius = (int) Tools.waterbendingNightAugment(defaultradius,
+		int radius = (int) PluginTools.waterbendingNightAugment(defaultradius,
 				player.getWorld());
 
 		if (AvatarState.isAvatarState(player)) {
@@ -38,14 +41,14 @@ public class Melt {
 			radius = AvatarState.getValue(radius);
 		}
 		boolean evaporate = false;
-		Location location = Tools.getTargetedLocation(player, range);
-		if (Tools.isWater(Tools.getTargetBlock(player, range))
+		Location location = EntityTools.getTargetedLocation(player, range);
+		if (BlockTools.isWater(EntityTools.getTargetBlock(player, range))
 				&& !(player.getEyeLocation().getBlockY() <= 62)) {
 			evaporate = true;
-			radius = (int) Tools.waterbendingNightAugment(
+			radius = (int) PluginTools.waterbendingNightAugment(
 					defaultevaporateradius, player.getWorld());
 		}
-		for (Block block : Tools.getBlocksAroundPoint(location, radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (evaporate) {
 				if (block.getY() > seaLevel)
 					evaporate(player, block);
@@ -69,7 +72,7 @@ public class Melt {
 			Torrent.thaw(block);
 			return;
 		}
-		if (Tools.isMeltable(block) && !TempBlock.isTempBlock(block)
+		if (BlockTools.isMeltable(block) && !TempBlock.isTempBlock(block)
 				&& WaterManipulation.canPhysicsChange(block)) {
 			if (block.getType() == Material.SNOW) {
 				block.setType(Material.AIR);
@@ -88,7 +91,7 @@ public class Melt {
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.PhaseChange,
 				block.getLocation()))
 			return;
-		if (Tools.isWater(block) && !TempBlock.isTempBlock(block)
+		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block)
 				&& WaterManipulation.canPhysicsChange(block)) {
 			block.setType(Material.AIR);
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1);

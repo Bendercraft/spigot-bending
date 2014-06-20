@@ -3,7 +3,7 @@ package net.avatarrealms.minecraft.bending.abilities.chi;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -13,7 +13,6 @@ public class HighJump {
 
 	private double jumpheight = ConfigManager.jumpHeight;
 
-	// private Map<String, Long> cooldowns = new HashMap<String, Long>();
 
 	public HighJump(Player p) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
@@ -28,7 +27,7 @@ public class HighJump {
 	}
 
 	private void jump(Player p) {
-		if (!Tools.isSolid(p.getLocation().getBlock()
+		if (!BlockTools.isSolid(p.getLocation().getBlock()
 				.getRelative(BlockFace.DOWN)))
 			return;
 		Vector vec = p.getVelocity();

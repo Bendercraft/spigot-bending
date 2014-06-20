@@ -7,6 +7,8 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -34,10 +36,10 @@ public class Bloodbending {
 			remove(player);
 			return;
 		}
-		range = (int) Tools.waterbendingNightAugment(range, player.getWorld());
+		range = (int) PluginTools.waterbendingNightAugment(range, player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
-			for (Entity entity : Tools.getEntitiesAroundPoint(
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(
 					player.getLocation(), range)) {
 				if (entity instanceof LivingEntity) {
 					if (entity instanceof Player) {
@@ -45,16 +47,16 @@ public class Bloodbending {
 								Abilities.Bloodbending, entity.getLocation())
 								|| AvatarState.isAvatarState((Player) entity)
 								|| entity.getEntityId() == player.getEntityId()
-								|| Tools.canBend((Player) entity,
+								|| EntityTools.canBend((Player) entity,
 										Abilities.Bloodbending))
 							continue;
 					}
-					Tools.damageEntity(player, entity, 0);
+					EntityTools.damageEntity(player, entity, 0);
 					targetentities.put(entity, entity.getLocation().clone());
 				}
 			}
 		} else {
-			Entity target = Tools.getTargettedEntity(player, range);
+			Entity target = EntityTools.getTargettedEntity(player, range);
 			if (target == null)
 				return;
 			if (!(target instanceof LivingEntity)
@@ -62,11 +64,11 @@ public class Bloodbending {
 							Abilities.Bloodbending, target.getLocation()))
 				return;
 			if (target instanceof Player) {
-				if (Tools.canBend((Player) target, Abilities.Bloodbending)
+				if (EntityTools.canBend((Player) target, Abilities.Bloodbending)
 						|| AvatarState.isAvatarState((Player) target))
 					return;
 			}
-			Tools.damageEntity(player, target, 0);
+			EntityTools.damageEntity(player, target, 0);
 			targetentities.put(target, target.getLocation().clone());
 		}
 		this.player = player;
@@ -97,26 +99,26 @@ public class Bloodbending {
 		PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 60, 1);
 
 		if (!player.isSneaking()
-				|| Tools.getBendingAbility(player) != Abilities.Bloodbending
-				|| !Tools.canBend(player, Abilities.Bloodbending)) {
+				|| EntityTools.getBendingAbility(player) != Abilities.Bloodbending
+				|| !EntityTools.canBend(player, Abilities.Bloodbending)) {
 			remove(player);
 			return;
 		}
 		if (AvatarState.isAvatarState(player)) {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
-			for (Entity entity : Tools.getEntitiesAroundPoint(
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(
 					player.getLocation(), range)) {
 				if (Tools.isRegionProtectedFromBuild(player,
 						Abilities.Bloodbending, entity.getLocation()))
 					continue;
 				if (entity instanceof Player) {
-					if (!Tools.canBeBloodbent((Player) entity))
+					if (!EntityTools.canBeBloodbent((Player) entity))
 						continue;
 				}
 				entities.add(entity);
 				if (!targetentities.containsKey(entity)
 						&& entity instanceof LivingEntity) {
-					Tools.damageEntity(player, entity, 0);
+					EntityTools.damageEntity(player, entity, 0);
 					targetentities.put(entity, entity.getLocation().clone());
 				}
 				if (entity instanceof LivingEntity) {
@@ -147,13 +149,13 @@ public class Bloodbending {
 		} else {
 			for (Entity entity : targetentities.keySet()) {
 				if (entity instanceof Player) {
-					if (!Tools.canBeBloodbent((Player) entity)) {
+					if (!EntityTools.canBeBloodbent((Player) entity)) {
 						targetentities.remove(entity);
 						continue;
 					}
 				}
 				Location newlocation = entity.getLocation();
-				Location location = Tools.getTargetedLocation(
+				Location location = EntityTools.getTargetedLocation(
 						player,
 						(int) targetentities.get(entity).distance(
 								player.getLocation()));

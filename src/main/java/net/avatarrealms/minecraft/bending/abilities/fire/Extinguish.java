@@ -5,6 +5,9 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -25,16 +28,16 @@ public class Extinguish {
 		if (bPlayer.isOnCooldown(Abilities.HeatControl))
 			return;
 
-		double range = Tools.firebendingDayAugment(defaultrange,
+		double range = PluginTools.firebendingDayAugment(defaultrange,
 				player.getWorld());
-		if (Tools.isMeltable(Tools.getTargetBlock(player, range))) {
+		if (BlockTools.isMeltable(EntityTools.getTargetBlock(player, range))) {
 			new HeatMelt(player);
 			return;
 		}
-		double radius = Tools.firebendingDayAugment(defaultradius,
+		double radius = PluginTools.firebendingDayAugment(defaultradius,
 				player.getWorld());
-		for (Block block : Tools.getBlocksAroundPoint(
-				Tools.getTargetBlock(player, range).getLocation(), radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(
+				EntityTools.getTargetBlock(player, range).getLocation(), radius)) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze,
 					block.getLocation()))
 				continue;
@@ -61,18 +64,16 @@ public class Extinguish {
 	}
 
 	public static boolean canBurn(Player player) {
-		if (Tools.getBendingAbility(player) == Abilities.HeatControl
+		if (EntityTools.getBendingAbility(player) == Abilities.HeatControl
 				|| FireJet.checkTemporaryImmunity(player)) {
 			player.setFireTicks(0);
 			return false;
 		}
 
 		if (player.getFireTicks() > 80
-				&& Tools.canBendPassive(player, BendingType.Fire)) {
+				&& EntityTools.canBendPassive(player, BendingType.Fire)) {
 			player.setFireTicks(80);
 		}
-
-		// Tools.verbose(player.getFireTicks());
 
 		return true;
 	}

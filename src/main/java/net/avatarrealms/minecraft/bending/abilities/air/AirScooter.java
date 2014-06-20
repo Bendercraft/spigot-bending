@@ -7,6 +7,8 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -28,7 +30,6 @@ public class AirScooter {
 	private Player player;
 	private Block floorblock;
 	private long time;
-	// private boolean canfly, wasflying;
 	private ArrayList<Double> angles = new ArrayList<Double>();
 
 	public AirScooter(Player player) {
@@ -41,14 +42,12 @@ public class AirScooter {
 			return;
 		}
 		if (!player.isSprinting()
-				|| Tools.isSolid(player.getEyeLocation().getBlock())
+				|| BlockTools.isSolid(player.getEyeLocation().getBlock())
 				|| player.getEyeLocation().getBlock().isLiquid())
 			return;
-		if (Tools.isSolid(player.getLocation().add(0, -.5, 0).getBlock()))
+		if (BlockTools.isSolid(player.getLocation().add(0, -.5, 0).getBlock()))
 			return;
 		this.player = player;
-		// wasflying = player.isFlying();
-		// canfly = player.getAllowFlight();
 		new Flight(player);
 		player.setAllowFlight(true);
 		player.setFlying(true);
@@ -68,8 +67,8 @@ public class AirScooter {
 			remove();
 			return;
 		}
-		if (!Tools.canBend(player, Abilities.AirScooter)
-				|| !Tools.hasAbility(player, Abilities.AirScooter)) {
+		if (!EntityTools.canBend(player, Abilities.AirScooter)
+				|| !EntityTools.hasAbility(player, Abilities.AirScooter)) {
 			remove();
 			return;
 		}
@@ -145,7 +144,7 @@ public class AirScooter {
 		for (int i = 0; i <= 7; i++) {
 			Block block = player.getEyeLocation().getBlock()
 					.getRelative(BlockFace.DOWN, i);
-			if (Tools.isSolid(block) || block.isLiquid()) {
+			if (BlockTools.isSolid(block) || block.isLiquid()) {
 				floorblock = block;
 				return;
 			}

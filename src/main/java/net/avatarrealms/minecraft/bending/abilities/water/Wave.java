@@ -9,6 +9,9 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -72,8 +75,7 @@ public class Wave {
 		if (AvatarState.isAvatarState(player)) {
 			maxradius = AvatarState.getValue(maxradius);
 		}
-		maxradius = Tools
-				.waterbendingNightAugment(maxradius, player.getWorld());
+		maxradius = PluginTools.waterbendingNightAugment(maxradius, player.getWorld());
 		if (prepare()) {
 			if (instances.containsKey(player.getEntityId())) {
 				instances.get(player.getEntityId()).cancel();
@@ -86,9 +88,8 @@ public class Wave {
 
 	public boolean prepare() {
 		cancelPrevious();
-		// Block block = player.getTargetBlock(null, (int) range);
-		Block block = Tools.getWaterSourceBlock(player, range,
-				Tools.canPlantbend(player));
+		Block block = BlockTools.getWaterSourceBlock(player, range,
+				EntityTools.canPlantbend(player));
 		if (block != null) {
 			sourceblock = block;
 			focusBlock();
@@ -133,12 +134,12 @@ public class Wave {
 			if (sourceblock.getWorld() != player.getWorld()) {
 				return;
 			}
-			range = Tools.waterbendingNightAugment(range, player.getWorld());
+			range = PluginTools.waterbendingNightAugment(range, player.getWorld());
 			if (AvatarState.isAvatarState(player))
 				factor = AvatarState.getValue(factor);
-			Entity target = Tools.getTargettedEntity(player, range);
+			Entity target = EntityTools.getTargettedEntity(player, range);
 			if (target == null) {
-				targetdestination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
+				targetdestination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
 			} else {
 				targetdestination = ((LivingEntity) target).getEyeLocation();
 			}
@@ -151,9 +152,9 @@ public class Wave {
 						targetdestination).normalize();
 				targetdestination = location.clone().add(
 						targetdirection.clone().multiply(range));
-				if (Tools.isPlant(sourceblock))
+				if (BlockTools.isPlant(sourceblock))
 					new Plantbending(sourceblock);
-				if (!Tools.adjacentToThreeOrMoreSources(sourceblock)) {
+				if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 					sourceblock.setType(Material.AIR);
 				}
 				addWater(sourceblock);
@@ -181,7 +182,7 @@ public class Wave {
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()
-				|| !Tools.canBend(player, Abilities.Surge)) {
+				|| !EntityTools.canBend(player, Abilities.Surge)) {
 			breakBlock();
 			thaw();
 			// instances.remove(player.getEntityId());
@@ -191,7 +192,7 @@ public class Wave {
 			time = System.currentTimeMillis();
 
 			if (!progressing
-					&& Tools.getBendingAbility(player) != Abilities.Surge) {
+					&& EntityTools.getBendingAbility(player) != Abilities.Surge) {
 				unfocusBlock();
 				return false;
 			}
@@ -215,15 +216,15 @@ public class Wave {
 					breakBlock();
 					return false;
 				}
-				if (!Tools.hasAbility(player, Abilities.PhaseChange)
-						&& Tools.getBendingAbility(player) != Abilities.Surge) {
+				if (!EntityTools.hasAbility(player, Abilities.PhaseChange)
+						&& EntityTools.getBendingAbility(player) != Abilities.Surge) {
 					progressing = false;
 					thaw();
 					breakBlock();
 					returnWater();
 					return false;
 				}
-				if (!Tools.canBend(player, Abilities.Surge)) {
+				if (!EntityTools.canBend(player, Abilities.Surge)) {
 					progressing = false;
 					thaw();
 					breakBlock();
@@ -244,9 +245,9 @@ public class Wave {
 						location)
 						&& (((blockl.getType() == Material.AIR
 								|| blockl.getType() == Material.FIRE
-								|| Tools.isPlant(blockl)
-								|| Tools.isWater(blockl) || Tools
-									.isWaterbendable(blockl, player))) && blockl
+								|| BlockTools.isPlant(blockl)
+								|| BlockTools.isWater(blockl) 
+								|| BlockTools.isWaterbendable(blockl, player))) && blockl
 								.getType() != Material.LEAVES)) {
 
 					for (double i = 0; i <= radius; i += .5) {
@@ -257,7 +258,7 @@ public class Wave {
 							if (!blocks.contains(block)
 									&& (block.getType() == Material.AIR || block
 											.getType() == Material.FIRE)
-									|| Tools.isWaterbendable(block, player)) {
+									|| BlockTools.isWaterbendable(block, player)) {
 								blocks.add(block);
 								FireBlast.removeFireBlastsAroundPoint(
 										block.getLocation(), 2);
@@ -289,7 +290,7 @@ public class Wave {
 					return false;
 				}
 
-				for (Entity entity : Tools.getEntitiesAroundPoint(location,
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 						2 * radius)) {
 
 					boolean knockback = false;
@@ -316,7 +317,7 @@ public class Wave {
 								.getVelocity()
 								.clone()
 								.add(dir.clone().multiply(
-										Tools.waterbendingNightAugment(factor,
+										PluginTools.waterbendingNightAugment(factor,
 												player.getWorld()))));
 						entity.setFallDistance(0);
 						if (entity.getFireTicks() > 0)
@@ -433,7 +434,7 @@ public class Wave {
 			freezeradius = maxfreezeradius;
 		}
 
-		for (Block block : Tools.getBlocksAroundPoint(frozenlocation,
+		for (Block block : BlockTools.getBlocksAroundPoint(frozenlocation,
 				freezeradius)) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.Surge,
 					block.getLocation())
@@ -448,10 +449,10 @@ public class Wave {
 				new TempBlock(block, Material.ICE, (byte) 0);
 				frozenblocks.put(block, block);
 			}
-			if (Tools.isWater(block)) {
+			if (BlockTools.isWater(block)) {
 				FreezeMelt.freeze(player, block);
 			}
-			if (Tools.isPlant(block) && block.getType() != Material.LEAVES) {
+			if (BlockTools.isPlant(block) && block.getType() != Material.LEAVES) {
 				block.breakNaturally();
 				// block.setType(Material.ICE);
 				new TempBlock(block, Material.ICE, (byte) 0);

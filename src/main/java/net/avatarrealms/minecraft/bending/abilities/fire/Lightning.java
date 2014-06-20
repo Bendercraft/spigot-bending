@@ -8,6 +8,8 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -67,12 +69,12 @@ public class Lightning {
 	}
 
 	private Location getTargetLocation() {
-		int distance = (int) Tools.firebendingDayAugment(defaultdistance,
+		int distance = (int) PluginTools.firebendingDayAugment(defaultdistance,
 				player.getWorld());
 
 		Location targetlocation;
-		targetlocation = Tools.getTargetedLocation(player, distance);
-		Entity target = Tools.getTargettedEntity(player, distance);
+		targetlocation = EntityTools.getTargetedLocation(player, distance);
+		Entity target = EntityTools.getTargettedEntity(player, distance);
 		if (target != null) {
 			if (target instanceof LivingEntity
 					&& player.getLocation().distance(targetlocation) > target
@@ -116,12 +118,12 @@ public class Lightning {
 			return;
 		}
 
-		if (Tools.getBendingAbility(player) != Abilities.Lightning) {
+		if (EntityTools.getBendingAbility(player) != Abilities.Lightning) {
 			instances.remove(player);
 			return;
 		}
 
-		int distance = (int) Tools.firebendingDayAugment(defaultdistance,
+		int distance = (int) PluginTools.firebendingDayAugment(defaultdistance,
 				player.getWorld());
 		long warmup = (int) ((double) defaultwarmup / ConfigManager.dayFactor);
 		if (AvatarState.isAvatarState(player))
@@ -164,7 +166,7 @@ public class Lightning {
 			return;
 		double damage = maxdamage - (distance / strikeradius) * .5;
 		hitentities.add(entity);
-		Tools.damageEntity(player, entity, (int) damage);
+		EntityTools.damageEntity(player, entity, (int) damage);
 	}
 
 	public static boolean isNearbyChannel(Location location) {

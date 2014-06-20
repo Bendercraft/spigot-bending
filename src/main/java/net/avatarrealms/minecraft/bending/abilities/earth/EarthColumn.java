@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -45,12 +46,12 @@ public class EarthColumn {
 			return;
 
 		try {
-			block = Tools.getEarthSourceBlock(player, range);
+			block = BlockTools.getEarthSourceBlock(player, range);
 			if (block == null)
 				return;
 			origin = block.getLocation();
 			location = origin.clone();
-			distance = Tools.getEarthbendableBlocksLength(player, block,
+			distance = BlockTools.getEarthbendableBlocksLength(player, block,
 					direction.clone().multiply(-1), height);
 		} catch (IllegalStateException e) {
 			return;
@@ -79,7 +80,7 @@ public class EarthColumn {
 		location = origin.clone();
 		block = location.getBlock();
 		this.player = player;
-		distance = Tools.getEarthbendableBlocksLength(player, block, direction
+		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
 				.clone().multiply(-1), height);
 
 		loadAffectedBlocks();
@@ -103,7 +104,7 @@ public class EarthColumn {
 		location = origin.clone();
 		block = location.getBlock();
 		this.player = player;
-		distance = Tools.getEarthbendableBlocksLength(player, block, direction
+		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
 				.clone().multiply(-1), height);
 
 		loadAffectedBlocks();
@@ -189,7 +190,7 @@ public class EarthColumn {
 	private boolean moveEarth() {
 		Block block = location.getBlock();
 		location = location.add(direction);
-		Tools.moveEarth(player, block, direction, distance);
+		BlockTools.moveEarth(player, block, direction, distance);
 		loadAffectedBlocks();
 
 		if (location.distance(origin) >= distance) {

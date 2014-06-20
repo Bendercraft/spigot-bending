@@ -13,6 +13,9 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -74,8 +77,7 @@ public class FireBlast {
 				|| Fireball.isCharging(player)) {
 			return;
 		}
-		range = Tools.firebendingDayAugment(range, player.getWorld());
-		// timers.put(player, System.currentTimeMillis());
+		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		this.player = player;
 		location = player.getEyeLocation();
 		origin = player.getEyeLocation();
@@ -87,8 +89,6 @@ public class FireBlast {
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
-		// time = System.currentTimeMillis();
-		// timers.put(player, System.currentTimeMillis());
 	}
 
 	public FireBlast(Location location, Vector direction, Player player,
@@ -97,7 +97,7 @@ public class FireBlast {
 			return;
 		}
 		safe = safeblocks;
-		range = Tools.firebendingDayAugment(range, player.getWorld());
+		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		// timers.put(player, System.currentTimeMillis());
 		this.player = player;
 		this.location = location.clone();
@@ -156,7 +156,7 @@ public class FireBlast {
 		// affectedlevers.add(block);
 		// }
 		// }
-		if (Tools.isSolid(block) || block.isLiquid()) {
+		if (BlockTools.isSolid(block) || block.isLiquid()) {
 			if (block.getType() == Material.FURNACE && canPowerFurnace) {
 				// BlockState state = block.getState();
 				// Furnace furnace = (Furnace) state;
@@ -184,7 +184,7 @@ public class FireBlast {
 			return false;
 		}
 
-		Tools.removeSpouts(location, player);
+		PluginTools.removeSpouts(location, player);
 
 		double radius = FireBlast.affectingradius;
 		Player source = player;
@@ -195,7 +195,7 @@ public class FireBlast {
 			return false;
 		}
 
-		for (Entity entity : Tools.getEntitiesAroundPoint(location,
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 			// Block bblock = location.getBlock();
 			// Block block1 = entity.getLocation().getBlock();
@@ -226,10 +226,9 @@ public class FireBlast {
 	}
 
 	private void ignite(Location location) {
-		for (Block block : Tools
-				.getBlocksAroundPoint(location, affectingradius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, affectingradius)) {
 			if (FireStream.isIgnitable(player, block) && !safe.contains(block)) {
-				if (Tools.isPlant(block))
+				if (BlockTools.isPlant(block))
 					new Plantbending(block);
 				block.setType(Material.FIRE);
 				if (dissipate) {
@@ -264,9 +263,8 @@ public class FireBlast {
 			}
 			if (entity instanceof LivingEntity) {
 				entity.setFireTicks(50);
-				Tools.damageEntity(player, entity,  bPlayer.getCriticalHit(BendingType.Fire,Tools
-						.firebendingDayAugment((double) damage,
-								entity.getWorld())));
+				EntityTools.damageEntity(player, entity,  bPlayer.getCriticalHit(BendingType.Fire,
+						PluginTools.firebendingDayAugment((double) damage,entity.getWorld())));
 				new Enflamed(entity, player);
 				instances.remove(id);
 			}

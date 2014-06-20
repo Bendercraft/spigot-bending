@@ -3,6 +3,8 @@ package net.avatarrealms.minecraft.bending.abilities.earth;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -33,7 +35,7 @@ public class EarthTunnel {
 	public EarthTunnel(Player player) {
 		this.player = player;
 		location = player.getEyeLocation().clone();
-		origin = Tools.getTargetBlock(player, range).getLocation();
+		origin = EntityTools.getTargetBlock(player, range).getLocation();
 		block = origin.getBlock();
 		direction = location.getDirection().clone().normalize();
 		depth = origin.distance(location) - 1;
@@ -63,12 +65,9 @@ public class EarthTunnel {
 				instances.remove(player);
 				return false;
 			} else {
-				while (!Tools.isEarthbendable(player, block)) {
+				while (!BlockTools.isEarthbendable(player, block)) {
 					// Tools.verbose("going");
-					if (!Tools.isTransparentToEarthbending(player, block)) {
-						// Tools.verbose("false! at" + angle + " " + radius +
-						// " "
-						// + depth);
+					if (!BlockTools.isTransparentToEarthbending(player, block)) {
 						instances.remove(player);
 						return false;
 					}
@@ -97,7 +96,7 @@ public class EarthTunnel {
 				}
 
 				if (revert) {
-					Tools.addTempAirBlock(block);
+					BlockTools.addTempAirBlock(block);
 				} else {
 					block.breakNaturally();
 				}

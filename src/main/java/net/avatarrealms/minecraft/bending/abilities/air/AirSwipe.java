@@ -16,6 +16,9 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -145,8 +148,8 @@ public class AirSwipe {
 
 			advanceSwipe();
 		} else {
-			if (Tools.getBendingAbility(player) != Abilities.AirSwipe
-					|| !Tools.canBend(player, Abilities.AirSwipe)) {
+			if (EntityTools.getBendingAbility(player) != Abilities.AirSwipe
+					|| !EntityTools.canBend(player, Abilities.AirSwipe)) {
 				instances.remove(id);
 				return false;
 			}
@@ -193,7 +196,7 @@ public class AirSwipe {
 								Abilities.AirSwipe, location)) {
 					elements.remove(direction);
 				} else {
-					Tools.removeSpouts(location, player);
+					PluginTools.removeSpouts(location, player);
 
 					double radius = FireBlast.affectingradius;
 					Player source = player;
@@ -208,19 +211,19 @@ public class AirSwipe {
 					}
 
 					Block block = location.getBlock();
-					for (Block testblock : Tools.getBlocksAroundPoint(location,
+					for (Block testblock : BlockTools.getBlocksAroundPoint(location,
 							affectingradius)) {
 						if (testblock.getType() == Material.FIRE) {
 							testblock.setType(Material.AIR);
 						}
 						if (isBlockBreakable(testblock)) {
-							Tools.breakBlock(testblock);
+							BlockTools.breakBlock(testblock);
 						}
 					}
 
 					if (block.getType() != Material.AIR) {
 						if (isBlockBreakable(block)) {
-							Tools.breakBlock(block);
+							BlockTools.breakBlock(block);
 						} else {
 							elements.remove(direction);
 						}
@@ -250,9 +253,9 @@ public class AirSwipe {
 	}
 
 	private void affectPeople(Location location, Vector direction) {
-		Tools.removeSpouts(location, player);
+		PluginTools.removeSpouts(location, player);
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		for (Entity entity : Tools.getEntitiesAroundPoint(location,
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
 					entity.getLocation()))
@@ -268,7 +271,7 @@ public class AirSwipe {
 				if (entity instanceof LivingEntity
 						&& !affectedentities.contains(entity)) {
 					if (damage != 0)
-						Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
+						EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
 					affectedentities.add(entity);
 					
 					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			

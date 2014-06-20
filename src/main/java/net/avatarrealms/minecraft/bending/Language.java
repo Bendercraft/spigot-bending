@@ -49,7 +49,7 @@ import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.StorageManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -515,7 +515,7 @@ public class Language {
 			HashMap<String, String> total = new HashMap<String, String>();
 			for (String index : messages.keySet()) {
 				if (total.containsKey(index)) {
-					Tools.verbose("Duplicate values in the code!");
+					PluginTools.verbose("Duplicate values in the code!");
 					return;
 				}
 				total.put(index, messages.get(index));
@@ -523,7 +523,7 @@ public class Language {
 			}
 			for (String index : general.keySet()) {
 				if (total.containsKey(index)) {
-					Tools.verbose("Duplicate values in the code!");
+					PluginTools.verbose("Duplicate values in the code!");
 					return;
 				}
 				total.put(index, general.get(index));
@@ -531,7 +531,7 @@ public class Language {
 			}
 			for (String index : langdescriptions.keySet()) {
 				if (total.containsKey(index)) {
-					Tools.verbose("Duplicate values in the code!");
+					PluginTools.verbose("Duplicate values in the code!");
 					return;
 				}
 				total.put(index, langdescriptions.get(index));
@@ -555,11 +555,11 @@ public class Language {
 	public String getMessage(String language, String key) {
 		String index = language.toLowerCase() + "." + key;
 		if (!descriptions.containsKey(language)) {
-			Tools.verbose("Language '" + language + "' not supported!");
+			PluginTools.verbose("Language '" + language + "' not supported!");
 			return "Language not supported!";
 		}
 		if (!descriptions.get(language).containsKey(index)) {
-			Tools.verbose("'" + index + "' doesn't exist?");
+			PluginTools.verbose("'" + index + "' doesn't exist?");
 			return "There was an error...";
 		}
 		return descriptions.get(language).get(index);

@@ -4,6 +4,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -36,11 +38,11 @@ public class Shockwave {
 	}
 
 	public static void fallShockwave(Player player) {
-		if (!Tools.canBend(player, Abilities.Shockwave)
-				|| Tools.getBendingAbility(player) != Abilities.Shockwave
+		if (!EntityTools.canBend(player, Abilities.Shockwave)
+				|| EntityTools.getBendingAbility(player) != Abilities.Shockwave
 				|| instances.containsKey(player)
 				|| player.getFallDistance() < threshold
-				|| !Tools.isEarthbendable(player,
+				|| !BlockTools.isEarthbendable(player,
 						player.getLocation().add(0, -1, 0).getBlock())) {
 			return;
 		}
@@ -48,8 +50,8 @@ public class Shockwave {
 	}
 
 	private void progress() {
-		if (!Tools.canBend(player, Abilities.Shockwave)
-				|| Tools.getBendingAbility(player) != Abilities.Shockwave) {
+		if (!EntityTools.canBend(player, Abilities.Shockwave)
+				|| EntityTools.getBendingAbility(player) != Abilities.Shockwave) {
 			instances.remove(player);
 			return;
 		}

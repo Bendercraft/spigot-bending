@@ -9,6 +9,9 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -50,8 +53,6 @@ public class EarthBlast {
 	private boolean progressing = false;
 	private Location destination = null;
 	private Location firstdestination = null;
-	// private Vector firstdirection = null;
-	// private Vector targetdirection = null;
 	private boolean falling = false;
 	private long time;
 	private boolean settingup = true;
@@ -74,13 +75,7 @@ public class EarthBlast {
 
 	public boolean prepare() {
 		cancelPrevious();
-		Block block = Tools.getEarthSourceBlock(player, preparerange);
-		// if (Tools.isEarthbendable(player, block)) {
-		// sourceblock = block;
-		// focusBlock();
-		// return true;
-		// }
-		// return false;
+		Block block = BlockTools.getEarthSourceBlock(player, preparerange);
 		block(player);
 		if (block != null) {
 			sourceblock = block;
@@ -91,10 +86,10 @@ public class EarthBlast {
 	}
 
 	private static Location getTargetLocation(Player player) {
-		Entity target = Tools.getTargettedEntity(player, range);
+		Entity target = EntityTools.getTargettedEntity(player, range);
 		Location location;
 		if (target == null) {
-			location = Tools.getTargetedLocation(player, range);
+			location = EntityTools.getTargetedLocation(player, range);
 		} else {
 			// targetting = true;
 			location = ((LivingEntity) target).getEyeLocation();
@@ -104,12 +99,6 @@ public class EarthBlast {
 	}
 
 	private void cancelPrevious() {
-		// if (prepared.containsKey(player)) {
-		// EarthBlast old = prepared.get(player);
-		// if (!old.progressing) {
-		// old.cancel();
-		// }
-		// }
 
 		for (int id : instances.keySet()) {
 			EarthBlast blast = instances.get(id);
@@ -148,15 +137,15 @@ public class EarthBlast {
 	public void throwEarth() {
 		if (sourceblock != null) {
 			if (sourceblock.getWorld() == player.getWorld()) {
-				if (Tools.movedearth.containsKey(sourceblock)) {
+				if (BlockTools.movedEarth.containsKey(sourceblock)) {
 					if (!revert)
-						Tools.removeRevertIndex(sourceblock);
+						BlockTools.removeRevertIndex(sourceblock);
 					// Tools.removeEarthbendedBlockIndex(sourceblock);
 				}
-				Entity target = Tools.getTargettedEntity(player, range);
+				Entity target = EntityTools.getTargettedEntity(player, range);
 				// Tools.verbose(target);
 				if (target == null) {
-					destination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
+					destination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
 					firstdestination = sourceblock.getLocation().clone();
 					firstdestination.setY(destination.getY());
 				} else {
@@ -166,8 +155,7 @@ public class EarthBlast {
 					destination = Tools.getPointOnLine(firstdestination,
 							destination, range);
 				}
-				// firstdestination.getBlock().setType(Material.GLOWSTONE);
-				// destination.getBlock().setType(Material.GLOWSTONE);
+
 				if (destination.distance(location) <= 1) {
 					progressing = false;
 					destination = null;
@@ -214,7 +202,7 @@ public class EarthBlast {
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()
-				|| !Tools.canBend(player, Abilities.EarthBlast)) {
+				|| !EntityTools.canBend(player, Abilities.EarthBlast)) {
 			breakBlock();
 			return false;
 		}
@@ -226,7 +214,7 @@ public class EarthBlast {
 				return false;
 			}
 
-			if (!Tools.isEarthbendable(player, sourceblock)
+			if (!BlockTools.isEarthbendable(player, sourceblock)
 					&& sourceblock.getType() != Material.COBBLESTONE) {
 				instances.remove(id);
 				return false;
@@ -234,7 +222,7 @@ public class EarthBlast {
 
 			if (!progressing && !falling) {
 
-				if (Tools.getBendingAbility(player) != Abilities.EarthBlast) {
+				if (EntityTools.getBendingAbility(player) != Abilities.EarthBlast) {
 					unfocusBlock();
 					return false;
 				}
@@ -250,52 +238,10 @@ public class EarthBlast {
 					unfocusBlock();
 					return false;
 				}
-				// if (sourceblock.getType() == Material.AIR) {
-				// instances.remove(player.getEntityId());
-				// return false;
-				// }
 			}
 
 			if (falling) {
-				// location = location.clone().add(0, -1, 0);
-				//
-				// if (location.getBlock().getType() == Material.SNOW
-				// || Tools.isPlant(location.getBlock())) {
-				// Tools.breakBlock(location.getBlock());
-				// } else if (location.getBlock().getType() != Material.AIR) {
-				// falling = false;
-				// unfocusBlock();
-				// return false;
-				// }
-				//
-				// for (Entity entity : Tools.getEntitiesAroundPoint(location,
-				// 1)) {
-				// if (entity instanceof LivingEntity
-				// && (entity.getEntityId() != player.getEntityId() || hitself))
-				// {
-				// Tools.damageEntity(player, entity, damage);
-				// falling = false;
-				//
-				// }
-				// }
-				//
-				// if (!falling) {
-				// breakBlock();
-				// return false;
-				// }
-				//
-				// if (revert) {
-				// Tools.addTempEarthBlock(sourceblock, location.getBlock());
-				// }
-				//
-				// location.getBlock().setType(sourceblock.getType());
-				// sourceblock.setType(Material.AIR);
-				//
-				// sourceblock = location.getBlock();
-				//
-				// return true;
 				breakBlock();
-
 			} else {
 				if (!progressing) {
 					return false;
@@ -315,7 +261,7 @@ public class EarthBlast {
 
 				location = location.clone().add(direction);
 
-				Tools.removeSpouts(location, player);
+				PluginTools.removeSpouts(location, player);
 
 				Block block = location.getBlock();
 				if (block.getLocation().equals(sourceblock.getLocation())) {
@@ -323,9 +269,9 @@ public class EarthBlast {
 					block = location.getBlock();
 				}
 
-				if (Tools.isTransparentToEarthbending(player, block)
+				if (BlockTools.isTransparentToEarthbending(player, block)
 						&& !block.isLiquid()) {
-					Tools.breakBlock(block);
+					BlockTools.breakBlock(block);
 				} else if (!settingup) {
 					breakBlock();
 					return false;
@@ -335,7 +281,7 @@ public class EarthBlast {
 							.normalize();
 					location = location.clone().add(direction);
 
-					Tools.removeSpouts(location, player);
+					PluginTools.removeSpouts(location, player);
 					double radius = FireBlast.affectingradius;
 					Player source = player;
 					if (EarthBlast.annihilateBlasts(location, radius, source)
@@ -353,35 +299,26 @@ public class EarthBlast {
 						block2 = location.getBlock();
 					}
 
-					if (Tools.isTransparentToEarthbending(player, block)
+					if (BlockTools.isTransparentToEarthbending(player, block)
 							&& !block.isLiquid()) {
-						Tools.breakBlock(block);
+						BlockTools.breakBlock(block);
 					} else {
 						breakBlock();
 						return false;
 					}
 				}
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-				for (Entity entity : Tools.getEntitiesAroundPoint(location,
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 						FireBlast.affectingradius)) {
 					if (Tools.isRegionProtectedFromBuild(player,
 							Abilities.EarthBlast, entity.getLocation()))
 						continue;
 					if (entity instanceof LivingEntity
 							&& (entity.getEntityId() != player.getEntityId() || hitself)) {
-						// Block testblock = location.getBlock();
-						// Block block1 = entity.getLocation().getBlock();
-						// Block block2 = ((LivingEntity)
-						// entity).getEyeLocation()
-						// .getBlock();
-						// if (testblock.equals(block1)
-						// || testblock.equals(block2)) {
-//						entity.setVelocity(entity.getVelocity().clone()
-//								.add(direction));
 						Location location = player.getEyeLocation();
 				 		Vector vector = location.getDirection();
 				 		entity.setVelocity(vector.normalize().multiply(pushfactor));
-						Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Earth,damage));
+				 		EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Earth,damage));
 						progressing = false;
 						if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
 							if (bPlayer != null) {
@@ -400,7 +337,7 @@ public class EarthBlast {
 				if (revert) {
 					// Tools.addTempEarthBlock(sourceblock, block);
 					sourceblock.setType(sourcetype);
-					Tools.moveEarthBlock(sourceblock, block);
+					BlockTools.moveEarthBlock(sourceblock, block);
 					if (block.getType() == Material.SAND)
 						block.setType(Material.SANDSTONE);
 					if (block.getType() == Material.GRAVEL)
@@ -410,13 +347,6 @@ public class EarthBlast {
 					sourceblock.setType(Material.AIR);
 				}
 
-				// block.setType(sourceblock.getType());
-				// sourceblock.setType(Material.AIR);
-				// if (block.getType() != Material.AIR) {
-				// block.setType(Material.GLOWSTONE);
-				// } else {
-				// block.setType(Material.GLASS);
-				// }
 				sourceblock = block;
 
 				if (location.distance(destination) < 1) {
@@ -441,7 +371,7 @@ public class EarthBlast {
 	private void breakBlock() {
 		sourceblock.setType(sourcetype);
 		if (revert) {
-			Tools.addTempAirBlock(sourceblock);
+			BlockTools.addTempAirBlock(sourceblock);
 		} else {
 			sourceblock.breakNaturally();
 		}

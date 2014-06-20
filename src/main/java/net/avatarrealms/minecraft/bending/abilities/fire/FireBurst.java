@@ -7,6 +7,8 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -50,7 +52,7 @@ public class FireBurst {
 	private void coneBurst() {
 		if (charged) {
 			Location location = player.getEyeLocation();
-			List<Block> safeblocks = Tools.getBlocksAroundPoint(
+			List<Block> safeblocks = BlockTools.getBlocksAroundPoint(
 					player.getLocation(), 2);
 			Vector vector = location.getDirection();
 			double angle = Math.toRadians(30);
@@ -81,7 +83,7 @@ public class FireBurst {
 	private void sphereBurst() {
 		if (charged) {
 			Location location = player.getEyeLocation();
-			List<Block> safeblocks = Tools.getBlocksAroundPoint(
+			List<Block> safeblocks = BlockTools.getBlocksAroundPoint(
 					player.getLocation(), 2);
 			double x, y, z;
 			double r = 1;
@@ -104,8 +106,8 @@ public class FireBurst {
 	}
 
 	private void progress() {
-		if (!Tools.canBend(player, Abilities.FireBurst)
-				|| Tools.getBendingAbility(player) != Abilities.FireBurst) {
+		if (!EntityTools.canBend(player, Abilities.FireBurst)
+				|| EntityTools.getBendingAbility(player) != Abilities.FireBurst) {
 			instances.remove(player);
 			return;
 		}

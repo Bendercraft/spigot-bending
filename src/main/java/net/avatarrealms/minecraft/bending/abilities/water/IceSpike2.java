@@ -8,6 +8,9 @@ import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -53,11 +56,11 @@ public class IceSpike2 {
 
 	public IceSpike2(Player player) {
 		block(player);
-		if (Tools.canPlantbend(player))
+		if (EntityTools.canPlantbend(player))
 			plantbending = true;
-		range = Tools.waterbendingNightAugment(defaultrange, player.getWorld());
+		range = PluginTools.waterbendingNightAugment(defaultrange, player.getWorld());
 		this.player = player;
-		Block sourceblock = Tools.getWaterSourceBlock(player, range,
+		Block sourceblock = BlockTools.getWaterSourceBlock(player, range,
 				plantbending);
 
 		if (sourceblock == null) {
@@ -128,16 +131,16 @@ public class IceSpike2 {
 			Location eyeloc = player.getEyeLocation();
 			Block block = eyeloc.add(eyeloc.getDirection().normalize())
 					.getBlock();
-			if (Tools.isTransparentToEarthbending(player, block)
-					&& Tools.isTransparentToEarthbending(player,
+			if (BlockTools.isTransparentToEarthbending(player, block)
+					&& BlockTools.isTransparentToEarthbending(player,
 							eyeloc.getBlock())) {
 
-				LivingEntity target = (LivingEntity) Tools.getTargettedEntity(
+				LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(
 						player, defaultrange);
 				Location destination;
 				if (target == null) {
-					destination = Tools.getTargetedLocation(player,
-							defaultrange, Tools.transparentEarthbending);
+					destination = EntityTools.getTargetedLocation(player,
+							defaultrange, BlockTools.transparentEarthbending);
 				} else {
 					destination = Tools.getPointOnLine(player.getEyeLocation(),
 							target.getEyeLocation(), defaultrange);
@@ -164,11 +167,11 @@ public class IceSpike2 {
 	private void throwIce() {
 		if (!prepared)
 			return;
-		LivingEntity target = (LivingEntity) Tools.getTargettedEntity(player,
+		LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(player,
 				range);
 		if (target == null) {
-			destination = Tools.getTargetedLocation(player, range,
-					Tools.transparentEarthbending);
+			destination = EntityTools.getTargetedLocation(player, range,
+					BlockTools.transparentEarthbending);
 		} else {
 			destination = target.getEyeLocation();
 		}
@@ -188,10 +191,10 @@ public class IceSpike2 {
 		settingup = true;
 		prepared = false;
 
-		if (Tools.isPlant(sourceblock)) {
+		if (BlockTools.isPlant(sourceblock)) {
 			new Plantbending(sourceblock);
 			sourceblock.setType(Material.AIR);
-		} else if (!Tools.adjacentToThreeOrMoreSources(sourceblock)) {
+		} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 			sourceblock.setType(Material.AIR);
 		}
 
@@ -206,7 +209,7 @@ public class IceSpike2 {
 
 	private void progress() {
 		if (player.isDead() || !player.isOnline()
-				|| !Tools.canBend(player, Abilities.IceSpike)) {
+				|| !EntityTools.canBend(player, Abilities.IceSpike)) {
 			cancel();
 			return;
 		}
@@ -226,7 +229,7 @@ public class IceSpike2 {
 			return;
 		}
 
-		if (Tools.getBendingAbility(player) != Abilities.IceSpike && prepared) {
+		if (EntityTools.getBendingAbility(player) != Abilities.IceSpike && prepared) {
 			cancel();
 			return;
 		}
@@ -267,10 +270,10 @@ public class IceSpike2 {
 			source.revertBlock();
 			source = null;
 
-			if (Tools.isTransparentToEarthbending(player, block)
+			if (BlockTools.isTransparentToEarthbending(player, block)
 					&& !block.isLiquid()) {
-				Tools.breakBlock(block);
-			} else if (!Tools.isWater(block)) {
+				BlockTools.breakBlock(block);
+			} else if (!BlockTools.isWater(block)) {
 				cancel();
 				returnWater();
 				return;
@@ -283,7 +286,7 @@ public class IceSpike2 {
 				return;
 			}
 
-			for (Entity entity : Tools.getEntitiesAroundPoint(location,
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 					affectingradius)) {
 				if (entity.getEntityId() != player.getEntityId()
 						&& entity instanceof LivingEntity) {
@@ -308,9 +311,9 @@ public class IceSpike2 {
 
 	private void affect(LivingEntity entity) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		int mod = (int) Tools.waterbendingNightAugment(defaultmod,
+		int mod = (int) PluginTools.waterbendingNightAugment(defaultmod,
 				player.getWorld());
-		double damage = (int) Tools.waterbendingNightAugment(defaultdamage,
+		double damage = (int) PluginTools.waterbendingNightAugment(defaultdamage,
 				player.getWorld());
 		damage = bPlayer.getCriticalHit(BendingType.Water,damage);
 		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
@@ -349,9 +352,9 @@ public class IceSpike2 {
 
 			if (ice.player.equals(player)) {
 				Location location;
-				Entity target = Tools.getTargettedEntity(player, defaultrange);
+				Entity target = EntityTools.getTargettedEntity(player, defaultrange);
 				if (target == null) {
-					location = Tools.getTargetedLocation(player, defaultrange);
+					location = EntityTools.getTargetedLocation(player, defaultrange);
 				} else {
 					location = ((LivingEntity) target).getEyeLocation();
 				}
@@ -372,9 +375,9 @@ public class IceSpike2 {
 							.distance(location.clone().add(
 									vector.clone().multiply(-1)))) {
 				Location loc;
-				Entity target = Tools.getTargettedEntity(player, defaultrange);
+				Entity target = EntityTools.getTargettedEntity(player, defaultrange);
 				if (target == null) {
-					loc = Tools.getTargetedLocation(player, defaultrange);
+					loc = EntityTools.getTargetedLocation(player, defaultrange);
 				} else {
 					loc = ((LivingEntity) target).getEyeLocation();
 				}

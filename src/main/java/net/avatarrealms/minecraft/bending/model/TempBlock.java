@@ -2,6 +2,7 @@ package net.avatarrealms.minecraft.bending.model;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -74,7 +75,7 @@ public class TempBlock {
 		} else {
 			if ((defaulttype == Material.WATER
 					|| defaulttype == Material.STATIONARY_WATER || defaulttype == Material.AIR)
-					&& Tools.adjacentToThreeOrMoreSources(block)) {
+					&& BlockTools.adjacentToThreeOrMoreSources(block)) {
 				block.setType(Material.WATER);
 				block.setData((byte) 0x0);
 			} else {

@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -42,13 +42,13 @@ public class CompactColumn {
 		if (bPlayer.isOnCooldown(Abilities.Collapse))
 			return;
 
-		block = Tools.getEarthSourceBlock(player, range);
+		block = BlockTools.getEarthSourceBlock(player, range);
 		if (block == null)
 			return;
 		origin = block.getLocation();
 		location = origin.clone();
 		this.player = player;
-		distance = Tools.getEarthbendableBlocksLength(player, block, direction
+		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
 				.clone().multiply(-1), height);
 
 		loadAffectedBlocks();
@@ -75,7 +75,7 @@ public class CompactColumn {
 		// Tools.verbose(block);
 		// Tools.verbose(origin);
 		location = origin.clone();
-		distance = Tools.getEarthbendableBlocksLength(player, block, direction
+		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
 				.clone().multiply(-1), height);
 
 		loadAffectedBlocks();
@@ -164,7 +164,7 @@ public class CompactColumn {
 		if (block == null || location == null || distance == 0) {
 			return false;
 		}
-		Tools.moveEarth(player, block, direction, distance);
+		BlockTools.moveEarth(player, block, direction, distance);
 		loadAffectedBlocks();
 
 		if (location.distance(origin) >= distance) {

@@ -4,6 +4,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -12,21 +13,12 @@ import org.bukkit.util.Vector;
 
 public class ArcOfFire {
 
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
-	// static final long soonesttime = Tools.timeinterval;
-
 	private static int defaultarc = ConfigManager.arcOfFireArc;
 	private static int defaultrange = ConfigManager.arcOfFireRange;
 	private static int stepsize = 2;
 
 	public ArcOfFire(Player player) {
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
-		// return;
-		// }
-		// }
-		// timers.put(player, System.currentTimeMillis());
+		
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Blaze))
@@ -34,7 +26,7 @@ public class ArcOfFire {
 
 		Location location = player.getLocation();
 
-		int arc = (int) Tools.firebendingDayAugment(defaultarc,
+		int arc = (int) PluginTools.firebendingDayAugment(defaultarc,
 				player.getWorld());
 
 		for (int i = -arc; i <= arc; i += stepsize) {

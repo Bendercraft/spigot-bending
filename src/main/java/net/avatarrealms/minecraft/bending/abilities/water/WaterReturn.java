@@ -5,6 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -37,15 +40,12 @@ public class WaterReturn {
 		location = block.getLocation();
 		if (!Tools.isRegionProtectedFromBuild(player,
 				Abilities.WaterManipulation, location)
-				&& Tools.canBend(player, Abilities.WaterManipulation)) {
-			if (Tools.isTransparentToEarthbending(player, block)
+				&& EntityTools.canBend(player, Abilities.WaterManipulation)) {
+			if (BlockTools.isTransparentToEarthbending(player, block)
 					&& !block.isLiquid())
 				this.block = new TempBlock(block, Material.WATER, full);
 		}
-		// if (ID >= Integer.MAX_VALUE) {
-		// ID = Integer.MIN_VALUE;
-		// }
-		// id = ID++;
+
 		instances.put(player, this);
 	}
 
@@ -88,7 +88,7 @@ public class WaterReturn {
 			return;
 		}
 
-		if (location.distance(player.getEyeLocation()) > Tools
+		if (location.distance(player.getEyeLocation()) > PluginTools
 				.waterbendingNightAugment(range, player.getWorld())) {
 			remove();
 			return;
@@ -100,7 +100,7 @@ public class WaterReturn {
 		}
 
 		Block newblock = location.getBlock();
-		if (Tools.isTransparentToEarthbending(player, newblock)
+		if (BlockTools.isTransparentToEarthbending(player, newblock)
 				&& !newblock.isLiquid()) {
 			block.revertBlock();
 			block = new TempBlock(newblock, Material.WATER, full);

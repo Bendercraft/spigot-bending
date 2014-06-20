@@ -7,7 +7,7 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -20,42 +20,35 @@ public class Speed {
 	private Player player;
 	private int id;
 
-	// private boolean canfly = false;
 
 	public Speed(Player player) {
 		this.player = player;
 		id = player.getEntityId();
-		// canfly = player.getAllowFlight();
 		new Flight(player);
 		player.setAllowFlight(true);
 		instances.put(id, this);
 	}
 
 	public boolean progress() {
-		// if (player.isFlying() && player.getGameMode() != GameMode.CREATIVE
-		// && !AirScooter.getPlayers().contains(player)
-		// && !AvatarState.isAvatarState(player))
-		// player.setFlying(false);
 		if (player.isSprinting()
-				&& Tools.isBender(player, BendingType.Air)
-				&& Tools.canBendPassive(player, BendingType.Air)) {
+				&& EntityTools.isBender(player, BendingType.Air)
+				&& EntityTools.canBendPassive(player, BendingType.Air)) {
 			applySpeed();
 			return true;
 		}
 		if (player.isSprinting()
-				&& Tools.isBender(player, BendingType.ChiBlocker)) {
+				&& EntityTools.isBender(player, BendingType.ChiBlocker)) {
 			applySpeed();
 			return true;
 		}
-		// player.setAllowFlight(canfly);
 		instances.remove(id);
 		return false;
 	}
 
 	private void applySpeed() {
 		int factor = 0;
-		if (Tools.isBender(player, BendingType.Air)
-				&& Tools.canBendPassive(player, BendingType.Air)) {
+		if (EntityTools.isBender(player, BendingType.Air)
+				&& EntityTools.canBendPassive(player, BendingType.Air)) {
 			factor = 1;
 		}
 		int jumpfactor = factor + 1;
@@ -63,13 +56,11 @@ public class Speed {
 				factor);
 		PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70,
 				jumpfactor);
-		// player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 70,
-		// factor));
+
 		new TempPotionEffect(player, speed);
-		if (Tools.getBendingAbility(player) != Abilities.AirScooter)
+		if (EntityTools.getBendingAbility(player) != Abilities.AirScooter)
 			new TempPotionEffect(player, jump);
-		// player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 70,
-		// jumpfactor));
+
 	}
 
 	public static boolean progress(int ID) {

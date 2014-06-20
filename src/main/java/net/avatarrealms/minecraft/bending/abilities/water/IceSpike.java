@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -67,7 +68,7 @@ public class IceSpike {
 
 			double lowestdistance = range + 1;
 			Entity closestentity = null;
-			for (Entity entity : Tools.getEntitiesAroundPoint(
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(
 					player.getLocation(), range)) {
 				if (Tools.getDistanceFromLine(player.getLocation()
 						.getDirection(), player.getLocation(), entity
@@ -89,7 +90,7 @@ public class IceSpike {
 				this.block = temptestingblock;
 				// }
 			} else {
-				this.block = Tools.getTargetBlock(player, range);
+				this.block = EntityTools.getTargetBlock(player, range);
 			}
 			origin = block.getLocation();
 			location = origin.clone();
@@ -220,15 +221,11 @@ public class IceSpike {
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
 				location))
 			return false;
-		for (Entity en : Tools.getEntitiesAroundPoint(location, 1.4)) {
+		for (Entity en : EntityTools.getEntitiesAroundPoint(location, 1.4)) {
 			if (en instanceof LivingEntity && en != player
 					&& !damaged.contains(((LivingEntity) en))) {
 				LivingEntity le = (LivingEntity) en;
 				affect(le);
-				// le.setVelocity(thrown);
-				// le.damage(damage);
-				// damaged.add(le);
-				// Tools.verbose(damage + " Hp:" + le.getHealth());
 			}
 		}
 		affectedblock.setType(Material.ICE);

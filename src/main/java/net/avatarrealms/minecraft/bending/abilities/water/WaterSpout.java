@@ -8,6 +8,9 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -63,8 +66,8 @@ public class WaterSpout {
 		for (Player player : instances.keySet()) {
 			if (!player.isOnline() || player.isDead()) {
 				instances.get(player).remove();
-			} else if (Tools.hasAbility(player, Abilities.WaterSpout)
-					&& Tools.canBend(player, Abilities.WaterSpout)) {
+			} else if (EntityTools.hasAbility(player, Abilities.WaterSpout)
+					&& EntityTools.canBend(player, Abilities.WaterSpout)) {
 				spout(player);
 			} else {
 				instances.get(player).remove();
@@ -76,25 +79,6 @@ public class WaterSpout {
 				remove(block);
 			}
 		}
-
-		// for (Block block : affectedblocks.keySet()) {
-		// boolean remove = true;
-		// for (Player player : instances.keySet()) {
-		// if (Tools.hasAbility(player, Abilities.WaterSpout)
-		// && Tools.canBend(player, Abilities.WaterSpout)
-		// && player.getWorld() == block.getWorld()) {
-		// Location loc1 = player.getLocation().clone();
-		// loc1.setY(0);
-		// Location loc2 = block.getLocation().clone();
-		// loc2.setY(0);
-		// if (loc1.distance(loc2) < 1)
-		// remove = false;
-		// }
-		// }
-		// if (remove)
-		// remove(block);
-		// }
-
 	}
 
 	private static void remove(Block block) {
@@ -108,11 +92,7 @@ public class WaterSpout {
 		WaterSpout spout = instances.get(player);
 		player.setFallDistance(0);
 		player.setSprinting(false);
-		// if (player.getVelocity().length() > threshold) {
-		// // Tools.verbose("Too fast!");
-		// player.setVelocity(player.getVelocity().clone().normalize()
-		// .multiply(threshold * .5));
-		// }
+
 		player.removePotionEffect(PotionEffectType.SPEED);
 		Location location = player.getLocation().clone().add(0, .2, 0);
 		Block block = location.clone().getBlock();
@@ -174,7 +154,7 @@ public class WaterSpout {
 		WaterSpout spout = instances.get(player);
 		int height = defaultheight;
 		if (Tools.isNight(player.getWorld()))
-			height = (int) Tools.waterbendingNightAugment((double) height,
+			height = (int) PluginTools.waterbendingNightAugment((double) height,
 					player.getWorld());
 		int maxheight = (int) ((double) defaultheight * ConfigManager.nightFactor) + 5;
 		Block blocki;
@@ -202,15 +182,13 @@ public class WaterSpout {
 						instances.get(player).baseblock = new TempBlock(blocki,
 								Material.WATER, full);
 					}
-					// blocki.setType(Material.WATER);
-					// blocki.setData(full);
 					spout.base = blocki;
 					if (i > height)
 						return height;
 					return i;
 				}
-				if ((blocki.getType() != Material.AIR && (!Tools
-						.isPlant(blocki) || !Tools.canPlantbend(player)))) {
+				if ((blocki.getType() != Material.AIR && (!BlockTools.isPlant(blocki) 
+						|| !EntityTools.canPlantbend(player)))) {
 					revertBaseBlock(player);
 					return -1;
 				}

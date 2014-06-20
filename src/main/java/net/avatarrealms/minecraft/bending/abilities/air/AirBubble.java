@@ -6,6 +6,9 @@ import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -32,52 +35,39 @@ public class AirBubble {
 
 	public AirBubble(Player player) {
 		this.player = player;
-		// waterorigins = new ConcurrentHashMap<Block, Byte>();
 		waterorigins = new ConcurrentHashMap<Block, BlockState>();
 		instances.put(player.getEntityId(), this);
 	}
 
 	private void pushWater() {
-		if (Tools.isBender(player, BendingType.Air)) {
+		if (EntityTools.isBender(player, BendingType.Air)) {
 			radius = defaultAirRadius;
 		} else {
 			radius = defaultWaterRadius;
 		}
-		if (Tools.isBender(player, BendingType.Water)
+		if (EntityTools.isBender(player, BendingType.Water)
 				&& Tools.isNight(player.getWorld())) {
-			radius = Tools.waterbendingNightAugment(defaultWaterRadius,
+			radius = PluginTools.waterbendingNightAugment(defaultWaterRadius,
 					player.getWorld());
 		}
 		if (defaultAirRadius > radius
-				&& Tools.isBender(player, BendingType.Air))
+				&& EntityTools.isBender(player, BendingType.Air))
 			radius = defaultAirRadius;
 		Location location = player.getLocation();
 
 		for (Block block : waterorigins.keySet()) {
 			if (block.getWorld() != location.getWorld()) {
-				if (block.getType() == Material.AIR || Tools.isWater(block))
+				if (block.getType() == Material.AIR || BlockTools.isWater(block))
 					waterorigins.get(block).update(true);
-				// byte data = full;
-				// block = block.getLocation().getBlock();
-				// if (block.getType() == Material.AIR) {
-				// block.setType(Material.WATER);
-				// block.setData(data);
-				// }
 				waterorigins.remove(block);
 			} else if (block.getLocation().distance(location) > radius) {
-				if (block.getType() == Material.AIR || Tools.isWater(block))
+				if (block.getType() == Material.AIR || BlockTools.isWater(block))
 					waterorigins.get(block).update(true);
-				// byte data = full;
-				// block = block.getLocation().getBlock();
-				// if (block.getType() == Material.AIR) {
-				// block.setType(Material.WATER);
-				// block.setData(data);
-				// }
 				waterorigins.remove(block);
 			}
 		}
 
-		for (Block block : Tools.getBlocksAroundPoint(location, radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (waterorigins.containsKey(block))
 				continue;
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.AirBubble,
@@ -93,9 +83,7 @@ public class AirBubble {
 					block.setType(Material.AIR);
 				}
 			}
-
 		}
-
 	}
 
 	public boolean progress() {
@@ -103,28 +91,21 @@ public class AirBubble {
 			removeBubble();
 			return false;
 		}
-		if (((Tools.getBendingAbility(player) == Abilities.AirBubble) && Tools
-				.canBend(player, Abilities.AirBubble))
-				|| ((Tools.getBendingAbility(player) == Abilities.WaterBubble) && Tools
-						.canBend(player, Abilities.WaterBubble))) {
+		if (((EntityTools.getBendingAbility(player) == Abilities.AirBubble) 
+				&& EntityTools.canBend(player, Abilities.AirBubble))
+				|| ((EntityTools.getBendingAbility(player) == Abilities.WaterBubble) 
+						&& EntityTools.canBend(player, Abilities.WaterBubble))) {
 			pushWater();
 			return true;
 		}
 		removeBubble();
 		return false;
-		// if ((Tools.getBendingAbility(player) != Abilities.AirBubble && Tools
-		// .getBendingAbility(player) != Abilities.WaterBubble)) {
-		// removeBubble();
-		// return false;
-		// }
-		// pushWater();
-		// return true;
 	}
 
 	public static void handleBubbles(Server server) {
 
 		for (Player player : server.getOnlinePlayers()) {
-			if ((Tools.getBendingAbility(player) == Abilities.AirBubble || Tools
+			if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble || EntityTools
 					.getBendingAbility(player) == Abilities.WaterBubble)
 					&& !instances.containsKey(player.getEntityId())) {
 				new AirBubble(player);
@@ -138,13 +119,6 @@ public class AirBubble {
 
 	private void removeBubble() {
 		for (Block block : waterorigins.keySet()) {
-			// byte data = waterorigins.get(block);
-			// byte data = 0x0;
-			// block = block.getLocation().getBlock();
-			// if (block.getType() == Material.AIR) {
-			// block.setType(Material.WATER);
-			// block.setData(data);
-			// }
 			if (block.getType() == Material.AIR || block.isLiquid())
 				waterorigins.get(block).update(true);
 		}

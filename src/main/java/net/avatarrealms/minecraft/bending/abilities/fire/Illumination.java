@@ -5,6 +5,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Material;
@@ -56,7 +59,7 @@ public class Illumination {
 		} else if ((FireStream.isIgnitable(player, standingblock) && standblock
 				.getType() != Material.LEAVES)
 				&& !block.equals(standblock)
-				&& !blocks.containsKey(standblock) && Tools.isSolid(standblock)) {
+				&& !blocks.containsKey(standblock) && BlockTools.isSolid(standblock)) {
 			revert();
 			block = standingblock;
 			normaltype = block.getType();
@@ -67,8 +70,8 @@ public class Illumination {
 			return;
 		} else if (player.getWorld() != block.getWorld()) {
 			revert();
-		} else if (player.getLocation().distance(block.getLocation()) > Tools
-				.firebendingDayAugment(range, player.getWorld())) {
+		} else if (player.getLocation().distance(block.getLocation()) > 
+		PluginTools.firebendingDayAugment(range, player.getWorld())) {
 			revert();
 		}
 	}
@@ -89,7 +92,7 @@ public class Illumination {
 	public static void manage(Server server) {
 		for (Player player : server.getOnlinePlayers()) {
 			if (instances.containsKey(player)
-					&& (!Tools.hasAbility(player, Abilities.Illumination) || !Tools
+					&& (!EntityTools.hasAbility(player, Abilities.Illumination) || !EntityTools
 							.canBend(player, Abilities.Illumination))) {
 				instances.get(player).revert();
 				instances.remove(player);

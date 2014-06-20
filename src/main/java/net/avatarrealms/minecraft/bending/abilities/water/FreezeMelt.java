@@ -7,6 +7,9 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -27,9 +30,9 @@ public class FreezeMelt {
 		if (bPlayer.isOnCooldown(Abilities.PhaseChange))
 			return;
 
-		int range = (int) Tools.waterbendingNightAugment(defaultrange,
+		int range = (int) PluginTools.waterbendingNightAugment(defaultrange,
 				player.getWorld());
-		int radius = (int) Tools.waterbendingNightAugment(defaultradius,
+		int radius = (int) PluginTools.waterbendingNightAugment(defaultradius,
 				player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
@@ -38,8 +41,8 @@ public class FreezeMelt {
 
 		boolean cooldown = false;
 
-		Location location = Tools.getTargetedLocation(player, range);
-		for (Block block : Tools.getBlocksAroundPoint(location, radius)) {
+		Location location = EntityTools.getTargetedLocation(player, range);
+		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (isFreezable(player, block)) {
 				freeze(player, block);
 				cooldown = true;
@@ -93,13 +96,13 @@ public class FreezeMelt {
 	public static boolean canThaw(Block block) {
 		if (frozenblocks.containsKey(block)) {
 			for (Player player : block.getWorld().getPlayers()) {
-				if (Tools.getBendingAbility(player) == Abilities.OctopusForm) {
+				if (EntityTools.getBendingAbility(player) == Abilities.OctopusForm) {
 					if (block.getLocation().distance(player.getLocation()) <= OctopusForm.radius + 2)
 						return false;
 				}
-				if (Tools.hasAbility(player, Abilities.PhaseChange)
-						&& Tools.canBend(player, Abilities.PhaseChange)) {
-					double range = Tools.waterbendingNightAugment(defaultrange,
+				if (EntityTools.hasAbility(player, Abilities.PhaseChange)
+						&& EntityTools.canBend(player, Abilities.PhaseChange)) {
+					double range = PluginTools.waterbendingNightAugment(defaultrange,
 							player.getWorld());
 					if (AvatarState.isAvatarState(player)) {
 						range = AvatarState.getValue(range);

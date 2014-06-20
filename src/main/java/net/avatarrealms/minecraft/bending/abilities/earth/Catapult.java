@@ -8,7 +8,8 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -19,9 +20,6 @@ import org.bukkit.util.Vector;
 public class Catapult {
 
 	public static ConcurrentHashMap<Integer, Catapult> instances = new ConcurrentHashMap<Integer, Catapult>();
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
-	// static final long soonesttime = Tools.timeinterval;
 
 	private static int length = ConfigManager.catapultLength;
 	private static double speed = ConfigManager.catapultSpeed;
@@ -43,11 +41,6 @@ public class Catapult {
 	private int ticks = 0;
 
 	public Catapult(Player player) {
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
-		// return;
-		// }
-		// }
 
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
@@ -64,12 +57,12 @@ public class Catapult {
 		for (int i = 0; i <= length; i++) {
 			location = origin.clone().add(neg.clone().multiply((double) i));
 			block = location.getBlock();
-			if (Tools.isEarthbendable(player, block)) {
+			if (BlockTools.isEarthbendable(player, block)) {
 				// block.setType(Material.SANDSTONE);
-				distance = Tools.getEarthbendableBlocksLength(player, block,
+				distance = BlockTools.getEarthbendableBlocksLength(player, block,
 						neg, length - i);
 				break;
-			} else if (!Tools.isTransparentToEarthbending(player, block)) {
+			} else if (!BlockTools.isTransparentToEarthbending(player, block)) {
 				break;
 			}
 		}
@@ -143,10 +136,8 @@ public class Catapult {
 			return;
 		}
 
-		for (Block block : Tools
-				.getBlocksAroundPoint(player.getLocation(), 1.5)) {
-			if ((Tools.isSolid(block) || block.isLiquid())) {
-				// Tools.verbose("Catapulting stopped");
+		for (Block block : BlockTools.getBlocksAroundPoint(player.getLocation(), 1.5)) {
+			if ((BlockTools.isSolid(block) || block.isLiquid())) {
 				flying = false;
 				return;
 			}
@@ -162,9 +153,6 @@ public class Catapult {
 	}
 
 	private boolean moveEarth() {
-		// Tools.verbose(distance);
-		// Tools.verbose(direction);
-		// Location loc = location.clone().add(direction);
 		if (ticks > distance) {
 			return false;
 		} else {
@@ -177,7 +165,7 @@ public class Catapult {
 		if (catapult) {
 			if (location.distance(origin) < .5) {
 				boolean remove = false;
-				for (Entity entity : Tools.getEntitiesAroundPoint(origin, 2)) {
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, 2)) {
 					if (entity instanceof Player) {
 						Player target = (Player) entity;
 						boolean equal = target.getEntityId() == player
@@ -200,14 +188,14 @@ public class Catapult {
 			}
 		} else {
 			if (location.distance(origin) <= length - distance) {
-				for (Entity entity : Tools.getEntitiesAroundPoint(location, 2)) {
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2)) {
 					entity.setVelocity(direction.clone().multiply(
 							push * distance / length));
 				}
 				return false;
 			}
 		}
-		Tools.moveEarth(player, location.clone().subtract(direction),
+		BlockTools.moveEarth(player, location.clone().subtract(direction),
 				direction, distance, false);
 		return true;
 	}

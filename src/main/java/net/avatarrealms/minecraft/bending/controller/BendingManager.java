@@ -58,6 +58,9 @@ import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -130,10 +133,10 @@ public class BendingManager implements Runnable {
 				handleVerbosity();
 
 		} catch (Exception e) {
-			Tools.stopAllBending();
-			Tools.writeToLog("Bending broke!");
-			Tools.writeToLog(ExceptionUtils.getStackTrace(e));
-			Tools.verbose("Bending just broke! It seems to have saved itself. The cause was reported in bending.log, and is repeated here for your convenience:");
+			PluginTools.stopAllBending();
+			PluginTools.writeToLog("Bending broke!");
+			PluginTools.writeToLog(ExceptionUtils.getStackTrace(e));
+			PluginTools.verbose("Bending just broke! It seems to have saved itself. The cause was reported in bending.log, and is repeated here for your convenience:");
 			e.printStackTrace();
 		}
 
@@ -204,12 +207,12 @@ public class BendingManager implements Runnable {
 		for (Block block : RevertChecker.revertQueue.keySet()) {
 			// Tools.removeEarthbendedBlockByIndex(block);
 			// if (Tools.revertBlock(block))
-			Tools.revertBlock(block);
+			BlockTools.revertBlock(block);
 			RevertChecker.revertQueue.remove(block);
 		}
 
 		for (int i : RevertChecker.airRevertQueue.keySet()) {
-			Tools.revertAirBlock(i);
+			BlockTools.revertAirBlock(i);
 			RevertChecker.airRevertQueue.remove(i);
 		}
 
@@ -262,7 +265,6 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageWaterbending() {
-		// WalkOnWater.handleFreezing(plugin.getServer());
 
 		FreezeMelt.handleFrozenBlocks();
 
@@ -307,68 +309,6 @@ public class BendingManager implements Runnable {
 
 	}
 
-	// private void handleFlying() {
-	//
-	// ArrayList<Player> players = new ArrayList<Player>();
-	// ArrayList<Player> newflyingplayers = new ArrayList<Player>();
-	// ArrayList<Player> avatarstateplayers = new ArrayList<Player>();
-	// ArrayList<Player> airscooterplayers = new ArrayList<Player>();
-	// ArrayList<Player> waterspoutplayers = new ArrayList<Player>();
-	// ArrayList<Player> airspoutplayers = new ArrayList<Player>();
-	//
-	// players.addAll(Tornado.getPlayers());
-	// players.addAll(Speed.getPlayers());
-	// players.addAll(FireJet.getPlayers());
-	// players.addAll(Catapult.getPlayers());
-	// avatarstateplayers = AvatarState.getPlayers();
-	// airscooterplayers = AirScooter.getPlayers();
-	// waterspoutplayers = WaterSpout.getPlayers();
-	// airspoutplayers = AirSpout.getPlayers();
-	// // players.addAll(avatarstateplayers);
-	//
-	// for (Player player : plugin.getServer().getOnlinePlayers()) {
-	// if (avatarstateplayers.contains(player)
-	// || airscooterplayers.contains(player)
-	// || waterspoutplayers.contains(player)
-	// || airspoutplayers.contains(player)) {
-	// continue;
-	// }
-	// if (Bloodbending.isBloodbended(player)) {
-	// player.setAllowFlight(true);
-	// player.setFlying(false);
-	// continue;
-	// }
-	// if (flyingplayers.contains(player) && players.contains(player)) {
-	// player.setAllowFlight(true);
-	// if (player.getGameMode() != GameMode.CREATIVE)
-	// player.setFlying(false);
-	// newflyingplayers.add(player);
-	// } else if (players.contains(player)
-	// && !flyingplayers.contains(player)) {
-	// newflyingplayers.add(player);
-	// if (player.getGameMode() != GameMode.CREATIVE)
-	// player.setFlying(false);
-	// } else if (flyingplayers.contains(player)
-	// && !players.contains(player)) {
-	// player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE);
-	// if (player.getGameMode() != GameMode.CREATIVE)
-	// player.setFlying(false);
-	// } else {
-	// player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE);
-	// if (player.getGameMode() != GameMode.CREATIVE)
-	// player.setFlying(false);
-	// }
-	// }
-	// flyingplayers.clear();
-	// flyingplayers.addAll(newflyingplayers);
-	// }
-	//
-	// public static void removeFlyers() {
-	// for (Player player : flyingplayers) {
-	// player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE);
-	// }
-	// }
-
 	private void handleDayNight() {
 
 		for (World world : plugin.getServer().getWorlds())
@@ -389,11 +329,11 @@ public class BendingManager implements Runnable {
 			boolean day = days.get(world);
 			if (Tools.isDay(world) && !day) {
 				for (Player player : world.getPlayers()) {
-					if (Tools.isBender(player, BendingType.Fire)
+					if (EntityTools.isBender(player, BendingType.Fire)
 							&& player
 									.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = Tools.getColor(ConfigManager.getColor("Fire"));
+						color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 						player.sendMessage(color
 								+ "You feel the strength of the rising sun empowering your firebending.");
 					}
@@ -403,11 +343,11 @@ public class BendingManager implements Runnable {
 
 			if (!Tools.isDay(world) && day) {
 				for (Player player : world.getPlayers()) {
-					if (Tools.isBender(player, BendingType.Fire)
+					if (EntityTools.isBender(player, BendingType.Fire)
 							&& player
 									.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = Tools.getColor(ConfigManager.getColor("Fire"));
+						color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 						player.sendMessage(color
 								+ "You feel the empowering of your firebending subside as the sun sets.");
 					}
@@ -417,11 +357,11 @@ public class BendingManager implements Runnable {
 
 			if (Tools.isNight(world) && !night) {
 				for (Player player : world.getPlayers()) {
-					if (Tools.isBender(player, BendingType.Water)
+					if (EntityTools.isBender(player, BendingType.Water)
 							&& player
 									.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = Tools.getColor(ConfigManager.getColor("Water"));
+						color = PluginTools.getColor(ConfigManager.getColor("Water"));
 						player.sendMessage(color
 								+ "You feel the strength of the rising moon empowering your waterbending.");
 					}
@@ -431,11 +371,11 @@ public class BendingManager implements Runnable {
 
 			if (!Tools.isNight(world) && night) {
 				for (Player player : world.getPlayers()) {
-					if (Tools.isBender(player, BendingType.Water)
+					if (EntityTools.isBender(player, BendingType.Water)
 							&& player
 									.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = Tools.getColor(ConfigManager.getColor("Water"));
+						color = PluginTools.getColor(ConfigManager.getColor("Water"));
 						player.sendMessage(color
 								+ "You feel the empowering of your waterbending subside as the moon sets.");
 					}
@@ -558,32 +498,25 @@ public class BendingManager implements Runnable {
 		waves = Wave.instances.size();
 
 		for (Player player : plugin.getServer().getOnlinePlayers()) {
-			Abilities ability = Tools.getBendingAbility(player);
+			Abilities ability = EntityTools.getBendingAbility(player);
 			if (ability == Abilities.AirBlast)
 				airblastplayers++;
 			if (ability == Abilities.AirBubble)
 				airbubbleplayers++;
-			// if (ability==Abilities.AirBurst)
-			// airburstplayers++;
 			if (ability == Abilities.AirScooter)
 				airscooterplayers++;
 			if (ability == Abilities.AirShield)
 				airshieldplayers++;
-			// if (ability==Abilities.AirSpout)
-			// airspoutplayers++;
 			if (ability == Abilities.AirSuction)
 				airsuctionplayers++;
 			if (ability == Abilities.AirSwipe)
 				airswipeplayers++;
 			if (ability == Abilities.Tornado)
 				tornadoplayers++;
-
 			if (ability == Abilities.Catapult)
 				catapultplayers++;
 			if (ability == Abilities.Collapse)
 				compactcolumnplayers++;
-			// if (ability == Abilities.CompactColumn)
-			// compactcolumnplayers++;
 			if (ability == Abilities.EarthBlast)
 				earthblastplayers++;
 			if (ability == Abilities.RaiseEarth)
@@ -592,35 +525,29 @@ public class BendingManager implements Runnable {
 				earthcolumnplayers++;
 			if (ability == Abilities.EarthTunnel)
 				earthtunnelplayers++;
-			if (Tools.hasAbility(player, Abilities.Tremorsense))
+			if (EntityTools.hasAbility(player, Abilities.Tremorsense))
 				tremorsenseplayers++;
-			// if (ability==Abilities.Shockwave) shockwaveplayers++;
-
 			if (ability == Abilities.Blaze)
 				firestreamplayers++;
 			if (ability == Abilities.FireBlast)
 				fireballplayers++;
 			if (ability == Abilities.FireBlast)
 				fireblastplayers++;
-			if (Tools.hasAbility(player, Abilities.FireJet))
+			if (EntityTools.hasAbility(player, Abilities.FireJet))
 				firejetplayers++;
-			if (Tools.hasAbility(player, Abilities.Illumination))
+			if (EntityTools.hasAbility(player, Abilities.Illumination))
 				illuminationplayers++;
-			// if (ability==Abilities.Lightning) lightningplayers++;
 			if (ability == Abilities.WallOfFire)
 				walloffireplayers++;
-
 			if (ability == Abilities.Bloodbending)
 				bloodbendingplayers++;
-			if (Tools.hasAbility(player, Abilities.PhaseChange))
+			if (EntityTools.hasAbility(player, Abilities.PhaseChange))
 				freezemeltplayers++;
-			// if (ability == Abilities.WalkOnWater)
-			// freezemeltplayers++;
 			if (ability == Abilities.WaterBubble)
 				airbubbleplayers++;
 			if (ability == Abilities.WaterManipulation)
 				watermanipulationplayers++;
-			if (Tools.hasAbility(player, Abilities.WaterSpout))
+			if (EntityTools.hasAbility(player, Abilities.WaterSpout))
 				waterspoutplayers++;
 			if (ability == Abilities.Surge)
 				waterwallplayers++;
@@ -628,7 +555,7 @@ public class BendingManager implements Runnable {
 				waveplayers++;
 		}
 
-		Tools.writeToLog("Debug data at "
+		PluginTools.writeToLog("Debug data at "
 				+ Calendar.getInstance().get(Calendar.HOUR) + "h "
 				+ Calendar.getInstance().get(Calendar.MINUTE) + "m "
 				+ Calendar.getInstance().get(Calendar.SECOND) + "s");
@@ -667,7 +594,7 @@ public class BendingManager implements Runnable {
 		verbose("waterwalls", waterwalls, waterwallplayers, true);
 		verbose("waves", waves, waveplayers, true);
 
-		Tools.writeToLog(null);
+		PluginTools.writeToLog(null);
 	}
 
 	private void verbose(String name, int instances, int players,
@@ -675,7 +602,7 @@ public class BendingManager implements Runnable {
 		if (warning && instances > players) {
 			name = "==WARNING== " + name;
 		}
-		Tools.writeToLog(name + ": " + instances + " instances for " + players
+		PluginTools.writeToLog(name + ": " + instances + " instances for " + players
 				+ " players.");
 	}
 

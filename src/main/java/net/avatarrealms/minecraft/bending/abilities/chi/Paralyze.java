@@ -7,7 +7,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
@@ -24,9 +24,9 @@ public class Paralyze {
 
 	public Paralyze(Player sourceplayer, Entity targetentity) {
 		if (targetentity != null && sourceplayer != null) {
-			if (Tools.isBender(sourceplayer, BendingType.ChiBlocker)
-				&& Tools.getBendingAbility(sourceplayer) == Abilities.Paralyze
-				&& Tools.canBend(sourceplayer, Abilities.Paralyze)) {
+			if (EntityTools.isBender(sourceplayer, BendingType.ChiBlocker)
+				&& EntityTools.getBendingAbility(sourceplayer) == Abilities.Paralyze
+				&& EntityTools.canBend(sourceplayer, Abilities.Paralyze)) {
 			if (cooldowns.containsKey(targetentity)) {
 				if (System.currentTimeMillis() < cooldowns.get(targetentity)
 						+ cooldown) {

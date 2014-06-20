@@ -7,6 +7,8 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -58,7 +60,7 @@ public class OctopusForm {
 		}
 		this.player = player;
 		time = System.currentTimeMillis();
-		sourceblock = Tools.getWaterSourceBlock(player, range, true);
+		sourceblock = BlockTools.getWaterSourceBlock(player, range, true);
 		if (sourceblock != null) {
 			sourcelocation = sourceblock.getLocation();
 			sourceselected = true;
@@ -86,8 +88,8 @@ public class OctopusForm {
 			Location eyeloc = player.getEyeLocation();
 			Block block = eyeloc.add(eyeloc.getDirection().normalize())
 					.getBlock();
-			if (Tools.isTransparentToEarthbending(player, block)
-					&& Tools.isTransparentToEarthbending(player,
+			if (BlockTools.isTransparentToEarthbending(player, block)
+					&& BlockTools.isTransparentToEarthbending(player,
 							eyeloc.getBlock())) {
 				block.setType(Material.WATER);
 				block.setData(full);
@@ -104,10 +106,10 @@ public class OctopusForm {
 
 	private void form() {
 		incrementStep();
-		if (Tools.isPlant(sourceblock)) {
+		if (BlockTools.isPlant(sourceblock)) {
 			new Plantbending(sourceblock);
 			sourceblock.setType(Material.AIR);
-		} else if (!Tools.adjacentToThreeOrMoreSources(sourceblock)) {
+		} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 			sourceblock.setType(Material.AIR);
 		}
 		source = new TempBlock(sourceblock, Material.WATER, full);
@@ -131,7 +133,7 @@ public class OctopusForm {
 
 	private void affect(Location location) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		for (Entity entity : Tools.getEntitiesAroundPoint(location, 2.5)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2.5)) {
 			if (entity.getEntityId() == player.getEntityId())
 				continue;
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.OctopusForm,
@@ -140,7 +142,7 @@ public class OctopusForm {
 			// if (Torrent.canThaw(entity.getLocation().getBlock())
 			// || Wave.canThaw(entity.getLocation().getBlock()))
 			// continue;
-			if (Tools.isObstructed(location, entity.getLocation()))
+			if (BlockTools.isObstructed(location, entity.getLocation()))
 				continue;
 			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
 				if (bPlayer != null) {
@@ -151,7 +153,7 @@ public class OctopusForm {
 					.getDirection(player.getLocation(), location).normalize()
 					.multiply(1.75));
 			if (entity instanceof LivingEntity)
-				Tools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damage));
+				EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damage));
 		}
 	}
 
@@ -163,9 +165,9 @@ public class OctopusForm {
 	}
 
 	private void progress() {
-		if (!Tools.canBend(player, Abilities.OctopusForm)
+		if (!EntityTools.canBend(player, Abilities.OctopusForm)
 				|| (!player.isSneaking() && !sourceselected)
-				|| Tools.getBendingAbility(player) != Abilities.OctopusForm) {
+				|| EntityTools.getBendingAbility(player) != Abilities.OctopusForm) {
 			remove();
 			returnWater();
 			return;
@@ -195,7 +197,7 @@ public class OctopusForm {
 					source = null;
 					Block newblock = sourceblock.getRelative(BlockFace.UP);
 					sourcelocation = newblock.getLocation();
-					if (!Tools.isSolid(newblock)) {
+					if (!BlockTools.isSolid(newblock)) {
 						source = new TempBlock(newblock, Material.WATER, full);
 						sourceblock = newblock;
 					} else {
@@ -207,7 +209,7 @@ public class OctopusForm {
 					source = null;
 					Block newblock = sourceblock.getRelative(BlockFace.DOWN);
 					sourcelocation = newblock.getLocation();
-					if (!Tools.isSolid(newblock)) {
+					if (!BlockTools.isSolid(newblock)) {
 						source = new TempBlock(newblock, Material.WATER, full);
 						sourceblock = newblock;
 					} else {
@@ -222,7 +224,7 @@ public class OctopusForm {
 					if (!newblock.equals(sourceblock)) {
 						source.revertBlock();
 						source = null;
-						if (!Tools.isSolid(newblock)) {
+						if (!BlockTools.isSolid(newblock)) {
 							source = new TempBlock(newblock, Material.WATER,
 									full);
 							sourceblock = newblock;
@@ -372,55 +374,25 @@ public class OctopusForm {
 					tblock.setType(Material.WATER, full);
 				newblocks.add(tblock);
 			}
-		} else if (Tools.isWaterbendable(block, player)
+		} else if (BlockTools.isWaterbendable(block, player)
 				|| block.getType() == Material.FIRE
 				|| block.getType() == Material.AIR) {
 			newblocks.add(new TempBlock(block, Material.WATER, full));
 		}
 	}
 
-	// private static void replaceWater() {
-	// boolean replace = true;
-	// ArrayList<TempBlock> newwater = new ArrayList<TempBlock>();
-	// for (TempBlock block : water) {
-	// for (Player player : instances.keySet()) {
-	// if (block.getLocation().distance(player.getLocation()) < 5) {
-	// replace = false;
-	// break;
-	// }
-	// }
-	// if (replace) {
-	// block.revertBlock();
-	// } else {
-	// newwater.add(block);
-	// }
-	// }
-	// water.clear();
-	// water.addAll(newwater);
-	// }
 
 	private void clearNearbyWater(Block block) {
 		BlockFace[] faces = { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST,
 				BlockFace.WEST, BlockFace.DOWN };
 		for (BlockFace face : faces) {
 			Block rel = block.getRelative(face);
-			if (Tools.isWater(rel) && !TempBlock.isTempBlock(rel)) {
+			if (BlockTools.isWater(rel) && !TempBlock.isTempBlock(rel)) {
 				FreezeMelt.freeze(player, rel);
 				// water.add(new TempBlock(rel, Material.AIR, (byte) 0));
 			}
 		}
 	}
-
-	// private static boolean blockIsTouchingWater(Block block) {
-	// BlockFace[] faces = { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST,
-	// BlockFace.WEST, BlockFace.DOWN };
-	// for (BlockFace face : faces) {
-	// Block rel = block.getRelative(face);
-	// if (Tools.isWater(rel) && !TempBlock.isTempBlock(rel))
-	// return true;
-	// }
-	// return false;
-	// }
 
 	public static boolean wasBrokenFor(Player player, Block block) {
 		if (instances.containsKey(player)) {

@@ -3,7 +3,7 @@ package net.avatarrealms.minecraft.bending.abilities.water;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -43,7 +43,7 @@ public class Plantbending {
 			block.setType(type);
 			block.setData(data);
 		} else {
-			Tools.dropItems(block, Tools.getDrops(block, type, data, null));
+			BlockTools.dropItems(block, BlockTools.getDrops(block, type, data, null));
 		}
 		instances.remove(id);
 	}

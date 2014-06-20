@@ -7,6 +7,8 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -65,8 +67,8 @@ public class FireShield {
 
 	private void progress() {
 		if (((!player.isSneaking()) && shield)
-				|| !Tools.canBend(player, Abilities.FireShield)
-				|| !Tools.hasAbility(player, Abilities.FireShield)) {
+				|| !EntityTools.canBend(player, Abilities.FireShield)
+				|| !EntityTools.hasAbility(player, Abilities.FireShield)) {
 			remove();
 			return;
 		}
@@ -99,7 +101,7 @@ public class FireShield {
 										radius * Math.cos(rtheta),
 										radius * Math.sin(rphi)
 												* Math.sin(rtheta)).getBlock();
-						if (!blocks.contains(block) && !Tools.isSolid(block)
+						if (!blocks.contains(block) && !BlockTools.isSolid(block)
 								&& !block.isLiquid())
 							blocks.add(block);
 					}
@@ -112,7 +114,7 @@ public class FireShield {
 								Effect.MOBSPAWNER_FLAMES, 0, 20);
 				}
 
-				for (Entity entity : Tools.getEntitiesAroundPoint(location,
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 						radius)) {
 					if (Tools.isRegionProtectedFromBuild(player,
 							Abilities.FireShield, entity.getLocation()))
@@ -146,7 +148,7 @@ public class FireShield {
 							discradius);
 
 					Block block = location.clone().add(vector).getBlock();
-					if (!blocks.contains(block) && !Tools.isSolid(block)
+					if (!blocks.contains(block) && !BlockTools.isSolid(block)
 							&& !block.isLiquid())
 						blocks.add(block);
 
@@ -159,7 +161,7 @@ public class FireShield {
 								Effect.MOBSPAWNER_FLAMES, 0, 20);
 				}
 
-				for (Entity entity : Tools.getEntitiesAroundPoint(location,
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 						discradius)) {
 					if (Tools.isRegionProtectedFromBuild(player,
 							Abilities.FireShield, entity.getLocation()))

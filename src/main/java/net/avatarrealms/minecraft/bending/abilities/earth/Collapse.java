@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 public class Collapse {
@@ -32,18 +34,16 @@ public class Collapse {
 		if (bPlayer.isOnCooldown(Abilities.Collapse))
 			return;
 
-		// if (AvatarState.isAvatarState(player))
-		// radius = AvatarState.getValue(defaultradius);
 		this.player = player;
-		Block sblock = Tools.getEarthSourceBlock(player, range);
+		Block sblock = BlockTools.getEarthSourceBlock(player, range);
 		Location location;
 		if (sblock == null) {
-			location = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
+			location = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
 		} else {
 			location = sblock.getLocation();
 		}
-		for (Block block : Tools.getBlocksAroundPoint(location, radius)) {
-			if (Tools.isEarthbendable(player, block)
+		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+			if (BlockTools.isEarthbendable(player, block)
 					&& !blocks.containsKey(block)
 					&& block.getY() >= location.getBlockY()) {
 				getAffectedBlocks(block);
@@ -66,7 +66,7 @@ public class Collapse {
 		bendableblocks.add(block);
 		for (int i = 1; i <= height; i++) {
 			Block blocki = block.getRelative(BlockFace.DOWN, i);
-			if (Tools.isEarthbendable(player, blocki)) {
+			if (BlockTools.isEarthbendable(player, blocki)) {
 				baseblock = blocki;
 				bendableblocks.add(blocki);
 				tall++;

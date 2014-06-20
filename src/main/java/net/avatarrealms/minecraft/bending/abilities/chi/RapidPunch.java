@@ -8,7 +8,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -19,29 +19,23 @@ public class RapidPunch {
 
 	private static int damage = ConfigManager.rapidPunchDamage;
 	private int distance = ConfigManager.rapidPunchDistance;
-	// private long cooldown = ConfigManager.rapidPunchCooldown;
 	private static int punches = ConfigManager.rapidPunchPunches;
-
-	// private static Map<String, Long> cooldowns = new HashMap<String, Long>();
+	
 	public static ConcurrentHashMap<Player, RapidPunch> instance = new ConcurrentHashMap<Player, RapidPunch>();
 	private int numpunches;
-	// private long timers;
+
 	private Entity target;
 	public static List<Player> punching = new ArrayList<Player>();
 
 	public RapidPunch(Player p) {// , Entity t) {
 		if (instance.containsKey(p))
 			return;
-		// if (cooldowns.containsKey(p.getName())
-		// && cooldowns.get(p.getName()) + cooldown >= System
-		// .currentTimeMillis())
-		// return;
 
 		if (BendingPlayer.getBendingPlayer(p)
 				.isOnCooldown(Abilities.RapidPunch))
 			return;
 
-		Entity t = Tools.getTargettedEntity(p, distance);
+		Entity t = EntityTools.getTargettedEntity(p, distance);
 
 		if (t == null)
 			return;
@@ -67,9 +61,9 @@ public class RapidPunch {
 					
 		if (target != null && target instanceof LivingEntity) {
 			LivingEntity lt = (LivingEntity) target;
-			Tools.damageEntity(p, target, bPlayer.getCriticalHit(BendingType.ChiBlocker,damage));
+			EntityTools.damageEntity(p, target, bPlayer.getCriticalHit(BendingType.ChiBlocker,damage));
 			if (target instanceof Player)
-				Tools.blockChi((Player) target, System.currentTimeMillis());
+				EntityTools.blockChi((Player) target, System.currentTimeMillis());
 			lt.setNoDamageTicks(0);
 			// Tools.verbose("PUNCHIN MOFO");
 		}

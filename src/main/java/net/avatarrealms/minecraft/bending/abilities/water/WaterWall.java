@@ -11,9 +11,11 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -99,8 +101,8 @@ public class WaterWall {
 			Location eyeloc = player.getEyeLocation();
 			Block block = eyeloc.add(eyeloc.getDirection().normalize())
 					.getBlock();
-			if (Tools.isTransparentToEarthbending(player, block)
-					&& Tools.isTransparentToEarthbending(player,
+			if (BlockTools.isTransparentToEarthbending(player, block)
+					&& BlockTools.isTransparentToEarthbending(player,
 							eyeloc.getBlock())) {
 				block.setType(Material.WATER);
 				block.setData(full);
@@ -152,8 +154,8 @@ public class WaterWall {
 	public boolean prepare() {
 		cancelPrevious();
 		// Block block = player.getTargetBlock(null, (int) range);
-		Block block = Tools.getWaterSourceBlock(player, range,
-				Tools.canPlantbend(player));
+		Block block = BlockTools.getWaterSourceBlock(player, range,
+				EntityTools.canPlantbend(player));
 		if (block != null) {
 			sourceblock = block;
 			focusBlock();
@@ -187,7 +189,7 @@ public class WaterWall {
 
 	public void moveWater() {
 		if (sourceblock != null) {
-			targetdestination = Tools.getTargetedLocation(player, range, Tools.getTransparentEarthbending());
+			targetdestination = EntityTools.getTargetedLocation(player, range, BlockTools.getTransparentEarthbending());
 			//targetdestination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 
 			if (targetdestination.distance(location) <= 1) {
@@ -201,9 +203,9 @@ public class WaterWall {
 						firstdestination);
 				targetdirection = getDirection(firstdestination,
 						targetdestination);
-				if (Tools.isPlant(sourceblock))
+				if (BlockTools.isPlant(sourceblock))
 					new Plantbending(sourceblock);
-				if (!Tools.adjacentToThreeOrMoreSources(sourceblock)) {
+				if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 					sourceblock.setType(Material.AIR);
 				}
 				addWater(sourceblock);
@@ -240,7 +242,7 @@ public class WaterWall {
 			// instances.remove(player.getEntityId());
 			return false;
 		}
-		if (!Tools.canBend(player, Abilities.Surge)) {
+		if (!EntityTools.canBend(player, Abilities.Surge)) {
 			if (!forming)
 				// removeWater(oldwater);
 				breakBlock();
@@ -256,13 +258,13 @@ public class WaterWall {
 			}
 
 			if (!progressing
-					&& Tools.getBendingAbility(player) != Abilities.Surge) {
+					&& EntityTools.getBendingAbility(player) != Abilities.Surge) {
 				unfocusBlock();
 				return false;
 			}
 
 			if (progressing
-					&& (!player.isSneaking() || Tools.getBendingAbility(player) != Abilities.Surge)) {
+					&& (!player.isSneaking() || EntityTools.getBendingAbility(player) != Abilities.Surge)) {
 				breakBlock();
 				returnWater();
 				return false;
@@ -282,13 +284,13 @@ public class WaterWall {
 				transparentForSelection.add(Material.STATIONARY_WATER);
 				transparentForSelection.add(Material.SNOW);
 				transparentForSelection.add(Material.ICE);
-				Location loc = Tools.getTargetedLocation(player, (int) range,
+				Location loc = EntityTools.getTargetedLocation(player, (int) range,
 						transparentForSelection);
 				location = loc.clone();
 				Vector dir = player.getEyeLocation().getDirection();
 				Vector vec;
 				Block block;
-				for (double i = 0; i <= Tools.waterbendingNightAugment(radius,
+				for (double i = 0; i <= PluginTools.waterbendingNightAugment(radius,
 						player.getWorld()); i += 0.5) {
 					for (double angle = 0; angle < 360; angle += 10) {
 						// loc.getBlock().setType(Material.GLOWSTONE);
@@ -301,21 +303,15 @@ public class WaterWall {
 							blocks.add(block);
 						} else if (!blocks.contains(block)
 								&& (block.getType() == Material.AIR
-										|| block.getType() == Material.FIRE || Tools
+										|| block.getType() == Material.FIRE || BlockTools
 											.isWaterbendable(block, player))) {
 							wallblocks.put(block, player);
 							addWallBlock(block);
-							// if (frozen) {
-							// block.setType(Material.ICE);
-							// } else {
-							// block.setType(Material.WATER);
-							// block.setData(full);
-							// }
-							// block.setType(Material.GLASS);
+
 							blocks.add(block);
 							FireBlast.removeFireBlastsAroundPoint(
 									block.getLocation(), 2);
-							// Tools.verbose(wallblocks.size());
+
 						}
 					}
 				}
@@ -409,7 +405,7 @@ public class WaterWall {
 	private void removeWater(Block block) {
 		if (block != null) {
 			if (affectedblocks.containsKey(block)) {
-				if (!Tools.adjacentToThreeOrMoreSources(block)) {
+				if (!BlockTools.adjacentToThreeOrMoreSources(block)) {
 					TempBlock.revertBlock(block, Material.AIR);
 				}
 				affectedblocks.remove(block);
@@ -419,25 +415,15 @@ public class WaterWall {
 
 	private static void finalRemoveWater(Block block) {
 		if (affectedblocks.containsKey(block)) {
-			// block.setType(Material.WATER);
-			// block.setData(half);
-			// if (!Tools.adjacentToThreeOrMoreSources(block)) {
-			// block.setType(Material.AIR);
-			// }
 			TempBlock.revertBlock(block, Material.AIR);
 			affectedblocks.remove(block);
 		}
 
 		if (wallblocks.containsKey(block)) {
-			// if (block.getType() == Material.ICE
-			// || block.getType() == Material.WATER
-			// || block.getType() == Material.STATIONARY_WATER) {
-			// block.setType(Material.AIR);
-			// }
+
 			TempBlock.revertBlock(block, Material.AIR);
 			wallblocks.remove(block);
-			// block.setType(Material.WATER);
-			// block.setData(half);
+
 		}
 	}
 
@@ -477,8 +463,8 @@ public class WaterWall {
 
 		if (!instances.containsKey(player.getEntityId())) {
 			if (!Wave.instances.containsKey(player.getEntityId())
-					&& Tools.getWaterSourceBlock(player,
-							(int) Wave.defaultrange, Tools.canPlantbend(player)) == null
+					&& BlockTools.getWaterSourceBlock(player,
+							(int) Wave.defaultrange, EntityTools.canPlantbend(player)) == null
 					&& WaterReturn.hasWaterBottle(player)) {
 
 				if (bPlayer.isOnCooldown(Abilities.Surge))
@@ -487,8 +473,8 @@ public class WaterWall {
 				Location eyeloc = player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize())
 						.getBlock();
-				if (Tools.isTransparentToEarthbending(player, block)
-						&& Tools.isTransparentToEarthbending(player,
+				if (BlockTools.isTransparentToEarthbending(player, block)
+						&& BlockTools.isTransparentToEarthbending(player,
 								eyeloc.getBlock())) {
 					block.setType(Material.WATER);
 					block.setData(full);
@@ -507,8 +493,8 @@ public class WaterWall {
 			new Wave(player);
 			return;
 		} else {
-			if (Tools.isWaterbendable(
-					Tools.getTargetBlock(player, (int) Wave.defaultrange),
+			if (BlockTools.isWaterbendable(
+					EntityTools.getTargetBlock(player, (int) Wave.defaultrange),
 					player)) {
 				new Wave(player);
 				return;

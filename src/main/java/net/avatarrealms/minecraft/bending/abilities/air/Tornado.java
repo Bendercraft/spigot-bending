@@ -8,6 +8,7 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -41,14 +42,11 @@ public class Tornado {
 	private Location origin;
 	private Player player;
 
-	// private boolean canfly;
-
 	public Tornado(Player player) {
 		this.player = player;
-		// canfly = player.getAllowFlight();
-		// player.setAllowFlight(true);
+
 		
-		origin = Tools.getTargetBlock(player, range).getLocation();
+		origin = EntityTools.getTargetBlock(player, range).getLocation();
 		origin.setY(origin.getY() - 1. / 10. * height);
 
 		int angle = 0;
@@ -67,19 +65,16 @@ public class Tornado {
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			// player.setAllowFlight(canfly);
 			instances.remove(player.getEntityId());
 			return false;
 		}
-		if (!Tools.canBend(player, Abilities.Tornado)
+		if (!EntityTools.canBend(player, Abilities.Tornado)
 				|| player.getEyeLocation().getBlock().isLiquid()) {
-			// player.setAllowFlight(canfly);
 			instances.remove(player.getEntityId());
 			return false;
 		}
-		if ((Tools.getBendingAbility(player) != Abilities.Tornado)
+		if ((EntityTools.getBendingAbility(player) != Abilities.Tornado)
 				|| (!player.isSneaking())) {
-			// player.setAllowFlight(canfly);
 			instances.remove(player.getEntityId());
 			return false;
 		}
@@ -93,7 +88,7 @@ public class Tornado {
 	}
 
 	private void rotateTornado() {
-		origin = Tools.getTargetBlock(player, range).getLocation();
+		origin = EntityTools.getTargetBlock(player, range).getLocation();
 
 		double timefactor = height / maxheight;
 		radius = timefactor * maxradius;
@@ -101,7 +96,7 @@ public class Tornado {
 		if (origin.getBlock().getType() != Material.AIR) {
 			origin.setY(origin.getY() - 1. / 10. * height);
 
-			for (Entity entity : Tools.getEntitiesAroundPoint(origin, height)) {
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, height)) {
 				if (Tools.isRegionProtectedFromBuild(player,
 						Abilities.AirBlast, entity.getLocation()))
 					continue;

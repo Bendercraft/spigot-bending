@@ -12,6 +12,8 @@ import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Material;
@@ -51,7 +53,7 @@ public class BendingPlayer {
 			players.remove(player);
 		}
 
-		language = Tools.getDefaultLanguage();
+		language = PluginTools.getDefaultLanguage();
 		this.player = player;
 		lasttime = System.currentTimeMillis();
 
@@ -349,7 +351,7 @@ public class BendingPlayer {
 	}
 
 	public Player getPlayer() {
-		return (Player) Tools.getEntityByUUID(this.player);
+		return (Player) EntityTools.getEntityByUUID(this.player);
 	}
 
 	// public static ArrayList<BendingPlayer> getBendingPlayers() {

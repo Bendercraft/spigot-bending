@@ -7,6 +7,9 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -58,7 +61,7 @@ public class Fireball {
 			chargetime = 0;
 			maxdamage = AvatarState.getValue(maxdamage);
 		}
-		range = Tools.firebendingDayAugment(range, player.getWorld());
+		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			id = ID;
 			instances.put(id, this);
@@ -70,8 +73,8 @@ public class Fireball {
 	}
 
 	private void progress() {
-		if ((!Tools.canBend(player, Abilities.FireBlast) || Tools
-				.getBendingAbility(player) != Abilities.FireBlast) && !launched) {
+		if ((!EntityTools.canBend(player, Abilities.FireBlast) 
+				|| EntityTools.getBendingAbility(player) != Abilities.FireBlast) && !launched) {
 			remove();
 			return;
 		}
@@ -117,7 +120,7 @@ public class Fireball {
 				return;
 			}
 
-			if (Tools.isSolid(location.getBlock())) {
+			if (BlockTools.isSolid(location.getBlock())) {
 				explode();
 				return;
 			} else if (location.getBlock().isLiquid()) {
@@ -149,23 +152,22 @@ public class Fireball {
 		if (distance > explosionradius)
 			return;
 		if (distance < innerradius) {
-			Tools.damageEntity(player, entity, maxdamage);
+			EntityTools.damageEntity(player, entity, maxdamage);
 			return;
 		}
 		double slope = -(maxdamage * .5) / (explosionradius - innerradius);
 
 		double damage = slope * (distance - innerradius) + maxdamage;
-		// Tools.verbose(damage);
-		Tools.damageEntity(player, entity, (int) damage);
+		EntityTools.damageEntity(player, entity, (int) damage);
 	}
 
 	private void fireball() {
-		for (Block block : Tools.getBlocksAroundPoint(location, radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			block.getWorld().playEffect(block.getLocation(),
 					Effect.MOBSPAWNER_FLAMES, 0, 20);
 		}
 
-		for (Entity entity : Tools.getEntitiesAroundPoint(location, 2 * radius)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
 			if (entity.getEntityId() == player.getEntityId())
 				continue;
 			entity.setFireTicks(120);
@@ -197,7 +199,7 @@ public class Fireball {
 
 		// Tools.verbose("Fireball Explode!");
 		boolean explode = true;
-		for (Block block : Tools.getBlocksAroundPoint(location, 3)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, 3)) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.FireBlast,
 					block.getLocation())) {
 				explode = false;
@@ -232,7 +234,7 @@ public class Fireball {
 	}
 
 	private void ignite(Location location) {
-		for (Block block : Tools.getBlocksAroundPoint(location,
+		for (Block block : BlockTools.getBlocksAroundPoint(location,
 				FireBlast.affectingradius)) {
 			if (FireStream.isIgnitable(player, block)) {
 				block.setType(Material.FIRE);

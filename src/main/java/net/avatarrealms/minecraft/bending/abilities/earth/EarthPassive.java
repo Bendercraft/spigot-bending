@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,13 +20,13 @@ public class EarthPassive {
 	public static boolean softenLanding(Player player) {
 		Block block = player.getLocation().getBlock()
 				.getRelative(BlockFace.DOWN);
-		if (Tools.isEarthbendable(player, Abilities.RaiseEarth, block)
-				|| Tools.isTransparentToEarthbending(player,
+		if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth, block)
+				|| BlockTools.isTransparentToEarthbending(player,
 						Abilities.RaiseEarth, block)) {
 
-			if (!Tools.isTransparentToEarthbending(player, block)) {
+			if (!BlockTools.isTransparentToEarthbending(player, block)) {
 				Material type = block.getType();
-				if (Tools.isSolid(block.getRelative(BlockFace.DOWN))) {
+				if (BlockTools.isSolid(block.getRelative(BlockFace.DOWN))) {
 					block.setType(Material.SAND);
 					if (!sandblocks.containsKey(block)) {
 						sandidentities.put(block, type);
@@ -36,11 +36,10 @@ public class EarthPassive {
 
 			}
 
-			for (Block affectedblock : Tools.getBlocksAroundPoint(
+			for (Block affectedblock : BlockTools.getBlocksAroundPoint(
 					block.getLocation(), 2)) {
-				if (Tools.isEarthbendable(player, affectedblock)) {
-					if (Tools
-							.isSolid(affectedblock.getRelative(BlockFace.DOWN))) {
+				if (BlockTools.isEarthbendable(player, affectedblock)) {
+					if (BlockTools.isSolid(affectedblock.getRelative(BlockFace.DOWN))) {
 						Material type = affectedblock.getType();
 						affectedblock.setType(Material.SAND);
 						if (!sandblocks.containsKey(affectedblock)) {
@@ -55,8 +54,8 @@ public class EarthPassive {
 			return true;
 		}
 
-		if (Tools.isEarthbendable(player, null, block)
-				|| Tools.isTransparentToEarthbending(player, null, block))
+		if (BlockTools.isEarthbendable(player, null, block)
+				|| BlockTools.isTransparentToEarthbending(player, null, block))
 			return true;
 		return false;
 	}

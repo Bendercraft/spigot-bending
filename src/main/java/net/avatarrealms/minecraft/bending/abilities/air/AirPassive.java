@@ -4,8 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -34,7 +33,7 @@ public class AirPassive {
 	public static void handlePassive(Server server) {
 		for (World world : server.getWorlds()) {
 			for (Player player : world.getPlayers()) {
-				if (Tools.isBender(player, BendingType.Air)) {
+				if (EntityTools.isBender(player, BendingType.Air)) {
 					player.setExhaustion(getFoodExhaustionLevel(player,
 							player.getExhaustion()));
 				}

@@ -7,6 +7,9 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -60,8 +63,8 @@ public class TorrentBurst {
 		origin = location.clone();
 		time = System.currentTimeMillis();
 		id = ID++;
-		factor = Tools.waterbendingNightAugment(factor, world);
-		maxradius = Tools.waterbendingNightAugment(maxradius, world);
+		factor = PluginTools.waterbendingNightAugment(factor, world);
+		maxradius = PluginTools.waterbendingNightAugment(maxradius, world);
 		this.radius = radius;
 		if (ID >= Integer.MAX_VALUE) {
 			ID = Integer.MIN_VALUE;
@@ -89,7 +92,7 @@ public class TorrentBurst {
 			return;
 		}
 
-		if (!Tools.canBend(player, Abilities.Torrent)) {
+		if (!EntityTools.canBend(player, Abilities.Torrent)) {
 			remove();
 			return;
 		}
@@ -120,7 +123,7 @@ public class TorrentBurst {
 		affectedentities.clear();
 
 		ArrayList<Entity> indexlist = new ArrayList<Entity>();
-		indexlist.addAll(Tools.getEntitiesAroundPoint(origin, radius + 2));
+		indexlist.addAll(EntityTools.getEntitiesAroundPoint(origin, radius + 2));
 
 		ArrayList<Block> torrentblocks = new ArrayList<Block>();
 
@@ -139,7 +142,7 @@ public class TorrentBurst {
 				Block block = location.getBlock();
 				if (torrentblocks.contains(block))
 					continue;
-				if (Tools.isTransparentToEarthbending(player,
+				if (BlockTools.isTransparentToEarthbending(player,
 						Abilities.Torrent, block)) {
 					TempBlock tempBlock = new TempBlock(block, Material.WATER,
 							full);

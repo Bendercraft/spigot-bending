@@ -10,6 +10,8 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -68,13 +70,13 @@ public class AirBlast {
 			otherorigin = true;
 			origin = origins.get(player);
 			origins.remove(player);
-			Entity entity = Tools.getTargettedEntity(player, range);
+			Entity entity = EntityTools.getTargettedEntity(player, range);
 			if (entity != null) {
 				direction = Tools.getDirection(origin, entity.getLocation())
 						.normalize();
 			} else {
 				direction = Tools.getDirection(origin,
-						Tools.getTargetedLocation(player, range)).normalize();
+						EntityTools.getTargetedLocation(player, range)).normalize();
 			}
 		} else {
 			origin = player.getEyeLocation();
@@ -87,8 +89,6 @@ public class AirBlast {
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
-		// time = System.currentTimeMillis();
-		// timers.put(player, System.currentTimeMillis());
 	}
 
 	public AirBlast(Location location, Vector direction, Player player,
@@ -110,10 +110,10 @@ public class AirBlast {
 	}
 
 	public static void setOrigin(Player player) {
-		Location location = Tools.getTargetedLocation(player,
-				originselectrange, Tools.nonOpaque);
+		Location location = EntityTools.getTargetedLocation(player,
+				originselectrange, BlockTools.nonOpaque);
 		if (location.getBlock().isLiquid()
-				|| Tools.isSolid(location.getBlock()))
+				|| BlockTools.isSolid(location.getBlock()))
 			return;
 
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirBlast,
@@ -148,13 +148,8 @@ public class AirBlast {
 			return false;
 		}
 
-		// if (player.isSneaking()
-		// && Tools.getBendingAbility(player) == Abilities.AirBlast) {
-		// new AirBlast(player);
-		// }
-
 		Block block = location.getBlock();
-		for (Block testblock : Tools.getBlocksAroundPoint(location,
+		for (Block testblock : BlockTools.getBlocksAroundPoint(location,
 				affectingradius)) {
 			if (testblock.getType() == Material.FIRE) {
 				testblock.setType(Material.AIR);
@@ -167,7 +162,7 @@ public class AirBlast {
 				affectedlevers.add(block);
 			}
 		}
-		if ((Tools.isSolid(block) || block.isLiquid())
+		if ((BlockTools.isSolid(block) || block.isLiquid())
 				&& !affectedlevers.contains(block)) {
 			if (block.getType() == Material.LAVA
 					|| block.getType() == Material.STATIONARY_LAVA) {
@@ -188,7 +183,7 @@ public class AirBlast {
 			return false;
 		}
 
-		for (Entity entity : Tools.getEntitiesAroundPoint(location,
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 			affect(entity);
 		}
@@ -231,7 +226,7 @@ public class AirBlast {
 			factor *= 1 - location.distance(origin) / (2 * range);
 
 			if (isUser
-					&& Tools.isSolid(player.getLocation().add(0, -.5, 0)
+					&& BlockTools.isSolid(player.getLocation().add(0, -.5, 0)
 							.getBlock())) {
 				factor *= .5;
 			}
@@ -279,8 +274,8 @@ public class AirBlast {
 			return;
 		}
 
-		if (Tools.getBendingAbility(player) != Abilities.AirBlast
-				|| !Tools.canBend(player, Abilities.AirBlast)) {
+		if (EntityTools.getBendingAbility(player) != Abilities.AirBlast
+				|| !EntityTools.canBend(player, Abilities.AirBlast)) {
 			origins.remove(player);
 			return;
 		}

@@ -10,6 +10,8 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -91,9 +93,9 @@ public class AirSuction {
 		// }
 		//
 		// } else {
-		location = Tools.getTargetedLocation(player, range, Tools.nonOpaque);
+		location = EntityTools.getTargetedLocation(player, range, BlockTools.nonOpaque);
 		direction = Tools.getDirection(location, origin).normalize();
-		Entity entity = Tools.getTargettedEntity(player, range);
+		Entity entity = EntityTools.getTargettedEntity(player, range);
 		if (entity != null) {
 			direction = Tools.getDirection(entity.getLocation(), origin)
 					.normalize();
@@ -117,7 +119,7 @@ public class AirSuction {
 		Location location = origin.clone();
 		for (double i = 1; i <= range; i++) {
 			location = origin.clone().add(direction.clone().multiply(i));
-			if (!Tools.isTransparentToEarthbending(player, location.getBlock())
+			if (!BlockTools.isTransparentToEarthbending(player, location.getBlock())
 					|| Tools.isRegionProtectedFromBuild(player,
 							Abilities.AirSuction, location)) {
 				return origin.clone().add(direction.clone().multiply(i - 1));
@@ -127,10 +129,10 @@ public class AirSuction {
 	}
 
 	public static void setOrigin(Player player) {
-		Location location = Tools.getTargetedLocation(player,
-				originselectrange, Tools.nonOpaque);
+		Location location = EntityTools.getTargetedLocation(player,
+				originselectrange, BlockTools.nonOpaque);
 		if (location.getBlock().isLiquid()
-				|| Tools.isSolid(location.getBlock()))
+				|| BlockTools.isSolid(location.getBlock()))
 			return;
 
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSuction,
@@ -162,10 +164,7 @@ public class AirSuction {
 			instances.remove(id);
 			return false;
 		}
-		// if (player.isSneaking()
-		// && Tools.getBendingAbility(player) == Abilities.AirSuction) {
-		// new AirSuction(player);
-		// }
+
 
 		if ((location.distance(origin) > range)
 				|| (location.distance(origin) <= 1)) {
@@ -173,11 +172,9 @@ public class AirSuction {
 			return false;
 		}
 
-		for (Entity entity : Tools.getEntitiesAroundPoint(location,
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
-			// if (affectedentities.contains(entity))
-			// continue;
-			// affectedentities.add(entity);
+
 			if (entity.getEntityId() != player.getEntityId() || otherorigin) {
 				
 				if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
@@ -186,38 +183,7 @@ public class AirSuction {
 						bPlayer.earnXP(BendingType.Air);
 					}
 				}
-				// Vector velocity = entity.getVelocity();
-				// double mag = Math.abs(velocity.getY());
-				// double max = maxspeed;
-				// if (AvatarState.isAvatarState(player)) {
-				// max = AvatarState.getValue(maxspeed);
-				// velocity = velocity.clone().add(
-				// direction.clone().multiply(
-				// AvatarState.getValue(pushfactor)));
-				// double newmag = Math.abs(velocity.getY());
-				// if (newmag > mag) {
-				// if (mag > max) {
-				// velocity = velocity.clone().multiply(mag / newmag);
-				// } else if (newmag > max) {
-				// velocity = velocity.clone().multiply(max / newmag);
-				// }
-				// }
-				// } else {
-				// velocity = velocity.clone().add(
-				// direction.clone().multiply(pushfactor));
-				// double newmag = Math.abs(velocity.getY());
-				// if (newmag > mag) {
-				// if (mag > max) {
-				// velocity = velocity.clone().multiply(mag / newmag);
-				// } else if (newmag > max) {
-				// velocity = velocity.clone().multiply(max / newmag);
-				// }
-				// }
-				// }
-				// if (entity instanceof Player)
-				// velocity.multiply(2);
-				// entity.setVelocity(velocity);
-				// entity.setFallDistance(0);
+
 				Vector velocity = entity.getVelocity();
 				double max = maxspeed;
 				double factor = pushfactor;
@@ -261,10 +227,8 @@ public class AirSuction {
 					entity.getWorld().playEffect(entity.getLocation(),
 							Effect.EXTINGUISH, 0);
 				entity.setFireTicks(0);
-
 			}
 		}
-
 		advanceLocation();
 
 		return true;
@@ -293,8 +257,8 @@ public class AirSuction {
 			return;
 		}
 
-		if (Tools.getBendingAbility(player) != Abilities.AirSuction
-				|| !Tools.canBend(player, Abilities.AirSuction)) {
+		if (EntityTools.getBendingAbility(player) != Abilities.AirSuction
+				|| !EntityTools.canBend(player, Abilities.AirSuction)) {
 			origins.remove(player);
 			return;
 		}

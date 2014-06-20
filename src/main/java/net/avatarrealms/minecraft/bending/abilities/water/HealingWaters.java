@@ -5,6 +5,8 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Server;
@@ -27,8 +29,8 @@ public class HealingWaters {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 			for (Player player : server.getOnlinePlayers()) {
-				if (Tools.getBendingAbility(player) == Abilities.HealingWaters
-						&& Tools.canBend(player, Abilities.HealingWaters)) {
+				if (EntityTools.getBendingAbility(player) == Abilities.HealingWaters
+						&& EntityTools.canBend(player, Abilities.HealingWaters)) {
 					heal(player);
 				}
 			}
@@ -38,7 +40,7 @@ public class HealingWaters {
 	private static void heal(Player player) {
 		if (inWater(player)) {
 			if (player.isSneaking()) {
-				Entity entity = Tools.getTargettedEntity(player, range);
+				Entity entity = EntityTools.getTargettedEntity(player, range);
 				if (entity instanceof LivingEntity && inWater(entity)) {
 					giveHPToEntity((LivingEntity) entity);
 					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
@@ -62,11 +64,6 @@ public class HealingWaters {
 	
 	private static void giveHP(Player player) {
 		if (!player.isDead() && player.getHealth() < 20) {
-			// int hp = player.getHealth();
-			// if (hp < 20) {
-			// hp++;
-			// }
-			// player.setHealth(hp);
 			applyHealing(player);
 		}
 	}
@@ -75,12 +72,8 @@ public class HealingWaters {
 
 	private static boolean inWater(Entity entity) {
 		Block block = entity.getLocation().getBlock();
-		if (Tools.isWater(block) && !TempBlock.isTempBlock(block))
+		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block))
 			return true;
-		// if (entity.getLocation().getBlock().getType() == Material.WATER
-		// || entity.getLocation().getBlock().getType() ==
-		// Material.STATIONARY_WATER) &&
-		// return true;
 		return false;
 	}
 

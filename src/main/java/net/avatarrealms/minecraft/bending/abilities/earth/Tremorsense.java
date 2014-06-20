@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -40,7 +42,7 @@ public class Tremorsense {
 		if (bPlayer.isOnCooldown(Abilities.Tremorsense))
 			return;
 
-		if (Tools.isEarthbendable(player, Abilities.Tremorsense, player
+		if (BlockTools.isEarthbendable(player, Abilities.Tremorsense, player
 				.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
 			this.player = player;
 			bPlayer.cooldown(Abilities.Tremorsense);
@@ -69,15 +71,15 @@ public class Tremorsense {
 					if (Tools.isRegionProtectedFromBuild(player,
 							Abilities.RaiseEarth, blocki.getLocation()))
 						continue;
-					if (Tools.isEarthbendable(player, Abilities.Tremorsense,
+					if (BlockTools.isEarthbendable(player, Abilities.Tremorsense,
 							blocki) && !earth) {
 						earth = true;
 						smokeblock = blocki;
-					} else if (!Tools.isEarthbendable(player,
+					} else if (!BlockTools.isEarthbendable(player,
 							Abilities.Tremorsense, blocki) && earth) {
 						foundair = true;
 						break;
-					} else if (!Tools.isEarthbendable(player,
+					} else if (!BlockTools.isEarthbendable(player,
 							Abilities.Tremorsense, blocki)
 							&& !earth
 							&& blocki.getType() != Material.AIR) {
@@ -104,12 +106,12 @@ public class Tremorsense {
 			return;
 		}
 
-		if (Tools.isEarthbendable(player, Abilities.Tremorsense, standblock)
+		if (BlockTools.isEarthbendable(player, Abilities.Tremorsense, standblock)
 				&& block == null) {
 			block = standblock;
 			player.sendBlockChange(block.getLocation(), 89, (byte) 1);
 			instances.put(player, this);
-		} else if (Tools.isEarthbendable(player, Abilities.Tremorsense,
+		} else if (BlockTools.isEarthbendable(player, Abilities.Tremorsense,
 				standblock) && !block.equals(standblock)) {
 			revert();
 			block = standblock;
@@ -119,20 +121,10 @@ public class Tremorsense {
 			return;
 		} else if (player.getWorld() != block.getWorld()) {
 			revert();
-		} else if (!Tools.isEarthbendable(player, Abilities.Tremorsense,
+		} else if (!BlockTools.isEarthbendable(player, Abilities.Tremorsense,
 				standblock)) {
 			revert();
 		}
-
-		// Block standblock = player.getLocation().getBlock()
-		// .getRelative(BlockFace.DOWN);
-		//
-		// if (Tools.isEarthbendable(player, Abilities.Tremorsense, standblock))
-		// {
-		// PotionEffect potion = new PotionEffect(
-		// PotionEffectType.NIGHT_VISION, 70, 0);
-		// new TempPotionEffect(player, potion);
-		// }
 	}
 
 	private void revert() {
@@ -146,14 +138,14 @@ public class Tremorsense {
 	public static void manage(Server server) {
 		for (Player player : server.getOnlinePlayers()) {
 			if (instances.containsKey(player)
-					&& (!Tools.hasAbility(player, Abilities.Tremorsense)
-							|| !Tools.canBend(player, Abilities.Tremorsense) || player
+					&& (!EntityTools.hasAbility(player, Abilities.Tremorsense)
+							|| !EntityTools.canBend(player, Abilities.Tremorsense) || player
 							.getLocation().getBlock().getLightLevel() > lightthreshold)) {
 				instances.get(player).revert();
 			} else if (instances.containsKey(player)) {
 				instances.get(player).set();
-			} else if (Tools.hasAbility(player, Abilities.Tremorsense)
-					&& Tools.canBend(player, Abilities.Tremorsense)
+			} else if (EntityTools.hasAbility(player, Abilities.Tremorsense)
+					&& EntityTools.canBend(player, Abilities.Tremorsense)
 					&& player.getLocation().getBlock().getLightLevel() < lightthreshold) {
 				new Tremorsense(player, false);
 			}

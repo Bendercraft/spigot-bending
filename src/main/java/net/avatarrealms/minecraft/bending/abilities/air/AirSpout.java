@@ -7,7 +7,8 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -57,10 +58,10 @@ public class AirSpout {
 	}
 
 	private void spout() {
-		if (!Tools.canBend(player, Abilities.AirSpout)
-				|| !Tools.hasAbility(player, Abilities.AirSpout)
+		if (!EntityTools.canBend(player, Abilities.AirSpout)
+				|| !EntityTools.hasAbility(player, Abilities.AirSpout)
 				|| player.getEyeLocation().getBlock().isLiquid()
-				|| Tools.isSolid(player.getEyeLocation().getBlock())
+				|| BlockTools.isSolid(player.getEyeLocation().getBlock())
 				|| player.isDead() || !player.isOnline()) {
 			remove();
 			return;
@@ -98,7 +99,7 @@ public class AirSpout {
 		Block standingblock = player.getLocation().getBlock();
 		for (int i = 0; i <= height + 5; i++) {
 			Block block = standingblock.getRelative(BlockFace.DOWN, i);
-			if (Tools.isSolid(block) || block.isLiquid()) {
+			if (BlockTools.isSolid(block) || block.isLiquid()) {
 				return block;
 			}
 		}

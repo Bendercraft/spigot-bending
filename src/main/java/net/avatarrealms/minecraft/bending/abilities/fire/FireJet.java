@@ -8,6 +8,8 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -21,13 +23,8 @@ public class FireJet {
 	public static ConcurrentHashMap<Player, FireJet> instances = new ConcurrentHashMap<Player, FireJet>();
 	private static final double defaultfactor = ConfigManager.fireJetSpeed;
 	private static final long defaultduration = ConfigManager.fireJetDuration;
-	// private static final long cooldown = ConfigManager.fireJetCooldown;
-
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
 
 	private Player player;
-	// private boolean canfly;
 	private long time;
 	private long duration = defaultduration;
 	private double factor = defaultfactor;
@@ -38,19 +35,13 @@ public class FireJet {
 			instances.remove(player);
 			return;
 		}
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player)
-		// + (long) ((double) cooldown / Tools
-		// .getFirebendingDayAugment(player.getWorld()))) {
-		// return;
-		// }
-		// }
+
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.FireJet))
 			return;
 
-		factor = Tools.firebendingDayAugment(defaultfactor, player.getWorld());
+		factor = PluginTools.firebendingDayAugment(defaultfactor, player.getWorld());
 		Block block = player.getLocation().getBlock();
 		if (FireStream.isIgnitable(player, block)
 				|| block.getType() == Material.AIR
@@ -79,14 +70,12 @@ public class FireJet {
 
 	public void progress() {
 		if (player.isDead() || !player.isOnline()) {
-			// player.setAllowFlight(canfly);
 			instances.remove(player);
 			return;
 		}
-		if ((Tools.isWater(player.getLocation().getBlock()) || System
+		if ((BlockTools.isWater(player.getLocation().getBlock()) || System
 				.currentTimeMillis() > time + duration)
 				&& !AvatarState.isAvatarState(player)) {
-			// player.setAllowFlight(canfly);
 			instances.remove(player);
 		} else {
 			player.getWorld().playEffect(player.getLocation(),
@@ -100,9 +89,6 @@ public class FireJet {
 			}
 			Vector velocity = player.getEyeLocation().getDirection().clone()
 					.normalize().multiply(factor * timefactor);
-			// Vector velocity = player.getVelocity().clone();
-			// velocity.add(player.getEyeLocation().getDirection().clone()
-			// .normalize().multiply(factor * timefactor));
 			player.setVelocity(velocity);
 			player.setFallDistance(0);
 		}

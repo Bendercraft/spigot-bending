@@ -9,6 +9,7 @@ import java.util.Random;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Material;
@@ -59,7 +60,7 @@ public class SpikeField {
 			}
 		}
 
-		List<Entity> entities = Tools.getEntitiesAroundPoint(p.getLocation(),
+		List<Entity> entities = EntityTools.getEntitiesAroundPoint(p.getLocation(),
 				radius);
 
 		for (int i = 0; i < numofspikes; i++) {

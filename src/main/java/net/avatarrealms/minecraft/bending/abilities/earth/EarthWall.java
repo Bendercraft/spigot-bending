@@ -5,7 +5,8 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -44,10 +45,10 @@ public class EarthWall {
 		Vector orth = new Vector(ox, oy, oz);
 		orth = orth.normalize();
 
-		Block sblock = Tools.getEarthSourceBlock(player, range);
+		Block sblock = BlockTools.getEarthSourceBlock(player, range);
 		Location origin;
 		if (sblock == null) {
-			origin = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
+			origin = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
 		} else {
 			origin = sblock.getLocation();
 		}
@@ -58,35 +59,33 @@ public class EarthWall {
 		for (int i = -halfwidth; i <= halfwidth; i++, cpt++) {
 			Block block = world.getBlockAt(origin.clone().add(
 					orth.clone().multiply((double) i)));
-			// if (block.getType() == Material.AIR || block.isLiquid()) {
-			if (Tools.isTransparentToEarthbending(player, block)) {
+
+			if (BlockTools.isTransparentToEarthbending(player, block)) {
 				for (int j = 1; j < height; j++) {
 					block = block.getRelative(BlockFace.DOWN);
-					if (Tools.isEarthbendable(player, block)) {
+					if (BlockTools.isEarthbendable(player, block)) {
 						cooldown = true;
 						new EarthColumn(player, block.getLocation(), height);
 						// } else if (block.getType() != Material.AIR
 						// && !block.isLiquid()) {
-					} else if (!Tools
-							.isTransparentToEarthbending(player, block)) {
+					} else if (!BlockTools.isTransparentToEarthbending(player, block)) {
 						break;
 					}
 				}
-			} else if (Tools.isEarthbendable(player,
+			} else if (BlockTools.isEarthbendable(player,
 					block.getRelative(BlockFace.UP))) {
 				for (int j = 1; j < height; j++) {
 					block = block.getRelative(BlockFace.UP);
-					// if (block.getType() == Material.AIR || block.isLiquid())
-					// {
-					if (Tools.isTransparentToEarthbending(player, block)) {
+					
+					if (BlockTools.isTransparentToEarthbending(player, block)) {
 						cooldown = true;
 						new EarthColumn(player, block.getRelative(
 								BlockFace.DOWN).getLocation(), height);
-					} else if (!Tools.isEarthbendable(player, block)) {
+					} else if (!BlockTools.isEarthbendable(player, block)) {
 						break;
 					}
 				}
-			} else if (Tools.isEarthbendable(player, block)) {
+			} else if (BlockTools.isEarthbendable(player, block)) {
 				cooldown = true;
 				new EarthColumn(player, block.getLocation(), height);
 			}

@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.command.Command;
@@ -62,8 +63,8 @@ public class Bending extends JavaPlugin {
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin, saver, 0,
 				20 * 60 * 3);
 
-		Tools.printHooks();
-		Tools.verbose("Bending v" + this.getDescription().getVersion()
+		PluginTools.printHooks();
+		PluginTools.verbose("Bending v" + this.getDescription().getVersion()
 				+ " has been loaded.");
 
 		registerCommands();
@@ -72,7 +73,7 @@ public class Bending extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		Tools.stopAllBending();
+		PluginTools.stopAllBending();
 		// PlayerStorageWriter.finish();
 		BendingPlayersSaver.save();
 		getServer().getScheduler().cancelTasks(plugin);

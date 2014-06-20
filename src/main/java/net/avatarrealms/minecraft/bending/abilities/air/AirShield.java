@@ -8,6 +8,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -54,7 +55,7 @@ public class AirShield {
 		
 		FireBlast.removeFireBlastsAroundPoint(origin, radius);
 
-		for (Entity entity : Tools.getEntitiesAroundPoint(origin, radius)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, radius)) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.AirShield,
 					entity.getLocation()))
 				continue;
@@ -132,12 +133,12 @@ public class AirShield {
 			return false;
 		}
 		speedfactor = 1;
-		if (!Tools.canBend(player, Abilities.AirShield)
+		if (!EntityTools.canBend(player, Abilities.AirShield)
 				|| player.getEyeLocation().getBlock().isLiquid()) {
 			instances.remove(player.getEntityId());
 			return false;
 		}
-		if (((Tools.getBendingAbility(player) != Abilities.AirShield) || (!player
+		if (((EntityTools.getBendingAbility(player) != Abilities.AirShield) || (!player
 				.isSneaking())) && !AvatarState.isAvatarState(player)) {
 			instances.remove(player.getEntityId());
 			return false;

@@ -9,7 +9,8 @@ import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -53,8 +54,8 @@ public class EarthArmor {
 
 		this.player = player;
 		
-		headblock = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending());
-		if (Tools.getEarthbendableBlocksLength(player, headblock, new Vector(0,
+		headblock = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending());
+		if (BlockTools.getEarthbendableBlocksLength(player, headblock, new Vector(0,
 				-1, 0), 2) >= 2) {
 			legsblock = headblock.getRelative(BlockFace.DOWN);
 			headtype = headblock.getType();
@@ -69,11 +70,11 @@ public class EarthArmor {
 			if (!moveBlocks())
 				return;
 			if (ConfigManager.reverseearthbending) {
-				Tools.addTempAirBlock(oldheadblock);
-				Tools.addTempAirBlock(oldlegsblock);
+				BlockTools.addTempAirBlock(oldheadblock);
+				BlockTools.addTempAirBlock(oldlegsblock);
 			} else {
-				Tools.removeBlock(oldheadblock);
-				Tools.removeBlock(oldlegsblock);
+				BlockTools.removeBlock(oldheadblock);
+				BlockTools.removeBlock(oldlegsblock);
 			}
 			instances.put(player, this);
 		}
@@ -107,7 +108,7 @@ public class EarthArmor {
 						factor2 * Math.sin(Math.toRadians(angle)));
 				for (int y = 0; y < EarthColumn.standardheight - height1; y++) {
 					testloc = testloc.clone().add(0, -1, 0);
-					if (Tools.isEarthbendable(player, testloc.getBlock())) {
+					if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
 						if (!blocks.contains(testloc.getBlock())) {
 							new EarthColumn(player, testloc, height1 + y - 1);
 						}
@@ -117,7 +118,7 @@ public class EarthArmor {
 				}
 				for (int y = 0; y < EarthColumn.standardheight - height2; y++) {
 					testloc2 = testloc2.clone().add(0, -1, 0);
-					if (Tools.isEarthbendable(player, testloc2.getBlock())) {
+					if (BlockTools.isEarthbendable(player, testloc2.getBlock())) {
 						if (!blocks.contains(testloc2.getBlock())) {
 							new EarthColumn(player, testloc2, height2 + y - 1);
 						}
@@ -159,20 +160,20 @@ public class EarthArmor {
 			newlegsblock = legsblocklocation.getBlock();
 		}
 
-		if (Tools.isTransparentToEarthbending(player, newheadblock)
+		if (BlockTools.isTransparentToEarthbending(player, newheadblock)
 				&& !newheadblock.isLiquid()) {
-			Tools.breakBlock(newheadblock);
-		} else if (!Tools.isEarthbendable(player, newheadblock)
+			BlockTools.breakBlock(newheadblock);
+		} else if (!BlockTools.isEarthbendable(player, newheadblock)
 				&& !newheadblock.isLiquid()
 				&& newheadblock.getType() != Material.AIR) {
 			cancel();
 			return false;
 		}
 
-		if (Tools.isTransparentToEarthbending(player, newlegsblock)
+		if (BlockTools.isTransparentToEarthbending(player, newlegsblock)
 				&& !newlegsblock.isLiquid()) {
-			Tools.breakBlock(newlegsblock);
-		} else if (!Tools.isEarthbendable(player, newlegsblock)
+			BlockTools.breakBlock(newlegsblock);
+		} else if (!BlockTools.isEarthbendable(player, newlegsblock)
 				&& !newlegsblock.isLiquid()
 				&& newlegsblock.getType() != Material.AIR) {
 			cancel();

@@ -3,6 +3,7 @@ package net.avatarrealms.minecraft.bending.controller;
 import java.util.List;
 
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 public class BendingPlayersSaver implements Runnable {
@@ -29,7 +30,7 @@ public class BendingPlayersSaver implements Runnable {
 		for (BendingPlayer player : players) {
 			long time = player.getLastTime();
 			if (nowtime - time >= timelimit && timelimitdays != 0) {
-				Tools.verbose("Old player: " + player.getPlayerID() + " deleted.");
+				PluginTools.verbose("Old player: " + player.getPlayerID() + " deleted.");
 				player.delete();
 				config.setPlayer(player.getPlayerID(), null);
 			} else {
