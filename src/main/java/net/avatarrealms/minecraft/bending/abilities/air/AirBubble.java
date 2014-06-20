@@ -1,6 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -20,7 +24,7 @@ import org.bukkit.entity.Player;
 
 public class AirBubble {
 
-	public static ConcurrentHashMap<Integer, AirBubble> instances = new ConcurrentHashMap<Integer, AirBubble>();
+	private static Map<Integer, AirBubble> instances = new HashMap<Integer, AirBubble>();
 
 	private static double defaultAirRadius = ConfigManager.airBubbleRadius;
 	private static double defaultWaterRadius = ConfigManager.waterBubbleRadius;
@@ -31,11 +35,11 @@ public class AirBubble {
 	private Player player;
 	private double radius;
 	// private ConcurrentHashMap<Block, Byte> waterorigins;
-	private ConcurrentHashMap<Block, BlockState> waterorigins;
+	private Map<Block, BlockState> waterorigins;
 
 	public AirBubble(Player player) {
 		this.player = player;
-		waterorigins = new ConcurrentHashMap<Block, BlockState>();
+		waterorigins = new HashMap<Block, BlockState>();
 		instances.put(player.getEntityId(), this);
 	}
 
@@ -55,16 +59,21 @@ public class AirBubble {
 			radius = defaultAirRadius;
 		Location location = player.getLocation();
 
-		for (Block block : waterorigins.keySet()) {
-			if (block.getWorld() != location.getWorld()) {
-				if (block.getType() == Material.AIR || BlockTools.isWater(block))
-					waterorigins.get(block).update(true);
-				waterorigins.remove(block);
-			} else if (block.getLocation().distance(location) > radius) {
-				if (block.getType() == Material.AIR || BlockTools.isWater(block))
-					waterorigins.get(block).update(true);
-				waterorigins.remove(block);
+		List<Block> toRemove = new LinkedList<Block>();
+		for (Entry<Block, BlockState> entry : waterorigins.entrySet()) {
+			if (entry.getKey().getWorld() != location.getWorld()) {
+				if (entry.getKey().getType() == Material.AIR || BlockTools.isWater(entry.getKey()))
+					entry.getValue().update(true);
+				toRemove.add(entry.getKey());
+			} else if (entry.getKey().getLocation().distance(location) > radius) {
+				if (entry.getKey().getType() == Material.AIR || BlockTools.isWater(entry.getKey()))
+					entry.getValue().update(true);
+				toRemove.add(entry.getKey());
 			}
+		}
+		
+		for(Block block : toRemove) {
+			waterorigins.remove(block);
 		}
 
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
@@ -86,9 +95,8 @@ public class AirBubble {
 		}
 	}
 
-	public boolean progress() {
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			removeBubble();
 			return false;
 		}
 		if (((EntityTools.getBendingAbility(player) == Abilities.AirBubble) 
@@ -98,12 +106,10 @@ public class AirBubble {
 			pushWater();
 			return true;
 		}
-		removeBubble();
 		return false;
 	}
 
 	public static void handleBubbles(Server server) {
-
 		for (Player player : server.getOnlinePlayers()) {
 			if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble || EntityTools
 					.getBendingAbility(player) == Abilities.WaterBubble)
@@ -112,21 +118,28 @@ public class AirBubble {
 			}
 		}
 
-		for (int ID : instances.keySet()) {
-			progress(ID);
+		List<AirBubble> toRemove = new LinkedList<AirBubble>();
+		for (AirBubble bubble : instances.values()) {
+			boolean keep = bubble.progress();
+			if(!keep) {
+				toRemove.add(bubble);
+			}
+		}
+		for(AirBubble bubble : toRemove) {
+			bubble.removeBubble();
+		}
+	}
+	
+	private void clearBubble() {
+		for (Entry<Block, BlockState> entry : waterorigins.entrySet()) {
+			if (entry.getKey().getType() == Material.AIR || entry.getKey().isLiquid())
+				entry.getValue().update(true);
 		}
 	}
 
 	private void removeBubble() {
-		for (Block block : waterorigins.keySet()) {
-			if (block.getType() == Material.AIR || block.isLiquid())
-				waterorigins.get(block).update(true);
-		}
+		this.clearBubble();
 		instances.remove(player.getEntityId());
-	}
-
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
 	}
 
 	public boolean blockInBubble(Block block) {
@@ -149,9 +162,10 @@ public class AirBubble {
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			instances.get(id).removeBubble();
+		for (AirBubble bubble : instances.values()) {
+			bubble.clearBubble();
 		}
+		instances.clear();
 	}
 
 	public static String getDescription() {
