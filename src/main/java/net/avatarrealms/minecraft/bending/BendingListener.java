@@ -532,6 +532,10 @@ public class BendingListener implements Listener {
 			if (ability == Abilities.Collapse) {
 				new Collapse(player);
 			}
+			
+			if (ability == Abilities.EarthArmor) {
+				EarthArmor.EarthShield(player);
+			}
 
 			if (ability == Abilities.WaterManipulation) {
 				new WaterManipulation(player);
