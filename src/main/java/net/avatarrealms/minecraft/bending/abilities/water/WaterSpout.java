@@ -76,10 +76,14 @@ public class WaterSpout {
 			}
 		}
 
-		for (Block block : affectedblocks) {
+		List<Block> toRemove = new LinkedList<Block>();
+		for(Block block : affectedblocks) {
 			if (!newaffectedblocks.contains(block)) {
-				remove(block);
+				toRemove.add(block);
 			}
+		}
+		for (Block block : toRemove) {
+			remove(block);
 		}
 	}
 
@@ -216,8 +220,8 @@ public class WaterSpout {
 		for (Block block : affectedblocks) {
 			// block.setType(Material.AIR);
 			TempBlock.revertBlock(block, Material.AIR);
-			affectedblocks.remove(block);
 		}
+		affectedblocks.clear();
 	}
 
 	public static ArrayList<Player> getPlayers() {
