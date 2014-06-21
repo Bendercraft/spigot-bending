@@ -1,8 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -19,7 +21,7 @@ import org.bukkit.util.Vector;
 
 public class AirShield {
 
-	public static ConcurrentHashMap<Integer, AirShield> instances = new ConcurrentHashMap<Integer, AirShield>();
+	private static Map<Integer, AirShield> instances = new HashMap<Integer, AirShield>();
 
 	private static double maxradius = ConfigManager.airShieldRadius;
 	private static int numberOfStreams = (int) (.75 * (double) maxradius);
@@ -29,7 +31,7 @@ public class AirShield {
 	private double speedfactor;
 
 	private Player player;
-	private HashMap<Integer, Integer> angles = new HashMap<Integer, Integer>();
+	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
 
 	public AirShield(Player player) {
 		if (AvatarState.isAvatarState(player)
@@ -146,9 +148,27 @@ public class AirShield {
 		rotateShield();
 		return true;
 	}
+	
+	public static void progressAll() {
+		List<AirShield> toRemove = new LinkedList<AirShield>();
+		for(AirShield shield : instances.values()) {
+			boolean keep = shield.progress();
+			if(!keep) {
+				toRemove.add(shield);
+			}
+		}
+		
+		for(AirShield shield : toRemove) {
+			shield.remove();
+		}
+	}
+	
+	private void remove() {
+		instances.remove(this.player.getEntityId());
+	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void removeAll() {
+		instances.clear();
 	}
 
 	public static String getDescription() {
@@ -159,4 +179,5 @@ public class AirShield {
 				+ "This wind will deflect all projectiles and will prevent any creature from "
 				+ "entering it for as long as its maintained. ";
 	}
+
 }

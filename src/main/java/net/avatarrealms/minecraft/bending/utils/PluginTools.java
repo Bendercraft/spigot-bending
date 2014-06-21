@@ -182,7 +182,7 @@ public class PluginTools {
 	public static void stopAllBending() {
 		AirBlast.removeAll();
 		AirBubble.removeAll();
-		AirShield.instances.clear();
+		AirShield.removeAll();
 		AirSuction.instances.clear();
 		AirScooter.removeAll();
 		AirSpout.removeAll();
