@@ -1,7 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.chi;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
@@ -15,9 +15,8 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 public class Paralyze {
-
-	private static ConcurrentHashMap<Entity, Long> entities = new ConcurrentHashMap<Entity, Long>();
-	private static ConcurrentHashMap<Entity, Long> cooldowns = new ConcurrentHashMap<Entity, Long>();
+	private static Map<Entity, Long> entities = new HashMap<Entity, Long>();
+	private static Map<Entity, Long> cooldowns = new HashMap<Entity, Long>();
 
 	private static final long cooldown = ConfigManager.paralyzeCooldown;
 	private static final long duration = ConfigManager.paralyzeDuration;
