@@ -52,8 +52,6 @@ public class ConfigManager {
 	
 	public static int maxlevel = 50;
 	private static Map<Abilities,Integer> levelsRequired;
-	/*public static int ticksBeforeLoseXP = 12000;
-	public static int xpLost = 2; */
 
 	public static int avatarStateLevelRequired = 51;
 	
@@ -448,8 +446,6 @@ public class ConfigManager {
 		// Option
 		earthbendable = defaultearthbendable;
 		maxlevel = config.getInt("Bending.Option.max-level");
-		/*ticksBeforeLoseXP = 20*config.getInt("Bending.Option.lose-experience.seconds");
-		xpLost = config.getInt("Bending.Option.lose-experience.amount");*/
 		if (config.contains("Bending.Option.EarthBendable"))
 			earthbendable = config
 					.getStringList("Bending.Option.EarthBendable");
@@ -1124,8 +1120,6 @@ public class ConfigManager {
 		config.set("Bending.Option.Firebending-Dissipate-Time", dissipateAfter);
 		config.set("Bending.Option.Sea-Level", seaLevel);
 		config.set("Bending.Option.max-level", maxlevel);
-		/* config.set("Bending.Option.lose-experience.seconds", ticksBeforeLoseXP/20);
-		config.set("Bending.Option.lose-experience.amount", xpLost); */
 
 		// Properties
 		// ChiBlocker

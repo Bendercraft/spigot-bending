@@ -203,10 +203,6 @@ public class BendingCommand {
 					temp[i] = args[i];
 				}
 				args = temp;
-				// String arglist = "";
-				// for (String arg : args)
-				// arglist = arglist + arg + " ";
-				// Tools.verbose(arglist);
 			}
 
 			String arg = args[0];

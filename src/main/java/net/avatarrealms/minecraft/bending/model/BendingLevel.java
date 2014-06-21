@@ -12,14 +12,12 @@ public class BendingLevel {
 		private BendingType bendingType;
 		private Integer level = 1;
 		private Integer experience = 0;
-		private int cpt = 0;
 		
 		public BendingLevel(BendingType type, BendingPlayer player) {
 			this.bPlayer = player;
 			this.bendingType = type;
 			this.level = 1;
 			this.experience = 0;
-			this.cpt = 0;
 		}
 		
 		public Integer getLevel() {
@@ -28,21 +26,6 @@ public class BendingLevel {
 		
 		public BendingType getBendingType() {
 			return bendingType;
-		}
-		
-		public void resetCpt() {
-			this.cpt = 0;
-		}
-		
-		public void increaseCpt() {
-			cpt++;
-			/*if (cpt >= ConfigManager.ticksBeforeLoseXP) {
-				experience -= ConfigManager.xpLost;
-				cpt = 0;
-				if (experience <= 0) {		
-						experience = 0;
-				}
-			}*/
 		}
 
 		public String toString() {

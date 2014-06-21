@@ -246,15 +246,9 @@ public class BendingListener implements Listener {
 	public void onPlayerSwing(PlayerAnimationEvent event) {
 
 		Player player = event.getPlayer();
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (Bloodbending.isBloodbended(player) || Paralyze.isParalyzed(player)) {
 			event.setCancelled(true);
 		}
-
-		// Tools.verbose(Tools.getBendingAbility(player));
-
-		// Abilities[] sourceabilities = { Abilities.OctopusForm,
-		// Abilities.Surge };
 
 		AirScooter.check(player);
 
@@ -268,22 +262,18 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.AirBlast) {
 					new AirBlast(player);
-					bPlayer.resetBendingCpt(BendingType.Air);
 				}
 
 				if (ability == Abilities.AirSuction) {
 					new AirSuction(player);
-					bPlayer.resetBendingCpt(BendingType.Air);
 				}
 
 				if (ability == Abilities.AirSwipe) {
 					new AirSwipe(player);
-					bPlayer.resetBendingCpt(BendingType.Air);
 				}
 
 				if (ability == Abilities.AirScooter) {
 					new AirScooter(player);
-					bPlayer.resetBendingCpt(BendingType.Air);
 				}
 
 				if (ability == Abilities.AirSpout) {
@@ -292,7 +282,6 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.AirBurst) {
 					AirBurst.coneBurst(player);
-					bPlayer.resetBendingCpt(BendingType.Air);
 				}
 
 			}
@@ -302,7 +291,6 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.Catapult) {
 					new Catapult(player);
-					bPlayer.resetBendingCpt(BendingType.Earth);
 				}
 
 				if (ability == Abilities.RaiseEarth) {
@@ -319,7 +307,6 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.EarthBlast) {
 					EarthBlast.throwEarth(player);
-					bPlayer.resetBendingCpt(BendingType.Earth);
 				}
 
 				if (ability == Abilities.Tremorsense) {
@@ -341,7 +328,6 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.FireBlast) {
 					new FireBlast(player);
-					bPlayer.resetBendingCpt(BendingType.Fire);
 				}
 
 				if (ability == Abilities.HeatControl) {
@@ -350,12 +336,10 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.Blaze) {
 					new ArcOfFire(player);
-					bPlayer.resetBendingCpt(BendingType.Fire);
 				}
 
 				if (ability == Abilities.FireJet) {
 					new FireJet(player);
-					bPlayer.resetBendingCpt(BendingType.Fire);
 				}
 
 				if (ability == Abilities.Illumination) {
@@ -364,17 +348,14 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.WallOfFire) {
 					new WallOfFire(player);
-					bPlayer.resetBendingCpt(BendingType.Fire);
 				}
 
 				if (ability == Abilities.FireBurst) {
 					FireBurst.coneBurst(player);
-					bPlayer.resetBendingCpt(BendingType.Fire);
 				}
 
 				if (ability == Abilities.FireShield) {
 					new FireShield(player);
-					bPlayer.resetBendingCpt(BendingType.Fire);
 				}
 
 			}
@@ -384,12 +365,10 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.WaterManipulation) {
 					WaterManipulation.moveWater(player);
-					bPlayer.resetBendingCpt(BendingType.Water);
 				}
 
 				if (ability == Abilities.IceSpike) {
 					IceSpike2.activate(player);
-					bPlayer.resetBendingCpt(BendingType.Water);
 				}
 
 				if (ability == Abilities.PhaseChange) {
@@ -406,17 +385,7 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.Torrent) {
 					new Torrent(player);
-					bPlayer.resetBendingCpt(BendingType.Water);
 				}
-
-				// if (ability == Abilities.Wave) {
-				// Wave.launch(player);
-				// }
-
-				// if (ability ==
-				// Abilities.Plantbending) {
-				// new Plantbending(player);
-				// }
 
 				if (ability == Abilities.WaterSpout) {
 					new WaterSpout(player);
@@ -434,14 +403,12 @@ public class BendingListener implements Listener {
 
 			if (ability == Abilities.HighJump) {
 				new HighJump(player);
-				bPlayer.resetBendingCpt(BendingType.ChiBlocker);
 			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
 
 				if (ability == Abilities.RapidPunch) {
 					new RapidPunch(player);
-					bPlayer.resetBendingCpt(BendingType.ChiBlocker);
 				}
 
 				if (ability == Abilities.Paralyze) {
@@ -463,10 +430,6 @@ public class BendingListener implements Listener {
 			event.setCancelled(true);
 		}
 
-		// Abilities[] sourceabilities = { Abilities.AirBlast,
-		// Abilities.AirSuction, Abilities.EarthBlast,
-		// Abilities.WaterManipulation, Abilities.Surge,
-		// Abilities.IceSpike };
 
 		AirScooter.check(player);
 
@@ -502,7 +465,6 @@ public class BendingListener implements Listener {
 
 			if (ability == Abilities.Tornado) {
 				new Tornado(player);
-				bPlayer.resetBendingCpt(BendingType.Air);
 			}
 
 			if (ability == Abilities.EarthBlast) {
@@ -557,10 +519,6 @@ public class BendingListener implements Listener {
 				Torrent.create(player);
 			}
 
-			// if (ability == Abilities.Wave) {
-			// new Wave(player);
-			// }
-
 			if (ability == Abilities.Bloodbending) {
 				new Bloodbending(player);
 			}
@@ -592,9 +550,7 @@ public class BendingListener implements Listener {
 			if (ability == Abilities.HeatControl) {
 				new Cook(player);
 			}
-
 		}
-
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

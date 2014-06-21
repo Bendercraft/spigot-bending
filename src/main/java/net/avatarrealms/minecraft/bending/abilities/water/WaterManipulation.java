@@ -372,17 +372,13 @@ public class WaterManipulation {
 					falling = true;
 					progressing = false;
 				}
-
 				return true;
 			}
 		}
-
 		return false;
-
 	}
 
 	private void breakBlock() {
-
 		// removeWater(oldwater);
 		finalRemoveWater(sourceblock);
 		remove(id);
@@ -397,7 +393,6 @@ public class WaterManipulation {
 			if (!BlockTools.adjacentToThreeOrMoreSources(block)) {
 				// && !Tools.adjacentToAnyWater(block)) {
 				block.setType(Material.AIR);
-
 			}
 			// oldwater = block;
 			affectedblocks.remove(block);
@@ -432,8 +427,6 @@ public class WaterManipulation {
 			if (!BlockTools.adjacentToThreeOrMoreSources(block)) {
 				// && !Tools.adjacentToAnyWater(block)) {
 				block.setType(Material.AIR);
-				// block.setType(Material.WATER);
-				// block.setData(half);
 			}
 			affectedblocks.remove(block);
 		}

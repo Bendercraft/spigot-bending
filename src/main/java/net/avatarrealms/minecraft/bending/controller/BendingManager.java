@@ -55,7 +55,6 @@ import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterWall;
 import net.avatarrealms.minecraft.bending.abilities.water.Wave;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -64,7 +63,6 @@ import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -110,11 +108,6 @@ public class BendingManager implements Runnable {
 			// handleFlying();
 			Flight.handle();
 			handleDayNight();
-			
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-				bPlayer.increaseAllBendingCpt();
-			}
 
 		} catch (Exception e) {
 			PluginTools.stopAllBending();

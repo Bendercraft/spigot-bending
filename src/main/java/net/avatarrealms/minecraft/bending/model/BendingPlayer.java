@@ -513,17 +513,6 @@ public class BendingPlayer {
 		return newDamage;
 	}
 	
-	public void increaseAllBendingCpt() {
-		for (BendingType type : bendings.keySet()) {
-			bendings.get(type).increaseCpt();
-		}
-	}
-	
-	public void resetBendingCpt(BendingType type) {
-		if (bendings.get(type) != null)
-			bendings.get(type).resetCpt();
-	}
-	
 	public void earnXP(BendingType type) {
 		bendings.get(type).earnXP();
 	}
