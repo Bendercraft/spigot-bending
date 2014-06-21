@@ -1,9 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.chi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -21,7 +21,7 @@ public class RapidPunch {
 	private int distance = ConfigManager.rapidPunchDistance;
 	private static int punches = ConfigManager.rapidPunchPunches;
 	
-	public static ConcurrentHashMap<Player, RapidPunch> instance = new ConcurrentHashMap<Player, RapidPunch>();
+	public static Map<Player, RapidPunch> instance = new HashMap<Player, RapidPunch>();
 	private int numpunches;
 
 	private Entity target;
