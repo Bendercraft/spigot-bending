@@ -1,6 +1,7 @@
 package net.avatarrealms.minecraft.bending.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.abilities.air.AirScooter;
@@ -76,7 +77,7 @@ public class Flight {
 		ArrayList<Player> avatarstateplayers = new ArrayList<Player>();
 		ArrayList<Player> airscooterplayers = new ArrayList<Player>();
 		ArrayList<Player> waterspoutplayers = new ArrayList<Player>();
-		ArrayList<Player> airspoutplayers = new ArrayList<Player>();
+		List<Player> airspoutplayers = AirSpout.getPlayers();
 
 		players.addAll(Tornado.getPlayers());
 		players.addAll(Speed.getPlayers());
@@ -85,7 +86,6 @@ public class Flight {
 		avatarstateplayers = AvatarState.getPlayers();
 		airscooterplayers = AirScooter.getPlayers();
 		waterspoutplayers = WaterSpout.getPlayers();
-		airspoutplayers = AirSpout.getPlayers();
 
 		for (Player player : instances.keySet()) {
 			Flight flight = instances.get(player);

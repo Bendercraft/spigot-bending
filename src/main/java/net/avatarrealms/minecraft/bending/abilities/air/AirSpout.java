@@ -1,7 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
@@ -18,7 +21,7 @@ import org.bukkit.entity.Player;
 
 public class AirSpout {
 
-	private static ConcurrentHashMap<Player, AirSpout> instances = new ConcurrentHashMap<Player, AirSpout>();
+	private static Map<Player, AirSpout> instances = new HashMap<Player, AirSpout>();
 
 	private static final double height = ConfigManager.airSpoutHeight;
 	private static final long interval = 100;
@@ -42,29 +45,39 @@ public class AirSpout {
 		new Flight(player);
 		instances.put(player, this);
 		bPlayer.cooldown(Abilities.AirSpout);
-		spout();
-	}
-
-	public static void spoutAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).spout();
+		boolean keep = spout();
+		if(!keep) {
+			this.remove();
 		}
 	}
 
-	public static ArrayList<Player> getPlayers() {
-		ArrayList<Player> players = new ArrayList<Player>();
+	public static void spoutAll() {
+		List<AirSpout> toRemove = new LinkedList<AirSpout>();
+		for (AirSpout spout : instances.values()) {
+			boolean keep = spout.spout();
+			if(!keep) {
+				toRemove.add(spout);
+			}
+		}
+		
+		for (AirSpout spout : toRemove) {
+			spout.remove();
+		}
+	}
+
+	public static List<Player> getPlayers() {
+		List<Player> players = new ArrayList<Player>();
 		players.addAll(instances.keySet());
 		return players;
 	}
 
-	private void spout() {
+	private boolean spout() {
 		if (!EntityTools.canBend(player, Abilities.AirSpout)
 				|| !EntityTools.hasAbility(player, Abilities.AirSpout)
 				|| player.getEyeLocation().getBlock().isLiquid()
 				|| BlockTools.isSolid(player.getEyeLocation().getBlock())
 				|| player.isDead() || !player.isOnline()) {
-			remove();
-			return;
+			return false;
 		}
 		player.setFallDistance(0);
 		player.setSprinting(false);
@@ -78,8 +91,10 @@ public class AirSpout {
 			}
 			rotateAirColumn(block);
 		} else {
-			remove();
+			return false;
 		}
+		
+		return true;
 	}
 
 	private void allowFlight() {
@@ -136,25 +151,6 @@ public class AirSpout {
 
 				location.getWorld().playEffect(effectloc2, Effect.SMOKE,
 						(int) directions[index], (int) height + 5);
-
-				// Tools.verbose(directions[index]);
-
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE, 0,
-				// (int) height + 5);
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE, 1,
-				// (int) height + 5);
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE, 2,
-				// (int) height + 5);
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE, 3,
-				// (int) height + 5);
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE, 5,
-				// (int) height + 5);
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE, 6,
-				// (int) height + 5);
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE, 7,
-				// (int) height + 5);
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE, 8,
-				// (int) height + 5);
 			}
 		}
 	}
@@ -177,15 +173,20 @@ public class AirSpout {
 		}
 	}
 
-	private void remove() {
+	private void clear() {
 		removeFlight();
+	}
+	
+	private void remove() {
+		clear();
 		instances.remove(player);
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).remove();
+		for (AirSpout spout : instances.values()) {
+			spout.clear();
 		}
+		instances.clear();
 	}
 
 	public static String getDescription() {
