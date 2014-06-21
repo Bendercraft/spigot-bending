@@ -108,7 +108,6 @@ public class Bending extends JavaPlugin {
 		if (cmd.getName().equalsIgnoreCase("bending")) {
 
 			new BendingCommand(player, args, getDataFolder(), getServer());
-
 		}
 		return true;
 	}

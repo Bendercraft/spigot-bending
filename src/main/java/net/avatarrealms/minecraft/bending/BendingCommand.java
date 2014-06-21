@@ -2192,15 +2192,21 @@ public class BendingCommand {
 						type = BendingType.ChiBlocker;
 					}
 					else {
+						player.sendMessage(ChatColor.RED + "Invalid element");
 						return;
 					}
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 					bPlayer.setBendingLevel(type,level);
+					target.sendMessage("You have received " + level + " level(s) for your "+ element +" bending");
+					player.sendMessage("You have given " + level + "level(s) for the "+element + "bending of " + target.getName());
 				}
 				else {
-					player.sendMessage("Bad use of the setlevel command.");
+					player.sendMessage(ChatColor.RED + "Bad use of the setlevel command.");
 				}
-			}	
+			}
+			else {
+				player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
+			}
 		}
 	}
 	
@@ -2229,14 +2235,20 @@ public class BendingCommand {
 					type = BendingType.ChiBlocker;
 				}
 				else {
+					player.sendMessage(ChatColor.RED + "Invalid element");
 					return;
 				}
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 				bPlayer.receiveXP(type,level);
+				target.sendMessage("You have received " + level + " experiences for your "+ element +" bending");
+				player.sendMessage("You have given " + level + "experiences for the "+element + "bending of " + target.getName());
 			}
 			else {
-				player.sendMessage("Bad use of the givexp command.");
+				player.sendMessage(ChatColor.RED + "Bad use of the givexp command.");
 			}
+		}
+		else {
+			player.sendMessage(ChatColor.RED + "You're not allowed to do that");
 		}
 	}
 

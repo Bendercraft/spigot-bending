@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -23,9 +22,8 @@ public class EarthGrab {
 
 	public EarthGrab(Player player) {
 		// Tools.verbose("initiating");
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.EarthGrab))
+		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(Abilities.EarthGrab))
 			return;
 
 		Location origin = player.getEyeLocation();
@@ -43,12 +41,16 @@ public class EarthGrab {
 					lowestdistance = distance;
 				}
 			}
-		}
-
-		if (closestentity != null) {
+		}	
+		grabEntity(player,closestentity);		
+	}
+	
+	public static void grabEntity(Player player, Entity entity) {
+		if (entity != null) {
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 			// Tools.verbose("grabbing");
 			ArrayList<Block> blocks = new ArrayList<Block>();
-			Location location = closestentity.getLocation();
+			Location location = entity.getLocation();
 			Location loc1 = location.clone();
 			Location loc2 = location.clone();
 			Location testloc, testloc2;
@@ -83,15 +85,13 @@ public class EarthGrab {
 						break;
 					}
 				}
-			}
-
-			if (!blocks.isEmpty()) {
-				bPlayer.cooldown(Abilities.EarthGrab);
-				bPlayer.receiveXP(BendingType.Earth,2);
-			}
 				
-		}
-	}
+				if (!blocks.isEmpty())
+					bPlayer.cooldown(Abilities.EarthGrab);
+				}
+			}				
+		}	
+	
 
 	public static void EarthGrabSelf(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -99,51 +99,7 @@ public class EarthGrab {
 		if (bPlayer.isOnCooldown(Abilities.EarthGrab))
 			return;
 
-		Entity closestentity = player;
-
-		if (closestentity != null) {
-			// Tools.verbose("grabbing");
-			ArrayList<Block> blocks = new ArrayList<Block>();
-			Location location = closestentity.getLocation();
-			Location loc1 = location.clone();
-			Location loc2 = location.clone();
-			Location testloc, testloc2;
-			double factor = 3;
-			double factor2 = 4;
-			int height1 = 3;
-			int height2 = 2;
-			for (double angle = 0; angle <= 360; angle += 20) {
-				testloc = loc1.clone().add(
-						factor * Math.cos(Math.toRadians(angle)), 1,
-						factor * Math.sin(Math.toRadians(angle)));
-				testloc2 = loc2.clone().add(
-						factor2 * Math.cos(Math.toRadians(angle)), 1,
-						factor2 * Math.sin(Math.toRadians(angle)));
-				for (int y = 0; y < EarthColumn.standardheight - height1; y++) {
-					testloc = testloc.clone().add(0, -1, 0);
-					if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
-						if (!blocks.contains(testloc.getBlock())) {
-							new EarthColumn(player, testloc, height1 + y - 1);
-						}
-						blocks.add(testloc.getBlock());
-						break;
-					}
-				}
-				for (int y = 0; y < EarthColumn.standardheight - height2; y++) {
-					testloc2 = testloc2.clone().add(0, -1, 0);
-					if (BlockTools.isEarthbendable(player, testloc2.getBlock())) {
-						if (!blocks.contains(testloc2.getBlock())) {
-							new EarthColumn(player, testloc2, height2 + y - 1);
-						}
-						blocks.add(testloc2.getBlock());
-						break;
-					}
-				}
-			}
-
-			if (!blocks.isEmpty())
-				bPlayer.cooldown(Abilities.EarthGrab);
-		}
+		grabEntity(player,player);	
 	}
 
 	public static String getDescription() {
