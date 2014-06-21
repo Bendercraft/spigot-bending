@@ -1,6 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
@@ -23,8 +26,8 @@ import org.bukkit.util.Vector;
 
 public class AirSuction {
 
-	public static ConcurrentHashMap<Integer, AirSuction> instances = new ConcurrentHashMap<Integer, AirSuction>();
-	private static ConcurrentHashMap<Player, Location> origins = new ConcurrentHashMap<Player, Location>();
+	private static Map<Integer, AirSuction> instances = new HashMap<Integer, AirSuction>();
+	private static Map<Player, Location> origins = new HashMap<Player, Location>();
 	// private static ConcurrentHashMap<Player, Long> timers = new
 	// ConcurrentHashMap<Player, Long>();
 	static final long soonesttime = Tools.timeinterval;
@@ -51,12 +54,6 @@ public class AirSuction {
 	private double speedfactor;
 
 	public AirSuction(Player player) {
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
-		// return;
-		// }
-		// }
-
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.AirSuction))
@@ -139,21 +136,15 @@ public class AirSuction {
 				location))
 			return;
 
-		if (origins.containsKey(player)) {
-			origins.replace(player, location);
-		} else {
-			origins.put(player, location);
-		}
+		origins.put(player, location);
 	}
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(id);
 			return false;
 		}
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSuction,
 				location)) {
-			instances.remove(id);
 			return false;
 		}
 		speedfactor = speed * (Bending.time_step / 1000.);
@@ -161,14 +152,12 @@ public class AirSuction {
 		ticks++;
 
 		if (ticks > maxticks) {
-			instances.remove(id);
 			return false;
 		}
 
 
 		if ((location.distance(origin) > range)
 				|| (location.distance(origin) <= 1)) {
-			instances.remove(id);
 			return false;
 		}
 
@@ -233,6 +222,10 @@ public class AirSuction {
 
 		return true;
 	}
+	
+	private void remove() {
+		instances.remove(id);
+	}
 
 	private void advanceLocation() {
 		location.getWorld().playEffect(location, Effect.SMOKE, 4,
@@ -241,8 +234,18 @@ public class AirSuction {
 	}
 
 	public static void progressAll() {
-		for (int id : instances.keySet())
-			instances.get(id).progress();
+		List<AirSuction> toRemove = new LinkedList<AirSuction>();
+		for(AirSuction suction : instances.values()) {
+			boolean keep = suction.progress();
+			if(!keep) {
+				toRemove.add(suction);
+			}
+		}
+		
+		for(AirSuction suction : toRemove) {
+			suction.remove();
+		}
+			
 		for (Player player : origins.keySet()) {
 			playOriginEffect(player);
 		}
@@ -279,6 +282,10 @@ public class AirSuction {
 				+ " Skilled benders can use this technique to pull items from precarious locations. "
 				+ "Additionally, tapping sneak will change the origin of your next "
 				+ "AirSuction to your targeted location.";
+	}
+
+	public static void removeAll() {
+		instances.clear();
 	}
 
 }
