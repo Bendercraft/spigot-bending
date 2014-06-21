@@ -278,8 +278,8 @@ public class BlockTools {
 					&& blocki.getData() == full
 					&& WaterManipulation.canPhysicsChange(blocki))
 				sources++;
-			if (FreezeMelt.frozenblocks.containsKey(blocki)) {
-				if (FreezeMelt.frozenblocks.get(blocki) == full)
+			if (FreezeMelt.isFrozen(blocki)) {
+				if (FreezeMelt.isLevel(blocki,full))
 					sources++;
 			} else if (blocki.getType() == Material.ICE) {
 				sources++;
@@ -295,7 +295,7 @@ public class BlockTools {
 				BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH };
 		boolean adjacent = false;
 		for (BlockFace face : faces) {
-			if (FreezeMelt.frozenblocks.containsKey((block.getRelative(face))))
+			if (FreezeMelt.isFrozen((block.getRelative(face))))
 				adjacent = true;
 		}
 		return adjacent;

@@ -210,7 +210,7 @@ public class PluginTools {
 		Wave.removeAll();
 		Plantbending.regrowAll();
 		OctopusForm.removeAll();
-		Bloodbending.instances.clear();
+		Bloodbending.removeAll();
 
 		FireStream.removeAll();
 		Fireball.removeAll();

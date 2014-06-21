@@ -1,7 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
@@ -18,8 +21,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class FreezeMelt {
-
-	public static ConcurrentHashMap<Block, Byte> frozenblocks = new ConcurrentHashMap<Block, Byte>();
+	private static Map<Block, Byte> frozenblocks = new HashMap<Block, Byte>();
 
 	public static final int defaultrange = ConfigManager.freezeMeltRange;
 	public static final int defaultradius = ConfigManager.freezeMeltRadius;
@@ -76,20 +78,40 @@ public class FreezeMelt {
 		block.setType(Material.ICE);
 		frozenblocks.put(block, data);
 	}
+	
+	public static void thawThenRemove(Block block) {
+		boolean keep = thaw(block);
+		if(!keep) {
+			frozenblocks.remove(block);
+		}
+	}
+	
+	public static void remove(Block block) {
+		frozenblocks.remove(block);
+	}
 
-	public static void thaw(Block block) {
+	private static boolean thaw(Block block) {
 		if (frozenblocks.containsKey(block)) {
 			byte data = frozenblocks.get(block);
-			frozenblocks.remove(block);
 			block.setType(Material.WATER);
 			block.setData(data);
+			return false;
 		}
+		return true;
 	}
 
 	public static void handleFrozenBlocks() {
+		List<Block> toRemove = new LinkedList<Block>();
 		for (Block block : frozenblocks.keySet()) {
-			if (canThaw(block))
-				thaw(block);
+			if (canThaw(block)) {
+				boolean keep = thaw(block);
+				if(!keep) {
+					toRemove.add(block);
+				}
+			}
+		}
+		for (Block block : toRemove) {
+			frozenblocks.remove(block);
 		}
 	}
 
@@ -118,14 +140,27 @@ public class FreezeMelt {
 	}
 
 	private static void thawAll() {
-		for (Block block : frozenblocks.keySet()) {
+		List<Block> toRemove = new LinkedList<Block>();
+		for (Entry<Block, Byte> entry : frozenblocks.entrySet()) {
+			Block block = entry.getKey();
 			if (block.getType() == Material.ICE) {
-				byte data = frozenblocks.get(block);
+				byte data = entry.getValue();
 				block.setType(Material.WATER);
 				block.setData(data);
-				frozenblocks.remove(block);
+				toRemove.add(block);
 			}
 		}
+		for (Block block : toRemove) {
+			frozenblocks.remove(block);
+		}
+	}
+	
+	public static boolean isFrozen(Block block) {
+		return frozenblocks.containsKey(block);
+	}
+	
+	public static boolean isLevel(Block block, byte level) {
+		return frozenblocks.get(block) == level;
 	}
 
 	public static void removeAll() {

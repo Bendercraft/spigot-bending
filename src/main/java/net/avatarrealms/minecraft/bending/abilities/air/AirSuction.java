@@ -245,34 +245,39 @@ public class AirSuction {
 		for(AirSuction suction : toRemove) {
 			suction.remove();
 		}
-			
+		
+		List<Player> toRemoveOrigin = new LinkedList<Player>();
 		for (Player player : origins.keySet()) {
-			playOriginEffect(player);
+			boolean keep = playOriginEffect(player);
+			if(!keep) {
+				toRemoveOrigin.add(player);
+			}
+		}
+		for(Player player : toRemoveOrigin) {
+			origins.remove(player);
 		}
 	}
 
-	private static void playOriginEffect(Player player) {
+	private static boolean playOriginEffect(Player player) {
 		if (!origins.containsKey(player))
-			return;
+			return true;
 		Location origin = origins.get(player);
 		if (!origin.getWorld().equals(player.getWorld())) {
-			origins.remove(player);
-			return;
+			return false;
 		}
 
 		if (EntityTools.getBendingAbility(player) != Abilities.AirSuction
 				|| !EntityTools.canBend(player, Abilities.AirSuction)) {
-			origins.remove(player);
-			return;
+			return false;
 		}
 
 		if (origin.distance(player.getEyeLocation()) > originselectrange) {
-			origins.remove(player);
-			return;
+			return false;
 		}
 
 		origin.getWorld().playEffect(origin, Effect.SMOKE, 4,
 				(int) originselectrange);
+		return true;
 	}
 
 	public static String getDescription() {

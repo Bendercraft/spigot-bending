@@ -436,8 +436,8 @@ public class WaterManipulation {
 		if (!affectedblocks.containsKey(block)) {
 			affectedblocks.put(block, block);
 		}
-		if (FreezeMelt.frozenblocks.containsKey(block))
-			FreezeMelt.frozenblocks.remove(block);
+		if (FreezeMelt.isFrozen(block))
+			FreezeMelt.remove(block);
 		block.setType(Material.WATER);
 		block.setData(full);
 	}

@@ -421,10 +421,7 @@ public class BendingListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSneak(PlayerToggleSneakEvent event) {
-		
 		Player player = event.getPlayer();
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		// Tools.verbose(Tools.getBendingAbility(player));
 
 		if (Paralyze.isParalyzed(player) || Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
@@ -823,7 +820,7 @@ public class BendingListener implements Listener {
 			event.setCancelled(!WaterManipulation.canPhysicsChange(block));
 		}
 		if (!event.isCancelled()) {
-			event.setCancelled(FreezeMelt.frozenblocks.containsKey(block));
+			event.setCancelled(FreezeMelt.isFrozen(block));
 		}
 		if (!event.isCancelled()) {
 			event.setCancelled(!Wave.canThaw(block));
@@ -861,8 +858,8 @@ public class BendingListener implements Listener {
 			blast.cancel();
 		}
 
-		if (FreezeMelt.frozenblocks.containsKey(block)) {
-			FreezeMelt.thaw(block);
+		if (FreezeMelt.isFrozen(block)) {
+			FreezeMelt.thawThenRemove(block);
 			event.setCancelled(true);
 		} else if (WaterWall.wallblocks.containsKey(block)) {
 			WaterWall.thaw(block);
@@ -929,8 +926,8 @@ public class BendingListener implements Listener {
 			if (blast != null) {
 				blast.cancel();
 			}
-			if (FreezeMelt.frozenblocks.containsKey(block)) {
-				FreezeMelt.thaw(block);
+			if (FreezeMelt.isFrozen(block)) {
+				FreezeMelt.thawThenRemove(block);
 			}
 			// if (WalkOnWater.affectedblocks.containsKey(block)) {
 			// WalkOnWater.thaw(block);
