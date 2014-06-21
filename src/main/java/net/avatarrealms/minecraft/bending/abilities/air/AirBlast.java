@@ -122,13 +122,11 @@ public class AirBlast {
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(id);
 			return false;
 		}
 
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirBlast,
 				location)) {
-			instances.remove(id);
 			return false;
 		}
 
@@ -137,7 +135,6 @@ public class AirBlast {
 		ticks++;
 
 		if (ticks > maxticks) {
-			instances.remove(id);
 			return false;
 		}
 
@@ -165,14 +162,10 @@ public class AirBlast {
 					block.setType(Material.COBBLESTONE);
 				}
 			}
-			instances.remove(id);
 			return false;
 		}
 
-		// Tools.verbose(location.distance(origin));
 		if (location.distance(origin) > range) {
-			// Tools.verbose(id);
-			instances.remove(id);
 			return false;
 		}
 
@@ -180,7 +173,7 @@ public class AirBlast {
 				affectingradius)) {
 			affect(entity);
 		}
-
+		
 		advanceLocation();
 
 		return true;
