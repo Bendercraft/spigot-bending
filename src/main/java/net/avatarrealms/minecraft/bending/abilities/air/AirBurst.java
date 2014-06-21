@@ -1,8 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -17,7 +18,7 @@ import org.bukkit.util.Vector;
 
 public class AirBurst {
 
-	private static ConcurrentHashMap<Player, AirBurst> instances = new ConcurrentHashMap<Player, AirBurst>();
+	private static Map<Player, AirBurst> instances = new HashMap<Player, AirBurst>();
 
 	private static double threshold = 10;
 	private static double pushfactor = 1.5;
@@ -29,7 +30,7 @@ public class AirBurst {
 	private long chargetime = 1750;
 	private boolean charged = false;
 
-	private ArrayList<Entity> affectedentities = new ArrayList<Entity>();
+	private List<Entity> affectedentities = new LinkedList<Entity>();
 
 	public AirBurst(Player player) {
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
@@ -79,7 +80,6 @@ public class AirBurst {
 				}
 			}
 		}
-		// Tools.verbose("--" + AirBlast.instances.size() + "--");
 		instances.remove(player);
 	}
 
@@ -102,8 +102,6 @@ public class AirBurst {
 				}
 			}
 		}
-		// Tools.verbose("--" + AirBlast.instances.size() + "--");
-		instances.remove(player);
 	}
 
 	public static void fallBurst(Player player) {
@@ -139,11 +137,10 @@ public class AirBurst {
 		return affectedentities.contains(entity);
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if (!EntityTools.canBend(player, Abilities.AirBurst)
 				|| EntityTools.getBendingAbility(player) != Abilities.AirBurst) {
-			instances.remove(player);
-			return;
+			return false;
 		}
 		if (System.currentTimeMillis() > starttime + chargetime && !charged) {
 			charged = true;
@@ -152,9 +149,8 @@ public class AirBurst {
 		if (!player.isSneaking()) {
 			if (charged) {
 				sphereBurst();
-			} else {
-				instances.remove(player);
 			}
+			return false;
 		} else if (charged) {
 			Location location = player.getEyeLocation();
 			// location = location.add(location.getDirection().normalize());
@@ -164,11 +160,25 @@ public class AirBurst {
 					Tools.getIntCardinalDirection(player.getEyeLocation()
 							.getDirection()), 3);
 		}
+		return true;
+	}
+	
+	private void remove() {
+		instances.remove(player);
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet())
-			instances.get(player).progress();
+		List<AirBurst> toRemove = new LinkedList<AirBurst>();
+		for (AirBurst burst : instances.values()) {
+			boolean keep = burst.progress();
+			if(!keep) {
+				toRemove.add(burst);
+			}
+		}
+		
+		for(AirBurst burst : toRemove) {
+			burst.remove();
+		}
 	}
 
 	public static String getDescription() {
@@ -182,6 +192,5 @@ public class AirBurst {
 
 	public static void removeAll() {
 		instances.clear();
-
 	}
 }
