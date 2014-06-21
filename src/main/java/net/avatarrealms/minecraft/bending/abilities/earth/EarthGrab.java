@@ -1,6 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -14,93 +17,74 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class EarthGrab {
 
 	private static double range = ConfigManager.earthGrabRange;
+	private static Map<Integer, EarthGrab> instances = new HashMap<Integer, EarthGrab>();
+	private static Integer ID = Integer.MIN_VALUE;
+	private List<EarthColumn> columns = new ArrayList<EarthColumn>();
 
-	public EarthGrab(Player player) {
+	public EarthGrab(Player player, boolean self) {
 		// Tools.verbose("initiating");
 
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(Abilities.EarthGrab))
 			return;
-
-		Location origin = player.getEyeLocation();
-		Vector direction = origin.getDirection();
-		double lowestdistance = range + 1;
-		Entity closestentity = null;
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, range)) {
-			if (Tools.getDistanceFromLine(direction, origin,
-					entity.getLocation()) <= 3
-					&& (entity instanceof LivingEntity)
-					&& (entity.getEntityId() != player.getEntityId())) {
-				double distance = origin.distance(entity.getLocation());
-				if (distance < lowestdistance) {
-					closestentity = entity;
-					lowestdistance = distance;
+		
+		if (self) {
+			grabEntity(player,player);
+		}
+		else {
+			Location origin = player.getEyeLocation();
+			Vector direction = origin.getDirection();
+			double lowestdistance = range + 1;
+			Entity closestentity = null;
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, range)) {
+				if (Tools.getDistanceFromLine(direction, origin,
+						entity.getLocation()) <= 3
+						&& (entity instanceof LivingEntity)
+						&& (entity.getEntityId() != player.getEntityId())) {
+					double distance = origin.distance(entity.getLocation());
+					if (distance < lowestdistance) {
+						closestentity = entity;
+						lowestdistance = distance;
+					}
 				}
-			}
+			}	
+			grabEntity(player,closestentity);	
 		}	
-		grabEntity(player,closestentity);		
 	}
 	
-	public static void grabEntity(Player player, Entity entity) {
+	public void grabEntity(Player player, Entity entity) {
 		if (entity != null) {
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			// Tools.verbose("grabbing");
-			ArrayList<Block> blocks = new ArrayList<Block>();
-			Location location = entity.getLocation();
-			Location loc1 = location.clone();
-			Location loc2 = location.clone();
-			Location testloc, testloc2;
-			double factor = 3;
-			double factor2 = 4;
-			int height1 = 3;
-			int height2 = 2;
-			for (double angle = 0; angle <= 360; angle += 20) {
-				testloc = loc1.clone().add(
-						factor * Math.cos(Math.toRadians(angle)), 1,
-						factor * Math.sin(Math.toRadians(angle)));
-				testloc2 = loc2.clone().add(
-						factor2 * Math.cos(Math.toRadians(angle)), 1,
-						factor2 * Math.sin(Math.toRadians(angle)));
-				for (int y = 0; y < EarthColumn.standardheight - height1; y++) {
-					testloc = testloc.clone().add(0, -1, 0);
-					if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
-						if (!blocks.contains(testloc.getBlock())) {
-							new EarthColumn(player, testloc, height1 + y - 1);
-						}
-						blocks.add(testloc.getBlock());
-						break;
-					}
-				}
-				for (int y = 0; y < EarthColumn.standardheight - height2; y++) {
-					testloc2 = testloc2.clone().add(0, -1, 0);
-					if (BlockTools.isEarthbendable(player, testloc2.getBlock())) {
-						if (!blocks.contains(testloc2.getBlock())) {
-							new EarthColumn(player, testloc2, height2 + y - 1);
-						}
-						blocks.add(testloc2.getBlock());
-						break;
-					}
-				}
+			if (entity instanceof LivingEntity) {
+				LivingEntity lEnt = (LivingEntity)entity;
+				PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, 600, 150); // The entity cannot move
+				PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, 600, 150); // The entity cannot jump
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+				lEnt.addPotionEffect(slowness);
+				lEnt.addPotionEffect(jumpless);
 				
-				if (!blocks.isEmpty())
+				Location location = entity.getLocation();
+				Location cLoc = location.clone();
+				cLoc.add(0,-1,-1);
+				columns.add(new EarthColumn(player, cLoc, 1));
+				cLoc.add(0,0,2);
+				columns.add(new EarthColumn(player, cLoc, 1));
+				cLoc.add(-1,0,-1);
+				columns.add(new EarthColumn(player, cLoc, 1));
+				cLoc.add(2,0,0);
+				columns.add(new EarthColumn(player, cLoc, 1));
+				
+				if (!columns.isEmpty())
 					bPlayer.cooldown(Abilities.EarthGrab);
 				}
-			}				
+			
+			}	
 		}	
-	
-
-	public static void EarthGrabSelf(Player player) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (bPlayer.isOnCooldown(Abilities.EarthGrab))
-			return;
-
-		grabEntity(player,player);	
-	}
 
 	public static String getDescription() {
 		return "To use, simply left-click while targeting a creature within range. "

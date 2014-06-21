@@ -302,7 +302,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.EarthGrab) {
-					new EarthGrab(player);
+					new EarthGrab(player,false);
 				}
 
 				if (ability == Abilities.EarthBlast) {
@@ -472,7 +472,7 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.EarthGrab) {
-				EarthGrab.EarthGrabSelf(player);
+				new EarthGrab(player,true);
 			}
 
 			if (ability == Abilities.Shockwave) {
