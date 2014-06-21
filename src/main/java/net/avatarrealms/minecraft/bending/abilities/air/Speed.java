@@ -1,7 +1,11 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -15,7 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Speed {
 
-	public static ConcurrentHashMap<Integer, Speed> instances = new ConcurrentHashMap<Integer, Speed>();
+	private static Map<Integer, Speed> instances = new HashMap<Integer, Speed>();
 
 	private Player player;
 	private int id;
@@ -41,8 +45,11 @@ public class Speed {
 			applySpeed();
 			return true;
 		}
-		instances.remove(id);
 		return false;
+	}
+	
+	private void remove() {
+		instances.remove(id);
 	}
 
 	private void applySpeed() {
@@ -63,21 +70,41 @@ public class Speed {
 
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
-	}
-
-	public static ArrayList<Player> getPlayers() {
-		ArrayList<Player> players = new ArrayList<Player>();
-		for (int id : instances.keySet()) {
-			Player player = instances.get(id).player;
-			if (player.isSprinting()) {
-				players.add(instances.get(id).player);
-			} else {
-				instances.remove(id);
+	public static void progressAll() {
+		List<Speed> toRemove = new LinkedList<Speed>();
+		for(Speed speed : instances.values()) {
+			boolean keep = speed.progress();
+			if(!keep) {
+				toRemove.add(speed);
 			}
 		}
+		
+		for(Speed speed : toRemove) {
+			speed.remove();
+		}
+	}
+
+	public static List<Player> getPlayers() {
+		List<Player> players = new LinkedList<Player>();
+		List<Integer> toRemove = new LinkedList<Integer>();
+		for (Entry<Integer, Speed> entry : instances.entrySet()) {
+			Player player = entry.getValue().player;
+			if (player.isSprinting()) {
+				players.add(player);
+			} else {
+				toRemove.add(entry.getKey());
+			}
+		}
+		
+		for(int id : toRemove) {
+			instances.remove(id);
+		}
+		
 		return players;
+	}
+
+	public static void removeAll() {
+		instances.clear();
 	}
 
 }

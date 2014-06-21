@@ -127,10 +127,7 @@ public class BendingManager implements Runnable {
 		AirShield.progressAll();
 		AirSuction.progressAll();
 		AirSwipe.progressAll();
-
-		for (int ID : Speed.instances.keySet()) {
-			Speed.progress(ID);
-		}
+		Speed.progressAll();
 
 		for (int ID : Tornado.instances.keySet()) {
 			Tornado.progress(ID);
