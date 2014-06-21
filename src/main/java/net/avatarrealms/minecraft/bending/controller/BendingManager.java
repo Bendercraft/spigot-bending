@@ -124,14 +124,9 @@ public class BendingManager implements Runnable {
 		AirBubble.handleBubbles(plugin.getServer());
 
 		AirBlast.progressAll();
-		
 		AirShield.progressAll();
-
 		AirSuction.progressAll();
-
-		for (int ID : AirSwipe.instances.keySet()) {
-			AirSwipe.progress(ID);
-		}
+		AirSwipe.progressAll();
 
 		for (int ID : Speed.instances.keySet()) {
 			Speed.progress(ID);

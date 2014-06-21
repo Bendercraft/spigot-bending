@@ -186,7 +186,7 @@ public class PluginTools {
 		AirSuction.removeAll();
 		AirScooter.removeAll();
 		AirSpout.removeAll();
-		AirSwipe.instances.clear();
+		AirSwipe.removeAll();
 		Speed.instances.clear();
 		Tornado.instances.clear();
 		AirBurst.removeAll();

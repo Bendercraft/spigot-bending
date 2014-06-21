@@ -1,8 +1,11 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.Bending;
@@ -32,8 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class AirSwipe {
-
-	public static ConcurrentHashMap<Integer, AirSwipe> instances = new ConcurrentHashMap<Integer, AirSwipe>();
+	private static Map<Integer, AirSwipe> instances = new HashMap<Integer, AirSwipe>();
 
 	private static int ID = Integer.MIN_VALUE;
 	private static List<Material> breakables = new ArrayList<Material>();
@@ -71,20 +73,14 @@ public class AirSwipe {
 	private int damage = defaultdamage;
 	private double pushfactor = defaultpushfactor;
 	private int id;
-	private ConcurrentHashMap<Vector, Location> elements = new ConcurrentHashMap<Vector, Location>();
-	private ArrayList<Entity> affectedentities = new ArrayList<Entity>();
+	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
+	private List<Entity> affectedentities = new ArrayList<Entity>();
 
 	public AirSwipe(Player player) {
 		this(player, false);
 	}
 
 	public AirSwipe(Player player, boolean charging) {
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
-		// return;
-		// }
-		// }
-
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.AirSwipe))
@@ -133,24 +129,28 @@ public class AirSwipe {
 		}
 		
 	}
+	
+	private void remove() {
+		instances.remove(id);
+	}
+	
+	public static void removeAll() {
+		instances.clear();
+	}
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(id);
 			return false;
 		}
 		speedfactor = speed * (Bending.time_step / 1000.);
 		if (!charging) {
 			if (elements.isEmpty()) {
-				instances.remove(id);
 				return false;
 			}
-
-			advanceSwipe();
+			return advanceSwipe();
 		} else {
 			if (EntityTools.getBendingAbility(player) != Abilities.AirSwipe
 					|| !EntityTools.canBend(player, Abilities.AirSwipe)) {
-				instances.remove(id);
 				return false;
 			}
 
@@ -182,19 +182,23 @@ public class AirSwipe {
 		return true;
 	}
 
-	private void advanceSwipe() {
+	private boolean advanceSwipe() {
 		affectedentities.clear();
-		for (Vector direction : elements.keySet()) {
-			Location location = elements.get(direction);
+		
+		Map<Vector, Location> toAdd = new HashMap<Vector, Location>();
+		List<Vector> toRemove = new LinkedList<Vector>();
+		for(Entry<Vector, Location> entry : elements.entrySet()) {
+			Vector direction = entry.getKey();
+			Location location = entry.getValue();
 			if (direction != null && location != null) {
 				location = location.clone().add(
 						direction.clone().multiply(speedfactor));
-				elements.replace(direction, location);
+				toAdd.put(direction, location);
 
 				if (location.distance(origin) > range
 						|| Tools.isRegionProtectedFromBuild(player,
 								Abilities.AirSwipe, location)) {
-					elements.remove(direction);
+					toRemove.add(direction);
 				} else {
 					PluginTools.removeSpouts(location, player);
 
@@ -205,7 +209,7 @@ public class AirSwipe {
 									radius, source)
 							|| FireBlast.annihilateBlasts(location, radius,
 									source)) {
-						elements.remove(direction);
+						toRemove.add(direction);
 						damage = 0;
 						continue;
 					}
@@ -225,7 +229,7 @@ public class AirSwipe {
 						if (isBlockBreakable(block)) {
 							BlockTools.breakBlock(block);
 						} else {
-							elements.remove(direction);
+							toRemove.add(direction);
 						}
 						if (block.getType() == Material.LAVA
 								|| block.getType() == Material.STATIONARY_LAVA) {
@@ -241,15 +245,19 @@ public class AirSwipe {
 						affectPeople(location, direction);
 					}
 				}
-				// } else {
-				// elements.remove(direction);
 			}
 
 		}
+		
+		elements.putAll(toAdd);
+		for(Vector direction : toRemove) {
+			elements.remove(direction);
+		}
 
 		if (elements.isEmpty()) {
-			instances.remove(id);
+			return false;
 		}
+		return true;
 	}
 
 	private void affectPeople(Location location, Vector direction) {
@@ -300,8 +308,18 @@ public class AirSwipe {
 		return false;
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void progressAll() {
+		List<AirSwipe> toRemove = new LinkedList<AirSwipe>();
+		for(AirSwipe swipe : instances.values()) {
+			boolean keep = swipe.progress();
+			if(!keep) {
+				toRemove.add(swipe);
+			}
+		}
+		
+		for(AirSwipe swipe : toRemove) {
+			swipe.remove();
+		}
 	}
 
 	public static String getDescription() {
