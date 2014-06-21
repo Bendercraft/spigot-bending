@@ -1,7 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
@@ -21,7 +24,7 @@ import org.bukkit.util.Vector;
 
 public class AirScooter {
 
-	public static ConcurrentHashMap<Player, AirScooter> instances = new ConcurrentHashMap<Player, AirScooter>();
+	public static Map<Player, AirScooter> instances = new HashMap<Player, AirScooter>();
 
 	private static final double speed = ConfigManager.airScooterSpeed;
 	private static final long interval = 100;
@@ -60,39 +63,23 @@ public class AirScooter {
 		progress();
 	}
 
-	private void progress() {
+	private boolean progress() {
 		getFloor();
-		// Tools.verbose(player);
 		if (floorblock == null) {
-			remove();
-			return;
+			return false;
 		}
 		if (!EntityTools.canBend(player, Abilities.AirScooter)
 				|| !EntityTools.hasAbility(player, Abilities.AirScooter)) {
-			remove();
-			return;
+			return false;
 		}
 		if (!player.isOnline() || player.isDead() || !player.isFlying()) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirScooter,
 				player.getLocation())) {
-			remove();
-			return;
+			return false;
 		}
-		// if (Tools
-		// .isSolid(player
-		// .getEyeLocation()
-		// .clone()
-		// .add(player.getEyeLocation().getDirection().clone()
-		// .normalize()).getBlock())) {
-		// remove();
-		// return;
-		// }
-		// player.sendBlockChange(floorblock.getLocation(), 89, (byte) 1);
-		// player.getLocation().setY((double) floorblock.getY() + 2.5);
 
 		Vector velocity = player.getEyeLocation().getDirection().clone();
 		velocity.setY(0);
@@ -100,8 +87,7 @@ public class AirScooter {
 		if (System.currentTimeMillis() > time + interval) {
 			time = System.currentTimeMillis();
 			if (player.getVelocity().length() < speed * .5) {
-				remove();
-				return;
+				return false;
 			}
 			spinScooter();
 		}
@@ -122,6 +108,8 @@ public class AirScooter {
 		player.setSprinting(false);
 		player.removePotionEffect(PotionEffectType.SPEED);
 		player.setVelocity(velocity);
+		
+		return true;
 	}
 
 	private void spinScooter() {
@@ -162,8 +150,16 @@ public class AirScooter {
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+		List<AirScooter> toRemove = new LinkedList<AirScooter>();
+		for (AirScooter scooter : instances.values()) {
+			boolean keep = scooter.progress();
+			if(!keep) {
+				toRemove.add(scooter);
+			}
+		}
+		
+		for(AirScooter scooter : toRemove) {
+			scooter.remove();
 		}
 	}
 
@@ -176,9 +172,7 @@ public class AirScooter {
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).remove();
-		}
+		instances.clear();
 	}
 
 	public static ArrayList<Player> getPlayers() {
