@@ -1,7 +1,11 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
@@ -21,7 +25,7 @@ import org.bukkit.util.Vector;
 
 public class Tornado {
 
-	public static ConcurrentHashMap<Integer, Tornado> instances = new ConcurrentHashMap<Integer, Tornado>();
+	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 
 	private static double maxradius = ConfigManager.tornadoRadius;
 	private static double maxheight = ConfigManager.tornadoHeight;
@@ -29,16 +33,12 @@ public class Tornado {
 	private static int numberOfStreams = (int) (.3 * (double) maxheight);
 	private static double NPCpushfactor = ConfigManager.tornadoMobPush;
 	private static double PCpushfactor = ConfigManager.tornadoPlayerPush;
-	// private static double speed = .75;
+	private static double speedfactor = 1;
 
 	private double height = 2;
 	private double radius = height / maxheight * maxradius;
 
-	// private static double speedfactor = 1000 * speed
-	// * (Bending.time_step / 1000.);
-	private static double speedfactor = 1;
-
-	private ConcurrentHashMap<Integer, Integer> angles = new ConcurrentHashMap<Integer, Integer>();
+	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
 	private Location origin;
 	private Player player;
 
@@ -62,25 +62,25 @@ public class Tornado {
 		instances.put(player.getEntityId(), this);
 
 	}
+	
+	private void remove() {
+		instances.remove(player.getEntityId());
+	}
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(player.getEntityId());
 			return false;
 		}
 		if (!EntityTools.canBend(player, Abilities.Tornado)
 				|| player.getEyeLocation().getBlock().isLiquid()) {
-			instances.remove(player.getEntityId());
 			return false;
 		}
 		if ((EntityTools.getBendingAbility(player) != Abilities.Tornado)
 				|| (!player.isSneaking())) {
-			instances.remove(player.getEntityId());
 			return false;
 		}
 		if (Tools
 				.isRegionProtectedFromBuild(player, Abilities.AirBlast, origin)) {
-			instances.remove(player.getEntityId());
 			return false;
 		}
 		rotateTornado();
@@ -164,9 +164,12 @@ public class Tornado {
 				}
 			}
 
-			for (int i : angles.keySet()) {
+			
+			Map<Integer, Integer> toAdd = new HashMap<Integer, Integer>();
+			for (Entry<Integer, Integer> entry : angles.entrySet()) {
+				int i = entry.getKey();
 				double x, y, z;
-				double angle = (double) angles.get(i);
+				double angle = (double) entry.getValue();
 				angle = Math.toRadians(angle);
 				double factor;
 
@@ -184,8 +187,9 @@ public class Tornado {
 					origin.getWorld().playEffect(effect, Effect.SMOKE, 4,
 							(int) AirBlast.defaultrange);
 
-				angles.put(i, angles.get(i) + 25 * (int) speedfactor);
+				toAdd.put(i, angles.get(i) + 25 * (int) speedfactor);
 			}
+			angles.putAll(toAdd);
 		}
 
 		if (height < maxheight) {
@@ -198,8 +202,18 @@ public class Tornado {
 
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void progressAll() {
+		List<Tornado> toRemove = new LinkedList<Tornado>();
+		for(Tornado tornado : instances.values()) {
+			boolean keep = tornado.progress();
+			if(!keep) {
+				toRemove.add(tornado);
+			}
+		}
+		
+		for(Tornado tornado : toRemove) {
+			tornado.remove();
+		}
 	}
 
 	public static String getDescription() {
@@ -213,15 +227,18 @@ public class Tornado {
 				+ "fall out of the vortex, it will take him to a maximum height and move him in "
 				+ "the general direction he's looking. Skilled airbenders can scale anything "
 				+ "with this ability.";
-
 	}
 
-	public static ArrayList<Player> getPlayers() {
-		ArrayList<Player> players = new ArrayList<Player>();
-		for (int id : instances.keySet()) {
-			players.add(instances.get(id).player);
+	public static List<Player> getPlayers() {
+		List<Player> players = new ArrayList<Player>();
+		for (Tornado tornado : instances.values()) {
+			players.add(tornado.player);
 		}
 		return players;
+	}
+
+	public static void removeAll() {
+		instances.clear();
 	}
 
 }
