@@ -242,11 +242,48 @@ public class AirSwipe {
 					} else {
 						location.getWorld().playEffect(location, Effect.SMOKE,
 								4, (int) AirBlast.defaultrange);
-						affectPeople(location, direction);
+						
+						//Check affected people
+						PluginTools.removeSpouts(location, player);
+						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+						for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
+								affectingradius)) {
+							if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
+									entity.getLocation()))
+								continue;
+							if (entity.getEntityId() != player.getEntityId()) {
+								if (AvatarState.isAvatarState(player)) {
+									entity.setVelocity(direction.multiply(AvatarState
+											.getValue(pushfactor)));
+								} else {
+									entity.setVelocity(direction.multiply(pushfactor));
+								}
+
+								if (entity instanceof LivingEntity
+										&& !affectedentities.contains(entity)) {
+									if (damage != 0)
+										EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
+									affectedentities.add(entity);
+									
+									if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			
+										if (bPlayer != null) {
+											bPlayer.earnXP(BendingType.Air);
+										}
+									}
+								}
+
+								if (entity instanceof Player) {
+									new Flight((Player) entity, player);
+								}
+
+								if (elements.containsKey(direction)) {
+									toRemove.add(direction);
+								}
+							}
+						}
 					}
 				}
 			}
-
 		}
 		
 		elements.putAll(toAdd);
@@ -258,46 +295,6 @@ public class AirSwipe {
 			return false;
 		}
 		return true;
-	}
-
-	private void affectPeople(Location location, Vector direction) {
-		PluginTools.removeSpouts(location, player);
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
-				affectingradius)) {
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
-					entity.getLocation()))
-				continue;
-			if (entity.getEntityId() != player.getEntityId()) {
-				if (AvatarState.isAvatarState(player)) {
-					entity.setVelocity(direction.multiply(AvatarState
-							.getValue(pushfactor)));
-				} else {
-					entity.setVelocity(direction.multiply(pushfactor));
-				}
-
-				if (entity instanceof LivingEntity
-						&& !affectedentities.contains(entity)) {
-					if (damage != 0)
-						EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
-					affectedentities.add(entity);
-					
-					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			
-						if (bPlayer != null) {
-							bPlayer.earnXP(BendingType.Air);
-						}
-					}
-				}
-
-				if (entity instanceof Player) {
-					new Flight((Player) entity, player);
-				}
-
-				if (elements.containsKey(direction)) {
-					elements.remove(direction);
-				}
-			}
-		}
 	}
 
 	private boolean isBlockBreakable(Block block) {
