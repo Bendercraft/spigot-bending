@@ -78,8 +78,8 @@ public class Melt {
 				block.setType(Material.AIR);
 				return;
 			}
-			if (FreezeMelt.frozenblocks.containsKey(block)) {
-				FreezeMelt.thaw(block);
+			if (FreezeMelt.isFrozen(block)) {
+				FreezeMelt.thawThenRemove(block);
 			} else {
 				block.setType(Material.WATER);
 				block.setData(full);
