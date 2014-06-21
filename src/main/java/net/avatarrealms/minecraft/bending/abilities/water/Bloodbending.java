@@ -1,8 +1,11 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
@@ -22,9 +25,9 @@ import org.bukkit.util.Vector;
 
 public class Bloodbending {
 
-	public static ConcurrentHashMap<Player, Bloodbending> instances = new ConcurrentHashMap<Player, Bloodbending>();
+	private static Map<Player, Bloodbending> instances = new HashMap<Player, Bloodbending>();
 
-	ConcurrentHashMap<Entity, Location> targetentities = new ConcurrentHashMap<Entity, Location>();
+	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
 
 	private static final double factor = ConfigManager.bloodbendingThrowFactor;
 
@@ -33,7 +36,7 @@ public class Bloodbending {
 
 	public Bloodbending(Player player) {
 		if (instances.containsKey(player)) {
-			remove(player);
+			instances.get(player).remove();
 			return;
 		}
 		range = (int) PluginTools.waterbendingNightAugment(range, player.getWorld());
@@ -52,7 +55,7 @@ public class Bloodbending {
 							continue;
 					}
 					EntityTools.damageEntity(player, entity, 0);
-					targetentities.put(entity, entity.getLocation().clone());
+					targetEntities.put(entity, entity.getLocation().clone());
 				}
 			}
 		} else {
@@ -69,7 +72,7 @@ public class Bloodbending {
 					return;
 			}
 			EntityTools.damageEntity(player, target, 0);
-			targetentities.put(target, target.getLocation().clone());
+			targetEntities.put(target, target.getLocation().clone());
 		}
 		this.player = player;
 		instances.put(player, this);
@@ -82,7 +85,7 @@ public class Bloodbending {
 
 	private void launch() {
 		Location location = player.getLocation();
-		for (Entity entity : targetentities.keySet()) {
+		for (Entity entity : targetEntities.keySet()) {
 			double dx, dy, dz;
 			Location target = entity.getLocation().clone();
 			dx = target.getX() - location.getX();
@@ -92,17 +95,16 @@ public class Bloodbending {
 			vector.normalize();
 			entity.setVelocity(vector.multiply(factor));
 		}
-		remove(player);
+		remove();
 	}
 
-	private void progress() {
+	private boolean progress() {
 		PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 60, 1);
 
 		if (!player.isSneaking()
 				|| EntityTools.getBendingAbility(player) != Abilities.Bloodbending
 				|| !EntityTools.canBend(player, Abilities.Bloodbending)) {
-			remove(player);
-			return;
+			return false;
 		}
 		if (AvatarState.isAvatarState(player)) {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -116,14 +118,14 @@ public class Bloodbending {
 						continue;
 				}
 				entities.add(entity);
-				if (!targetentities.containsKey(entity)
+				if (!targetEntities.containsKey(entity)
 						&& entity instanceof LivingEntity) {
 					EntityTools.damageEntity(player, entity, 0);
-					targetentities.put(entity, entity.getLocation().clone());
+					targetEntities.put(entity, entity.getLocation().clone());
 				}
 				if (entity instanceof LivingEntity) {
 					Location newlocation = entity.getLocation().clone();
-					Location location = targetentities.get(entity);
+					Location location = targetEntities.get(entity);
 					double distance = location.distance(newlocation);
 					double dx, dy, dz;
 					dx = location.getX() - newlocation.getX();
@@ -142,22 +144,29 @@ public class Bloodbending {
 					}
 				}
 			}
-			for (Entity entity : targetentities.keySet()) {
-				if (!entities.contains(entity))
-					targetentities.remove(entity);
+			List<Entity> toRemove = new LinkedList<Entity>();
+			for (Entity entity : targetEntities.keySet()) {
+				if (!entities.contains(entity)) {
+					toRemove.add(entity);
+				}	
+			}
+			for(Entity entity : toRemove) {
+				targetEntities.remove(entity);
 			}
 		} else {
-			for (Entity entity : targetentities.keySet()) {
+			List<Entity> toRemove = new LinkedList<Entity>();
+			for (Entry<Entity, Location> entry : targetEntities.entrySet()) {
+				Entity entity = entry.getKey();
 				if (entity instanceof Player) {
 					if (!EntityTools.canBeBloodbent((Player) entity)) {
-						targetentities.remove(entity);
+						toRemove.add(entity);
 						continue;
 					}
 				}
 				Location newlocation = entity.getLocation();
 				Location location = EntityTools.getTargetedLocation(
 						player,
-						(int) targetentities.get(entity).distance(
+						(int) entry.getValue().distance(
 								player.getLocation()));
 				double distance = location.distance(newlocation);
 				double dx, dy, dz;
@@ -176,28 +185,34 @@ public class Bloodbending {
 					((Creature) entity).setTarget(null);
 				}
 			}
+			for(Entity entity : toRemove) {
+				targetEntities.remove(entity);
+			}
 		}
+		return true;
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+		List<Bloodbending> toRemove = new LinkedList<Bloodbending>();
+		for (Bloodbending bloodBend : instances.values()) {
+			boolean keep = bloodBend.progress();
+			if(!keep) {
+				toRemove.add(bloodBend);
+			}
+		}
+		
+		for(Bloodbending bloodBend : toRemove) {
+			bloodBend.remove();
 		}
 	}
-
-	public static void remove(Player player) {
-		if (instances.containsKey(player)) {
-			instances.remove(player);
-		}
+	
+	private void remove() {
+		instances.remove(player);
 	}
 
 	public static boolean isBloodbended(Entity entity) {
-		for (Player player : instances.keySet()) {
-			if (instances.get(player).targetentities.containsKey(entity)) {
-				// if (entity instanceof Player) {
-				// if (!Tools.canBeBloodbent((Player) entity))
-				// return false;
-				// }
+		for (Bloodbending bloodBend : instances.values()) {
+			if (bloodBend.getTargetEntities().containsKey(entity)) {
 				return true;
 			}
 		}
@@ -205,9 +220,9 @@ public class Bloodbending {
 	}
 
 	public static Location getBloodbendingLocation(Entity entity) {
-		for (Player player : instances.keySet()) {
-			if (instances.get(player).targetentities.containsKey(entity)) {
-				return instances.get(player).targetentities.get(entity);
+		for (Bloodbending bloodBend : instances.values()) {
+			if (bloodBend.getTargetEntities().containsKey(entity)) {
+				return bloodBend.getTargetEntities().get(entity);
 			}
 		}
 		return null;
@@ -220,6 +235,14 @@ public class Bloodbending {
 				+ "be forced to move in that direction. Additionally, clicking while bloodbending will "
 				+ "launch that target off in the direction you're looking. "
 				+ "People who are capable of bloodbending are immune to your technique, and you are immune to theirs.";
+	}
+
+	public static void removeAll() {
+		instances.clear();
+	}
+	
+	public Map<Entity, Location> getTargetEntities() {
+		return targetEntities;
 	}
 
 }
