@@ -1,17 +1,18 @@
 package net.avatarrealms.minecraft.bending.abilities.air;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class AirPassive {
 
-	private static ConcurrentHashMap<Player, Float> foodlevels = new ConcurrentHashMap<Player, Float>();
+	private static Map<Player, Float> foodlevels = new HashMap<Player, Float>();
 	private static float factor = ConfigManager.airPassiveFactor;
 
 	private static float getFoodExhaustionLevel(Player player, float level) {
@@ -25,7 +26,7 @@ public class AirPassive {
 			} else {
 				level = (level - oldlevel) * factor + oldlevel;
 			}
-			foodlevels.replace(player, level);
+			foodlevels.put(player, level);
 			return level;
 		}
 	}
