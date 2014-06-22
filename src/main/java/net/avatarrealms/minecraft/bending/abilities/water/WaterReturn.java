@@ -1,8 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -20,7 +21,7 @@ import org.bukkit.util.Vector;
 
 public class WaterReturn {
 
-	private static ConcurrentHashMap<Player, WaterReturn> instances = new ConcurrentHashMap<Player, WaterReturn>();
+	private static Map<Player, WaterReturn> instances = new HashMap<Player, WaterReturn>();
 	// private static int ID = Integer.MIN_VALUE;
 	private static long interval = 50;
 
@@ -49,24 +50,21 @@ public class WaterReturn {
 		instances.put(player, this);
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if (!hasEmptyWaterBottle()) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (player.isDead() || !player.isOnline()) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (player.getWorld() != location.getWorld()) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (System.currentTimeMillis() < time + interval)
-			return;
+			return true;
 
 		time = System.currentTimeMillis();
 
@@ -75,28 +73,25 @@ public class WaterReturn {
 		location = location.clone().add(direction);
 
 		if (location == null || block == null) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (location.getBlock().equals(block.getLocation().getBlock()))
-			return;
+			return true;
 
 		if (Tools.isRegionProtectedFromBuild(player,
 				Abilities.WaterManipulation, location)) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (location.distance(player.getEyeLocation()) > PluginTools
 				.waterbendingNightAugment(range, player.getWorld())) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (location.distance(player.getEyeLocation()) <= 1.5) {
 			fillBottle();
-			return;
+			return false;
 		}
 
 		Block newblock = location.getBlock();
@@ -105,17 +100,20 @@ public class WaterReturn {
 			block.revertBlock();
 			block = new TempBlock(newblock, Material.WATER, full);
 		} else {
-			remove();
-			return;
+			return false;
 		}
-
+		return true;
 	}
-
-	private void remove() {
+	
+	private void clear() {
 		if (block != null) {
 			block.revertBlock();
 			block = null;
 		}
+	}
+
+	private void remove() {
+		this.clear();
 		instances.remove(player);
 	}
 
@@ -137,7 +135,7 @@ public class WaterReturn {
 			} else {
 				item.setAmount(item.getAmount() - 1);
 				inventory.setItem(index, item);
-				HashMap<Integer, ItemStack> leftover = inventory
+				Map<Integer, ItemStack> leftover = inventory
 						.addItem(new ItemStack(Material.POTION));
 				for (int left : leftover.keySet()) {
 					player.getWorld().dropItemNaturally(player.getLocation(),
@@ -145,8 +143,6 @@ public class WaterReturn {
 				}
 			}
 		}
-
-		remove();
 	}
 
 	private static boolean isBending(Player player) {
@@ -203,16 +199,22 @@ public class WaterReturn {
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+		List<WaterReturn> toRemove = new LinkedList<WaterReturn>();
+		for (WaterReturn water : instances.values()) {
+			boolean keep = water.progress();
+			if(!keep) {
+				toRemove.add(water);
+			}
+		}
+		for(WaterReturn water : toRemove) {
+			water.remove();
 		}
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet()) {
-			WaterReturn wr = instances.get(player);
-			if (wr.block != null)
-				wr.block.revertBlock();
+		for (WaterReturn water : instances.values()) {
+			if (water.block != null)
+				water.block.revertBlock();
 		}
 		instances.clear();
 	}
