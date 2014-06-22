@@ -1,9 +1,9 @@
 package net.avatarrealms.minecraft.bending.controller;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.air.AirScooter;
 import net.avatarrealms.minecraft.bending.abilities.air.AirSpout;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 
 public class Flight {
 
-	private static ConcurrentHashMap<Player, Flight> instances = new ConcurrentHashMap<Player, Flight>();
+	private static Map<Player, Flight> instances = new HashMap<Player, Flight>();
 
 	private static long duration = 5000;
 
@@ -36,7 +36,7 @@ public class Flight {
 		if (instances.containsKey(player)) {
 			Flight flight = instances.get(player);
 			flight.refresh(source);
-			instances.replace(player, flight);
+			instances.put(player, flight);
 			return;
 		}
 
@@ -68,15 +68,15 @@ public class Flight {
 	private void refresh(Player source) {
 		this.source = source;
 		time = System.currentTimeMillis();
-		instances.replace(player, this);
+		instances.put(player, this);
 	}
 
 	public static void handle() {
-		ArrayList<Player> players = new ArrayList<Player>();
-		ArrayList<Player> newflyingplayers = new ArrayList<Player>();
-		ArrayList<Player> avatarstateplayers = new ArrayList<Player>();
-		ArrayList<Player> airscooterplayers = new ArrayList<Player>();
-		ArrayList<Player> waterspoutplayers = new ArrayList<Player>();
+		List<Player> players = new LinkedList<Player>();
+		List<Player> newflyingplayers = new LinkedList<Player>();
+		List<Player> avatarstateplayers = new LinkedList<Player>();
+		List<Player> airscooterplayers = new LinkedList<Player>();
+		List<Player> waterspoutplayers = new LinkedList<Player>();
 		List<Player> airspoutplayers = AirSpout.getPlayers();
 
 		players.addAll(Tornado.getPlayers());
@@ -128,8 +128,8 @@ public class Flight {
 			Flight flight = instances.get(player);
 			if (flight.source != null)
 				flight.revert();
-			flight.remove();
 		}
+		instances.clear();
 	}
 
 }
