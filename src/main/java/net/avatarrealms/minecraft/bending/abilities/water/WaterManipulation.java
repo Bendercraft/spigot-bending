@@ -561,13 +561,13 @@ public class WaterManipulation {
 			// Tools.verbose("waterspout");
 			return false;
 		}
-		if (WaterWall.affectedblocks.containsKey(to)
-				|| WaterWall.affectedblocks.containsKey(from)) {
+		if (WaterWall.isAffectedByWaterWall(to)
+				|| WaterWall.isAffectedByWaterWall(from)) {
 			// Tools.verbose("waterwallaffectedblocks");
 			return false;
 		}
-		if (WaterWall.wallblocks.containsKey(to)
-				|| WaterWall.wallblocks.containsKey(from)) {
+		if (WaterWall.isWaterWallPart(to)
+				|| WaterWall.isWaterWallPart(from)) {
 			// Tools.verbose("waterwallwall");
 			return false;
 		}
@@ -593,9 +593,9 @@ public class WaterManipulation {
 			return false;
 		if (WaterSpout.affectedblocks.contains(block))
 			return false;
-		if (WaterWall.affectedblocks.containsKey(block))
+		if (WaterWall.isAffectedByWaterWall(block))
 			return false;
-		if (WaterWall.wallblocks.containsKey(block))
+		if (WaterWall.isWaterWallPart(block))
 			return false;
 		if (Wave.isBlockWave(block))
 			return false;

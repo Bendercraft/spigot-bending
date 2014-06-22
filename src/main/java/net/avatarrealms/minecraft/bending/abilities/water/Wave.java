@@ -1,7 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -24,8 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class Wave {
-
-	public static ConcurrentHashMap<Integer, Wave> instances = new ConcurrentHashMap<Integer, Wave>();
+	private static Map<Integer, Wave> instances = new HashMap<Integer, Wave>();
 
 	private static final long interval = 30;
 
@@ -49,8 +51,8 @@ public class Wave {
 	boolean progressing = false;
 	private Location targetdestination = null;
 	private Vector targetdirection = null;
-	private ConcurrentHashMap<Block, Block> wave = new ConcurrentHashMap<Block, Block>();
-	private ConcurrentHashMap<Block, Block> frozenblocks = new ConcurrentHashMap<Block, Block>();
+	private Map<Block, Block> wave = new HashMap<Block, Block>();
+	private Map<Block, Block> frozenblocks = new HashMap<Block, Block>();
 	private double radius = 1;
 	private long time;
 	private double maxradius = defaultmaxradius;
@@ -78,7 +80,7 @@ public class Wave {
 		maxradius = PluginTools.waterbendingNightAugment(maxradius, player.getWorld());
 		if (prepare()) {
 			if (instances.containsKey(player.getEntityId())) {
-				instances.get(player.getEntityId()).cancel();
+				instances.get(player.getEntityId()).remove();
 			}
 			instances.put(player.getEntityId(), this);
 			time = System.currentTimeMillis();
@@ -106,21 +108,17 @@ public class Wave {
 				old.thaw();
 				old.returnWater();
 			} else {
-				old.cancel();
+				old.remove();
 			}
 		}
 	}
 
-	public void cancel() {
-		unfocusBlock();
+	public void remove() {
+		instances.remove(player.getEntityId());
 	}
 
 	private void focusBlock() {
 		location = sourceblock.getLocation();
-	}
-
-	private void unfocusBlock() {
-		instances.remove(player.getEntityId());
 	}
 
 	public void moveWater() {
@@ -185,7 +183,6 @@ public class Wave {
 				|| !EntityTools.canBend(player, Abilities.Surge)) {
 			breakBlock();
 			thaw();
-			// instances.remove(player.getEntityId());
 			return false;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
@@ -193,7 +190,6 @@ public class Wave {
 
 			if (!progressing
 					&& EntityTools.getBendingAbility(player) != Abilities.Surge) {
-				unfocusBlock();
 				return false;
 			}
 
@@ -272,8 +268,9 @@ public class Wave {
 						}
 					}
 				}
-
-				for (Block block : wave.keySet()) {
+				
+				List<Block> toRemove = new LinkedList<Block>(wave.keySet());
+				for (Block block : toRemove) {
 					if (!blocks.contains(block))
 						finalRemoveWater(block);
 				}
@@ -294,7 +291,8 @@ public class Wave {
 						2 * radius)) {
 
 					boolean knockback = false;
-					for (Block block : wave.keySet()) {
+					List<Block> temp = new LinkedList<Block>(wave.keySet());
+					for (Block block : temp) {
 						if (entity.getLocation().distance(block.getLocation()) <= 2) {
 							if (entity instanceof LivingEntity
 									&& freeze
@@ -355,7 +353,7 @@ public class Wave {
 		for (Block block : wave.keySet()) {
 			finalRemoveWater(block);
 		}
-		instances.remove(player.getEntityId());
+		//instances.remove(player.getEntityId());
 	}
 
 	private void finalRemoveWater(Block block) {
@@ -397,8 +395,18 @@ public class Wave {
 		}
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void progressAll() {
+		List<Wave> toRemove = new LinkedList<Wave>();
+		
+		for(Wave wave : instances.values()) {
+			boolean keep = wave.progress();
+			if(!keep) {
+				toRemove.add(wave);
+			}
+		}
+		for(Wave wave : toRemove) {
+			wave.remove();
+		}
 	}
 
 	public static boolean isBlockWave(Block block) {
@@ -414,14 +422,16 @@ public class Wave {
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			for (Block block : instances.get(id).wave.keySet()) {
+		for (Wave wave : instances.values()) {
+			List<Block> waveBlock = new LinkedList<Block>(wave.wave.keySet());
+			for (Block block : waveBlock) {
 				block.setType(Material.AIR);
-				instances.get(id).wave.remove(block);
+				wave.wave.remove(block);
 			}
-			for (Block block : instances.get(id).frozenblocks.keySet()) {
+			List<Block> frozenBlock = new LinkedList<Block>(wave.frozenblocks.keySet());
+			for (Block block : frozenBlock) {
 				block.setType(Material.AIR);
-				instances.get(id).frozenblocks.remove(block);
+				wave.frozenblocks.remove(block);
 			}
 		}
 	}
@@ -463,26 +473,16 @@ public class Wave {
 
 	private void thaw() {
 		for (Block block : frozenblocks.keySet()) {
-			// if (block.getType() == Material.ICE) {
-			// // block.setType(Material.WATER);
-			// // block.setData((byte) 0x7);
-			// block.setType(Material.AIR);
-			// }
 			TempBlock.revertBlock(block, Material.AIR);
-			frozenblocks.remove(block);
 		}
+		frozenblocks.clear();
 	}
 
 	public static void thaw(Block block) {
-		for (int id : instances.keySet()) {
-			if (instances.get(id).frozenblocks.containsKey(block)) {
-				// if (block.getType() == Material.ICE) {
-				// // block.setType(Material.WATER);
-				// // block.setData((byte) 0x7);
-				// block.setType(Material.AIR);
-				// }
+		for (Wave wave : instances.values()) {
+			if (wave.frozenblocks.containsKey(block)) {
 				TempBlock.revertBlock(block, Material.AIR);
-				instances.get(id).frozenblocks.remove(block);
+				wave.frozenblocks.remove(block);
 			}
 		}
 	}
@@ -500,6 +500,14 @@ public class Wave {
 		if (location != null) {
 			new WaterReturn(player, location.getBlock());
 		}
+	}
+	
+	public static boolean isWaving(Player player) {
+		return instances.containsKey(player.getEntityId());
+	}
+	
+	public static Wave getWave(Player player) {
+		return instances.get(player.getEntityId());
 	}
 
 	public static String getDescription() {

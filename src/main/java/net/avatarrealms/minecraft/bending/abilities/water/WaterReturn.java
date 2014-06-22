@@ -153,14 +153,11 @@ public class WaterReturn {
 		if (OctopusForm.isOctopus(player))
 			return true;
 
-		for (int id : Wave.instances.keySet()) {
-			if (Wave.instances.get(id).player.equals(player))
-				return true;
-		}
+		if (Wave.isWaving(player))
+			return true;
 
-		for (int id : WaterWall.instances.keySet()) {
-			if (WaterWall.instances.get(id).player.equals(player))
-				return true;
+		if(WaterWall.isWaterWalling(player)) {
+			return true;
 		}
 
 		if (IceSpike2.isBending(player))
