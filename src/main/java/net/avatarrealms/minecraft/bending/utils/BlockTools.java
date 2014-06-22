@@ -2,10 +2,11 @@ package net.avatarrealms.minecraft.bending.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthColumn;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthPassive;
@@ -132,8 +133,8 @@ public class BlockTools {
 		nonOpaque.add(Material.TRIPWIRE);
 	}
 	
-	public static ConcurrentHashMap<Block, Information> movedEarth = new ConcurrentHashMap<Block, Information>();
-	public static ConcurrentHashMap<Integer, Information> tempAir = new ConcurrentHashMap<Integer, Information>();
+	public static Map<Block, Information> movedEarth = new HashMap<Block, Information>();
+	public static Map<Integer, Information> tempAir = new HashMap<Integer, Information>();
 	
 	public static Set<Material> getTransparentEarthbending() {
 		Set<Material> set = new HashSet<Material>();

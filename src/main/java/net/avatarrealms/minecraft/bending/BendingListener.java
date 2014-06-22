@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.abilities.air.*;
 import net.avatarrealms.minecraft.bending.abilities.chi.*;
@@ -455,8 +456,8 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.AirSwipe) {
-					//Logger.getLogger("Bending").info(player.getName() + (" started to charge an airswipe"));
-					//AirSwipe.charge(player);
+					Logger.getLogger("Bending").info(player.getName() + (" started to charge an airswipe"));
+					AirSwipe.charge(player);
 				}
 			}
 
@@ -858,11 +859,8 @@ public class BendingListener implements Listener {
 			blast.cancel();
 		}
 		
-		player.sendMessage("Block détruit");
 		Integer id = EarthGrab.blockInEarthGrab(block);
-		player.sendMessage(""+id);
 		if (id != null) {
-			player.sendMessage(" ID : " + id);
 			if (!EarthGrab.revertEarthGrab(id)) {
 				Bending.log.info("[Bending] An error occured while removing an earthgrab");
 				// Should never happen ?
@@ -1129,6 +1127,10 @@ public class BendingListener implements Listener {
 			event.getDrops().clear();
 			event.getDrops().addAll(newdrops);
 			EarthArmor.removeEffect(event.getEntity());
+		}
+		
+		if (EntityTools.isGrabed(event.getEntity())) {
+			EntityTools.unGrab(event.getEntity());
 		}
 	}
 }
