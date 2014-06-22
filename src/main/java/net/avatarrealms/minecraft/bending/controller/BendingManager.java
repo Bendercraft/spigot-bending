@@ -243,13 +243,7 @@ public class BendingManager implements Runnable {
 			Wave.progress(ID);
 		}
 
-		for (int ID : IceSpike.instances.keySet()) {
-			IceSpike.instances.get(ID).progress();
-		}
-
-		for (int ID : IceSpike.instances.keySet()) {
-			IceSpike.instances.get(ID).progress();
-		}
+		IceSpike.progressAll();
 
 		IceSpike2.progressAll();
 
