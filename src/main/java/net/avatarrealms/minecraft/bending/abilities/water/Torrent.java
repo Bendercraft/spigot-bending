@@ -1,7 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -25,9 +28,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class Torrent {
-
-	private static ConcurrentHashMap<Player, Torrent> instances = new ConcurrentHashMap<Player, Torrent>();
-	private static ConcurrentHashMap<TempBlock, Player> frozenblocks = new ConcurrentHashMap<TempBlock, Player>();
+	private static Map<Player, Torrent> instances = new HashMap<Player, Torrent>();
+	private static Map<TempBlock, Player> frozenblocks = new HashMap<TempBlock, Player>();
 
 	static long interval = 30;
 	private static int defaultrange = 20;
@@ -97,22 +99,19 @@ public class Torrent {
 		}
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (!EntityTools.canBend(player, Abilities.Torrent)) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (EntityTools.getBendingAbility(player) != Abilities.Torrent) {
-			remove();
 			if (location != null)
 				returnWater(location);
-			return;
+			return false;
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
@@ -120,13 +119,11 @@ public class Torrent {
 
 			if (sourceselected) {
 				if (!sourceblock.getWorld().equals(player.getWorld())) {
-					remove();
-					return;
+					return false;
 				}
 
 				if (sourceblock.getLocation().distance(player.getLocation()) > selectrange) {
-					remove();
-					return;
+					return false;
 				}
 
 				if (player.isSneaking()) {
@@ -142,15 +139,14 @@ public class Torrent {
 					location = sourceblock.getLocation();
 				} else {
 					Tools.playFocusWaterEffect(sourceblock);
-					return;
+					return true;
 				}
 			}
 
 			if (settingup) {
 				if (!player.isSneaking()) {
-					remove();
 					returnWater(source.getLocation());
-					return;
+					return false;
 				}
 				Location eyeloc = player.getEyeLocation();
 				double startangle = player.getEyeLocation().getDirection()
@@ -161,13 +157,11 @@ public class Torrent {
 				Location setup = eyeloc.clone().add(dx, dy, dz);
 
 				if (!location.getWorld().equals(player.getWorld())) {
-					remove();
-					return;
+					return false;
 				}
 
 				if (location.distance(setup) > defaultrange) {
-					remove();
-					return;
+					return false;
 				}
 
 				if (location.getBlockY() > setup.getBlockY()) {
@@ -195,8 +189,7 @@ public class Torrent {
 						Block block = location.getBlock();
 						if (!BlockTools.isTransparentToEarthbending(player, block)
 								|| block.isLiquid()) {
-							remove();
-							return;
+							return false;
 						}
 						source = new TempBlock(location.getBlock(),
 								Material.WATER, full);
@@ -205,9 +198,8 @@ public class Torrent {
 			}
 
 			if (forming && !player.isSneaking()) {
-				remove();
 				returnWater(player.getEyeLocation().add(radius, 0, 0));
-				return;
+				return false;
 			}
 
 			if (forming || formed) {
@@ -219,15 +211,13 @@ public class Torrent {
 				}
 				formRing();
 				if (blocks.isEmpty()) {
-					remove();
-					return;
+					return false;
 				}
 			}
 
 			if (formed && !player.isSneaking() && !launch) {
 				new TorrentBurst(player, radius);
-				remove();
-				return;
+				return false;
 			}
 
 			if (launch && formed) {
@@ -235,24 +225,20 @@ public class Torrent {
 				launch = false;
 				formed = false;
 				if (!launch()) {
-					remove();
-					return;
+					return false;
 				}
 			}
 
 			if (launching) {
 				if (!player.isSneaking()) {
-					remove();
-					return;
+					return false;
 				}
 				if (!launch()) {
-					remove();
-					return;
+					return false;
 				}
-
 			}
 		}
-
+		return true;
 	}
 
 	private boolean launch() {
@@ -448,14 +434,18 @@ public class Torrent {
 		}
 		blocks.clear();
 	}
-
-	private void remove() {
+	
+	private void clear() {
 		clearRing();
 		for (TempBlock block : launchblocks)
 			block.revertBlock();
 		launchblocks.clear();
 		if (source != null)
 			source.revertBlock();
+	}
+
+	private void remove() {
+		this.clear();
 		instances.remove(player);
 	}
 
@@ -566,23 +556,40 @@ public class Torrent {
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet())
-			instances.get(player).progress();
+		List<Torrent> toRemove = new LinkedList<Torrent>();
+		for(Torrent torrent : instances.values()) {
+			boolean keep = torrent.progress();
+			if(!keep) {
+				toRemove.add(torrent);
+			}
+		}
+		
+		for(Torrent torrent : toRemove) {
+			torrent.remove();
+		}
 
+		List<TempBlock> toRemoveIce = new LinkedList<TempBlock>();
+		List<TempBlock> toThawIce = new LinkedList<TempBlock>();
 		for (TempBlock block : frozenblocks.keySet()) {
 			Player player = frozenblocks.get(block);
 			if (block.getBlock().getType() != Material.ICE) {
-				frozenblocks.remove(block);
+				toRemoveIce.add(block);
 				continue;
 			}
 			if (block.getBlock().getWorld() != player.getWorld()) {
-				thaw(block);
+				toThawIce.add(block);
 				continue;
 			}
 			if (block.getLocation().distance(player.getLocation()) > range
 					|| !EntityTools.canBend(player, Abilities.Torrent)) {
-				thaw(block);
+				toThawIce.add(block);
 			}
+		}
+		for(TempBlock block : toRemoveIce) {
+			frozenblocks.remove(block);
+		}
+		for(TempBlock block : toThawIce) {
+			thaw(block);
 		}
 	}
 
@@ -608,12 +615,15 @@ public class Torrent {
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet())
-			instances.get(player).remove();
+		for (Torrent torrent : instances.values())
+			torrent.clear();
+		
+		instances.clear();
 
 		for (TempBlock block : frozenblocks.keySet())
-			thaw(block);
-
+			block.revertBlock();
+		
+		frozenblocks.clear();
 	}
 
 	public static boolean wasBrokenFor(Player player, Block block) {
