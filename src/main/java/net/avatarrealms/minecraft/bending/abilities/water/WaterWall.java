@@ -1,10 +1,11 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -24,13 +25,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class WaterWall {
-
-	public static ConcurrentHashMap<Integer, WaterWall> instances = new ConcurrentHashMap<Integer, WaterWall>();
+	private static Map<Integer, WaterWall> instances = new HashMap<Integer, WaterWall>();
 
 	private static final long interval = 30;
 
-	public static ConcurrentHashMap<Block, Block> affectedblocks = new ConcurrentHashMap<Block, Block>();
-	public static ConcurrentHashMap<Block, Player> wallblocks = new ConcurrentHashMap<Block, Player>();
+	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
+	private static Map<Block, Player> wallblocks = new HashMap<Block, Player>();
 
 	private static final byte full = 0x0;
 	// private static final byte half = 0x4;
@@ -76,7 +76,7 @@ public class WaterWall {
 				freezeThaw(player);
 			} else if (prepare()) {
 				if (instances.containsKey(player.getEntityId())) {
-					instances.get(player.getEntityId()).cancel();
+					instances.get(player.getEntityId()).remove();
 				}
 				// Tools.verbose("New water wall prepared");
 				instances.put(player.getEntityId(), this);
@@ -85,7 +85,7 @@ public class WaterWall {
 			}
 		} else if (prepare()) {
 			if (instances.containsKey(player.getEntityId())) {
-				instances.get(player.getEntityId()).cancel();
+				instances.get(player.getEntityId()).remove();
 			}
 			// Tools.verbose("New water wall prepared");
 			instances.put(player.getEntityId(), this);
@@ -170,21 +170,17 @@ public class WaterWall {
 			if (old.progressing) {
 				old.removeWater(old.sourceblock);
 			} else {
-				old.cancel();
+				old.remove();
 			}
 		}
 	}
 
-	public void cancel() {
-		unfocusBlock();
+	public void remove() {
+		instances.remove(player.getEntityId());
 	}
 
 	private void focusBlock() {
 		location = sourceblock.getLocation();
-	}
-
-	private void unfocusBlock() {
-		instances.remove(player.getEntityId());
 	}
 
 	public void moveWater() {
@@ -239,27 +235,19 @@ public class WaterWall {
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
 			breakBlock();
-			// instances.remove(player.getEntityId());
 			return false;
 		}
 		if (!EntityTools.canBend(player, Abilities.Surge)) {
 			if (!forming)
-				// removeWater(oldwater);
 				breakBlock();
-			unfocusBlock();
 			returnWater();
 			return false;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 
-			if (!forming) {
-				// removeWater(oldwater);
-			}
-
 			if (!progressing
 					&& EntityTools.getBendingAbility(player) != Abilities.Surge) {
-				unfocusBlock();
 				return false;
 			}
 
@@ -277,7 +265,7 @@ public class WaterWall {
 			}
 
 			if (forming) {
-				ArrayList<Block> blocks = new ArrayList<Block>();
+				List<Block> blocks = new LinkedList<Block>();
 				Set<Material> transparentForSelection = new HashSet<Material>();
 				transparentForSelection.add(Material.AIR);
 				transparentForSelection.add(Material.WATER);
@@ -315,8 +303,9 @@ public class WaterWall {
 						}
 					}
 				}
-
-				for (Block blocki : wallblocks.keySet()) {
+				//TODO
+				List<Block> toRemove = new LinkedList<Block>(wallblocks.keySet());
+				for (Block blocki : toRemove) {
 					if (wallblocks.get(blocki) == player
 							&& !blocks.contains(blocki)) {
 						finalRemoveWater(blocki);
@@ -361,17 +350,14 @@ public class WaterWall {
 			sourceblock = block;
 
 			if (location.distance(targetdestination) < 1) {
-
 				removeWater(sourceblock);
-				// removeWater(oldwater);
 				forming = true;
 			}
 
 			return true;
 		}
 
-		return false;
-
+		return true;
 	}
 
 	private void addWallBlock(Block block) {
@@ -384,23 +370,16 @@ public class WaterWall {
 
 	private void breakBlock() {
 		finalRemoveWater(sourceblock);
+		List<Block> toRemove = new LinkedList<Block>();
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				finalRemoveWater(block);
+				toRemove.add(block);
 			}
 		}
-		instances.remove(player.getEntityId());
+		for (Block block : toRemove) {
+			finalRemoveWater(block);
+		}
 	}
-
-	// private void reduceWater(Block block) {
-	// if (affectedblocks.containsKey(block)) {
-	// if (!Tools.adjacentToThreeOrMoreSources(block)) {
-	// block.setType(Material.WATER);
-	// block.setData(half);
-	// }
-	// oldwater = block;
-	// }
-	// }
 
 	private void removeWater(Block block) {
 		if (block != null) {
@@ -420,10 +399,8 @@ public class WaterWall {
 		}
 
 		if (wallblocks.containsKey(block)) {
-
 			TempBlock.revertBlock(block, Material.AIR);
 			wallblocks.remove(block);
-
 		}
 	}
 
@@ -454,8 +431,17 @@ public class WaterWall {
 		}
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void progressAll() {
+		List<WaterWall> toRemove = new LinkedList<WaterWall>();
+		for(WaterWall wall : instances.values()) {
+			boolean keep = wall.progress();
+			if(!keep) {
+				toRemove.add(wall);
+			}
+		}
+		for(WaterWall wall : toRemove) {
+			wall.remove();
+		}
 	}
 
 	public static void form(Player player) {
@@ -482,7 +468,7 @@ public class WaterWall {
 					wall.moveWater();
 					if (!wall.progressing) {
 						block.setType(Material.AIR);
-						wall.cancel();
+						wall.remove();
 					} else {
 						WaterReturn.emptyWaterBottle(player);
 					}
@@ -505,12 +491,14 @@ public class WaterWall {
 	}
 
 	public static void removeAll() {
-		for (Block block : affectedblocks.keySet()) {
+		List<Block> toRemoveAffected = new LinkedList<Block>(affectedblocks.values());
+		for (Block block : toRemoveAffected) {
 			TempBlock.revertBlock(block, Material.AIR);
 			affectedblocks.remove(block);
 			wallblocks.remove(block);
 		}
-		for (Block block : wallblocks.keySet()) {
+		List<Block> toRemoveWall = new LinkedList<Block>(wallblocks.keySet());
+		for (Block block : toRemoveWall) {
 			TempBlock.revertBlock(block, Material.AIR);
 			affectedblocks.remove(block);
 			wallblocks.remove(block);
@@ -551,6 +539,22 @@ public class WaterWall {
 				+ "If, instead, you click to select a source block, you can hold sneak to form a wall of water at "
 				+ "your cursor location. Click to shift between a water wall and an ice wall. "
 				+ "Release sneak to dissipate it.";
+	}
+	
+	public static boolean isWaterWalling(Player player) {
+		for (WaterWall wall : instances.values()) {
+			if (wall.player.equals(player))
+				return true;
+		}
+		return false;
+	}
+	
+	public static boolean isAffectedByWaterWall(Block block) {
+		return affectedblocks.containsKey(block);
+	}
+	
+	public static boolean isWaterWallPart(Block block) {
+		return wallblocks.containsKey(block);
 	}
 
 }

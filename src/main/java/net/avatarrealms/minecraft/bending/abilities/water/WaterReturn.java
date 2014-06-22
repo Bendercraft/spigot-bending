@@ -158,9 +158,8 @@ public class WaterReturn {
 				return true;
 		}
 
-		for (int id : WaterWall.instances.keySet()) {
-			if (WaterWall.instances.get(id).player.equals(player))
-				return true;
+		if(WaterWall.isWaterWalling(player)) {
+			return true;
 		}
 
 		if (IceSpike2.isBending(player))

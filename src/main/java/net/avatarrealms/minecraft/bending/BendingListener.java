@@ -861,7 +861,7 @@ public class BendingListener implements Listener {
 		if (FreezeMelt.isFrozen(block)) {
 			FreezeMelt.thawThenRemove(block);
 			event.setCancelled(true);
-		} else if (WaterWall.wallblocks.containsKey(block)) {
+		} else if (WaterWall.isWaterWallPart(block)) {
 			WaterWall.thaw(block);
 			event.setCancelled(true);
 		} else if (Illumination.blocks.containsKey(block)) {
@@ -932,7 +932,7 @@ public class BendingListener implements Listener {
 			// if (WalkOnWater.affectedblocks.containsKey(block)) {
 			// WalkOnWater.thaw(block);
 			// }
-			if (WaterWall.wallblocks.containsKey(block)) {
+			if (WaterWall.isWaterWallPart(block)) {
 				block.setType(Material.AIR);
 			}
 			if (!Wave.canThaw(block)) {
