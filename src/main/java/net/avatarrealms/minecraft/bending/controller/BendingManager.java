@@ -231,9 +231,7 @@ public class BendingManager implements Runnable {
 
 		WaterSpout.handleSpouts(plugin.getServer());
 
-		for (int ID : WaterManipulation.instances.keySet()) {
-			WaterManipulation.progress(ID);
-		}
+		WaterManipulation.progressAll();
 
 		for (int ID : WaterWall.instances.keySet()) {
 			WaterWall.progress(ID);

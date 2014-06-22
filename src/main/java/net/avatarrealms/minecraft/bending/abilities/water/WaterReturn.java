@@ -150,9 +150,8 @@ public class WaterReturn {
 	}
 
 	private static boolean isBending(Player player) {
-		for (int id : WaterManipulation.instances.keySet()) {
-			if (WaterManipulation.instances.get(id).player.equals(player))
-				return true;
+		if(WaterManipulation.isWaterManipulater(player)) {
+			return true;
 		}
 
 		if (OctopusForm.isOctopus(player))

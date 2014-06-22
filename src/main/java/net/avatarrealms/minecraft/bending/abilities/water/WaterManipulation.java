@@ -1,8 +1,11 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -27,10 +30,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class WaterManipulation {
-
-	public static ConcurrentHashMap<Integer, WaterManipulation> instances = new ConcurrentHashMap<Integer, WaterManipulation>();
-	public static ConcurrentHashMap<Block, Block> affectedblocks = new ConcurrentHashMap<Block, Block>();
-	public static ConcurrentHashMap<Player, Integer> prepared = new ConcurrentHashMap<Player, Integer>();
+	private static Map<Integer, WaterManipulation> instances = new HashMap<Integer, WaterManipulation>();
+	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
+	private static Map<Player, Integer> prepared = new HashMap<Player, Integer>();
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -44,7 +46,7 @@ public class WaterManipulation {
 	private static final double deflectrange = 3;
 	// private static double speed = 1.5;
 
-	private static HashSet<Byte> water = new HashSet<Byte>();
+	private static Set<Byte> water = new HashSet<Byte>();
 
 	private static long interval = (long) (1000. / speed);
 
@@ -103,22 +105,18 @@ public class WaterManipulation {
 			if (instances.containsKey(prepared.get(player))) {
 				WaterManipulation old = instances.get(prepared.get(player));
 				if (!old.progressing) {
-					old.cancel();
+					old.remove();
 				}
 			}
 		}
 	}
 
-	public void cancel() {
-		unfocusBlock();
+	public void remove() {
+		remove(id);
 	}
 
 	private void focusBlock() {
 		location = sourceblock.getLocation();
-	}
-
-	private void unfocusBlock() {
-		remove(id);
 	}
 
 	public void moveWater() {
@@ -199,17 +197,19 @@ public class WaterManipulation {
 		}
 	}
 
-	public boolean progress() {
+	/**
+	 * If return false, breakBlock has to be called !
+	 * @return
+	 */
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()
 				|| !EntityTools.canBend(player, Abilities.WaterManipulation)) {
-			breakBlock();
 			return false;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
 			// removeWater(oldwater);
 			if (Tools.isRegionProtectedFromBuild(player,
 					Abilities.WaterManipulation, location)) {
-				breakBlock();
 				return false;
 			}
 
@@ -218,13 +218,10 @@ public class WaterManipulation {
 			if (!progressing
 					&& !falling
 					&& EntityTools.getBendingAbility(player) != Abilities.WaterManipulation) {
-				unfocusBlock();
 				return false;
 			}
 
 			if (falling) {
-				
-				breakBlock();
 				new WaterReturn(player, sourceblock);
 				return false;
 
@@ -234,9 +231,7 @@ public class WaterManipulation {
 							4, (int) range);
 					return false;
 				}
-
-				// Tools.verbose(firstdestination);
-
+				
 				if (sourceblock.getLocation().distance(firstdestination) < .5) {
 					settingup = false;
 				}
@@ -274,7 +269,6 @@ public class WaterManipulation {
 									radius, source)
 							|| FireBlast.annihilateBlasts(location, radius,
 									source)) {
-						breakBlock();
 						new WaterReturn(player, sourceblock);
 						return false;
 					}
@@ -311,7 +305,6 @@ public class WaterManipulation {
 					BlockTools.breakBlock(block);
 				} else if (block.getType() != Material.AIR
 						&& !BlockTools.isWater(block)) {
-					breakBlock();
 					new WaterReturn(player, sourceblock);
 					return false;
 				}
@@ -347,7 +340,6 @@ public class WaterManipulation {
 				}
 
 				if (!progressing) {
-					breakBlock();
 					new WaterReturn(player, sourceblock);
 					return false;
 				}
@@ -375,11 +367,11 @@ public class WaterManipulation {
 				return true;
 			}
 		}
-		return false;
+		
+		return true;
 	}
 
 	private void breakBlock() {
-		// removeWater(oldwater);
 		finalRemoveWater(sourceblock);
 		remove(id);
 	}
@@ -480,9 +472,7 @@ public class WaterManipulation {
 	}
 
 	private static void redirectTargettedBlasts(Player player) {
-		for (int id : instances.keySet()) {
-			WaterManipulation manip = instances.get(id);
-
+		for(WaterManipulation manip : instances.values()) {
 			if (!manip.progressing)
 				continue;
 
@@ -512,9 +502,8 @@ public class WaterManipulation {
 	}
 
 	private static void block(Player player) {
-		for (int id : instances.keySet()) {
-			WaterManipulation manip = instances.get(id);
-
+		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
+		for(WaterManipulation manip : instances.values()) {
 			if (manip.player.equals(player))
 				continue;
 
@@ -537,16 +526,27 @@ public class WaterManipulation {
 					&& mloc.distance(location.clone().add(vector)) < mloc
 							.distance(location.clone().add(
 									vector.clone().multiply(-1)))) {
-				manip.breakBlock();
+				toBreak.add(manip);
 			}
 
 		}
+		
+		for(WaterManipulation manip : toBreak) {
+			manip.breakBlock();
+		}
 	}
 
-	public static boolean progress(int ID) {
-		if (instances.containsKey(ID))
-			return instances.get(ID).progress();
-		return false;
+	public static void progressAll() {
+		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
+		for(WaterManipulation manip : instances.values()) {
+			boolean keep = manip.progress();
+			if(!keep) {
+				toBreak.add(manip);
+			}
+		}
+		for(WaterManipulation manip : toBreak) {
+			manip.breakBlock();
+		}
 	}
 
 	public static boolean canFlowFromTo(Block from, Block to) {
@@ -607,8 +607,9 @@ public class WaterManipulation {
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet())
-			instances.get(id).breakBlock();
+		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>(instances.values());
+		for (WaterManipulation manip : toBreak)
+			manip.breakBlock();
 		prepared.clear();
 	}
 
@@ -629,27 +630,40 @@ public class WaterManipulation {
 	}
 
 	public static void removeAroundPoint(Location location, double radius) {
-		for (int id : instances.keySet()) {
-			WaterManipulation manip = instances.get(id);
+		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
+		for(WaterManipulation manip : instances.values()) {
 			if (manip.location.getWorld().equals(location.getWorld()))
 				if (manip.location.distance(location) <= radius)
-					manip.breakBlock();
+					toBreak.add(manip);
 		}
+		for (WaterManipulation manip : toBreak)
+			manip.breakBlock();
 	}
 
 	public static boolean annihilateBlasts(Location location, double radius,
 			Player source) {
 		boolean broke = false;
-		for (int id : instances.keySet()) {
-			WaterManipulation manip = instances.get(id);
+		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
+		for(WaterManipulation manip : instances.values()) {
 			if (manip.location.getWorld().equals(location.getWorld())
 					&& !source.equals(manip.player))
 				if (manip.location.distance(location) <= radius) {
-					manip.breakBlock();
+					toBreak.add(manip);
 					broke = true;
 				}
 		}
+		for (WaterManipulation manip : toBreak)
+			manip.breakBlock();
 		return broke;
+	}
+	
+	public static boolean isWaterManipulater(Player player) {
+		for (WaterManipulation manip : instances.values()) {
+			if(manip.player.equals(player)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
