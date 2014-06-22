@@ -147,10 +147,7 @@ public class IceSpike {
 	}
 
 	private boolean blockInAffectedBlocks(Block block) {
-		if (affectedblocks.containsKey(block)) {
-			return true;
-		}
-		return false;
+		return affectedblocks.containsKey(block);
 	}
 
 	public static boolean blockInAllAffectedBlocks(Block block) {
@@ -220,8 +217,6 @@ public class IceSpike {
 						return false;
 					}
 				}
-
-				return false;
 			}
 		}
 		return true;

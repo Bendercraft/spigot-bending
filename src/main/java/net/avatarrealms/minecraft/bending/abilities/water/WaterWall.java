@@ -261,7 +261,7 @@ public class WaterWall {
 			if (!progressing) {
 				sourceblock.getWorld().playEffect(location, Effect.SMOKE, 4,
 						(int) range);
-				return false;
+				return true;
 			}
 
 			if (forming) {
@@ -303,7 +303,7 @@ public class WaterWall {
 						}
 					}
 				}
-				//TODO
+				
 				List<Block> toRemove = new LinkedList<Block>(wallblocks.keySet());
 				for (Block blocki : toRemove) {
 					if (wallblocks.get(blocki) == player

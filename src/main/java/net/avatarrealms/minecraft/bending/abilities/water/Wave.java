@@ -1,6 +1,5 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -196,7 +195,7 @@ public class Wave {
 			if (!progressing) {
 				sourceblock.getWorld().playEffect(location, Effect.SMOKE, 4,
 						(int) range);
-				return false;
+				return true;
 			}
 
 			if (location.getWorld() != player.getWorld()) {
@@ -235,7 +234,7 @@ public class Wave {
 				location = location.clone().add(direction);
 				Block blockl = location.getBlock();
 
-				ArrayList<Block> blocks = new ArrayList<Block>();
+				List<Block> blocks = new LinkedList<Block>();
 
 				if (!Tools.isRegionProtectedFromBuild(player, Abilities.Surge,
 						location)
@@ -345,12 +344,13 @@ public class Wave {
 			}
 		}
 
-		return false;
+		return true;
 
 	}
 
 	private void breakBlock() {
-		for (Block block : wave.keySet()) {
+		List<Block> temp = new LinkedList<Block>(wave.keySet());
+		for (Block block : temp) {
 			finalRemoveWater(block);
 		}
 		//instances.remove(player.getEntityId());

@@ -24,6 +24,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -98,6 +99,7 @@ public class AirSwipe {
 			ID = Integer.MIN_VALUE;
 		}
 		id = ID++;
+		Bukkit.getLogger().info("create "+id);
 
 		instances.put(id, this);
 
@@ -110,6 +112,7 @@ public class AirSwipe {
 	}
 
 	private void launch() {
+		Bukkit.getLogger().info("launch");
 		origin = player.getEyeLocation();
 		for (int i = -arc; i <= arc; i += stepsize) {
 			double angle = Math.toRadians((double) i);
@@ -131,6 +134,7 @@ public class AirSwipe {
 	}
 	
 	private void remove() {
+		Bukkit.getLogger().info("removed "+id);
 		instances.remove(id);
 	}
 	
@@ -139,6 +143,7 @@ public class AirSwipe {
 	}
 
 	public boolean progress() {
+		Bukkit.getLogger().info("progress "+instances.size());
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
@@ -183,6 +188,7 @@ public class AirSwipe {
 	}
 
 	private boolean advanceSwipe() {
+		Bukkit.getLogger().info("advanceSwipe");
 		affectedentities.clear();
 		
 		Map<Vector, Location> toAdd = new HashMap<Vector, Location>();
@@ -243,6 +249,7 @@ public class AirSwipe {
 						location.getWorld().playEffect(location, Effect.SMOKE,
 								4, (int) AirBlast.defaultrange);
 						
+						//TODO CRASH TEST start here
 						//Check affected people
 						PluginTools.removeSpouts(location, player);
 						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -281,6 +288,7 @@ public class AirSwipe {
 								}
 							}
 						}
+						//CRASH TEST end here
 					}
 				}
 			}
@@ -294,6 +302,9 @@ public class AirSwipe {
 		if (elements.isEmpty()) {
 			return false;
 		}
+		Bukkit.getLogger().info("advanceSwipe elements "+elements.size());
+		Bukkit.getLogger().info("advanceSwipe toAdd "+toAdd.size());
+		Bukkit.getLogger().info("advanceSwipe toRemove "+toRemove.size());
 		return true;
 	}
 

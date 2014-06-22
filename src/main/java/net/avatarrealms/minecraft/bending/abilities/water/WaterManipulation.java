@@ -86,7 +86,7 @@ public class WaterManipulation {
 		}
 	}
 
-	public boolean prepare() {
+	private boolean prepare() {
 		// Block block = player.getTargetBlock(null, (int) range);
 		Block block = BlockTools.getWaterSourceBlock(player, range,
 				EntityTools.canPlantbend(player));
@@ -229,7 +229,7 @@ public class WaterManipulation {
 				if (!progressing) {
 					sourceblock.getWorld().playEffect(location, Effect.SMOKE,
 							4, (int) range);
-					return false;
+					return true;
 				}
 				
 				if (sourceblock.getLocation().distance(firstdestination) < .5) {
