@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -22,8 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class OctopusForm {
-
-	static ConcurrentHashMap<Player, OctopusForm> instances = new ConcurrentHashMap<Player, OctopusForm>();
+	private static Map<Player, OctopusForm> instances = new HashMap<Player, OctopusForm>();
 
 	private static int range = 10;
 	static double radius = 3;
@@ -41,9 +42,8 @@ public class OctopusForm {
 	private double y = 0;
 	private int animstep = 1, step = 1, inc = 3;
 	private double dta = 45;
-	private ArrayList<TempBlock> blocks = new ArrayList<TempBlock>();
-	private ArrayList<TempBlock> newblocks = new ArrayList<TempBlock>();
-	// private static ArrayList<TempBlock> water = new ArrayList<TempBlock>();
+	private List<TempBlock> blocks = new LinkedList<TempBlock>();
+	private List<TempBlock> newblocks = new LinkedList<TempBlock>();
 	private boolean sourceselected = false;
 	private boolean settingup = false;
 	private boolean forming = false;
@@ -158,30 +158,33 @@ public class OctopusForm {
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+		List<OctopusForm> toRemove = new LinkedList<OctopusForm>();
+		for (OctopusForm octopus : instances.values()) {
+			boolean keep = octopus.progress();
+			if(!keep) {
+				toRemove.add(octopus);
+			}
 		}
-		// replaceWater();
+		for(OctopusForm octopus : toRemove) {
+			octopus.remove();
+		}
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if (!EntityTools.canBend(player, Abilities.OctopusForm)
 				|| (!player.isSneaking() && !sourceselected)
 				|| EntityTools.getBendingAbility(player) != Abilities.OctopusForm) {
-			remove();
 			returnWater();
-			return;
+			return false;
 		}
 
 		if (!sourceblock.getWorld().equals(player.getWorld())) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (sourceblock.getLocation().distance(player.getLocation()) > range
 				&& sourceselected) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
@@ -201,8 +204,8 @@ public class OctopusForm {
 						source = new TempBlock(newblock, Material.WATER, full);
 						sourceblock = newblock;
 					} else {
-						remove();
 						returnWater();
+						return false;
 					}
 				} else if (sourceblock.getY() > location.getBlockY()) {
 					source.revertBlock();
@@ -213,8 +216,8 @@ public class OctopusForm {
 						source = new TempBlock(newblock, Material.WATER, full);
 						sourceblock = newblock;
 					} else {
-						remove();
 						returnWater();
+						return false;
 					}
 				} else if (sourcelocation.distance(location) > radius) {
 					Vector vector = Tools.getDirection(sourcelocation,
@@ -246,28 +249,31 @@ public class OctopusForm {
 				} else {
 					angle += 20;
 				}
-				formOctopus();
+				boolean result = formOctopus();
 				if (y == 2) {
 					incrementStep();
 				}
+				return result;
 			} else if (formed) {
 				step += 1;
 				if (step % inc == 0)
 					animstep += 1;
 				if (animstep > 8)
 					animstep = 1;
-				formOctopus();
+				return formOctopus();
 			} else {
-				remove();
+				return false;
 			}
 		}
+		
+		return true;
 	}
 
-	private void formOctopus() {
+	private boolean formOctopus() {
 		Location location = player.getLocation();
 		newblocks.clear();
 
-		ArrayList<Block> doneblocks = new ArrayList<Block>();
+		List<Block> doneblocks = new LinkedList<Block>();
 
 		for (double theta = startangle; theta < startangle + angle; theta += 10) {
 			double rtheta = Math.toRadians(theta);
@@ -307,7 +313,9 @@ public class OctopusForm {
 		blocks.addAll(newblocks);
 
 		if (blocks.isEmpty())
-			remove();
+			return false;
+		
+		return true;
 	}
 
 	private void tentacle(Location base, int animationstep) {
@@ -405,11 +413,15 @@ public class OctopusForm {
 		return false;
 	}
 
-	private void remove() {
+	private void clear() {
 		if (source != null)
 			source.revertBlock();
 		for (TempBlock block : blocks)
 			block.revertBlock();
+	}
+	
+	private void remove() {
+		this.clear();
 		instances.remove(player);
 	}
 
@@ -430,12 +442,15 @@ public class OctopusForm {
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).remove();
+		for (OctopusForm octopus : instances.values()) {
+			octopus.clear();
 		}
-
-		// for (TempBlock block : water)
-		// block.revertBlock();
+		
+		instances.clear();
+	}
+	
+	public static boolean isOctopus(Player player) {
+		return instances.containsKey(player);
 	}
 
 	public static String getDescription() {

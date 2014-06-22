@@ -155,7 +155,7 @@ public class WaterReturn {
 				return true;
 		}
 
-		if (OctopusForm.instances.containsKey(player))
+		if (OctopusForm.isOctopus(player))
 			return true;
 
 		for (int id : Wave.instances.keySet()) {
