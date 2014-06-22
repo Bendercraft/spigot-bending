@@ -38,6 +38,7 @@ public class EarthColumn {
 	private long time;
 	private int height = standardheight;
 	private ConcurrentHashMap<Block, Block> affectedblocks = new ConcurrentHashMap<Block, Block>();
+	private EarthGrab earthGrab = null;
 
 	public EarthColumn(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -120,6 +121,15 @@ public class EarthColumn {
 				time = System.currentTimeMillis() - interval;
 			}
 		}
+	}
+	
+	public EarthColumn(Player player, Location origin, EarthGrab grab) {
+		this(player,origin,1);
+		this.earthGrab = grab;
+	}
+	
+	public EarthGrab getEarthGrab() {
+		return earthGrab;
 	}
 
 	private void loadAffectedBlocks() {
