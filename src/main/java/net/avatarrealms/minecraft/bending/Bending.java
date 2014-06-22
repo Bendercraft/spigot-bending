@@ -101,12 +101,12 @@ public class Bending extends JavaPlugin {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
 			String[] args) {
+		// Will have to change that to allow the console sender
 		Player player = null;
 		if (sender instanceof Player) {
 			player = (Player) sender;
 		}
 		if (cmd.getName().equalsIgnoreCase("bending")) {
-
 			new BendingCommand(player, args, getDataFolder(), getServer());
 		}
 		return true;

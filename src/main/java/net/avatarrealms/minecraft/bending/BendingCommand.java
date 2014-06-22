@@ -976,114 +976,9 @@ public class BendingCommand {
 									+ ".");
 				}
 			}
-			// for (String s : command) {
-			//
-			// if (args[1].equalsIgnoreCase(s.split(" ")[0])) {
-			// sendMessage(
-			// player,
-			// ChatColor.AQUA
-			// + "                                        /bending "
-			// + (s.split(" ")[0]));
-			// String msg = "";
-			// if ((s.split(" ")[0]).equalsIgnoreCase("choose")
-			// && hasHelpPermission(player,
-			// "bending.command.choose")) {
-			// msg =
-			// "The command /bending choose <element> let you choose one of the four elements (air, fire, water, air) each having different abilities. ";
-			// if (hasHelpPermission(player, "bending.admin.choose"))
-			// msg = msg
-			// +
-			// "The command can also be used to set other people bending element like so /bending choose <player> <element>";
-			// sendMessage(player, msg);
-			// } else if ((s.split(" ")[0]).equalsIgnoreCase("bind")
-			// && hasHelpPermission(player, "bending.command.bind")) {
-			// String append = "a slot";
-			// if (ConfigManager.bendToItem) {
-			// append = "an item";
-			// }
-			// msg =
-			// "The command /bending <bind> <ability> is used to bind an ability to "
-			// + append + ".";
-			// sendMessage(player, msg);
-			// } else if ((s.split(" ")[0].toLowerCase())
-			// .equalsIgnoreCase("help")) {
-			//
-			// } else if ((s.split(" ")[0].toLowerCase())
-			// .equalsIgnoreCase("remove")
-			// && hasHelpPermission(player, "bending.admin.remove")) {
-			// sendMessage(
-			// player,
-			// "The command /bending remove <player> will remove the player bending. It can also be used to lift the permaremove of a player.");
-			// } else if ((s.split(" ")[0]).equalsIgnoreCase("reload")
-			// && hasHelpPermission(player, "bending.admin.reload")) {
-			// player.sendMessage("The command /bending reload will allow you to reload the configuration, so you can make change while the server is running and don't have to restart/reload it.");
-			// } else if ((s.split(" ")[0])
-			// .equalsIgnoreCase("permaremove")
-			// && hasHelpPermission(player,
-			// "bending.admin.permaremove")) {
-			// sendMessage(
-			// player,
-			// "The command /bending permaremove <player> will permanantly remove someone's bending and won't allow him to choose once again until you do /bending remove <player> or manually set his bending");
-			// } else if ((s.split(" ")[0]).equalsIgnoreCase("add")
-			// && hasHelpPermission(player, "bending.admin.add")) {
-			// sendMessage(
-			// player,
-			// "The command /bending add <element> allow you to add elements to the one you aleredy have. It can be used to stack all for eleents at once.");
-			// } else if ((s.split(" ")[0]).equalsIgnoreCase("display")
-			// && hasHelpPermission(player,
-			// "bending.command.display")) {
-			// msg =
-			// ("The command /bending display allows you to see a list of your binding so you can remember where you binded what.");
-			// if (hasHelpPermission(player,
-			// "bending.command.displayelement")) {
-			// msg = msg
-			// +
-			// " The command /bending display <element> can allow you to see a list of abilities an bending element has.";
-			// }
-			// sendMessage(player, msg);
-			// }
-			//
-			// return;
-			// }
-			// }
-
-			// try {
-			// page = Integer.parseInt(args[1]);
-			// } catch (NumberFormatException e) {
-			// page = -1;
-			// }
 		} else {
 			printCommands(player);
 		}
-		// if (page != -1) {
-		// pages = command.size() / 8;
-		// if (command.size() % 8 != 0)
-		// pages++;
-		//
-		// if (page > pages) {
-		// if (pages > 1) {
-		// sendMessage(player, ChatColor.RED + "There's only " + pages
-		// + " pages of help");
-		// } else {
-		// sendMessage(player, ChatColor.RED + "There's only " + pages
-		// + " page of help");
-		// }
-		// return;
-		// }
-		// sendMessage(player, ChatColor.AQUA
-		// + "=======================Help===========================");
-		// for (int i = 1; i <= 8; i++) {
-		// if (command.size() > (i + (8 * page) - 9)) {
-		// String comname = "/bending "
-		// + command.get((i + (8 * page) - 9));
-		// sendMessage(player, comname);
-		// }
-		// }
-		// sendMessage(player, ChatColor.AQUA + "=====================Page "
-		// + page + "/" + pages + "========================");
-		// return;
-		// }
-
 	}
 
 	private void helpCommand(Player player, String[] args) {
@@ -1835,19 +1730,6 @@ public class BendingCommand {
 		}
 
 		if (args.length == 1) {
-			// if (!ConfigManager.bendToItem) {
-			// for (int i = 0; i <= 8; i++) {
-			// // config.removeAbility(player, i);
-			// // PlayerStorageWriter.removeSlot(player, i);
-			// BendingPlayer.getBendingPlayer(player).removeAbility(i);
-			// }
-			// } else {
-			// for (Material mat : Material.values()) {
-			// // config.removeAbility(player, mat.getId());
-			// // PlayerStorageWriter.removeItem(player, mat);
-			// BendingPlayer.getBendingPlayer(player).removeAbility(mat);
-			// }
-			// }
 			BendingPlayer.getBendingPlayer(player).clearAbilities();
 			PluginTools.sendMessage(player, "General.cleared_message");
 		} else if (args.length == 2) {
@@ -1887,51 +1769,6 @@ public class BendingCommand {
 					return;
 				}
 			}
-			//
-			// if (!ConfigManager.bendToItem) {
-			// try {
-			// int slot = Integer.parseInt(args[1]);
-			//
-			// if (slot > 0 && slot < 10) {
-			// // config.removeAbility(player, slot - 1);
-			// // PlayerStorageWriter.removeSlot(player, slot - 1);
-			// BendingPlayer.getBendingPlayer(player).removeAbility(
-			// slot - 1);
-			// sendMessage(
-			// player,
-			// Tools.getMessage(player, "General.slot")
-			// + " "
-			// + args[1]
-			// + " "
-			// + Tools.getMessage(player,
-			// "General.slot_item_cleared"));
-			// return;
-			// }
-			// printClearUsage(player);
-			// } catch (NumberFormatException e) {
-			// printClearUsage(player);
-			// return;
-			// }
-			// } else {
-			// if (Material.matchMaterial(args[1]) != null) {
-			// // config.removeAbility(player,
-			// // Material.matchMaterial(args[1]));
-			// // PlayerStorageWriter.removeItem(player,
-			// // Material.matchMaterial(args[1]));
-			// BendingPlayer.getBendingPlayer(player).removeAbility(
-			// Material.matchMaterial(args[1]));
-			// sendMessage(
-			// player,
-			// "Item "
-			// + args[1]
-			// + " "
-			// + Tools.getMessage(player,
-			// "General.slot_item_cleared"));
-			// return;
-			// }
-			// printClearUsage(player);
-			// }
-
 		}
 
 	}
@@ -2198,7 +2035,7 @@ public class BendingCommand {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 					bPlayer.setBendingLevel(type,level);
 					target.sendMessage("You have received " + level + " level(s) for your "+ element +" bending");
-					player.sendMessage("You have given " + level + "level(s) for the "+element + "bending of " + target.getName());
+					player.sendMessage("You have given " + level + " level(s) for the "+element + "bending of " + target.getName());
 				}
 				else {
 					player.sendMessage(ChatColor.RED + "Bad use of the setlevel command.");
