@@ -1,6 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -9,9 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class Plantbending {
-
 	private static final long regrowtime = ConfigManager.plantbendingRegrowTime;
-	private static ConcurrentHashMap<Integer, Plantbending> instances = new ConcurrentHashMap<Integer, Plantbending>();
+	private static Map<Integer, Plantbending> instances = new HashMap<Integer, Plantbending>();
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -37,29 +39,38 @@ public class Plantbending {
 			}
 		}
 	}
-
-	private void revert() {
+	
+	private void remove() {
+		this.clear();
+		instances.remove(id);
+	}
+	
+	private void clear() {
 		if (block.getType() == Material.AIR) {
 			block.setType(type);
 			block.setData(data);
 		} else {
 			BlockTools.dropItems(block, BlockTools.getDrops(block, type, data, null));
 		}
-		instances.remove(id);
 	}
 
 	public static void regrow() {
-		for (int id : instances.keySet()) {
-			Plantbending plantbending = instances.get(id);
+		List<Plantbending> toRemove = new LinkedList<Plantbending>();
+		for (Plantbending plantbending : instances.values()) {
 			if (plantbending.time < System.currentTimeMillis()) {
-				plantbending.revert();
+				toRemove.add(plantbending);
 			}
+		}
+		for (Plantbending plantbending : toRemove) {
+			plantbending.remove();
 		}
 	}
 
 	public static void regrowAll() {
-		for (int id : instances.keySet())
-			instances.get(id).revert();
+		for (Plantbending plantbending : instances.values())
+			plantbending.clear();
+		
+		instances.clear();
 	}
 
 	public static String getDescription() {
