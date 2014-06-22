@@ -23,8 +23,6 @@ public class RevertChecker implements Runnable {
 	static ConcurrentHashMap<Block, Block> revertQueue = new ConcurrentHashMap<Block, Block>();
 	static ConcurrentHashMap<Integer, Integer> airRevertQueue = new ConcurrentHashMap<Integer, Integer>();
 	private Future<ArrayList<Chunk>> returnFuture;
-	// static ConcurrentHashMap<Block, Material> movedEarthQueue = new
-	// ConcurrentHashMap<Block, Material>();
 
 	static ConcurrentHashMap<Chunk, Chunk> chunks = new ConcurrentHashMap<Chunk, Chunk>();
 
@@ -113,41 +111,6 @@ public class RevertChecker implements Runnable {
 				e.printStackTrace();
 				PluginTools.writeToLog(ExceptionUtils.getStackTrace(e));
 			}
-
-			// for (Block block : Tools.tempearthblocks.keySet()) {
-			// if (revertQueue.containsKey(block))
-			// continue;
-			// boolean remove = true;
-			//
-			// Block index = Tools.tempearthblocks.get(block);
-			// if (Tools.movedearth.containsKey(index)) {
-			// Information info = Tools.movedearth.get(index);
-			// if (time < info.getTime() + ConfigManager.revertchecktime
-			// || (chunks.contains(index.getChunk()) && safeRevert)) {
-			// remove = false;
-			// }
-			// }
-			//
-			// if (remove)
-			// addToRevertQueue(block);
-			//
-			// }
-
-			// for (Block block : Tools.movedearth.keySet()) {
-			// if (movedEarthQueue.containsKey(block))
-			// continue;
-			// Information info = Tools.movedearth.get(block);
-			// if (time >= info.getTime() + ConfigManager.revertchecktime) {
-			// // if (Tools.tempearthblocks.containsKey(info.getBlock()))
-			// // Tools.verbose("PROBLEM!");
-			// // block.setType(info.getType());
-			// // Tools.movedearth.remove(block);
-			// addToMovedEarthQueue(block, info.getType());
-			// }
-			// }
-
-			// Tools.writeToLog("Still " + Tools.tempearthblocks.size()
-			// + " remaining.");
 		}
 	}
 

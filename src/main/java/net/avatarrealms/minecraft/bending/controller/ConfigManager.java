@@ -193,6 +193,7 @@ public class ConfigManager {
 
 	// EarthGrab
 	public static double earthGrabRange = 15;
+	public static int earthGrabDuration = 150000;
 	public static int earthGrabLevelRequired = 6;
 
 	// EarthPassive
@@ -707,6 +708,8 @@ public class ConfigManager {
 		// EarthGrab
 		earthGrabRange = config.getDouble("Properties.Earth.EarthGrab.Range",
 				earthGrabRange);
+		earthGrabDuration = config.getInt("Properties.Earth.EarthGrab.Duration",
+				earthGrabDuration);
 		earthGrabLevelRequired = config.getInt(
 				"Properties.Earth.EarthGrab.level-required", earthGrabLevelRequired);
 		levelsRequired.put(Abilities.EarthGrab, earthGrabLevelRequired);
@@ -1240,6 +1243,7 @@ public class ConfigManager {
 		config.set("Properties.Earth.EarthColumn.level-required", earthColumnLevelRequired);
 		// EarthGrab
 		config.set("Properties.Earth.EarthGrab.Range", earthGrabRange);
+		config.set("Properties.Earth.EarthGrab.Duration", earthGrabDuration);
 		config.set("Properties.Earth.EarthGrab.level-required", earthGrabLevelRequired);
 		// EarthPassive
 		config.set("Properties.Earth.EarthPassive.Wait-Before-Reverse-Changes",

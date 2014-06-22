@@ -1,5 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -37,7 +39,7 @@ public class EarthColumn {
 	private int id;
 	private long time;
 	private int height = standardheight;
-	private ConcurrentHashMap<Block, Block> affectedblocks = new ConcurrentHashMap<Block, Block>();
+	private List<Block> affectedBlocks = new ArrayList<Block>();
 	private EarthGrab earthGrab = null;
 
 	public EarthColumn(Player player) {
@@ -133,19 +135,19 @@ public class EarthColumn {
 	}
 
 	private void loadAffectedBlocks() {
-		affectedblocks.clear();
+		affectedBlocks.clear();
 		Block thisblock;
 		for (int i = 0; i <= distance; i++) {
 			thisblock = block.getWorld().getBlockAt(
 					location.clone().add(direction.clone().multiply(-i)));
-			affectedblocks.put(thisblock, thisblock);
+			affectedBlocks.add(thisblock);
 			if (CompactColumn.blockInAllAffectedBlocks(thisblock))
 				CompactColumn.revertBlock(thisblock);
 		}
 	}
 
-	private boolean blockInAffectedBlocks(Block block) {
-		if (affectedblocks.containsKey(block)) {
+	public boolean blockInAffectedBlocks(Block block) {
+		if (affectedBlocks.contains(block)) {
 			return true;
 		}
 		return false;
@@ -162,13 +164,13 @@ public class EarthColumn {
 	public static void revertBlock(Block block) {
 		for (int ID : instances.keySet()) {
 			if (instances.get(ID).blockInAffectedBlocks(block)) {
-				instances.get(ID).affectedblocks.remove(block);
+				instances.get(ID).affectedBlocks.remove(block);
 			}
 		}
 	}
 
 	private boolean canInstantiate() {
-		for (Block block : affectedblocks.keySet()) {
+		for (Block block : affectedBlocks) {
 			if (blockInAllAffectedBlocks(block)
 					|| alreadydoneblocks.containsKey(block)) {
 				return false;
@@ -182,7 +184,7 @@ public class EarthColumn {
 			time = System.currentTimeMillis();
 			if (!moveEarth()) {
 				instances.remove(id);
-				for (Block block : affectedblocks.keySet()) {
+				for (Block block : affectedBlocks) {
 					alreadydoneblocks.put(block, block);
 				}
 				baseblocks.put(
@@ -250,6 +252,10 @@ public class EarthColumn {
 				+ "Additionally, simply sneak (default shift) looking at an earthbendable block. "
 				+ "A wall of earth will shoot upwards from that location. "
 				+ "Anything in the way of the wall will be brought up with it. ";
+	}
+	
+	public  List<Block> getAffectedBlocks() {
+		return affectedBlocks;
 	}
 
 }
