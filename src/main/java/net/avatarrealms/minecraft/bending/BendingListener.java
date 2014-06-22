@@ -857,6 +857,17 @@ public class BendingListener implements Listener {
 		if (blast != null) {
 			blast.cancel();
 		}
+		
+		player.sendMessage("Block détruit");
+		Integer id = EarthGrab.blockInEarthGrab(block);
+		player.sendMessage(""+id);
+		if (id != null) {
+			player.sendMessage(" ID : " + id);
+			if (!EarthGrab.revertEarthGrab(id)) {
+				Bending.log.info("[Bending] An error occured while removing an earthgrab");
+				// Should never happen ?
+			}
+		}
 
 		if (FreezeMelt.isFrozen(block)) {
 			FreezeMelt.thawThenRemove(block);

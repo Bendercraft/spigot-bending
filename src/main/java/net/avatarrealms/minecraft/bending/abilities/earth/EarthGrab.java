@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -13,6 +14,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -29,16 +31,19 @@ public class EarthGrab {
 	private List<EarthColumn> columns = new ArrayList<EarthColumn>();
 	private boolean self;
 	private BendingPlayer bPlayer;
+	private Player bender;
+	private LivingEntity target;
 
-	public EarthGrab(Player player, boolean self) {
+ 	public EarthGrab(Player player, boolean self) {
 		// Tools.verbose("initiating");
 		this.self = self;
-		bPlayer = BendingPlayer.getBendingPlayer(player);
+		this.bender = player;
+		bPlayer = BendingPlayer.getBendingPlayer(bender);
 		if (bPlayer.isOnCooldown(Abilities.EarthGrab))
 			return;
 		
 		if (self) {
-			grabEntity(player,player);
+			grabEntity(bender,bender);
 		}
 		else {
 			Location origin = player.getEyeLocation();
@@ -49,7 +54,7 @@ public class EarthGrab {
 				if (Tools.getDistanceFromLine(direction, origin,
 						entity.getLocation()) <= 3
 						&& (entity instanceof LivingEntity)
-						&& (entity.getEntityId() != player.getEntityId())) {
+						&& (entity.getEntityId() != bender.getEntityId())) {
 					double distance = origin.distance(entity.getLocation());
 					if (distance < lowestdistance) {
 						closestentity = entity;
@@ -57,16 +62,20 @@ public class EarthGrab {
 					}
 				}
 			}	
-			grabEntity(player,closestentity);	
+			grabEntity(bender,closestentity);	
 		}
-		id = ID;
-		instances.put(id,this);
+		if (target != null) {
+			id = ID;
+			instances.put(id,this);
+			ID ++;
+		}
+		
 	}
 	
 	public void grabEntity(Player player, Entity entity) {
 		if (entity != null) {
 			if (entity instanceof LivingEntity) {
-				LivingEntity lEnt = (LivingEntity)entity;
+				target = (LivingEntity)entity;
 				Location location = entity.getLocation();
 				Location cLoc[] = new Location[4];
 				cLoc[0] = location.clone().add(0,-1,-1);
@@ -86,13 +95,25 @@ public class EarthGrab {
 					}
 					PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, duration, 150); // The entity cannot move
 					PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, duration, 150); // The entity cannot jump
-					lEnt.addPotionEffect(slowness);
-					lEnt.addPotionEffect(jumpless);
-					lEnt.teleport(new Location(lEnt.getWorld(),(int)(lEnt.getLocation().getX())+0.5, (int)(lEnt.getLocation().getY())+0.5, (int)(lEnt.getLocation().getZ())+0.5));
+					target.addPotionEffect(slowness);
+					target.addPotionEffect(jumpless);
+					double x = (int)target.getLocation().getX();
+					double y = (int)target.getLocation().getY();
+					double z = (int)target.getLocation().getZ();
+
+					x = (x<0)? x-0.5 : x+0.5 ;
+					
+					z = (z<0)? z-0.5 : z+0.5;
+					
+					target.teleport(new Location(target.getWorld(),x,y,z));
+					
+					if (target instanceof Player) {
+						EntityTools.grab((Player) target,System.currentTimeMillis());
+					}
 					// To be sure the guy is locked in the grab
 					
 				}
-				player.sendMessage("Location : " + lEnt.getLocation().getX() + " " + lEnt.getLocation().getY() + " " + lEnt.getLocation().getZ());
+				//player.sendMessage("Location : " + target.getLocation().getX() + " " + target.getLocation().getY() + " " + target.getLocation().getZ());
 						
 				columns.add(new EarthColumn(player, cLoc[0], this));
 				columns.add(new EarthColumn(player, cLoc[1], this));
@@ -109,5 +130,41 @@ public class EarthGrab {
 	public static String getDescription() {
 		return "To use, simply left-click while targeting a creature within range. "
 				+ "This ability will erect a circle of earth to trap the creature in.";
+	}
+	
+	public static Integer blockInEarthGrab(Block block) {
+		for (Integer ID : instances.keySet()) {
+			for (EarthColumn column : instances.get(ID).columns) {
+				if (column.blockInAffectedBlocks(block)) {
+					return ID;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static boolean revertEarthGrab(Integer ID) {
+		if (ID == null) {
+			return false;
+		}
+		instances.get(ID).bender.sendMessage("Reversing the Earth Grab");
+		for (EarthColumn column : instances.get(ID).columns) {
+			for (Block block : column.getAffectedBlocks()) {
+				BlockTools.revertBlock(block);
+			}
+		}		
+		instances.get(ID).columns.clear();
+		LivingEntity targ = instances.get(ID).target;
+		if (targ!= null) {
+			instances.get(ID).target.removePotionEffect(PotionEffectType.SLOW);
+			instances.get(ID).target.removePotionEffect(PotionEffectType.JUMP);
+			if (targ instanceof Player) {
+				EntityTools.unGrab((Player)targ);
+			}
+		}
+	
+		instances.remove(ID);
+		
+		return true;
 	}
 }

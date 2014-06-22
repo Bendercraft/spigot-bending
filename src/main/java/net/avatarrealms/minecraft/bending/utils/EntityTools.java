@@ -2,10 +2,11 @@ package net.avatarrealms.minecraft.bending.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
@@ -30,7 +31,8 @@ import org.bukkit.util.Vector;
 
 public class EntityTools {
 	
-	public static ConcurrentHashMap<Player, Long> blockedChis = new ConcurrentHashMap<Player, Long>();
+	public static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
+	public static Map<Player, Long> grabedPlayers = new HashMap<Player, Long>();
 	public static List<Player> toggledBending = new ArrayList<Player>();
 
 	public static Entity getEntityByUUID(UUID uuid) {
@@ -130,7 +132,7 @@ public class EntityTools {
 		if (!hasPermission(player, ability)) {
 			return false;
 		}
-		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player)))
+		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player)))
 			return false;
 
 		if (Abilities.isAirbending(ability)
@@ -169,7 +171,7 @@ public class EntityTools {
 	
 	public static boolean canBendPassive(Player player, BendingType type) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player))
+		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player))
 				&& !AvatarState.isAvatarState(player))
 			return false;
 		if (!player.hasPermission("bending." + type + ".passive")) {
@@ -208,11 +210,7 @@ public class EntityTools {
 	}
 	
 	public static void blockChi(Player player, long time) {
-		if (blockedChis.containsKey(player)) {
-			blockedChis.replace(player, time);
-		} else {
-			blockedChis.put(player, time);
-		}
+		blockedChis.put(player,time);
 	}
 	
 	public static boolean isChiBlocked(Player player) {
@@ -230,6 +228,30 @@ public class EntityTools {
 		return false;
 	}
 	
+	public static void grab(Player player, long time) {
+		grabedPlayers.put(player,time);
+	}
+	
+	public static void unGrab(Player player) {
+		if (grabedPlayers.containsKey(player)) {
+			grabedPlayers.remove(player);
+		}
+	}
+	
+	public static boolean isGrabed(Player player) {
+
+		if (grabedPlayers.containsKey(player)) {
+			long time = System.currentTimeMillis();
+			if (time > grabedPlayers.get(player) + ConfigManager.earthGrabDuration
+					|| AvatarState.isAvatarState(player)) {
+				grabedPlayers.remove(player);
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	
 	public static boolean canBeBloodbent(Player player) {
 		
 		if (player.isOp()) {
@@ -238,7 +260,7 @@ public class EntityTools {
 		
 		if (AvatarState.isAvatarState(player))
 			return false;
-		if ((isChiBlocked(player)))
+		if ((isChiBlocked(player)) || isGrabed(player))
 			return true;
 		Abilities ability = Abilities.Bloodbending;
 		if (canBend(player, ability) && !toggledBending(player))

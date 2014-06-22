@@ -183,13 +183,13 @@ public class BlockTools {
 			return false;
 		return true;
 	}
-	
 	public static boolean isMeltable(Block block) {
 		if (block.getType() == Material.ICE || block.getType() == Material.SNOW) {
 			return true;
 		}
 		return false;
 	}
+	
 	
 	public static boolean isEarthbendable(Player player, Block block) {
 		return isEarthbendable(player, Abilities.RaiseEarth, block);
@@ -678,11 +678,6 @@ public class BlockTools {
 				// sourceblock.setData(info.getData());
 				info.getState().update(true);
 			} else {
-				// if (info.getType() != Material.AIR) {
-				// ItemStack item = new ItemStack(info.getType());
-				// item.setData(new MaterialData(info.getType(), info
-				// .getData()));
-				// block.getWorld().dropItem(block.getLocation(), item);
 				dropItems(
 						block,
 						getDrops(block, info.getState().getType(), info
