@@ -1,9 +1,11 @@
 package net.avatarrealms.minecraft.bending.model;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,8 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
 public class TempBlock {
-
-	public static ConcurrentHashMap<Block, TempBlock> instances = new ConcurrentHashMap<Block, TempBlock>();
+	private static Map<Block, TempBlock> instances = new HashMap<Block, TempBlock>();
 
 	private Block block;
 	private Material newtype;
@@ -35,7 +36,7 @@ public class TempBlock {
 				temp.newdata = newdata;
 			}
 			state = temp.state;
-			instances.replace(block, temp);
+			instances.put(block, temp);
 		} else {
 			state = block.getState();
 			block.setType(newtype);
@@ -47,20 +48,6 @@ public class TempBlock {
 	}
 
 	public void revertBlock() {
-		// Tools.verbose(block.getType());
-		// if (block.getType() == newtype
-		// || (Tools.isWater(block) && (newtype == Material.WATER || newtype ==
-		// Material.STATIONARY_WATER))) {
-		// if (type == Material.WATER || type == Material.STATIONARY_WATER
-		// || type == Material.AIR) {
-		// if (Tools.adjacentToThreeOrMoreSources(block)) {
-		// type = Material.WATER;
-		// data = (byte) 0x0;
-		// }
-		// }
-		// block.setType(type);
-		// block.setData(data);
-		// }
 		state.update(true);
 		instances.remove(block);
 	}
@@ -86,15 +73,11 @@ public class TempBlock {
 	}
 
 	public static void removeBlock(Block block) {
-		if (instances.containsKey(block)) {
-			instances.remove(block);
-		}
+		instances.remove(block);
 	}
 
 	public static boolean isTempBlock(Block block) {
-		if (instances.containsKey(block))
-			return true;
-		return false;
+		return instances.containsKey(block);
 	}
 
 	public static boolean isTouchingTempBlock(Block block) {
@@ -122,10 +105,13 @@ public class TempBlock {
 	}
 
 	public static void removeAll() {
+		List<Block> toRevert = new LinkedList<Block>();
 		for (Block block : instances.keySet()) {
+			toRevert.add(block);
+		}
+		for (Block block : toRevert) {
 			revertBlock(block, Material.AIR);
 		}
-
 	}
 
 	public void setType(Material material) {
