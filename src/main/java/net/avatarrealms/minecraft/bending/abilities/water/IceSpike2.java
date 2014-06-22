@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -25,8 +27,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class IceSpike2 {
-
-	private static ConcurrentHashMap<Integer, IceSpike2> instances = new ConcurrentHashMap<Integer, IceSpike2>();
+	private static Map<Integer, IceSpike2> instances = new HashMap<Integer, IceSpike2>();
 
 	private static double defaultrange = 20;
 	private static int defaultdamage = 1;
@@ -74,7 +75,7 @@ public class IceSpike2 {
 	private void prepare(Block block) {
 		for (IceSpike2 ice : getInstances(player)) {
 			if (ice.prepared) {
-				ice.cancel();
+				ice.remove();
 			}
 		}
 		sourceblock = block;
@@ -91,10 +92,9 @@ public class IceSpike2 {
 		}
 	}
 
-	private static ArrayList<IceSpike2> getInstances(Player player) {
-		ArrayList<IceSpike2> list = new ArrayList<IceSpike2>();
-		for (int id : instances.keySet()) {
-			IceSpike2 ice = instances.get(id);
+	private static List<IceSpike2> getInstances(Player player) {
+		List<IceSpike2> list = new LinkedList<IceSpike2>();
+		for (IceSpike2 ice : instances.values()) {
 			if (ice.player.equals(player)) {
 				list.add(ice);
 			}
@@ -202,54 +202,57 @@ public class IceSpike2 {
 	}
 
 	public static void progressAll() {
-		for (int id : instances.keySet()) {
-			instances.get(id).progress();
+		List<IceSpike2> toRemove = new LinkedList<IceSpike2>();
+		for (IceSpike2 ice : instances.values()) {
+			boolean keep = ice.progress();
+			if(!keep) {
+				toRemove.add(ice);
+			}
+		}
+		
+		for (IceSpike2 ice : toRemove) {
+			ice.remove();
 		}
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()
 				|| !EntityTools.canBend(player, Abilities.IceSpike)) {
-			cancel();
-			return;
+			return false;
 		}
 
 		if (!player.getWorld().equals(location.getWorld())) {
-			cancel();
-			return;
+			return false;
 		}
 
 		if (player.getEyeLocation().distance(location) >= range) {
 			if (progressing) {
-				cancel();
 				returnWater();
-			} else {
-				cancel();
 			}
-			return;
+			return false;
 		}
 
 		if (EntityTools.getBendingAbility(player) != Abilities.IceSpike && prepared) {
-			cancel();
-			return;
+			return false;
 		}
 
-		if (System.currentTimeMillis() < time + interval)
-			return;
+		if (System.currentTimeMillis() < time + interval) {
+			//Not enough time has passed to progress, just waiting
+			return true;
+		}
 
 		time = System.currentTimeMillis();
 
 		if (progressing) {
-
-			Vector direction;
-
-			if (location.getBlockY() == firstdestination.getBlockY())
+			Vector direction = null;
+			
+			if (location.getBlockY() == firstdestination.getBlockY()) {
 				settingup = false;
+			}
 
 			if (location.distance(destination) <= 2) {
-				cancel();
 				returnWater();
-				return;
+				return false;
 			}
 
 			if (settingup) {
@@ -264,8 +267,9 @@ public class IceSpike2 {
 
 			Block block = location.getBlock();
 
-			if (block.equals(sourceblock))
-				return;
+			if (block.equals(sourceblock)) {
+				return true;
+			}
 
 			source.revertBlock();
 			source = null;
@@ -274,16 +278,14 @@ public class IceSpike2 {
 					&& !block.isLiquid()) {
 				BlockTools.breakBlock(block);
 			} else if (!BlockTools.isWater(block)) {
-				cancel();
 				returnWater();
-				return;
+				return false;
 			}
 
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
 					location)) {
-				cancel();
 				returnWater();
-				return;
+				return false;
 			}
 
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
@@ -297,8 +299,7 @@ public class IceSpike2 {
 			}
 
 			if (!progressing) {
-				cancel();
-				return;
+				return false;
 			}
 
 			sourceblock = block;
@@ -307,6 +308,7 @@ public class IceSpike2 {
 		} else if (prepared) {
 			Tools.playFocusWaterEffect(sourceblock);
 		}
+		return true;
 	}
 
 	private void affect(LivingEntity entity) {
@@ -413,7 +415,7 @@ public class IceSpike2 {
 					&& mloc.distance(location.clone().add(vector)) < mloc
 							.distance(location.clone().add(
 									vector.clone().multiply(-1)))) {
-				ice.cancel();
+				ice.remove();
 			}
 
 		}
@@ -423,14 +425,23 @@ public class IceSpike2 {
 		this.destination = destination;
 		this.player = player;
 	}
-
-	private void cancel() {
+	
+	/**
+	 * Remove cleanly this ability in game, but does not remove it on instances list; assuming it is done after
+	 */
+	private void clear() {
 		if (progressing) {
 			if (source != null)
 				source.revertBlock();
 			progressing = false;
 		}
+	}
 
+	/**
+	 * Safe effect as "clear" but remove it from instances list, and thus not concurrent safe when iterating on it
+	 */
+	private void remove() {
+		this.clear();
 		instances.remove(id);
 	}
 
@@ -439,16 +450,16 @@ public class IceSpike2 {
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			instances.get(id).cancel();
+		for (IceSpike2 ice : instances.values()) {
+			ice.clear();
 		}
 
 		instances.clear();
 	}
 
 	public static boolean isBending(Player player) {
-		for (int id : instances.keySet()) {
-			if (instances.get(id).player.equals(player))
+		for (IceSpike2 ice : instances.values()) {
+			if (ice.player.equals(player))
 				return true;
 		}
 		return false;

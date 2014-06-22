@@ -2,10 +2,9 @@ package net.avatarrealms.minecraft.bending.abilities.water;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -27,15 +26,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class IceSpike {
-
-	public static ConcurrentHashMap<Integer, IceSpike> instances = new ConcurrentHashMap<Integer, IceSpike>();
-	public ConcurrentHashMap<Player, Long> removeTimers = new ConcurrentHashMap<Player, Long>();
-	public static Map<Player, Long> cooldowns = new HashMap<Player, Long>();
-	public static final int standardheight = ConfigManager.earthColumnHeight;
-	public static long removeTimer = 500;
-
-	private static ConcurrentHashMap<Block, Block> alreadydoneblocks = new ConcurrentHashMap<Block, Block>();
-	private static ConcurrentHashMap<Block, Integer> baseblocks = new ConcurrentHashMap<Block, Integer>();
+	private static Map<Integer, IceSpike> instances = new HashMap<Integer, IceSpike>();
+	
+	private Map<Player, Long> removeTimers = new HashMap<Player, Long>();
+	private static Map<Player, Long> cooldowns = new HashMap<Player, Long>();
+	private static long removeTimer = 500;
+	private static Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -56,7 +52,7 @@ public class IceSpike {
 	private long time;
 	int height = 2;
 	private Vector thrown = new Vector(0, ConfigManager.icespikeThrowingMult, 0);
-	private ConcurrentHashMap<Block, Block> affectedblocks = new ConcurrentHashMap<Block, Block>();
+	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 	private List<LivingEntity> damaged = new ArrayList<LivingEntity>();
 
 	public IceSpike(Player player) {
@@ -158,17 +154,17 @@ public class IceSpike {
 	}
 
 	public static boolean blockInAllAffectedBlocks(Block block) {
-		for (int ID : instances.keySet()) {
-			if (instances.get(ID).blockInAffectedBlocks(block))
+		for (IceSpike spike : instances.values()) {
+			if (spike.blockInAffectedBlocks(block))
 				return true;
 		}
 		return false;
 	}
 
 	public static void revertBlock(Block block) {
-		for (int ID : instances.keySet()) {
-			if (instances.get(ID).blockInAffectedBlocks(block)) {
-				instances.get(ID).affectedblocks.remove(block);
+		for (IceSpike spike : instances.values()) {
+			if (spike.blockInAffectedBlocks(block)) {
+				spike.affectedblocks.remove(block);
 			}
 		}
 	}
@@ -178,7 +174,6 @@ public class IceSpike {
 			return false;
 		for (Block block : affectedblocks.keySet()) {
 			if (blockInAllAffectedBlocks(block)
-					|| alreadydoneblocks.containsKey(block)
 					|| block.getType() != Material.AIR
 					|| (block.getX() == player.getEyeLocation().getBlock()
 							.getX() && block.getZ() == player.getEyeLocation()
@@ -188,8 +183,26 @@ public class IceSpike {
 		}
 		return true;
 	}
+	
+	public static void progressAll() {
+		List<IceSpike> toRemove = new LinkedList<IceSpike>();
+		for(IceSpike spike : instances.values()) {
+			boolean keep = spike.progress();
+			if(!keep) {
+				toRemove.add(spike);
+			}
+		}
+		
+		for(IceSpike spike : toRemove) {
+			spike.remove();
+		}
+	}
+	
+	private void remove() {
+		instances.remove(id);
+	}
 
-	public boolean progress() {
+	private boolean progress() {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 			if (progress < height) {
@@ -204,7 +217,7 @@ public class IceSpike {
 											-1 * (height))).getBlock(),
 							(height - 1));
 					if (!revertblocks()) {
-						instances.remove(id);
+						return false;
 					}
 				}
 
@@ -280,9 +293,7 @@ public class IceSpike {
 	}
 
 	public static void removeAll() {
-		for (int ID : instances.keySet()) {
-			instances.remove(ID);
-		}
+		instances.clear();
 	}
 
 	public boolean revertblocks() {
