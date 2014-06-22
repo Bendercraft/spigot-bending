@@ -60,8 +60,8 @@ public class WaterWall {
 
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (Wave.instances.containsKey(player.getEntityId())) {
-			Wave wave = Wave.instances.get(player.getEntityId());
+		if (Wave.isWaving(player)) {
+			Wave wave = Wave.getWave(player);
 			if (!wave.progressing) {
 				Wave.launch(player);
 				return;
@@ -111,7 +111,7 @@ public class WaterWall {
 				wave.moveWater();
 				if (!wave.progressing) {
 					block.setType(Material.AIR);
-					wave.cancel();
+					wave.remove();
 				} else {
 					WaterReturn.emptyWaterBottle(player);
 				}
@@ -448,7 +448,7 @@ public class WaterWall {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (!instances.containsKey(player.getEntityId())) {
-			if (!Wave.instances.containsKey(player.getEntityId())
+			if (!Wave.isWaving(player)
 					&& BlockTools.getWaterSourceBlock(player,
 							(int) Wave.defaultrange, EntityTools.canPlantbend(player)) == null
 					&& WaterReturn.hasWaterBottle(player)) {

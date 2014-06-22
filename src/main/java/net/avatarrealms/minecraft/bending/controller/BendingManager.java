@@ -235,9 +235,7 @@ public class BendingManager implements Runnable {
 		
 		WaterWall.progressAll();
 
-		for (int ID : Wave.instances.keySet()) {
-			Wave.progress(ID);
-		}
+		Wave.progressAll();
 
 		IceSpike.progressAll();
 
