@@ -278,7 +278,7 @@ public class AirSwipe {
 										}
 									}
 								}
-
+								
 								if (entity instanceof Player) {
 									new Flight((Player) entity, player);
 								}

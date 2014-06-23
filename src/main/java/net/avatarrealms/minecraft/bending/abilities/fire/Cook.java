@@ -2,11 +2,10 @@ package net.avatarrealms.minecraft.bending.abilities.fire;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -15,12 +14,15 @@ import org.bukkit.inventory.ItemStack;
 
 public class Cook {
 
-	private static ConcurrentHashMap<Player, Cook> instances = new ConcurrentHashMap<Player, Cook>();
+	private static Map<Player, Cook> instances = new HashMap<Player, Cook>();
 
 	private static final long cooktime = 2000;
-	private static final Material[] cookables = { Material.RAW_BEEF,
-			Material.RAW_CHICKEN, Material.RAW_FISH, Material.PORK,
-			Material.POTATO_ITEM };
+	private static final Material[] cookables = {Material.RAW_BEEF,
+			Material.RAW_CHICKEN, 
+			Material.RAW_FISH,
+			Material.PORK,
+			Material.POTATO_ITEM,
+			Material.POISONOUS_POTATO};
 
 	private Player player;
 	private ItemStack items;
@@ -108,6 +110,7 @@ public class Cook {
 				cooked = Material.GRILLED_PORK;
 				break;
 			case POTATO_ITEM:
+			case POISONOUS_POTATO : 
 				cooked = Material.BAKED_POTATO;
 				break;
 			default:

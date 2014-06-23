@@ -1,8 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
@@ -23,18 +24,20 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class FireBlast {
 
-	public static ConcurrentHashMap<Integer, FireBlast> instances = new ConcurrentHashMap<Integer, FireBlast>();
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
-	// static final long soonesttime = ConfigManager.fireBlastCooldown;
+	public static Map<Integer, FireBlast> instances = new HashMap<Integer, FireBlast>();
+	public static List<Integer> toRemove = new ArrayList<Integer>();
 
 	private static int ID = Integer.MIN_VALUE;
 	static final int maxticks = 10000;
@@ -44,7 +47,6 @@ public class FireBlast {
 	private static double pushfactor = ConfigManager.fireBlastPush;
 	private static boolean canPowerFurnace = true;
 	static boolean dissipate = ConfigManager.fireBlastDissipate;
-	// public static long interval = 2000;
 	public static byte full = 0x0;
 
 	private Location location;
@@ -58,16 +60,7 @@ public class FireBlast {
 	private int damage = ConfigManager.fireBlastDamage;
 	double range = ConfigManager.fireBlastRange;
 
-	// private ArrayList<Block> affectedlevers = new ArrayList<Block>();
-
-	// private long time;
-
 	public FireBlast(Player player) {
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
-		// return;
-		// }
-		// }
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.FireBlast))
@@ -98,7 +91,6 @@ public class FireBlast {
 		}
 		safe = safeblocks;
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
-		// timers.put(player, System.currentTimeMillis());
 		this.player = player;
 		this.location = location.clone();
 		origin = location.clone();
@@ -113,12 +105,12 @@ public class FireBlast {
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(id);
+			toRemove.add(id);
 			return false;
 		}
 
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze, location)) {
-			instances.remove(id);
+			toRemove.add(id);
 			return false;
 		}
 
@@ -127,60 +119,37 @@ public class FireBlast {
 		ticks++;
 
 		if (ticks > maxticks) {
-			instances.remove(id);
+			toRemove.add(id);
 			return false;
 		}
 
-		// if (player.isSneaking()
-		// && Tools.getBendingAbility(player) == Abilities.AirBlast) {
-		// new AirBlast(player);
-		// }
-
 		Block block = location.getBlock();
-		// for (Block testblock : Tools.getBlocksAroundPoint(location,
-		// affectingradius)) {
-		// if (testblock.getType() == Material.FIRE) {
-		// testblock.setType(Material.AIR);
-		// testblock.getWorld().playEffect(testblock.getLocation(),
-		// Effect.EXTINGUISH, 0);
-		// }
-		// if (((block.getType() == Material.LEVER) || (block.getType() ==
-		// Material.STONE_BUTTON))
-		// && !affectedlevers.contains(block)) {
-		// EntityHuman eH = ((CraftPlayer) player).getHandle();
-		//
-		// net.minecraft.server.Block.byId[block.getTypeId()].interact(
-		// ((CraftWorld) block.getWorld()).getHandle(),
-		// block.getX(), block.getY(), block.getZ(), eH);
-		//
-		// affectedlevers.add(block);
-		// }
-		// }
 		if (BlockTools.isSolid(block) || block.isLiquid()) {
-			if (block.getType() == Material.FURNACE && canPowerFurnace) {
-				// BlockState state = block.getState();
-				// Furnace furnace = (Furnace) state;
-				// FurnaceInventory inv = furnace.getInventory();
-				// if (inv.getFuel() == null) {
-				// ItemStack temp = inv.getSmelting();
-				// ItemStack tempfuel = new ItemStack(Material.WOOD_AXE, 1);
-				// ItemStack tempsmelt = new ItemStack(Material.COBBLESTONE);
-				// inv.setFuel(tempfuel);
-				// inv.setSmelting(tempsmelt);
-				// state.update(true);
-				// inv.setSmelting(temp);
-				// state.update(true);
-				// }
+			if ((block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
+					&& canPowerFurnace) {
+				BlockState state = block.getState();
+				Furnace furnace = (Furnace) state;
+				FurnaceInventory inv = furnace.getInventory();
+				if (inv.getFuel() == null) {
+					ItemStack temp = inv.getSmelting();
+					ItemStack tempfuel = new ItemStack(Material.SAPLING, 1);
+					ItemStack tempsmelt = new ItemStack(Material.COBBLESTONE);
+					inv.setFuel(tempfuel);
+					inv.setSmelting(tempsmelt);
+					state.update(true);
+					inv.setSmelting(temp);
+					state.update(true);
+				}
 			} else if (FireStream.isIgnitable(player,
 					block.getRelative(BlockFace.UP))) {
 				ignite(location);
 			}
-			instances.remove(id);
+			toRemove.add(id);
 			return false;
 		}
 
 		if (location.distance(origin) > range) {
-			instances.remove(id);
+			toRemove.add(id);
 			return false;
 		}
 
@@ -191,20 +160,19 @@ public class FireBlast {
 		if (EarthBlast.annihilateBlasts(location, radius, source)
 				|| WaterManipulation.annihilateBlasts(location, radius, source)
 				|| FireBlast.annihilateBlasts(location, radius, source)) {
-			instances.remove(id);
+			toRemove.add(id);
 			return false;
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
-			// Block bblock = location.getBlock();
-			// Block block1 = entity.getLocation().getBlock();
-			// if (bblock.equals(block1))
 			affect(entity);
-			
+
 			if (entity instanceof LivingEntity) {
-				if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
-					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+				if (((entity instanceof Player) || (entity instanceof Monster))
+						&& (entity.getEntityId() != player.getEntityId())) {
+					BendingPlayer bPlayer = BendingPlayer
+							.getBendingPlayer(player);
 					if (bPlayer != null) {
 						bPlayer.earnXP(BendingType.Fire);
 					}
@@ -226,7 +194,8 @@ public class FireBlast {
 	}
 
 	private void ignite(Location location) {
-		for (Block block : BlockTools.getBlocksAroundPoint(location, affectingradius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location,
+				affectingradius)) {
 			if (FireStream.isIgnitable(player, block) && !safe.contains(block)) {
 				if (BlockTools.isPlant(block))
 					new Plantbending(block);
@@ -250,6 +219,10 @@ public class FireBlast {
 		for (int id : instances.keySet()) {
 			progress(id);
 		}
+		for (Integer i : toRemove) {
+			instances.remove(i);
+		}
+		toRemove.clear();
 	}
 
 	private void affect(Entity entity) {
@@ -263,21 +236,24 @@ public class FireBlast {
 			}
 			if (entity instanceof LivingEntity) {
 				entity.setFireTicks(50);
-				EntityTools.damageEntity(player, entity,  bPlayer.getCriticalHit(BendingType.Fire,
-						PluginTools.firebendingDayAugment((double) damage,entity.getWorld())));
+				EntityTools.damageEntity(player, entity, bPlayer
+						.getCriticalHit(BendingType.Fire, PluginTools
+								.firebendingDayAugment((double) damage,
+										entity.getWorld())));
 				new Enflamed(entity, player);
-				instances.remove(id);
+				toRemove.add(id);
 			}
 		}
 	}
 
 	public static void removeFireBlastsAroundPoint(Location location,
 			double radius) {
+		List<Integer> toRemove = new ArrayList<Integer>();
 		for (int id : instances.keySet()) {
 			Location fireblastlocation = instances.get(id).location;
 			if (location.getWorld() == fireblastlocation.getWorld()) {
 				if (location.distance(fireblastlocation) <= radius)
-					instances.remove(id);
+					toRemove.add(id);
 			}
 		}
 		Fireball.removeFireballsAroundPoint(location, radius);
@@ -286,13 +262,14 @@ public class FireBlast {
 	public static boolean annihilateBlasts(Location location, double radius,
 			Player source) {
 		boolean broke = false;
+		List<Integer> toRemove = new ArrayList<Integer>();
 		for (int id : instances.keySet()) {
 			FireBlast blast = instances.get(id);
 			Location fireblastlocation = blast.location;
 			if (location.getWorld() == fireblastlocation.getWorld()
 					&& !blast.player.equals(source)) {
 				if (location.distance(fireblastlocation) <= radius) {
-					instances.remove(id);
+					toRemove.add(id);
 					broke = true;
 				}
 			}
@@ -303,9 +280,7 @@ public class FireBlast {
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			instances.remove(id);
-		}
+		instances.clear();
 	}
 
 	public static String getDescription() {
