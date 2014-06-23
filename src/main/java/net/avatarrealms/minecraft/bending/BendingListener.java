@@ -416,6 +416,10 @@ public class BendingListener implements Listener {
 					Entity t = EntityTools.getTargettedEntity(player, ConfigManager.rapidPunchDistance);
 					new Paralyze(player,t);
 				}
+				
+				if (ability == Abilities.SmokeBomb) {
+					new SmokeBomb(player);
+				}
 			}
 		}
 	}

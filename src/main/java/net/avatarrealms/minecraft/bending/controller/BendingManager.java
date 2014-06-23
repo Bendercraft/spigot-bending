@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
@@ -18,6 +19,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
+import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
 import net.avatarrealms.minecraft.bending.abilities.earth.Catapult;
 import net.avatarrealms.minecraft.bending.abilities.earth.CompactColumn;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthArmor;
@@ -176,12 +178,6 @@ public class BendingManager implements Runnable {
 			BlockTools.revertAirBlock(i);
 			RevertChecker.airRevertQueue.remove(i);
 		}
-
-		// for (Block block : RevertChecker.movedEarthQueue.keySet()) {
-		// block.setType(RevertChecker.movedEarthQueue.get(block));
-		// RevertChecker.movedEarthQueue.remove(block);
-		// }
-
 	}
 
 	private void manageFirebending() {
@@ -221,8 +217,11 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageChiBlocking() {
-		for (Player p : RapidPunch.instance.keySet())
+		for (Player p : RapidPunch.instance.keySet()) {
 			RapidPunch.instance.get(p).startPunch(p);
+		}
+		
+		SmokeBomb.progressAll();
 	}
 
 	private void manageWaterbending() {

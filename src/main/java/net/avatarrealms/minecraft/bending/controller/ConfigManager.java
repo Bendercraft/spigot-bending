@@ -138,9 +138,10 @@ public class ConfigManager {
 	public static int rapidPunchLevelRequired = 1;
 	
 	//Smoke Bomb
-	public static int smokeRadius = 5;
+	public static int smokeRadius = 6;
 	public static int smokeBombLevelRequired = 5;
 	public static int smokeDuration = 10;    // time in secs
+	public static int smokeBombCooldown = 5000;
 	
 	//Poisonned dart
 	public static int dartRange = 10;

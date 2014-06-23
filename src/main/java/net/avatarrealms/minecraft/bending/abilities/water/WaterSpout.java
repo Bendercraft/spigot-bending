@@ -115,8 +115,6 @@ public class WaterSpout {
 				if (!TempBlock.isTempBlock(block)) {
 					new TempBlock(block, Material.WATER, full);
 				}
-				// block.setType(Material.WATER);
-				// block.setData(full);
 				if (!affectedblocks.contains(block)) {
 					affectedblocks.add(block);
 				}

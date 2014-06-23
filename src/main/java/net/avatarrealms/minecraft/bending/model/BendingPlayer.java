@@ -116,6 +116,8 @@ public class BendingPlayer {
 					case IceSpike:
 						cd = ConfigManager.icespikeCooldown;
 						break;
+					case SmokeBomb:
+						cd = ConfigManager.smokeBombCooldown;
 					default:
 						//TODO Throw exception here
 						cd = 0;
