@@ -541,6 +541,7 @@ public class ConfigManager {
 		//Smoke bomb
 		smokeRadius = config.getInt("Properties.ChiBlocker.SmokeBomb.Radius",smokeRadius);
 		smokeDuration = config.getInt("Properties.ChiBlocker.SmokeBomb.Duration",smokeDuration);
+		smokeBombCooldown = config.getInt("Properties.ChiBlocker.SmokeBomb.Cooldown",smokeBombCooldown);
 		smokeBombLevelRequired = config.getInt("Properties.ChiBlocker.SmokeBomb.level-required",smokeBombLevelRequired);
 		levelsRequired.put(Abilities.SmokeBomb, smokeBombLevelRequired);
 
@@ -1153,6 +1154,7 @@ public class ConfigManager {
 		//SmokeBomb
 		config.set("Properties.ChiBlocker.SmokeBomb.Radius", smokeRadius);
 		config.set("Properties.ChiBlocker.SmokeBomb.Duration", smokeDuration);
+		config.set("Properties.ChiBlocker.SmokeBomb.Cooldown", smokeBombCooldown);
 		config.set("Properties.ChiBlocker.SmokeBomb.level-required", smokeBombLevelRequired);
 		//Poisonned Dart
 		config.set("Properties.ChiBlocker.PoisonnedDart.Range", dartRange);
