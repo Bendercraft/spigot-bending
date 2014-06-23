@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Material;
@@ -21,7 +20,7 @@ import org.bukkit.entity.Player;
 
 public class BendingPlayer {
 
-	private static ConcurrentHashMap<UUID, BendingPlayer> players = new ConcurrentHashMap<UUID, BendingPlayer>();
+	private static Map<UUID, BendingPlayer> players = new HashMap<UUID, BendingPlayer>();
 
 	private static Map<Abilities, Long> abilityCooldowns = new HashMap<Abilities, Long>();
 	private static long globalCooldown = 250;
@@ -355,14 +354,6 @@ public class BendingPlayer {
 	public Player getPlayer() {
 		return (Player) EntityTools.getEntityByUUID(this.player);
 	}
-
-	// public static ArrayList<BendingPlayer> getBendingPlayers() {
-	// ArrayList<BendingPlayer> list = new ArrayList<BendingPlayer>();
-	// for (String player : players.keySet()) {
-	// list.add(players.get(player));
-	// }
-	// return list;
-	// }
 
 	public List<BendingType> getBendingTypes() {
 		List<BendingType> list = new ArrayList<BendingType>();

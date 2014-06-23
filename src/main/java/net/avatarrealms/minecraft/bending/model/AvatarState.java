@@ -1,11 +1,12 @@
 package net.avatarrealms.minecraft.bending.model;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -13,11 +14,12 @@ import org.bukkit.potion.PotionEffectType;
 
 public class AvatarState{
 
-	public static ConcurrentHashMap<Player, AvatarState> instances = new ConcurrentHashMap<Player, AvatarState>();
+	public static Map<Player, AvatarState> instances = new HashMap<Player, AvatarState>();
+	private static List<Player> toRemove = new ArrayList<Player>();
 
 	private static final double factor = 5;
 
-	Player player;
+	private Player player;
 
 	// boolean canfly = false;
 
@@ -35,11 +37,15 @@ public class AvatarState{
 		for (Player player : instances.keySet()) {
 			instances.get(player).progress();
 		}
+		for (Player pl : toRemove) {
+			instances.remove(pl);
+		}
+		toRemove.clear();
 	}
 
 	public boolean progress() {
 		if (!EntityTools.canBend(player, Abilities.AvatarState)) {
-			instances.remove(player);
+			toRemove.add(player);
 			return false;
 		}
 		addPotionEffects();
