@@ -140,8 +140,8 @@ public class BendingPlayer {
 
 		if (cooldowns.containsKey(ability)) {
 			double time = System.currentTimeMillis() - cooldowns.get(ability);
-			PluginTools.verbose(time);
-			PluginTools.verbose(ability + ": " + abilityCooldowns.get(ability));
+			//PluginTools.verbose(time);
+			//PluginTools.verbose(ability + ": " + abilityCooldowns.get(ability));
 			return (time <= abilityCooldowns.get(ability));
 
 		} else {

@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -60,6 +61,13 @@ public class SmokeBomb {
 					.getBlocksAroundPoint(origin, radius);
 			for (Block block : blocks) {
 				locs.add(block.getLocation().clone());
+			}
+			List<Entity> entitiesAround = EntityTools.getEntitiesAroundPoint(origin,radius+10);
+			for (Entity ent : entitiesAround) {
+				if (ent instanceof Player) {
+					((Player)ent).playSound(origin,Sound.FIREWORK_BLAST,10,1);
+					//((Player)ent).playSound(origin,Sound.FIREWORK_BLAST2,10,1);
+				}
 			}
 			bomber.addPotionEffect(blindnessBomber);
 			bPlayer.cooldown(Abilities.SmokeBomb);
