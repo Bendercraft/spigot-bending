@@ -65,9 +65,11 @@ public class EarthGrab {
 			grabEntity(bender,closestentity);	
 		}
 		if (target != null) {
-			id = ID;
+			if (ID == Integer.MAX_VALUE) {
+				ID = Integer.MIN_VALUE;
+			}
+			id = ID++;
 			instances.put(id,this);
-			ID ++;
 		}
 		
 	}
@@ -106,11 +108,11 @@ public class EarthGrab {
 					z = (z<0)? z-0.5 : z+0.5;
 					
 					target.teleport(new Location(target.getWorld(),x,y,z));
+					// To be sure the guy is locked in the grab
 					
 					if (target instanceof Player) {
 						EntityTools.grab((Player) target,System.currentTimeMillis());
 					}
-					// To be sure the guy is locked in the grab
 					
 				}
 				//player.sendMessage("Location : " + target.getLocation().getX() + " " + target.getLocation().getY() + " " + target.getLocation().getZ());
@@ -147,7 +149,6 @@ public class EarthGrab {
 		if (ID == null) {
 			return false;
 		}
-		instances.get(ID).bender.sendMessage("Reversing the Earth Grab");
 		for (EarthColumn column : instances.get(ID).columns) {
 			for (Block block : column.getAffectedBlocks()) {
 				BlockTools.revertBlock(block);
