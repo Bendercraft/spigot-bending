@@ -21,6 +21,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
+import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
 import net.avatarrealms.minecraft.bending.abilities.earth.Catapult;
 import net.avatarrealms.minecraft.bending.abilities.earth.CompactColumn;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthArmor;
@@ -223,7 +224,8 @@ public class PluginTools {
 		Cook.removeAll();
 		Illumination.removeAll();
 
-		RapidPunch.instance.clear();
+		RapidPunch.instances.clear();
+		SmokeBomb.removeAll();
 
 		// BendingManager.removeFlyers();
 		Flight.removeAll();

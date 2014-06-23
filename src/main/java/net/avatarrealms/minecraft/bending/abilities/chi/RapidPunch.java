@@ -21,14 +21,14 @@ public class RapidPunch {
 	private int distance = ConfigManager.rapidPunchDistance;
 	private static int punches = ConfigManager.rapidPunchPunches;
 	
-	public static Map<Player, RapidPunch> instance = new HashMap<Player, RapidPunch>();
+	public static Map<Player, RapidPunch> instances = new HashMap<Player, RapidPunch>();
 	private int numpunches;
 
 	private Entity target;
 	public static List<Player> punching = new ArrayList<Player>();
 
 	public RapidPunch(Player p) {// , Entity t) {
-		if (instance.containsKey(p))
+		if (instances.containsKey(p))
 			return;
 
 		if (BendingPlayer.getBendingPlayer(p)
@@ -42,14 +42,14 @@ public class RapidPunch {
 
 		target = t;
 		numpunches = 0;
-		instance.put(p, this);
+		instances.put(p, this);
 		// Tools.verbose("PUNCH MOFO");
 	}
 
 	public void startPunch(Player p) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 		if (numpunches >= punches) {
-			instance.remove(p);
+			instances.remove(p);
 		}
 		if (numpunches%2 == 0) {
 			if ((target instanceof Player) ||(target instanceof Monster)) {	
