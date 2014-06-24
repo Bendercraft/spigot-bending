@@ -1985,7 +1985,7 @@ public class BendingCommand {
 
 	}
 	
-	private void level(Player player, String args[]) {
+	private boolean level(Player player, String args[]) {
 		//b lvl
 		//b lvl Nokorikatsu
 		BendingPlayer bPlayer;
@@ -1995,15 +1995,16 @@ public class BendingCommand {
 		else  {
 			Player target = server.getPlayer(args[1]);
 			if (target == null) {
-				return;
+				return false;
 			}
 			bPlayer = BendingPlayer.getBendingPlayer(target);
 		}
 		player.sendMessage(bPlayer.bendingsToString());
+		return true;
 			
 	}
 	
-	private void setlevel(Player player, String args[]) {
+	private boolean setlevel(Player player, String args[]) {
 		if (player!= null) {
 			if (player.hasPermission("bending.admin")) {
 				//b slvl Nokorikatsu Fire 50
@@ -2030,21 +2031,25 @@ public class BendingCommand {
 					}
 					else {
 						player.sendMessage(ChatColor.RED + "Invalid element");
-						return;
+						return false;
 					}
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 					bPlayer.setBendingLevel(type,level);
 					target.sendMessage("You have received " + level + " level(s) for your "+ element +" bending");
 					player.sendMessage("You have given " + level + " level(s) for the "+element + "bending of " + target.getName());
+					return true;
 				}
 				else {
 					player.sendMessage(ChatColor.RED + "Bad use of the setlevel command.");
+					return false;
 				}
 			}
 			else {
 				player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
+				return false;
 			}
 		}
+		return true;
 	}
 	
 	private void giveXP(Player player, String args[]) {
@@ -2078,7 +2083,7 @@ public class BendingCommand {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 				bPlayer.receiveXP(type,level);
 				target.sendMessage("You have received " + level + " experiences for your "+ element +" bending");
-				player.sendMessage("You have given " + level + "experiences for the "+element + "bending of " + target.getName());
+				player.sendMessage("You have given " + level + " experiences for the "+element + "bending of " + target.getName());
 			}
 			else {
 				player.sendMessage(ChatColor.RED + "Bad use of the givexp command.");
