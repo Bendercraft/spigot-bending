@@ -1,15 +1,16 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class Enflamed {
-
-	private static ConcurrentHashMap<Entity, Player> instances = new ConcurrentHashMap<Entity, Player>();
-	private static ConcurrentHashMap<Entity, Long> times = new ConcurrentHashMap<Entity, Long>();
+	private static Map<Entity, Player> instances = new HashMap<Entity, Player>();
+	private static Map<Entity, Long> times = new HashMap<Entity, Long>();
 
 	private static final int damage = 1;
 	private static final int max = 90;
@@ -18,11 +19,7 @@ public class Enflamed {
 	public Enflamed(Entity entity, Player source) {
 		if (entity.getEntityId() == source.getEntityId())
 			return;
-		if (instances.containsKey(entity)) {
-			instances.replace(entity, source);
-		} else {
-			instances.put(entity, source);
-		}
+		instances.put(entity, source);
 	}
 
 	public static boolean isEnflamed(Entity entity) {
@@ -57,10 +54,15 @@ public class Enflamed {
 	}
 
 	public static void handleFlames() {
+		List<Entity> toRemove = new LinkedList<Entity>();
 		for (Entity entity : instances.keySet()) {
 			if (entity.getFireTicks() <= 0) {
-				instances.remove(entity);
+				toRemove.add(entity);
 			}
+		}
+		
+		for(Entity entity : toRemove) {
+			instances.remove(entity);
 		}
 	}
 
