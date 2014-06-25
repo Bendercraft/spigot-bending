@@ -2,6 +2,7 @@ package net.avatarrealms.minecraft.bending.abilities.fire;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +36,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class FireBlast {
-
-	public static Map<Integer, FireBlast> instances = new HashMap<Integer, FireBlast>();
-	public static List<Integer> toRemove = new ArrayList<Integer>();
+	private static Map<Integer, FireBlast> instances = new HashMap<Integer, FireBlast>();
 
 	private static int ID = Integer.MIN_VALUE;
 	static final int maxticks = 10000;
@@ -50,7 +49,7 @@ public class FireBlast {
 	public static byte full = 0x0;
 
 	private Location location;
-	private List<Block> safe = new ArrayList<Block>();
+	private List<Block> safe = new LinkedList<Block>();
 	private Location origin;
 	private Vector direction;
 	private Player player;
@@ -103,14 +102,12 @@ public class FireBlast {
 		ID++;
 	}
 
-	public boolean progress() {
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			toRemove.add(id);
 			return false;
 		}
 
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze, location)) {
-			toRemove.add(id);
 			return false;
 		}
 
@@ -119,7 +116,6 @@ public class FireBlast {
 		ticks++;
 
 		if (ticks > maxticks) {
-			toRemove.add(id);
 			return false;
 		}
 
@@ -144,12 +140,10 @@ public class FireBlast {
 					block.getRelative(BlockFace.UP))) {
 				ignite(location);
 			}
-			toRemove.add(id);
 			return false;
 		}
 
 		if (location.distance(origin) > range) {
-			toRemove.add(id);
 			return false;
 		}
 
@@ -160,13 +154,12 @@ public class FireBlast {
 		if (EarthBlast.annihilateBlasts(location, radius, source)
 				|| WaterManipulation.annihilateBlasts(location, radius, source)
 				|| FireBlast.annihilateBlasts(location, radius, source)) {
-			toRemove.add(id);
 			return false;
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
-			affect(entity);
+			boolean result = affect(entity);
 
 			if (entity instanceof LivingEntity) {
 				if (((entity instanceof Player) || (entity instanceof Monster))
@@ -177,20 +170,19 @@ public class FireBlast {
 						bPlayer.earnXP(BendingType.Fire);
 					}
 				}
-				break;
-				// }
+			}
+			//If result is true, do not return here ! we need to iterate fully !
+			if(result == false) {
+				return false;
 			}
 		}
 
-		advanceLocation();
-
-		return true;
-	}
-
-	private void advanceLocation() {
+		//Advance location
 		location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 0,
 				(int) range);
 		location = location.add(direction.clone().multiply(speedfactor));
+
+		return true;
 	}
 
 	private void ignite(Location location) {
@@ -209,23 +201,24 @@ public class FireBlast {
 		}
 	}
 
-	public static boolean progress(int ID) {
-		if (instances.containsKey(ID))
-			return instances.get(ID).progress();
-		return false;
-	}
-
 	public static void progressAll() {
-		for (int id : instances.keySet()) {
-			progress(id);
+		List<FireBlast> toRemove = new LinkedList<FireBlast>();
+		for (FireBlast fireblast : instances.values()) {
+			boolean keep = fireblast.progress();
+			if(!keep) {
+				toRemove.add(fireblast);
+			}
 		}
-		for (Integer i : toRemove) {
-			instances.remove(i);
+		for (FireBlast fireblast : toRemove) {
+			fireblast.remove();
 		}
-		toRemove.clear();
 	}
 
-	private void affect(Entity entity) {
+	private void remove() {
+		instances.remove(this.id);
+	}
+
+	private boolean affect(Entity entity) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity.getEntityId() != player.getEntityId()) {
 			if (AvatarState.isAvatarState(player)) {
@@ -241,9 +234,10 @@ public class FireBlast {
 								.firebendingDayAugment((double) damage,
 										entity.getWorld())));
 				new Enflamed(entity, player);
-				toRemove.add(id);
+				return false;
 			}
 		}
+		return true;
 	}
 
 	public static void removeFireBlastsAroundPoint(Location location,
