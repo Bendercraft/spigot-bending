@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
@@ -25,8 +27,9 @@ import org.bukkit.util.Vector;
 
 public class Fireball {
 
-	public static ConcurrentHashMap<Integer, Fireball> instances = new ConcurrentHashMap<Integer, Fireball>();
-	private static ConcurrentHashMap<Entity, Fireball> explosions = new ConcurrentHashMap<Entity, Fireball>();
+	public static Map<Integer, Fireball> instances = new HashMap<Integer, Fireball>();
+	//TODO : this variable seems to be never cleared of any of its content, strange
+	private static Map<Entity, Fireball> explosions = new HashMap<Entity, Fireball>();
 
 	private static long defaultchargetime = 2000;
 	private static long interval = 25;
@@ -72,11 +75,10 @@ public class Fireball {
 
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if ((!EntityTools.canBend(player, Abilities.FireBlast) 
 				|| EntityTools.getBendingAbility(player) != Abilities.FireBlast) && !launched) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (System.currentTimeMillis() > starttime + chargetime) {
@@ -85,8 +87,7 @@ public class Fireball {
 
 		if (!player.isSneaking() && !charged) {
 			new FireBlast(player);
-			remove();
-			return;
+			return false;
 		}
 
 		if (!player.isSneaking() && !launched) {
@@ -100,44 +101,38 @@ public class Fireball {
 			if (launched)
 				if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze,
 						location)) {
-					remove();
-					return;
+					return false;
 				}
 
 			time = System.currentTimeMillis();
 
 			if (!launched && !charged)
-				return;
+				return true;
 			if (!launched) {
 				player.getWorld().playEffect(player.getEyeLocation(),
 						Effect.MOBSPAWNER_FLAMES, 0, 3);
-				return;
+				return true ;
 			}
 
 			location = location.clone().add(direction);
 			if (location.distance(origin) > range) {
-				remove();
-				return;
+				return false;
 			}
 
 			if (BlockTools.isSolid(location.getBlock())) {
 				explode();
-				return;
+				return false;
 			} else if (location.getBlock().isLiquid()) {
-				remove();
-				return;
+				return false;
 			}
 
-			fireball();
-
+			return fireball();
 		}
-
+		return true;
 	}
 
 	public static Fireball getFireball(Entity entity) {
-		if (explosions.containsKey(entity))
-			return explosions.get(entity);
-		return null;
+		return explosions.get(entity);
 	}
 
 	public void dealDamage(Entity entity) {
@@ -161,7 +156,7 @@ public class Fireball {
 		EntityTools.damageEntity(player, entity, (int) damage);
 	}
 
-	private void fireball() {
+	private boolean fireball() {
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			block.getWorld().playEffect(block.getLocation(),
 					Effect.MOBSPAWNER_FLAMES, 0, 20);
@@ -179,9 +174,10 @@ public class Fireball {
 						bPlayer.earnXP(BendingType.Fire);
 					}
 				}
-				return;
+				return false;
 			}
 		}
+		return true;
 	}
 
 	public static boolean isCharging(Player player) {
@@ -228,9 +224,7 @@ public class Fireball {
 			explosions.put(explosion, this);
 		}
 		// location.getWorld().createExplosion(location, 1);
-
 		ignite(location);
-		remove();
 	}
 
 	private void ignite(Location location) {
@@ -248,39 +242,48 @@ public class Fireball {
 	}
 
 	public static void progressAll() {
-		for (int id : instances.keySet())
-			instances.get(id).progress();
+		List<Fireball> toRemove = new LinkedList<Fireball>();
+		for (Fireball fireball : instances.values()) {
+			boolean keep = fireball.progress();
+			if(!keep) {
+				toRemove.add(fireball);
+			}
+		}
+		for(Fireball fireball : toRemove) {
+			fireball.remove();
+		}
 	}
 
-	private void remove() {
+	public void remove() {
 		instances.remove(id);
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet())
-			instances.get(id).remove();
+		instances.clear();
 	}
 
 	public static void removeFireballsAroundPoint(Location location,
 			double radius) {
-		for (int id : instances.keySet()) {
-			Fireball fireball = instances.get(id);
+		List<Fireball> toRemove = new LinkedList<Fireball>();
+		for (Fireball fireball : instances.values()) {
 			if (!fireball.launched)
 				continue;
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld()) {
 				if (location.distance(fireblastlocation) <= radius)
-					instances.remove(id);
+					toRemove.add(fireball);
 			}
 		}
-
+		for(Fireball fireball : toRemove) {
+			fireball.remove();
+		}
 	}
 
 	public static boolean annihilateBlasts(Location location, double radius,
 			Player source) {
 		boolean broke = false;
-		for (int id : instances.keySet()) {
-			Fireball fireball = instances.get(id);
+		List<Fireball> toRemove = new LinkedList<Fireball>();
+		for (Fireball fireball : instances.values()) {
 			if (!fireball.launched)
 				continue;
 			Location fireblastlocation = fireball.location;
@@ -288,12 +291,16 @@ public class Fireball {
 					&& !source.equals(fireball.player)) {
 				if (location.distance(fireblastlocation) <= radius) {
 					fireball.explode();
+					toRemove.add(fireball);
 					broke = true;
 				}
 			}
 		}
+		
+		for(Fireball fireball : toRemove) {
+			fireball.remove();
+		}
 
 		return broke;
-
 	}
 }
