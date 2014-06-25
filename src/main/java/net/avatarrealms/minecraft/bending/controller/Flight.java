@@ -87,6 +87,7 @@ public class Flight {
 		airscooterplayers = AirScooter.getPlayers();
 		waterspoutplayers = WaterSpout.getPlayers();
 
+		List<Flight> toRemove = new LinkedList<Flight>();
 		for (Player player : instances.keySet()) {
 			Flight flight = instances.get(player);
 			if (avatarstateplayers.contains(player)
@@ -112,13 +113,16 @@ public class Flight {
 
 			if (flight.source == null) {
 				flight.revert();
-				flight.remove();
+				toRemove.add(flight);
 			} else {
 				if (System.currentTimeMillis() > flight.time + duration) {
-					flight.remove();
+					toRemove.add(flight);
 				}
 			}
-
+		}
+		
+		for(Flight flight : toRemove) {
+			flight.remove();
 		}
 
 	}
