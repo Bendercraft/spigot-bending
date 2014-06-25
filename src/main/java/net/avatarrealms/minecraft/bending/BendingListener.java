@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
-
 import net.avatarrealms.minecraft.bending.abilities.air.*;
 import net.avatarrealms.minecraft.bending.abilities.chi.*;
 import net.avatarrealms.minecraft.bending.abilities.earth.*;
@@ -460,7 +458,6 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.AirSwipe) {
-					Logger.getLogger("Bending").info(player.getName() + (" started to charge an airswipe"));
 					AirSwipe.charge(player);
 				}
 			}

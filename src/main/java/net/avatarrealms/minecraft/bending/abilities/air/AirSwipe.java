@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
-
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
@@ -24,7 +22,6 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,6 +41,7 @@ public class AirSwipe {
 		breakables.add(Material.SAPLING);
 		breakables.add(Material.DEAD_BUSH);
 		breakables.add(Material.LONG_GRASS);
+		breakables.add(Material.DOUBLE_PLANT);
 		breakables.add(Material.YELLOW_FLOWER);
 		breakables.add(Material.RED_ROSE);
 		breakables.add(Material.BROWN_MUSHROOM);
@@ -99,7 +97,6 @@ public class AirSwipe {
 			ID = Integer.MIN_VALUE;
 		}
 		id = ID++;
-		Bukkit.getLogger().info("create "+id);
 
 		instances.put(id, this);
 
@@ -112,7 +109,6 @@ public class AirSwipe {
 	}
 
 	private void launch() {
-		Bukkit.getLogger().info("launch");
 		origin = player.getEyeLocation();
 		for (int i = -arc; i <= arc; i += stepsize) {
 			double angle = Math.toRadians((double) i);
@@ -134,7 +130,6 @@ public class AirSwipe {
 	}
 	
 	private void remove() {
-		Bukkit.getLogger().info("removed "+id);
 		instances.remove(id);
 	}
 	
@@ -143,7 +138,6 @@ public class AirSwipe {
 	}
 
 	public boolean progress() {
-		Bukkit.getLogger().info("progress "+instances.size());
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
@@ -163,7 +157,6 @@ public class AirSwipe {
 				double factor = 1;
 				if (System.currentTimeMillis() >= time + maxchargetime) {
 					factor = maxfactor;
-					Logger.getLogger("Bending").info(player.getName() + " has launched his aiswipe");
 				} else {
 					factor = maxfactor
 							* (double) (System.currentTimeMillis() - time)
@@ -188,113 +181,112 @@ public class AirSwipe {
 	}
 
 	private boolean advanceSwipe() {
-		Bukkit.getLogger().info("advanceSwipe");
 		affectedentities.clear();
 		
+		//Basically, AirSwipe is  just a set of smoke effect on some location called "elements"
 		Map<Vector, Location> toAdd = new HashMap<Vector, Location>();
-		List<Vector> toRemove = new LinkedList<Vector>();
+		
 		for(Entry<Vector, Location> entry : elements.entrySet()) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
 			if (direction != null && location != null) {
-				location = location.clone().add(
+				//For each elements, we calculate the next one and check afterwards if it is still in range
+				Location newlocation = location.clone().add(
 						direction.clone().multiply(speedfactor));
-				toAdd.put(direction, location);
+				if (newlocation.distance(origin) <= range
+						&& !Tools.isRegionProtectedFromBuild(player,
+								Abilities.AirSwipe, newlocation)) {
+					//If new location is still valid, we add it
+					toAdd.put(direction, newlocation);
+				}
+			}
+		}
+		elements.clear();
+		elements.putAll(toAdd);
+		List<Vector> toRemove = new LinkedList<Vector>();
+		for(Entry<Vector, Location> entry : elements.entrySet()) {
+			Vector direction = entry.getKey();
+			Location location = entry.getValue();
+			PluginTools.removeSpouts(location, player);
 
-				if (location.distance(origin) > range
-						|| Tools.isRegionProtectedFromBuild(player,
-								Abilities.AirSwipe, location)) {
-					toRemove.add(direction);
+			double radius = FireBlast.affectingradius;
+			Player source = player;
+			if (EarthBlast.annihilateBlasts(location, radius, source)
+					|| WaterManipulation.annihilateBlasts(location,
+							radius, source)
+					|| FireBlast.annihilateBlasts(location, radius,
+							source)) {
+				toRemove.add(direction);
+				damage = 0;
+				continue;
+			}
+
+			Block block = location.getBlock();
+			for (Block testblock : BlockTools.getBlocksAroundPoint(location,
+					affectingradius)) {
+				if (testblock.getType() == Material.FIRE) {
+					testblock.setType(Material.AIR);
+				}
+				if (isBlockBreakable(testblock)) {
+					BlockTools.breakBlock(testblock);
+				}
+			}
+			if (block.getType() != Material.AIR) {
+				if (isBlockBreakable(block)) {
+					BlockTools.breakBlock(block);
 				} else {
-					PluginTools.removeSpouts(location, player);
-
-					double radius = FireBlast.affectingradius;
-					Player source = player;
-					if (EarthBlast.annihilateBlasts(location, radius, source)
-							|| WaterManipulation.annihilateBlasts(location,
-									radius, source)
-							|| FireBlast.annihilateBlasts(location, radius,
-									source)) {
-						toRemove.add(direction);
-						damage = 0;
-						continue;
-					}
-
-					Block block = location.getBlock();
-					for (Block testblock : BlockTools.getBlocksAroundPoint(location,
-							affectingradius)) {
-						if (testblock.getType() == Material.FIRE) {
-							testblock.setType(Material.AIR);
-						}
-						if (isBlockBreakable(testblock)) {
-							BlockTools.breakBlock(testblock);
-						}
-					}
-
-					if (block.getType() != Material.AIR) {
-						if (isBlockBreakable(block)) {
-							BlockTools.breakBlock(block);
-						} else {
-							toRemove.add(direction);
-						}
-						if (block.getType() == Material.LAVA
-								|| block.getType() == Material.STATIONARY_LAVA) {
-							if (block.getData() == full) {
-								block.setType(Material.OBSIDIAN);
-							} else {
-								block.setType(Material.COBBLESTONE);
-							}
-						}
+					toRemove.add(direction);
+				}
+				if (block.getType() == Material.LAVA
+						|| block.getType() == Material.STATIONARY_LAVA) {
+					if (block.getData() == full) {
+						block.setType(Material.OBSIDIAN);
 					} else {
-						location.getWorld().playEffect(location, Effect.SMOKE,
-								4, (int) AirBlast.defaultrange);
-						
-						//TODO CRASH TEST start here
-						//Check affected people
-						PluginTools.removeSpouts(location, player);
-						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-						for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
-								affectingradius)) {
-							if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
-									entity.getLocation()))
-								continue;
-							if (entity.getEntityId() != player.getEntityId()) {
-								if (AvatarState.isAvatarState(player)) {
-									entity.setVelocity(direction.multiply(AvatarState
-											.getValue(pushfactor)));
-								} else {
-									entity.setVelocity(direction.multiply(pushfactor));
-								}
-
-								if (entity instanceof LivingEntity
-										&& !affectedentities.contains(entity)) {
-									if (damage != 0)
-										EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
-									affectedentities.add(entity);
-									
-									if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			
-										if (bPlayer != null) {
-											bPlayer.earnXP(BendingType.Air);
-										}
-									}
-								}
+						block.setType(Material.COBBLESTONE);
+					}
+				}
+			} else {
+				location.getWorld().playEffect(location, Effect.SMOKE,
+						4, (int) AirBlast.defaultrange);
+			
+				//Check affected people
+				PluginTools.removeSpouts(location, player);
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
+						affectingradius)) {
+					if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
+							entity.getLocation()))
+						continue;
+					if (entity.getEntityId() != player.getEntityId()) {
+						if (AvatarState.isAvatarState(player)) {
+							entity.setVelocity(direction.multiply(AvatarState
+									.getValue(pushfactor)));
+						} else {
+							entity.setVelocity(direction.multiply(pushfactor));
+						}
+						if (entity instanceof LivingEntity
+							&& !affectedentities.contains(entity)) {
+							if (damage != 0)
+								EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
+							affectedentities.add(entity);
 								
-								if (entity instanceof Player) {
-									new Flight((Player) entity, player);
-								}
-
-								if (elements.containsKey(direction)) {
-									toRemove.add(direction);
+							if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			
+								if (bPlayer != null) {
+									bPlayer.earnXP(BendingType.Air);
 								}
 							}
 						}
-						//CRASH TEST end here
+						
+						if (entity instanceof Player) {
+							new Flight((Player) entity, player);
+						}
+
+						toRemove.add(direction);
 					}
 				}
 			}
 		}
 		
-		elements.putAll(toAdd);
 		for(Vector direction : toRemove) {
 			elements.remove(direction);
 		}
@@ -302,9 +294,6 @@ public class AirSwipe {
 		if (elements.isEmpty()) {
 			return false;
 		}
-		Bukkit.getLogger().info("advanceSwipe elements "+elements.size());
-		Bukkit.getLogger().info("advanceSwipe toAdd "+toAdd.size());
-		Bukkit.getLogger().info("advanceSwipe toRemove "+toRemove.size());
 		return true;
 	}
 
