@@ -2009,8 +2009,14 @@ public class BendingCommand {
 			if (player.hasPermission("bending.admin")) {
 				//b slvl Nokorikatsu Fire 50
 				if (args.length == 4){
-					BendingType type;
 					Player target = server.getPlayer(args[1]);
+					
+					if (target == null) {
+						return false;
+					}
+					
+					BendingType type;
+					
 					String element = args[2].toLowerCase();
 					int level = Integer.parseInt(args[3]);
 					
