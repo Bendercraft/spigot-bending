@@ -1,6 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.chi;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -27,10 +28,6 @@ public class SmokeBomb {
 
 	private static PotionEffect blindnessBomber = new PotionEffect(
 			PotionEffectType.BLINDNESS, 20, 2);
-	/*
-	 * private static Type fwType = Type.BURST; private static Color fwColor =
-	 * Color.BLACK;
-	 */
 
 	private Player bomber;
 	private PotionEffect blindnessTarget;
@@ -47,14 +44,7 @@ public class SmokeBomb {
 			this.origin = bomber.getLocation();
 			this.ticksRemaining = duration * 20;
 			locs = new ArrayList<Location>();
-			/*
-			 * Firework fw = (Firework)
-			 * bomber.getWorld().spawnEntity(origin,EntityType.FIREWORK);
-			 * FireworkMeta fwm = fw.getFireworkMeta(); FireworkEffect effect =
-			 * FireworkEffect.builder(). flicker(true). withColor(fwColor).
-			 * with(fwType). trail(true). build(); fwm.addEffect(effect);
-			 * fwm.setPower(0); fw.setFireworkMeta(fwm);
-			 */
+			targets = new ArrayList<LivingEntity>();
 			instances.add(this);
 
 			List<Block> blocks = BlockTools
@@ -75,22 +65,33 @@ public class SmokeBomb {
 	}
 
 	public void progress() {
-		targets = new ArrayList<LivingEntity>();
+		List<LivingEntity> newTargets = new LinkedList<LivingEntity>();
 		List<Entity> entitiesAround = EntityTools.getEntitiesAroundPoint(
 				origin, radius);
 		for (Entity e : entitiesAround) {
 			if (e instanceof LivingEntity) {
-				targets.add((LivingEntity) e);
+				newTargets.add((LivingEntity) e);
 			}
 		}
 		entitiesAround.clear();
 		blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS,
 				ticksRemaining, 2);
+		
 		for (LivingEntity targ : targets) {
-			if (targ.getEntityId() != bomber.getEntityId()) {
-				targ.addPotionEffect(blindnessTarget);
+			if (!newTargets.contains(targ)) {
+				targ.removePotionEffect(PotionEffectType.BLINDNESS);
 			}
 		}
+		
+		targets.clear();
+		
+		for (LivingEntity targ : newTargets) {
+			if (targ.getEntityId() != bomber.getEntityId()) {
+				targ.addPotionEffect(blindnessTarget);
+				targets.add(targ);
+			}
+		}
+		
 		if (ticksRemaining % 10 == 0) {
 			for (Location loc : locs) {
 				loc.getWorld().playEffect(loc, Effect.SMOKE, 1, 15);
@@ -101,13 +102,14 @@ public class SmokeBomb {
 	}
 
 	public static void progressAll() {
-		List<SmokeBomb> toRemove = new ArrayList<SmokeBomb>();
+		List<SmokeBomb> toRemove = new LinkedList<SmokeBomb>();
 		for (SmokeBomb bomb : instances) {
 			bomb.progress();
 			if (bomb.ticksRemaining <= 0) {
 				toRemove.add(bomb);
 			}
 		}
+		
 		for (SmokeBomb toRem : toRemove) {
 			instances.remove(toRem);
 		}
