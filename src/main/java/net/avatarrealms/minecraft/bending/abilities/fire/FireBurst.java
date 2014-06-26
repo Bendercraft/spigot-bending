@@ -77,6 +77,7 @@ public class FireBurst {
 					}
 				}
 			}
+			remove();
 		}
 	}
 	
