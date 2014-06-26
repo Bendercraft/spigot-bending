@@ -193,9 +193,7 @@ public class FireBlast {
 					new Plantbending(block);
 				block.setType(Material.FIRE);
 				if (dissipate) {
-					FireStream.ignitedblocks.put(block, player);
-					FireStream.ignitedtimes.put(block,
-							System.currentTimeMillis());
+					FireStream.addIgnitedBlock(block, player, System.currentTimeMillis());
 				}
 			}
 		}

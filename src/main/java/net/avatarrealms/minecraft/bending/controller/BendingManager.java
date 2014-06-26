@@ -66,7 +66,6 @@ import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.block.Block;
@@ -181,16 +180,8 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageFirebending() {
-
-		for (int ID : FireStream.instances.keySet()) {
-			FireStream.progress(ID);
-		}
-
-		for (Block block : FireStream.ignitedblocks.keySet()) {
-			if (block.getType() != Material.FIRE) {
-				FireStream.ignitedblocks.remove(block);
-			}
-		}
+		FireStream.progressAll();
+		FireStream.removeAllNoneFireIgnitedBlock();
 
 		Fireball.progressAll();
 

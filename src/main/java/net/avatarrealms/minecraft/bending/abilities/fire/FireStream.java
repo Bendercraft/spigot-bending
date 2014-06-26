@@ -1,6 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.abilities.water.Plantbending;
@@ -19,10 +23,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class FireStream {
-
-	public static ConcurrentHashMap<Integer, FireStream> instances = new ConcurrentHashMap<Integer, FireStream>();
-	public static ConcurrentHashMap<Block, Player> ignitedblocks = new ConcurrentHashMap<Block, Player>();
-	public static ConcurrentHashMap<Block, Long> ignitedtimes = new ConcurrentHashMap<Block, Long>();
+	private static Map<Integer, FireStream> instances = new HashMap<Integer, FireStream>();
+	private static Map<Block, Player> ignitedblocks = new HashMap<Block, Player>();
+	private static Map<Block, Long> ignitedtimes = new HashMap<Block, Long>();
 	public static ConcurrentHashMap<LivingEntity, Player> ignitedentities = new ConcurrentHashMap<LivingEntity, Player>();
 	static final long soonesttime = Tools.timeinterval;
 
@@ -65,14 +68,12 @@ public class FireStream {
 
 	public boolean progress() {
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze, location)) {
-			remove();
 			return false;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
 			location = location.clone().add(direction);
 			time = System.currentTimeMillis();
 			if (location.distance(origin) > range) {
-				remove();
 				return false;
 			}
 			Block block = location.getBlock();
@@ -88,12 +89,11 @@ public class FireStream {
 				location = block.getRelative(BlockFace.UP).getLocation();
 				return true;
 			} else {
-				remove();
 				return false;
 			}
 
 		}
-		return false;
+		return true;
 	}
 
 	private void ignite(Block block) {
@@ -146,15 +146,27 @@ public class FireStream {
 	private void remove() {
 		instances.remove(id);
 	}
-
+	
 	public static void removeAll() {
-		for (Block block : ignitedblocks.keySet())
+		List<Block> toRemove = new LinkedList<Block>(ignitedblocks.keySet());
+		for (Block block : toRemove) {
 			remove(block);
+		}
+	}
+
+	public static void removeAllNoneFireIgnitedBlock() {
+		List<Block> toRemove = new LinkedList<Block>(ignitedblocks.keySet());
+		for (Block block : toRemove) {
+			if(block.getType() != Material.FIRE) {
+				remove(block);
+			}
+		}
 	}
 
 	public static void dissipateAll() {
-		if (dissipateAfter != 0)
-			for (Block block : ignitedtimes.keySet()) {
+		if (dissipateAfter != 0) {
+			List<Block> toRemove = new LinkedList<Block>(ignitedtimes.keySet());
+			for (Block block : toRemove) {
 				if (block.getType() != Material.FIRE) {
 					remove(block);
 				} else {
@@ -165,10 +177,20 @@ public class FireStream {
 					}
 				}
 			}
+		}
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void progressAll() {
+		List<FireStream> toRemove = new LinkedList<FireStream>();
+		for(FireStream stream : instances.values()) {
+			boolean keep = stream.progress();
+			if(!keep) {
+				toRemove.add(stream);
+			}
+		}
+		for(FireStream stream : toRemove) {
+			stream.remove();
+		}
 	}
 
 	public static String getDescription() {
@@ -186,14 +208,27 @@ public class FireStream {
 	}
 
 	public static void removeAroundPoint(Location location, double radius) {
-
-		for (int id : instances.keySet()) {
-			FireStream stream = instances.get(id);
+		List<FireStream> toRemove = new LinkedList<FireStream>();
+		for (FireStream stream : instances.values()) {
 			if (stream.location.getWorld().equals(location.getWorld()))
 				if (stream.location.distance(location) <= radius)
-					instances.remove(id);
+					toRemove.add(stream);
 		}
-
+		for(FireStream stream : toRemove) {
+			stream.remove();
+		}
+	}
+	
+	public static void addIgnitedBlock(Block block, Player player, long time) {
+		ignitedblocks.put(block, player);
+		ignitedtimes.put(block, time);
+	}
+	
+	public static boolean isIgnited(Block block) {
+		return ignitedblocks.containsKey(block);
 	}
 
+	public static Player getIgnited(Block block) {
+		return ignitedblocks.get(block);
+	}
 }

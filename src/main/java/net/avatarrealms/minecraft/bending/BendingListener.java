@@ -663,10 +663,8 @@ public class BendingListener implements Listener {
 		// Tools.verbose("Caught an ignition");
 		Entity entity = event.getEntity();
 		Block block = entity.getLocation().getBlock();
-		if (FireStream.ignitedblocks.containsKey(block)
-				&& entity instanceof LivingEntity) {
-			// Tools.verbose("Passed it to Enflamed.");
-			new Enflamed(entity, FireStream.ignitedblocks.get(block));
+		if (FireStream.isIgnited(block) && entity instanceof LivingEntity) {
+			new Enflamed(entity, FireStream.getIgnited(block));
 		}
 	}
 
@@ -674,9 +672,9 @@ public class BendingListener implements Listener {
 	public void onEntityDamageEvent(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
 		if (event.getCause() == DamageCause.FIRE
-				&& FireStream.ignitedblocks.containsKey(entity.getLocation()
+				&& FireStream.isIgnited(entity.getLocation()
 						.getBlock())) {
-			new Enflamed(entity, FireStream.ignitedblocks.get(entity
+			new Enflamed(entity, FireStream.getIgnited(entity
 					.getLocation().getBlock()));
 		}
 		if (Enflamed.isEnflamed(entity)
@@ -830,7 +828,7 @@ public class BendingListener implements Listener {
 		if (!event.isCancelled()) {
 			event.setCancelled(!Torrent.canThaw(block));
 		}
-		if (FireStream.ignitedblocks.containsKey(block)) {
+		if (FireStream.isIgnited(block)) {
 			FireStream.remove(block);
 		}
 	}

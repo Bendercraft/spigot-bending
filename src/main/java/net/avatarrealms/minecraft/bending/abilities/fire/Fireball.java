@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
@@ -233,9 +234,7 @@ public class Fireball {
 			if (FireStream.isIgnitable(player, block)) {
 				block.setType(Material.FIRE);
 				if (FireBlast.dissipate) {
-					FireStream.ignitedblocks.put(block, player);
-					FireStream.ignitedtimes.put(block,
-							System.currentTimeMillis());
+					FireStream.addIgnitedBlock(block, player, System.currentTimeMillis());
 				}
 			}
 		}
