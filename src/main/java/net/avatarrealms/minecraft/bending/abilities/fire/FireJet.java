@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
@@ -10,7 +12,6 @@ import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -19,8 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class FireJet {
-
-	public static ConcurrentHashMap<Player, FireJet> instances = new ConcurrentHashMap<Player, FireJet>();
+	public static Map<Player, FireJet> instances = new HashMap<Player, FireJet>();
 	private static final double defaultfactor = ConfigManager.fireJetSpeed;
 	private static final long defaultduration = ConfigManager.fireJetDuration;
 
@@ -31,7 +31,6 @@ public class FireJet {
 
 	public FireJet(Player player) {
 		if (instances.containsKey(player)) {
-			// player.setAllowFlight(canfly);
 			instances.remove(player);
 			return;
 		}
@@ -67,16 +66,19 @@ public class FireJet {
 		}
 		return false;
 	}
+	
+	private void remove() {
+		instances.remove(player);
+	}
 
-	public void progress() {
+	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(player);
-			return;
+			return false;
 		}
 		if ((BlockTools.isWater(player.getLocation().getBlock()) || System
 				.currentTimeMillis() > time + duration)
 				&& !AvatarState.isAvatarState(player)) {
-			instances.remove(player);
+			return false;
 		} else {
 			player.getWorld().playEffect(player.getLocation(),
 					Effect.MOBSPAWNER_FLAMES, 1);
@@ -92,20 +94,25 @@ public class FireJet {
 			player.setVelocity(velocity);
 			player.setFallDistance(0);
 		}
+		return true;
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+		List<FireJet> toRemove = new LinkedList<FireJet>();
+		for (FireJet jet : instances.values()) {
+			boolean keep = jet.progress();
+			if(!keep) {
+				toRemove.add(jet);
+			}
+		}
+		
+		for (FireJet jet : toRemove) {
+			jet.remove();
 		}
 	}
 
-	public static ArrayList<Player> getPlayers() {
-		ArrayList<Player> players = new ArrayList<Player>();
-		for (Player player : instances.keySet()) {
-			players.add(player);
-		}
-		return players;
+	public static List<Player> getPlayers() {
+		return new LinkedList<Player>(instances.keySet());
 	}
 
 	public static String getDescription() {
