@@ -152,7 +152,7 @@ public class BendingLevel {
 		//TODO stop hardcoded 10% factor or improve this formula
 		currentXPToReceive *= (1 - spamHistory * 0.1);
 		
-		if(currentXPToReceive <= 0) {
+		if(currentXPToReceive > 0) {
 			//If player is strong enough, he receive more exp
 			if (level >= 10) {
 				xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
