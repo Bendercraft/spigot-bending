@@ -1,7 +1,6 @@
 package net.avatarrealms.minecraft.bending.model;
 
 import java.util.Random;
-import java.lang.Math;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
@@ -150,12 +149,18 @@ public class BendingLevel {
 					currentXPToReceive *= (1 - 2 * loseExperienceOnSpam);
 				}
 				else {
-					currentXPToReceive *=(1 - loseExperienceOnSpam);
+					currentXPToReceive *= (1 - loseExperienceOnSpam);
 				}		
 			}
 		}
 
-		xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
+		if (level >= 10) {
+			xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
+		}
+		else {
+			xpReceived = currentXPToReceive;
+		}
+		
 		giveXP(xpReceived);
 		lasttime = now;
 	}
