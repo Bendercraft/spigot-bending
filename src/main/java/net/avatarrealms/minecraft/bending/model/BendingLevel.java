@@ -156,10 +156,6 @@ public class BendingLevel {
 				}		
 			}
 		}
-		if(level < 0) {
-			Bukkit.getLogger().warning("Got bending level : "+level+" ... automatically setting to 1");
-			level = 1;
-		}
 		xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
 		giveXP(xpReceived);
 		lasttime = now;
