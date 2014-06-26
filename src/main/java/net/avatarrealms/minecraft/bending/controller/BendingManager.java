@@ -185,7 +185,7 @@ public class BendingManager implements Runnable {
 
 		Fireball.progressAll();
 
-		WallOfFire.manage();
+		WallOfFire.progressAll();
 
 		Lightning.progressAll();
 
