@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -18,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class FireBurst {
-	private static ConcurrentHashMap<Player, FireBurst> instances = new ConcurrentHashMap<Player, FireBurst>();
+	private static Map<Player, FireBurst> instances = new HashMap<Player, FireBurst>();
 
 	private Player player;
 	private long starttime;
@@ -76,7 +78,9 @@ public class FireBurst {
 				}
 			}
 		}
-		// Tools.verbose("--" + AirBlast.instances.size() + "--");
+	}
+	
+	private void remove() {
 		instances.remove(player);
 	}
 
@@ -101,15 +105,12 @@ public class FireBurst {
 				}
 			}
 		}
-		// Tools.verbose("--" + AirBlast.instances.size() + "--");
-		instances.remove(player);
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if (!EntityTools.canBend(player, Abilities.FireBurst)
 				|| EntityTools.getBendingAbility(player) != Abilities.FireBurst) {
-			instances.remove(player);
-			return;
+			return false;
 		}
 		if (System.currentTimeMillis() > starttime + chargetime && !charged) {
 			charged = true;
@@ -118,20 +119,29 @@ public class FireBurst {
 		if (!player.isSneaking()) {
 			if (charged) {
 				sphereBurst();
-			} else {
-				instances.remove(player);
 			}
+			return false;
 		} else if (charged) {
 			Location location = player.getEyeLocation();
 			// location = location.add(location.getDirection().normalize());
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES,
 					4, 3);
 		}
+		return true;
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet())
-			instances.get(player).progress();
+		List<FireBurst> toRemove = new LinkedList<FireBurst>();
+		for (FireBurst burst : instances.values()) {
+			boolean keep = burst.progress();
+			if(!keep) {
+				toRemove.add(burst);
+			}
+		}
+		
+		for (FireBurst burst : toRemove) {
+			burst.remove();
+		}
 	}
 
 	public static String getDescription() {
@@ -143,6 +153,5 @@ public class FireBurst {
 
 	public static void removeAll() {
 		instances.clear();
-
 	}
 }
