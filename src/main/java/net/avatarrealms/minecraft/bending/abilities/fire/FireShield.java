@@ -1,7 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
@@ -20,7 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class FireShield {
-	private static ConcurrentHashMap<Player, FireShield> instances = new ConcurrentHashMap<Player, FireShield>();
+	private static Map<Player, FireShield> instances = new HashMap<Player, FireShield>();
 
 	private static long interval = 100;
 	private static double radius = 3;
@@ -64,29 +67,24 @@ public class FireShield {
 		instances.remove(player);
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if (((!player.isSneaking()) && shield)
 				|| !EntityTools.canBend(player, Abilities.FireShield)
 				|| !EntityTools.hasAbility(player, Abilities.FireShield)) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (!player.isOnline() || player.isDead()) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (System.currentTimeMillis() > starttime + duration && !shield) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
 			time = System.currentTimeMillis();
-
-			if (shield) {
-
+			if(shield) {
 				ArrayList<Block> blocks = new ArrayList<Block>();
 				Location location = player.getEyeLocation().clone();
 
@@ -130,16 +128,14 @@ public class FireShield {
 				// FireStream.removeAroundPoint(location, radius);
 
 			} else {
-
-				ArrayList<Block> blocks = new ArrayList<Block>();
+				List<Block> blocks = new LinkedList<Block>();
 				Location location = player.getEyeLocation().clone();
 				Vector direction = location.getDirection();
 				location = location.clone().add(direction.multiply(radius));
 
 				if (Tools.isRegionProtectedFromBuild(player,
 						Abilities.FireShield, location)) {
-					remove();
-					return;
+					return false;
 				}
 
 				for (double theta = 0; theta < 360; theta += 20) {
@@ -179,13 +175,22 @@ public class FireShield {
 				FireStream.removeAroundPoint(location, discradius);
 
 			}
-
 		}
+		return true;
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet())
-			instances.get(player).progress();
+		List<FireShield> toRemove = new LinkedList<FireShield>();
+		for (FireShield shield : instances.values()) {
+			boolean keep = shield.progress();
+			if(!keep) {
+				toRemove.add(shield);
+			}
+		}
+		
+		for(FireShield shield : toRemove) {
+			shield.remove();
+		}
 	}
 
 	public static String getDescription() {
@@ -199,6 +204,5 @@ public class FireShield {
 
 	public static void removeAll() {
 		instances.clear();
-
 	}
 }
