@@ -1,6 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -22,7 +25,9 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 public class Lightning {
-
+	private static Map<Player, Lightning> instances = new HashMap<Player, Lightning>();
+	private static ConcurrentHashMap<Entity, Lightning> strikes = new ConcurrentHashMap<Entity, Lightning>();
+	
 	public static int defaultdistance = ConfigManager.lightningRange;
 	private static long defaultwarmup = ConfigManager.lightningWarmup;
 	private static double misschance = ConfigManager.lightningMissChance;
@@ -36,9 +41,7 @@ public class Lightning {
 	private long starttime;
 	private boolean charged = false;
 	private LightningStrike strike = null;
-	public static ConcurrentHashMap<Player, Lightning> instances = new ConcurrentHashMap<Player, Lightning>();
-	private static ConcurrentHashMap<Entity, Lightning> strikes = new ConcurrentHashMap<Entity, Lightning>();
-	private ArrayList<Entity> hitentities = new ArrayList<Entity>();
+	private List<Entity> hitentities = new LinkedList<Entity>();
 
 	public Lightning(Player player) {
 		if (instances.containsKey(player)) {
@@ -47,13 +50,10 @@ public class Lightning {
 		this.player = player;
 		starttime = System.currentTimeMillis();
 		instances.put(player, this);
-
 	}
 
 	public static Lightning getLightning(Entity entity) {
-		if (strikes.containsKey(entity))
-			return strikes.get(entity);
-		return null;
+		return strikes.get(entity);
 	}
 
 	private void strike() {
@@ -65,7 +65,6 @@ public class Lightning {
 			strike = player.getWorld().strikeLightning(targetlocation);
 			strikes.put(strike, this);
 		}
-		instances.remove(player);
 	}
 
 	private Location getTargetLocation() {
@@ -111,16 +110,18 @@ public class Lightning {
 
 		return targetlocation;
 	}
+	
+	private void remove() {
+		instances.remove(player);
+	}
 
-	private void progress() {
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(player);
-			return;
+			return false;
 		}
 
 		if (EntityTools.getBendingAbility(player) != Abilities.Lightning) {
-			instances.remove(player);
-			return;
+			return false;
 		}
 
 		int distance = (int) PluginTools.firebendingDayAugment(defaultdistance,
@@ -140,25 +141,21 @@ public class Lightning {
 								.getDirection()), distance);
 			} else {
 				strike();
+				return false;
 			}
 		} else {
 			if (!player.isSneaking()) {
-				instances.remove(player);
+				return false;
 			}
 		}
+		return true;
 	}
 
 	public void dealDamage(Entity entity) {
 		if (strike == null) {
-			// Tools.verbose("Null strike");
 			return;
 		}
-		// if (Tools.isObstructed(strike.getLocation(), entity.getLocation())) {
-		// Tools.verbose("Is Obstructed");
-		// return 0;
-		// }
 		if (hitentities.contains(entity)) {
-			// Tools.verbose("Already hit");
 			return;
 		}
 		double distance = entity.getLocation().distance(strike.getLocation());
@@ -183,9 +180,20 @@ public class Lightning {
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+		List<Lightning> toRemove = new LinkedList<Lightning>();
+		for (Lightning lightning : instances.values()) {
+			boolean keep = lightning.progress();
+			if(!keep) {
+				toRemove.add(lightning);
+			}
 		}
+		for (Lightning lightning : toRemove) {
+			lightning.remove();
+		}
+	}
+	
+	public static void removeAll() {
+		instances.clear();
 	}
 
 	public static String getDescription() {

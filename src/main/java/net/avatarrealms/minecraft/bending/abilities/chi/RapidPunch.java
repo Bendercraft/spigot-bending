@@ -2,8 +2,10 @@ package net.avatarrealms.minecraft.bending.abilities.chi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -16,14 +18,14 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 public class RapidPunch {
-
 	private static int damage = ConfigManager.rapidPunchDamage;
 	private int distance = ConfigManager.rapidPunchDistance;
 	private static int punches = ConfigManager.rapidPunchPunches;
 	
-	public static Map<Player, RapidPunch> instances = new HashMap<Player, RapidPunch>();
+	private static Map<Player, RapidPunch> instances = new HashMap<Player, RapidPunch>();
 	private int numpunches;
 
+	private Player player;
 	private Entity target;
 	public static List<Player> punching = new ArrayList<Player>();
 
@@ -42,14 +44,14 @@ public class RapidPunch {
 
 		target = t;
 		numpunches = 0;
+		player = p;
 		instances.put(p, this);
-		// Tools.verbose("PUNCH MOFO");
 	}
 
-	public void startPunch(Player p) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
+	public boolean progress() {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (numpunches >= punches) {
-			instances.remove(p);
+			return false;
 		}
 		if (numpunches%2 == 0) {
 			if ((target instanceof Player) ||(target instanceof Monster)) {	
@@ -61,27 +63,35 @@ public class RapidPunch {
 					
 		if (target != null && target instanceof LivingEntity) {
 			LivingEntity lt = (LivingEntity) target;
-			EntityTools.damageEntity(p, target, bPlayer.getCriticalHit(BendingType.ChiBlocker,damage));
+			EntityTools.damageEntity(player, target, bPlayer.getCriticalHit(BendingType.ChiBlocker,damage));
 			if (target instanceof Player)
 				EntityTools.blockChi((Player) target, System.currentTimeMillis());
 			lt.setNoDamageTicks(0);
-			// Tools.verbose("PUNCHIN MOFO");
 		}
-		// cooldowns.put(p.getName(), System.currentTimeMillis());
-		BendingPlayer.getBendingPlayer(p).cooldown(Abilities.RapidPunch);
-		swing(p);
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.RapidPunch);
 		numpunches++;
+		return true;
+	}
+	
+	public static void progressAll() {
+		List<RapidPunch> toRemove = new LinkedList<RapidPunch>();
+		for (RapidPunch punch : instances.values()) {
+			boolean keep = punch.progress();
+			if(!keep) {
+				toRemove.add(punch);
+			}
+		}
+		for (RapidPunch punch : toRemove) {
+			punch.remove();
+		}
+	}
+	
+	private void remove() {
+		instances.remove(player);
 	}
 
-	private void swing(Player p) {
-		// punching.add(p);
-		// timers = System.currentTimeMillis();
-		// Packet18ArmAnimation packet = new Packet18ArmAnimation();
-		// packet.a = p.getEntityId();
-		// packet.b = (byte) 1;
-		// for (Player observer : p.getWorld().getPlayers())
-		// ((CraftPlayer) observer).getHandle().netServerHandler
-		// .sendPacket(packet);
+	public static void removeAll() {
+		instances.clear();
 	}
 
 	public static String getDescription() {

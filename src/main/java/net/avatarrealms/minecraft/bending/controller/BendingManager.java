@@ -208,9 +208,7 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageChiBlocking() {
-		for (Player p : RapidPunch.instances.keySet()) {
-			RapidPunch.instances.get(p).startPunch(p);
-		}
+		RapidPunch.progressAll();
 		
 		SmokeBomb.progressAll();
 	}

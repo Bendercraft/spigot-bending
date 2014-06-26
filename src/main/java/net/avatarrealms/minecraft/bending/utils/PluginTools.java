@@ -216,7 +216,7 @@ public class PluginTools {
 		FireStream.removeAll();
 		Fireball.removeAll();
 		WallOfFire.instances.clear();
-		Lightning.instances.clear();
+		Lightning.removeAll();
 		FireShield.removeAll();
 		FireBlast.removeAll();
 		FireBurst.removeAll();
@@ -224,7 +224,7 @@ public class PluginTools {
 		Cook.removeAll();
 		Illumination.removeAll();
 
-		RapidPunch.instances.clear();
+		RapidPunch.removeAll();
 		SmokeBomb.removeAll();
 
 		// BendingManager.removeFlyers();
