@@ -3,22 +3,19 @@ package net.avatarrealms.minecraft.bending.model;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
-
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 
 public class BendingLevel {
-
 	private static int defaultExperience = 5;
-	private static float loseExperienceOnSpam = 0.05f;
 
 	private BendingPlayer bPlayer;
 	private BendingType bendingType;
 	private Integer level = 1;
 	private Integer experience = 0;
 	private long lasttime;
+	private int spamHistory = 0;
 	//private long firstTimeDegression;
-	private int currentXPToReceive;
 
 	public BendingLevel(BendingType type, BendingPlayer player) {
 		this.bPlayer = player;
@@ -28,7 +25,6 @@ public class BendingLevel {
 		
 		this.lasttime = 0;
 		//this.firstTimeDegression = 0;
-		this.currentXPToReceive = defaultExperience;
 	}
 
 	public Integer getLevel() {
@@ -113,6 +109,7 @@ public class BendingLevel {
 	}
 
 	public void giveXP(Integer xpAmount) {
+		Bukkit.getLogger().info("Got XP : "+xpAmount);
 		if (level < ConfigManager.maxlevel) {
 			experience += xpAmount;
 			while (experience >= getExperienceNeeded()) {
@@ -142,27 +139,31 @@ public class BendingLevel {
 		Random rand = new Random();
 		Integer xpReceived = 0;
 		long now = System.currentTimeMillis();
-		if (lasttime - now >= 120000) { // 2 minutes
-			currentXPToReceive = defaultExperience;
+		//Base experience to receive
+		int currentXPToReceive = defaultExperience;
+		
+		//Degression system, anti-spam
+		//if last bending was 10sec ago, reset spam history for this player
+		//TODO stop hardcoded 10sec
+		if (now - lasttime > 10000) {
+			spamHistory = 0;
 		}
-		else {
-			if (lasttime - now < 300) {
-				if (lasttime - now < 100) {
-					currentXPToReceive *= (1 - 2 * loseExperienceOnSpam);
-				}
-				else {
-					currentXPToReceive *= (1 - loseExperienceOnSpam);
-				}		
+		//Adjust received based upon spamHistory
+		//TODO stop hardcoded 10% factor or improve this formula
+		currentXPToReceive *= (1 - spamHistory * 0.1);
+		
+		if(currentXPToReceive <= 0) {
+			//If player is strong enough, he receive more exp
+			if (level >= 10) {
+				xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
+			} else {
+				xpReceived = currentXPToReceive;
 			}
+			giveXP(xpReceived);
 		}
-		if (level >= 10) {
-			xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
-		}
-		else {
-			xpReceived = currentXPToReceive;
-		}
-		giveXP(xpReceived);
+		
 		lasttime = now;
+		spamHistory++;
 	}
 
 	public void setXP(double d) {
