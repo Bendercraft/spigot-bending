@@ -1,9 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
@@ -25,26 +25,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class WallOfFire {
-
-	private Player player;
-
+	private static Map<Player, WallOfFire> instances = new HashMap<Player, WallOfFire>();
+	
 	private static double maxangle = 50;
-
 	private static int range = ConfigManager.wallOfFireRange;
+	private static long interval = 250;
+	private static long cooldown = ConfigManager.wallOfFireCooldown;
+	private static long damageinterval = ConfigManager.wallOfFireInterval;
+
 	private int height = ConfigManager.wallOfFireHeight;
 	private int width = ConfigManager.wallOfFireWidth;
 	private long duration = ConfigManager.wallOfFireDuration;
 	private int damage = ConfigManager.wallOfFireDamage;
-	private static long interval = 250;
-	private static long cooldown = ConfigManager.wallOfFireCooldown;
-	public static ConcurrentHashMap<Player, WallOfFire> instances = new ConcurrentHashMap<Player, WallOfFire>();
-	private static long damageinterval = ConfigManager.wallOfFireInterval;
-
+	private Player player;
 	private Location origin;
 	private long time, starttime;
 	private boolean active = true;
 	private int damagetick = 0, intervaltick = 0;
-	private List<Block> blocks = new ArrayList<Block>();
+	private List<Block> blocks = new LinkedList<Block>();
 
 	public WallOfFire(Player player) {
 		if (instances.containsKey(player) && !AvatarState.isAvatarState(player)) {
@@ -93,20 +91,19 @@ public class WallOfFire {
 		instances.put(player, this);
 	}
 
-	private void progress() {
+	private boolean progress() {
 		time = System.currentTimeMillis();
 
 		if (time - starttime > cooldown) {
-			instances.remove(player);
-			return;
+			return false;
 		}
 
 		if (!active)
-			return;
+			return true;
 
 		if (time - starttime > duration) {
 			active = false;
-			return;
+			return true;
 		}
 
 		if (time - starttime > intervaltick * interval) {
@@ -118,7 +115,7 @@ public class WallOfFire {
 			damagetick++;
 			damage();
 		}
-
+		return true;
 	}
 
 	private void initializeBlocks() {
@@ -200,9 +197,24 @@ public class WallOfFire {
 				+ "and blocking projectiles.";
 	}
 
-	public static void manage() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+	public static void progressAll() {
+		List<WallOfFire> toRemove = new LinkedList<WallOfFire>();
+		for (WallOfFire wall : instances.values()) {
+			boolean keep = wall.progress();
+			if(!keep) {
+				toRemove.add(wall);
+			}
 		}
+		for (WallOfFire wall : toRemove) {
+			wall.remove();
+		}
+	}
+	
+	public static void removeAll() {
+		instances.clear();
+	}
+
+	private void remove() {
+		instances.remove(player);
 	}
 }

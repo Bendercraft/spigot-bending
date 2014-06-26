@@ -215,7 +215,7 @@ public class PluginTools {
 
 		FireStream.removeAll();
 		Fireball.removeAll();
-		WallOfFire.instances.clear();
+		WallOfFire.removeAll();
 		Lightning.removeAll();
 		FireShield.removeAll();
 		FireBlast.removeAll();
