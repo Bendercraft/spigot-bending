@@ -3,6 +3,8 @@ package net.avatarrealms.minecraft.bending.model;
 import java.util.Random;
 import java.lang.Math;
 
+import org.bukkit.Bukkit;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 
@@ -154,7 +156,10 @@ public class BendingLevel {
 				}		
 			}
 		}
-
+		if(level < 0) {
+			Bukkit.getLogger().warning("Got bending level : "+level+" ... automatically setting to 1");
+			level = 1;
+		}
 		xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
 		giveXP(xpReceived);
 		lasttime = now;
