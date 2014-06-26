@@ -2,11 +2,8 @@ package net.avatarrealms.minecraft.bending.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -135,8 +132,8 @@ public class BlockTools {
 		nonOpaque.add(Material.TRIPWIRE);
 	}
 	
-	public static Map<Block, Information> movedEarth = new ConcurrentHashMap<Block, Information>();
-	public static Map<Integer, Information> tempAir = new HashMap<Integer, Information>();
+	public static ConcurrentHashMap<Block, Information> movedEarth = new ConcurrentHashMap<Block, Information>();
+	public static ConcurrentHashMap<Integer, Information> tempAir = new ConcurrentHashMap<Integer, Information>();
 	
 	public static Set<Material> getTransparentEarthbending() {
 		Set<Material> set = new HashSet<Material>();
@@ -625,9 +622,9 @@ public class BlockTools {
 		revertAirBlock(i, false);
 	}
 
-	public static boolean revertAirBlock(int i, boolean force) {
+	public static void revertAirBlock(int i, boolean force) {
 		if (!tempAir.containsKey(i))
-			return false;
+			return;
 		Information info = tempAir.get(i);
 		Block block = info.getState().getBlock();
 		if (block.getType() != Material.AIR && !block.isLiquid()) {
@@ -636,16 +633,15 @@ public class BlockTools {
 						block,
 						getDrops(block, info.getState().getType(), info
 								.getState().getRawData(), pickaxe));
-				return true;
+				tempAir.remove(i);
 			} else {
 				info.setTime(info.getTime() + 10000);
 			}
-			return false;
+			return;
 		} else {
-			info.getState().update(true);		
-			return true;
+			info.getState().update(true);
+			tempAir.remove(i);
 		}
-		// If return true : Needs to delete that tempAir, if false : We can conserve it
 	}
 
 	public static boolean revertBlock(Block block) {
@@ -678,8 +674,15 @@ public class BlockTools {
 			}
 
 			if (sourceblock.getType() == Material.AIR || sourceblock.isLiquid()) {
+				// sourceblock.setType(info.getType());
+				// sourceblock.setData(info.getData());
 				info.getState().update(true);
 			} else {
+				// if (info.getType() != Material.AIR) {
+				// ItemStack item = new ItemStack(info.getType());
+				// item.setData(new MaterialData(info.getType(), info
+				// .getData()));
+				// block.getWorld().dropItem(block.getLocation(), item);
 				dropItems(
 						block,
 						getDrops(block, info.getState().getType(), info
@@ -687,12 +690,14 @@ public class BlockTools {
 				// }
 			}
 
+			// if (info.getInteger() != 10) {
 			if (adjacentToThreeOrMoreSources(block)) {
 				block.setType(Material.WATER);
 				block.setData(full);
 			} else {
 				block.setType(Material.AIR);
 			}
+			// }
 
 			if (EarthColumn.blockInAllAffectedBlocks(sourceblock))
 				EarthColumn.revertBlock(sourceblock);
@@ -732,23 +737,13 @@ public class BlockTools {
 	}
 
 	public static void removeAllEarthbendedBlocks() {
-		List<Integer> toRemove = new LinkedList<Integer>();
-		List<Block> blocksToRemove = new LinkedList<Block>();
-		for (Block block : movedEarth.keySet()) {		
-			if (revertBlock(block)) {
-				blocksToRemove.add(block);
-			}
+		for (Block block : movedEarth.keySet()) {
+			revertBlock(block);
 		}
 
 		for (Integer i : tempAir.keySet()) {
-			if (revertAirBlock(i, true)) {
-				toRemove.add(i);
-			}
-		}		
-		for (Integer id : toRemove) {
-			tempAir.remove(id);
+			revertAirBlock(i, true);
 		}
-		toRemove.clear();
 	}
 	
 	public static Collection<ItemStack> getDrops(Block block, Material type,
