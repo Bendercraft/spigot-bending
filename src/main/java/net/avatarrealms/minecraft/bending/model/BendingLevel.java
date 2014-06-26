@@ -161,7 +161,6 @@ public class BendingLevel {
 		else {
 			xpReceived = currentXPToReceive;
 		}
-		xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
 		giveXP(xpReceived);
 		lasttime = now;
 	}
