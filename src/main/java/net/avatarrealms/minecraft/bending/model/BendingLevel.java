@@ -16,7 +16,7 @@ public class BendingLevel {
 	private Integer level = 1;
 	private Integer experience = 0;
 	private long lasttime;
-	private long firstTimeDegression;
+	//private long firstTimeDegression;
 	private int currentXPToReceive;
 
 	public BendingLevel(BendingType type, BendingPlayer player) {
@@ -24,8 +24,9 @@ public class BendingLevel {
 		this.bendingType = type;
 		this.level = 1;
 		this.experience = 0;
+		
 		this.lasttime = 0;
-		this.firstTimeDegression = 0;
+		//this.firstTimeDegression = 0;
 		this.currentXPToReceive = defaultExperience;
 	}
 
@@ -139,16 +140,22 @@ public class BendingLevel {
 	public void earnXP() {
 		Random rand = new Random();
 		Integer xpReceived = 0;
-
-		if (bendingType == BendingType.Fire) {
-			xpReceived = 2 + (int) (level / (rand.nextInt(8) + 1));
-		} else if (bendingType == BendingType.Air) {
-			xpReceived = 1 + (int) (level / (rand.nextInt(8) + 1));
-		} else if (bendingType == BendingType.ChiBlocker) {
-			xpReceived = 8 + (int) (level / (rand.nextInt(8) + 1));
-		} else {
-			xpReceived = 5 + (int) (level / (rand.nextInt(8) + 1));
+		long now = System.currentTimeMillis();
+		if (lasttime - now >= 120000) { // 2 minutes
+			currentXPToReceive = defaultExperience;
 		}
+		else {
+			if (lasttime - now < 300) {
+				if (lasttime - now < 100) {
+					currentXPToReceive *= (1 - 2 * loseExperienceOnSpam);
+				}
+				else {
+					currentXPToReceive *=(1 - loseExperienceOnSpam);
+				}		
+			}
+		}
+
+		xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
 		giveXP(xpReceived);
 	}
 
@@ -156,7 +163,7 @@ public class BendingLevel {
 		experience = (int) d;
 	}
 
-	public Integer getXP() {
+	public int getXP() {
 		return experience;
 	}
 
