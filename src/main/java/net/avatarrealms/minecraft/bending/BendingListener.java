@@ -803,7 +803,7 @@ public class BendingListener implements Listener {
 						toblock));
 			}
 			if (!event.isCancelled()) {
-				if (Illumination.blocks.containsKey(toblock))
+				if (Illumination.isIlluminated(toblock))
 					toblock.setType(Material.AIR);
 			}
 		}
@@ -815,7 +815,7 @@ public class BendingListener implements Listener {
 		if (block.getType() == Material.FIRE) {
 			return;
 		}
-		event.setCancelled(Illumination.blocks.containsKey(block));
+		event.setCancelled(Illumination.isIlluminated(block));
 		if (!event.isCancelled()) {
 			event.setCancelled(!WaterManipulation.canPhysicsChange(block));
 		}
@@ -838,7 +838,7 @@ public class BendingListener implements Listener {
 		Block block = event.getBlock();
 		event.setCancelled(!WaterManipulation.canPhysicsChange(block));
 		if (!event.isCancelled())
-			event.setCancelled(Illumination.blocks.containsKey(block));
+			event.setCancelled(Illumination.isIlluminated(block));
 		if (!event.isCancelled())
 			event.setCancelled(BlockTools.tempnophysics.contains(block));
 	}
@@ -872,7 +872,7 @@ public class BendingListener implements Listener {
 		} else if (WaterWall.isWaterWallPart(block)) {
 			WaterWall.thaw(block);
 			event.setCancelled(true);
-		} else if (Illumination.blocks.containsKey(block)) {
+		} else if (Illumination.isIlluminated(block)) {
 			event.setCancelled(true);
 		} else if (!Wave.canThaw(block)) {
 			Wave.thaw(block);

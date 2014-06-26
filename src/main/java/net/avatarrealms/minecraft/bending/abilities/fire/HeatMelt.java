@@ -5,15 +5,12 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class HeatMelt {
-
 	private static final int range = ConfigManager.heatMeltRange;
 	private static final int radius = ConfigManager.heatMeltRadius;
 

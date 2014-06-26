@@ -1,25 +1,26 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 public class Illumination {
-
-	public static ConcurrentHashMap<Player, Illumination> instances = new ConcurrentHashMap<Player, Illumination>();
-	public static ConcurrentHashMap<Block, Player> blocks = new ConcurrentHashMap<Block, Player>();
+	private static Map<Player, Illumination> instances = new HashMap<Player, Illumination>();
+	private static Map<Block, Player> blocks = new HashMap<Block, Player>();
 
 	private static final int range = ConfigManager.illuminationRange;
 
@@ -89,32 +90,45 @@ public class Illumination {
 		instances.get(player).revert();
 	}
 
-	public static void manage(Server server) {
-		for (Player player : server.getOnlinePlayers()) {
+	public static void progressAll() {
+		List<Illumination> toRemove = new LinkedList<Illumination>();
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 			if (instances.containsKey(player)
 					&& (!EntityTools.hasAbility(player, Abilities.Illumination) || !EntityTools
 							.canBend(player, Abilities.Illumination))) {
 				instances.get(player).revert();
-				instances.remove(player);
+				toRemove.add(instances.get(player));
 			} else if (instances.containsKey(player)) {
 				instances.get(player).set();
 			}
 		}
-
-		for (Player player : instances.keySet()) {
+		for(Illumination illumination : toRemove) {
+			illumination.remove();
+		}
+		
+		toRemove.clear();
+		for (Entry<Player, Illumination> entry : instances.entrySet()) {
+			Player player = entry.getKey();
+			Illumination illumination = entry.getValue();
 			if (!player.isOnline() || player.isDead()) {
-				instances.get(player).revert();
-				instances.remove(player);
+				illumination.revert();
+				toRemove.add(illumination);
 			}
+		}
+		for(Illumination illumination : toRemove) {
+			illumination.remove();
 		}
 	}
 
-	public static void removeAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).revert();
-			instances.remove(player);
-		}
+	private void remove() {
+		instances.remove(player);
+	}
 
+	public static void removeAll() {
+		for (Illumination illumination : instances.values()) {
+			illumination.revert();
+		}
+		instances.clear();
 	}
 
 	public static String getDescription() {
@@ -123,6 +137,10 @@ public class Illumination {
 				+ "ignitable and can hold a torch (e.g. not leaves or ice). If you get too far away from the torch, "
 				+ "it will disappear, but will reappear when you get on another ignitable block. Clicking again "
 				+ "dismisses this torch.";
+	}
+
+	public static boolean isIlluminated(Block block) {
+		return blocks.containsKey(block);
 	}
 
 }

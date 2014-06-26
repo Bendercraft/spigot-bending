@@ -201,7 +201,7 @@ public class BendingManager implements Runnable {
 
 		Cook.progressAll();
 
-		Illumination.manage(plugin.getServer());
+		Illumination.progressAll();
 
 		Enflamed.handleFlames();
 

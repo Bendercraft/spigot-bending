@@ -299,7 +299,7 @@ public class AirSwipe {
 
 	private boolean isBlockBreakable(Block block) {
 		if (breakables.contains(block.getType())
-				&& !Illumination.blocks.containsKey(block)) {
+				&& !Illumination.isIlluminated(block)) {
 			return true;
 		}
 		return false;
