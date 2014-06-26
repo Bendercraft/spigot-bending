@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class FireJet {
-	public static Map<Player, FireJet> instances = new HashMap<Player, FireJet>();
+	private static Map<Player, FireJet> instances = new HashMap<Player, FireJet>();
 	private static final double defaultfactor = ConfigManager.fireJetSpeed;
 	private static final long defaultduration = ConfigManager.fireJetDuration;
 
@@ -121,6 +121,10 @@ public class FireJet {
 				+ "controlled flight for a short time. This ability can be used mid-air to prevent falling "
 				+ "to your death, but on the ground it can only be used if standing on a block that's "
 				+ "ignitable (e.g. not snow or water).";
+	}
+
+	public static void removeAll() {
+		instances.clear();
 	}
 
 }

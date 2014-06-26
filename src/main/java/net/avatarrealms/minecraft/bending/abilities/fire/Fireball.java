@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
 
 public class Fireball {
 
-	public static Map<Integer, Fireball> instances = new HashMap<Integer, Fireball>();
+	private static Map<Integer, Fireball> instances = new HashMap<Integer, Fireball>();
 	//TODO : this variable seems to be never cleared of any of its content, strange
 	private static Map<Entity, Fireball> explosions = new HashMap<Entity, Fireball>();
 

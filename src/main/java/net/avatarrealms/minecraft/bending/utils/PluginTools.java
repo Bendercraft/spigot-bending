@@ -220,7 +220,7 @@ public class PluginTools {
 		FireShield.removeAll();
 		FireBlast.removeAll();
 		FireBurst.removeAll();
-		FireJet.instances.clear();
+		FireJet.removeAll();
 		Cook.removeAll();
 		Illumination.removeAll();
 

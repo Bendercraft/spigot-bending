@@ -20,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class FireShield {
-
 	private static ConcurrentHashMap<Player, FireShield> instances = new ConcurrentHashMap<Player, FireShield>();
 
 	private static long interval = 100;
