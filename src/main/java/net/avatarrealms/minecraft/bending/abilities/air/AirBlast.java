@@ -91,6 +91,7 @@ public class AirBlast implements IAbility {
 		instances.put(id, this);
 		cptEntitiesHit = 0;
 		bPlayer.cooldown(Abilities.AirBlast);
+		bPlayer.earnXP(BendingType.Air, this);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
@@ -251,19 +252,15 @@ public class AirBlast implements IAbility {
 
 	public static void progressAll() {
 		List<AirBlast> toRemove = new LinkedList<AirBlast>();
-		for (AirBlast blast : instances.values()) {
+		for(AirBlast blast : instances.values()) {
 			if (!blast.progress()) {
 				toRemove.add(blast);
-				if (blast.cptEntitiesHit >=1 && blast.parent == null) {
-					BendingPlayer.getBendingPlayer(blast.player).earnXP(BendingType.Air,blast);
-				}
 			}
 		}
 		
-		for(AirBlast blastTR : toRemove) {
-			instances.remove(blastTR);
+		for(AirBlast blast : toRemove) {
+			instances.remove(blast);
 		}
-		toRemove.clear();
 			
 		for (Player player : origins.keySet()) {
 			playOriginEffect(player);
