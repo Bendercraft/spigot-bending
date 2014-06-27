@@ -208,7 +208,7 @@ public class ConfigManager {
 	public static double earthTunnelRadius = 0.25;
 	public static long earthTunnelInterval = 30;
 	public static boolean earthTunnelRevert = true;
-	public static int earthTunnelLevelRequired = 51;
+	public static int earthTunnelLevelRequired = 1;
 
 	// EarthWall
 	public static int earthWallRange = 15;
