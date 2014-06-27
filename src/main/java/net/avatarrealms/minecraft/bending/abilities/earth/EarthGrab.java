@@ -96,8 +96,8 @@ public class EarthGrab implements IAbility {
 						cpt++;
 						columns.add(new EarthColumn(player, cLoc[i],1, this, this));
 					}
-					else if (cLoc[0].getBlock().getType() == Material.AIR){
-						cLoc[0] = location.add(0,-1,0);
+					else if (cLoc[i].getBlock().getType() == Material.AIR){
+						cLoc[i] = location.add(0,-1,0);
 						if (BlockTools.isEarthbendable(player,cLoc[i].getBlock())) {
 							cpt++;
 							columns.add(new EarthColumn(player, cLoc[i], 2, this, this));
