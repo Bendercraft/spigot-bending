@@ -262,12 +262,6 @@ public class Wave implements IAbility {
 								FireBlast.removeFireBlastsAroundPoint(
 										block.getLocation(), 2);
 							}
-							// if (!blocks.contains(block)
-							// && (Tools.isPlant(block) && block.getType() !=
-							// Material.LEAVES)) {
-							// blocks.add(block);
-							// block.breakNaturally();
-							// }
 						}
 					}
 				}
@@ -290,10 +284,12 @@ public class Wave implements IAbility {
 					return false;
 				}
 
+				int cpt = 0;
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 						2 * radius)) {
 
 					boolean knockback = false;
+					cpt++;
 					List<Block> temp = new LinkedList<Block>(wave.keySet());
 					for (Block block : temp) {
 						if (entity.getLocation().distance(block.getLocation()) <= 2) {
@@ -304,7 +300,6 @@ public class Wave implements IAbility {
 								activatefreeze = true;
 								frozenlocation = entity.getLocation();
 								freeze();
-								BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,this);
 								break;
 							}
 							if (entity.getEntityId() != player.getEntityId()
@@ -327,7 +322,9 @@ public class Wave implements IAbility {
 									Effect.EXTINGUISH, 0);
 						entity.setFireTicks(0);
 					}
-
+				}
+				if (cpt >= 1) {
+					BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,this);
 				}
 
 				if (!progressing) {
