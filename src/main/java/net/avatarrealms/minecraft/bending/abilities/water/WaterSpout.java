@@ -18,12 +18,13 @@ import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class WaterSpout {
+	//TODO Put this variable into configmanager and config file
+	public static int SPEED = 3;
 	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
 	private static List<Block> affectedblocks = new LinkedList<Block>();
 	private static List<Block> newaffectedblocks = new LinkedList<Block>();
@@ -105,7 +106,7 @@ public class WaterSpout {
 		// + affectedblocks.size());
 		if (height != -1) {
 			location = base.getLocation();
-			for (int i = 1, cardinalPoint = (int)(currentCardinalPoint/10); i <= height; i++, cardinalPoint++) {
+			for (int i = 1, cardinalPoint = (int)(currentCardinalPoint/SPEED); i <= height; i++, cardinalPoint++) {
 				if (cardinalPoint == 8) {cardinalPoint = 0;}
 				
 				block = location.clone().add(0, i, 0).getBlock();
@@ -128,10 +129,7 @@ public class WaterSpout {
 					case 7 : block = location.clone().add(1, i, -1).getBlock(); break;
 					default: break;
 				}
-				currentCardinalPoint ++;
-				if (currentCardinalPoint == 10*8) {
-					currentCardinalPoint = 0;
-				}
+				
 				if (!TempBlock.isTempBlock(block)) {
 					new TempBlock(block, Material.WATER, full);
 				}
@@ -139,6 +137,10 @@ public class WaterSpout {
 					affectedblocks.add(block);
 				}
 				newaffectedblocks.add(block);	
+			}
+			currentCardinalPoint ++;
+			if (currentCardinalPoint == SPEED*8) {
+				currentCardinalPoint = 0;
 			}
 			if (player.getLocation().getBlockY() > block.getY()) {
 				player.setFlying(false);
