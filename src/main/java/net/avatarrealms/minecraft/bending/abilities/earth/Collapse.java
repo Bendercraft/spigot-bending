@@ -1,9 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,16 +14,15 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 
 public class Collapse {
-
 	private static final int range = ConfigManager.collapseRange;
 	private static final double defaultradius = ConfigManager.collapseRadius;
 	private static final int height = EarthColumn.standardheight;
 
-	private ConcurrentHashMap<Block, Block> blocks = new ConcurrentHashMap<Block, Block>();
-	private ConcurrentHashMap<Block, Integer> baseblocks = new ConcurrentHashMap<Block, Integer>();
+	//TODO : This map is never cleared of any of its item, strange
+	private Map<Block, Block> blocks = new HashMap<Block, Block>();
+	private Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 	private double radius = defaultradius;
 
 	private Player player;
