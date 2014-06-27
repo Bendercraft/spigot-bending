@@ -136,10 +136,7 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageEarthbending() {
-
-		for (int ID : Catapult.instances.keySet()) {
-			Catapult.progress(ID);
-		}
+		Catapult.progressAll();
 
 		for (int ID : EarthColumn.instances.keySet()) {
 			EarthColumn.progress(ID);

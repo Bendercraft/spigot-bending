@@ -1,9 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -18,8 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class Catapult {
-
-	public static ConcurrentHashMap<Integer, Catapult> instances = new ConcurrentHashMap<Integer, Catapult>();
+	public static Map<Integer, Catapult> instances = new HashMap<Integer, Catapult>();
 
 	private static int length = ConfigManager.catapultLength;
 	private static double speed = ConfigManager.catapultSpeed;
@@ -98,7 +97,6 @@ public class Catapult {
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			remove();
 			return false;
 		}
 
@@ -111,41 +109,39 @@ public class Catapult {
 		}
 
 		if (flying)
-			fly();
+			return fly();
 
 		if (!flying && !moving && System.currentTimeMillis() > starttime + 1000)
-			remove();
+			return false;
 		return true;
 	}
 
-	private void fly() {
+	private boolean fly() {
 		if (player.isDead() || !player.isOnline()) {
-			remove();
-			return;
+			return false;
 		}
 
 		// Tools.verbose(player.getLocation().distance(location));
 		if (player.getWorld() != location.getWorld()) {
-			remove();
-			return;
+			return false;
 		}
 
 		if (player.getLocation().distance(location) < 3) {
 			if (!moving && System.currentTimeMillis() > starttime + 1000)
 				flying = false;
-			return;
+			return true;
 		}
 
 		for (Block block : BlockTools.getBlocksAroundPoint(player.getLocation(), 1.5)) {
 			if ((BlockTools.isSolid(block) || block.isLiquid())) {
 				flying = false;
-				return;
+				return true;
 			}
 		}
 		Vector vector = direction.clone().multiply(push * distance / length);
 		vector.setY(player.getVelocity().getY());
 		player.setVelocity(vector);
-		// Tools.verbose("Fly!");
+		return true;
 	}
 
 	private void remove() {
@@ -200,14 +196,24 @@ public class Catapult {
 		return true;
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void progressAll() {
+		List<Catapult> toRemove = new LinkedList<Catapult>();
+		
+		for(Catapult catapult : instances.values()) {
+			boolean keep = catapult.progress();
+			if(!keep) {
+				toRemove.add(catapult);
+			}
+		}
+		for(Catapult catapult : toRemove) {
+			catapult.remove();
+		}
 	}
 
 	public static List<Player> getPlayers() {
-		List<Player> players = new ArrayList<Player>();
-		for (int id : instances.keySet()) {
-			Player player = instances.get(id).player;
+		List<Player> players = new LinkedList<Player>();
+		for (Catapult catapult : instances.values()) {
+			Player player = catapult.player;
 			if (!players.contains(player))
 				players.add(player);
 		}
@@ -215,9 +221,7 @@ public class Catapult {
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			instances.remove(id);
-		}
+		instances.clear();
 	}
 
 	public static String getDescription() {
