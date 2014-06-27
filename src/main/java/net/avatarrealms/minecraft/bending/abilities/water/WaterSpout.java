@@ -1,10 +1,11 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -26,12 +27,8 @@ public class WaterSpout {
 	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
 	private static List<Block> affectedblocks = new LinkedList<Block>();
 	private static List<Block> newaffectedblocks = new LinkedList<Block>();
-	private static List<Block> baseblocks = new LinkedList<Block>();
-
 	private static final int defaultheight = ConfigManager.waterSpoutHeight;
 
-	// private static final double threshold = .05;
-	// private static final byte half = 0x4;
 	private static final byte full = 0x0;
 	private int currentCardinalPoint = 0;
 	private Player player;
@@ -52,7 +49,7 @@ public class WaterSpout {
 		new Flight(player);
 		player.setAllowFlight(true);
 		instances.put(player, this);
-		spout(player);
+		spout();
 	}
 
 	private void remove() {
@@ -60,41 +57,42 @@ public class WaterSpout {
 		instances.remove(player);
 	}
 
-	public static void handleSpouts(Server server) {
-		// affectedblocks.clear();
+	public static void progressAll() {
 		newaffectedblocks.clear();
 
-		for (Player player : instances.keySet()) {
+		List<WaterSpout> toRemoveSpout = new LinkedList<WaterSpout>();
+		for (Entry<Player, WaterSpout> entry : instances.entrySet()) {
+			Player player = entry.getKey();
+			WaterSpout spout = entry.getValue();
 			if (!player.isOnline() || player.isDead()) {
-				instances.get(player).remove();
+				toRemoveSpout.add(spout);
 			} else if (EntityTools.hasAbility(player, Abilities.WaterSpout)
 					&& EntityTools.canBend(player, Abilities.WaterSpout)) {
-				spout(player);
+				boolean keep = spout.spout();
+				if(!keep) {
+					toRemoveSpout.add(spout);
+				}
 			} else {
-				instances.get(player).remove();
+				toRemoveSpout.add(spout);
 			}
 		}
+		for (WaterSpout spout : toRemoveSpout) {
+			spout.remove();
+		}
 
-		List<Block> toRemove = new LinkedList<Block>();
+		List<Block> toRemoveBlock = new LinkedList<Block>();
 		for(Block block : affectedblocks) {
 			if (!newaffectedblocks.contains(block)) {
-				toRemove.add(block);
+				toRemoveBlock.add(block);
 			}
 		}
-		for (Block block : toRemove) {
-			remove(block);
+		for (Block block : toRemoveBlock) {
+			affectedblocks.remove(block);
+			TempBlock.revertBlock(block, Material.AIR);
 		}
 	}
 
-	private static void remove(Block block) {
-		affectedblocks.remove(block);
-		TempBlock.revertBlock(block, Material.AIR);
-		// block.setType(Material.AIR);
-		// block.setData(half);
-	}
-
-	public static void spout(Player player) {
-		WaterSpout spout = instances.get(player);
+	private boolean spout() {
 		player.setFallDistance(0);
 		player.setSprinting(false);
 
@@ -106,8 +104,8 @@ public class WaterSpout {
 		// Tools.verbose(height + " " + WaterSpout.height + " "
 		// + affectedblocks.size());
 		if (height != -1) {
-			location = spout.base.getLocation();
-			for (int i = 1, cardinalPoint = (int)(spout.currentCardinalPoint/10); i <= height; i++, cardinalPoint++) {
+			location = base.getLocation();
+			for (int i = 1, cardinalPoint = (int)(currentCardinalPoint/10); i <= height; i++, cardinalPoint++) {
 				if (cardinalPoint == 8) {cardinalPoint = 0;}
 				
 				block = location.clone().add(0, i, 0).getBlock();
@@ -120,18 +118,19 @@ public class WaterSpout {
 				newaffectedblocks.add(block);
 				
 				switch (cardinalPoint) {
-				case 0 : block = location.clone().add(0, i, -1).getBlock(); break;
-				case 1 : block = location.clone().add(-1, i, -1).getBlock(); break;
-				case 2 : block = location.clone().add(-1, i, 0).getBlock(); break;
-				case 3 : block = location.clone().add(-1, i, 1).getBlock(); break;
-				case 4 : block = location.clone().add(0, i, 1).getBlock(); break;
-				case 5 : block = location.clone().add(1, i, 1).getBlock(); break;
-				case 6 : block = location.clone().add(1, i, 0).getBlock(); break;
-				case 7 : block = location.clone().add(1, i, -1).getBlock(); break;
+					case 0 : block = location.clone().add(0, i, -1).getBlock(); break;
+					case 1 : block = location.clone().add(-1, i, -1).getBlock(); break;
+					case 2 : block = location.clone().add(-1, i, 0).getBlock(); break;
+					case 3 : block = location.clone().add(-1, i, 1).getBlock(); break;
+					case 4 : block = location.clone().add(0, i, 1).getBlock(); break;
+					case 5 : block = location.clone().add(1, i, 1).getBlock(); break;
+					case 6 : block = location.clone().add(1, i, 0).getBlock(); break;
+					case 7 : block = location.clone().add(1, i, -1).getBlock(); break;
+					default: break;
 				}
-				spout.currentCardinalPoint ++;
-				if (spout.currentCardinalPoint == 10*8) {
-					spout.currentCardinalPoint = 0;
+				currentCardinalPoint ++;
+				if (currentCardinalPoint == 10*8) {
+					currentCardinalPoint = 0;
 				}
 				if (!TempBlock.isTempBlock(block)) {
 					new TempBlock(block, Material.WATER, full);
@@ -149,8 +148,9 @@ public class WaterSpout {
 				player.setFlying(true);
 			}
 		} else {
-			instances.get(player).remove();
+			return false;
 		}
+		return true;
 	}
 
 	private static int spoutableWaterHeight(Location location, Player player) {
@@ -211,21 +211,15 @@ public class WaterSpout {
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).remove();
-		}
+		instances.clear();
 		for (Block block : affectedblocks) {
-			// block.setType(Material.AIR);
 			TempBlock.revertBlock(block, Material.AIR);
 		}
 		affectedblocks.clear();
 	}
 
-	public static ArrayList<Player> getPlayers() {
-		ArrayList<Player> players = new ArrayList<Player>();
-		for (Player player : instances.keySet())
-			players.add(player);
-		return players;
+	public static List<Player> getPlayers() {
+		return new LinkedList<Player>(instances.keySet());
 	}
 
 	public static void removeSpouts(Location loc0, double radius,
