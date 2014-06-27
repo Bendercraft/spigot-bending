@@ -42,6 +42,7 @@ public class AirSuction implements IAbility {
 	private static double affectingradius = ConfigManager.airSuctionRadius;
 	private static double pushfactor = ConfigManager.airSuctionPush;
 	private static double originselectrange = 10;
+	int cptEntitiesHit = 0;
 	// private static long interval = AirBlast.interval;
 
 	private Location location;
@@ -89,6 +90,7 @@ public class AirSuction implements IAbility {
 		id = ID;
 		instances.put(id, this);
 		bPlayer.cooldown(Abilities.AirSuction);
+		cptEntitiesHit = 0;
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
@@ -143,7 +145,6 @@ public class AirSuction implements IAbility {
 			return false;
 		}
 
-		int cpt = 0;
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 
@@ -151,9 +152,8 @@ public class AirSuction implements IAbility {
 				
 				if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-					cpt++;
+					cptEntitiesHit++;
 				}
-
 				Vector velocity = entity.getVelocity();
 				double max = maxspeed;
 				double factor = pushfactor;
@@ -199,10 +199,7 @@ public class AirSuction implements IAbility {
 				entity.setFireTicks(0);
 			}
 		}
-		if (cpt >= 1) {
-			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
-		}
-		
+
 		advanceLocation();
 
 		return true;
@@ -224,6 +221,9 @@ public class AirSuction implements IAbility {
 			boolean keep = suction.progress();
 			if(!keep) {
 				toRemove.add(suction);
+				if (suction.cptEntitiesHit >= 1) {
+						BendingPlayer.getBendingPlayer(suction.player).earnXP(BendingType.Air,suction);
+				}
 			}
 		}
 		
