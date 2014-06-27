@@ -506,8 +506,8 @@ public class BendingPlayer {
 		return newDamage;
 	}
 	
-	public void earnXP(BendingType type) {
-		bendings.get(type).earnXP();
+	public void earnXP(BendingType type, IAbility ability) {
+		bendings.get(type).earnXP(ability);
 	}
 	
 	public Integer getLevel (BendingType type) {

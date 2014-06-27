@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.Location;
@@ -15,7 +17,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class EarthColumn {
+public class EarthColumn implements IAbility {
 	private static Map<Integer, EarthColumn> instances = new HashMap<Integer, EarthColumn>();
 	public static final int standardheight = ConfigManager.earthColumnHeight;
 
@@ -40,8 +42,10 @@ public class EarthColumn {
 	private int height = standardheight;
 	private List<Block> affectedBlocks = new ArrayList<Block>();
 	private EarthGrab earthGrab = null;
+	private IAbility parent;
 
-	public EarthColumn(Player player) {
+	public EarthColumn(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.RaiseEarth))
@@ -77,7 +81,8 @@ public class EarthColumn {
 		}
 	}
 
-	public EarthColumn(Player player, Location origin) {
+	public EarthColumn(Player player, Location origin, IAbility parent) {
+		this.parent = parent;
 		this.origin = origin;
 		location = origin.clone();
 		block = location.getBlock();
@@ -100,7 +105,8 @@ public class EarthColumn {
 		}
 	}
 
-	public EarthColumn(Player player, Location origin, int height) {
+	public EarthColumn(Player player, Location origin, int height, IAbility parent) {
+		this.parent = parent;
 		this.height = height;
 		this.origin = origin;
 		location = origin.clone();
@@ -124,8 +130,8 @@ public class EarthColumn {
 		}
 	}
 	
-	public EarthColumn(Player player, Location origin, EarthGrab grab) {
-		this(player,origin,1);
+	public EarthColumn(Player player, Location origin, EarthGrab grab, IAbility parent) {
+		this(player,origin,1, parent);
 		this.earthGrab = grab;
 	}
 	
@@ -262,6 +268,16 @@ public class EarthColumn {
 	
 	public  List<Block> getAffectedBlocks() {
 		return affectedBlocks;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 3;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -22,9 +23,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class AirScooter {
-
-	public static Map<Player, AirScooter> instances = new HashMap<Player, AirScooter>();
+public class AirScooter implements IAbility {
+	private static Map<Player, AirScooter> instances = new HashMap<Player, AirScooter>();
 
 	private static final double speed = ConfigManager.airScooterSpeed;
 	private static final long interval = 100;
@@ -34,8 +34,10 @@ public class AirScooter {
 	private Block floorblock;
 	private long time;
 	private ArrayList<Double> angles = new ArrayList<Double>();
+	private IAbility parent;
 
-	public AirScooter(Player player) {
+	public AirScooter(Player player, IAbility parent) {
+		this.parent = parent;
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
 				Abilities.AirScooter))
 			return;
@@ -181,5 +183,15 @@ public class AirScooter {
 			players.add(player);
 		}
 		return players;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

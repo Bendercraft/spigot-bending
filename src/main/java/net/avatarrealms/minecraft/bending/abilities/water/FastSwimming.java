@@ -5,13 +5,15 @@ import java.util.Arrays;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
-public class FastSwimming {
+public class FastSwimming implements IPassiveAbility {
 
 	private static double factor = ConfigManager.fastSwimmingFactor;
 

@@ -6,9 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -23,7 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class Bloodbending {
+public class Bloodbending implements IAbility {
 
 	private static Map<Player, Bloodbending> instances = new HashMap<Player, Bloodbending>();
 
@@ -33,8 +35,10 @@ public class Bloodbending {
 
 	private Player player;
 	private int range = ConfigManager.bloodbendingRange;
+	private IAbility parent;
 
-	public Bloodbending(Player player) {
+	public Bloodbending(Player player, IAbility parent) {
+		this.parent = parent;
 		if (instances.containsKey(player)) {
 			instances.get(player).remove();
 			return;
@@ -243,6 +247,16 @@ public class Bloodbending {
 	
 	public Map<Entity, Location> getTargetEntities() {
 		return targetEntities;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 10;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

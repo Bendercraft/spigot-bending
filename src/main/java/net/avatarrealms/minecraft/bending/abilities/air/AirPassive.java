@@ -2,15 +2,17 @@ package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class AirPassive {
+public class AirPassive implements IPassiveAbility {
 
 	private static Map<Player, Float> foodlevels = new HashMap<Player, Float>();
 	private static float factor = ConfigManager.airPassiveFactor;
@@ -41,5 +43,4 @@ public class AirPassive {
 			}
 		}
 	}
-
 }

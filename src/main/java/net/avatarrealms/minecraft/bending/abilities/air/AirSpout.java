@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -19,7 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-public class AirSpout {
+public class AirSpout implements IAbility {
 
 	private static Map<Player, AirSpout> instances = new HashMap<Player, AirSpout>();
 
@@ -29,8 +30,10 @@ public class AirSpout {
 	private Player player;
 	private long time;
 	private int angle = 0;
+	private IAbility parent;
 
-	public AirSpout(Player player) {
+	public AirSpout(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.AirSpout))
@@ -194,6 +197,16 @@ public class AirSpout {
 				+ "toggle - click to activate and form a whirling spout of air "
 				+ "beneath you, lifting you up. You can bend other abilities while using AirSpout. "
 				+ "Click again to deactivate this ability.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

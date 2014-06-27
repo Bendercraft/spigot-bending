@@ -1,21 +1,20 @@
 package net.avatarrealms.minecraft.bending.model;
 
-import java.util.Random;
-
 import org.bukkit.Bukkit;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 
+// http://rechneronline.de/function-graphs/
 public class BendingLevel {
-	private static int defaultExperience = 5;
-
+	// 120 seconds, but SPAM_THRESHOLD is in milliseconds
+	public static int SPAM_THRESHOLD = 120 * 1000;
+	
 	private BendingPlayer bPlayer;
 	private BendingType bendingType;
 	private Integer level = 1;
 	private Integer experience = 0;
-	private long lasttime;
+	private long lastTime;
 	private int spamHistory = 0;
-	//private long firstTimeDegression;
 
 	public BendingLevel(BendingType type, BendingPlayer player) {
 		this.bPlayer = player;
@@ -23,8 +22,7 @@ public class BendingLevel {
 		this.level = 1;
 		this.experience = 0;
 		
-		this.lasttime = 0;
-		//this.firstTimeDegression = 0;
+		this.lastTime = 0;
 	}
 
 	public Integer getLevel() {
@@ -54,7 +52,8 @@ public class BendingLevel {
 	}
 
 	public Integer getExperienceNeeded() {
-		double xp;
+		//((8*x)+6)*(5*x+45)
+		double xp = 0;
 		Integer xpArr = (int) 0;
 		xp = (8*level);
 		if (level >= 32) {
@@ -109,7 +108,6 @@ public class BendingLevel {
 	}
 
 	public void giveXP(Integer xpAmount) {
-		Bukkit.getLogger().info("Got XP : "+xpAmount);
 		if (level < ConfigManager.maxlevel) {
 			experience += xpAmount;
 			while (experience >= getExperienceNeeded()) {
@@ -118,52 +116,84 @@ public class BendingLevel {
 					String str = "Level up : ";
 					level++;
 					str += level;
-					
 					switch (bendingType) {
-					case Air : str += " (Air)"; break;
-					case Earth : str += " (Terre)"; break;
-					case ChiBlocker : str += " (ChiBlocker)"; break;
-					case Fire : str += " (Feu)"; break;
-					case Water : str += " (Eau)";break;
-					default : break;
+						case Air : 
+							str += " (Air)";
+							break;
+						case Earth : 
+							str += " (Terre)";
+							break;
+						case ChiBlocker : 
+							str += " (ChiBlocker)";
+							break;
+						case Fire : 
+							str += " (Feu)";
+							break;
+						case Water : 
+							str += " (Eau)";
+							break;
+						default :
+							break;
 					}
-	
 					bPlayer.getPlayer().sendMessage(str);
 				}
 
 			}
 		}
 	}
-
-	public void earnXP() {
-		Random rand = new Random();
-		Integer xpReceived = 0;
-		long now = System.currentTimeMillis();
-		//Base experience to receive
-		int currentXPToReceive = defaultExperience;
+	
+	private double degress(int x) {
+		// (e^(x*0.35) -1)/100
+		double result = 0;
 		
-		//Degression system, anti-spam
-		//if last bending was 10sec ago, reset spam history for this player
-		//TODO stop hardcoded 10sec
-		if (now - lasttime > 10000) {
-			spamHistory = 0;
+		result = (double) (Math.exp(x*0.35) - 1) / 100;
+		
+		if(result > 1) {
+			result = 1;
 		}
-		//Adjust received based upon spamHistory
-		//TODO stop hardcoded 10% factor or improve this formula
-		currentXPToReceive *= (1 - spamHistory * 0.1);
-		
-		if(currentXPToReceive > 0) {
-			//If player is strong enough, he receive more exp
-			if (level >= 10) {
-				xpReceived = currentXPToReceive * (rand.nextInt(level/10)+1);
-			} else {
-				xpReceived = currentXPToReceive;
+		return result;
+	}
+	
+	private double augment(int x) {
+		//(2*log(x +1)+1)
+		return 2 * Math.log(x+1) +1;
+	}
+	
+	public void earnXP(IAbility ability) {
+		if(ability.getParent() == null) {
+			long now = System.currentTimeMillis();
+			if (now - lastTime > SPAM_THRESHOLD) {
+				spamHistory = 0;
 			}
-			giveXP(xpReceived);
+			double degressFactor = this.degress(spamHistory);
+			double augmentFactor = this.augment(level);
+			//Progression could be resolved by 
+			//  [(getExperienceNeeded / augment) / baseXP] 
+			//    it will give number of ability to spam to get level (no degression assumed)
+			double finalXP = ability.getBaseExperience() * augmentFactor * (1-degressFactor);
+			
+			Bukkit.getLogger().info("Ability : "+ability.getClass().getSimpleName()+
+					" with no parent, got degress factor : "+degressFactor+
+					" and thus gave "+finalXP+
+					" over "+ability.getBaseExperience()+"*"+augmentFactor);
+			
+			if(finalXP > 0) {
+				giveXP((int) finalXP);
+			}
+			
+			lastTime = now;
+			spamHistory++;
+		} else {
+			StringBuilder builder = new StringBuilder();
+			builder.append("Got parent : ");
+			builder.append(ability.getClass().getSimpleName());
+			IAbility parent = ability.getParent();
+			while(parent.getParent() != null) {
+				builder.append(" -> ");
+				builder.append(parent.getClass().getSimpleName());
+			}
+			Bukkit.getLogger().info(builder.toString());
 		}
-		
-		lasttime = now;
-		spamHistory++;
 	}
 
 	public void setXP(double d) {

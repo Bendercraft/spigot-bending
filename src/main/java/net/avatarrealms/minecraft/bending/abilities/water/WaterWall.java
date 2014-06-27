@@ -6,11 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -24,7 +26,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class WaterWall {
+public class WaterWall implements IAbility {
 	private static Map<Integer, WaterWall> instances = new HashMap<Integer, WaterWall>();
 
 	private static final long interval = 30;
@@ -54,8 +56,10 @@ public class WaterWall {
 	private boolean frozen = false;
 	private long time;
 	private double radius = defaultradius;
+	private IAbility parent;
 
-	public WaterWall(Player player) {
+	public WaterWall(Player player, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -106,7 +110,7 @@ public class WaterWall {
 							eyeloc.getBlock())) {
 				block.setType(Material.WATER);
 				block.setData(full);
-				Wave wave = new Wave(player);
+				Wave wave = new Wave(player, this);
 				wave.canhitself = false;
 				wave.moveWater();
 				if (!wave.progressing) {
@@ -200,7 +204,7 @@ public class WaterWall {
 				targetdirection = getDirection(firstdestination,
 						targetdestination);
 				if (BlockTools.isPlant(sourceblock))
-					new Plantbending(sourceblock);
+					new Plantbending(sourceblock, this);
 				if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 					sourceblock.setType(Material.AIR);
 				}
@@ -464,7 +468,7 @@ public class WaterWall {
 								eyeloc.getBlock())) {
 					block.setType(Material.WATER);
 					block.setData(full);
-					WaterWall wall = new WaterWall(player);
+					WaterWall wall = new WaterWall(player, null);
 					wall.moveWater();
 					if (!wall.progressing) {
 						block.setType(Material.AIR);
@@ -476,13 +480,13 @@ public class WaterWall {
 				}
 			}
 
-			new Wave(player);
+			new Wave(player, null);
 			return;
 		} else {
 			if (BlockTools.isWaterbendable(
 					EntityTools.getTargetBlock(player, (int) Wave.defaultrange),
 					player)) {
-				new Wave(player);
+				new Wave(player, null);
 				return;
 			}
 		}
@@ -528,7 +532,7 @@ public class WaterWall {
 
 	private void returnWater() {
 		if (location != null) {
-			new WaterReturn(player, location.getBlock());
+			new WaterReturn(player, location.getBlock(), this);
 		}
 	}
 
@@ -555,6 +559,16 @@ public class WaterWall {
 	
 	public static boolean isWaterWallPart(Block block) {
 		return wallblocks.containsKey(block);
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 2;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

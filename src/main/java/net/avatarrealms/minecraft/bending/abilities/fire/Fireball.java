@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -26,7 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
 
-public class Fireball {
+public class Fireball implements IAbility {
 
 	private static Map<Integer, Fireball> instances = new HashMap<Integer, Fireball>();
 	//TODO : this variable seems to be never cleared of any of its content, strange
@@ -53,8 +54,10 @@ public class Fireball {
 	private boolean charged = false;
 	private boolean launched = false;
 	private TNTPrimed explosion = null;
+	private IAbility parent;
 
-	public Fireball(Player player) {
+	public Fireball(Player player, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		time = System.currentTimeMillis();
 		starttime = time;
@@ -87,7 +90,7 @@ public class Fireball {
 		}
 
 		if (!player.isSneaking() && !charged) {
-			new FireBlast(player);
+			new FireBlast(player, this);
 			return false;
 		}
 
@@ -172,7 +175,7 @@ public class Fireball {
 				if ((entity instanceof Player) ||(entity instanceof Monster)) {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 					if (bPlayer != null) {
-						bPlayer.earnXP(BendingType.Fire);
+						bPlayer.earnXP(BendingType.Fire, this);
 					}
 				}
 				return false;
@@ -301,5 +304,15 @@ public class Fireball {
 		}
 
 		return broke;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 9;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

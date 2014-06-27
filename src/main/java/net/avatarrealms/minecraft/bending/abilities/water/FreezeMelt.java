@@ -5,10 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -20,13 +22,15 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-public class FreezeMelt {
+public class FreezeMelt implements IAbility {
 	private static Map<Block, Byte> frozenblocks = new HashMap<Block, Byte>();
 
 	public static final int defaultrange = ConfigManager.freezeMeltRange;
 	public static final int defaultradius = ConfigManager.freezeMeltRadius;
+	private IAbility parent;
 
-	public FreezeMelt(Player player) {
+	public FreezeMelt(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.PhaseChange))
@@ -177,6 +181,16 @@ public class FreezeMelt {
 				+ "would otherwise by nature or some other bending ability. Additionally, if you tap sneak while "
 				+ "targetting water with FreezeMelt, it will evaporate water around that block that is above "
 				+ "sea level. ";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 1;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -18,7 +21,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Ripple {
+public class Ripple implements IAbility {
 	private static Map<Integer, Ripple> instances = new HashMap<Integer, Ripple>();
 	private static Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
 
@@ -38,12 +41,14 @@ public class Ripple {
 	private int id;
 	private int step = 0;
 	private int maxstep;
+	private IAbility parent;
 
-	public Ripple(Player player, Vector direction) {
-		this(player, getInitialLocation(player, direction), direction);
+	public Ripple(Player player, Vector direction, IAbility parent) {
+		this(player, getInitialLocation(player, direction), direction, parent);
 	}
 
-	public Ripple(Player player, Location origin, Vector direction) {
+	public Ripple(Player player, Location origin, Vector direction, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		if (origin == null)
 			return;
@@ -253,7 +258,7 @@ public class Ripple {
 					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
 						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 						if (bPlayer != null) {
-							bPlayer.earnXP(BendingType.Earth);
+							bPlayer.earnXP(BendingType.Earth, this);
 						}
 					}
 					
@@ -308,6 +313,16 @@ public class Ripple {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

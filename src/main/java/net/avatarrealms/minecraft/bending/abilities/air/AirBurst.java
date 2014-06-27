@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -16,7 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class AirBurst {
+public class AirBurst implements IAbility {
 
 	private static Map<Player, AirBurst> instances = new HashMap<Player, AirBurst>();
 
@@ -29,10 +31,12 @@ public class AirBurst {
 	private long starttime;
 	private long chargetime = 1750;
 	private boolean charged = false;
-
 	private List<Entity> affectedentities = new LinkedList<Entity>();
+	
+	private IAbility parent;
 
-	public AirBurst(Player player) {
+	public AirBurst(Player player, IAbility parent) {
+		this.parent = parent;
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
 				Abilities.AirBurst))
 			return;
@@ -46,8 +50,8 @@ public class AirBurst {
 		instances.put(player, this);
 	}
 
-	public AirBurst() {
-
+	private AirBurst() {
+		
 	}
 
 	public static void coneBurst(Player player) {
@@ -192,5 +196,15 @@ public class AirBurst {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 10;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -22,7 +24,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
-public class Lightning {
+public class Lightning implements IAbility {
 	private static Map<Player, Lightning> instances = new HashMap<Player, Lightning>();
 	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();
 	
@@ -40,8 +42,10 @@ public class Lightning {
 	private boolean charged = false;
 	private LightningStrike strike = null;
 	private List<Entity> hitentities = new LinkedList<Entity>();
+	private IAbility parent;
 
-	public Lightning(Player player) {
+	public Lightning(Player player, IAbility parent) {
+		this.parent = parent;
 		if (instances.containsKey(player)) {
 			return;
 		}
@@ -83,7 +87,7 @@ public class Lightning {
 				if (((target instanceof Player) ||(target instanceof Monster)) && (target.getEntityId() != player.getEntityId())) {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 					if (bPlayer != null) {
-						bPlayer.earnXP(BendingType.Fire);
+						bPlayer.earnXP(BendingType.Fire, this);
 					}
 				}
 			}
@@ -197,6 +201,16 @@ public class Lightning {
 	public static String getDescription() {
 		return "Hold sneak while selecting this ability to charge up a lightning strike. Once "
 				+ "charged, release sneak to discharge the lightning to the targetted location.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 12;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

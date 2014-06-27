@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -13,6 +14,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -29,7 +31,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class WaterManipulation {
+public class WaterManipulation implements IAbility {
 	private static Map<Integer, WaterManipulation> instances = new HashMap<Integer, WaterManipulation>();
 	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 	private static Map<Player, Integer> prepared = new HashMap<Player, Integer>();
@@ -67,8 +69,11 @@ public class WaterManipulation {
 	private long time;
 	private int damage = defaultdamage;
 	private int displrange;
+	
+	private IAbility parent;
 
-	public WaterManipulation(Player player) {
+	public WaterManipulation(Player player, IAbility parent) {
+		this.parent = parent;
 		if (water.isEmpty()) {
 			water.add((byte) 0);
 			water.add((byte) 8);
@@ -141,7 +146,7 @@ public class WaterManipulation {
 							targetdestination).normalize();
 
 					if (BlockTools.isPlant(sourceblock))
-						new Plantbending(sourceblock);
+						new Plantbending(sourceblock, this);
 					addWater(sourceblock);
 				}
 
@@ -222,7 +227,7 @@ public class WaterManipulation {
 			}
 
 			if (falling) {
-				new WaterReturn(player, sourceblock);
+				new WaterReturn(player, sourceblock, this);
 				return false;
 
 			} else {
@@ -269,7 +274,7 @@ public class WaterManipulation {
 									radius, source)
 							|| FireBlast.annihilateBlasts(location, radius,
 									source)) {
-						new WaterReturn(player, sourceblock);
+						new WaterReturn(player, sourceblock, this);
 						return false;
 					}
 
@@ -305,7 +310,7 @@ public class WaterManipulation {
 					BlockTools.breakBlock(block);
 				} else if (block.getType() != Material.AIR
 						&& !BlockTools.isWater(block)) {
-					new WaterReturn(player, sourceblock);
+					new WaterReturn(player, sourceblock, this);
 					return false;
 				}
 
@@ -332,7 +337,7 @@ public class WaterManipulation {
 							
 							if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){	
 								if (bPlayer != null) {
-									bPlayer.earnXP(BendingType.Water);
+									bPlayer.earnXP(BendingType.Water, this);
 								}
 							}
 						}
@@ -340,7 +345,7 @@ public class WaterManipulation {
 				}
 
 				if (!progressing) {
-					new WaterReturn(player, sourceblock);
+					new WaterReturn(player, sourceblock, this);
 					return false;
 				}
 
@@ -456,7 +461,7 @@ public class WaterManipulation {
 						block.setType(Material.WATER);
 						block.setData(full);
 						WaterManipulation watermanip = new WaterManipulation(
-								player);
+								player, null);
 						watermanip.moveWater();
 						if (!watermanip.progressing) {
 							block.setType(Material.AIR);
@@ -664,6 +669,16 @@ public class WaterManipulation {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 3;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

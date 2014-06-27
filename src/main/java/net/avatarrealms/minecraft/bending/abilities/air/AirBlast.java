@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -23,7 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 
-public class AirBlast {
+public class AirBlast implements IAbility {
 	private static Map<Integer, AirBlast> instances = new HashMap<Integer, AirBlast>();
 	private static Map<Player, Location> origins = new HashMap<Player, Location>();
 
@@ -51,8 +53,10 @@ public class AirBlast {
 	private int ticks = 0;
 
 	private List<Block> affectedlevers = new ArrayList<Block>();
+	private IAbility parent;
 
-	public AirBlast(Player player) {
+	public AirBlast(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.AirBlast))
@@ -90,6 +94,7 @@ public class AirBlast {
 
 	public AirBlast(Location location, Vector direction, Player player,
 			double factorpush, AirBurst burst) {
+		this.parent = burst;
 		if (location.getBlock().isLiquid()) {
 			return;
 		}
@@ -286,5 +291,15 @@ public class AirBlast {
 				+ " A gust of air can extinguish fires on the ground or on a player, can cool lava, and "
 				+ "can flip levers and activate buttons. Additionally, tapping sneak will change the "
 				+ "origin of your next AirBlast to your targeted location.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 5;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

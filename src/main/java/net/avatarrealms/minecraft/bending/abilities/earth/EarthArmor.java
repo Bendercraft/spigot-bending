@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -25,7 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class EarthArmor {
+public class EarthArmor implements IAbility {
 	private static Map<Player, EarthArmor> instances = new HashMap<Player, EarthArmor>();
 	
 	private static long duration = ConfigManager.earthArmorDuration;
@@ -42,10 +44,12 @@ public class EarthArmor {
 	private boolean formed = false;
 	private boolean complete = false;
 	public ItemStack[] oldarmor;
+	private IAbility parent;
 
 	private static long interval = 2000;
 
-	public EarthArmor(Player player) {
+	public EarthArmor(Player player, IAbility parent) {
+		this.parent = parent;
 		if (instances.containsKey(player)) {
 			return;
 		}
@@ -112,7 +116,7 @@ public class EarthArmor {
 					testloc = testloc.clone().add(0, -1, 0);
 					if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
 						if (!blocks.contains(testloc.getBlock())) {
-							new EarthColumn(player, testloc, height1 + y - 1);
+							new EarthColumn(player, testloc, height1 + y - 1, null);
 						}
 						blocks.add(testloc.getBlock());
 						break;
@@ -122,7 +126,7 @@ public class EarthArmor {
 					testloc2 = testloc2.clone().add(0, -1, 0);
 					if (BlockTools.isEarthbendable(player, testloc2.getBlock())) {
 						if (!blocks.contains(testloc2.getBlock())) {
-							new EarthColumn(player, testloc2, height2 + y - 1);
+							new EarthColumn(player, testloc2, height2 + y - 1, null);
 						}
 						blocks.add(testloc2.getBlock());
 						break;
@@ -330,5 +334,15 @@ public class EarthArmor {
 				return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 6;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

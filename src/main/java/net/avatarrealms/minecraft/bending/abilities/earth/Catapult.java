@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -17,7 +19,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Catapult {
+public class Catapult implements IAbility {
 	private static Map<Integer, Catapult> instances = new HashMap<Integer, Catapult>();
 
 	private static int length = ConfigManager.catapultLength;
@@ -38,9 +40,10 @@ public class Catapult {
 	private long time;
 	private long starttime;
 	private int ticks = 0;
+	private IAbility parent;
 
-	public Catapult(Player player) {
-
+	public Catapult(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Catapult))
@@ -82,7 +85,8 @@ public class Catapult {
 
 	}
 
-	public Catapult(Player player, Catapult source) {
+	public Catapult(Player player, Catapult source, IAbility parent) {
+		this.parent = parent;
 		flying = true;
 		this.player = player;
 		moving = false;
@@ -231,5 +235,15 @@ public class Catapult {
 				+ "Skillful use of this ability takes much time and work, and it does result in the "
 				+ "death of certain gung-ho earthbenders. If you plan to use this ability, be sure "
 				+ "you've read about your passive ability you innately have as an earthbender.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 6;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

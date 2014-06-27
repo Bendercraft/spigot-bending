@@ -4,6 +4,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -16,7 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-public class Melt {
+public class Melt implements IAbility {
 
 	private static final int defaultrange = FreezeMelt.defaultrange;
 	private static final int defaultradius = FreezeMelt.defaultradius;
@@ -24,8 +25,10 @@ public class Melt {
 	private static final int seaLevel = ConfigManager.seaLevel;
 
 	private static final byte full = 0x0;
+	private IAbility parent;
 
-	public Melt(Player player) {
+	public Melt(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.PhaseChange))
@@ -96,6 +99,16 @@ public class Melt {
 			block.setType(Material.AIR);
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1);
 		}
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

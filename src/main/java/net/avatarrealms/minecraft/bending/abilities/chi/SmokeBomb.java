@@ -7,6 +7,7 @@ import java.util.List;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -20,7 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class SmokeBomb {
+public class SmokeBomb implements IAbility {
 	public static int radius = ConfigManager.smokeRadius;
 	public static int duration = ConfigManager.smokeDuration;
 
@@ -35,8 +36,10 @@ public class SmokeBomb {
 	private Location origin;
 	private int ticksRemaining;
 	private List<Location> locs;
+	private IAbility parent;
 
-	public SmokeBomb(Player player) {
+	public SmokeBomb(Player player, IAbility parent) {
+		this.parent = parent;
 		this.bomber = player;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(bomber);
 
@@ -118,5 +121,15 @@ public class SmokeBomb {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 4;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

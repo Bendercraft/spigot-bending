@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -22,7 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
-public class WaterSpout {
+public class WaterSpout implements IAbility {
 	//TODO Put this variable into configmanager and config file
 	public static int SPEED = 3;
 	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
@@ -35,9 +36,10 @@ public class WaterSpout {
 	private Player player;
 	private Block base;
 	private TempBlock baseblock;
-	
+	private IAbility parent;
 
-	public WaterSpout(Player player) {
+	public WaterSpout(Player player, IAbility parent) {
+		this.parent = parent;
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
 				Abilities.WaterSpout))
 			return;
@@ -256,5 +258,15 @@ public class WaterSpout {
 				+ "This ability is a toggle, so you can activate it then use other abilities and it "
 				+ "will remain on. If you try to spout over an area with no water, snow or ice, "
 				+ "the spout will dissipate and you will fall. Click again with this ability selected to deactivate it.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

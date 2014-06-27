@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.model.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.Material;
@@ -13,7 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-public class EarthPassive {
+public class EarthPassive implements IPassiveAbility {
 	private static Map<Block, Long> sandblocks = new HashMap<Block, Long>();
 	private static Map<Block, Material> sandidentities = new HashMap<Block, Material>();
 	private static final long duration = ConfigManager.earthPassive;

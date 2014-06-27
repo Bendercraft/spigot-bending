@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -14,7 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class EarthTunnel {
+public class EarthTunnel implements IAbility {
 	private static Map<Player, EarthTunnel> instances = new HashMap<Player, EarthTunnel>();
 
 	private static final double maxradius = ConfigManager.earthTunnelMaxRadius;
@@ -31,8 +33,10 @@ public class EarthTunnel {
 	private Vector direction;
 	private double depth, radius, angle;
 	private long time;
+	private IAbility parent;
 
-	public EarthTunnel(Player player) {
+	public EarthTunnel(Player player, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		location = player.getEyeLocation().clone();
 		origin = EntityTools.getTargetBlock(player, range).getLocation();
@@ -128,6 +132,16 @@ public class EarthTunnel {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 8;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

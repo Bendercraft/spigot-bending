@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -25,7 +26,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Wave {
+public class Wave implements IAbility {
 	private static Map<Integer, Wave> instances = new HashMap<Integer, Wave>();
 
 	private static final long interval = 30;
@@ -61,8 +62,10 @@ public class Wave {
 	double range = defaultrange;
 	private double factor = defaultfactor;
 	boolean canhitself = true;
+	private IAbility parent;
 
-	public Wave(Player player) {
+	public Wave(Player player, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 
 		if (instances.containsKey(player.getEntityId())) {
@@ -150,7 +153,7 @@ public class Wave {
 				targetdestination = location.clone().add(
 						targetdirection.clone().multiply(range));
 				if (BlockTools.isPlant(sourceblock))
-					new Plantbending(sourceblock);
+					new Plantbending(sourceblock, this);
 				if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 					sourceblock.setType(Material.AIR);
 				}
@@ -496,9 +499,9 @@ public class Wave {
 		return true;
 	}
 
-	void returnWater() {
+	private void returnWater() {
 		if (location != null) {
-			new WaterReturn(player, location.getBlock());
+			new WaterReturn(player, location.getBlock(), this);
 		}
 	}
 	
@@ -520,6 +523,16 @@ public class Wave {
 				+ "If you look towards a creature when you use this ability, it will target that creature. "
 				+ "Additionally, tapping sneak while the wave is en route will cause that wave to encase the "
 				+ "first target it hits in ice.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 6;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

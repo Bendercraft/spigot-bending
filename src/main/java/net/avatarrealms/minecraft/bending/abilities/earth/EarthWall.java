@@ -5,6 +5,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -15,7 +16,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class EarthWall {
+public class EarthWall implements IAbility {
 
 	private static final int range = ConfigManager.earthWallRange;
 	private static final int defaultheight = ConfigManager.earthWallHeight;
@@ -23,8 +24,11 @@ public class EarthWall {
 
 	private int height = defaultheight;
 	private int halfwidth = defaulthalfwidth;
+	
+	private IAbility parent;
 
-	public EarthWall(Player player) {
+	public EarthWall(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.RaiseEarth))
@@ -65,7 +69,7 @@ public class EarthWall {
 					block = block.getRelative(BlockFace.DOWN);
 					if (BlockTools.isEarthbendable(player, block)) {
 						cooldown = true;
-						new EarthColumn(player, block.getLocation(), height);
+						new EarthColumn(player, block.getLocation(), height, this);
 						// } else if (block.getType() != Material.AIR
 						// && !block.isLiquid()) {
 					} else if (!BlockTools.isTransparentToEarthbending(player, block)) {
@@ -80,14 +84,14 @@ public class EarthWall {
 					if (BlockTools.isTransparentToEarthbending(player, block)) {
 						cooldown = true;
 						new EarthColumn(player, block.getRelative(
-								BlockFace.DOWN).getLocation(), height);
+								BlockFace.DOWN).getLocation(), height, this);
 					} else if (!BlockTools.isEarthbendable(player, block)) {
 						break;
 					}
 				}
 			} else if (BlockTools.isEarthbendable(player, block)) {
 				cooldown = true;
-				new EarthColumn(player, block.getLocation(), height);
+				new EarthColumn(player, block.getLocation(), height, this);
 			}
 		}
 
@@ -97,6 +101,16 @@ public class EarthWall {
 		if (cooldown)
 			bPlayer.cooldown(Abilities.RaiseEarth);
 
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 9;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.entity.Entity;
@@ -17,7 +18,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
-public class RapidPunch {
+public class RapidPunch implements IAbility {
 	private static int damage = ConfigManager.rapidPunchDamage;
 	private int distance = ConfigManager.rapidPunchDistance;
 	private static int punches = ConfigManager.rapidPunchPunches;
@@ -28,8 +29,10 @@ public class RapidPunch {
 	private Player player;
 	private Entity target;
 	public static List<Player> punching = new ArrayList<Player>();
+	private IAbility parent;
 
-	public RapidPunch(Player p) {// , Entity t) {
+	public RapidPunch(Player p, IAbility parent) {
+		this.parent = parent;
 		if (instances.containsKey(p))
 			return;
 
@@ -56,7 +59,7 @@ public class RapidPunch {
 		if (numpunches%2 == 0) {
 			if ((target instanceof Player) ||(target instanceof Monster)) {	
 				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.ChiBlocker);
+					bPlayer.earnXP(BendingType.ChiBlocker, this);
 				}
 			}
 		}
@@ -97,6 +100,16 @@ public class RapidPunch {
 	public static String getDescription() {
 		return "This ability allows the chiblocker to punch rapidly in a short period. To use, simply punch."
 				+ " This has a short cooldown.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 15;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

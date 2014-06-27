@@ -13,6 +13,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -24,7 +25,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class AirSuction {
+public class AirSuction implements IAbility {
 
 	private static Map<Integer, AirSuction> instances = new HashMap<Integer, AirSuction>();
 	private static Map<Player, Location> origins = new HashMap<Player, Location>();
@@ -50,10 +51,12 @@ public class AirSuction {
 	private boolean otherorigin = false;
 	private int id;
 	private int ticks = 0;
+	private IAbility parent;
 
 	private double speedfactor;
 
-	public AirSuction(Player player) {
+	public AirSuction(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.AirSuction))
@@ -74,22 +77,6 @@ public class AirSuction {
 		} else {
 			origin = player.getEyeLocation();
 		}
-		// if (origins.containsKey(player)) {
-		// origin = origins.get(player);
-		// otherorigin = true;
-		// location = Tools.getTargetedLocation(player, range);
-		// origins.remove(player);
-		// Entity entity = Tools.getTargettedEntity(player, range);
-		// if (entity != null) {
-		// direction = Tools.getDirection(entity.getLocation(), origin)
-		// .normalize();
-		// location = origin.clone().add(
-		// direction.clone().multiply(-range));
-		// } else {
-		// direction = Tools.getDirection(location, origin).normalize();
-		// }
-		//
-		// } else {
 		location = EntityTools.getTargetedLocation(player, range, BlockTools.nonOpaque);
 		direction = Tools.getDirection(location, origin).normalize();
 		Entity entity = EntityTools.getTargettedEntity(player, range);
@@ -97,10 +84,7 @@ public class AirSuction {
 			direction = Tools.getDirection(entity.getLocation(), origin)
 					.normalize();
 			location = getLocation(origin, direction.clone().multiply(-1));
-			// location =
-			// origin.clone().add(direction.clone().multiply(-range));
 		}
-		// }
 
 		id = ID;
 		instances.put(id, this);
@@ -108,8 +92,6 @@ public class AirSuction {
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
-		// time = System.currentTimeMillis();
-		// timers.put(player, System.currentTimeMillis());
 	}
 
 	private Location getLocation(Location origin, Vector direction) {
@@ -169,7 +151,7 @@ public class AirSuction {
 				if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 					if (bPlayer != null) {
-						bPlayer.earnXP(BendingType.Air);
+						bPlayer.earnXP(BendingType.Air, this);
 					}
 				}
 
@@ -291,6 +273,16 @@ public class AirSuction {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 5;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

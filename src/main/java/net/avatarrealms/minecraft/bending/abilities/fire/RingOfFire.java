@@ -4,20 +4,23 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class RingOfFire {
+public class RingOfFire implements IAbility {
 
 	// private static ConcurrentHashMap<Player, Long> timers = new
 	// ConcurrentHashMap<Player, Long>();
 	// static final long soonesttime = Tools.timeinterval;
 
 	static final int defaultrange = ConfigManager.ringOfFireRange;
+	private IAbility parent;
 
-	public RingOfFire(Player player) {
+	public RingOfFire(Player player, IAbility parent) {
+		this.parent = parent;
 		// if (timers.containsKey(player)) {
 		// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
 		// return;
@@ -49,7 +52,7 @@ public class RingOfFire {
 			if (AvatarState.isAvatarState(player))
 				range = AvatarState.getValue(range);
 
-			new FireStream(location, direction, player, range);
+			new FireStream(location, direction, player, range, this);
 		}
 
 		bPlayer.cooldown(Abilities.Blaze);
@@ -59,6 +62,16 @@ public class RingOfFire {
 		return "To use, simply left-click. "
 				+ "A circle of fire will emanate from you, "
 				+ "engulfing everything around you. Use with extreme caution.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 7;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

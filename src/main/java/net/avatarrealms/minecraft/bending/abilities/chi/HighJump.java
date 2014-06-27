@@ -3,18 +3,20 @@ package net.avatarrealms.minecraft.bending.abilities.chi;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class HighJump {
+public class HighJump implements IAbility {
 
 	private double jumpheight = ConfigManager.jumpHeight;
+	private IAbility parent;
 
-
-	public HighJump(Player p) {
+	public HighJump(Player p, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 
 		if (bPlayer.isOnCooldown(Abilities.HighJump))
@@ -41,5 +43,15 @@ public class HighJump {
 
 	public static String getDescription() {
 		return "To use this ability, simply click. You will jump quite high. This ability has a short cooldown.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 1;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }
