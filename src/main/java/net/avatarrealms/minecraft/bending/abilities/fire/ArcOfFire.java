@@ -51,10 +51,9 @@ public class ArcOfFire implements IAbility {
 				range = AvatarState.getValue(range);
 
 			new FireStream(location, direction, player, range, this);
+			bPlayer.cooldown(Abilities.Blaze);
+			bPlayer.earnXP(BendingType.Fire, this);
 		}
-
-		bPlayer.cooldown(Abilities.Blaze);
-		bPlayer.earnXP(BendingType.Fire, this);
 	}
 
 	public static String getDescription() {
