@@ -1,8 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -25,10 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class EarthBlast {
-
-	public static ConcurrentHashMap<Integer, EarthBlast> instances = new ConcurrentHashMap<Integer, EarthBlast>();
-	// private static ConcurrentHashMap<Player, EarthBlast> prepared = new
-	// ConcurrentHashMap<Player, EarthBlast>();
+	private static Map<Integer, EarthBlast> instances = new HashMap<Integer, EarthBlast>();
 
 	private static boolean hitself = ConfigManager.earthBlastHitSelf;
 	private static double preparerange = ConfigManager.earthBlastPrepareRange;
@@ -99,17 +98,23 @@ public class EarthBlast {
 	}
 
 	private void cancelPrevious() {
-
-		for (int id : instances.keySet()) {
-			EarthBlast blast = instances.get(id);
-			if (blast.player == player && !blast.progressing)
+		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
+		for (EarthBlast blast : instances.values()) {
+			if (blast.player == player && !blast.progressing) {
 				blast.cancel();
+				toRemove.add(blast);
+			}
 		}
-
+		for (EarthBlast blast : toRemove) {
+			blast.remove();
+		}
 	}
 
+	/**
+	 * Should remove() after this method
+	 */
 	public void cancel() {
-		unfocusBlock();
+		sourceblock.setType(sourcetype);
 	}
 
 	private void focusBlock() {
@@ -129,8 +134,7 @@ public class EarthBlast {
 		location = sourceblock.getLocation();
 	}
 
-	private void unfocusBlock() {
-		sourceblock.setType(sourcetype);
+	private void remove() {
 		instances.remove(id);
 	}
 
@@ -200,7 +204,7 @@ public class EarthBlast {
 		return null;
 	}
 
-	public boolean progress() {
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()
 				|| !EntityTools.canBend(player, Abilities.EarthBlast)) {
 			breakBlock();
@@ -216,35 +220,34 @@ public class EarthBlast {
 
 			if (!BlockTools.isEarthbendable(player, sourceblock)
 					&& sourceblock.getType() != Material.COBBLESTONE) {
-				instances.remove(id);
 				return false;
 			}
 
 			if (!progressing && !falling) {
 
 				if (EntityTools.getBendingAbility(player) != Abilities.EarthBlast) {
-					unfocusBlock();
+					cancel();
 					return false;
 				}
 				if (sourceblock == null) {
-					instances.remove(player.getEntityId());
 					return false;
 				}
 				if (player.getWorld() != sourceblock.getWorld()) {
-					unfocusBlock();
+					cancel();
 					return false;
 				}
 				if (sourceblock.getLocation().distance(player.getLocation()) > preparerange) {
-					unfocusBlock();
+					cancel();
 					return false;
 				}
 			}
 
 			if (falling) {
 				breakBlock();
+				return false;
 			} else {
 				if (!progressing) {
-					return false;
+					return true;
 				}
 
 				if (sourceblock.getY() == firstdestination.getBlockY())
@@ -325,7 +328,6 @@ public class EarthBlast {
 								bPlayer.earnXP(BendingType.Earth);
 							}
 						}
-						// }
 					}
 				}
 
@@ -364,10 +366,13 @@ public class EarthBlast {
 			}
 		}
 
-		return false;
+		return true;
 
 	}
 
+	/**
+	 * Should remove() after this method
+	 */
 	private void breakBlock() {
 		sourceblock.setType(sourcetype);
 		if (revert) {
@@ -375,16 +380,9 @@ public class EarthBlast {
 		} else {
 			sourceblock.breakNaturally();
 		}
-
-		instances.remove(id);
 	}
 
 	public static void throwEarth(Player player) {
-		// if (prepared.containsKey(player)) {
-		// prepared.get(player).throwEarth();
-		// prepared.remove(player);
-		// }
-
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		ArrayList<EarthBlast> ignore = new ArrayList<EarthBlast>();
 
@@ -408,23 +406,29 @@ public class EarthBlast {
 		redirectTargettedBlasts(player, ignore);
 	}
 
-	public static boolean progress(int ID) {
-		if (instances.containsKey(ID))
-			return instances.get(ID).progress();
-		return false;
+	public static void progressAll() {
+		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
+		for(EarthBlast blast : instances.values()) {
+			boolean keep = blast.progress();
+			if(!keep) {
+				toRemove.add(blast);
+			}
+		}
+		for(EarthBlast blast : toRemove) {
+			blast.remove();
+		}
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			instances.get(id).breakBlock();
+		for(EarthBlast blast : instances.values()) {
+			blast.breakBlock();
 		}
+		instances.clear();
 	}
 
 	private static void redirectTargettedBlasts(Player player,
 			ArrayList<EarthBlast> ignore) {
-		for (int id : instances.keySet()) {
-			EarthBlast blast = instances.get(id);
-
+		for(EarthBlast blast : instances.values()) {
 			if (!blast.progressing || ignore.contains(blast))
 				continue;
 
@@ -456,8 +460,6 @@ public class EarthBlast {
 	private void redirect(Player player, Location targetlocation) {
 		if (progressing) {
 			if (location.distance(player.getLocation()) <= range) {
-				// direction = Tools.getDirection(location, targetlocation)
-				// .normalize();
 				settingup = false;
 				destination = targetlocation;
 			}
@@ -465,9 +467,8 @@ public class EarthBlast {
 	}
 
 	private static void block(Player player) {
-		for (int id : instances.keySet()) {
-			EarthBlast blast = instances.get(id);
-
+		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
+		for (EarthBlast blast : instances.values()) {
 			if (blast.player.equals(player))
 				continue;
 
@@ -491,8 +492,11 @@ public class EarthBlast {
 							.distance(location.clone().add(
 									vector.clone().multiply(-1)))) {
 				blast.breakBlock();
+				toRemove.add(blast);
 			}
-
+		}
+		for(EarthBlast blast : toRemove) {
+			blast.remove();
 		}
 	}
 
@@ -509,28 +513,35 @@ public class EarthBlast {
 	}
 
 	public static void removeAroundPoint(Location location, double radius) {
-
-		for (int id : instances.keySet()) {
-			EarthBlast blast = instances.get(id);
-			if (blast.location.getWorld().equals(location.getWorld()))
-				if (blast.location.distance(location) <= radius)
+		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
+		for (EarthBlast blast : instances.values()) {
+			if (blast.location.getWorld().equals(location.getWorld())) {
+				if (blast.location.distance(location) <= radius) {
 					blast.breakBlock();
-
+					toRemove.add(blast);
+				}
+			}
 		}
-
+		for(EarthBlast blast : toRemove) {
+			blast.remove();
+		}
 	}
 
 	public static boolean annihilateBlasts(Location location, double radius,
 			Player source) {
+		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
 		boolean broke = false;
-		for (int id : instances.keySet()) {
-			EarthBlast blast = instances.get(id);
+		for (EarthBlast blast : instances.values()) {
 			if (blast.location.getWorld().equals(location.getWorld())
 					&& !source.equals(blast.player))
 				if (blast.location.distance(location) <= radius) {
 					blast.breakBlock();
 					broke = true;
+					toRemove.add(blast);
 				}
+		}
+		for(EarthBlast blast : toRemove) {
+			blast.remove();
 		}
 		return broke;
 	}

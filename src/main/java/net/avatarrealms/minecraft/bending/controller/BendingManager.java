@@ -143,9 +143,7 @@ public class BendingManager implements Runnable {
 
 		CompactColumn.progressAll();
 
-		for (int ID : EarthBlast.instances.keySet()) {
-			EarthBlast.progress(ID);
-		}
+		EarthBlast.progressAll();
 
 		for (Player player : EarthTunnel.instances.keySet()) {
 			EarthTunnel.progress(player);
