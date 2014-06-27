@@ -198,7 +198,7 @@ public class PluginTools {
 		EarthColumn.removeAll();
 		EarthPassive.removeAll();
 		EarthArmor.removeAll();
-		EarthTunnel.instances.clear();
+		EarthTunnel.removeAll();
 		Shockwave.removeAll();
 		Tremorsense.removeAll();
 

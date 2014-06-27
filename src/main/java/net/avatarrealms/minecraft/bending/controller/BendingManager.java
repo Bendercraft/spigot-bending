@@ -143,9 +143,7 @@ public class BendingManager implements Runnable {
 
 		EarthBlast.progressAll();
 
-		for (Player player : EarthTunnel.instances.keySet()) {
-			EarthTunnel.progress(player);
-		}
+		EarthTunnel.progressAll();
 
 		EarthArmor.progressAll();
 		EarthPassive.revertSands();

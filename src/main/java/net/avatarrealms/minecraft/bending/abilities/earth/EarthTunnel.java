@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -13,13 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class EarthTunnel {
-
-	public static ConcurrentHashMap<Player, EarthTunnel> instances = new ConcurrentHashMap<Player, EarthTunnel>();
+	private static Map<Player, EarthTunnel> instances = new HashMap<Player, EarthTunnel>();
 
 	private static final double maxradius = ConfigManager.earthTunnelMaxRadius;
 	private static final double range = ConfigManager.earthTunnelRange;
 	private static final double radiusinc = ConfigManager.earthTunnelRadius;
-	// private static final double speed = 10;
 
 	private static boolean revert = ConfigManager.earthTunnelRevert;
 
@@ -43,17 +43,17 @@ public class EarthTunnel {
 			depth = 0;
 		angle = 0;
 		radius = radiusinc;
-		// ortho = new Vector(direction.getY(), -direction.getX(),
-		// 0).normalize();
-		// Tools.verbose(ortho.clone().dot(direction));
 		time = System.currentTimeMillis();
 
 		instances.put(player, this);
 	}
+	
+	private void remove() {
+		instances.remove(player);
+	}
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(player);
 			return false;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
@@ -62,13 +62,11 @@ public class EarthTunnel {
 			if (Math.abs(Math.toDegrees(player.getEyeLocation().getDirection()
 					.angle(direction))) > 20
 					|| !player.isSneaking()) {
-				instances.remove(player);
 				return false;
 			} else {
 				while (!BlockTools.isEarthbendable(player, block)) {
 					// Tools.verbose("going");
 					if (!BlockTools.isTransparentToEarthbending(player, block)) {
-						instances.remove(player);
 						return false;
 					}
 					if (angle >= 360) {
@@ -103,13 +101,21 @@ public class EarthTunnel {
 
 				return true;
 			}
-		} else {
-			return false;
 		}
+		return true;
 	}
 
-	public static boolean progress(Player player) {
-		return instances.get(player).progress();
+	public static void progressAll() {
+		List<EarthTunnel> toRemove = new LinkedList<EarthTunnel>();
+		for(EarthTunnel tunnel : instances.values()) {
+			boolean keep = tunnel.progress();
+			if(!keep) {
+				toRemove.add(tunnel);
+			}
+		}
+		for(EarthTunnel tunnel : toRemove) {
+			tunnel.remove();
+		}
 	}
 
 	public static String getDescription() {
@@ -118,6 +124,10 @@ public class EarthTunnel {
 				+ "You will slowly begin tunneling in the direction you're facing for as long as you "
 				+ "sneak or if the tunnel has been dug long enough. This ability will be interupted "
 				+ "if it hits a block that cannot be earthbent.";
+	}
+
+	public static void removeAll() {
+		instances.clear();
 	}
 
 }
