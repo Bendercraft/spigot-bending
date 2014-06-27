@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -14,8 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class Shockwave {
-
-	private static ConcurrentHashMap<Player, Shockwave> instances = new ConcurrentHashMap<Player, Shockwave>();
+	private static Map<Player, Shockwave> instances = new HashMap<Player, Shockwave>();
 
 	private static final double angle = Math.toRadians(40);
 	private static final long defaultchargetime = 2500;
@@ -48,12 +49,15 @@ public class Shockwave {
 		}
 		areaShockwave(player);
 	}
+	
+	private void remove() {
+		instances.remove(player);
+	}
 
-	private void progress() {
+	private boolean progress() {
 		if (!EntityTools.canBend(player, Abilities.Shockwave)
 				|| EntityTools.getBendingAbility(player) != Abilities.Shockwave) {
-			instances.remove(player);
-			return;
+			return false;
 		}
 		if (System.currentTimeMillis() > starttime + chargetime && !charged) {
 			charged = true;
@@ -62,10 +66,8 @@ public class Shockwave {
 		if (!player.isSneaking()) {
 			if (charged) {
 				areaShockwave(player);
-				instances.remove(player);
-			} else {
-				instances.remove(player);
 			}
+			return false;
 		} else if (charged) {
 			Location location = player.getEyeLocation();
 			// location = location.add(location.getDirection().normalize());
@@ -75,11 +77,21 @@ public class Shockwave {
 					Tools.getIntCardinalDirection(player.getEyeLocation()
 							.getDirection()), 3);
 		}
+		
+		return true;
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet())
-			instances.get(player).progress();
+		List<Shockwave> toRemove = new LinkedList<Shockwave>();
+		for (Shockwave shockwave : instances.values()) {
+			boolean keep = shockwave.progress();
+			if(!keep) {
+				toRemove.add(shockwave);
+			}
+		}
+		for (Shockwave shockwave : toRemove) {
+			shockwave.remove();
+		}
 		Ripple.progressAll();
 	}
 
@@ -121,7 +133,6 @@ public class Shockwave {
 	public static void removeAll() {
 		instances.clear();
 		Ripple.removeAll();
-
 	}
 
 }
