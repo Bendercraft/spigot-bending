@@ -1,8 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -24,7 +26,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class EarthArmor {
-
+	private static Map<Player, EarthArmor> instances = new HashMap<Player, EarthArmor>();
+	
 	private static long duration = ConfigManager.earthArmorDuration;
 	private static int strength = ConfigManager.earthArmorStrength;
 	private static long cooldown = ConfigManager.earthArmorCooldown;
@@ -41,7 +44,6 @@ public class EarthArmor {
 	public ItemStack[] oldarmor;
 
 	private static long interval = 2000;
-	public static ConcurrentHashMap<Player, EarthArmor> instances = new ConcurrentHashMap<Player, EarthArmor>();
 
 	public EarthArmor(Player player) {
 		if (instances.containsKey(player)) {
@@ -224,8 +226,6 @@ public class EarthArmor {
 			headblock.breakNaturally();
 			legsblock.breakNaturally();
 		}
-		if (instances.containsKey(player))
-			instances.remove(player);
 	}
 
 	private boolean inPosition() {
@@ -260,44 +260,60 @@ public class EarthArmor {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		bPlayer.receiveXP(BendingType.Earth,2);
 	}
+	
+	private void remove() {
+		instances.remove(player);
+	}
 
-	public static void moveArmor(Player player) {
-		if (!instances.containsKey(player))
-			return;
-		EarthArmor eartharmor = instances.get(player);
-
+	//Old static moveArmor(Player player)
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			eartharmor.cancel();
-			eartharmor.removeEffect();
-			return;
+			cancel();
+			removeEffect();
+			return false;
 		}
 
-		if (eartharmor.formed) {
-			if (System.currentTimeMillis() > eartharmor.starttime + duration
-					&& !eartharmor.complete) {
-				eartharmor.complete = true;
-				eartharmor.removeEffect();
-				return;
+		if (formed) {
+			if (System.currentTimeMillis() > starttime + duration
+					&& !complete) {
+				complete = true;
+				removeEffect();
+				return true;
 			}
-			if (System.currentTimeMillis() > eartharmor.starttime + cooldown) {
-				instances.remove(player);
-				return;
+			if (System.currentTimeMillis() > starttime + cooldown) {
+				return false;
 			}
-		} else if (System.currentTimeMillis() > eartharmor.time + interval) {
-			if (!eartharmor.moveBlocks())
-				return;
+		} else if (System.currentTimeMillis() > time + interval) {
+			if (moveBlocks())
+				return true;
 
-			if (eartharmor.inPosition()) {
-				eartharmor.formArmor();
+			if (inPosition()) {
+				formArmor();
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	public static void progressAll() {
+		List<EarthArmor> toRemove = new LinkedList<EarthArmor>();
+		for(EarthArmor armor : instances.values()) {
+			boolean keep = armor.progress();
+			if(!keep) {
+				toRemove.add(armor);
 			}
 		}
-
+		for(EarthArmor armor : toRemove) {
+			armor.remove();
+		}
+	}
+	
+	public static boolean hasEarthArmor(Player player) {
+		return instances.containsKey(player);
 	}
 
 	private void removeEffect() {
 		player.getInventory().setArmorContents(oldarmor);
-		// player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-		// instances.remove(player);
 	}
 
 	public static void removeEffect(Player player) {
@@ -307,11 +323,11 @@ public class EarthArmor {
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet()) {
-			EarthArmor eartharmor = instances.get(player);
+		for (EarthArmor eartharmor : instances.values()) {
 			eartharmor.cancel();
 			eartharmor.removeEffect();
 		}
+		instances.clear();
 	}
 
 	public static String getDescription() {

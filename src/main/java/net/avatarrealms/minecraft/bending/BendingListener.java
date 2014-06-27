@@ -1082,7 +1082,7 @@ public class BendingListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		if (EarthArmor.instances.containsKey(event.getPlayer())) {
+		if (EarthArmor.hasEarthArmor(event.getPlayer())) {
 			EarthArmor.removeEffect(event.getPlayer());
 			event.getPlayer().removePotionEffect(
 					PotionEffectType.DAMAGE_RESISTANCE);
@@ -1102,7 +1102,7 @@ public class BendingListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		if (EarthArmor.instances.containsKey(event.getEntity())) {
+		if (EarthArmor.hasEarthArmor(event.getEntity())) {
 			List<ItemStack> drops = event.getDrops();
 			List<ItemStack> newdrops = new ArrayList<ItemStack>();
 			for (int i = 0; i < drops.size(); i++) {
