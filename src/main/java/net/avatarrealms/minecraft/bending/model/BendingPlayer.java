@@ -368,7 +368,7 @@ public class BendingPlayer {
 	}
 	
 	public String bendingsToString() {
-		String str = "";
+		String str = ""; // TODO : Add the nickname
 		for (BendingType type : bendings.keySet()) {
 			str+=bendings.get(type).toString()+"\n";
 		}

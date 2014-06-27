@@ -2,6 +2,7 @@ package net.avatarrealms.minecraft.bending.abilities.air;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,7 @@ public class AirBlast implements IAbility {
 	private double pushfactor = defaultpushfactor;
 	private boolean otherorigin = false;
 	private int ticks = 0;
+	private int cptEntitiesHit = 0;
 
 	private List<Block> affectedlevers = new ArrayList<Block>();
 	private IAbility parent;
@@ -87,6 +89,7 @@ public class AirBlast implements IAbility {
 		location = origin.clone();
 		id = ID;
 		instances.put(id, this);
+		cptEntitiesHit = 0;
 		bPlayer.cooldown(Abilities.AirBlast);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
@@ -175,14 +178,10 @@ public class AirBlast implements IAbility {
 			return false;
 		}
 
-		int cpt = 0;
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 			affect(entity);
-			cpt ++;
-		}
-		if (cpt >=1 && parent == null) {
-			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
+			cptEntitiesHit ++;
 		}
 		
 		advanceLocation();
@@ -251,8 +250,21 @@ public class AirBlast implements IAbility {
 	}
 
 	public static void progressAll() {
-		for (AirBlast blast : instances.values())
-			blast.progress();
+		List<AirBlast> toRemove = new LinkedList<AirBlast>();
+		for (AirBlast blast : instances.values()) {
+			if (!blast.progress()) {
+				toRemove.add(blast);
+				if (blast.cptEntitiesHit >=1 && blast.parent == null) {
+					BendingPlayer.getBendingPlayer(blast.player).earnXP(BendingType.Air,blast);
+				}
+			}
+		}
+		
+		for(AirBlast blastTR : toRemove) {
+			instances.remove(blastTR);
+		}
+		toRemove.clear();
+			
 		for (Player player : origins.keySet()) {
 			playOriginEffect(player);
 		}

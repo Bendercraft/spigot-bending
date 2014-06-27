@@ -54,9 +54,6 @@ public class SpikeField implements IAbility {
 									.getBlock().getX() && testblock.getZ() == p
 									.getEyeLocation().getBlock().getZ())) {
 						iceblocks.add(testblock);
-						// /Tools.verbose("X: " + testblock.getLocation().getX()
-						// + " Y: " + testblock.getLocation().getY() + " Z: " +
-						// testblock.getLocation().getZ());
 					}
 				}
 			}
