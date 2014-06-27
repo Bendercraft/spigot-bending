@@ -9,6 +9,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -69,8 +70,6 @@ public class Catapult implements IAbility {
 			}
 		}
 
-		// Tools.verbose(distance);
-
 		if (distance != 0) {
 			if ((double) distance >= location.distance(origin)) {
 				catapult = true;
@@ -80,7 +79,7 @@ public class Catapult implements IAbility {
 			moving = true;
 			instances.put(player.getEntityId(), this);
 			bPlayer.cooldown(Abilities.Catapult);
-			// timers.put(player, System.currentTimeMillis());
+			bPlayer.earnXP(BendingType.Earth, this);
 		}
 
 	}

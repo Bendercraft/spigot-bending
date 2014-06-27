@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -131,6 +132,7 @@ public class EarthGrab implements IAbility {
 						EntityTools.grab((Player) target,System.currentTimeMillis());
 					}
 					bPlayer.cooldown(Abilities.EarthGrab);
+					bPlayer.earnXP(BendingType.Earth, this);
 				}
 				//player.sendMessage("Location : " + target.getLocation().getX() + " " + target.getLocation().getY() + " " + target.getLocation().getZ());	
 			}

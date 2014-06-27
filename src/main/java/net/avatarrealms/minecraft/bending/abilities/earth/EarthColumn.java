@@ -9,6 +9,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
@@ -72,6 +73,7 @@ public class EarthColumn implements IAbility {
 				id = ID;
 				instances.put(id, this);
 				bPlayer.cooldown(Abilities.RaiseEarth);
+				bPlayer.earnXP(BendingType.Earth, this);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}
