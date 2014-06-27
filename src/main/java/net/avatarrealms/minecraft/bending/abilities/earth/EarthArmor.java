@@ -182,16 +182,6 @@ public class EarthArmor {
 			return false;
 		}
 
-		// if ((!Tools.isEarthbendable(player, newlegsblock)
-		// && !newlegsblock.isLiquid() && newlegsblock.getType() !=
-		// Material.AIR)
-		// || (!Tools.isEarthbendable(player, newheadblock)
-		// && !newheadblock.isLiquid() && newheadblock.getType() !=
-		// Material.AIR)) {
-		// cancel();
-		// return false;
-		// }
-
 		if (headblock.getLocation().distance(player.getEyeLocation()) > range
 				|| legsblock.getLocation().distance(player.getLocation()) > range) {
 			cancel();
@@ -284,13 +274,11 @@ public class EarthArmor {
 				return false;
 			}
 		} else if (System.currentTimeMillis() > time + interval) {
-			if (moveBlocks())
-				return true;
-
 			if (inPosition()) {
 				formArmor();
+			} else {
+				return moveBlocks();
 			}
-			return false;
 		}
 		return true;
 	}
