@@ -460,7 +460,9 @@ public class WaterWall implements IAbility {
 
 				if (bPlayer.isOnCooldown(Abilities.Surge))
 					return;
-
+				
+				WaterWall wall = new WaterWall(player, null);
+				BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,wall);
 				Location eyeloc = player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize())
 						.getBlock();
@@ -469,8 +471,6 @@ public class WaterWall implements IAbility {
 								eyeloc.getBlock())) {
 					block.setType(Material.WATER);
 					block.setData(full);
-					WaterWall wall = new WaterWall(player, null);
-					BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,wall);
 					wall.moveWater();
 					if (!wall.progressing) {
 						block.setType(Material.AIR);
