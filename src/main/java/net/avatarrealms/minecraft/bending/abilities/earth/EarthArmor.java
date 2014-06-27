@@ -89,7 +89,7 @@ public class EarthArmor implements IAbility {
 	public static void EarthShield(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.EarthGrab))
+		if (bPlayer.isOnCooldown(Abilities.EarthArmor))
 			return;
 
 		Entity closestentity = player;
@@ -134,8 +134,11 @@ public class EarthArmor implements IAbility {
 				}
 			}
 
-			if (!blocks.isEmpty())
-				bPlayer.cooldown(Abilities.EarthGrab);
+			if (!blocks.isEmpty()) {
+				bPlayer.cooldown(Abilities.EarthArmor);
+				//TODO Separate EarthShield into an another ability
+				//bPlayer.earnXP(BendingType.Earth, this);
+			}
 		}
 	}
 
@@ -252,7 +255,7 @@ public class EarthArmor implements IAbility {
 		formed = true;
 		starttime = System.currentTimeMillis();
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		bPlayer.receiveXP(BendingType.Earth,2);
+		bPlayer.earnXP(BendingType.Earth, this);
 	}
 	
 	private void remove() {

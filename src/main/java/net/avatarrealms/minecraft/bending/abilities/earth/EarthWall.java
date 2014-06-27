@@ -96,11 +96,11 @@ public class EarthWall implements IAbility {
 		}
 
 		if (cpt>0) {
-			bPlayer.receiveXP(BendingType.Earth, 2);
+			bPlayer.earnXP(BendingType.Earth, this);
 		}
-		if (cooldown)
+		if (cooldown) {
 			bPlayer.cooldown(Abilities.RaiseEarth);
-
+		}
 	}
 
 	@Override
