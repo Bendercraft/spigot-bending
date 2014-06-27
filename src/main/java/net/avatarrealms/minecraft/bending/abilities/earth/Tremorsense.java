@@ -100,13 +100,13 @@ public class Tremorsense {
 		if (BlockTools.isEarthbendable(player, Abilities.Tremorsense, standblock)
 				&& block == null) {
 			block = standblock;
-			player.sendBlockChange(block.getLocation(), 89, (byte) 1);
+			player.sendBlockChange(block.getLocation(), Material.GLOWSTONE, (byte) 1);
 			instances.put(player, this);
 		} else if (BlockTools.isEarthbendable(player, Abilities.Tremorsense,
 				standblock) && !block.equals(standblock)) {
 			revert();
 			block = standblock;
-			player.sendBlockChange(block.getLocation(), 89, (byte) 1);
+			player.sendBlockChange(block.getLocation(), Material.GLOWSTONE, (byte) 1);
 			instances.put(player, this);
 		} else if (block == null) {
 			return;
@@ -120,8 +120,7 @@ public class Tremorsense {
 
 	private void revert() {
 		if (block != null) {
-			player.sendBlockChange(block.getLocation(), block.getTypeId(),
-					block.getData());
+			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 			instances.remove(player);
 		}
 	}
