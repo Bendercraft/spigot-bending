@@ -221,11 +221,8 @@ public class WaterSpout {
 		affectedblocks.clear();
 	}
 
-	public static ArrayList<Player> getPlayers() {
-		ArrayList<Player> players = new ArrayList<Player>();
-		for (Player player : instances.keySet())
-			players.add(player);
-		return players;
+	public static List<Player> getPlayers() {
+		return new LinkedList<Player>(instances.keySet());
 	}
 
 	public static void removeSpouts(Location loc0, double radius,
