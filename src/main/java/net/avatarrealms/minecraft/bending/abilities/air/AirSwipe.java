@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
@@ -17,6 +18,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -32,7 +34,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class AirSwipe {
+public class AirSwipe implements IAbility {
 	private static Map<Integer, AirSwipe> instances = new HashMap<Integer, AirSwipe>();
 
 	private static int ID = Integer.MIN_VALUE;
@@ -74,12 +76,14 @@ public class AirSwipe {
 	private int id;
 	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
 	private List<Entity> affectedentities = new ArrayList<Entity>();
+	private IAbility parent;
 
-	public AirSwipe(Player player) {
-		this(player, false);
+	public AirSwipe(Player player, IAbility parent) {
+		this(player, false, parent);
 	}
 
-	public AirSwipe(Player player, boolean charging) {
+	public AirSwipe(Player player, boolean charging, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.AirSwipe))
@@ -272,7 +276,7 @@ public class AirSwipe {
 								
 							if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			
 								if (bPlayer != null) {
-									bPlayer.earnXP(BendingType.Air);
+									bPlayer.earnXP(BendingType.Air, this);
 								}
 							}
 						}
@@ -330,7 +334,17 @@ public class AirSwipe {
 	}
 
 	public static void charge(Player player) {
-		new AirSwipe(player, true);
+		new AirSwipe(player, true, null);
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 10;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

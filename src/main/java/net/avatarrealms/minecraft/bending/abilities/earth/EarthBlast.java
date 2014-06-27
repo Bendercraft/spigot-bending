@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -26,7 +28,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class EarthBlast {
+public class EarthBlast implements IAbility {
 	private static Map<Integer, EarthBlast> instances = new HashMap<Integer, EarthBlast>();
 
 	private static boolean hitself = ConfigManager.earthBlastHitSelf;
@@ -55,8 +57,10 @@ public class EarthBlast {
 	private boolean falling = false;
 	private long time;
 	private boolean settingup = true;
+	private IAbility parent;
 
-	public EarthBlast(Player player) {
+	public EarthBlast(Player player, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		if (prepare()) {
 			// if (instances.containsKey(player.getEntityId())) {
@@ -325,7 +329,7 @@ public class EarthBlast {
 						progressing = false;
 						if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
 							if (bPlayer != null) {
-								bPlayer.earnXP(BendingType.Earth);
+								bPlayer.earnXP(BendingType.Earth, this);
 							}
 						}
 					}
@@ -544,6 +548,16 @@ public class EarthBlast {
 			blast.remove();
 		}
 		return broke;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 5;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

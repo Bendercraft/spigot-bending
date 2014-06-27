@@ -260,23 +260,23 @@ public class BendingListener implements Listener {
 					|| ConfigManager.useWeapon.get("Air")) {
 
 				if (ability == Abilities.AirBlast) {
-					new AirBlast(player);
+					new AirBlast(player, null);
 				}
 
 				if (ability == Abilities.AirSuction) {
-					new AirSuction(player);
+					new AirSuction(player, null);
 				}
 
 				if (ability == Abilities.AirSwipe) {
-					new AirSwipe(player);
+					new AirSwipe(player, null);
 				}
 
 				if (ability == Abilities.AirScooter) {
-					new AirScooter(player);
+					new AirScooter(player, null);
 				}
 
 				if (ability == Abilities.AirSpout) {
-					new AirSpout(player);
+					new AirSpout(player, null);
 				}
 
 				if (ability == Abilities.AirBurst) {
@@ -289,19 +289,19 @@ public class BendingListener implements Listener {
 					|| ConfigManager.useWeapon.get("Earth")) {
 
 				if (ability == Abilities.Catapult) {
-					new Catapult(player);
+					new Catapult(player, null);
 				}
 
 				if (ability == Abilities.RaiseEarth) {
-					new EarthColumn(player);
+					new EarthColumn(player, null);
 				}
 
 				if (ability == Abilities.Collapse) {
-					new CompactColumn(player);
+					new CompactColumn(player, null);
 				}
 
 				if (ability == Abilities.EarthGrab) {
-					new EarthGrab(player,false);
+					new EarthGrab(player,false, null);
 				}
 
 				if (ability == Abilities.EarthBlast) {
@@ -309,11 +309,11 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.Tremorsense) {
-					new Tremorsense(player);
+					new Tremorsense(player, null);
 				}
 
 				if (ability == Abilities.EarthArmor) {
-					new EarthArmor(player);
+					new EarthArmor(player, null);
 				}
 
 				if (ability == Abilities.Shockwave) {
@@ -326,27 +326,27 @@ public class BendingListener implements Listener {
 					|| ConfigManager.useWeapon.get("Fire")) {
 
 				if (ability == Abilities.FireBlast) {
-					new FireBlast(player);
+					new FireBlast(player, null);
 				}
 
 				if (ability == Abilities.HeatControl) {
-					new Extinguish(player);
+					new Extinguish(player, null);
 				}
 
 				if (ability == Abilities.Blaze) {
-					new ArcOfFire(player);
+					new ArcOfFire(player, null);
 				}
 
 				if (ability == Abilities.FireJet) {
-					new FireJet(player);
+					new FireJet(player, null);
 				}
 
 				if (ability == Abilities.Illumination) {
-					new Illumination(player);
+					new Illumination(player, null);
 				}
 
 				if (ability == Abilities.WallOfFire) {
-					new WallOfFire(player);
+					new WallOfFire(player, null);
 				}
 
 				if (ability == Abilities.FireBurst) {
@@ -354,7 +354,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.FireShield) {
-					new FireShield(player);
+					new FireShield(player, null);
 				}
 
 			}
@@ -371,23 +371,23 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.PhaseChange) {
-					new FreezeMelt(player);
+					new FreezeMelt(player, null);
 				}
 
 				if (ability == Abilities.Surge) {
-					new WaterWall(player);
+					new WaterWall(player, null);
 				}
 
 				if (ability == Abilities.OctopusForm) {
-					new OctopusForm(player);
+					new OctopusForm(player, null);
 				}
 
 				if (ability == Abilities.Torrent) {
-					new Torrent(player);
+					new Torrent(player, null);
 				}
 
 				if (ability == Abilities.WaterSpout) {
-					new WaterSpout(player);
+					new WaterSpout(player, null);
 				}
 
 				if (ability == Abilities.Bloodbending) {
@@ -401,22 +401,22 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.HighJump) {
-				new HighJump(player);
+				new HighJump(player, null);
 			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
 
 				if (ability == Abilities.RapidPunch) {
-					new RapidPunch(player);
+					new RapidPunch(player, null);
 				}
 
 				if (ability == Abilities.Paralyze) {
 					Entity t = EntityTools.getTargettedEntity(player, ConfigManager.rapidPunchDistance);
-					new Paralyze(player,t);
+					new Paralyze(player,t, null);
 				}
 				
 				if (ability == Abilities.SmokeBomb) {
-					new SmokeBomb(player);
+					new SmokeBomb(player, null);
 				}
 			}
 		}
@@ -439,7 +439,7 @@ public class BendingListener implements Listener {
 		if (!player.isSneaking() && EntityTools.canBend(player, ability)) {
 
 			if (ability == Abilities.AirShield) {
-				new AirShield(player);
+				new AirShield(player, null);
 			}
 
 			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
@@ -454,7 +454,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.AirBurst) {
-					new AirBurst(player);
+					new AirBurst(player, null);
 				}
 
 				if (ability == Abilities.AirSwipe) {
@@ -463,19 +463,19 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.Tornado) {
-				new Tornado(player);
+				new Tornado(player, null);
 			}
 
 			if (ability == Abilities.EarthBlast) {
-				new EarthBlast(player);
+				new EarthBlast(player, null);
 			}
 
 			if (ability == Abilities.EarthGrab) {
-				new EarthGrab(player,true);
+				new EarthGrab(player,true, null);
 			}
 
 			if (ability == Abilities.Shockwave) {
-				new Shockwave(player);
+				new Shockwave(player, null);
 			}
 
 			if (ability == Abilities.Tremorsense) {
@@ -483,7 +483,7 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.Collapse) {
-				new Collapse(player);
+				new Collapse(player, null);
 			}
 			
 			if (ability == Abilities.EarthArmor) {
@@ -491,19 +491,19 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.WaterManipulation) {
-				new WaterManipulation(player);
+				new WaterManipulation(player, null);
 			}
 
 			if (ability == Abilities.IceSpike) {
-				new IceSpike2(player);
+				new IceSpike2(player, null);
 			}
 
 			if (ability == Abilities.EarthTunnel) {
-				new EarthTunnel(player);
+				new EarthTunnel(player, null);
 			}
 
 			if (ability == Abilities.RaiseEarth) {
-				new EarthWall(player);
+				new EarthWall(player, null);
 			}
 
 			if (ability == Abilities.Surge) {
@@ -519,27 +519,27 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.Bloodbending) {
-				new Bloodbending(player);
+				new Bloodbending(player, null);
 			}
 
 			if (ability == Abilities.PhaseChange) {
-				new Melt(player);
+				new Melt(player, null);
 			}
 
 			if (ability == Abilities.Lightning) {
-				new Lightning(player);
+				new Lightning(player, null);
 			}
 
 			if (ability == Abilities.Blaze) {
-				new RingOfFire(player);
+				new RingOfFire(player, null);
 			}
 
 			if (ability == Abilities.FireBurst) {
-				new FireBurst(player);
+				new FireBurst(player, null);
 			}
 
 			if (ability == Abilities.FireBlast) {
-				new Fireball(player);
+				new Fireball(player, null);
 			}
 
 			if (ability == Abilities.FireShield) {
@@ -547,7 +547,7 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.HeatControl) {
-				new Cook(player);
+				new Cook(player, null);
 			}
 		}
 	}
@@ -664,7 +664,8 @@ public class BendingListener implements Listener {
 		Entity entity = event.getEntity();
 		Block block = entity.getLocation().getBlock();
 		if (FireStream.isIgnited(block) && entity instanceof LivingEntity) {
-			new Enflamed(entity, FireStream.getIgnited(block));
+			//TODO parent is FireStream !
+			new Enflamed(entity, FireStream.getIgnited(block), null);
 		}
 	}
 
@@ -674,8 +675,9 @@ public class BendingListener implements Listener {
 		if (event.getCause() == DamageCause.FIRE
 				&& FireStream.isIgnited(entity.getLocation()
 						.getBlock())) {
+			//TODO parent is FireStream
 			new Enflamed(entity, FireStream.getIgnited(entity
-					.getLocation().getBlock()));
+					.getLocation().getBlock()), null);
 		}
 		if (Enflamed.isEnflamed(entity)
 				&& event.getCause() == DamageCause.FIRE_TICK) {
@@ -780,7 +782,7 @@ public class BendingListener implements Listener {
 		if (source instanceof Player) {
 			
 			if (!dodged)
-				new Paralyze((Player) event.getDamager(), event.getEntity());
+				new Paralyze((Player) event.getDamager(), event.getEntity(), null);
 			if (EntityTools.isBender(((Player) event.getDamager()),
 					BendingType.ChiBlocker)
 					&& event.getCause() == DamageCause.ENTITY_ATTACK

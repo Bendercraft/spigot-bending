@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -22,7 +23,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class FireShield {
+public class FireShield implements IAbility {
 	private static Map<Player, FireShield> instances = new HashMap<Player, FireShield>();
 
 	private static long interval = 100;
@@ -35,12 +36,14 @@ public class FireShield {
 	private long time;
 	private long starttime;
 	private boolean shield = false;
+	private IAbility parent;
 
-	public FireShield(Player player) {
-		this(player, false);
+	public FireShield(Player player, IAbility parent) {
+		this(player, false, parent);
 	}
 
-	public FireShield(Player player, boolean shield) {
+	public FireShield(Player player, boolean shield, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		this.shield = shield;
 		if (instances.containsKey(player))
@@ -60,7 +63,7 @@ public class FireShield {
 	}
 
 	public static void shield(Player player) {
-		new FireShield(player, true);
+		new FireShield(player, true, null);
 	}
 
 	private void remove() {
@@ -118,7 +121,7 @@ public class FireShield {
 						continue;
 					if (player.getEntityId() != entity.getEntityId() && ignite) {
 						entity.setFireTicks(120);
-						new Enflamed(entity, player);
+						new Enflamed(entity, player, this);
 					}
 				}
 
@@ -204,5 +207,15 @@ public class FireShield {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 2;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

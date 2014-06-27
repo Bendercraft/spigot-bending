@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-public class Plantbending {
+public class Plantbending implements IAbility {
 	private static final long regrowtime = ConfigManager.plantbendingRegrowTime;
 	private static Map<Integer, Plantbending> instances = new HashMap<Integer, Plantbending>();
 
@@ -22,8 +23,10 @@ public class Plantbending {
 	private byte data;
 	private long time;
 	private int id;
+	private IAbility parent;
 
-	public Plantbending(Block block) {
+	public Plantbending(Block block, IAbility parent) {
+		this.parent = parent;
 		if (regrowtime != 0) {
 			this.block = block;
 			type = block.getType();
@@ -81,5 +84,15 @@ public class Plantbending {
 				+ "block of leaves and it would suck the water out of the leaves for your other technique. "
 				+ "Additionally, if you are close to a plant, you can click this ability to turn the plant into a "
 				+ "source block of water.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

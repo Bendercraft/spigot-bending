@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.abilities.water.Plantbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -19,7 +21,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class FireStream {
+public class FireStream implements IAbility {
 	private static Map<Integer, FireStream> instances = new HashMap<Integer, FireStream>();
 	private static Map<Block, Player> ignitedblocks = new HashMap<Block, Player>();
 	private static Map<Block, Long> ignitedtimes = new HashMap<Block, Long>();
@@ -41,10 +43,11 @@ public class FireStream {
 	private int id;
 	private long time;
 	private double range;
-
+	private IAbility parent;
 
 	public FireStream(Location location, Vector direction, Player player,
-			int range) {
+			int range, IAbility parent) {
+		this.parent = parent;
 		this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		this.player = player;
 		origin = location.clone();
@@ -94,7 +97,7 @@ public class FireStream {
 
 	private void ignite(Block block) {
 		if (BlockTools.isPlant(block)) {
-			new Plantbending(block);
+			new Plantbending(block, this);
 		}
 		block.setType(Material.FIRE);
 		ignitedblocks.put(block, this.player);
@@ -226,5 +229,15 @@ public class FireStream {
 
 	public static Player getIgnited(Block block) {
 		return ignitedblocks.get(block);
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 3;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

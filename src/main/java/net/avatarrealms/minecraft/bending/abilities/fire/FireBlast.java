@@ -15,6 +15,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -35,7 +36,7 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class FireBlast {
+public class FireBlast implements IAbility {
 	private static Map<Integer, FireBlast> instances = new HashMap<Integer, FireBlast>();
 
 	private static int ID = Integer.MIN_VALUE;
@@ -58,8 +59,10 @@ public class FireBlast {
 	private int ticks = 0;
 	private int damage = ConfigManager.fireBlastDamage;
 	double range = ConfigManager.fireBlastRange;
+	private IAbility parent;
 
-	public FireBlast(Player player) {
+	public FireBlast(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.FireBlast))
@@ -84,7 +87,8 @@ public class FireBlast {
 	}
 
 	public FireBlast(Location location, Vector direction, Player player,
-			int damage, List<Block> safeblocks) {
+			int damage, List<Block> safeblocks, IAbility parent) {
+		this.parent = parent;
 		if (location.getBlock().isLiquid()) {
 			return;
 		}
@@ -167,7 +171,7 @@ public class FireBlast {
 					BendingPlayer bPlayer = BendingPlayer
 							.getBendingPlayer(player);
 					if (bPlayer != null) {
-						bPlayer.earnXP(BendingType.Fire);
+						bPlayer.earnXP(BendingType.Fire, this);
 					}
 				}
 			}
@@ -190,7 +194,7 @@ public class FireBlast {
 				affectingradius)) {
 			if (FireStream.isIgnitable(player, block) && !safe.contains(block)) {
 				if (BlockTools.isPlant(block))
-					new Plantbending(block);
+					new Plantbending(block, this);
 				block.setType(Material.FIRE);
 				if (dissipate) {
 					FireStream.addIgnitedBlock(block, player, System.currentTimeMillis());
@@ -231,7 +235,7 @@ public class FireBlast {
 						.getCriticalHit(BendingType.Fire, PluginTools
 								.firebendingDayAugment((double) damage,
 										entity.getWorld())));
-				new Enflamed(entity, player);
+				new Enflamed(entity, player, this);
 				return false;
 			}
 		}
@@ -284,6 +288,16 @@ public class FireBlast {
 				+ "Additionally, if you hold sneak, you will charge up the fireblast. "
 				+ "If you release it when it's charged, it will instead launch a powerful "
 				+ "fireball that explodes on contact.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 5;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

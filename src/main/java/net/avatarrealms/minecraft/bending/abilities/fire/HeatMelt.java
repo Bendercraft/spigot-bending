@@ -2,19 +2,23 @@ package net.avatarrealms.minecraft.bending.abilities.fire;
 
 import net.avatarrealms.minecraft.bending.abilities.water.Melt;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-public class HeatMelt {
+public class HeatMelt implements IAbility {
 	private static final int range = ConfigManager.heatMeltRange;
 	private static final int radius = ConfigManager.heatMeltRadius;
+	private IAbility parent;
 
-	public HeatMelt(Player player) {
+	public HeatMelt(Player player, IAbility parent) {
+		this.parent = parent;
 		Location location = EntityTools.getTargetedLocation(player,
 				(int) PluginTools.firebendingDayAugment(range, player.getWorld()));
 		for (Block block : BlockTools.getBlocksAroundPoint(location,
@@ -41,6 +45,16 @@ public class HeatMelt {
 	public static String getDescription() {
 		return "To use, simply left-click. "
 				+ "Any meltable blocks around that target location will immediately melt.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

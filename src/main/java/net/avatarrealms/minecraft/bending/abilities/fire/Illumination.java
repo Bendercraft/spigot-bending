@@ -5,9 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -18,7 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-public class Illumination {
+public class Illumination implements IAbility {
 	private static Map<Player, Illumination> instances = new HashMap<Player, Illumination>();
 	private static Map<Block, Player> blocks = new HashMap<Block, Player>();
 
@@ -28,8 +30,10 @@ public class Illumination {
 	private Block block;
 	private Material normaltype;
 	private byte normaldata;
+	private IAbility parent;
 
-	public Illumination(Player player) {
+	public Illumination(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Illumination))
@@ -141,6 +145,16 @@ public class Illumination {
 
 	public static boolean isIlluminated(Block block) {
 		return blocks.containsKey(block);
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -20,7 +22,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class EarthGrab {
+public class EarthGrab implements IAbility {
 
 	private static double range = ConfigManager.earthGrabRange;
 	private static Map<Integer, EarthGrab> instances = new HashMap<Integer, EarthGrab>();
@@ -31,8 +33,10 @@ public class EarthGrab {
 	private BendingPlayer bPlayer;
 	private Player bender;
 	private LivingEntity target;
+	private IAbility parent;
 
- 	public EarthGrab(Player player, boolean self) {
+ 	public EarthGrab(Player player, boolean self, IAbility parent) {
+ 		this.parent = parent;
 		// Tools.verbose("initiating");
 		this.self = self;
 		this.bender = player;
@@ -165,5 +169,15 @@ public class EarthGrab {
 		instances.remove(ID);
 		
 		return true;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 4;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

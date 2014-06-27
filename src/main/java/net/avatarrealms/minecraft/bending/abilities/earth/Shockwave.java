@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -15,7 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Shockwave {
+public class Shockwave implements IAbility {
 	private static Map<Player, Shockwave> instances = new HashMap<Player, Shockwave>();
 
 	private static final double angle = Math.toRadians(40);
@@ -26,8 +28,10 @@ public class Shockwave {
 	private long starttime;
 	private long chargetime = defaultchargetime;
 	private boolean charged = false;
+	private IAbility parent;
 
-	public Shockwave(Player player) {
+	public Shockwave(Player player, IAbility parent) {
+		this.parent = parent;
 		if (instances.containsKey(player))
 			return;
 		starttime = System.currentTimeMillis();
@@ -100,7 +104,8 @@ public class Shockwave {
 		for (double theta = 0; theta < 360; theta += dtheta) {
 			double rtheta = Math.toRadians(theta);
 			Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
-			new Ripple(player, vector.normalize());
+			//TODO HEY SHOCKWAVE HERE
+			new Ripple(player, vector.normalize(), null);
 		}
 	}
 
@@ -113,7 +118,8 @@ public class Shockwave {
 					Vector vector = new Vector(Math.cos(rtheta), 0,
 							Math.sin(rtheta));
 					if (vector.angle(player.getEyeLocation().getDirection()) < angle)
-						new Ripple(player, vector.normalize());
+						//TODO HEY SHOCKWAVE HERE
+						new Ripple(player, vector.normalize(), null);
 				}
 				instances.remove(player);
 			}
@@ -133,6 +139,16 @@ public class Shockwave {
 	public static void removeAll() {
 		instances.clear();
 		Ripple.removeAll();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 11;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

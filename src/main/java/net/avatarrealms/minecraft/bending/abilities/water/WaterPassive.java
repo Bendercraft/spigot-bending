@@ -1,6 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -11,10 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class WaterPassive {
-
-	// private static final double factor = 5;
-
+public class WaterPassive implements IPassiveAbility{
 	public static void handlePassive(Server server) {
 		for (Player player : server.getOnlinePlayers()) {
 			if (EntityTools.isBender(player, BendingType.Water)

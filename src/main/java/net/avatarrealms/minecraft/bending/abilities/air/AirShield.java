@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -19,7 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class AirShield {
+public class AirShield implements IAbility {
 
 	private static Map<Integer, AirShield> instances = new HashMap<Integer, AirShield>();
 
@@ -32,8 +33,10 @@ public class AirShield {
 
 	private Player player;
 	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
+	private IAbility parent;
 
-	public AirShield(Player player) {
+	public AirShield(Player player, IAbility parent) {
+		this.parent = parent;
 		if (AvatarState.isAvatarState(player)
 				&& instances.containsKey(player.getEntityId())) {
 			instances.remove(player.getEntityId());
@@ -178,6 +181,16 @@ public class AirShield {
 				+ "with a small pocket of safe space in the center. "
 				+ "This wind will deflect all projectiles and will prevent any creature from "
 				+ "entering it for as long as its maintained. ";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 1;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

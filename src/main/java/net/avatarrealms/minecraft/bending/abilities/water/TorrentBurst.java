@@ -5,9 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -23,7 +25,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class TorrentBurst {
+public class TorrentBurst implements IAbility {
 	private static Map<Integer, TorrentBurst> instances = new HashMap<Integer, TorrentBurst>();
 
 	private static int ID = Integer.MIN_VALUE;
@@ -45,20 +47,23 @@ public class TorrentBurst {
 	private Map<Integer, Map<Integer, Double>> heights = new HashMap<Integer, Map<Integer, Double>>();
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private List<Entity> affectedentities = new LinkedList<Entity>();
+	
+	private IAbility parent;
 
-	public TorrentBurst(Player player) {
-		this(player, player.getEyeLocation(), dr);
+	public TorrentBurst(Player player, IAbility parent) {
+		this(player, player.getEyeLocation(), dr, parent);
 	}
 
-	public TorrentBurst(Player player, Location location) {
-		this(player, location, dr);
+	public TorrentBurst(Player player, Location location, IAbility parent) {
+		this(player, location, dr, parent);
 	}
 
-	public TorrentBurst(Player player, double radius) {
-		this(player, player.getEyeLocation(), radius);
+	public TorrentBurst(Player player, double radius, IAbility parent) {
+		this(player, player.getEyeLocation(), radius, parent);
 	}
 
-	public TorrentBurst(Player player, Location location, double radius) {
+	public TorrentBurst(Player player, Location location, double radius, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		World world = player.getWorld();
 		origin = location.clone();
@@ -190,7 +195,7 @@ public class TorrentBurst {
 		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Water);
+				bPlayer.earnXP(BendingType.Water, this);
 			}
 		}
 	}
@@ -213,7 +218,7 @@ public class TorrentBurst {
 			return;
 		if (location.distance(player.getLocation()) > maxradius + 5)
 			return;
-		new WaterReturn(player, location.getBlock());
+		new WaterReturn(player, location.getBlock(), this);
 	}
 
 	public static void progressAll() {
@@ -234,6 +239,16 @@ public class TorrentBurst {
 			burst.clear();
 		
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 6;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

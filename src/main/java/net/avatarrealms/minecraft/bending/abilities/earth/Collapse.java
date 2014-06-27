@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -12,10 +13,11 @@ import org.bukkit.entity.Player;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
-public class Collapse {
+public class Collapse implements IAbility {
 	private static final int range = ConfigManager.collapseRange;
 	private static final double defaultradius = ConfigManager.collapseRadius;
 	private static final int height = EarthColumn.standardheight;
@@ -24,10 +26,11 @@ public class Collapse {
 	private Map<Block, Block> blocks = new HashMap<Block, Block>();
 	private Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 	private double radius = defaultradius;
-
+	private IAbility parent;
 	private Player player;
 
-	public Collapse(Player player) {
+	public Collapse(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Collapse))
@@ -54,7 +57,7 @@ public class Collapse {
 		}
 
 		for (Block block : baseblocks.keySet()) {
-			new CompactColumn(player, block.getLocation());
+			new CompactColumn(player, block.getLocation(), this);
 		}
 	}
 
@@ -90,5 +93,15 @@ public class Collapse {
 				+ "all earth that can be moved downwards will be moved downwards. "
 				+ "This ability is especially risky or deadly in caves, depending on the "
 				+ "earthbender's goal and technique.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 9;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

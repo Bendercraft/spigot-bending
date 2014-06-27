@@ -9,6 +9,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -19,7 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class FireBurst {
+public class FireBurst implements IAbility {
 	private static Map<Player, FireBurst> instances = new HashMap<Player, FireBurst>();
 
 	private Player player;
@@ -29,8 +30,10 @@ public class FireBurst {
 	private double deltheta = 10;
 	private double delphi = 10;
 	private boolean charged = false;
+	private IAbility parent;
 
-	public FireBurst(Player player) {
+	public FireBurst(Player player, IAbility parent) {
+		this.parent = parent;
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
 				Abilities.FireBurst))
 			return;
@@ -73,7 +76,7 @@ public class FireBurst {
 						// Tools.verbose(direction.angle(vector));
 						// Tools.verbose(direction);
 						new FireBlast(location, direction.normalize(), player,
-								damage, safeblocks);
+								damage, safeblocks, this);
 					}
 				}
 			}
@@ -102,7 +105,7 @@ public class FireBurst {
 					z = r * Math.cos(rtheta);
 					Vector direction = new Vector(x, z, y);
 					new FireBlast(location, direction.normalize(), player,
-							damage, safeblocks);
+							damage, safeblocks, this);
 				}
 			}
 		}
@@ -154,5 +157,15 @@ public class FireBurst {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 11;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

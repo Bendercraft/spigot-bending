@@ -5,6 +5,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -15,14 +16,16 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-public class Extinguish {
+public class Extinguish implements IAbility {
 
 	private static double defaultrange = ConfigManager.extinguishRange;
 	private static double defaultradius = ConfigManager.extinguishRadius;
 	private static byte full = AirBlast.full;
+	
+	private IAbility parent;
 
-	public Extinguish(Player player) {
-
+	public Extinguish(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.HeatControl))
@@ -31,7 +34,7 @@ public class Extinguish {
 		double range = PluginTools.firebendingDayAugment(defaultrange,
 				player.getWorld());
 		if (BlockTools.isMeltable(EntityTools.getTargetBlock(player, range))) {
-			new HeatMelt(player);
+			new HeatMelt(player, this);
 			return;
 		}
 		double radius = PluginTools.firebendingDayAugment(defaultradius,
@@ -85,5 +88,15 @@ public class Extinguish {
 				+ "extinguished, although it will leave any creature burning engulfed in flames. "
 				+ "This ability can also cool lava. If this ability is used while targetting ice or snow, it"
 				+ " will instead melt blocks in that area. Finally, sneaking with this ability will cook any food in your hand.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

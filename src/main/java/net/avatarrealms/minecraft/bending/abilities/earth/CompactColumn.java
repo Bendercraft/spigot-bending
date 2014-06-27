@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.Location;
@@ -14,7 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class CompactColumn {
+public class CompactColumn implements IAbility {
 	private static Map<Integer, CompactColumn> instances = new HashMap<Integer, CompactColumn>();
 	//TODO This map never receive any elements, strange
 	private static Map<Block, Block> alreadydoneblocks = new HashMap<Block, Block>();
@@ -36,8 +38,10 @@ public class CompactColumn {
 	private int id;
 	private long time;
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
+	private IAbility parent;
 
-	public CompactColumn(Player player) {
+	public CompactColumn(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Collapse))
@@ -68,7 +72,8 @@ public class CompactColumn {
 		}
 	}
 
-	public CompactColumn(Player player, Location origin) {
+	public CompactColumn(Player player, Location origin, IAbility parent) {
+		this.parent = parent;
 		// Tools.verbose("New compact column");
 		this.origin = origin;
 		this.player = player;
@@ -199,5 +204,15 @@ public class CompactColumn {
 				+ "back into the earth below them, if they can. "
 				+ "This ability does have the capacity to trap something inside of it, "
 				+ "although it is incredibly difficult to do so. ";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 3;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

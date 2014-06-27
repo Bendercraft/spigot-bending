@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -23,7 +24,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Tornado {
+public class Tornado implements IAbility {
 
 	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 
@@ -41,8 +42,10 @@ public class Tornado {
 	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
 	private Location origin;
 	private Player player;
+	private IAbility parent;
 
-	public Tornado(Player player) {
+	public Tornado(Player player, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 
 		
@@ -124,7 +127,7 @@ public class Tornado {
 						if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId()!= player.getEntityId())) {
 							BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 							if (bPlayer != null) {
-								bPlayer.earnXP(BendingType.Air);
+								bPlayer.earnXP(BendingType.Air, this);
 							}
 						}
 						if (entity instanceof Player) {
@@ -239,6 +242,16 @@ public class Tornado {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 15;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

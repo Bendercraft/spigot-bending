@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -22,7 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
-public class AirBubble {
+public class AirBubble implements IAbility {
 
 	private static Map<Integer, AirBubble> instances = new HashMap<Integer, AirBubble>();
 
@@ -37,7 +38,10 @@ public class AirBubble {
 	// private ConcurrentHashMap<Block, Byte> waterorigins;
 	private Map<Block, BlockState> waterorigins;
 
-	public AirBubble(Player player) {
+	private IAbility parent;
+
+	public AirBubble(Player player, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		waterorigins = new HashMap<Block, BlockState>();
 		instances.put(player.getEntityId(), this);
@@ -114,7 +118,7 @@ public class AirBubble {
 			if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble || EntityTools
 					.getBendingAbility(player) == Abilities.WaterBubble)
 					&& !instances.containsKey(player.getEntityId())) {
-				new AirBubble(player);
+				new AirBubble(player, null);
 			}
 		}
 
@@ -172,6 +176,16 @@ public class AirBubble {
 		return "To use, the bender must merely have the ability selected."
 				+ " All water around the user in a small bubble will vanish,"
 				+ " replacing itself once the user either gets too far away or selects a different ability.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

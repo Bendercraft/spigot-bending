@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Effect;
@@ -12,7 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Cook {
+public class Cook implements IAbility {
 
 	private static Map<Player, Cook> instances = new HashMap<Player, Cook>();
 
@@ -27,8 +28,10 @@ public class Cook {
 	private Player player;
 	private ItemStack items;
 	private long time;
+	private IAbility parent;
 
-	public Cook(Player player) {
+	public Cook(Player player, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		items = player.getItemInHand();
 		time = System.currentTimeMillis();
@@ -127,6 +130,16 @@ public class Cook {
 
 	public static void removeAll() {
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

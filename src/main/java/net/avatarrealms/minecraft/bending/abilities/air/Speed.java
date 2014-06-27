@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -16,7 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Speed {
+public class Speed implements IPassiveAbility {
 
 	private static Map<Integer, Speed> instances = new HashMap<Integer, Speed>();
 

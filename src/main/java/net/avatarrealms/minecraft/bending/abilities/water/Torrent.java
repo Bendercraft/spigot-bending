@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -27,7 +28,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Torrent {
+public class Torrent implements IAbility {
 	private static Map<Player, Torrent> instances = new HashMap<Player, Torrent>();
 	private static Map<TempBlock, Player> frozenblocks = new HashMap<TempBlock, Player>();
 
@@ -65,8 +66,11 @@ public class Torrent {
 	private boolean launch = false;
 	private boolean launching = false;
 	private boolean freeze = false;
+	
+	private IAbility parent;
 
-	public Torrent(Player player) {
+	public Torrent(Player player, IAbility parent) {
+		this.parent = parent;
 		if (instances.containsKey(player)) {
 			Torrent torrent = instances.get(player);
 			if (!torrent.sourceselected) {
@@ -130,7 +134,7 @@ public class Torrent {
 					sourceselected = false;
 					settingup = true;
 					if (BlockTools.isPlant(sourceblock)) {
-						new Plantbending(sourceblock);
+						new Plantbending(sourceblock, this);
 						sourceblock.setType(Material.AIR);
 					} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 						sourceblock.setType(Material.AIR);
@@ -216,7 +220,7 @@ public class Torrent {
 			}
 
 			if (formed && !player.isSneaking() && !launch) {
-				new TorrentBurst(player, radius);
+				new TorrentBurst(player, radius, this);
 				return false;
 			}
 
@@ -450,7 +454,7 @@ public class Torrent {
 	}
 
 	private void returnWater(Location location) {
-		new WaterReturn(player, location.getBlock());
+		new WaterReturn(player, location.getBlock(), this);
 	}
 
 	public static void use(Player player) {
@@ -471,7 +475,7 @@ public class Torrent {
 							eyeloc.getBlock())) {
 				block.setType(Material.WATER);
 				block.setData(full);
-				Torrent tor = new Torrent(player);
+				Torrent tor = new Torrent(player, null);
 				if (tor.sourceselected || tor.settingup) {
 					WaterReturn.emptyWaterBottle(player);
 				} else {
@@ -542,7 +546,7 @@ public class Torrent {
 			}
 			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){	
 				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.Water);
+					bPlayer.earnXP(BendingType.Water, this);
 				}
 			}
 			// if (((LivingEntity) entity).getNoDamageTicks() == 0) {
@@ -639,6 +643,16 @@ public class Torrent {
 
 	public static String getDescription() {
 		return "Torrent is one of the strongest moves in a waterbender's arsenal. To use, first click a source block to select it; then hold shift to begin streaming the water around you. Water flowing around you this way will damage and knock back nearby enemies and projectiles. If you release shift during this, you will create a large wave that expands outwards from you, launching anything in its path back. Instead, if you click you release the water and channel it to flow towards your cursor. Anything caught in the blast will be tossed about violently and take damage. Finally, if you click again when the water is torrenting, it will freeze the area around it when it is obstructed.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 6;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

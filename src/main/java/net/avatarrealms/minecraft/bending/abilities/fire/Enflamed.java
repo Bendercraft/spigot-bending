@@ -4,19 +4,25 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import net.avatarrealms.minecraft.bending.model.IAbility;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public class Enflamed {
+public class Enflamed implements IAbility {
 	private static Map<Entity, Player> instances = new HashMap<Entity, Player>();
 	private static Map<Entity, Long> times = new HashMap<Entity, Long>();
 
 	private static final int damage = 1;
 	private static final int max = 90;
 	private static final long buffer = 30;
+	
+	private IAbility parent;
 
-	public Enflamed(Entity entity, Player source) {
+	public Enflamed(Entity entity, Player source, IAbility parent) {
+		this.parent = parent;
 		if (entity.getEntityId() == source.getEntityId())
 			return;
 		instances.put(entity, source);
@@ -64,6 +70,16 @@ public class Enflamed {
 		for(Entity entity : toRemove) {
 			instances.remove(entity);
 		}
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

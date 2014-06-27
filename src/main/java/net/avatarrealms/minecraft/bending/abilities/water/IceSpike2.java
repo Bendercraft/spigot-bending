@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -26,7 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class IceSpike2 {
+public class IceSpike2 implements IAbility {
 	private static Map<Integer, IceSpike2> instances = new HashMap<Integer, IceSpike2>();
 
 	private static double defaultrange = 20;
@@ -54,8 +55,10 @@ public class IceSpike2 {
 	private Location location;
 	private Location firstdestination;
 	private Location destination;
+	private IAbility parent;
 
-	public IceSpike2(Player player) {
+	public IceSpike2(Player player, IAbility parent) {
+		this.parent = parent;
 		block(player);
 		if (EntityTools.canPlantbend(player))
 			plantbending = true;
@@ -65,7 +68,7 @@ public class IceSpike2 {
 				plantbending);
 
 		if (sourceblock == null) {
-			new SpikeField(player);
+			new SpikeField(player, this);
 		} else {
 			prepare(sourceblock);
 		}
@@ -119,7 +122,7 @@ public class IceSpike2 {
 		}
 
 		if (!activate) {
-			IceSpike spike = new IceSpike(player);
+			IceSpike spike = new IceSpike(player, null);
 			if (spike.id == 0) {
 				waterBottle(player);
 			}
@@ -151,7 +154,7 @@ public class IceSpike2 {
 
 				block.setType(Material.WATER);
 				block.setData((byte) 0x0);
-				IceSpike2 ice = new IceSpike2(player);
+				IceSpike2 ice = new IceSpike2(player, null);
 				ice.throwIce();
 
 				if (ice.progressing) {
@@ -192,7 +195,7 @@ public class IceSpike2 {
 		prepared = false;
 
 		if (BlockTools.isPlant(sourceblock)) {
-			new Plantbending(sourceblock);
+			new Plantbending(sourceblock, this);
 			sourceblock.setType(Material.AIR);
 		} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 			sourceblock.setType(Material.AIR);
@@ -321,7 +324,7 @@ public class IceSpike2 {
 		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
 			
 			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Water);
+				bPlayer.earnXP(BendingType.Water, this);
 			}
 		}
 		if (entity instanceof Player) {
@@ -446,7 +449,7 @@ public class IceSpike2 {
 	}
 
 	private void returnWater() {
-		new WaterReturn(player, sourceblock);
+		new WaterReturn(player, sourceblock, this);
 	}
 
 	public static void removeAll() {
@@ -463,5 +466,15 @@ public class IceSpike2 {
 				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 4;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 }

@@ -9,7 +9,9 @@ import java.util.Random;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -18,19 +20,21 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class SpikeField {
+public class SpikeField implements IAbility {
 
 	private static int radius = ConfigManager.icespikeAreaRadius;
 	public static int numofspikes = ((radius * 2) * (radius * 2)) / 16;
 	private static long cooldown = ConfigManager.icespikeAreaCooldown;
 	public static Map<Player, Long> cooldowns = new HashMap<Player, Long>();
 
-	Random ran = new Random();
+	private Random ran = new Random();
 	private int damage = ConfigManager.icespikeAreaDamage;
 	private Vector thrown = new Vector(0,
 			ConfigManager.icespikeAreaThrowingMult, 0);
+	private IAbility parent;
 
-	public SpikeField(Player p) {
+	public SpikeField(Player p, IAbility parent) {
+		this.parent = parent;
 		if (cooldowns.containsKey(p))
 			if (cooldowns.get(p) + cooldown >= System.currentTimeMillis())
 				return;
@@ -73,7 +77,7 @@ public class SpikeField {
 					if ((entity instanceof Player)) {
 						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 						if (bPlayer != null) {
-							bPlayer.earnXP(BendingType.Water);
+							bPlayer.earnXP(BendingType.Water, this);
 						}
 					}
 					for (Block block : iceblocks) {
@@ -101,47 +105,20 @@ public class SpikeField {
 			// targetblock.getLocation().getZ());
 			if (targetblock.getRelative(BlockFace.UP).getType() != Material.ICE) {
 				new IceSpike(p, targetblock.getLocation(), damage, thrown,
-						cooldown);
+						cooldown, this);
 				cooldowns.put(p, System.currentTimeMillis());
 				iceblocks.remove(targetblock);
 			}
 		}
 	}
+
+	@Override
+	public int getBaseExperience() {
+		return 9;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
+	}
 }
-// for (int i = 0; i < (numofspikes / 2); i++){
-// int blockX = ran.nextInt(radius) + 1;
-// int blockZ = ran.nextInt((radius * 2) + 1) - radius;
-// Block b = p.getLocation().getWorld().getBlockAt(locX + blockX, locY - 1, locZ
-// - blockZ);
-// if (b.getType() == Material.ICE){
-// new IceSpike(p, b.getLocation(), 2);
-// } else {
-// for (i = 0; i <= heigth; i++) {
-// b = b.getRelative(BlockFace.DOWN);
-// if (b.getType() == Material.ICE){
-// new IceSpike(p, b.getLocation(), 2);
-// break;
-// }
-// }
-// }
-//
-// }
-// for (int i = 0; i < (numofspikes / 2); i++){
-// int blockX = ran.nextInt(radius) + 1;
-// int blockZ = ran.nextInt((radius * 2) + 1) - radius;
-// Block b = p.getLocation().getWorld().getBlockAt(locX - blockX, locY - 1, locZ
-// - blockZ);
-// if (b.getType() == Material.ICE) {
-// new IceSpike(p, b.getLocation(), 2);
-// } else {
-// for (i = 0; i <= heigth; i++) {
-// b = b.getRelative(BlockFace.DOWN);
-// if (b.getType() == Material.ICE){
-// new IceSpike(p, b.getLocation(), 2);
-// break;
-// }
-// }
-// }
-// }
-// }
-// }

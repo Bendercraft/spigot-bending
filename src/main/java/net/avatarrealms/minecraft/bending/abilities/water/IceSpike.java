@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -25,7 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class IceSpike {
+public class IceSpike implements IAbility {
 	private static Map<Integer, IceSpike> instances = new HashMap<Integer, IceSpike>();
 	
 	private Map<Player, Long> removeTimers = new HashMap<Player, Long>();
@@ -54,8 +56,10 @@ public class IceSpike {
 	private Vector thrown = new Vector(0, ConfigManager.icespikeThrowingMult, 0);
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 	private List<LivingEntity> damaged = new ArrayList<LivingEntity>();
+	private IAbility parent;
 
-	public IceSpike(Player player) {
+	public IceSpike(Player player, IAbility parent) {
+		this.parent = parent;
 		if (cooldowns.containsKey(player))
 			if (cooldowns.get(player) + cooldown >= System.currentTimeMillis())
 				return;
@@ -112,7 +116,8 @@ public class IceSpike {
 	}
 
 	public IceSpike(Player player, Location origin, int damage,
-			Vector throwing, long aoecooldown) {
+			Vector throwing, long aoecooldown, IAbility parent) {
+		this.parent = parent;
 		this.cooldown = aoecooldown;
 		this.player = player;
 		this.origin = origin;
@@ -255,7 +260,7 @@ public class IceSpike {
 		int mod = 2;
 		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
 			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Water);
+				bPlayer.earnXP(BendingType.Water, this);
 			}
 		}
 		if (entity instanceof Player) {
@@ -307,6 +312,16 @@ public class IceSpike {
 				+ " this will launch a spike of ice at your target, dealing a bit of damage and slowing the target. "
 				+ "If you sneak (shift) while not selecting a source, many ice spikes will erupt from around you, "
 				+ "damaging and slowing those targets.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 4;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

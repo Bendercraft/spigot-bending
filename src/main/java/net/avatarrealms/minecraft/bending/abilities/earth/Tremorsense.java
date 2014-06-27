@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -19,7 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-public class Tremorsense {
+public class Tremorsense implements IAbility {
 	private static Map<Player, Tremorsense> instances = new HashMap<Player, Tremorsense>();
 	private static final int maxdepth = ConfigManager.tremorsenseMaxDepth;
 	private static final int radius = ConfigManager.tremorsenseRadius;
@@ -27,8 +28,10 @@ public class Tremorsense {
 
 	private Player player;
 	private Block block;
+	private IAbility parent;
 
-	public Tremorsense(Player player) {
+	public Tremorsense(Player player, IAbility parent) {
+		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Tremorsense))
@@ -42,7 +45,8 @@ public class Tremorsense {
 		}
 	}
 
-	public Tremorsense(Player player, boolean value) {
+	public Tremorsense(Player player, boolean value, IAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		set();
 	}
@@ -137,7 +141,7 @@ public class Tremorsense {
 			} else if (EntityTools.hasAbility(player, Abilities.Tremorsense)
 					&& EntityTools.canBend(player, Abilities.Tremorsense)
 					&& player.getLocation().getBlock().getLightLevel() < lightthreshold) {
-				new Tremorsense(player, false);
+				new Tremorsense(player, false, null);
 			}
 		}
 	}
@@ -158,6 +162,16 @@ public class Tremorsense {
 				+ "as you have lost contact with the earth and cannot 'see' until you can touch earth again. "
 				+ "Additionally, if you click with this ability selected, smoke will appear above nearby earth "
 				+ "with pockets of air beneath them.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

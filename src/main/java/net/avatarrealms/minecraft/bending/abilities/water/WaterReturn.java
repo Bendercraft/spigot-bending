@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -19,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
-public class WaterReturn {
+public class WaterReturn implements IAbility {
 
 	private static Map<Player, WaterReturn> instances = new HashMap<Player, WaterReturn>();
 	// private static int ID = Integer.MIN_VALUE;
@@ -33,8 +35,10 @@ public class WaterReturn {
 	private Location location;
 	private TempBlock block;
 	private long time;
+	private IAbility parent;
 
-	public WaterReturn(Player player, Block block) {
+	public WaterReturn(Player player, Block block, IAbility parent) {
+		this.parent = parent;
 		if (instances.containsKey(player))
 			return;
 		this.player = player;
@@ -214,6 +218,16 @@ public class WaterReturn {
 				water.block.revertBlock();
 		}
 		instances.clear();
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 0;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }

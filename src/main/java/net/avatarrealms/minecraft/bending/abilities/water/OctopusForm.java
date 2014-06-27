@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
+import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -23,7 +24,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class OctopusForm {
+public class OctopusForm implements IAbility {
 	private static Map<Player, OctopusForm> instances = new HashMap<Player, OctopusForm>();
 
 	private static int range = 10;
@@ -48,8 +49,10 @@ public class OctopusForm {
 	private boolean settingup = false;
 	private boolean forming = false;
 	private boolean formed = false;
+	private IAbility parent;
 
-	public OctopusForm(Player player) {
+	public OctopusForm(Player player, IAbility parent) {
+		this.parent = parent;
 		if (instances.containsKey(player)) {
 			if (instances.get(player).formed) {
 				instances.get(player).attack();
@@ -93,7 +96,7 @@ public class OctopusForm {
 							eyeloc.getBlock())) {
 				block.setType(Material.WATER);
 				block.setData(full);
-				OctopusForm form = new OctopusForm(player);
+				OctopusForm form = new OctopusForm(player, null);
 				form.form();
 				if (form.formed || form.forming || form.settingup) {
 					WaterReturn.emptyWaterBottle(player);
@@ -107,7 +110,7 @@ public class OctopusForm {
 	private void form() {
 		incrementStep();
 		if (BlockTools.isPlant(sourceblock)) {
-			new Plantbending(sourceblock);
+			new Plantbending(sourceblock, this);
 			sourceblock.setType(Material.AIR);
 		} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 			sourceblock.setType(Material.AIR);
@@ -146,7 +149,7 @@ public class OctopusForm {
 				continue;
 			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
 				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.Water);
+					bPlayer.earnXP(BendingType.Water, this);
 				}
 			}
 			entity.setVelocity(Tools
@@ -428,7 +431,7 @@ public class OctopusForm {
 	private void returnWater() {
 		if (source != null) {
 			source.revertBlock();
-			new WaterReturn(player, source.getLocation().getBlock());
+			new WaterReturn(player, source.getLocation().getBlock(), this);
 			source = null;
 		} else {
 			Location location = player.getLocation();
@@ -437,7 +440,7 @@ public class OctopusForm {
 					.clone()
 					.add(new Vector(radius * Math.cos(rtheta), 0, radius
 							* Math.sin(rtheta))).getBlock();
-			new WaterReturn(player, block);
+			new WaterReturn(player, block, this);
 		}
 	}
 
@@ -459,6 +462,16 @@ public class OctopusForm {
 				+ "While channeling, the water will form itself around you and has a chance to block incoming attacks. "
 				+ "Additionally, you can click while channeling to attack things near you, dealing damage and knocking them back. "
 				+ "Releasing shift at any time will dissipate the form.";
+	}
+
+	@Override
+	public int getBaseExperience() {
+		return 8;
+	}
+
+	@Override
+	public IAbility getParent() {
+		return parent;
 	}
 
 }
