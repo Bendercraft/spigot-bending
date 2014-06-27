@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
@@ -26,7 +24,7 @@ import org.bukkit.entity.Player;
 
 public class Lightning {
 	private static Map<Player, Lightning> instances = new HashMap<Player, Lightning>();
-	private static ConcurrentHashMap<Entity, Lightning> strikes = new ConcurrentHashMap<Entity, Lightning>();
+	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();
 	
 	public static int defaultdistance = ConfigManager.lightningRange;
 	private static long defaultwarmup = ConfigManager.lightningWarmup;
