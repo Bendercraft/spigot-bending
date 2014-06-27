@@ -1,14 +1,14 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -16,12 +16,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class EarthColumn {
-
-	public static ConcurrentHashMap<Integer, EarthColumn> instances = new ConcurrentHashMap<Integer, EarthColumn>();
+	private static Map<Integer, EarthColumn> instances = new HashMap<Integer, EarthColumn>();
 	public static final int standardheight = ConfigManager.earthColumnHeight;
 
-	private static ConcurrentHashMap<Block, Block> alreadydoneblocks = new ConcurrentHashMap<Block, Block>();
-	private static ConcurrentHashMap<Block, Integer> baseblocks = new ConcurrentHashMap<Block, Integer>();
+	private static Map<Block, Block> alreadydoneblocks = new HashMap<Block, Block>();
+	private static Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -154,17 +153,17 @@ public class EarthColumn {
 	}
 
 	public static boolean blockInAllAffectedBlocks(Block block) {
-		for (int ID : instances.keySet()) {
-			if (instances.get(ID).blockInAffectedBlocks(block))
+		for (EarthColumn column : instances.values()) {
+			if (column.blockInAffectedBlocks(block))
 				return true;
 		}
 		return false;
 	}
 
 	public static void revertBlock(Block block) {
-		for (int ID : instances.keySet()) {
-			if (instances.get(ID).blockInAffectedBlocks(block)) {
-				instances.get(ID).affectedBlocks.remove(block);
+		for (EarthColumn column : instances.values()) {
+			if (column.blockInAffectedBlocks(block)) {
+				column.affectedBlocks.remove(block);
 			}
 		}
 	}
@@ -179,11 +178,10 @@ public class EarthColumn {
 		return true;
 	}
 
-	public boolean progress() {
+	private boolean progress() {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 			if (!moveEarth()) {
-				instances.remove(id);
 				for (Block block : affectedBlocks) {
 					alreadydoneblocks.put(block, block);
 				}
@@ -212,8 +210,21 @@ public class EarthColumn {
 		return true;
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void progressAll() {
+		List<EarthColumn> toRemove = new LinkedList<EarthColumn>();
+		for(EarthColumn column : instances.values()) {
+			boolean keep = column.progress();
+			if(!keep) {
+				toRemove.add(column);
+			}
+		}
+		for(EarthColumn column : toRemove) {
+			column.remove();
+		}
+	}
+
+	private void remove() {
+		instances.remove(id);
 	}
 
 	public static boolean blockIsBase(Block block) {
@@ -227,21 +238,16 @@ public class EarthColumn {
 		if (baseblocks.containsKey(block)) {
 			baseblocks.remove(block);
 		}
-
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			instances.remove(id);
-		}
+		instances.clear();
 	}
 
 	public static void resetBlock(Block block) {
-
 		if (alreadydoneblocks.containsKey(block)) {
 			alreadydoneblocks.remove(block);
 		}
-
 	}
 
 	public static String getDescription() {
