@@ -49,19 +49,15 @@ public class RapidPunch implements IAbility {
 		numpunches = 0;
 		player = p;
 		instances.put(p, this);
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		bPlayer.earnXP(BendingType.ChiBlocker, this);
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.RapidPunch);
 	}
 
 	public boolean progress() {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (numpunches >= punches) {
 			return false;
-		}
-		if (numpunches%2 == 0) {
-			if ((target instanceof Player) ||(target instanceof Monster)) {	
-				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.ChiBlocker, this);
-				}
-			}
 		}
 					
 		if (target != null && target instanceof LivingEntity) {
@@ -71,7 +67,6 @@ public class RapidPunch implements IAbility {
 				EntityTools.blockChi((Player) target, System.currentTimeMillis());
 			lt.setNoDamageTicks(0);
 		}
-		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.RapidPunch);
 		numpunches++;
 		return true;
 	}

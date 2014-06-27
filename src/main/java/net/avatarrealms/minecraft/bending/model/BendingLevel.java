@@ -1,13 +1,12 @@
 package net.avatarrealms.minecraft.bending.model;
 
-import org.bukkit.Bukkit;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 
 // http://rechneronline.de/function-graphs/
 public class BendingLevel {
-	// 120 seconds, but SPAM_THRESHOLD is in milliseconds
-	public static int SPAM_THRESHOLD = 120 * 1000;
+	// 240 seconds, but SPAM_THRESHOLD is in milliseconds
+	public static int SPAM_THRESHOLD = 240 * 1000;
 	
 	private BendingPlayer bPlayer;
 	private BendingType bendingType;
@@ -171,12 +170,6 @@ public class BendingLevel {
 			//  [(getExperienceNeeded / augment) / baseXP] 
 			//    it will give number of ability to spam to get level (no degression assumed)
 			double finalXP = ability.getBaseExperience() * augmentFactor * (1-degressFactor);
-			String message = "Ability : "+ability.getClass().getSimpleName()+
-					" with no parent, got degress factor : "+degressFactor+
-					" and thus gave "+finalXP+
-					" over "+ability.getBaseExperience()+"*"+augmentFactor;
-			Bukkit.getLogger().info(message);
-			bPlayer.getPlayer().sendMessage(message);
 			
 			if(finalXP > 0) {
 				giveXP((int) finalXP);
@@ -187,6 +180,13 @@ public class BendingLevel {
 			if(ability.getBaseExperience() > 0) {
 				spamHistory++;
 			}
+			/*
+			String message = "Ability : "+ability.getClass().getSimpleName()+
+					" with no parent, got degress factor : "+degressFactor+
+					" and thus gave "+finalXP+
+					" over "+ability.getBaseExperience()+"*"+augmentFactor;
+			Bukkit.getLogger().info(message);
+			bPlayer.getPlayer().sendMessage(message);
 		} else {
 			StringBuilder builder = new StringBuilder();
 			builder.append("Got parent : ");
@@ -198,6 +198,8 @@ public class BendingLevel {
 				parent = parent.getParent();
 			}
 			Bukkit.getLogger().info(builder.toString());
+			Bukkit.getLogger().info(builder.toString());
+			*/
 		}
 	}
 

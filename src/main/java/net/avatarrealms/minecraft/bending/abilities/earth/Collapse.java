@@ -99,7 +99,7 @@ public class Collapse implements IAbility {
 
 	@Override
 	public int getBaseExperience() {
-		return 9;
+		return 4;
 	}
 
 	@Override
