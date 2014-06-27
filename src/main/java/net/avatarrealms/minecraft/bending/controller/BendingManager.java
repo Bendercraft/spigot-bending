@@ -1,6 +1,5 @@
 package net.avatarrealms.minecraft.bending.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,12 +71,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class BendingManager implements Runnable {
-	public static ArrayList<Player> flyingplayers = new ArrayList<Player>();
+	public static List<Player> flyingplayers = new LinkedList<Player>();
 
 	public Bending plugin;
 	private long time;
 	private long interval;
-	private List<World> worlds = new ArrayList<World>();
+	private List<World> worlds = new LinkedList<World>();
 	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
 
@@ -142,9 +141,7 @@ public class BendingManager implements Runnable {
 			EarthColumn.progress(ID);
 		}
 
-		for (int ID : CompactColumn.instances.keySet()) {
-			CompactColumn.progress(ID);
-		}
+		CompactColumn.progressAll();
 
 		for (int ID : EarthBlast.instances.keySet()) {
 			EarthBlast.progress(ID);

@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -13,10 +15,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class CompactColumn {
-
-	public static ConcurrentHashMap<Integer, CompactColumn> instances = new ConcurrentHashMap<Integer, CompactColumn>();
-
-	private static ConcurrentHashMap<Block, Block> alreadydoneblocks = new ConcurrentHashMap<Block, Block>();
+	private static Map<Integer, CompactColumn> instances = new HashMap<Integer, CompactColumn>();
+	//TODO This map never receive any elements, strange
+	private static Map<Block, Block> alreadydoneblocks = new HashMap<Block, Block>();
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -34,7 +35,7 @@ public class CompactColumn {
 	private int distance;
 	private int id;
 	private long time;
-	private ConcurrentHashMap<Block, Block> affectedblocks = new ConcurrentHashMap<Block, Block>();
+	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 
 	public CompactColumn(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -116,17 +117,17 @@ public class CompactColumn {
 	}
 
 	public static boolean blockInAllAffectedBlocks(Block block) {
-		for (int ID : instances.keySet()) {
-			if (instances.get(ID).blockInAffectedBlocks(block))
+		for (CompactColumn column : instances.values()) {
+			if (column.blockInAffectedBlocks(block))
 				return true;
 		}
 		return false;
 	}
 
 	public static void revertBlock(Block block) {
-		for (int ID : instances.keySet()) {
-			if (instances.get(ID).blockInAffectedBlocks(block)) {
-				instances.get(ID).affectedblocks.remove(block);
+		for (CompactColumn column : instances.values()) {
+			if (column.blockInAffectedBlocks(block)) {
+				column.affectedblocks.remove(block);
 			}
 		}
 	}
@@ -141,17 +142,13 @@ public class CompactColumn {
 		return true;
 	}
 
-	public boolean progress() {
+	private boolean progress() {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 			if (!moveEarth()) {
 				for (Block blocki : affectedblocks.keySet()) {
 					EarthColumn.resetBlock(blocki);
 				}
-				instances.remove(id);
-				// for (Block block : affectedblocks.keySet()) {
-				// alreadydoneblocks.put(block, block);
-				// }
 				return false;
 			}
 		}
@@ -174,14 +171,26 @@ public class CompactColumn {
 		return true;
 	}
 
-	public static boolean progress(int ID) {
-		return instances.get(ID).progress();
+	public static void progressAll() {
+		List<CompactColumn> toRemove = new LinkedList<CompactColumn>();
+		
+		for(CompactColumn column : instances.values()) {
+			boolean keep = column.progress();
+			if(!keep) {
+				toRemove.add(column);
+			}
+		}
+		for(CompactColumn column : toRemove) {
+			column.remove();
+		}
+	}
+
+	private void remove() {
+		instances.remove(player.getEntityId());
 	}
 
 	public static void removeAll() {
-		for (int id : instances.keySet()) {
-			instances.remove(id);
-		}
+		instances.clear();
 	}
 
 	public static String getDescription() {
