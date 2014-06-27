@@ -195,6 +195,7 @@ public class BendingLevel {
 			while(parent.getParent() != null) {
 				builder.append(" -> ");
 				builder.append(parent.getClass().getSimpleName());
+				parent = parent.getParent();
 			}
 			Bukkit.getLogger().info(builder.toString());
 		}
