@@ -157,7 +157,7 @@ public class ConfigManager {
 	public static int catapultLevelRequired = 35;
 	
 	//ShockWave
-	public static int shockwaveLevelRequired = 40;
+	public static int shockwaveLevelRequired = 1;
 
 	// Collapse
 	public static int collapseRange = 20;
@@ -1222,6 +1222,9 @@ public class ConfigManager {
 		config.set("Properties.Earth.Catapult.Speed", catapultSpeed);
 		config.set("Properties.Earth.Catapult.Push", catapultPush);
 		config.set("Properties.Earth.Catapult.level-required", catapultLevelRequired);
+		
+		// ShockWave
+		config.set("Properties.Earth.ShockWave.level-required", shockwaveLevelRequired);
 		// CompactColumn
 		config.set("Properties.Earth.CompactColumn.Range", compactColumnRange);
 		config.set("Properties.Earth.CompactColumn.Speed", compactColumnSpeed);
