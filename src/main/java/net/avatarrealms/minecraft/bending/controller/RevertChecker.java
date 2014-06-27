@@ -64,8 +64,10 @@ public class RevertChecker implements Runnable {
 	}
 	
 	public static void progressAll() {
+		//TODO ManageEarthBending seems to have trouble here, using temp list as buffer
+		List<Block> tempBlock = new LinkedList<Block>(revertQueue.keySet());
 		List<Block> toRemoveBlock = new LinkedList<Block>();
-		for (Block block : revertQueue.keySet()) {
+		for (Block block : tempBlock) {
 			BlockTools.revertBlock(block);
 			toRemoveBlock.add(block);
 		}
