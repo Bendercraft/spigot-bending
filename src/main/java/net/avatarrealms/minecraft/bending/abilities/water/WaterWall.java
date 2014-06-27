@@ -86,7 +86,7 @@ public class WaterWall implements IAbility {
 				// Tools.verbose("New water wall prepared");
 				instances.put(player.getEntityId(), this);
 				time = System.currentTimeMillis();
-
+				bPlayer.earnXP(BendingType.Water, this);
 			}
 		} else if (prepare()) {
 			if (instances.containsKey(player.getEntityId())) {
@@ -123,7 +123,6 @@ public class WaterWall implements IAbility {
 			}
 
 		}
-
 	}
 
 	private static void freezeThaw(Player player) {
@@ -462,7 +461,6 @@ public class WaterWall implements IAbility {
 					return;
 				
 				WaterWall wall = new WaterWall(player, null);
-				BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,wall);
 				Location eyeloc = player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize())
 						.getBlock();
