@@ -113,6 +113,11 @@ public class FireBurst implements IAbility {
 							damage, safeblocks, this);
 				}
 			}
+			//TODO change into another ability ?
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+			if (bPlayer != null) {
+				bPlayer.earnXP(BendingType.Fire, this);
+			}
 		}
 	}
 

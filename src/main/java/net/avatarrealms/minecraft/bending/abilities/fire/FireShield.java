@@ -60,8 +60,8 @@ public class FireShield implements IAbility {
 			instances.put(player, this);
 			if (!shield) {
 				bPlayer.cooldown(Abilities.FireShield);
-				bPlayer.earnXP(BendingType.Fire, this);
 			}
+			bPlayer.earnXP(BendingType.Fire, this);
 		}
 	}
 
