@@ -3,6 +3,7 @@ package net.avatarrealms.minecraft.bending.abilities.chi;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
@@ -21,11 +22,9 @@ public class HighJump implements IAbility {
 
 		if (bPlayer.isOnCooldown(Abilities.HighJump))
 			return;
-		// if (cooldowns.containsKey(p.getName())
-		// && cooldowns.get(p.getName()) + cooldown >= System
-		// .currentTimeMillis())
-		// return;
 		jump(p);
+		bPlayer.cooldown(Abilities.HighJump);
+		bPlayer.earnXP(BendingType.ChiBlocker,this);
 	}
 
 	private void jump(Player p) {
@@ -35,9 +34,7 @@ public class HighJump implements IAbility {
 		Vector vec = p.getVelocity();
 		vec.setY(jumpheight);
 		p.setVelocity(vec);
-		// cooldowns.put(p.getName(), System.currentTimeMillis());
-		BendingPlayer.getBendingPlayer(p).cooldown(Abilities.HighJump);
-		
+		// cooldowns.put(p.getName(), System.currentTimeMillis());	
 		return;
 	}
 

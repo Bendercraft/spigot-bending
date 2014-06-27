@@ -132,8 +132,8 @@ public class EarthColumn implements IAbility {
 		}
 	}
 	
-	public EarthColumn(Player player, Location origin, EarthGrab grab, IAbility parent) {
-		this(player,origin,1, parent);
+	public EarthColumn(Player player, Location origin,int height, EarthGrab grab, IAbility parent) {
+		this(player,origin, height, parent);
 		this.earthGrab = grab;
 	}
 	

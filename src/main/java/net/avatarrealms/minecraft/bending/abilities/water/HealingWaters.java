@@ -48,7 +48,7 @@ public class HealingWaters implements IAbility {
 					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
 						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 						if (bPlayer != null) {
-							//bPlayer.earnXP(BendingType.Water);
+							bPlayer.earnXP(BendingType.Water,new HealingWaters());
 						}
 					}
 				}

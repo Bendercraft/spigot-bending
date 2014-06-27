@@ -15,6 +15,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -80,17 +81,31 @@ public class EarthGrab implements IAbility {
 	public void grabEntity(Player player, Entity entity) {
 		if (entity != null) {
 			if (entity instanceof LivingEntity) {
+				int cpt = 0;
 				target = (LivingEntity)entity;
 				Location location = entity.getLocation();
 				Location cLoc[] = new Location[4];
+				
 				cLoc[0] = location.clone().add(0,-1,-1);
 				cLoc[1] = location.clone().add(0,-1,1);
 				cLoc[2] = location.clone().add(-1,-1,0);
 				cLoc[3] = location.clone().add(1,-1,0);
-				if (BlockTools.isEarthbendable(player,cLoc[0].getBlock()) &&
-						BlockTools.isEarthbendable(player,cLoc[1].getBlock()) &&
-						BlockTools.isEarthbendable(player,cLoc[2].getBlock()) &&
-						BlockTools.isEarthbendable(player,cLoc[3].getBlock())) {
+				
+				for (int i =0; i < 4; i ++) {
+					if (BlockTools.isEarthbendable(player,cLoc[i].getBlock())) {
+						cpt++;
+						columns.add(new EarthColumn(player, cLoc[i],1, this, this));
+					}
+					else if (cLoc[0].getBlock().getType() == Material.AIR){
+						cLoc[0] = location.add(0,-1,0);
+						if (BlockTools.isEarthbendable(player,cLoc[i].getBlock())) {
+							cpt++;
+							columns.add(new EarthColumn(player, cLoc[i], 2, this, this));
+						}
+					}
+				}
+				
+				if (cpt >= 4) {
 					int duration;
 					if (self) {
 						duration = 100; // 5 secs
@@ -116,22 +131,13 @@ public class EarthGrab implements IAbility {
 					if (target instanceof Player) {
 						EntityTools.grab((Player) target,System.currentTimeMillis());
 					}
-					
-				}
-				//player.sendMessage("Location : " + target.getLocation().getX() + " " + target.getLocation().getY() + " " + target.getLocation().getZ());
-						
-				columns.add(new EarthColumn(player, cLoc[0], this, this));
-				columns.add(new EarthColumn(player, cLoc[1], this, this));
-				columns.add(new EarthColumn(player, cLoc[2], this, this));
-				columns.add(new EarthColumn(player, cLoc[3], this, this));
-				
-				if (!columns.isEmpty()) // never empty ?
 					bPlayer.cooldown(Abilities.EarthGrab);
 					bPlayer.earnXP(BendingType.Earth, this);
 				}
-			
-			}	
+				//player.sendMessage("Location : " + target.getLocation().getX() + " " + target.getLocation().getY() + " " + target.getLocation().getZ());	
+			}
 		}	
+	}
 
 	public static String getDescription() {
 		return "To use, simply left-click while targeting a creature within range. "

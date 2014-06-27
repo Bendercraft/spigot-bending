@@ -208,6 +208,8 @@ public class AirSwipe implements IAbility {
 		elements.clear();
 		elements.putAll(toAdd);
 		List<Vector> toRemove = new LinkedList<Vector>();
+		int cpt = 0;
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		for(Entry<Vector, Location> entry : elements.entrySet()) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
@@ -255,7 +257,6 @@ public class AirSwipe implements IAbility {
 			
 				//Check affected people
 				PluginTools.removeSpouts(location, player);
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 						affectingradius)) {
 					if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
@@ -275,9 +276,7 @@ public class AirSwipe implements IAbility {
 							affectedentities.add(entity);
 								
 							if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			
-								if (bPlayer != null) {
-									bPlayer.earnXP(BendingType.Air, this);
-								}
+								cpt++;
 							}
 						}
 						
@@ -289,6 +288,9 @@ public class AirSwipe implements IAbility {
 					}
 				}
 			}
+		}
+		if (cpt>= 1) {
+			bPlayer.earnXP(BendingType.Air,this);
 		}
 		
 		for(Vector direction : toRemove) {
