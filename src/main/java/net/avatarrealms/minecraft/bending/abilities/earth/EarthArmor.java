@@ -63,7 +63,7 @@ public class EarthArmor {
 			headtype = headblock.getType();
 			legstype = legsblock.getType();
 			headdata = headblock.getData();
-			legsdata = legsblock.;
+			legsdata = legsblock.getData();
 			headblocklocation = headblock.getLocation();
 			legsblocklocation = legsblock.getLocation();
 			Block oldheadblock, oldlegsblock;
