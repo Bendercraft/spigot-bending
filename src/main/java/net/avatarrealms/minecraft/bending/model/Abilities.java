@@ -179,7 +179,6 @@ public enum Abilities {
 		case MentalExplosion :
 		case ThunderArmor :
 		case IceSwipe :
-		case SmokeBomb :
 		case PoisonnedDart: return true;			
 		default : return false;
 		}

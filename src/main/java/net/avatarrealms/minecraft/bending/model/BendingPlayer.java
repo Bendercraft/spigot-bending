@@ -117,6 +117,7 @@ public class BendingPlayer {
 						break;
 					case SmokeBomb:
 						cd = ConfigManager.smokeBombCooldown;
+						break;
 					default:
 						//TODO Throw exception here
 						cd = 0;
