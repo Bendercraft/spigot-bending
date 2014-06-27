@@ -139,7 +139,7 @@ public class ConfigManager {
 	
 	//Smoke Bomb
 	public static int smokeRadius = 6;
-	public static int smokeBombLevelRequired = 5;
+	public static int smokeBombLevelRequired = 1;
 	public static int smokeDuration = 10;    // time in secs
 	public static int smokeBombCooldown = 6000;
 	
@@ -154,7 +154,7 @@ public class ConfigManager {
 	public static int catapultLength = 7;
 	public static double catapultSpeed = 12;
 	public static double catapultPush = 5;
-	public static int catapultLevelRequired = 35;
+	public static int catapultLevelRequired = 45;
 	
 	//ShockWave
 	public static int shockwaveLevelRequired = 1;
@@ -236,7 +236,7 @@ public class ConfigManager {
 	// ArcOfFire
 	public static int arcOfFireArc = 20;
 	public static int arcOfFireRange = 9;
-	public static int arcOfFireLevelRequired = 3;
+	public static int arcOfFireLevelRequired = 1;
 
 	// Extinguish
 	public static double extinguishRange = 20;
@@ -246,7 +246,7 @@ public class ConfigManager {
 	// Fireball
 	public static long fireballCooldown = 300000;
 	public static double fireballSpeed = 0.3;
-	public static int fireballLevelRequired = 3;
+	public static int fireballLevelRequired = 1;
 
 	// FireBlast
 	public static double fireBlastSpeed = 15;
@@ -259,16 +259,16 @@ public class ConfigManager {
 	public static int fireBlastLevelRequired = 1;
 	
 	//FireBurst
-	public static int fireBurstLevelRequired = 5;
+	public static int fireBurstLevelRequired = 1;
 	
 	//FireShield
-	public static int fireShieldLevelRequired = 5;
+	public static int fireShieldLevelRequired = 1;
 
 	// FireJet
 	public static double fireJetSpeed = 0.7;
 	public static long fireJetDuration = 1500;
 	public static long fireJetCooldown = 6000;
-	public static int fireJetLevelRequired = 15;
+	public static int fireJetLevelRequired = 45;
 
 	// FireStream
 	public static double fireStreamSpeed = 15;
@@ -288,11 +288,11 @@ public class ConfigManager {
 	public static long lightningWarmup = 3500;
 	public static int lightningRange = 50;
 	public static double lightningMissChance = 5;
-	public static int lightningLevelRequired = 40;
+	public static int lightningLevelRequired = 45;
 
 	// RingOfFire
 	public static int ringOfFireRange = 7;
-	public static int ringOfFireLevelRequired = 5;
+	public static int ringOfFireLevelRequired = 1;
 
 	// WallOfFire
 	public static int wallOfFireRange = 4;
@@ -302,7 +302,7 @@ public class ConfigManager {
 	public static int wallOfFireDamage = 2;
 	public static long wallOfFireInterval = 500;
 	public static long wallOfFireCooldown = 7500;
-	public static int wallOfFireLevelRequired = 5;
+	public static int wallOfFireLevelRequired = 1;
 	
 	//ThunderArmor
 	public static int thunderArmorThornsLevel = 2;
@@ -337,28 +337,28 @@ public class ConfigManager {
 	// HealingWaters
 	public static double healingWatersRadius = 5;
 	public static long healingWatersInterval = 750;
-	public static int healingWatersLevelRequired = 5;
+	public static int healingWatersLevelRequired = 1;
 
 	// IceSpike
 	public static long icespikeCooldown = 2000;
 	public static int icespikeDamage = 2;
 	public static int icespikeRange = 20;
 	public static double icespikeThrowingMult = 0.7;
-	public static int icespikeLevelRequired = 3;
+	public static int icespikeLevelRequired = 1;
 
 	// Plantbending
 	public static long plantbendingRegrowTime = 180000;
-	public static int plantbendingLevelRequired = 5;
+	public static int plantbendingLevelRequired = 1;
 
 	// SpikeField
 	public static long icespikeAreaCooldown = 3000;
 	public static int icespikeAreaDamage = 2;
 	public static int icespikeAreaRadius = 6;
-	public static double icespikeAreaThrowingMult = 5;
+	public static double icespikeAreaThrowingMult = 1;
 	
 	// WaterBubble
 	public static double waterBubbleRadius = airBubbleRadius;
-	public static int waterBubbleLevelRequired = 2;
+	public static int waterBubbleLevelRequired = 1;
 
 	// WaterManipulation
 	public static int waterManipulationDamage = 3;
@@ -369,21 +369,21 @@ public class ConfigManager {
 
 	// WaterSpout
 	public static int waterSpoutHeight = 16;
-	public static int waterSpoutLevelRequired = 4;
+	public static int waterSpoutLevelRequired = 1;
 
 	// WaterWall
 	public static double waterWallRange = 5;
 	public static double waterWallRadius = 2;
-	public static int waterWallLevelRequired = 4;
+	public static int waterWallLevelRequired = 1;
 
 	// Wave
 	public static double waveRadius = 3;
 	public static double waveHorizontalPush = 1;
 	public static double waveVerticalPush = 0.2;
-	public static int waveLevelRequired = 6;
+	public static int waveLevelRequired = 1;
 	
 	//Torrent
-	public static int torrentLevelRequired = 40;
+	public static int torrentLevelRequired = 45;
 	
 	//OctopusForm
 	
