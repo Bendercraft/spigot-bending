@@ -150,7 +150,7 @@ public class BendingManager implements Runnable {
 
 		Shockwave.progressAll();
 
-		Tremorsense.manage(plugin.getServer());
+		Tremorsense.progressAll();
 
 		for (Block block : RevertChecker.revertQueue.keySet()) {
 			// Tools.removeEarthbendedBlockByIndex(block);

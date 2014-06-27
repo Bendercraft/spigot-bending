@@ -1,6 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -9,19 +12,15 @@ import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 public class Tremorsense {
-
-	public static ConcurrentHashMap<Player, Tremorsense> instances = new ConcurrentHashMap<Player, Tremorsense>();
-	public static ConcurrentHashMap<Block, Player> blocks = new ConcurrentHashMap<Block, Player>();
-
-	// private static final long cooldown = ConfigManager.tremorsenseCooldown;
+	private static Map<Player, Tremorsense> instances = new HashMap<Player, Tremorsense>();
 	private static final int maxdepth = ConfigManager.tremorsenseMaxDepth;
 	private static final int radius = ConfigManager.tremorsenseRadius;
 	private static final byte lightthreshold = ConfigManager.tremorsenseLightThreshold;
@@ -29,14 +28,7 @@ public class Tremorsense {
 	private Player player;
 	private Block block;
 
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
-
 	public Tremorsense(Player player) {
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player) + cooldown)
-		// return;
-		// }
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Tremorsense))
@@ -46,7 +38,6 @@ public class Tremorsense {
 				.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
 			this.player = player;
 			bPlayer.cooldown(Abilities.Tremorsense);
-			// timers.put(player, System.currentTimeMillis());
 			activate();
 		}
 	}
@@ -135,8 +126,8 @@ public class Tremorsense {
 		}
 	}
 
-	public static void manage(Server server) {
-		for (Player player : server.getOnlinePlayers()) {
+	public static void progressAll() {
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 			if (instances.containsKey(player)
 					&& (!EntityTools.hasAbility(player, Abilities.Tremorsense)
 							|| !EntityTools.canBend(player, Abilities.Tremorsense) || player
@@ -153,7 +144,8 @@ public class Tremorsense {
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet()) {
+		List<Player> temp = new LinkedList<Player>(instances.keySet());
+		for (Player player : temp) {
 			instances.get(player).revert();
 		}
 
