@@ -1,21 +1,21 @@
 package net.avatarrealms.minecraft.bending.model;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 
 public class TempPotionEffect {
-
-	private static ConcurrentHashMap<LivingEntity, TempPotionEffect> instances = new ConcurrentHashMap<LivingEntity, TempPotionEffect>();
+	private static Map<LivingEntity, TempPotionEffect> instances = new HashMap<LivingEntity, TempPotionEffect>();
 
 	private static final long tick = 21;
 
 	private int ID = Integer.MIN_VALUE;
-
-	// private ConcurrentHashMap<Long, PotionEffect> effects = new
-	// ConcurrentHashMap<Long, PotionEffect>();
-	private ConcurrentHashMap<Integer, PotionInfo> infos = new ConcurrentHashMap<Integer, PotionInfo>();
+	
+	private Map<Integer, PotionInfo> infos = new HashMap<Integer, PotionInfo>();
 	private LivingEntity entity;
 
 	private class PotionInfo {
@@ -46,7 +46,7 @@ public class TempPotionEffect {
 			instance.infos
 					.put(instance.ID++, new PotionInfo(starttime, effect));
 			// instance.effects.put(starttime, effect);
-			instances.replace(entity, instance);
+			instances.put(entity, instance);
 		} else {
 			// effects.put(starttime, effect);
 			infos.put(ID++, new PotionInfo(starttime, effect));
@@ -99,21 +99,40 @@ public class TempPotionEffect {
 		entity.addPotionEffect(effect);
 	}
 
-	private void progress() {
+	private boolean progress() {
+		List<Integer> toRemove = new LinkedList<Integer>();
 		for (int id : infos.keySet()) {
 			PotionInfo info = infos.get(id);
 			if (info.getTime() < System.currentTimeMillis()) {
 				addEffect(info.getEffect());
-				infos.remove(id);
+				toRemove.add(id);
 			}
 		}
+		for(int id : toRemove) {
+			infos.remove(id);
+		}
+		
 		if (infos.isEmpty() && instances.containsKey(entity))
-			instances.remove(entity);
+			return false;
+		
+		return true;
 	}
 
 	public static void progressAll() {
-		for (LivingEntity entity : instances.keySet())
-			instances.get(entity).progress();
+		List<TempPotionEffect> toRemove = new LinkedList<TempPotionEffect>();
+		for (TempPotionEffect effect : instances.values()) {
+			boolean keep = effect.progress();
+			if(!keep) {
+				toRemove.add(effect);
+			}
+		}
+		for (TempPotionEffect effect : toRemove) {
+			effect.remove();
+		}
+	}
+
+	private void remove() {
+		instances.remove(entity);
 	}
 
 }
