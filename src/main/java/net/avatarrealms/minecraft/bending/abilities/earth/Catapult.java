@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class Catapult {
-	public static Map<Integer, Catapult> instances = new HashMap<Integer, Catapult>();
+	private static Map<Integer, Catapult> instances = new HashMap<Integer, Catapult>();
 
 	private static int length = ConfigManager.catapultLength;
 	private static double speed = ConfigManager.catapultSpeed;
