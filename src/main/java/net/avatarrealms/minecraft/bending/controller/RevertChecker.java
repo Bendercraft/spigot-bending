@@ -73,12 +73,9 @@ public class RevertChecker implements Runnable {
 			revertQueue.remove(block);
 		}
 		
-		List<Integer> toRemoveInteger = new LinkedList<Integer>();
-		for (int i : airRevertQueue.keySet()) {
+		List<Integer> temp = new LinkedList<Integer>(airRevertQueue.keySet());
+		for (int i : temp) {
 			BlockTools.revertAirBlock(i);
-			toRemoveInteger.add(i);
-		}
-		for (int i : toRemoveInteger) {
 			airRevertQueue.remove(i);
 		}
 	}
