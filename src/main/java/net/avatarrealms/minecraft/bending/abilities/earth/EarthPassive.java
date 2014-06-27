@@ -1,7 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -12,9 +14,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 public class EarthPassive {
-
-	public static ConcurrentHashMap<Block, Long> sandblocks = new ConcurrentHashMap<Block, Long>();
-	public static ConcurrentHashMap<Block, Material> sandidentities = new ConcurrentHashMap<Block, Material>();
+	private static Map<Block, Long> sandblocks = new HashMap<Block, Long>();
+	private static Map<Block, Material> sandidentities = new HashMap<Block, Material>();
 	private static final long duration = ConfigManager.earthPassive;
 
 	public static boolean softenLanding(Player player) {
@@ -74,7 +75,8 @@ public class EarthPassive {
 	}
 
 	public static void revertSands() {
-		for (Block block : sandblocks.keySet()) {
+		List<Block> temp = new LinkedList<Block>(sandblocks.keySet());
+		for (Block block : temp) {
 			if (System.currentTimeMillis() >= sandblocks.get(block) + duration) {
 				revertSand(block);
 			}
@@ -83,7 +85,8 @@ public class EarthPassive {
 	}
 
 	public static void revertAllSand() {
-		for (Block block : sandblocks.keySet()) {
+		List<Block> temp = new LinkedList<Block>(sandblocks.keySet());
+		for (Block block : temp) {
 			revertSand(block);
 		}
 	}
