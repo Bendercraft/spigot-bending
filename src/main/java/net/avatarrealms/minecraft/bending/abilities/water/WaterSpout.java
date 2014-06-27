@@ -20,7 +20,10 @@ import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
@@ -153,6 +156,15 @@ public class WaterSpout implements IAbility {
 				player.setAllowFlight(true);
 				player.setFlying(true);
 			}
+			
+			
+			Location tempLoc = player.getLocation().add(0,-height,0);
+			for (Entity e : EntityTools.getEntitiesAroundPoint(tempLoc,5)) {
+				if (e instanceof Player) {
+					((Player)e).playSound(tempLoc,Sound.SPLASH,10,1);
+				}
+			}
+			
 		} else {
 			return false;
 		}
