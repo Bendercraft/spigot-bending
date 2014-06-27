@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -57,6 +58,8 @@ public class FreezeMelt implements IAbility {
 
 		if (cooldown)
 			bPlayer.cooldown(Abilities.PhaseChange);
+		
+		bPlayer.earnXP(BendingType.Water,this);
 
 	}
 

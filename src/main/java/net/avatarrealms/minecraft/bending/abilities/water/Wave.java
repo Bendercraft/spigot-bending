@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -303,6 +304,7 @@ public class Wave implements IAbility {
 								activatefreeze = true;
 								frozenlocation = entity.getLocation();
 								freeze();
+								BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,this);
 								break;
 							}
 							if (entity.getEntityId() != player.getEntityId()
@@ -361,11 +363,6 @@ public class Wave implements IAbility {
 
 	private void finalRemoveWater(Block block) {
 		if (wave.containsKey(block)) {
-			// block.setType(Material.WATER);
-			// block.setData(half);
-			// if (!Tools.adjacentToThreeOrMoreSources(block) || radius > 1) {
-			// block.setType(Material.AIR);
-			// }
 			TempBlock.revertBlock(block, Material.AIR);
 			wave.remove(block);
 		}
@@ -380,9 +377,6 @@ public class Wave implements IAbility {
 			// new TempBlock(block, Material.ICE, (byte) 0);
 			wave.put(block, block);
 		}
-		// block.setType(Material.WATER);
-		// block.setData(full);
-		// wave.put(block, block);
 	}
 
 	private void clearWave() {
