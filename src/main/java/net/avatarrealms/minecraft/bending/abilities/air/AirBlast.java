@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -174,9 +175,14 @@ public class AirBlast implements IAbility {
 			return false;
 		}
 
+		int cpt = 0;
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 			affect(entity);
+			cpt ++;
+		}
+		if (cpt >=1 && parent == null) {
+			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
 		}
 		
 		advanceLocation();
@@ -190,10 +196,6 @@ public class AirBlast implements IAbility {
 	}
 
 	private void affect(Entity entity) {
-		// if (source == null)
-		// affectedentities.add(entity);
-		// else
-		// source.addAffectedEntity(entity);
 		boolean isUser = entity.getEntityId() == player.getEntityId();
 
 		if (!isUser || otherorigin) {

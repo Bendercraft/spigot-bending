@@ -99,6 +99,8 @@ public class Tornado implements IAbility {
 		if (origin.getBlock().getType() != Material.AIR) {
 			origin.setY(origin.getY() - 1. / 10. * height);
 
+			int cpt = 0;
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, height)) {
 				if (Tools.isRegionProtectedFromBuild(player,
 						Abilities.AirBlast, entity.getLocation()))
@@ -125,10 +127,7 @@ public class Tornado implements IAbility {
 						vz = (x * Math.sin(angle) + z * Math.cos(angle)) / mag;
 
 						if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId()!= player.getEntityId())) {
-							BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-							if (bPlayer != null) {
-								bPlayer.earnXP(BendingType.Air, this);
-							}
+							cpt++;
 						}
 						if (entity instanceof Player) {
 							vy = 0.05 * PCpushfactor;
@@ -165,6 +164,9 @@ public class Tornado implements IAbility {
 						}
 					}
 				}
+			}
+			if (cpt>= 1) {
+				bPlayer.earnXP(BendingType.Air,this);
 			}
 
 			

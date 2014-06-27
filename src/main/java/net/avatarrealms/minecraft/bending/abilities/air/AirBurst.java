@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -49,8 +50,8 @@ public class AirBurst implements IAbility {
 		this.player = player;
 		instances.put(player, this);
 	}
-
-	private AirBurst() {
+	
+	public AirBurst() {
 		
 	}
 
@@ -83,6 +84,7 @@ public class AirBurst implements IAbility {
 					}
 				}
 			}
+			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
 		}
 		instances.remove(player);
 	}
@@ -105,6 +107,7 @@ public class AirBurst implements IAbility {
 							pushfactor, this);
 				}
 			}
+			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
 		}
 	}
 
@@ -118,6 +121,7 @@ public class AirBurst implements IAbility {
 		Location location = player.getLocation();
 		double x, y, z;
 		double r = 1;
+		AirBurst ab = new AirBurst();
 		for (double theta = 75; theta < 105; theta += deltheta) {
 			double dphi = delphi / Math.sin(Math.toRadians(theta));
 			for (double phi = 0; phi < 360; phi += dphi) {
@@ -128,9 +132,10 @@ public class AirBurst implements IAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				new AirBlast(location, direction.normalize(), player,
-						pushfactor, new AirBurst());
+						pushfactor, ab);
 			}
 		}
+		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,ab);
 	}
 
 	void addAffectedEntity(Entity entity) {
