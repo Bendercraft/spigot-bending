@@ -193,7 +193,7 @@ public class BendingManager implements Runnable {
 
 		FreezeMelt.handleFrozenBlocks();
 
-		WaterSpout.handleSpouts(plugin.getServer());
+		WaterSpout.progressAll();
 
 		WaterManipulation.progressAll();
 		
