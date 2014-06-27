@@ -119,10 +119,10 @@ public class EarthGrab implements IAbility {
 				}
 				//player.sendMessage("Location : " + target.getLocation().getX() + " " + target.getLocation().getY() + " " + target.getLocation().getZ());
 						
-				columns.add(new EarthColumn(player, cLoc[0], this));
-				columns.add(new EarthColumn(player, cLoc[1], this));
-				columns.add(new EarthColumn(player, cLoc[2], this));
-				columns.add(new EarthColumn(player, cLoc[3], this));
+				columns.add(new EarthColumn(player, cLoc[0], this, this));
+				columns.add(new EarthColumn(player, cLoc[1], this, this));
+				columns.add(new EarthColumn(player, cLoc[2], this, this));
+				columns.add(new EarthColumn(player, cLoc[3], this, this));
 				
 				if (!columns.isEmpty()) // never empty ?
 					bPlayer.cooldown(Abilities.EarthGrab);
