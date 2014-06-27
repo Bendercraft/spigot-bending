@@ -891,7 +891,7 @@ public class BendingListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-		if (WaterSpout.instances.containsKey(event.getPlayer())
+		if (WaterSpout.isBending(event.getPlayer())
 				|| AirSpout.getPlayers().contains(event.getPlayer())) {
 			Vector vel = new Vector();
 			vel.setX(event.getTo().getX() - event.getFrom().getX());

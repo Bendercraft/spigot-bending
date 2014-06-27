@@ -23,11 +23,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class WaterSpout {
-
-	public static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
-	public static List<Block> affectedblocks = new LinkedList<Block>();
-	public static List<Block> newaffectedblocks = new LinkedList<Block>();
-	public static List<Block> baseblocks = new LinkedList<Block>();
+	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
+	private static List<Block> affectedblocks = new LinkedList<Block>();
+	private static List<Block> newaffectedblocks = new LinkedList<Block>();
+	private static List<Block> baseblocks = new LinkedList<Block>();
 
 	private static final int defaultheight = ConfigManager.waterSpoutHeight;
 
@@ -245,6 +244,14 @@ public class WaterSpout {
 					instances.get(player).remove();
 			}
 		}
+	}
+	
+	public static boolean isBending(Player player) {
+		return instances.containsKey(player);
+	}
+	
+	public static boolean isAffected(Block block) {
+		return affectedblocks.contains(block);
 	}
 
 	public static String getDescription() {
