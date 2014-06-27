@@ -94,6 +94,9 @@ public class BendingPlayer {
 					case EarthBlast:
 						cd = 1000;
 						break;
+					case EarthGrab :
+						cd = ConfigManager.earthGrabCooldown;
+						break;
 					case AirSwipe:
 						cd = ConfigManager.airSwipeCooldown;
 						break;

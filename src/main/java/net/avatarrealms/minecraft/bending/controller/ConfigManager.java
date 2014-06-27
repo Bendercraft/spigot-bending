@@ -76,22 +76,22 @@ public class ConfigManager {
 
 	// AirScooter
 	public static double airScooterSpeed = 0.675;
-	public static int airScooterLevelRequired = 4;
+	public static int airScooterLevelRequired = 1;
 
 	// AirShield
 	public static double airShieldRadius = 5;
-	public static int airShieldLevelRequired = 10;
+	public static int airShieldLevelRequired = 1;
 
 	// AirSpout
 	public static double airSpoutHeight = 20;
-	public static int airSpoutLevelRequired = 6;
+	public static int airSpoutLevelRequired = 1;
 
 	// AirSuction
 	public static double airSuctionSpeed = 25;
 	public static double airSuctionRange = 20;
 	public static double airSuctionRadius = 2;
 	public static double airSuctionPush = 3.5;
-	public static int airSuctionLevelRequired = 2;
+	public static int airSuctionLevelRequired = 1;
 
 	// AirSwipe
 	public static int airSwipeDamage = 4;
@@ -109,7 +109,7 @@ public class ConfigManager {
 	public static double tornadoRange = 25;
 	public static double tornadoMobPush = 1;
 	public static double tornadoPlayerPush = 1;
-	public static int tornadoLevelRequired = 40;
+	public static int tornadoLevelRequired = 45;
 	
 	// Air Manipulation
 	public static int airManipulationDamage = 2;
@@ -123,12 +123,12 @@ public class ConfigManager {
 	// HighJump
 	public static double jumpHeight = 1.5;
 	public static long highJumpCooldown = 4000;
-	public static int highJumpLevelRequired = 2;
+	public static int highJumpLevelRequired = 1;
 
 	// Paralyze
 	public static long paralyzeCooldown = 10000;
 	public static long paralyzeDuration = 2500;
-	public static int paralyzeLevelRequired = 3;
+	public static int paralyzeLevelRequired = 1;
 
 	// RapidPunch
 	public static int rapidPunchDamage = 2;
@@ -141,7 +141,7 @@ public class ConfigManager {
 	public static int smokeRadius = 6;
 	public static int smokeBombLevelRequired = 5;
 	public static int smokeDuration = 10;    // time in secs
-	public static int smokeBombCooldown = 5000;
+	public static int smokeBombCooldown = 6000;
 	
 	//Poisonned dart
 	public static int dartRange = 10;
@@ -190,12 +190,13 @@ public class ConfigManager {
 
 	// EarthColumn
 	public static int earthColumnHeight = 6;
-	public static int earthColumnLevelRequired = 2;
+	public static int earthColumnLevelRequired = 1;
 
 	// EarthGrab
 	public static double earthGrabRange = 15;
 	public static int earthGrabDuration = 150000;
-	public static int earthGrabLevelRequired = 6;
+	public static int earthGrabLevelRequired = 1;
+	public static long earthGrabCooldown = 15000;
 
 	// EarthPassive
 	public static long earthPassive = 3000;
@@ -712,6 +713,8 @@ public class ConfigManager {
 				earthGrabRange);
 		earthGrabDuration = config.getInt("Properties.Earth.EarthGrab.Duration",
 				earthGrabDuration);
+		earthGrabCooldown = config.getLong("Properties.Earth.EarthGrab.Cooldown",
+				earthGrabCooldown);
 		earthGrabLevelRequired = config.getInt(
 				"Properties.Earth.EarthGrab.level-required", earthGrabLevelRequired);
 		levelsRequired.put(Abilities.EarthGrab, earthGrabLevelRequired);
@@ -1250,6 +1253,7 @@ public class ConfigManager {
 		// EarthGrab
 		config.set("Properties.Earth.EarthGrab.Range", earthGrabRange);
 		config.set("Properties.Earth.EarthGrab.Duration", earthGrabDuration);
+		config.set("Properties.Earth.EarthGrab.Cooldown", earthGrabCooldown);
 		config.set("Properties.Earth.EarthGrab.level-required", earthGrabLevelRequired);
 		// EarthPassive
 		config.set("Properties.Earth.EarthPassive.Wait-Before-Reverse-Changes",
