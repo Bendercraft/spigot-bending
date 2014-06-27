@@ -141,7 +141,7 @@ public class EarthTunnel implements IAbility {
 
 	@Override
 	public int getBaseExperience() {
-		return 8;
+		return 1;
 	}
 
 	@Override
