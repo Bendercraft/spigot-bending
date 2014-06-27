@@ -32,11 +32,7 @@ public class Bending extends JavaPlugin {
 	private final BendingPlayersSaver saver = new BendingPlayersSaver();
 
 	static Map<String, String> commands = new HashMap<String, String>();
-	// public static ConcurrentHashMap<String, List<BendingType>> benders = new
-	// ConcurrentHashMap<String, List<BendingType>>();
-
-	// public BendingPlayers config = new BendingPlayers(getDataFolder(),
-	// getResource("bendingPlayers.yml"));
+	
 	public static ConfigManager configManager = new ConfigManager();
 	public static Language language = new Language();
 	public BendingPlayers config;
@@ -74,7 +70,6 @@ public class Bending extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		PluginTools.stopAllBending();
-		// PlayerStorageWriter.finish();
 		BendingPlayersSaver.save();
 		getServer().getScheduler().cancelTasks(plugin);
 	}
