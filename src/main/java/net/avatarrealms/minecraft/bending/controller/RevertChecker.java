@@ -2,9 +2,10 @@ package net.avatarrealms.minecraft.bending.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 import net.avatarrealms.minecraft.bending.Bending;
@@ -18,13 +19,15 @@ import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+/**
+ * TODO: Author call this class in async method of bukkit scheduler, but the first thing it does in "run()" is asking to return in sync state : strange
+ * @author Koudja
+ *
+ */
 public class RevertChecker implements Runnable {
-
-	static ConcurrentHashMap<Block, Block> revertQueue = new ConcurrentHashMap<Block, Block>();
-	static ConcurrentHashMap<Integer, Integer> airRevertQueue = new ConcurrentHashMap<Integer, Integer>();
+	private static Map<Block, Block> revertQueue = new HashMap<Block, Block>();
+	private static Map<Integer, Integer> airRevertQueue = new HashMap<Integer, Integer>();
 	private Future<ArrayList<Chunk>> returnFuture;
-
-	static ConcurrentHashMap<Chunk, Chunk> chunks = new ConcurrentHashMap<Chunk, Chunk>();
 
 	private Bending plugin;
 
@@ -59,12 +62,31 @@ public class RevertChecker implements Runnable {
 		}
 
 	}
+	
+	public static void progressAll() {
+		List<Block> toRemoveBlock = new LinkedList<Block>();
+		for (Block block : revertQueue.keySet()) {
+			BlockTools.revertBlock(block);
+			toRemoveBlock.add(block);
+		}
+		for (Block block : toRemoveBlock) {
+			revertQueue.remove(block);
+		}
+		
+		List<Integer> toRemoveInteger = new LinkedList<Integer>();
+		for (int i : airRevertQueue.keySet()) {
+			BlockTools.revertAirBlock(i);
+			toRemoveInteger.add(i);
+		}
+		for (int i : toRemoveInteger) {
+			airRevertQueue.remove(i);
+		}
+	}
 
 	public void run() {
 		time = System.currentTimeMillis();
 
 		if (ConfigManager.reverseearthbending) {
-
 			try {
 				returnFuture = plugin
 						.getServer()
