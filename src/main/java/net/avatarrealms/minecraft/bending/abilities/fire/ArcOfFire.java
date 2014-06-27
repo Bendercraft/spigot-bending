@@ -52,7 +52,6 @@ public class ArcOfFire implements IAbility {
 
 			new FireStream(location, direction, player, range, this);
 		}
-
 		bPlayer.cooldown(Abilities.Blaze);
 		bPlayer.earnXP(BendingType.Fire, this);
 	}
