@@ -1,14 +1,13 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -20,9 +19,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class Ripple {
-
-	private static ConcurrentHashMap<Integer, Ripple> instances = new ConcurrentHashMap<Integer, Ripple>();
-	private static ConcurrentHashMap<Integer[], Block> blocks = new ConcurrentHashMap<Integer[], Block>();
+	private static Map<Integer, Ripple> instances = new HashMap<Integer, Ripple>();
+	private static Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
 
 	static final double radius = 15;
 	private static final int damage = 5;
@@ -33,8 +31,8 @@ public class Ripple {
 	private Vector direction;
 	private Location origin, location;
 
-	private ArrayList<Location> locations = new ArrayList<Location>();
-	private ArrayList<Entity> entities = new ArrayList<Entity>();
+	private List<Location> locations = new LinkedList<Location>();
+	private List<Entity> entities = new LinkedList<Entity>();
 
 	private Block block1, block2, block3, block4;
 	private int id;
@@ -88,8 +86,8 @@ public class Ripple {
 		return null;
 	}
 
-	private void progress() {
-
+	private boolean progress() {
+		boolean result = true;
 		if (step < maxstep) {
 			Location newlocation = locations.get(step);
 			Block block = location.getBlock();
@@ -177,7 +175,7 @@ public class Ripple {
 
 			if (decrease(block4))
 				block4 = block4.getRelative(BlockFace.DOWN);
-			remove();
+			result = false;
 
 		}
 
@@ -186,7 +184,7 @@ public class Ripple {
 		for (Entity entity : entities)
 			affect(entity);
 		entities.clear();
-
+		return result;
 	}
 
 	private void remove() {
@@ -296,13 +294,20 @@ public class Ripple {
 
 	public static void progressAll() {
 		blocks.clear();
-		for (int id : instances.keySet())
-			instances.get(id).progress();
+		List<Ripple> toRemove = new LinkedList<Ripple>();
+		for (Ripple ripple : instances.values()) {
+			boolean keep = ripple.progress();
+			if(!keep) {
+				toRemove.add(ripple);
+			}
+		}
+		for (Ripple ripple : toRemove) {
+			ripple.remove();
+		}
 	}
 
 	public static void removeAll() {
 		instances.clear();
-
 	}
 
 }
