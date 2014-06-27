@@ -88,6 +88,7 @@ public class AirSuction implements IAbility {
 
 		id = ID;
 		instances.put(id, this);
+		bPlayer.earnXP(BendingType.Air,this);
 		bPlayer.cooldown(Abilities.AirSuction);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
@@ -143,17 +144,10 @@ public class AirSuction implements IAbility {
 			return false;
 		}
 
-		int cpt = 0;
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 
 			if (entity.getEntityId() != player.getEntityId() || otherorigin) {
-				
-				if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
-					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-					cpt++;
-				}
-
 				Vector velocity = entity.getVelocity();
 				double max = maxspeed;
 				double factor = pushfactor;
@@ -198,9 +192,6 @@ public class AirSuction implements IAbility {
 							Effect.EXTINGUISH, 0);
 				entity.setFireTicks(0);
 			}
-		}
-		if (cpt >= 1) {
-			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
 		}
 		
 		advanceLocation();
