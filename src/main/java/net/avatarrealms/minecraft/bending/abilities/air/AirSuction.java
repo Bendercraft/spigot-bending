@@ -154,6 +154,7 @@ public class AirSuction implements IAbility {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 					cptEntitiesHit++;
 				}
+
 				Vector velocity = entity.getVelocity();
 				double max = maxspeed;
 				double factor = pushfactor;
@@ -199,7 +200,6 @@ public class AirSuction implements IAbility {
 				entity.setFireTicks(0);
 			}
 		}
-
 		advanceLocation();
 
 		return true;
