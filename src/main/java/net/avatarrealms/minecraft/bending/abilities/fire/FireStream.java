@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.avatarrealms.minecraft.bending.abilities.water.Plantbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -18,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -26,7 +23,6 @@ public class FireStream {
 	private static Map<Integer, FireStream> instances = new HashMap<Integer, FireStream>();
 	private static Map<Block, Player> ignitedblocks = new HashMap<Block, Player>();
 	private static Map<Block, Long> ignitedtimes = new HashMap<Block, Long>();
-	public static ConcurrentHashMap<LivingEntity, Player> ignitedentities = new ConcurrentHashMap<LivingEntity, Player>();
 	static final long soonesttime = Tools.timeinterval;
 
 	public static int firedamage = 3;
