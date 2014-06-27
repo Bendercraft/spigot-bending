@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -94,6 +96,10 @@ public class Cook implements IAbility {
 					.clear(player.getInventory().getHeldItemSlot());
 		} else {
 			items.setAmount(amount - 1);
+		}
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer != null) {
+			bPlayer.earnXP(BendingType.Fire, this);
 		}
 	}
 

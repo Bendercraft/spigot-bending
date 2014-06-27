@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -57,8 +58,10 @@ public class FireShield implements IAbility {
 			time = System.currentTimeMillis();
 			starttime = time;
 			instances.put(player, this);
-			if (!shield)
+			if (!shield) {
 				bPlayer.cooldown(Abilities.FireShield);
+				bPlayer.earnXP(BendingType.Fire, this);
+			}
 		}
 	}
 
