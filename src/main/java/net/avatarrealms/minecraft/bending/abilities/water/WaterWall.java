@@ -20,6 +20,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -460,7 +461,6 @@ public class WaterWall implements IAbility {
 				if (bPlayer.isOnCooldown(Abilities.Surge))
 					return;
 				
-				WaterWall wall = new WaterWall(player, null);
 				Location eyeloc = player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize())
 						.getBlock();
@@ -469,6 +469,9 @@ public class WaterWall implements IAbility {
 								eyeloc.getBlock())) {
 					block.setType(Material.WATER);
 					block.setData(full);
+					Bukkit.getLogger().info("forming Waterwall with hasWaterBottle");
+					
+					WaterWall wall = new WaterWall(player, null);
 					wall.moveWater();
 					if (!wall.progressing) {
 						block.setType(Material.AIR);
