@@ -121,20 +121,26 @@ public class WaterSpout implements IAbility {
 					affectedblocks.add(block);
 				}
 				newaffectedblocks.add(block);
+				block = null;
+				Location loc;
 				
 				switch (cardinalPoint) {
-					case 0 : block = location.clone().add(0, i, -1).getBlock(); break;
-					case 1 : block = location.clone().add(-1, i, -1).getBlock(); break;
-					case 2 : block = location.clone().add(-1, i, 0).getBlock(); break;
-					case 3 : block = location.clone().add(-1, i, 1).getBlock(); break;
-					case 4 : block = location.clone().add(0, i, 1).getBlock(); break;
-					case 5 : block = location.clone().add(1, i, 1).getBlock(); break;
-					case 6 : block = location.clone().add(1, i, 0).getBlock(); break;
-					case 7 : block = location.clone().add(1, i, -1).getBlock(); break;
-					default: break;
+					case 0 : loc = location.clone().add(0,i,-1); break;
+					case 1 : loc = location.clone().add(-1, i, -1); break;
+					case 2 : loc = location.clone().add(-1, i, 0); break;
+					case 3 : loc = location.clone().add(-1, i, 1); break;
+					case 4 : loc = location.clone().add(0, i, 1); break;
+					case 5 : loc = location.clone().add(1, i, 1); break;
+					case 6 : loc = location.clone().add(1, i, 0); break;
+					case 7 : loc = location.clone().add(1, i, -1); break;
+					default: loc = null; break;
 				}
 				
-				if (!TempBlock.isTempBlock(block)) {
+				if (loc != null && loc.getBlock().getType() != Material.AIR) {
+					block = loc.getBlock();
+				}
+				
+				if (block != null && !TempBlock.isTempBlock(block)) {
 					new TempBlock(block, Material.WATER, full);
 				}
 				if (!affectedblocks.contains(block)) {
