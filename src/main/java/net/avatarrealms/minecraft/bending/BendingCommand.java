@@ -260,7 +260,7 @@ public class BendingCommand {
 
 		sendMessage(player, "Bending v"
 				+ Bending.plugin.getDescription().getVersion());
-		sendMessage(player, "Author: orion304");
+		sendMessage(player, "Author: orion304; updated by : Koudja, Nokorikatsu");
 	}
 
 	private void printVersionUsage(Player player) {
