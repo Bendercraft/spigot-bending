@@ -23,7 +23,7 @@ public class FireBurstCone implements IAbility {
 				Abilities.FireBurst))
 			return;
 		
-		if (FireBurst.isFireBursting(player))
+		if (!FireBurst.isFireBursting(player))
 			return;
 		
 		FireBurst burst = FireBurst.getFireBurst(player);
