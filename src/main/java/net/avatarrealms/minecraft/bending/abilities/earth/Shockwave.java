@@ -7,24 +7,18 @@ import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
-import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 public class Shockwave implements IAbility {
 	private static Map<Player, Shockwave> instances = new HashMap<Player, Shockwave>();
 
-	private static final double angle = Math.toRadians(40);
 	private static final long defaultchargetime = 2500;
-	private static final double threshold = 10;
-
 	private Player player;
 	private long starttime;
 	private long chargetime = defaultchargetime;
@@ -42,20 +36,8 @@ public class Shockwave implements IAbility {
 		instances.put(player, this);
 
 	}
-
-	public static void fallShockwave(Player player) {
-		if (!EntityTools.canBend(player, Abilities.Shockwave)
-				|| EntityTools.getBendingAbility(player) != Abilities.Shockwave
-				|| instances.containsKey(player)
-				|| player.getFallDistance() < threshold
-				|| !BlockTools.isEarthbendable(player,
-						player.getLocation().add(0, -1, 0).getBlock())) {
-			return;
-		}
-		areaShockwave(player);
-	}
 	
-	private void remove() {
+	public void remove() {
 		instances.remove(player);
 	}
 
@@ -68,12 +50,7 @@ public class Shockwave implements IAbility {
 			charged = true;
 		}
 
-		if (!player.isSneaking()) {
-			if (charged) {
-				areaShockwave(player);
-			}
-			return false;
-		} else if (charged) {
+		if (charged) {
 			Location location = player.getEyeLocation();
 			// location = location.add(location.getDirection().normalize());
 			location.getWorld().playEffect(
@@ -97,34 +74,6 @@ public class Shockwave implements IAbility {
 		for (Shockwave shockwave : toRemove) {
 			shockwave.remove();
 		}
-		Ripple.progressAll();
-	}
-
-	private static void areaShockwave(Player player) {
-		double dtheta = 360. / (2 * Math.PI * Ripple.radius) - 1;
-		for (double theta = 0; theta < 360; theta += dtheta) {
-			double rtheta = Math.toRadians(theta);
-			Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
-			//TODO HEY SHOCKWAVE HERE
-			new Ripple(player, vector.normalize(), null);
-		}
-	}
-
-	public static void coneShockwave(Player player) {
-		if (instances.containsKey(player)) {
-			if (instances.get(player).charged) {
-				double dtheta = 360. / (2 * Math.PI * Ripple.radius) - 1;
-				for (double theta = 0; theta < 360; theta += dtheta) {
-					double rtheta = Math.toRadians(theta);
-					Vector vector = new Vector(Math.cos(rtheta), 0,
-							Math.sin(rtheta));
-					if (vector.angle(player.getEyeLocation().getDirection()) < angle)
-						//TODO HEY SHOCKWAVE HERE
-						new Ripple(player, vector.normalize(), null);
-				}
-				instances.remove(player);
-			}
-		}
 	}
 
 	public static String getDescription() {
@@ -144,12 +93,24 @@ public class Shockwave implements IAbility {
 
 	@Override
 	public int getBaseExperience() {
-		return 11;
+		return 0;
 	}
 
 	@Override
 	public IAbility getParent() {
 		return parent;
+	}
+	
+	public boolean isCharged() {
+		return charged;
+	}
+	
+	public static boolean isShockwaving(Player player) {
+		return instances.containsKey(player);
+	}
+	
+	public static Shockwave getShockwave(Player player) {
+		return instances.get(player);
 	}
 
 }

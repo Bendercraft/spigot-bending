@@ -318,7 +318,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.Shockwave) {
-					Shockwave.coneShockwave(player);
+					new ShockwaveCone(player, null);
 				}
 
 			}
@@ -587,7 +587,7 @@ public class BendingListener implements Listener {
 
 			if (EntityTools.isBender(player, BendingType.Earth)
 					&& event.getCause() == DamageCause.FALL)
-				Shockwave.fallShockwave(player);
+				new ShockwaveFall(player, null);
 
 			if (EntityTools.isBender(player, BendingType.Air)
 					&& event.getCause() == DamageCause.FALL

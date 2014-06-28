@@ -26,6 +26,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthColumn;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthPassive;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
+import net.avatarrealms.minecraft.bending.abilities.earth.Ripple;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
 import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
@@ -147,6 +148,7 @@ public class BendingManager implements Runnable {
 		EarthPassive.revertSands();
 
 		Shockwave.progressAll();
+		Ripple.progressAll();
 
 		Tremorsense.progressAll();
 
