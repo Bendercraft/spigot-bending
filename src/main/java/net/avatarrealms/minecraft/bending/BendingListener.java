@@ -351,7 +351,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.FireBurst) {
-					FireBurst.coneBurst(player);
+					new FireBurstCone(player, null);
 				}
 
 				if (ability == Abilities.FireShield) {
@@ -446,6 +446,9 @@ public class BendingListener implements Listener {
 			}
 			if (ability == Abilities.Shockwave) {
 				new ShockwaveArea(player, null);
+			}
+			if (ability == Abilities.FireBurst) {
+				new FireBurstSphere(player, null);
 			}
 		}
 		if (!player.isSneaking() && EntityTools.canBend(player, ability)) {

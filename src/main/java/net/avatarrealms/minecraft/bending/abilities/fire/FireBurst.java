@@ -9,27 +9,20 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
-import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 public class FireBurst implements IAbility {
 	private static Map<Player, FireBurst> instances = new HashMap<Player, FireBurst>();
 
 	private Player player;
 	private long starttime;
-	private int damage = 3;
 	private long chargetime = 2500;
-	private double deltheta = 10;
-	private double delphi = 10;
 	private boolean charged = false;
 	private IAbility parent;
 
@@ -49,76 +42,9 @@ public class FireBurst implements IAbility {
 		this.player = player;
 		instances.put(player, this);
 	}
-
-	public static void coneBurst(Player player) {
-		if (instances.containsKey(player))
-			instances.get(player).coneBurst();
-	}
-
-	private void coneBurst() {
-		if (charged) {
-			Location location = player.getEyeLocation();
-			List<Block> safeblocks = BlockTools.getBlocksAroundPoint(
-					player.getLocation(), 2);
-			Vector vector = location.getDirection();
-			double angle = Math.toRadians(30);
-			double x, y, z;
-			double r = 1;
-			for (double theta = 0; theta <= 180; theta += deltheta) {
-				double dphi = delphi / Math.sin(Math.toRadians(theta));
-				for (double phi = 0; phi < 360; phi += dphi) {
-					double rphi = Math.toRadians(phi);
-					double rtheta = Math.toRadians(theta);
-					x = r * Math.cos(rphi) * Math.sin(rtheta);
-					y = r * Math.sin(rphi) * Math.sin(rtheta);
-					z = r * Math.cos(rtheta);
-					Vector direction = new Vector(x, z, y);
-					if (direction.angle(vector) <= angle) {
-						// Tools.verbose(direction.angle(vector));
-						// Tools.verbose(direction);
-						new FireBlast(location, direction.normalize(), player,
-								damage, safeblocks, this);
-					}
-				}
-			}
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Fire, this);
-			}
-			remove();
-		}
-	}
 	
-	private void remove() {
+	public void remove() {
 		instances.remove(player);
-	}
-
-	private void sphereBurst() {
-		if (charged) {
-			Location location = player.getEyeLocation();
-			List<Block> safeblocks = BlockTools.getBlocksAroundPoint(
-					player.getLocation(), 2);
-			double x, y, z;
-			double r = 1;
-			for (double theta = 0; theta <= 180; theta += deltheta) {
-				double dphi = delphi / Math.sin(Math.toRadians(theta));
-				for (double phi = 0; phi < 360; phi += dphi) {
-					double rphi = Math.toRadians(phi);
-					double rtheta = Math.toRadians(theta);
-					x = r * Math.cos(rphi) * Math.sin(rtheta);
-					y = r * Math.sin(rphi) * Math.sin(rtheta);
-					z = r * Math.cos(rtheta);
-					Vector direction = new Vector(x, z, y);
-					new FireBlast(location, direction.normalize(), player,
-							damage, safeblocks, this);
-				}
-			}
-			//TODO change into another ability ?
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Fire, this);
-			}
-		}
 	}
 
 	private boolean progress() {
@@ -130,12 +56,7 @@ public class FireBurst implements IAbility {
 			charged = true;
 		}
 
-		if (!player.isSneaking()) {
-			if (charged) {
-				sphereBurst();
-			}
-			return false;
-		} else if (charged) {
+		if (charged) {
 			Location location = player.getEyeLocation();
 			// location = location.add(location.getDirection().normalize());
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES,
@@ -168,14 +89,25 @@ public class FireBurst implements IAbility {
 	public static void removeAll() {
 		instances.clear();
 	}
+	
+	public boolean isCharged() {
+		return charged;
+	}
 
 	@Override
 	public int getBaseExperience() {
-		return 11;
+		return 0;
 	}
 
 	@Override
 	public IAbility getParent() {
 		return parent;
+	}
+	
+	public static boolean isFireBursting(Player player) {
+		return instances.containsKey(player);
+	}
+	public static FireBurst getFireBurst(Player player) {
+		return instances.get(player);
 	}
 }
