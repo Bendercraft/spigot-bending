@@ -47,8 +47,9 @@ public class WaterReturn implements IAbility {
 				Abilities.WaterManipulation, location)
 				&& EntityTools.canBend(player, Abilities.WaterManipulation)) {
 			if (BlockTools.isTransparentToEarthbending(player, block)
-					&& !block.isLiquid())
+					&& !block.isLiquid()) {
 				this.block = new TempBlock(block, Material.WATER, full);
+			}
 		}
 
 		instances.put(player, this);

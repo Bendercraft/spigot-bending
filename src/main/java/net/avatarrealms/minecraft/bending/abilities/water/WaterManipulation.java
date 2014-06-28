@@ -227,6 +227,7 @@ public class WaterManipulation implements IAbility {
 			}
 
 			if (falling) {
+				finalRemoveWater(sourceblock);
 				new WaterReturn(player, sourceblock, this);
 				return false;
 
