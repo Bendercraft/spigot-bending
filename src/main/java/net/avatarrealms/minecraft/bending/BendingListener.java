@@ -459,11 +459,7 @@ public class BendingListener implements Listener {
 
 			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
 					|| ConfigManager.useWeapon.get("Air")) {
-
-				if (ability == Abilities.AirBlast) {
-					//AirBlast.setOrigin(player);
-				}
-
+				
 				if (ability == Abilities.AirSuction) {
 					AirSuction.setOrigin(player);
 				}
@@ -502,7 +498,7 @@ public class BendingListener implements Listener {
 			}
 			
 			if (ability == Abilities.EarthArmor) {
-				EarthArmor.EarthShield(player);
+				new EarthShield(player, null);
 			}
 
 			if (ability == Abilities.WaterManipulation) {
