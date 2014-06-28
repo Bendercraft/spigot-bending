@@ -157,7 +157,7 @@ public class FireBlast implements IAbility {
 		Player source = player;
 		if (EarthBlast.annihilateBlasts(location, radius, source)
 				|| WaterManipulation.annihilateBlasts(location, radius, source)
-				|| FireBlast.annihilateBlasts(location, radius, source)) {
+				|| FireBlast.shouldAnnihilateBlasts(location, radius, source, false)) {
 			return false;
 		}
 
@@ -255,24 +255,33 @@ public class FireBlast implements IAbility {
 		Fireball.removeFireballsAroundPoint(location, radius);
 	}
 
-	public static boolean annihilateBlasts(Location location, double radius,
-			Player source) {
+	private static boolean shouldAnnihilateBlasts(Location location, double radius,
+			Player source, boolean remove) {
 		boolean broke = false;
-		List<Integer> toRemove = new ArrayList<Integer>();
+		List<FireBlast> toRemove = new ArrayList<FireBlast>();
 		for (int id : instances.keySet()) {
 			FireBlast blast = instances.get(id);
 			Location fireblastlocation = blast.location;
 			if (location.getWorld() == fireblastlocation.getWorld()
 					&& !blast.player.equals(source)) {
 				if (location.distance(fireblastlocation) <= radius) {
-					toRemove.add(id);
+					toRemove.add(blast);
 					broke = true;
 				}
 			}
 		}
 		if (Fireball.annihilateBlasts(location, radius, source))
 			broke = true;
+		if(remove) {
+			for (FireBlast fireblast : toRemove) {
+				fireblast.remove();
+			}
+		}
 		return broke;
+	}
+	public static boolean annihilateBlasts(Location location, double radius,
+			Player source) {
+		return shouldAnnihilateBlasts(location, radius, source, true);
 	}
 
 	public static void removeAll() {
