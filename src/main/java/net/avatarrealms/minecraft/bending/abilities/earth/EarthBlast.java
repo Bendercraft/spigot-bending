@@ -291,7 +291,7 @@ public class EarthBlast implements IAbility {
 					PluginTools.removeSpouts(location, player);
 					double radius = FireBlast.affectingradius;
 					Player source = player;
-					if (EarthBlast.annihilateBlasts(location, radius, source)
+					if (EarthBlast.shouldAnnihilateBlasts(location, radius, source, false)
 							|| WaterManipulation.annihilateBlasts(location,
 									radius, source)
 							|| FireBlast.annihilateBlasts(location, radius,
@@ -530,9 +530,9 @@ public class EarthBlast implements IAbility {
 			blast.remove();
 		}
 	}
-
-	public static boolean annihilateBlasts(Location location, double radius,
-			Player source) {
+	
+	public static boolean shouldAnnihilateBlasts(Location location, double radius,
+			Player source, boolean remove) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
 		boolean broke = false;
 		for (EarthBlast blast : instances.values()) {
@@ -544,10 +544,17 @@ public class EarthBlast implements IAbility {
 					toRemove.add(blast);
 				}
 		}
-		for(EarthBlast blast : toRemove) {
-			blast.remove();
+		if(remove) {
+			for(EarthBlast blast : toRemove) {
+				blast.remove();
+			}
 		}
 		return broke;
+	}
+
+	public static boolean annihilateBlasts(Location location, double radius,
+			Player source) {
+		return shouldAnnihilateBlasts(location, radius, source, true);
 	}
 
 	@Override
