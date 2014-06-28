@@ -529,7 +529,10 @@ public class BendingPlayer {
 	}
 	
 	public void setBendingLevel(BendingType type, Integer level) {
-		bendings.get(type).setLevel(level);
+		if(bendings.containsKey(type)) {
+			bendings.get(type).setLevel(level);
+		}
+		
 	}
 	
 	public int getMaxLevel() {
