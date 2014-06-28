@@ -271,8 +271,8 @@ public class WaterManipulation implements IAbility {
 					double radius = FireBlast.affectingradius;
 					Player source = player;
 					if (EarthBlast.annihilateBlasts(location, radius, source)
-							|| WaterManipulation.annihilateBlasts(location,
-									radius, source)
+							|| WaterManipulation.shouldAnnihilateBlasts(location,
+									radius, source, false)
 							|| FireBlast.annihilateBlasts(location, radius,
 									source)) {
 						new WaterReturn(player, sourceblock, this);
@@ -645,9 +645,9 @@ public class WaterManipulation implements IAbility {
 		for (WaterManipulation manip : toBreak)
 			manip.breakBlock();
 	}
-
-	public static boolean annihilateBlasts(Location location, double radius,
-			Player source) {
+	
+	private static boolean shouldAnnihilateBlasts(Location location, double radius,
+			Player source, boolean remove) {
 		boolean broke = false;
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
 		for(WaterManipulation manip : instances.values()) {
@@ -658,9 +658,16 @@ public class WaterManipulation implements IAbility {
 					broke = true;
 				}
 		}
-		for (WaterManipulation manip : toBreak)
-			manip.breakBlock();
+		if(remove) {
+			for (WaterManipulation manip : toBreak)
+				manip.breakBlock();
+		}
 		return broke;
+	}
+
+	public static boolean annihilateBlasts(Location location, double radius,
+			Player source) {
+		return shouldAnnihilateBlasts(location, radius, source, true);
 	}
 	
 	public static boolean isWaterManipulater(Player player) {
