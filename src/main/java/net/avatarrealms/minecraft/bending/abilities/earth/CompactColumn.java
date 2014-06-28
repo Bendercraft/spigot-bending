@@ -193,7 +193,7 @@ public class CompactColumn implements IAbility {
 	}
 
 	private void remove() {
-		instances.remove(player.getEntityId());
+		instances.remove(id);
 	}
 
 	public static void removeAll() {
