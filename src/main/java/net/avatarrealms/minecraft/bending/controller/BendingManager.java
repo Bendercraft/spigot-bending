@@ -34,6 +34,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.Enflamed;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBurst;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireJet;
+import net.avatarrealms.minecraft.bending.abilities.fire.FireProtection;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireShield;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireStream;
 import net.avatarrealms.minecraft.bending.abilities.fire.Fireball;
@@ -168,6 +169,8 @@ public class BendingManager implements Runnable {
 		Lightning.progressAll();
 
 		FireShield.progressAll();
+		
+		FireProtection.progressAll();
 
 		FireBlast.progressAll();
 

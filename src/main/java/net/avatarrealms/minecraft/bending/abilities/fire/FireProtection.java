@@ -5,8 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
+import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -16,20 +19,25 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
-public class FireShield implements IAbility {
-	private static Map<Player, FireShield> instances = new HashMap<Player, FireShield>();
+public class FireProtection implements IAbility {
+	private static Map<Player, FireProtection> instances = new HashMap<Player, FireProtection>();
 
 	private static long interval = 100;
 	private static double radius = 3;
+	private static double discradius = 1.5;
+	private static long duration = 1000;
 	private static boolean ignite = true;
 
 	private Player player;
 	private long time;
+	private long starttime;
 	private IAbility parent;
 
-	public FireShield(Player player, IAbility parent) {
+	public FireProtection(Player player, IAbility parent) {
 		this.parent = parent;
 		this.player = player;
 		if (instances.containsKey(player))
@@ -41,7 +49,10 @@ public class FireShield implements IAbility {
 
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			time = System.currentTimeMillis();
+			starttime = time;
 			instances.put(player, this);
+			bPlayer.cooldown(Abilities.FireShield);
+			bPlayer.earnXP(BendingType.Fire, this);
 		}
 	}
 
@@ -50,13 +61,11 @@ public class FireShield implements IAbility {
 	}
 
 	private boolean progress() {
-		if ((!player.isSneaking())
-				|| !EntityTools.canBend(player, Abilities.FireShield)
-				|| !EntityTools.hasAbility(player, Abilities.FireShield)) {
+		if (!player.isOnline() || player.isDead()) {
 			return false;
 		}
 
-		if (!player.isOnline() || player.isDead()) {
+		if (System.currentTimeMillis() > starttime + duration) {
 			return false;
 		}
 
@@ -65,21 +74,21 @@ public class FireShield implements IAbility {
 			
 			List<Block> blocks = new LinkedList<Block>();
 			Location location = player.getEyeLocation().clone();
+			Vector direction = location.getDirection();
+			location = location.clone().add(direction.multiply(radius));
 
-			for (double theta = 0; theta < 180; theta += 20) {
-				for (double phi = 0; phi < 360; phi += 20) {
-					double rphi = Math.toRadians(phi);
-					double rtheta = Math.toRadians(theta);
-					Block block = location
-							.clone()
-							.add(radius * Math.cos(rphi) * Math.sin(rtheta),
-									radius * Math.cos(rtheta),
-									radius * Math.sin(rphi)
-											* Math.sin(rtheta)).getBlock();
-					if (!blocks.contains(block) && !BlockTools.isSolid(block)
-							&& !block.isLiquid())
-						blocks.add(block);
-				}
+			if (Tools.isRegionProtectedFromBuild(player,
+					Abilities.FireShield, location)) {
+				return false;
+			}
+
+			for (double theta = 0; theta < 360; theta += 20) {
+				Vector vector = Tools.getOrthogonalVector(direction, theta,
+						discradius);
+				Block block = location.clone().add(vector).getBlock();
+				if (!blocks.contains(block) && !BlockTools.isSolid(block)
+						&& !block.isLiquid())
+					blocks.add(block);
 			}
 
 			for (Block block : blocks) {
@@ -90,32 +99,37 @@ public class FireShield implements IAbility {
 			}
 
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
-					radius)) {
+					discradius)) {
 				if (Tools.isRegionProtectedFromBuild(player,
 						Abilities.FireShield, entity.getLocation()))
 					continue;
 				if (player.getEntityId() != entity.getEntityId() && ignite) {
 					entity.setFireTicks(120);
-					new Enflamed(entity, player, this);
+					if (!(entity instanceof LivingEntity)) {
+						entity.remove();
+					}
 				}
 			}
 
-			FireBlast.removeFireBlastsAroundPoint(location, radius);
+			FireBlast.removeFireBlastsAroundPoint(location, discradius);
+			WaterManipulation.removeAroundPoint(location, discradius);
+			EarthBlast.removeAroundPoint(location, discradius);
+			FireStream.removeAroundPoint(location, discradius);
 			
 		}
 		return true;
 	}
 
 	public static void progressAll() {
-		List<FireShield> toRemove = new LinkedList<FireShield>();
-		for (FireShield shield : instances.values()) {
+		List<FireProtection> toRemove = new LinkedList<FireProtection>();
+		for (FireProtection shield : instances.values()) {
 			boolean keep = shield.progress();
 			if(!keep) {
 				toRemove.add(shield);
 			}
 		}
 		
-		for(FireShield shield : toRemove) {
+		for(FireProtection shield : toRemove) {
 			shield.remove();
 		}
 	}

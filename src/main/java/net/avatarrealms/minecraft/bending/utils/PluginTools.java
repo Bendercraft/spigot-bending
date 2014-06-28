@@ -35,6 +35,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBurst;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireJet;
+import net.avatarrealms.minecraft.bending.abilities.fire.FireProtection;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireShield;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireStream;
 import net.avatarrealms.minecraft.bending.abilities.fire.Fireball;
@@ -218,6 +219,7 @@ public class PluginTools {
 		WallOfFire.removeAll();
 		Lightning.removeAll();
 		FireShield.removeAll();
+		FireProtection.removeAll();
 		FireBlast.removeAll();
 		FireBurst.removeAll();
 		FireJet.removeAll();

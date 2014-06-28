@@ -355,7 +355,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.FireShield) {
-					new FireShield(player, null);
+					new FireProtection(player, null);
 				}
 
 			}
@@ -554,7 +554,7 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.FireShield) {
-				FireShield.shield(player);
+				new FireShield(player, null);
 			}
 
 			if (ability == Abilities.HeatControl) {
