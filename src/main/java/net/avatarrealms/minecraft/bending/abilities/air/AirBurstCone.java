@@ -8,14 +8,14 @@ import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 
-public class AirSphereBurst implements IAbility  {
+public class AirBurstCone implements IAbility  {
 	private static double pushfactor = 1.5;
 	private static double deltheta = 10;
 	private static double delphi = 10;
 	
 	private IAbility parent;
 	
-	public AirSphereBurst(Player player, IAbility parent) {
+	public AirBurstCone(Player player, IAbility parent) {
 		this.parent = parent;
 		if(!AirBurst.isAirBursting(player)) {
 			return;
@@ -24,8 +24,9 @@ public class AirSphereBurst implements IAbility  {
 		if(!burst.isCharged()) {
 			return;
 		}
-		
 		Location location = player.getEyeLocation();
+		Vector vector = location.getDirection();
+		double angle = Math.toRadians(30);
 		double x, y, z;
 		double r = 1;
 		for (double theta = 0; theta <= 180; theta += deltheta) {
@@ -37,18 +38,21 @@ public class AirSphereBurst implements IAbility  {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				new AirBlast(location, direction.normalize(), player,
-						pushfactor, this);
+				if (direction.angle(vector) <= angle) {
+					// Tools.verbose(direction.angle(vector));
+					// Tools.verbose(direction);
+					new AirBlast(location, direction.normalize(), player,
+							pushfactor, this);
+				}
 			}
 		}
 		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
-		
 		burst.remove();
 	}
 
 	@Override
 	public int getBaseExperience() {
-		return 10;
+		return 6;
 	}
 
 	@Override

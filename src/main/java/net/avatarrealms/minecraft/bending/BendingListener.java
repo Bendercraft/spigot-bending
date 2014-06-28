@@ -281,7 +281,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.AirBurst) {
-					new AirConeBurst(player, null);
+					new AirBurstCone(player, null);
 				}
 
 			}
@@ -441,7 +441,7 @@ public class BendingListener implements Listener {
 			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
 					|| ConfigManager.useWeapon.get("Air")) {
 				if (ability == Abilities.AirBurst) {
-					new AirSphereBurst(player, null);
+					new AirBurstSphere(player, null);
 				}
 			}
 		}
