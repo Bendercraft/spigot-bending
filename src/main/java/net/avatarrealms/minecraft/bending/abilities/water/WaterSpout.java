@@ -20,16 +20,13 @@ import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class WaterSpout implements IAbility {
 	//TODO Put this variable into configmanager and config file
-	public static int SPEED = 3;
+	public static int SPEED = 4;
 	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
 	private static List<Block> affectedblocks = new LinkedList<Block>();
 	private static List<Block> newaffectedblocks = new LinkedList<Block>();
@@ -243,6 +240,7 @@ public class WaterSpout implements IAbility {
 
 	public static void removeSpouts(Location loc0, double radius,
 			Player sourceplayer) {
+		List<WaterSpout> toRemove = new LinkedList<WaterSpout>();
 		for (Player player : instances.keySet()) {
 			if (!player.equals(sourceplayer)) {
 				Location loc1 = player.getLocation().getBlock().getLocation();
@@ -254,8 +252,11 @@ public class WaterSpout implements IAbility {
 				double distance = Math.sqrt(dx * dx + dz * dz);
 
 				if (distance <= radius && dy > 0 && dy < defaultheight)
-					instances.get(player).remove();
+					toRemove.add(instances.get(player));
 			}
+		}
+		for(WaterSpout spout : toRemove) {
+			spout.remove();
 		}
 	}
 	

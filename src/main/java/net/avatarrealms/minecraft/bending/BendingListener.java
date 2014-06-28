@@ -586,14 +586,14 @@ public class BendingListener implements Listener {
 		if (event.getEntity() instanceof Player) {
 			// Tools.verbose(event.getCause());
 			Player player = (Player) event.getEntity();
-
+			Abilities ability = EntityTools.getBendingAbility(player);
 			if (EntityTools.isBender(player, BendingType.Earth)
-					&& event.getCause() == DamageCause.FALL)
+					&& event.getCause() == DamageCause.FALL && ability == Abilities.Shockwave)
 				new ShockwaveFall(player, null);
 
 			if (EntityTools.isBender(player, BendingType.Air)
 					&& event.getCause() == DamageCause.FALL
-					&& EntityTools.canBendPassive(player, BendingType.Air)) {
+					&& EntityTools.canBendPassive(player, BendingType.Air) && ability == Abilities.AirBurst) {
 				new Flight(player);
 				player.setAllowFlight(true);
 				new AirFallBurst(player, null);

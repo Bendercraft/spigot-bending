@@ -60,6 +60,7 @@ import net.avatarrealms.minecraft.bending.abilities.water.Wave;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -68,6 +69,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class BendingManager implements Runnable {
@@ -153,8 +155,17 @@ public class BendingManager implements Runnable {
 
 		Tremorsense.progressAll();
 
-		RevertChecker.progressAll();
+		for (Block block : RevertChecker.revertQueue.keySet()) {
+			// Tools.removeEarthbendedBlockByIndex(block);
+			// if (Tools.revertBlock(block))
+			BlockTools.revertBlock(block);
+			RevertChecker.revertQueue.remove(block);
+		}
 
+		for (int i : RevertChecker.airRevertQueue.keySet()) {
+			BlockTools.revertAirBlock(i);
+			RevertChecker.airRevertQueue.remove(i);
+		}
 		
 	}
 

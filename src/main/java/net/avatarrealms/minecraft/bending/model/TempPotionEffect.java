@@ -101,7 +101,8 @@ public class TempPotionEffect {
 
 	private boolean progress() {
 		List<Integer> toRemove = new LinkedList<Integer>();
-		for (int id : infos.keySet()) {
+		List<Integer> temp = new LinkedList<Integer>(infos.keySet());
+		for (int id : temp) {
 			PotionInfo info = infos.get(id);
 			if (info.getTime() < System.currentTimeMillis()) {
 				addEffect(info.getEffect());
