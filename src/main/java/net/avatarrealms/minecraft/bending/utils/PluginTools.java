@@ -3,6 +3,7 @@ package net.avatarrealms.minecraft.bending.utils;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -327,14 +328,16 @@ public class PluginTools {
 	}
 	
 	public static <T> void writeToLog(T something) {
-		String string = "";
+		StringBuilder builder = new StringBuilder();
+		Date now = new Date();
+		builder.append("["+now.toString()+"] ");
 		if (something != null) {
-			string = something.toString();
+			builder.append(something.toString());
 		}
 		try {
 			FileWriter fstream = new FileWriter("bending.log", true);
 			BufferedWriter out = new BufferedWriter(fstream);
-			out.write(string);
+			out.write(builder.toString());
 			out.newLine();
 			out.close();
 		} catch (Exception e) {
