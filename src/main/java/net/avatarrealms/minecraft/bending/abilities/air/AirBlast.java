@@ -53,7 +53,6 @@ public class AirBlast implements IAbility {
 	private double pushfactor = defaultpushfactor;
 	private boolean otherorigin = false;
 	private int ticks = 0;
-	private int cptEntitiesHit = 0;
 
 	private List<Block> affectedlevers = new ArrayList<Block>();
 	private IAbility parent;
@@ -89,7 +88,6 @@ public class AirBlast implements IAbility {
 		location = origin.clone();
 		id = ID;
 		instances.put(id, this);
-		cptEntitiesHit = 0;
 		bPlayer.cooldown(Abilities.AirBlast);
 		bPlayer.earnXP(BendingType.Air, this);
 		if (ID == Integer.MAX_VALUE)
@@ -98,8 +96,8 @@ public class AirBlast implements IAbility {
 	}
 
 	public AirBlast(Location location, Vector direction, Player player,
-			double factorpush, AirBurst burst) {
-		this.parent = burst;
+			double factorpush, IAbility parent) {
+		this.parent = parent;
 		if (location.getBlock().isLiquid()) {
 			return;
 		}
@@ -182,7 +180,6 @@ public class AirBlast implements IAbility {
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
 			affect(entity);
-			cptEntitiesHit ++;
 		}
 		
 		advanceLocation();

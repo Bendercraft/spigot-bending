@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import net.avatarrealms.minecraft.bending.abilities.air.*;
 import net.avatarrealms.minecraft.bending.abilities.chi.*;
 import net.avatarrealms.minecraft.bending.abilities.earth.*;
@@ -280,7 +281,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.AirBurst) {
-					AirBurst.coneBurst(player);
+					new AirConeBurst(player, null);
 				}
 
 			}
@@ -436,6 +437,14 @@ public class BendingListener implements Listener {
 		Abilities ability = EntityTools.getBendingAbility(player);
 		if (ability == null)
 			return;
+		if (player.isSneaking() && EntityTools.canBend(player, ability)) {
+			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
+					|| ConfigManager.useWeapon.get("Air")) {
+				if (ability == Abilities.AirBurst) {
+					new AirSphereBurst(player, null);
+				}
+			}
+		}
 		if (!player.isSneaking() && EntityTools.canBend(player, ability)) {
 
 			if (ability == Abilities.AirShield) {
@@ -585,7 +594,7 @@ public class BendingListener implements Listener {
 					&& EntityTools.canBendPassive(player, BendingType.Air)) {
 				new Flight(player);
 				player.setAllowFlight(true);
-				AirBurst.fallBurst(player);
+				new AirFallBurst(player, null);
 				player.setFallDistance(0);
 				event.setDamage(0);
 				event.setCancelled(true);

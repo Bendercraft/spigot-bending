@@ -8,7 +8,6 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -17,16 +16,16 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
+/**
+ * AirBurst is just an utility abilities, it does no damage or whatever, only providing a way to check if a player has charged
+ * Classes AirSphereBurst, AirConeBurst, AirFallBurst consumes charge and remove it
+ * 
+ * @author Koudja
+ *
+ */
 public class AirBurst implements IAbility {
-
 	private static Map<Player, AirBurst> instances = new HashMap<Player, AirBurst>();
-
-	private static double threshold = 10;
-	private static double pushfactor = 1.5;
-	private static double deltheta = 10;
-	private static double delphi = 10;
 
 	private Player player;
 	private long starttime;
@@ -50,99 +49,12 @@ public class AirBurst implements IAbility {
 		this.player = player;
 		instances.put(player, this);
 	}
-	
-	public AirBurst() {
-		
-	}
 
-	public static void coneBurst(Player player) {
-		if (instances.containsKey(player))
-			instances.get(player).coneBurst();
-	}
-
-	private void coneBurst() {
-		if (charged) {
-			Location location = player.getEyeLocation();
-			Vector vector = location.getDirection();
-			double angle = Math.toRadians(30);
-			double x, y, z;
-			double r = 1;
-			for (double theta = 0; theta <= 180; theta += deltheta) {
-				double dphi = delphi / Math.sin(Math.toRadians(theta));
-				for (double phi = 0; phi < 360; phi += dphi) {
-					double rphi = Math.toRadians(phi);
-					double rtheta = Math.toRadians(theta);
-					x = r * Math.cos(rphi) * Math.sin(rtheta);
-					y = r * Math.sin(rphi) * Math.sin(rtheta);
-					z = r * Math.cos(rtheta);
-					Vector direction = new Vector(x, z, y);
-					if (direction.angle(vector) <= angle) {
-						// Tools.verbose(direction.angle(vector));
-						// Tools.verbose(direction);
-						new AirBlast(location, direction.normalize(), player,
-								pushfactor, this);
-					}
-				}
-			}
-			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
-		}
-		instances.remove(player);
-	}
-
-	private void sphereBurst() {
-		if (charged) {
-			Location location = player.getEyeLocation();
-			double x, y, z;
-			double r = 1;
-			for (double theta = 0; theta <= 180; theta += deltheta) {
-				double dphi = delphi / Math.sin(Math.toRadians(theta));
-				for (double phi = 0; phi < 360; phi += dphi) {
-					double rphi = Math.toRadians(phi);
-					double rtheta = Math.toRadians(theta);
-					x = r * Math.cos(rphi) * Math.sin(rtheta);
-					y = r * Math.sin(rphi) * Math.sin(rtheta);
-					z = r * Math.cos(rtheta);
-					Vector direction = new Vector(x, z, y);
-					new AirBlast(location, direction.normalize(), player,
-							pushfactor, this);
-				}
-			}
-			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
-		}
-	}
-
-	public static void fallBurst(Player player) {
-		if (!EntityTools.canBend(player, Abilities.AirBurst)
-				|| EntityTools.getBendingAbility(player) != Abilities.AirBurst
-				|| instances.containsKey(player)
-				|| player.getFallDistance() < threshold) {
-			return;
-		}
-		Location location = player.getLocation();
-		double x, y, z;
-		double r = 1;
-		AirBurst ab = new AirBurst();
-		for (double theta = 75; theta < 105; theta += deltheta) {
-			double dphi = delphi / Math.sin(Math.toRadians(theta));
-			for (double phi = 0; phi < 360; phi += dphi) {
-				double rphi = Math.toRadians(phi);
-				double rtheta = Math.toRadians(theta);
-				x = r * Math.cos(rphi) * Math.sin(rtheta);
-				y = r * Math.sin(rphi) * Math.sin(rtheta);
-				z = r * Math.cos(rtheta);
-				Vector direction = new Vector(x, z, y);
-				new AirBlast(location, direction.normalize(), player,
-						pushfactor, ab);
-			}
-		}
-		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,ab);
-	}
-
-	void addAffectedEntity(Entity entity) {
+	public void addAffectedEntity(Entity entity) {
 		affectedentities.add(entity);
 	}
 
-	boolean isAffectedEntity(Entity entity) {
+	public boolean isAffectedEntity(Entity entity) {
 		return affectedentities.contains(entity);
 	}
 
@@ -155,12 +67,7 @@ public class AirBurst implements IAbility {
 			charged = true;
 		}
 
-		if (!player.isSneaking()) {
-			if (charged) {
-				sphereBurst();
-			}
-			return false;
-		} else if (charged) {
+		if (charged) {
 			Location location = player.getEyeLocation();
 			// location = location.add(location.getDirection().normalize());
 			location.getWorld().playEffect(
@@ -172,7 +79,7 @@ public class AirBurst implements IAbility {
 		return true;
 	}
 	
-	private void remove() {
+	public void remove() {
 		instances.remove(player);
 	}
 
@@ -202,14 +109,26 @@ public class AirBurst implements IAbility {
 	public static void removeAll() {
 		instances.clear();
 	}
+	
+	public static boolean isAirBursting(Player player) {
+		return instances.containsKey(player);
+	}
+	
+	public boolean isCharged() {
+		return charged;
+	}
 
 	@Override
 	public int getBaseExperience() {
-		return 10;
+		return 0;
 	}
 
 	@Override
 	public IAbility getParent() {
 		return parent;
+	}
+
+	public static AirBurst getAirBurst(Player player) {
+		return instances.get(player);
 	}
 }
