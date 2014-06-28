@@ -444,6 +444,9 @@ public class BendingListener implements Listener {
 					new AirBurstSphere(player, null);
 				}
 			}
+			if (ability == Abilities.Shockwave) {
+				new ShockwaveArea(player, null);
+			}
 		}
 		if (!player.isSneaking() && EntityTools.canBend(player, ability)) {
 
