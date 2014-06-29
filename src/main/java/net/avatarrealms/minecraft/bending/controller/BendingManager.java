@@ -74,10 +74,11 @@ import org.bukkit.entity.Player;
 
 public class BendingManager implements Runnable {
 	public static List<Player> flyingplayers = new LinkedList<Player>();
+	
+	public static Map<String, String> metrics = new HashMap<String, String>();
 
 	public Bending plugin;
 	private long time;
-	private long interval;
 	private List<World> worlds = new LinkedList<World>();
 	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
@@ -93,12 +94,10 @@ public class BendingManager implements Runnable {
 	}
 
 	public void run() {
-
 		try {
-			interval = System.currentTimeMillis() - time;
+			Bending.time_step = System.currentTimeMillis() - time;
 			time = System.currentTimeMillis();
-			Bending.time_step = interval;
-
+			
 			manageAirbending();
 			manageEarthbending();
 			manageFirebending();
@@ -110,7 +109,9 @@ public class BendingManager implements Runnable {
 			// handleFlying();
 			Flight.handle();
 			handleDayNight();
-
+			
+			metrics.put("run", String.valueOf(System.currentTimeMillis() - time));
+			metrics.put("global_time_step", String.valueOf(Bending.time_step));
 		} catch (Exception e) {
 			PluginTools.stopAllBending();
 			PluginTools.writeToLog("Bending broke!");
@@ -122,21 +123,58 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageAirbending() {
+		long current = System.currentTimeMillis();
+		
+		long temp = System.currentTimeMillis();
 		AirPassive.handlePassive(plugin.getServer());
+		metrics.put("AirPassive", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirBubble.handleBubbles(plugin.getServer());
-
+		metrics.put("AirBubble", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirBlast.progressAll();
+		metrics.put("AirBlast", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirShield.progressAll();
+		metrics.put("AirShield", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirSuction.progressAll();
+		metrics.put("AirSuction", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirSwipe.progressAll();
+		metrics.put("AirSwipe", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		Speed.progressAll();
+		metrics.put("Speed", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		Tornado.progressAll();
+		metrics.put("Tornado", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirBurst.progressAll();
+		metrics.put("AirBurst", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirScooter.progressAll();
+		metrics.put("AirScooter", String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirSpout.spoutAll();
+		metrics.put("AirSpout", String.valueOf(System.currentTimeMillis() - temp));
+		
+		metrics.put("manageAirbending", String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void manageEarthbending() {
+		long current = System.currentTimeMillis();
+		
 		Catapult.progressAll();
 
 		EarthColumn.progressAll();
@@ -166,10 +204,11 @@ public class BendingManager implements Runnable {
 			BlockTools.revertAirBlock(i);
 			RevertChecker.airRevertQueue.remove(i);
 		}
-		
+		metrics.put("manageEarthbending", String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void manageFirebending() {
+		long current = System.currentTimeMillis();
 		FireStream.progressAll();
 		FireStream.removeAllNoneFireIgnitedBlock();
 
@@ -196,17 +235,19 @@ public class BendingManager implements Runnable {
 		Illumination.progressAll();
 
 		Enflamed.handleFlames();
-
+		metrics.put("manageFirebending", String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void manageChiBlocking() {
+		long current = System.currentTimeMillis();
 		RapidPunch.progressAll();
 		
 		SmokeBomb.progressAll();
+		metrics.put("manageChiBlocking", String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void manageWaterbending() {
-
+		long current = System.currentTimeMillis();
 		FreezeMelt.handleFrozenBlocks();
 
 		WaterSpout.progressAll();
@@ -235,10 +276,11 @@ public class BendingManager implements Runnable {
 		Plantbending.regrow();
 
 		WaterReturn.progressAll();
-
+		metrics.put("manageWaterbending", String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void handleDayNight() {
+		long current = System.currentTimeMillis();
 		for (World world : plugin.getServer().getWorlds())
 			if (world.getWorldType() == WorldType.NORMAL
 					&& !worlds.contains(world)) {
@@ -315,7 +357,7 @@ public class BendingManager implements Runnable {
 		for (World world : removeWorlds) {
 			worlds.remove(world);
 		}
-
+		metrics.put("handleDayNight", String.valueOf(System.currentTimeMillis() - current));
 	}
 
 }

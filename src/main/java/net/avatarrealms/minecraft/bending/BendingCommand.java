@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 
+import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -55,6 +57,8 @@ public class BendingCommand {
 
 	private final String[] itemAliases = { "item", "ite", "it", "i" };
 	private final String[] slotAliases = { "slot", "slo", "sl", "s" };
+	
+	private final String[] metricsAlias = {"metrics"};
 
 	private String[] waterbendingabilities = Abilities
 			.getWaterbendingAbilities();
@@ -241,6 +245,8 @@ public class BendingCommand {
 				setlevel(player, args);
 			} else if (Arrays.asList(givexpAliases).contains(arg)) {
 				giveXP(player, args);
+			} else if (Arrays.asList(metricsAlias).contains(arg)) {
+				metrics(player, args);
 			} else {
 				printHelpDialogue(player);
 			}
@@ -250,6 +256,17 @@ public class BendingCommand {
 
 		}
 
+	}
+
+	private void metrics(Player player, String[] args) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Metrics : ");
+		for(Entry<String, String> entry : BendingManager.metrics.entrySet()) {
+			builder.append("  - ");
+			builder.append(entry.getKey()).append(" : ").append(entry.getValue());
+			builder.append("\n");
+		}
+		sendMessage(player, builder.toString());
 	}
 
 	private void version(Player player, String[] args) {
