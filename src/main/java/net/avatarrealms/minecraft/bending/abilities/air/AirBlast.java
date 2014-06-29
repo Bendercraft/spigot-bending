@@ -247,19 +247,21 @@ public class AirBlast implements IAbility {
 			entity.setFireTicks(0);
 		}
 	}
+	
+	private void remove() {
+		instances.remove(id);
+	}
 
 	public static void progressAll() {
-		List<Integer> toRemove = new LinkedList<Integer>();
-		AirBlast blast;
-		for(Integer id : instances.keySet()) {
-			blast = instances.get(id);
+		List<AirBlast> toRemove = new LinkedList<AirBlast>();
+		for(AirBlast blast : instances.values()) {
 			if (!blast.progress()) {
-				toRemove.add(id);
+				toRemove.add(blast);
 			}
 		}
 		
-		for(Integer id : toRemove) {
-			instances.remove(id);
+		for(AirBlast blast : toRemove) {
+			blast.remove();
 		}
 			
 		for (Player player : origins.keySet()) {
