@@ -327,8 +327,10 @@ public class WaterManipulation implements IAbility {
 					 		entity.setVelocity(vector.normalize().multiply(pushfactor));
 //							entity.setVelocity(entity.getVelocity().clone()
 //									.add(direction));
-							if (AvatarState.isAvatarState(player))
+							if (AvatarState.isAvatarState(player)) {
 								damage = AvatarState.getValue(damage);
+							}
+								
 							EntityTools.damageEntity(player, entity,
 									bPlayer.getCriticalHit(BendingType.Water,PluginTools
 											.waterbendingNightAugment(damage,

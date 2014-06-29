@@ -154,11 +154,12 @@ public class AirBlast implements IAbility {
 				testblock.getWorld().playEffect(testblock.getLocation(),
 						Effect.EXTINGUISH, 0);
 			}
-			if (((block.getType() == Material.LEVER) || (block.getType() == Material.STONE_BUTTON))
+			/*if (((block.getType() == Material.LEVER) || (block.getType() == Material.STONE_BUTTON))
 					&& !affectedlevers.contains(block)) {
 
 				affectedlevers.add(block);
 			}
+			*/
 		}
 		if ((BlockTools.isSolid(block) || block.isLiquid())
 				&& !affectedlevers.contains(block)) {
@@ -248,15 +249,17 @@ public class AirBlast implements IAbility {
 	}
 
 	public static void progressAll() {
-		List<AirBlast> toRemove = new LinkedList<AirBlast>();
-		for(AirBlast blast : instances.values()) {
+		List<Integer> toRemove = new LinkedList<Integer>();
+		AirBlast blast;
+		for(Integer id : instances.keySet()) {
+			blast = instances.get(id);
 			if (!blast.progress()) {
-				toRemove.add(blast);
+				toRemove.add(id);
 			}
 		}
 		
-		for(AirBlast blast : toRemove) {
-			instances.remove(blast);
+		for(Integer id : toRemove) {
+			instances.remove(id);
 		}
 			
 		for (Player player : origins.keySet()) {
