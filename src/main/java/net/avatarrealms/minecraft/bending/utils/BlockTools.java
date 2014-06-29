@@ -46,7 +46,7 @@ public class BlockTools {
 		plantIds.add(Material.RED_MUSHROOM);
 		plantIds.add(Material.CROPS);
 		plantIds.add(Material.CACTUS);
-		plantIds.add(Material.SUGAR_CANE);
+		plantIds.add(Material.SUGAR_CANE_BLOCK);
 		plantIds.add(Material.PUMPKIN);
 		plantIds.add(Material.HUGE_MUSHROOM_1);// 99, BROWN MUSHROOM CAP
 		plantIds.add(Material.HUGE_MUSHROOM_2);// 100, RED MUSHROOM CAP
