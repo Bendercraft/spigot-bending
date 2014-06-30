@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map.Entry;
-
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -260,10 +258,9 @@ public class BendingCommand {
 
 	private void metrics(Player player, String[] args) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Metrics : ");
-		for(Entry<String, String> entry : BendingManager.metrics.entrySet()) {
-			builder.append("  - ");
-			builder.append(entry.getKey()).append(" : ").append(entry.getValue());
+		List<String> toSend = BendingManager.metrics.toMinecraftString(0);
+		for(String entry : toSend) {
+			builder.append(entry);
 			builder.append("\n");
 		}
 		sendMessage(player, builder.toString());

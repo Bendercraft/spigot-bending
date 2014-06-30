@@ -1,5 +1,6 @@
 package net.avatarrealms.minecraft.bending.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +63,7 @@ import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.Metrics;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -74,9 +76,7 @@ import org.bukkit.entity.Player;
 
 public class BendingManager implements Runnable {
 	public static List<Player> flyingplayers = new LinkedList<Player>();
-	
-	public static Map<String, String> metrics = new HashMap<String, String>();
-
+	public static Metrics metrics = new Metrics();
 	public Bending plugin;
 	private long time;
 	private List<World> worlds = new LinkedList<World>();
@@ -110,8 +110,8 @@ public class BendingManager implements Runnable {
 			Flight.handle();
 			handleDayNight();
 			
-			metrics.put("run", String.valueOf(System.currentTimeMillis() - time));
-			metrics.put("global_time_step", String.valueOf(Bending.time_step));
+			metrics.put(new LinkedList<String>(Arrays.asList("global", "run")), String.valueOf(System.currentTimeMillis() - time));
+			metrics.put(new LinkedList<String>(Arrays.asList("global", "step")), String.valueOf(Bending.time_step));
 		} catch (Exception e) {
 			PluginTools.stopAllBending();
 			PluginTools.writeToLog("Bending broke!");
@@ -125,72 +125,33 @@ public class BendingManager implements Runnable {
 	private void manageAirbending() {
 		long current = System.currentTimeMillis();
 		
-		long temp = System.currentTimeMillis();
 		AirPassive.handlePassive(plugin.getServer());
-		//metrics.put("AirPassive", String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		AirBubble.handleBubbles(plugin.getServer());
-		metrics.put("AirBubble", String.valueOf(System.currentTimeMillis() - temp));
-		
-		//temp = System.currentTimeMillis();
 		AirBlast.progressAll();
-		//metrics.put("AirBlast", String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		AirShield.progressAll();
-		metrics.put("AirShield", String.valueOf(System.currentTimeMillis() - temp));
-		
-		//temp = System.currentTimeMillis();
 		AirSuction.progressAll();
-		//metrics.put("AirSuction", String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		AirSwipe.progressAll();
-		metrics.put("AirSwipe", String.valueOf(System.currentTimeMillis() - temp));
-		
-		//temp = System.currentTimeMillis();
 		Speed.progressAll();
-		//metrics.put("Speed", String.valueOf(System.currentTimeMillis() - temp));
-		
-		//temp = System.currentTimeMillis();
 		Tornado.progressAll();
-		//metrics.put("Tornado", String.valueOf(System.currentTimeMillis() - temp));
-		
-		//temp = System.currentTimeMillis();
 		AirBurst.progressAll();
-		//metrics.put("AirBurst", String.valueOf(System.currentTimeMillis() - temp));
-		
-		//temp = System.currentTimeMillis();
 		AirScooter.progressAll();
-		//metrics.put("AirScooter", String.valueOf(System.currentTimeMillis() - temp));
-		
-		//temp = System.currentTimeMillis();
 		AirSpout.spoutAll();
-		//metrics.put("AirSpout", String.valueOf(System.currentTimeMillis() - temp));
 		
-		metrics.put("manageAirbending", String.valueOf(System.currentTimeMillis() - current));
+		metrics.put(new LinkedList<String>(Arrays.asList("air", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void manageEarthbending() {
 		long current = System.currentTimeMillis();
 		
 		Catapult.progressAll();
-
 		EarthColumn.progressAll();
-
 		CompactColumn.progressAll();
-
 		EarthBlast.progressAll();
-
 		EarthTunnel.progressAll();
-
 		EarthArmor.progressAll();
 		EarthPassive.revertSands();
-
 		Shockwave.progressAll();
 		Ripple.progressAll();
-
 		Tremorsense.progressAll();
 
 		for (Block block : RevertChecker.revertQueue.keySet()) {
@@ -204,116 +165,60 @@ public class BendingManager implements Runnable {
 			BlockTools.revertAirBlock(i);
 			RevertChecker.airRevertQueue.remove(i);
 		}
-		metrics.put("manageEarthbending", String.valueOf(System.currentTimeMillis() - current));
+		metrics.put(new LinkedList<String>(Arrays.asList("earth", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void manageFirebending() {
 		long current = System.currentTimeMillis();
+		
 		FireStream.progressAll();
 		FireStream.removeAllNoneFireIgnitedBlock();
-
 		Fireball.progressAll();
-
 		WallOfFire.progressAll();
-
 		Lightning.progressAll();
-
 		FireShield.progressAll();
-		
 		FireProtection.progressAll();
-
 		FireBlast.progressAll();
-
 		FireBurst.progressAll();
-
 		FireJet.progressAll();
-
 		FireStream.dissipateAll();
-
 		Cook.progressAll();
-
 		Illumination.progressAll();
-
 		Enflamed.handleFlames();
-		metrics.put("manageFirebending", String.valueOf(System.currentTimeMillis() - current));
+		
+		metrics.put(new LinkedList<String>(Arrays.asList("earth", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void manageChiBlocking() {
 		long current = System.currentTimeMillis();
-		RapidPunch.progressAll();
 		
+		RapidPunch.progressAll();
 		SmokeBomb.progressAll();
-		metrics.put("manageChiBlocking", String.valueOf(System.currentTimeMillis() - current));
+		
+		metrics.put(new LinkedList<String>(Arrays.asList("chi", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void manageWaterbending() {
 		long current = System.currentTimeMillis();
 		
-		long temp = System.currentTimeMillis();
 		FreezeMelt.handleFrozenBlocks();
-		metrics.put("FreezeMelt", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		WaterSpout.progressAll();
-		metrics.put("WaterSpout", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		WaterManipulation.progressAll();
-		metrics.put("WaterManipulation", String.valueOf(System.currentTimeMillis() - temp));
-	
-		temp = System.currentTimeMillis();
 		WaterWall.progressAll();
-		metrics.put("WaterWall", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		Wave.progressAll();
-		metrics.put("Wave", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		IceSpike.progressAll();
-		metrics.put("IceSpike", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		IceSpike2.progressAll();
-		metrics.put("IceSpike2", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		Torrent.progressAll();
-		metrics.put("Torrent", String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		TorrentBurst.progressAll();
-		metrics.put("TorrentBurst", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		Bloodbending.progressAll();
-		metrics.put("Bloodbending", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		HealingWaters.heal(plugin.getServer());
-		metrics.put("HealingWaters", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		WaterPassive.handlePassive(plugin.getServer());
-		metrics.put("WaterPassive", String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		FastSwimming.HandleSwim(plugin.getServer());
-		metrics.put("FastSwimming", String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		OctopusForm.progressAll();
-		metrics.put("OctopusForm", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		Plantbending.regrow();
-		metrics.put("PlantBending", String.valueOf(System.currentTimeMillis() - temp));
-
-		temp = System.currentTimeMillis();
 		WaterReturn.progressAll();
-		metrics.put("WaterReturn", String.valueOf(System.currentTimeMillis() - temp));
 		
-		metrics.put("manageWaterbending", String.valueOf(System.currentTimeMillis() - current));
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "global")), String.valueOf(System.currentTimeMillis() - current));
 	}
 
 	private void handleDayNight() {
@@ -394,7 +299,7 @@ public class BendingManager implements Runnable {
 		for (World world : removeWorlds) {
 			worlds.remove(world);
 		}
-		metrics.put("handleDayNight", String.valueOf(System.currentTimeMillis() - current));
+		metrics.put(new LinkedList<String>(Arrays.asList("global", "day&night")), String.valueOf(System.currentTimeMillis() - current));
 	}
 
 }
