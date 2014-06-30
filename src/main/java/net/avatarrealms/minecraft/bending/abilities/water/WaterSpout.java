@@ -121,6 +121,8 @@ public class WaterSpout implements IAbility {
 					affectedblocks.add(block);
 				}
 				newaffectedblocks.add(block);
+				
+				/*
 				switch (cardinalPoint) {
 					case 0 : block = location.clone().add(0, i, -1).getBlock(); break;
 					case 1 : block = location.clone().add(-1, i, -1).getBlock(); break;
@@ -139,7 +141,8 @@ public class WaterSpout implements IAbility {
 				if (!affectedblocks.contains(block)) {
 					affectedblocks.add(block);
 				}
-				newaffectedblocks.add(block);	
+				newaffectedblocks.add(block);
+				*/
 			}
 			currentCardinalPoint ++;
 			if (currentCardinalPoint == SPEED*8) {
@@ -151,6 +154,7 @@ public class WaterSpout implements IAbility {
 					}
 				} */
 			}
+			
 			if (player.getLocation().getBlockY() > block.getY()) {
 				player.setFlying(false);
 			} else {

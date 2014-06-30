@@ -2,6 +2,8 @@ package net.avatarrealms.minecraft.bending.abilities.fire;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
@@ -42,16 +44,14 @@ public class Cook implements IAbility {
 		}
 	}
 
-	private void progress() {
+	private boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			cancel();
-			return;
+			return false;
 		}
 
 		if (!player.isSneaking()
 				|| EntityTools.getBendingAbility(player) != Abilities.HeatControl) {
-			cancel();
-			return;
+			return false;
 		}
 
 		if (!items.equals(player.getItemInHand())) {
@@ -60,8 +60,7 @@ public class Cook implements IAbility {
 		}
 
 		if (!isCookable(items.getType())) {
-			cancel();
-			return;
+			return false;
 		}
 
 		if (System.currentTimeMillis() > time + cooktime) {
@@ -71,9 +70,10 @@ public class Cook implements IAbility {
 
 		player.getWorld().playEffect(player.getEyeLocation(),
 				Effect.MOBSPAWNER_FLAMES, 0, 10);
+		return true;
 	}
 
-	private void cancel() {
+	private void remove() {
 		instances.remove(player);
 	}
 
@@ -129,8 +129,15 @@ public class Cook implements IAbility {
 	}
 
 	public static void progressAll() {
-		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+		List<Cook> toRemove = new LinkedList<Cook>();
+		for (Cook cook : instances.values()) {
+			boolean keep = cook.progress();
+			if(!keep) {
+				toRemove.add(cook);
+			}
+		}
+		for (Cook cook : toRemove) {
+			cook.remove();
 		}
 	}
 

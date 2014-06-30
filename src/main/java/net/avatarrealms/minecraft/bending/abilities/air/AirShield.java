@@ -132,23 +132,19 @@ public class AirShield implements IAbility {
 
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
-			instances.remove(player.getEntityId());
 			return false;
 		}
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirShield,
 				player.getLocation())) {
-			instances.remove(player.getEntityId());
 			return false;
 		}
 		speedfactor = 1;
 		if (!EntityTools.canBend(player, Abilities.AirShield)
 				|| player.getEyeLocation().getBlock().isLiquid()) {
-			instances.remove(player.getEntityId());
 			return false;
 		}
 		if (((EntityTools.getBendingAbility(player) != Abilities.AirShield) || (!player
 				.isSneaking())) && !AvatarState.isAvatarState(player)) {
-			instances.remove(player.getEntityId());
 			return false;
 		}
 		rotateShield();
