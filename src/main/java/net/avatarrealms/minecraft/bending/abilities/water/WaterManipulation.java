@@ -613,7 +613,7 @@ public class WaterManipulation implements IAbility {
 			return false;
 		return true;
 	}
-
+	
 	public static void removeAll() {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>(instances.values());
 		for (WaterManipulation manip : toBreak)
@@ -624,6 +624,7 @@ public class WaterManipulation implements IAbility {
 	public static boolean canBubbleWater(Block block) {
 		return canPhysicsChange(block);
 	}
+
 
 	public static String getDescription() {
 		// TODO Auto-generated method stub

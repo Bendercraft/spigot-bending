@@ -128,7 +128,7 @@ public class EarthGrab implements IAbility {
 					target.teleport(new Location(target.getWorld(),x,y,z));
 					// To be sure the guy is locked in the grab
 					
-					if (target instanceof Player) {
+					if (target instanceof Player && target.getEntityId() != bender.getEntityId()) {
 						EntityTools.grab((Player) target,System.currentTimeMillis());
 					}
 					bPlayer.cooldown(Abilities.EarthGrab);

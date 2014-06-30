@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -144,6 +145,13 @@ public class EarthBlast implements IAbility {
 
 	public void throwEarth() {
 		if (sourceblock != null) {
+			Integer id = EarthGrab.blockInEarthGrab(sourceblock);
+			if (id != null) {
+				if (!EarthGrab.revertEarthGrab(id)) {
+					Bending.log.info("[Bending] An error occured while removing an earthgrab");
+				}
+			}
+			
 			if (sourceblock.getWorld() == player.getWorld()) {
 				if (BlockTools.movedEarth.containsKey(sourceblock)) {
 					if (!revert)
@@ -182,22 +190,6 @@ public class EarthBlast implements IAbility {
 
 		}
 	}
-
-	// private Vector getDirection() {
-	// double x1, y1, z1;
-	// double x0, y0, z0;
-	//
-	// x1 = destination.getX();
-	// y1 = destination.getY();
-	// z1 = destination.getZ();
-	//
-	// x0 = (double) sourceblock.getX();
-	// y0 = (double) sourceblock.getY();
-	// z0 = (double) sourceblock.getZ();
-	//
-	// return new Vector(x1 - x0, y1 - y0, z1 - z0);
-	//
-	// }
 
 	public static EarthBlast getBlastFromSource(Block block) {
 		for (int id : instances.keySet()) {
@@ -361,17 +353,13 @@ public class EarthBlast implements IAbility {
 						progressing = false;
 						sourceblock.setType(sourcetype);
 					}
-
 					falling = true;
 					progressing = false;
 				}
-
 				return true;
 			}
 		}
-
 		return true;
-
 	}
 
 	/**
@@ -402,9 +390,9 @@ public class EarthBlast implements IAbility {
 				}
 			}
 
-			if (cooldown)
+			if (cooldown) {
 				bPlayer.cooldown(Abilities.EarthBlast);
-
+			}
 		}
 
 		redirectTargettedBlasts(player, ignore);
