@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -31,7 +32,7 @@ public class SmokeBomb implements IAbility {
 	private static PotionEffect blindnessBomber = new PotionEffect(
 			PotionEffectType.BLINDNESS, 20, 2);
 
-	private Player bomber;
+	private Player player;
 	private PotionEffect blindnessTarget;
 	private List<LivingEntity> targets;
 	private Location origin;
@@ -41,11 +42,16 @@ public class SmokeBomb implements IAbility {
 
 	public SmokeBomb(Player player, IAbility parent) {
 		this.parent = parent;
-		this.bomber = player;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(bomber);
+		this.player = player;
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		
+		if (Tools.isRegionProtectedFromBuild(player, Abilities.SmokeBomb,
+				origin)) {
+			return;
+		}
 
 		if (!bPlayer.isOnCooldown(Abilities.SmokeBomb)) {
-			this.origin = bomber.getLocation();
+			this.origin = player.getLocation();
 			this.ticksRemaining = duration * 20;
 			locs = new ArrayList<Location>();
 			targets = new ArrayList<LivingEntity>();
@@ -63,7 +69,7 @@ public class SmokeBomb implements IAbility {
 					//((Player)ent).playSound(origin,Sound.FIREWORK_BLAST2,10,1);
 				}
 			}
-			bomber.addPotionEffect(blindnessBomber);
+			player.addPotionEffect(blindnessBomber);
 			bPlayer.cooldown(Abilities.SmokeBomb);
 			bPlayer.earnXP(BendingType.ChiBlocker,this);
 		}
@@ -91,7 +97,7 @@ public class SmokeBomb implements IAbility {
 		targets.clear();
 		
 		for (LivingEntity targ : newTargets) {
-			if (targ.getEntityId() != bomber.getEntityId()) {
+			if (targ.getEntityId() != player.getEntityId()) {
 				targ.addPotionEffect(blindnessTarget);
 				targets.add(targ);
 			}
