@@ -36,6 +36,7 @@ public class EarthGrab implements IAbility {
 	private Player bender;
 	private LivingEntity target;
 	private IAbility parent;
+	private Location origin;
 
  	public EarthGrab(Player player, boolean self, IAbility parent) {
  		this.parent = parent;
@@ -83,13 +84,13 @@ public class EarthGrab implements IAbility {
 			if (entity instanceof LivingEntity) {
 				int cpt = 0;
 				target = (LivingEntity)entity;
-				Location location = entity.getLocation();
+				origin = entity.getLocation();
 				Location cLoc[] = new Location[4];
 				
-				cLoc[0] = location.clone().add(0,-1,-1);
-				cLoc[1] = location.clone().add(0,-1,1);
-				cLoc[2] = location.clone().add(-1,-1,0);
-				cLoc[3] = location.clone().add(1,-1,0);
+				cLoc[0] = origin.clone().add(0,-1,-1);
+				cLoc[1] = origin.clone().add(0,-1,1);
+				cLoc[2] = origin.clone().add(-1,-1,0);
+				cLoc[3] = origin.clone().add(1,-1,0);
 				
 				for (int i =0; i < 4; i ++) {
 					if (BlockTools.isEarthbendable(player,cLoc[i].getBlock())) {
@@ -145,11 +146,20 @@ public class EarthGrab implements IAbility {
 	}
 	
 	public static Integer blockInEarthGrab(Block block) {
+		Location loc;
 		for (Integer ID : instances.keySet()) {
-			for (EarthColumn column : instances.get(ID).columns) {
-				if (column.blockInAffectedBlocks(block)) {
-					return ID;
-				}
+			loc = instances.get(ID).origin.clone();
+			if (loc.add(0,0,1).equals(block.getLocation())) {
+				return ID;
+			}
+			if (loc.add(0,0,-2).equals(block.getLocation())) {
+				return ID;
+			}
+			if (loc.add(+1,0,+2).equals(block.getLocation())) {
+				return ID;
+			}
+			if (loc.add(-2,0,0).equals(block.getLocation())) {
+				return ID;
 			}
 		}
 		return null;
