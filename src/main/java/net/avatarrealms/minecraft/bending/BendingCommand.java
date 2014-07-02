@@ -2083,7 +2083,21 @@ public class BendingCommand {
 	
 	private void seeDegressionFactor(Player player, String args[]) {
 		if (player.hasPermission("bending.admin")) {
-			BendingPlayer bPlayer =	BendingPlayer.getBendingPlayer(player);
+			if (args.length != 3){
+				player.sendMessage(ChatColor.RED + "Invalid command, should have been <target> <element>");
+				return;
+			}
+			Player target = server.getPlayer(args[1]);
+			if(target == null){
+				player.sendMessage(ChatColor.RED + "Invalid target");
+				return;
+			}
+			BendingPlayer bTarget =	BendingPlayer.getBendingPlayer(target);
+			if(bTarget == null){
+				player.sendMessage(ChatColor.RED + "Invalid target");
+				return;
+			}
+			
 			String element = args[2].toLowerCase();
 			BendingType type = null;
 			if (Arrays.asList(firebendingAliases).contains(element)){
@@ -2096,21 +2110,24 @@ public class BendingCommand {
 				type = BendingType.Air;
 			} else if (Arrays.asList(chiblockingAliases).contains(element)){
 				type = BendingType.ChiBlocker;
-			} else {
+			}
+			if(type == null){
 				player.sendMessage(ChatColor.RED + "Invalid element");
 				return;
 			}
+			
 			StringBuilder builder = new StringBuilder();
-			builder.append("Player : "+player.getName())
+			builder.append("Player : "+target.getName())
 				.append("\n");
 			builder.append("  - Degression factor : ")
-				.append(bPlayer.getDegressionFactor(type))
+				.append(bTarget.getDegressionFactor(type))
 				.append("\n");
 			builder.append("  - Spam history : ")
-				.append(bPlayer.getSpamHistory(type))
+				.append(bTarget.getSpamHistory(type))
 				.append("\n");
 			builder.append("  - Last time : ")
-				.append(bPlayer.getLastTime(type));
+				.append(bTarget.getLastTime(type));
+			
 			player.sendMessage(builder.toString());
 		} else {
 			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
