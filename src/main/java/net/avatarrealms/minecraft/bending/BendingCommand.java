@@ -2126,7 +2126,13 @@ public class BendingCommand {
 				.append(bTarget.getSpamHistory(type))
 				.append("\n");
 			builder.append("  - Last time : ")
-				.append(bTarget.getLastTime(type));
+				.append(bTarget.getLastTime(type))
+				.append("\n");
+			builder.append("  - Current time : ")
+				.append(System.currentTimeMillis())
+				.append("\n");
+			builder.append("  - Time diff : ")
+				.append(System.currentTimeMillis()-bTarget.getLastTime(type));
 			
 			player.sendMessage(builder.toString());
 		} else {
