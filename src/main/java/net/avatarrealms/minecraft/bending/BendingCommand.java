@@ -52,6 +52,7 @@ public class BendingCommand {
 	private final String[] levelAliases = {"level","lvl","lv","l"};
 	private final String[] setlevelAliases = {"setlevel","slvl"};
 	private final String[] givexpAliases = {"givexp","gxp","xp"};
+	private final String[] seeDegressionAliases = {"dxp"};
 
 	private final String[] itemAliases = { "item", "ite", "it", "i" };
 	private final String[] slotAliases = { "slot", "slo", "sl", "s" };
@@ -243,6 +244,8 @@ public class BendingCommand {
 				setlevel(player, args);
 			} else if (Arrays.asList(givexpAliases).contains(arg)) {
 				giveXP(player, args);
+			} else if (Arrays.asList(seeDegressionAliases).contains(arg)) {
+				seeDegressionFactor(player, args);
 			} else if (Arrays.asList(metricsAlias).contains(arg)) {
 				metrics(player, args);
 			} else {
@@ -257,13 +260,17 @@ public class BendingCommand {
 	}
 
 	private void metrics(Player player, String[] args) {
-		StringBuilder builder = new StringBuilder();
-		List<String> toSend = BendingManager.metrics.toMinecraftString(0);
-		for(String entry : toSend) {
-			builder.append(entry);
-			builder.append("\n");
+		if (player.hasPermission("bending.admin")) {
+			StringBuilder builder = new StringBuilder();
+			List<String> toSend = BendingManager.metrics.toMinecraftString(0);
+			for(String entry : toSend) {
+				builder.append(entry);
+				builder.append("\n");
+			}
+			sendMessage(player, builder.toString());
+		} else {
+			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
 		}
-		sendMessage(player, builder.toString());
 	}
 
 	private void version(Player player, String[] args) {
@@ -2072,6 +2079,42 @@ public class BendingCommand {
 			}
 		}
 		return true;
+	}
+	
+	private void seeDegressionFactor(Player player, String args[]) {
+		if (player.hasPermission("bending.admin")) {
+			BendingPlayer bPlayer =	BendingPlayer.getBendingPlayer(player);
+			String element = args[2].toLowerCase();
+			BendingType type = null;
+			if (Arrays.asList(firebendingAliases).contains(element)){
+				type = BendingType.Fire;
+			} else if (Arrays.asList(waterbendingAliases).contains(element)){
+				type = BendingType.Water;
+			} else if (Arrays.asList(earthbendingAliases).contains(element)){
+				type = BendingType.Earth;
+			} else if (Arrays.asList(airbendingAliases).contains(element)){
+				type = BendingType.Air;
+			} else if (Arrays.asList(chiblockingAliases).contains(element)){
+				type = BendingType.ChiBlocker;
+			} else {
+				player.sendMessage(ChatColor.RED + "Invalid element");
+				return;
+			}
+			StringBuilder builder = new StringBuilder();
+			builder.append("Player : "+player.getName())
+				.append("\n");
+			builder.append("  - Degression factor : ")
+				.append(bPlayer.getDegressionFactor(type))
+				.append("\n");
+			builder.append("  - Spam history : ")
+				.append(bPlayer.getSpamHistory(type))
+				.append("\n");
+			builder.append("  - Last time : ")
+				.append(bPlayer.getLastTime(type));
+			player.sendMessage(builder.toString());
+		} else {
+			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
+		}
 	}
 	
 	private void giveXP(Player player, String args[]) {

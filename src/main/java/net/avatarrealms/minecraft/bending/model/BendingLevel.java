@@ -20,7 +20,6 @@ public class BendingLevel {
 		this.bendingType = type;
 		this.level = 1;
 		this.experience = 0;
-		
 		this.lastTime = 0;
 	}
 
@@ -202,6 +201,10 @@ public class BendingLevel {
 			*/
 		}
 	}
+	
+	public double getDegressFactor() {
+		return this.degress(spamHistory);
+	}
 
 	public void setXP(double d) {
 		experience = (int) d;
@@ -213,5 +216,13 @@ public class BendingLevel {
 
 	public void setBendingPlayer(BendingPlayer player) {
 		this.bPlayer = player;
+	}
+	
+	public long getLastTime() {
+		return lastTime;
+	}
+
+	public int getSpamHistory() {
+		return spamHistory;
 	}
 }

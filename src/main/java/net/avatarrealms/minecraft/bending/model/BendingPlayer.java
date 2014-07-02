@@ -535,6 +535,18 @@ public class BendingPlayer {
 		
 	}
 	
+	public long getLastTime(BendingType type) {
+		return bendings.get(type).getLastTime();
+	}
+	
+	public int getSpamHistory(BendingType type) {
+		return bendings.get(type).getSpamHistory();
+	}
+	
+	public double getDegressionFactor(BendingType type) {
+		return bendings.get(type).getDegressFactor();
+	}
+	
 	public int getMaxLevel() {
 		int max = 0;
 		for (BendingType type : bendings.keySet()) {
