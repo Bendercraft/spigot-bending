@@ -46,6 +46,9 @@ public class Shockwave implements IAbility {
 				|| EntityTools.getBendingAbility(player) != Abilities.Shockwave) {
 			return false;
 		}
+		if (!player.isSneaking()) {
+			return false;
+		}
 		if (System.currentTimeMillis() > starttime + chargetime && !charged) {
 			charged = true;
 		}

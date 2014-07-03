@@ -52,6 +52,11 @@ public class FireBurst implements IAbility {
 				|| EntityTools.getBendingAbility(player) != Abilities.FireBurst) {
 			return false;
 		}
+		
+		if (!player.isSneaking()) {
+			return false;
+		}
+		
 		if (System.currentTimeMillis() > starttime + chargetime && !charged) {
 			charged = true;
 		}
