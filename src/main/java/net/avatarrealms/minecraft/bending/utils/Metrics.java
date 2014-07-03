@@ -1,12 +1,12 @@
 package net.avatarrealms.minecraft.bending.utils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class Metrics {
-	private Map<String, Metrics> metrics = new HashMap<String, Metrics>();
+	private Map<String, Metrics> metrics = new TreeMap<String, Metrics>();
 	private String value = null;
 	
 	public Metrics() {
