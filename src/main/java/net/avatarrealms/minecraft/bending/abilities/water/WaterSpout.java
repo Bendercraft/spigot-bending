@@ -147,12 +147,6 @@ public class WaterSpout implements IAbility {
 			currentCardinalPoint ++;
 			if (currentCardinalPoint == SPEED*8) {
 				currentCardinalPoint = 0;
-				/*Location tempLoc = player.getLocation().add(0,-height,0);
-				for (Entity e : EntityTools.getEntitiesAroundPoint(tempLoc,7)) {
-					if (e instanceof Player) {
-						((Player)e).playSound(tempLoc,Sound.SPLASH2,10,1);
-					}
-				} */
 			}
 			
 			if (player.getLocation().getBlockY() > block.getY()) {

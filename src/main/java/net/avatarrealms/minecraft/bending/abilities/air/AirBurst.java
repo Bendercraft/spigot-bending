@@ -63,6 +63,11 @@ public class AirBurst implements IAbility {
 				|| EntityTools.getBendingAbility(player) != Abilities.AirBurst) {
 			return false;
 		}
+		
+		if (!player.isSneaking()) {
+			return false;
+		}
+		
 		if (System.currentTimeMillis() > starttime + chargetime && !charged) {
 			charged = true;
 		}
