@@ -135,8 +135,7 @@ public class WaterSpout implements IAbility {
 				}
 				
 				if (block.getType().equals(Material.AIR) ||
-						block.getType().equals(Material.WATER) || 
-						block.getType().equals(Material.STATIONARY_WATER)) {
+						affectedblocks.contains(block)) {
 					
 					if (!TempBlock.isTempBlock(block)) {
 						new TempBlock(block, Material.WATER, full);
