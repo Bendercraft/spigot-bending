@@ -120,9 +120,8 @@ public class WaterSpout implements IAbility {
 				if (!affectedblocks.contains(block)) {
 					affectedblocks.add(block);
 				}
-				newaffectedblocks.add(block);
+				newaffectedblocks.add(block);	
 				
-				/*
 				switch (cardinalPoint) {
 					case 0 : block = location.clone().add(0, i, -1).getBlock(); break;
 					case 1 : block = location.clone().add(-1, i, -1).getBlock(); break;
@@ -135,14 +134,18 @@ public class WaterSpout implements IAbility {
 					default: break;
 				}
 				
-				if (!TempBlock.isTempBlock(block) && block.getType().equals(Material.AIR)) {
-					new TempBlock(block, Material.WATER, full);
-				}
-				if (!affectedblocks.contains(block)) {
-					affectedblocks.add(block);
-				}
-				newaffectedblocks.add(block);
-				*/
+				if (block.getType().equals(Material.AIR) ||
+						block.getType().equals(Material.WATER) || 
+						block.getType().equals(Material.STATIONARY_WATER)) {
+					
+					if (!TempBlock.isTempBlock(block)) {
+						new TempBlock(block, Material.WATER, full);
+					}
+					if (!affectedblocks.contains(block)) {
+						affectedblocks.add(block);
+					}
+					newaffectedblocks.add(block);
+				}		
 			}
 			currentCardinalPoint ++;
 			if (currentCardinalPoint == SPEED*8) {
