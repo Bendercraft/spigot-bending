@@ -261,13 +261,7 @@ public class BendingCommand {
 
 	private void metrics(Player player, String[] args) {
 		if (player.hasPermission("bending.admin")) {
-			StringBuilder builder = new StringBuilder();
-			List<String> toSend = BendingManager.metrics.toMinecraftString(0);
-			for(String entry : toSend) {
-				builder.append(entry);
-				builder.append("\n");
-			}
-			sendMessage(player, builder.toString());
+			sendMessage(player, BendingManager.metrics.toMinecraftString("", 0));
 		} else {
 			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
 		}

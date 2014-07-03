@@ -1,7 +1,6 @@
 package net.avatarrealms.minecraft.bending.utils;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,32 +29,28 @@ public class Metrics {
 		}
 	}
 	
-	public List<String> toMinecraftString(int level) {
-		List<String> result = new LinkedList<String>();
-		
+	public String toMinecraftString(String key, int level) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.incrementString(level));
+		builder.append(key);
 		if(value != null) {
-			StringBuilder builder = this.incrementString(level);
+			builder.append(" - ");
 			builder.append(value);
-			result.add(builder.toString());
 		}
-		
+		builder.append("\n");
 		for(Entry<String, Metrics> entry : metrics.entrySet()) {
-			StringBuilder builder = this.incrementString(level);
-			builder.append(entry.getKey());
-			result.add(builder.toString());
-			result.addAll(entry.getValue().toMinecraftString(level+1));
+			builder.append(entry.getValue().toMinecraftString(entry.getKey(), level+1));
 		}
 		
-		return result;
+		return builder.toString();
 	}
 	
-	private StringBuilder incrementString(int level) {
+	private String incrementString(int level) {
 		StringBuilder builder = new StringBuilder();
-		
 		for(int i = 0 ; i < level ; i++) {
-			builder.append("  ");
+			builder .append("  ");
 		}
 		
-		return builder;
+		return builder.toString();
 	}
 }
