@@ -147,7 +147,12 @@ public class ConfigManager {
 	public static int dartRange = 10;
 	public static int dartDamage = 2;
 	public static int poisonLevel = 1;
-	public static int poisonnedDartLevelRequired = 10;
+	public static int poisonnedDartCooldown = 1500;
+	public static int poisonnedDartLevelRequired = 1;
+	
+	//Dash
+	public static int dashCooldown = 6000;
+	public static int dashLevelRequired = 1;
 
 	// Earth
 	// Catapult
@@ -536,6 +541,7 @@ public class ConfigManager {
 		dartRange = config.getInt("Properties.ChiBlocker.PoisonnedDart.Range",dartRange);
 		dartDamage = config.getInt("Properties.ChiBlocker.PoisonnedDart.Damage",dartDamage);
 		poisonLevel = config.getInt("Properties.ChiBlocker.PoisonnedDart.poison-level",poisonLevel);
+		poisonnedDartCooldown = config.getInt("Properties.ChiBlocker.PoisonnedDart.Cooldown",poisonnedDartCooldown);
 		poisonnedDartLevelRequired = config.getInt("Properties.ChiBlocker.PoisonnedDart.level-required",poisonnedDartLevelRequired);
 		levelsRequired.put(Abilities.PoisonnedDart, poisonnedDartLevelRequired);
 		
@@ -545,6 +551,10 @@ public class ConfigManager {
 		smokeBombCooldown = config.getInt("Properties.ChiBlocker.SmokeBomb.Cooldown",smokeBombCooldown);
 		smokeBombLevelRequired = config.getInt("Properties.ChiBlocker.SmokeBomb.level-required",smokeBombLevelRequired);
 		levelsRequired.put(Abilities.SmokeBomb, smokeBombLevelRequired);
+		
+		//Dash
+		dashCooldown = config.getInt("Properties.ChiBlocker.Dash.Cooldown",dashCooldown);
+		dashLevelRequired = config.getInt("Properties.ChiBlocker.Dash.level-required",dashLevelRequired);
 
 		// Air
 		// AirBlast
@@ -1163,7 +1173,12 @@ public class ConfigManager {
 		config.set("Properties.ChiBlocker.PoisonnedDart.Range", dartRange);
 		config.set("Properties.ChiBlocker.PoisonnedDart.Damage", dartDamage);
 		config.set("Properties.ChiBlocker.PoisonnedDart.poison-level", poisonLevel);
-		config.set("Properties.ChiBlocker.PoisonnedDart.level-required", poisonnedDartLevelRequired);
+		config.set("Properties.ChiBlocker.PoisonnedDart.Cooldown", poisonnedDartCooldown);
+		config.set("Properties.ChiBlocker.PoisonnedDart.level-required", poisonnedDartLevelRequired);		
+		//Dash
+		config.set("Properties.ChiBlocker.Dash.Cooldown", dashCooldown);
+		config.set("Properties.ChiBlocker.Dash.level-required", dashLevelRequired);
+		
 		// Air
 		// AirBlast
 		config.set("Properties.Air.AirBlast.Speed", airBlastSpeed);
