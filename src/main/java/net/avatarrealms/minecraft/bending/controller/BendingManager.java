@@ -201,22 +201,70 @@ public class BendingManager implements Runnable {
 	private void manageWaterbending() {
 		long current = System.currentTimeMillis();
 		
+		long temp = System.currentTimeMillis();
 		FreezeMelt.handleFrozenBlocks();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "FreezeMelt")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		WaterSpout.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "WaterSpout")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		WaterManipulation.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "WaterManipulation")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		WaterWall.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "WaterWall")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		Wave.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "Wave")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		IceSpike.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "IceSpike")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		IceSpike2.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "IceSpike2")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		Torrent.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "Torrent")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		TorrentBurst.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "TorrentBurst")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		Bloodbending.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "Bloodbending")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		HealingWaters.heal(plugin.getServer());
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "HealingWaters")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		WaterPassive.handlePassive(plugin.getServer());
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "WaterPassive")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		FastSwimming.HandleSwim(plugin.getServer());
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "FastSwimming")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		OctopusForm.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "OctopusForm")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		Plantbending.regrow();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "Plantbending")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		WaterReturn.progressAll();
+		metrics.put(new LinkedList<String>(Arrays.asList("water", "WaterReturn")), String.valueOf(System.currentTimeMillis() - temp));
+		
 		
 		metrics.put(new LinkedList<String>(Arrays.asList("water", "global")), String.valueOf(System.currentTimeMillis() - current));
 	}
