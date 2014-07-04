@@ -17,7 +17,7 @@ public enum Abilities {
 	WaterBubble, PhaseChange, HealingWaters, WaterManipulation, Surge, Bloodbending, WaterSpout,
 	IceSpike, OctopusForm, Torrent, IceSwipe,
 
-	HighJump, RapidPunch, Paralyze, SmokeBomb, PoisonnedDart,
+	HighJump, RapidPunch, Paralyze, SmokeBomb, PoisonnedDart, Dash,
 
 	AvatarState;
 
@@ -152,6 +152,7 @@ public enum Abilities {
 		case RapidPunch :
 		case Paralyze :
 		case SmokeBomb :
+		case Dash : 
 		case PoisonnedDart : return true;
 		default : return false;
 		}
@@ -179,6 +180,7 @@ public enum Abilities {
 		case MentalExplosion :
 		case ThunderArmor :
 		case IceSwipe :
+		case Dash :
 		case PoisonnedDart: return true;			
 		default : return false;
 		}

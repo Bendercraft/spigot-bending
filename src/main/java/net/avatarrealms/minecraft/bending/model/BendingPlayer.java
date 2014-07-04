@@ -121,6 +121,12 @@ public class BendingPlayer {
 					case SmokeBomb:
 						cd = ConfigManager.smokeBombCooldown;
 						break;
+					case PoisonnedDart:
+						cd = ConfigManager.poisonnedDartCooldown;
+						break;
+					case Dash :
+						cd = ConfigManager.dashCooldown;
+						break;
 					default:
 						//TODO Throw exception here
 						cd = 0;
