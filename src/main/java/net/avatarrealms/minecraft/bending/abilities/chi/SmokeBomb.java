@@ -44,6 +44,7 @@ public class SmokeBomb implements IAbility {
 		this.parent = parent;
 		this.player = player;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		this.origin = player.getLocation();
 		
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.SmokeBomb,
 				origin)) {
@@ -51,7 +52,7 @@ public class SmokeBomb implements IAbility {
 		}
 
 		if (!bPlayer.isOnCooldown(Abilities.SmokeBomb)) {
-			this.origin = player.getLocation();
+			
 			this.ticksRemaining = duration * 20;
 			locs = new ArrayList<Location>();
 			targets = new ArrayList<LivingEntity>();
