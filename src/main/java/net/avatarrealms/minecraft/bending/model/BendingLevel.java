@@ -141,13 +141,16 @@ public class BendingLevel {
 	}
 	
 	private double degress(int x) {
-		// (e^(x*0.35) -1)/100
+		// (e^(x*0.1) -1)/100
 		double result = 0;
 		
-		result = (double) (Math.exp(x*0.35) - 1) / 100;
+		result = (double) (Math.exp(x*0.1) - 1) / 100;
 		
 		if(result > 1) {
 			result = 1;
+		}
+		if(result < 0) {
+			result = 0;
 		}
 		return result;
 	}
