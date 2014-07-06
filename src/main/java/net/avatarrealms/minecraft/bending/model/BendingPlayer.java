@@ -545,7 +545,7 @@ public class BendingPlayer {
 		return bendings.get(type).getLastTime();
 	}
 	
-	public int getSpamHistory(BendingType type) {
+	public double getSpamHistory(BendingType type) {
 		return bendings.get(type).getSpamHistory();
 	}
 	

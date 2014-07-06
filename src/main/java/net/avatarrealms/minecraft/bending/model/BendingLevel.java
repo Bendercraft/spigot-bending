@@ -1,5 +1,7 @@
 package net.avatarrealms.minecraft.bending.model;
 
+import org.bukkit.Location;
+
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 
@@ -12,8 +14,10 @@ public class BendingLevel {
 	private BendingType bendingType;
 	private Integer level = 1;
 	private Integer experience = 0;
+	
 	private long lastTime;
-	private int spamHistory = 0;
+	private Location lastLocation;
+	private double spamHistory = 0;
 
 	public BendingLevel(BendingType type, BendingPlayer player) {
 		this.bPlayer = player;
@@ -140,12 +144,13 @@ public class BendingLevel {
 		}
 	}
 	
-	private double degress(int x) {
+	private double degress(double x) {
 		// (e^(x*0.1) -1)/100
 		double result = 0;
 		
 		result = (double) (Math.exp(x*0.1) - 1) / 100;
 		
+		//Since this function is not limited on Y range between 0-1, just make it so
 		if(result > 1) {
 			result = 1;
 		}
@@ -162,46 +167,52 @@ public class BendingLevel {
 	
 	public void earnXP(IAbility ability) {
 		if(ability.getParent() == null) {
+			//If player has not bended long enough, allow him ot reset his spam history
 			long now = System.currentTimeMillis();
 			if (now - lastTime > SPAM_THRESHOLD) {
 				spamHistory = 0;
 			}
-			double degressFactor = this.degress(spamHistory);
+			
+			//A player that travel far enough will suffer less from degression factor
+			double distance = 1;
+			if(this.lastLocation != null) {
+				distance = this.bPlayer.getPlayer().getLocation().distance(this.lastLocation);
+				if(distance < 5) {
+					//Between 0-5 blocks, player will take 100% of degression factor
+					distance = 1;
+				} else {
+					//Between 5-infinite blocks, player will take (distance / 4)% degression factor 
+					distance = distance / 4;
+				}
+				
+			}
+			
+			//Minor spamHistory by distance, and calculate degression factor
+			double degressFactor = this.degress(spamHistory /distance);
+			
+			//Calculate augment factor, only depends on level
 			double augmentFactor = this.augment(level);
+			
 			//Progression could be resolved by 
 			//  [(getExperienceNeeded / augment) / baseXP] 
 			//    it will give number of ability to spam to get level (no degression assumed)
-			double finalXP = ability.getBaseExperience() * augmentFactor * (1-degressFactor);
+			double finalXP = ability.getBaseExperience() * augmentFactor;
 			
+			//Apply degression factor
+			finalXP = finalXP * (1-degressFactor);
+			
+			//For safety mesure, if finalXP is negative, does not allow to give it (because player will be losing exp)
 			if(finalXP > 0) {
 				giveXP((int) finalXP);
 			}
 			
+			//In any case, to be able to calculate NEXT degression factor, store player location and increment spamHistory
+			this.lastLocation = this.bPlayer.getPlayer().getLocation();
 			lastTime = now;
 			//Be kind enough to not use no-rewarding ability as spam count
 			if(ability.getBaseExperience() > 0) {
 				spamHistory++;
 			}
-			/*
-			String message = "Ability : "+ability.getClass().getSimpleName()+
-					" with no parent, got degress factor : "+degressFactor+
-					" and thus gave "+finalXP+
-					" over "+ability.getBaseExperience()+"*"+augmentFactor;
-			Bukkit.getLogger().info(message);
-			bPlayer.getPlayer().sendMessage(message);
-		} else {
-			StringBuilder builder = new StringBuilder();
-			builder.append("Got parent : ");
-			builder.append(ability.getClass().getSimpleName());
-			IAbility parent = ability.getParent();
-			while(parent.getParent() != null) {
-				builder.append(" -> ");
-				builder.append(parent.getClass().getSimpleName());
-				parent = parent.getParent();
-			}
-			Bukkit.getLogger().info(builder.toString());
-			Bukkit.getLogger().info(builder.toString());
-			*/
 		}
 	}
 	
@@ -225,7 +236,7 @@ public class BendingLevel {
 		return lastTime;
 	}
 
-	public int getSpamHistory() {
+	public double getSpamHistory() {
 		return spamHistory;
 	}
 }
