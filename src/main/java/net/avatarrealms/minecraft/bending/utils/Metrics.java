@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class Metrics {
+	public static Metrics ROOT = new Metrics();
+	
 	private Map<String, Metrics> metrics = new TreeMap<String, Metrics>();
 	private String value = null;
 	

@@ -4,13 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.avatarrealms.minecraft.bending.controller.BendingManager;
+
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.Metrics;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 import org.bukkit.ChatColor;
@@ -261,7 +262,7 @@ public class BendingCommand {
 
 	private void metrics(Player player, String[] args) {
 		if (player.hasPermission("bending.admin")) {
-			sendMessage(player, BendingManager.metrics.toMinecraftString("", 0));
+			sendMessage(player, Metrics.ROOT.toMinecraftString("", 0));
 		} else {
 			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
 		}

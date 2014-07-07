@@ -1,5 +1,6 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,7 @@ import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.Metrics;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -56,11 +58,10 @@ public class FreezeMelt implements IAbility {
 			}
 		}
 
-		if (cooldown)
+		if (cooldown) {
+			bPlayer.earnXP(BendingType.Water,this);
 			bPlayer.cooldown(Abilities.PhaseChange);
-		
-		bPlayer.earnXP(BendingType.Water,this);
-
+		}
 	}
 
 	private static boolean isFreezable(Player player, Block block) {
@@ -108,6 +109,7 @@ public class FreezeMelt implements IAbility {
 	}
 
 	public static void handleFrozenBlocks() {
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "FreezeMelt", "handleFrozenBlocks")), String.valueOf(frozenblocks.size()));
 		List<Block> toRemove = new LinkedList<Block>();
 		for (Block block : frozenblocks.keySet()) {
 			if (canThaw(block)) {
