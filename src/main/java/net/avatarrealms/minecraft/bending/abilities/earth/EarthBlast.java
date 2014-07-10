@@ -144,14 +144,7 @@ public class EarthBlast implements IAbility {
 	}
 
 	public void throwEarth() {
-		if (sourceblock != null) {
-			Integer id = EarthGrab.blockInEarthGrab(sourceblock);
-			if (id != null) {
-				if (!EarthGrab.revertEarthGrab(id)) {
-					Bending.log.info("[Bending] An error occured while removing an earthgrab");
-				}
-			}
-			
+		if (sourceblock != null) {		
 			if (sourceblock.getWorld() == player.getWorld()) {
 				if (BlockTools.movedEarth.containsKey(sourceblock)) {
 					if (!revert)

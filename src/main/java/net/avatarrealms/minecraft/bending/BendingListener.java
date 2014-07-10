@@ -115,18 +115,22 @@ public class BendingListener implements Listener {
 			ChatColor color = ChatColor.WHITE;
 			if (ConfigManager.colors) {
 				if (player.hasPermission("bending.avatar")) {
-					color = PluginTools.getColor(ConfigManager.getColor("Avatar"));
+					color = PluginTools.getColor(ConfigManager
+							.getColor("Avatar"));
 				} else if (EntityTools.isBender(player, BendingType.Air)) {
 					color = PluginTools.getColor(ConfigManager.getColor("Air"));
 				} else if (EntityTools.isBender(player, BendingType.Earth)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Earth"));
+					color = PluginTools.getColor(ConfigManager
+							.getColor("Earth"));
 				} else if (EntityTools.isBender(player, BendingType.Fire)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Fire"));
+					color = PluginTools
+							.getColor(ConfigManager.getColor("Fire"));
 				} else if (EntityTools.isBender(player, BendingType.Water)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Water"));
-				} else if (EntityTools.isBender(player,
-						BendingType.ChiBlocker)) {
-					color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+					color = PluginTools.getColor(ConfigManager
+							.getColor("Water"));
+				} else if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
+					color = PluginTools.getColor(ConfigManager
+							.getColor("ChiBlocker"));
 				}
 			}
 			player.setDisplayName("<" + color + append + player.getName()
@@ -212,27 +216,34 @@ public class BendingListener implements Listener {
 
 			if (ConfigManager.colors) {
 				if (player.hasPermission("bending.avatar")) {
-					color = PluginTools.getColor(ConfigManager.getColor("Avatar"));
+					color = PluginTools.getColor(ConfigManager
+							.getColor("Avatar"));
 				} else if (EntityTools.isBender(player, BendingType.Air)) {
 					color = PluginTools.getColor(ConfigManager.getColor("Air"));
 				} else if (EntityTools.isBender(player, BendingType.Earth)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Earth"));
+					color = PluginTools.getColor(ConfigManager
+							.getColor("Earth"));
 				} else if (EntityTools.isBender(player, BendingType.Fire)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Fire"));
+					color = PluginTools
+							.getColor(ConfigManager.getColor("Fire"));
 				} else if (EntityTools.isBender(player, BendingType.Water)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Water"));
-				} else if (EntityTools.isBender(player,
-						BendingType.ChiBlocker)) {
-					color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+					color = PluginTools.getColor(ConfigManager
+							.getColor("Water"));
+				} else if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
+					color = PluginTools.getColor(ConfigManager
+							.getColor("ChiBlocker"));
 				}
 			}
 			String format = ConfigManager.chat;
 			format = format.replace("<message>", "%2$s");
-			format = format.replace("<name>", color + player.getDisplayName() + ChatColor.RESET);
-//			String format2 = format.replace("<name>", color + player.getDisplayName()).replace("<message>", ChatColor.WHITE + event.getMessage());
+			format = format.replace("<name>", color + player.getDisplayName()
+					+ ChatColor.RESET);
+			// String format2 = format.replace("<name>", color +
+			// player.getDisplayName()).replace("<message>", ChatColor.WHITE +
+			// event.getMessage());
 			event.setFormat(format);
-			//				event.setFormat("<" + color + player.getDisplayName()
-			//						+ ChatColor.WHITE + "> " + event.getMessage());
+			// event.setFormat("<" + color + player.getDisplayName()
+			// + ChatColor.WHITE + "> " + event.getMessage());
 			// event.setFormat(format);
 			// // event.setMessage(message + "Test");
 			// Tools.verbose(event.getFormat());
@@ -302,7 +313,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.EarthGrab) {
-					new EarthGrab(player,false, null);
+					new EarthGrab(player, false, null);
 				}
 
 				if (ability == Abilities.EarthBlast) {
@@ -412,10 +423,11 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.Paralyze) {
-					Entity t = EntityTools.getTargettedEntity(player, ConfigManager.rapidPunchDistance);
-					new Paralyze(player,t, null);
+					Entity t = EntityTools.getTargettedEntity(player,
+							ConfigManager.rapidPunchDistance);
+					new Paralyze(player, t, null);
 				}
-				
+
 				if (ability == Abilities.SmokeBomb) {
 					new SmokeBomb(player, null);
 				}
@@ -430,7 +442,6 @@ public class BendingListener implements Listener {
 		if (Paralyze.isParalyzed(player) || Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}
-
 
 		AirScooter.check(player);
 
@@ -459,7 +470,7 @@ public class BendingListener implements Listener {
 
 			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
 					|| ConfigManager.useWeapon.get("Air")) {
-				
+
 				if (ability == Abilities.AirSuction) {
 					AirSuction.setOrigin(player);
 				}
@@ -482,7 +493,7 @@ public class BendingListener implements Listener {
 			}
 
 			if (ability == Abilities.EarthGrab) {
-				new EarthGrab(player,true, null);
+				new EarthGrab(player, true, null);
 			}
 
 			if (ability == Abilities.Shockwave) {
@@ -496,7 +507,7 @@ public class BendingListener implements Listener {
 			if (ability == Abilities.Collapse) {
 				new Collapse(player, null);
 			}
-			
+
 			if (ability == Abilities.EarthArmor) {
 				new EarthShield(player, null);
 			}
@@ -588,7 +599,8 @@ public class BendingListener implements Listener {
 			Player player = (Player) event.getEntity();
 			Abilities ability = EntityTools.getBendingAbility(player);
 			if (EntityTools.isBender(player, BendingType.Earth)
-					&& event.getCause() == DamageCause.FALL && ability == Abilities.Shockwave)
+					&& event.getCause() == DamageCause.FALL
+					&& ability == Abilities.Shockwave)
 				new ShockwaveFall(player, null);
 
 			if (EntityTools.isBender(player, BendingType.Air)
@@ -596,7 +608,7 @@ public class BendingListener implements Listener {
 					&& EntityTools.canBendPassive(player, BendingType.Air)) {
 				new Flight(player);
 				player.setAllowFlight(true);
-				if(ability == Abilities.AirBurst) {
+				if (ability == Abilities.AirBurst) {
 					new AirFallBurst(player, null);
 				}
 				player.setFallDistance(0);
@@ -634,7 +646,8 @@ public class BendingListener implements Listener {
 			if (!event.isCancelled()
 					&& EntityTools.isBender(player, BendingType.ChiBlocker)
 					&& event.getCause() == DamageCause.FALL
-					&& EntityTools.canBendPassive(player, BendingType.ChiBlocker)) {
+					&& EntityTools.canBendPassive(player,
+							BendingType.ChiBlocker)) {
 				event.setDamage((int) ((double) event.getDamage() * (ConfigManager.falldamagereduction / 100.)));
 			}
 
@@ -659,12 +672,13 @@ public class BendingListener implements Listener {
 				event.setDamage(0);
 				event.setCancelled(true);
 			}
-			
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player)event.getEntity());
+
+			BendingPlayer bPlayer = BendingPlayer
+					.getBendingPlayer((Player) event.getEntity());
 			if (bPlayer != null && event.getCause() != DamageCause.STARVATION) {
 				int level = bPlayer.getMaxLevel();
 				Random rand = new Random();
-				if (rand.nextDouble()< ((double)level/2)/100){
+				if (rand.nextDouble() < ((double) level / 2) / 100) {
 					event.setCancelled(true);
 				}
 			}
@@ -677,7 +691,7 @@ public class BendingListener implements Listener {
 		Entity entity = event.getEntity();
 		Block block = entity.getLocation().getBlock();
 		if (FireStream.isIgnited(block) && entity instanceof LivingEntity) {
-			//TODO parent is FireStream !
+			// TODO parent is FireStream !
 			new Enflamed(entity, FireStream.getIgnited(block), null);
 		}
 	}
@@ -686,11 +700,10 @@ public class BendingListener implements Listener {
 	public void onEntityDamageEvent(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
 		if (event.getCause() == DamageCause.FIRE
-				&& FireStream.isIgnited(entity.getLocation()
-						.getBlock())) {
-			//TODO parent is FireStream
-			new Enflamed(entity, FireStream.getIgnited(entity
-					.getLocation().getBlock()), null);
+				&& FireStream.isIgnited(entity.getLocation().getBlock())) {
+			// TODO parent is FireStream
+			new Enflamed(entity, FireStream.getIgnited(entity.getLocation()
+					.getBlock()), null);
 		}
 		if (Enflamed.isEnflamed(entity)
 				&& event.getCause() == DamageCause.FIRE_TICK) {
@@ -741,31 +754,33 @@ public class BendingListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-		
-		if (source instanceof Player && entity instanceof Monster && event.getCause() == DamageCause.CUSTOM) {
-			event.setDamage(event.getDamage()*2.5);
+
+		if (source instanceof Player && entity instanceof Monster
+				&& event.getCause() == DamageCause.CUSTOM) {
+			event.setDamage(event.getDamage() * 2.5);
 		}
-		
+
 		if (entity instanceof Player && source instanceof Monster) {
-			event.setDamage(event.getDamage()*2/3);
+			event.setDamage(event.getDamage() * 2 / 3);
 		}
 
 		// Tools.verbose(event.getCause());
 
 		boolean dodged = false;
 
-		if (source instanceof Player
-				&& entity instanceof Player) {
+		if (source instanceof Player && entity instanceof Player) {
 			Player sourceplayer = (Player) source;
 			Player targetplayer = (Player) entity;
-			if (EntityTools.canBendPassive(sourceplayer, BendingType.ChiBlocker)
+			if (EntityTools
+					.canBendPassive(sourceplayer, BendingType.ChiBlocker)
 					&& EntityTools.isBender(sourceplayer,
 							BendingType.ChiBlocker)
 					&& event.getCause() == DamageCause.ENTITY_ATTACK
 					&& event.getDamage() == 1
 					&& sourceplayer.getLocation().distance(
 							targetplayer.getLocation()) <= ConfigManager.rapidPunchDistance
-					&& (!EntityTools.isWeapon(sourceplayer.getItemInHand().getType()) || ConfigManager.useWeapon
+					&& (!EntityTools.isWeapon(sourceplayer.getItemInHand()
+							.getType()) || ConfigManager.useWeapon
 							.get("ChiBlocker"))) {
 				EntityTools.blockChi(targetplayer, System.currentTimeMillis());
 			}
@@ -793,9 +808,10 @@ public class BendingListener implements Listener {
 			}
 		}
 		if (source instanceof Player) {
-			
+
 			if (!dodged)
-				new Paralyze((Player) event.getDamager(), event.getEntity(), null);
+				new Paralyze((Player) event.getDamager(), event.getEntity(),
+						null);
 			if (EntityTools.isBender(((Player) event.getDamager()),
 					BendingType.ChiBlocker)
 					&& event.getCause() == DamageCause.ENTITY_ATTACK
@@ -872,12 +888,17 @@ public class BendingListener implements Listener {
 		if (blast != null) {
 			blast.cancel();
 		}
-		
-		Integer id = EarthGrab.blockInEarthGrab(block);
-		if (id != null) {
-			if (!EarthGrab.revertEarthGrab(id)) {
-				Bending.log.info("[Bending] An error occured while removing an earthgrab");
-				// Should never happen ?
+
+		EarthGrab grab = EarthGrab.blockInEarthGrab(block);
+		if (grab != null) {
+			Bending.log.info("Grab found");
+			grab.setToKeep(false);
+			event.setCancelled(true);
+			Location loc = block.getLocation().clone();
+			loc.add(0, -1, 0);
+			if (loc.getBlock().getType() == Material.AIR) {
+				loc.getBlock().setType(block.getType());
+				block.setType(Material.AIR);
 			}
 		}
 
@@ -1121,28 +1142,27 @@ public class BendingListener implements Listener {
 			List<ItemStack> drops = event.getDrops();
 			List<ItemStack> newdrops = new ArrayList<ItemStack>();
 			for (int i = 0; i < drops.size(); i++) {
-				//Remove eartharmor from items drops
+				// Remove eartharmor from items drops
 				if (!(drops.get(i).getType() == Material.LEATHER_BOOTS
 						|| drops.get(i).getType() == Material.LEATHER_CHESTPLATE
 						|| drops.get(i).getType() == Material.LEATHER_HELMET
-						|| drops.get(i).getType() == Material.LEATHER_LEGGINGS 
-						|| drops.get(i).getType() == Material.AIR))
+						|| drops.get(i).getType() == Material.LEATHER_LEGGINGS || drops
+						.get(i).getType() == Material.AIR))
 					newdrops.add((drops.get(i)));
 			}
-			//Koudja : Since "EarthArmor.removeEffect" already restore player armor, do not drop it again !
+			// Koudja : Since "EarthArmor.removeEffect" already restore player
+			// armor, do not drop it again !
 			/*
-			if (EarthArmor.instances.get(event.getEntity()).oldarmor != null) {
-				for (ItemStack is : EarthArmor.instances.get(event.getEntity()).oldarmor) {
-					if (!(is.getType() == Material.AIR))
-						newdrops.add(is);
-				}
-			}
-			*/
+			 * if (EarthArmor.instances.get(event.getEntity()).oldarmor != null)
+			 * { for (ItemStack is :
+			 * EarthArmor.instances.get(event.getEntity()).oldarmor) { if
+			 * (!(is.getType() == Material.AIR)) newdrops.add(is); } }
+			 */
 			event.getDrops().clear();
 			event.getDrops().addAll(newdrops);
 			EarthArmor.removeEffect(event.getEntity());
 		}
-		
+
 		if (EntityTools.isGrabed(event.getEntity())) {
 			EntityTools.unGrab(event.getEntity());
 		}

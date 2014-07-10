@@ -25,6 +25,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.CompactColumn;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthArmor;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthColumn;
+import net.avatarrealms.minecraft.bending.abilities.earth.EarthGrab;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthPassive;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
 import net.avatarrealms.minecraft.bending.abilities.earth.Ripple;
@@ -146,6 +147,7 @@ public class BendingManager implements Runnable {
 		EarthColumn.progressAll();
 		CompactColumn.progressAll();
 		EarthBlast.progressAll();
+		EarthGrab.progressAll();
 		EarthTunnel.progressAll();
 		EarthArmor.progressAll();
 		EarthPassive.revertSands();
