@@ -891,7 +891,6 @@ public class BendingListener implements Listener {
 
 		EarthGrab grab = EarthGrab.blockInEarthGrab(block);
 		if (grab != null) {
-			Bending.log.info("Grab found");
 			grab.setToKeep(false);
 			event.setCancelled(true);
 			Location loc = block.getLocation().clone();

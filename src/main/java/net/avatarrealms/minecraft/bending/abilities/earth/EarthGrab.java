@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -122,7 +121,6 @@ public class EarthGrab implements IAbility {
 							|| cLoc[i].getBlock().getType() == Material.STATIONARY_LAVA
 							|| BlockTools.isPlant(cLoc[i].getBlock())) {
 
-						// Bending.log.info("Can column");
 						cLoc[i].add(0, -1, 0);
 						if (BlockTools.isEarthbendable(player,
 								cLoc[i].getBlock())) {
@@ -141,14 +139,12 @@ public class EarthGrab implements IAbility {
 
 					} else if (BlockTools.isEarthbendable(bender,
 							cLoc[i].getBlock())) {
-						Bending.log.info("Cannot column but bendable");
 						cpt++;
 					}
 				}
 
 				if (cpt >= 4) {
 					int duration;
-					Bending.log.info("Can effect");
 					if (self) {
 						duration = benderTargettedDuration;
 					} else {
@@ -189,53 +185,42 @@ public class EarthGrab implements IAbility {
 		Location loc = target.getLocation();
 
 		if (!toKeep) {
-			Bending.log.info("toKeep : false");
 			return false;
 		}
 
 		if (target == null) {
-			// Bending.log.info("Target : false");
 			return false;
 		}
 		if (bender.getEntityId() == target.getEntityId()) {
 			if (System.currentTimeMillis() > time
 					+ ((benderTargettedDuration / 20) * 1000)) {
-				// Bending.log.info("Time : false");
 				return false;
 			}
 		}
 
 		if (loc.getWorld() != origin.getWorld()) {
-			// Bending.log.info("World : false");
 			return false;
 		}
 		if ((int) loc.getX() != (int) origin.getX()) {
-			// Bending.log.info("X : false");
 			return false;
 		}
 		if ((int) loc.getZ() != (int) origin.getZ()) {
-			// Bending.log.info("Z : false");
 			return false;
 		}
 		if ((int) loc.getY() != (int) origin.getY()) {
-			// Bending.log.info("Y : false");
 			return false;
 		}
 
 		if (!BlockTools.isEarthbendable(bender, loc.add(0, 0, -1).getBlock())) {
-			Bending.log.info("North : false");
 			return false;
 		}
 		if (!BlockTools.isEarthbendable(bender, loc.add(0, 0, +2).getBlock())) {
-			Bending.log.info("South : false");
 			return false;
 		}
 		if (!BlockTools.isEarthbendable(bender, loc.add(-1, 0, -1).getBlock())) {
-			Bending.log.info("West : false");
 			return false;
 		}
 		if (!BlockTools.isEarthbendable(bender, loc.add(+2, 0, 0).getBlock())) {
-			Bending.log.info("East : false");
 			return false;
 		}
 		return true;
@@ -305,37 +290,21 @@ public class EarthGrab implements IAbility {
 			if (lX == x && lY == y && lZ == z) {
 				return true;
 			}
-			Bending.log.info( "Not South \n"
-					+ x + " != " + lX + "\n"
-					+ y + " != " + lY + "\n"
-					+ z + " != " + lZ + "");
 			
 			lZ-=2; // North
 			if (lX == x && lY == y && lZ == z) {
 				return true;
 			}
-			Bending.log.info( "Not North \n"
-					+ x + " != " + lX + "\n"
-					+ y + " != " + lY + "\n"
-					+ z + " != " + lZ + "");
 			
 			lZ++; lX ++; // East
 			if (lX == x && lY == y && lZ == z) {
 				return true;
 			}
-			Bending.log.info( "Not East \n"
-					+ x + " != " + lX + "\n"
-					+ y + " != " + lY + "\n"
-					+ z + " != " + lZ + "");
 
 			lX-= 2; // West
 			if (lX == x && lY == y && lZ == z) {
 				return true;
 			}
-			Bending.log.info( "Not West \n"
-					+ x + " != " + lX + "\n"
-					+ y + " != " + lY + "\n"
-					+ z + " != " + lZ + "");
 		}
 
 		return false;
