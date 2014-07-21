@@ -28,7 +28,7 @@ public class OctopusForm implements IAbility {
 	private static Map<Player, OctopusForm> instances = new HashMap<Player, OctopusForm>();
 
 	private static int range = 10;
-	static double radius = 3;
+	static final double radius = 3;
 	private static final byte full = 0x0;
 	private static long interval = 50;
 	private static int damage = 3;

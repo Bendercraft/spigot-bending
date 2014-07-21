@@ -571,6 +571,12 @@ public class BendingListener implements Listener {
 			if (ability == Abilities.HeatControl) {
 				new Cook(player, null);
 			}
+			
+			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
+				if (ability == Abilities.Dash) {
+					//new Dash(player, null);
+				}
+			}
 		}
 	}
 
@@ -935,13 +941,8 @@ public class BendingListener implements Listener {
 			// You now know the old velocity. Set to match recommended velocity
 			double currspeed = vel.length();
 			double maxspeed = .15;
-			if (currspeed > maxspeed) {
-				// only if moving set a factor
-				// double recspeed = 0.6;
-				// vel = vel.ultiply(recspeed * currspeed);
+			if (currspeed > maxspeed) {			
 				vel = vel.normalize().multiply(maxspeed);
-				// apply the new velocity (MAY REQUIRE A SCHEDULED TASK
-				// INSTEAD!)
 				event.getPlayer().setVelocity(vel);
 			}
 		}
@@ -954,11 +955,13 @@ public class BendingListener implements Listener {
 				player.setVelocity(new Vector(0, 0, 0));
 			// return;
 		}
+		if (Dash.isDashing(player)) {
+			Vector dir = event.getTo().subtract(event.getFrom()).toVector();
+			Dash d = Dash.getDash(player);
+			d.setDirection(dir);
+			d.dash();
+		}
 
-		// if (Tools.isBender(player, BendingType.Water)
-		// && (Tools.getBendingAbility(player) == Abilities.WalkOnWater)) {
-		// WalkOnWater.freeze(player);
-		// }
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

@@ -125,12 +125,11 @@ public class FreezeMelt implements IAbility {
 	}
 
 	public static boolean canThaw(Block block) {
+		if (!WaterManipulation.canPhysicsChange(block)) {
+			return false;
+		}
 		if (frozenblocks.containsKey(block)) {
 			for (Player player : block.getWorld().getPlayers()) {
-				if (EntityTools.getBendingAbility(player) == Abilities.OctopusForm) {
-					if (block.getLocation().distance(player.getLocation()) <= OctopusForm.radius + 2)
-						return false;
-				}
 				if (EntityTools.hasAbility(player, Abilities.PhaseChange)
 						&& EntityTools.canBend(player, Abilities.PhaseChange)) {
 					double range = PluginTools.waterbendingNightAugment(defaultrange,
@@ -138,13 +137,17 @@ public class FreezeMelt implements IAbility {
 					if (AvatarState.isAvatarState(player)) {
 						range = AvatarState.getValue(range);
 					}
-					if (block.getLocation().distance(player.getLocation()) <= range)
+					if (block.getLocation().distance(player.getLocation()) <= range) {
 						return false;
+					}			
+				}
+				if (EntityTools.getBendingAbility(player) == Abilities.OctopusForm) {
+					if (block.getLocation().distance(player.getLocation()) <= OctopusForm.radius + 2) {
+						return false;
+					}				
 				}
 			}
-		}
-		if (!WaterManipulation.canPhysicsChange(block))
-			return false;
+		}			
 		return true;
 	}
 

@@ -105,8 +105,9 @@ public class Flight {
 			if (players.contains(player)) {
 				flight.refresh(null);
 				player.setAllowFlight(true);
-				if (player.getGameMode() != GameMode.CREATIVE)
+				if (player.getGameMode() != GameMode.CREATIVE) {
 					player.setFlying(false);
+				}
 				newflyingplayers.add(player);
 				continue;
 			}

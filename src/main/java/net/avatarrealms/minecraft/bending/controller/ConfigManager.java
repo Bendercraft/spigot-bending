@@ -153,6 +153,9 @@ public class ConfigManager {
 	//Dash
 	public static int dashCooldown = 6000;
 	public static int dashLevelRequired = 1;
+	public static double dashLength = 1.90; // Not really accurate as it's used with the setVelocity()
+	public static double dashHeight = 0.70;
+	
 
 	// Earth
 	// Catapult
@@ -555,6 +558,9 @@ public class ConfigManager {
 		//Dash
 		dashCooldown = config.getInt("Properties.ChiBlocker.Dash.Cooldown",dashCooldown);
 		dashLevelRequired = config.getInt("Properties.ChiBlocker.Dash.level-required",dashLevelRequired);
+		dashLength = config.getDouble("Properties.ChiBlocker.Dash.Length", dashLength);
+		dashHeight = config.getDouble("Properties.ChiBlocker.Dash.Height",dashHeight);
+		levelsRequired.put(Abilities.Dash,dashLevelRequired);
 
 		// Air
 		// AirBlast
@@ -1177,6 +1183,8 @@ public class ConfigManager {
 		config.set("Properties.ChiBlocker.PoisonnedDart.level-required", poisonnedDartLevelRequired);		
 		//Dash
 		config.set("Properties.ChiBlocker.Dash.Cooldown", dashCooldown);
+		config.set("Properties.ChiBlocker.Dash.Length", dashLength);
+		config.set("Properties.ChiBlocker.Dash.Height", dashHeight);
 		config.set("Properties.ChiBlocker.Dash.level-required", dashLevelRequired);
 		
 		// Air
