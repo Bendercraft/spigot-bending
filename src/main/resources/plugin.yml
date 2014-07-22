@@ -123,6 +123,8 @@ permissions:
       bending.command.language: true
       bending.command.bindmode: true
       bending.command.version: true
+      bending.command.save : true
+      bending.command.getback : true
 
 # AIRBENDING PERMISSIONS
   bending.air:
@@ -351,6 +353,12 @@ permissions:
   bending.command.bindmode:
     description: Allows the use of /bending bindmode
     default: true
+  bending.command.save:
+    description: Allows the use of /bending save
+    default: op
+  bending.command.getback:
+    description: Allows the use of /bending getback
+    default: op
 
   bending.avatar:
     description: Give the avatar prefix.

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.controller.TempBackup;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 
 import org.bukkit.Bukkit;
@@ -26,12 +27,14 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 public class Tools {
 	public static BendingPlayers config;
+	public static TempBackup tBackup;
 	
 	public static final long timeinterval = ConfigManager.globalCooldown;
 	//public static ConcurrentHashMap<Player, Player> tempFlyers = new ConcurrentHashMap<Player, Player>();
 
-	public Tools(BendingPlayers config2) {
+	public Tools(BendingPlayers config2, TempBackup tb) {
 		config = config2;
+		tBackup = tb;
 	}
 	
 	public static double getDistanceFromLine(Vector line, Location pointonline,

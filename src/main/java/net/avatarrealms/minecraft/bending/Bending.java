@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
+import net.avatarrealms.minecraft.bending.controller.TempBackup;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -36,6 +37,7 @@ public class Bending extends JavaPlugin {
 	public static ConfigManager configManager = new ConfigManager();
 	public static Language language = new Language();
 	public BendingPlayers config;
+	public TempBackup tBackup;
 	public Tools tools;
 	
 	@Override
@@ -45,9 +47,10 @@ public class Bending extends JavaPlugin {
 		language.load(new File(getDataFolder(), "language.yml"));
 
 		config = new BendingPlayers(getDataFolder());
+		tBackup = new TempBackup(getDataFolder());
 		BendingPlayer.initializeCooldowns();
 
-		tools = new Tools(config);
+		tools = new Tools(config,tBackup);
 
 		getServer().getPluginManager().registerEvents(listener, this);
 

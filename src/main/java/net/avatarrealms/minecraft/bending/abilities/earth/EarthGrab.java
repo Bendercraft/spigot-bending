@@ -148,7 +148,7 @@ public class EarthGrab implements IAbility {
 					if (self) {
 						duration = benderTargettedDuration;
 					} else {
-						duration = otherTargettedDuration; // 5 minutes
+						duration = otherTargettedDuration;
 					}
 					PotionEffect slowness = new PotionEffect(
 							PotionEffectType.SLOW, duration, 150); // The entity
