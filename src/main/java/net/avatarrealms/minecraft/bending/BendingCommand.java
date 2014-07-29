@@ -2120,6 +2120,7 @@ public class BendingCommand {
 					Player target = server.getPlayer(args[1]);
 
 					if (target == null) {
+						player.sendMessage(ChatColor.RED + "Your target doesn't exist or is not connected.");
 						return false;
 					}
 
@@ -2224,12 +2225,16 @@ public class BendingCommand {
 		}
 	}
 
-	private void giveXP(Player player, String args[]) {
+	private boolean giveXP(Player player, String args[]) {
 		if (player.hasPermission("bending.admin")) {
 			// b givexp Nokorikatsu Fire 5000
 			if (args.length == 4) {
 				BendingType type;
 				Player target = server.getPlayer(args[1]);
+				if (target == null) {
+					player.sendMessage(ChatColor.RED + "Your target doesn't exist or is not connected.");
+					return false;
+				}
 				String element = args[2].toLowerCase();
 				int level = Integer.parseInt(args[3]);
 
@@ -2245,7 +2250,7 @@ public class BendingCommand {
 					type = BendingType.ChiBlocker;
 				} else {
 					player.sendMessage(ChatColor.RED + "Invalid element");
-					return;
+					return false;
 				}
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
 				bPlayer.receiveXP(type, level);
@@ -2254,12 +2259,15 @@ public class BendingCommand {
 				player.sendMessage("You have given " + level
 						+ " experiences for the " + element + "bending of "
 						+ target.getName());
+				return true;
 			} else {
 				player.sendMessage(ChatColor.RED
 						+ "Bad use of the givexp command.");
+				return false;
 			}
 		} else {
 			player.sendMessage(ChatColor.RED + "You're not allowed to do that");
+			return false;
 		}
 	}
 
