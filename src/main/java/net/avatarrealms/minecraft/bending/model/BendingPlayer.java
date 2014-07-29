@@ -497,22 +497,24 @@ public class BendingPlayer {
 	
 	public double getCriticalHit(BendingType type, double damage){
 		double newDamage = damage;
-		int level = bendings.get(type).getLevel();
-		double prc = ((level)/(level+2))*0.4;
-		
-		Random rand = new Random();
-		
-		if (rand.nextDouble() < prc) {
-			newDamage += 1;
+		BendingLevel playerBending = bendings.get(type);
+		if (playerBending != null) {
+			int level = playerBending.getLevel();
+			double prc = ((level)/(level+2))*0.4;
 			
-			if (level >= 25) {
-				prc = ((level)/(level+2))*0.2;
-				if (rand.nextDouble() < prc) {
-					newDamage += 1;
-				}
-			}		
-		}
-		
+			Random rand = new Random();
+			
+			if (rand.nextDouble() < prc) {
+				newDamage += 1;
+				
+				if (level >= 25) {
+					prc = ((level)/(level+2))*0.2;
+					if (rand.nextDouble() < prc) {
+						newDamage += 1;
+					}
+				}		
+			}
+		}	
 		return newDamage;
 	}
 	

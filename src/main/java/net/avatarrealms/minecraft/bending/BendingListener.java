@@ -383,7 +383,7 @@ public class BendingListener implements Listener {
 				}
 
 				if (ability == Abilities.PhaseChange) {
-					new FreezeMelt(player, null);
+					//new FreezeMelt(player, null);
 				}
 
 				if (ability == Abilities.Surge) {

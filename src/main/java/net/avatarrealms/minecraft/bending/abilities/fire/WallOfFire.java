@@ -190,7 +190,7 @@ public class WallOfFire implements IAbility {
 		entity.setFireTicks(50);
 		entity.setVelocity(new Vector(0, 0, 0));
 		if (entity instanceof LivingEntity) {
-			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Fire,damage));
+			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Fire, damage));
 			new Enflamed(entity, player, this);
 		}
 	}

@@ -1866,13 +1866,10 @@ public class BendingCommand {
 				if (mat != null) {
 					BendingPlayer.getBendingPlayer(player).removeAbility(
 							Material.matchMaterial(args[1]));
-					sendMessage(
-							player,
-							"Item "
+					sendMessage( player, "Item "
 									+ args[1]
 									+ " "
-									+ PluginTools.getMessage(player,
-											"General.slot_item_cleared"));
+									+ PluginTools.getMessage(player, "General.slot_item_cleared"));
 					return;
 				} else {
 					printClearUsage(player);
