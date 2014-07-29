@@ -2102,6 +2102,7 @@ public class BendingCommand {
 		} else {
 			Player target = server.getPlayer(args[1]);
 			if (target == null) {
+				player.sendMessage(ChatColor.RED + "Your target doesn't exist or is not connected.");
 				return false;
 			}
 			bPlayer = BendingPlayer.getBendingPlayer(target);
