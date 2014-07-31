@@ -340,6 +340,7 @@ public class ConfigManager {
 	// FreezeMelt
 	public static int freezeMeltRange = 20;
 	public static int freezeMeltRadius = 5;
+	public static int freezeMeltDepth = 1;
 	public static int freezeMeltLevelRequired = 1;
 
 	// HealingWaters
@@ -985,6 +986,8 @@ public class ConfigManager {
 				freezeMeltRange);
 		freezeMeltRadius = config.getInt("Properties.Water.FreezeMelt.Radius",
 				freezeMeltRadius);
+		freezeMeltDepth = config.getInt("Properties.Water.FreezeMelt.Depth",
+				freezeMeltDepth);
 		freezeMeltLevelRequired = config.getInt(
 				"Properties.Water.FreezeMelt.level-required", freezeMeltLevelRequired);
 		levelsRequired.put(Abilities.PhaseChange, freezeMeltLevelRequired);
@@ -1398,6 +1401,7 @@ public class ConfigManager {
 		// FreezeMelt
 		config.set("Properties.Water.FreezeMelt.Range", freezeMeltRange);
 		config.set("Properties.Water.FreezeMelt.Radius", freezeMeltRadius);
+		config.set("Properties.Water.FreezeMelt.Depth", freezeMeltDepth);
 		config.set("Properties.Water.FreezeMelt.level-required", freezeMeltLevelRequired);
 		// HealingWaters
 		config.set("Properties.Water.HealingWaters.Radius", healingWatersRadius);

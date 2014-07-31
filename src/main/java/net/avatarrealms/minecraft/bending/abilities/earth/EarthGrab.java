@@ -101,7 +101,9 @@ public class EarthGrab implements IAbility {
 
 				z = (z < 0) ? z - 0.5 : z + 0.5;
 
-				origin = new Location(entity.getLocation().getWorld(), x, y, z);
+				origin = new Location(entity.getLocation().getWorld(), x, y, z,
+						entity.getLocation().getYaw(),
+						entity.getLocation().getPitch());
 
 				target.teleport(origin);
 				// To be sure the guy is locked in the grab
@@ -273,35 +275,36 @@ public class EarthGrab implements IAbility {
 		int x = (int) loc.getX();
 		int y = (int) loc.getY();
 		int z = (int) loc.getZ();
-		
+
 		if (z < 0) {
 			z++;
 		}
 		if (x < 0) {
 			x++;
 		}
-		
+
 		if (origin.getWorld() == loc.getWorld()) {
 			int lY = (int) origin.getY();
 			int lX = (int) origin.getX();
 			int lZ = (int) origin.getZ();
-			
+
 			lZ++; // South
 			if (lX == x && lY == y && lZ == z) {
 				return true;
 			}
-			
-			lZ-=2; // North
-			if (lX == x && lY == y && lZ == z) {
-				return true;
-			}
-			
-			lZ++; lX ++; // East
+
+			lZ -= 2; // North
 			if (lX == x && lY == y && lZ == z) {
 				return true;
 			}
 
-			lX-= 2; // West
+			lZ++;
+			lX++; // East
+			if (lX == x && lY == y && lZ == z) {
+				return true;
+			}
+
+			lX -= 2; // West
 			if (lX == x && lY == y && lZ == z) {
 				return true;
 			}
