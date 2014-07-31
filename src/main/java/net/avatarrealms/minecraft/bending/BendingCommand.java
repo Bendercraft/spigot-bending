@@ -2278,6 +2278,10 @@ public class BendingCommand {
 		if (player.hasPermission("bending.command.save")) {
 			Tools.tBackup.setPlayer(player.getUniqueId(),
 					BendingPlayer.getBendingPlayer(player));
+			player.sendMessage("Bending properly saved.");
+		}
+		else {
+			player.sendMessage("You're not allowed to do that.");
 		}
 	}
 
@@ -2299,6 +2303,10 @@ public class BendingCommand {
 			for (Entry<Integer, Abilities> data : plData.getSlotAbilities().entrySet()) {
 				bPl.setAbility(data.getKey(),data.getValue());
 			}
+			player.sendMessage("Bending properly set back");
+		}
+		else {
+			player.sendMessage("You're not allowed to do that.");
 		}
 	}
 
