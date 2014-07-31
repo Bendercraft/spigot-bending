@@ -37,8 +37,10 @@ public class FreezeMelt implements IAbility {
 		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.PhaseChange))
+		if (bPlayer.isOnCooldown(Abilities.PhaseChange)) {
 			return;
+		}
+			
 
 		int range = (int) PluginTools.waterbendingNightAugment(defaultrange,
 				player.getWorld());
@@ -52,7 +54,7 @@ public class FreezeMelt implements IAbility {
 		boolean cooldown = false;
 
 		Location location = EntityTools.getTargetedLocation(player, range);
-		int y = (int)location.getY();
+		int y = (int) location.getY();
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (block.getLocation().getY() >= y - defaultDepth) {
 				if (isFreezable(player, block)) {
@@ -69,23 +71,31 @@ public class FreezeMelt implements IAbility {
 	}
 
 	private static boolean isFreezable(Player player, Block block) {
+		
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.PhaseChange,
-				block.getLocation()))
+				block.getLocation())) {
 			return false;
+		}
 		if (block.getType() == Material.WATER
-				|| block.getType() == Material.STATIONARY_WATER)
+				|| block.getType() == Material.STATIONARY_WATER) {
 			if (WaterManipulation.canPhysicsChange(block)
-					&& !TempBlock.isTempBlock(block))
+					&& !TempBlock.isTempBlock(block)) {
 				return true;
+			}
+		}
+
 		return false;
 	}
 
 	static void freeze(Player player, Block block) {
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.PhaseChange,
-				block.getLocation()))
+				block.getLocation())) {
 			return;
-		if (TempBlock.isTempBlock(block))
+		}
+			
+		if (TempBlock.isTempBlock(block)) {
 			return;
+		}	
 		byte data = block.getData();
 		block.setType(Material.ICE);
 		frozenblocks.put(block, data);
@@ -114,8 +124,9 @@ public class FreezeMelt implements IAbility {
 
 	public static void handleFrozenBlocks() {
 		Metrics.ROOT.put(
-				new LinkedList<String>(Arrays.asList("water", "FreezeMelt", "handleFrozenBlocks")), 
-						String.valueOf(frozenblocks.size()));
+				new LinkedList<String>(Arrays.asList("water", "FreezeMelt",
+						"handleFrozenBlocks")), String.valueOf(frozenblocks
+						.size()));
 		List<Block> toRemove = new LinkedList<Block>();
 		for (Block block : frozenblocks.keySet()) {
 			if (canThaw(block)) {

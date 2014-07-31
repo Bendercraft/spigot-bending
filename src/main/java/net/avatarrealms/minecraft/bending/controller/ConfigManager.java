@@ -339,7 +339,7 @@ public class ConfigManager {
 
 	// FreezeMelt
 	public static int freezeMeltRange = 20;
-	public static int freezeMeltRadius = 5;
+	public static int freezeMeltRadius = 3;
 	public static int freezeMeltDepth = 1;
 	public static int freezeMeltLevelRequired = 1;
 
