@@ -167,7 +167,7 @@ public class BendingLevel {
 	
 	public void earnXP(IAbility ability) {
 		if(ability.getParent() == null) {
-			//If player has not bended long enough, allow him ot reset his spam history
+			//If player has not bended long enough, allow him to reset his spam history
 			long now = System.currentTimeMillis();
 			if (now - lastTime > SPAM_THRESHOLD) {
 				spamHistory = 0;
@@ -176,15 +176,19 @@ public class BendingLevel {
 			//A player that travel far enough will suffer less from degression factor
 			double distance = 1;
 			if(this.lastLocation != null) {
-				distance = this.bPlayer.getPlayer().getLocation().distance(this.lastLocation);
-				if(distance < 5) {
-					//Between 0-5 blocks, player will take 100% of degression factor
-					distance = 1;
+				//If player is still in same world as previous location
+				if(this.bPlayer.getPlayer().getLocation().getWorld().getUID().equals(this.lastLocation.getWorld().getUID())) {
+					distance = this.bPlayer.getPlayer().getLocation().distance(this.lastLocation);
+					if(distance < 5) {
+						//Between 0-5 blocks, player will take 100% of degression factor
+						distance = 1;
+					} else {
+						//Between 5-infinite blocks, player will take (distance / 4)% degression factor 
+						distance = distance / 4;
+					}
 				} else {
-					//Between 5-infinite blocks, player will take (distance / 4)% degression factor 
-					distance = distance / 4;
+					distance = 1;
 				}
-				
 			}
 			
 			//Minor spamHistory by distance, and calculate degression factor
