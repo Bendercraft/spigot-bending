@@ -203,7 +203,7 @@ public class BendingManager implements Runnable {
 		long current = System.currentTimeMillis();
 		
 		long temp = System.currentTimeMillis();
-		FreezeMelt.handleFrozenBlocks();
+		FreezeMelt.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "FreezeMelt")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();

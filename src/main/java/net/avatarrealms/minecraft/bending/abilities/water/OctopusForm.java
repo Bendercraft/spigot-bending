@@ -399,7 +399,7 @@ public class OctopusForm implements IAbility {
 		for (BlockFace face : faces) {
 			Block rel = block.getRelative(face);
 			if (BlockTools.isWater(rel) && !TempBlock.isTempBlock(rel)) {
-				FreezeMelt.freeze(player, rel);
+				new FreezeMelt(player, this, rel);
 				// water.add(new TempBlock(rel, Material.AIR, (byte) 0));
 			}
 		}

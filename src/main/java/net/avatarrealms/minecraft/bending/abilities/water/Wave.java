@@ -452,7 +452,7 @@ public class Wave implements IAbility {
 				frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
-				FreezeMelt.freeze(player, block);
+				new FreezeMelt(player, this, block);
 			}
 			if (BlockTools.isPlant(block) && block.getType() != Material.LEAVES) {
 				block.breakNaturally();

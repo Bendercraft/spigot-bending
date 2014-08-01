@@ -437,7 +437,7 @@ public class WaterManipulation implements IAbility {
 			affectedblocks.put(block, block);
 		}
 		if (FreezeMelt.isFrozen(block))
-			FreezeMelt.remove(block);
+			FreezeMelt.thawThenRemove(block);
 		block.setType(Material.WATER);
 		block.setData(full);
 	}
