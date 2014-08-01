@@ -163,9 +163,10 @@ public class FreezeMelt implements IAbility {
 						return false;
 					}
 				}
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	private static void thawAll() {
