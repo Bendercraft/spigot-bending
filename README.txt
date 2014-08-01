@@ -1,6 +1,5 @@
 This code is based on the Orion304's code.
 TODO :
-Re-structure and re-optimize the code
 Add more customizations
 Add some abilities
 
