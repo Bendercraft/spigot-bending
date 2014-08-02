@@ -138,6 +138,10 @@ public class FreezeMelt implements IAbility {
 				if (AvatarState.isAvatarState(getPlayer())) {
 					range = AvatarState.getValue(range);
 				}
+				//Player just changed world, allow thaw
+				if(!block.getLocation().getWorld().getUID().equals(getPlayer().getLocation().getWorld().getUID())) {
+					return true;
+				}
 				if (block.getLocation().distance(getPlayer().getLocation()) <= range) {
 					return false;
 				}
