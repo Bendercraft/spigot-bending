@@ -91,7 +91,13 @@ public class SmokeBomb implements IAbility {
 		
 		for (LivingEntity targ : targets) {
 			if (!newTargets.contains(targ)) {
-				targ.removePotionEffect(PotionEffectType.BLINDNESS);
+				if (targ.getEntityId() != player.getEntityId()) {
+					targ.removePotionEffect(PotionEffectType.BLINDNESS);
+				}
+				else {
+					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
+				}
+				
 			}
 		}
 		
@@ -100,8 +106,12 @@ public class SmokeBomb implements IAbility {
 		for (LivingEntity targ : newTargets) {
 			if (targ.getEntityId() != player.getEntityId()) {
 				targ.addPotionEffect(blindnessTarget);
-				targets.add(targ);
 			}
+			else {
+				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY,ticksRemaining,1);
+				targ.addPotionEffect(invisibilityLauncher);
+			}
+			targets.add(targ);
 		}
 		
 		if (ticksRemaining % 10 == 0) {
@@ -134,7 +144,7 @@ public class SmokeBomb implements IAbility {
 
 	@Override
 	public int getBaseExperience() {
-		return 4;
+		return 3;
 	}
 
 	@Override
