@@ -246,7 +246,8 @@ public class EarthGrab implements IAbility {
 
 	public boolean revertEarthGrab() {
 		for (EarthColumn column : columns) {
-			for (Block block : column.getAffectedBlocks()) {
+			List<Block> affecteds = new LinkedList<Block>(column.getAffectedBlocks());
+			for (Block block : affecteds) {
 				BlockTools.revertBlock(block);
 			}
 		}
