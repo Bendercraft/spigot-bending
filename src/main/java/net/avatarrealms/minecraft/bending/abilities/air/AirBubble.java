@@ -29,13 +29,10 @@ public class AirBubble implements IAbility {
 
 	private static double defaultAirRadius = ConfigManager.airBubbleRadius;
 	private static double defaultWaterRadius = ConfigManager.waterBubbleRadius;
-	// private static byte full = AirBlast.full;
-
-	// private static final byte full = 0x0;
 
 	private Player player;
 	private double radius;
-	// private ConcurrentHashMap<Block, Byte> waterorigins;
+
 	private Map<Block, BlockState> waterorigins;
 
 	private IAbility parent;
@@ -48,19 +45,23 @@ public class AirBubble implements IAbility {
 	}
 
 	private void pushWater() {
-		if (EntityTools.isBender(player, BendingType.Air)) {
-			radius = defaultAirRadius;
-		} else {
+		if (EntityTools.isBender(player, BendingType.Water)) {
 			radius = defaultWaterRadius;
+			if (Tools.isNight(player.getWorld())) {
+				radius = PluginTools.waterbendingNightAugment(defaultWaterRadius,
+						player.getWorld());
+			}
 		}
-		if (EntityTools.isBender(player, BendingType.Water)
-				&& Tools.isNight(player.getWorld())) {
-			radius = PluginTools.waterbendingNightAugment(defaultWaterRadius,
-					player.getWorld());
-		}
-		if (defaultAirRadius > radius
-				&& EntityTools.isBender(player, BendingType.Air))
+		else {
 			radius = defaultAirRadius;
+		}
+
+		if (defaultAirRadius > radius
+				&& EntityTools.isBender(player, BendingType.Air)) {
+			radius = defaultAirRadius;
+			// In case he has both element
+		}
+				
 		Location location = player.getLocation();
 
 		List<Block> toRemove = new LinkedList<Block>();
@@ -88,11 +89,10 @@ public class AirBubble implements IAbility {
 				continue;
 			if (block.getType() == Material.STATIONARY_WATER
 					|| block.getType() == Material.WATER) {
+				
 				if (WaterManipulation.canBubbleWater(block)) {
-					// if (block.getData() == full)
+					
 					waterorigins.put(block, block.getState());
-					// waterorigins.put(block, block.getData());
-
 					block.setType(Material.AIR);
 				}
 			}

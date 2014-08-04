@@ -164,12 +164,15 @@ public class WallOfFire implements IAbility {
 			radius = width;
 		radius = radius + 1;
 		List<Entity> entities = EntityTools.getEntitiesAroundPoint(origin, radius);
-		if (entities.contains(player))
+		if (entities.contains(player)) {
 			entities.remove(player);
+		}
+			
 		for (Entity entity : entities) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.WallOfFire,
-					entity.getLocation()))
+					entity.getLocation())) {
 				continue;
+			}		
 			for (Block block : blocks) {
 				if (entity.getLocation().distance(block.getLocation()) <= 1.5) {
 					affect(entity);

@@ -125,17 +125,49 @@ public class BendingManager implements Runnable {
 	private void manageAirbending() {
 		long current = System.currentTimeMillis();
 		
+		long temp = System.currentTimeMillis();
 		AirPassive.handlePassive(plugin.getServer());
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "passive")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirBubble.handleBubbles(plugin.getServer());
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "bubbles")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirBlast.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "blast")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirShield.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "shield")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirSuction.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "suction")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirSwipe.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "swipe")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		Speed.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "speed")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		Tornado.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "tornado")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirBurst.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "burst")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirScooter.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "scooter")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
 		AirSpout.spoutAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "spout")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}
@@ -206,67 +238,26 @@ public class BendingManager implements Runnable {
 		FreezeMelt.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "FreezeMelt")), String.valueOf(System.currentTimeMillis() - temp));
 		
-		temp = System.currentTimeMillis();
 		WaterSpout.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "WaterSpout")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		WaterManipulation.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "WaterManipulation")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		WaterWall.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "WaterWall")), String.valueOf(System.currentTimeMillis() - temp));
 		
-		temp = System.currentTimeMillis();
-		Wave.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "Wave")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
-		IceSpike.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "IceSpike")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
+		Wave.progressAll();	
+		IceSpike.progressAll();		
 		IceSpike2.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "IceSpike2")), String.valueOf(System.currentTimeMillis() - temp));
 		
-		temp = System.currentTimeMillis();
 		Torrent.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "Torrent")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		TorrentBurst.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "TorrentBurst")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		Bloodbending.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "Bloodbending")), String.valueOf(System.currentTimeMillis() - temp));
 		
-		temp = System.currentTimeMillis();
 		HealingWaters.heal(plugin.getServer());
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "HealingWaters")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		WaterPassive.handlePassive(plugin.getServer());
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "WaterPassive")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		FastSwimming.HandleSwim(plugin.getServer());
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "FastSwimming")), String.valueOf(System.currentTimeMillis() - temp));
 		
-		temp = System.currentTimeMillis();
 		OctopusForm.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "OctopusForm")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		Plantbending.regrow();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "Plantbending")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		WaterReturn.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "WaterReturn")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		
+	
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "global")), String.valueOf(System.currentTimeMillis() - current));
 	}
 

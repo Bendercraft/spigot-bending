@@ -13,21 +13,12 @@ import org.bukkit.util.Vector;
 
 public class RingOfFire implements IAbility {
 
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
-	// static final long soonesttime = Tools.timeinterval;
-
 	static final int defaultrange = ConfigManager.ringOfFireRange;
 	private IAbility parent;
 
 	public RingOfFire(Player player, IAbility parent) {
 		this.parent = parent;
-		// if (timers.containsKey(player)) {
-		// if (System.currentTimeMillis() < timers.get(player) + soonesttime) {
-		// return;
-		// }
-		// }
-		// timers.put(player, System.currentTimeMillis());
+
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Blaze))
