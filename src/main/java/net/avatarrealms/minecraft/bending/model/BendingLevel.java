@@ -177,8 +177,7 @@ public class BendingLevel {
 			double distance = 1;
 			if(this.lastLocation != null) {
 				//If player is still in same world as previous location
-				if((lastLocation != null) && 
-						this.bPlayer.getPlayer().getLocation().getWorld().getUID().equals(this.lastLocation.getWorld().getUID())) {
+				if(this.bPlayer.getPlayer().getLocation().getWorld().getUID().equals(this.lastLocation.getWorld().getUID())) {
 					distance = this.bPlayer.getPlayer().getLocation().distance(this.lastLocation);
 					if(distance < 5) {
 						//Between 0-5 blocks, player will take 100% of degression factor

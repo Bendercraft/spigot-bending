@@ -15,6 +15,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -374,11 +375,17 @@ public class BendingPlayer {
 	}
 	
 	public String bendingsToString() {
-		String str = ""; // TODO : Add the nickname
-		for (BendingType type : bendings.keySet()) {
-			str+=bendings.get(type).toString()+"\n";
+		
+		Player pl = getPlayer();
+		if (pl != null) {
+			String str = pl.getName() + " : \n"; // TODO : Add the nickname
+			for (BendingType type : bendings.keySet()) {
+				str+=bendings.get(type).toString() + "\n";
+			}
+			return str;
 		}
-		return str;
+		return "This player seems not to exist.";
+		
 	}
 
 	public void setLanguage(String language) {

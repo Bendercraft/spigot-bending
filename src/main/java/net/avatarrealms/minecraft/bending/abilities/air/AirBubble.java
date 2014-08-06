@@ -136,8 +136,9 @@ public class AirBubble implements IAbility {
 	
 	private void clearBubble() {
 		for (Entry<Block, BlockState> entry : waterorigins.entrySet()) {
-			if (entry.getKey().getType() == Material.AIR || entry.getKey().isLiquid())
+			if (entry.getKey().getType() == Material.AIR || entry.getKey().isLiquid()){
 				entry.getValue().update(true);
+			}			
 		}
 	}
 
