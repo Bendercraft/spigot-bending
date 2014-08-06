@@ -9,7 +9,7 @@ import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 // http://rechneronline.de/function-graphs/
 public class BendingLevel {
 	// 240 seconds, but SPAM_THRESHOLD is in milliseconds
-	public static int SPAM_THRESHOLD = 240 * 1000;
+	public static int SPAM_THRESHOLD = 300 * 1000;
 	
 	private BendingPlayer bPlayer;
 	private BendingType bendingType;
@@ -181,8 +181,8 @@ public class BendingLevel {
 				Player player = bPlayer.getPlayer();
 				if(player!=null && player.getLocation().getWorld().getUID().equals(this.lastLocation.getWorld().getUID())) {
 					distance = player.getLocation().distance(this.lastLocation);
-					if(distance < 5) {
-						//Between 0-5 blocks, player will take 100% of degression factor
+					if(distance < 6) {
+						//Between 0-6 blocks, player will take 100% of degression factor
 						distance = 1;
 					} else {
 						//Between 5-infinite blocks, player will take (distance / 4)% degression factor 
