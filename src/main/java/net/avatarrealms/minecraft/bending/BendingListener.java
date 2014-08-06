@@ -21,6 +21,7 @@ import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -65,6 +66,7 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -571,10 +573,10 @@ public class BendingListener implements Listener {
 			if (ability == Abilities.HeatControl) {
 				new Cook(player, null);
 			}
-			
+
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
 				if (ability == Abilities.Dash) {
-					//new Dash(player, null);
+					// new Dash(player, null);
 				}
 			}
 		}
@@ -941,7 +943,7 @@ public class BendingListener implements Listener {
 			// You now know the old velocity. Set to match recommended velocity
 			double currspeed = vel.length();
 			double maxspeed = .15;
-			if (currspeed > maxspeed) {			
+			if (currspeed > maxspeed) {
 				vel = vel.normalize().multiply(maxspeed);
 				event.getPlayer().setVelocity(vel);
 			}
@@ -991,15 +993,14 @@ public class BendingListener implements Listener {
 		}
 	}
 
-	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	// public void onPlayerKick(PlayerKickEvent event) {
-	// Tools.verbose(event.getReason());
-	// if (BendingManager.flyingplayers.contains(event.getPlayer())
-	// || Bloodbending.isBloodbended(event.getPlayer())) {
-	// event.setCancelled(true);
-	// event.setReason(null);
-	// }
-	// }
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerKick(PlayerKickEvent event) {
+		PluginTools.verbose(event.getReason());
+		if (Bloodbending.isBloodbended(event.getPlayer())) {
+			event.setCancelled(true);
+			event.setReason(null);
+		}
+	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockForm(BlockFormEvent event) {
@@ -1073,43 +1074,6 @@ public class BendingListener implements Listener {
 		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity))
 			event.setCancelled(true);
 	}
-
-	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	// public void onEntityEvent(EntityEvent event) {
-	// if (Paralyze.isParalyzed(event.getEntity())
-	// || Bloodbending.isBloodbended(event.getEntity()))
-	// if ((event instanceof EntityChangeBlockEvent
-	// || event instanceof EntityExplodeEvent
-	// || event instanceof EntityInteractEvent
-	// || event instanceof EntityShootBowEvent
-	// || event instanceof EntityTargetEvent
-	// || event instanceof EntityTeleportEvent
-	// || event instanceof ProjectileLaunchEvent || event instanceof
-	// SlimeSplitEvent)
-	// && (event instanceof Cancellable)) {
-	// ((Cancellable) event).setCancelled(true);
-	// }
-	// }
-
-	// @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	// public void onPlayerInteract(PlayerInteractEntityEvent event){
-	// Entity rightclicked = event.getRightClicked();
-	// Player player = event.getPlayer();
-	// if (!Tools.isBender(player, BendingType.Air))
-	// return;
-	// if (!(player.getItemInHand().getType() == Material.AIR))
-	// return;
-	// EntityType type = event.getRightClicked().getType();
-	// if (type == EntityType.COW || type == EntityType.CHICKEN || type ==
-	// EntityType.SHEEP
-	// || type == EntityType.PIG){
-	// rightclicked.setPassenger(player);
-	// }
-	// if (rightclicked.getPassenger() == player){
-	// rightclicked.setPassenger(null);
-	// }
-	//
-	// }
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
