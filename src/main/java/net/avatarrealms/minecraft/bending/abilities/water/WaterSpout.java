@@ -25,8 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class WaterSpout implements IAbility {
-	//TODO Put this variable into configmanager and config file
-	public static int SPEED = 4;
+	public static int SPEED = ConfigManager.waterSpoutRotationSpeed;
 	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
 	private static List<Block> affectedblocks = new LinkedList<Block>();
 	private static List<Block> newaffectedblocks = new LinkedList<Block>();
@@ -50,8 +49,10 @@ public class WaterSpout implements IAbility {
 			return;
 		}
 		this.player = player;
+		/* Dangerous zone : Player can have no fall damage when lag and spam clicking */
 		new Flight(player);
 		player.setAllowFlight(true);
+		 /* ---------------------------- */
 		instances.put(player, this);
 		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,this);
 		spout();

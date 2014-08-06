@@ -378,6 +378,7 @@ public class ConfigManager {
 
 	// WaterSpout
 	public static int waterSpoutHeight = 16;
+	public static int waterSpoutRotationSpeed = 4;
 	public static int waterSpoutLevelRequired = 1;
 
 	// WaterWall
@@ -1026,6 +1027,8 @@ public class ConfigManager {
 		// WaterSpout
 		waterSpoutHeight = config.getInt("Properties.Water.WaterSpout.Height",
 				waterSpoutHeight);
+		waterSpoutRotationSpeed = config.getInt("Properties.Water.WaterSpout.Rotation-Speed",
+				waterSpoutRotationSpeed);
 		waterSpoutLevelRequired = config.getInt(
 				"Properties.Water.WaterSpout.level-required", waterSpoutLevelRequired);
 		levelsRequired.put(Abilities.WaterSpout, waterSpoutLevelRequired);
@@ -1422,6 +1425,7 @@ public class ConfigManager {
 		config.set("Properties.Water.WaterManipulation.level-required", waterManipulationLevelRequired);
 		// WaterSpout
 		config.set("Properties.Water.WaterSpout.Height", waterSpoutHeight);
+		config.set("Properties.Water.WaterSpout.Rotation-Speed", waterSpoutRotationSpeed);
 		config.set("Properties.Water.WaterSpout.level-required", waterSpoutLevelRequired);
 		// WaterWall
 		config.set("Properties.Water.WaterWall.Range", waterWallRange);

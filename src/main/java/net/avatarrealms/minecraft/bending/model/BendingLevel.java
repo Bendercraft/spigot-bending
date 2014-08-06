@@ -8,7 +8,7 @@ import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 
 // http://rechneronline.de/function-graphs/
 public class BendingLevel {
-	// 240 seconds, but SPAM_THRESHOLD is in milliseconds
+	// 300 seconds, but SPAM_THRESHOLD is in milliseconds
 	public static int SPAM_THRESHOLD = 300 * 1000;
 	
 	private BendingPlayer bPlayer;
