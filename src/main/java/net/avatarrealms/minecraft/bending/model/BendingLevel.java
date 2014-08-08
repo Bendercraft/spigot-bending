@@ -176,9 +176,9 @@ public class BendingLevel {
 			
 			//A player that travel far enough will suffer less from degression factor
 			double distance = 1;
+			Player player = bPlayer.getPlayer();
 			if(this.lastLocation != null) {
 				//If player is still in same world as previous location
-				Player player = bPlayer.getPlayer();
 				if(player!=null && player.getLocation().getWorld().getUID().equals(this.lastLocation.getWorld().getUID())) {
 					distance = player.getLocation().distance(this.lastLocation);
 					if(distance < 6) {
@@ -213,7 +213,10 @@ public class BendingLevel {
 			}
 			
 			//In any case, to be able to calculate NEXT degression factor, store player location and increment spamHistory
-			this.lastLocation = this.bPlayer.getPlayer().getLocation();
+			if (player != null) {
+				this.lastLocation = player.getLocation();
+			}
+			
 			lastTime = now;
 			//Be kind enough to not use no-rewarding ability as spam count
 			if(ability.getBaseExperience() > 0) {
