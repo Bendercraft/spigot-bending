@@ -107,6 +107,7 @@ public class FireBlast implements IAbility {
 	}
 
 	private boolean progress() {
+		//TODO : Make it redirectable
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}

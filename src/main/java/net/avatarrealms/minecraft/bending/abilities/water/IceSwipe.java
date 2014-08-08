@@ -7,7 +7,7 @@ public class IceSwipe implements IAbility{
 	private IAbility parent;
 	
 	//TODO : Not to forget to check for the protected region
-	//TODO : Almost the same that the airswipe but with a different skin
+	//TODO : As Kya against Zaheer
 
 	
 	@Override

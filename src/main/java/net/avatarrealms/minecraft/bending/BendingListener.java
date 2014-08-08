@@ -993,9 +993,8 @@ public class BendingListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerKick(PlayerKickEvent event) {
-		PluginTools.verbose(event.getReason());
 		if (Bloodbending.isBloodbended(event.getPlayer())) {
 			event.setCancelled(true);
 			event.setReason(null);
@@ -1036,8 +1035,9 @@ public class BendingListener implements Listener {
 		Entity entity = event.getEntity();
 		if (entity != null)
 			if (Paralyze.isParalyzed(entity)
-					|| Bloodbending.isBloodbended(entity))
+					|| Bloodbending.isBloodbended(entity)) {
 				event.setCancelled(true);
+			}		
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
