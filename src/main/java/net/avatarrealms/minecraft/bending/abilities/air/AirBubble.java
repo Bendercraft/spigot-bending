@@ -73,9 +73,7 @@ public class AirBubble implements IAbility {
 				radius = defaultAirRadius;
 				// In case he has both element
 			}
-					
 			
-	
 			List<Block> toRemove = new LinkedList<Block>();
 			for (Entry<Block, BlockState> entry : waterorigins.entrySet()) {
 				if (entry.getKey().getWorld() != location.getWorld()) {
