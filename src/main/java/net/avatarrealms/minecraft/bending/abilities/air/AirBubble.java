@@ -85,7 +85,7 @@ public class AirBubble implements IAbility {
 			
 			for(Block block : toRemove) {
 				if (block.getType() == Material.AIR || BlockTools.isWater(block))
-					waterorigins.get(block).update(true);
+					waterorigins.get(block).update(true, false);
 				waterorigins.remove(block);
 			}
 	
