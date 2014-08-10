@@ -1,6 +1,8 @@
 .classpath
+.gitignore
 .project
 dependency-reduced-pom.xml
-/.settings
+.settings
 /target
 /bin
+/save
