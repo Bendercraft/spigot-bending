@@ -27,7 +27,8 @@ public class Cook implements IAbility {
 			Material.RAW_FISH,
 			Material.PORK,
 			Material.POTATO_ITEM,
-			Material.POISONOUS_POTATO};
+			Material.POISONOUS_POTATO,
+			Material.STICK};
 
 	private Player player;
 	private ItemStack items;
@@ -121,6 +122,9 @@ public class Cook implements IAbility {
 			case POTATO_ITEM:
 			case POISONOUS_POTATO : 
 				cooked = Material.BAKED_POTATO;
+				break;
+			case STICK:
+				cooked = Material.TORCH;
 				break;
 			default:
 				break;
