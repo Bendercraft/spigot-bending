@@ -130,7 +130,7 @@ public class BendingManager implements Runnable {
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "passive")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();
-		AirBubble.handleBubbles(plugin.getServer());
+		AirBubble.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "bubbles")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();

@@ -18,7 +18,6 @@ import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -38,6 +37,13 @@ public class AirBubble implements IAbility {
 	private IAbility parent;
 
 	public AirBubble(Player player, IAbility parent) {
+		//If already present, cancel previous bubble
+		if(instances.containsKey(player.getEntityId())) {
+			AirBubble bubble = instances.get(player.getEntityId());
+			bubble.removeBubble();
+			return;
+		}
+		
 		this.parent = parent;
 		this.player = player;
 		waterorigins = new HashMap<Block, BlockState>();
@@ -113,15 +119,7 @@ public class AirBubble implements IAbility {
 		return false;
 	}
 
-	public static void handleBubbles(Server server) {
-		for (Player player : server.getOnlinePlayers()) {
-			if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble || EntityTools
-					.getBendingAbility(player) == Abilities.WaterBubble)
-					&& !instances.containsKey(player.getEntityId())) {
-				new AirBubble(player, null);
-			}
-		}
-
+	public static void progressAll() {
 		List<AirBubble> toRemove = new LinkedList<AirBubble>();
 		for (AirBubble bubble : instances.values()) {
 			boolean keep = bubble.progress();

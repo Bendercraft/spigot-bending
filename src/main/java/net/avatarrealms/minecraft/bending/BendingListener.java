@@ -21,8 +21,6 @@ import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -280,6 +278,10 @@ public class BendingListener implements Listener {
 				if (ability == Abilities.AirSuction) {
 					new AirSuction(player, null);
 				}
+				
+				if (ability == Abilities.AirBubble) {
+					new AirBubble(player, null);
+				}
 
 				if (ability == Abilities.AirSwipe) {
 					new AirSwipe(player, null);
@@ -382,6 +384,10 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.IceSpike) {
 					IceSpike2.activate(player);
+				}
+				
+				if (ability == Abilities.WaterBubble) {
+					new WaterBubble(player, null);
 				}
 
 				if (ability == Abilities.PhaseChange) {
