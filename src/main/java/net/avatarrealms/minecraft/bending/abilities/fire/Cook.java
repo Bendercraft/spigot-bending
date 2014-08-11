@@ -85,6 +85,9 @@ public class Cook implements IAbility {
 	private void cook() {
 		Material cooked = getCooked(items.getType());
 		ItemStack newitem = new ItemStack(cooked);
+		if (cooked == Material.TORCH) {
+			newitem.setAmount(4);
+		}
 		HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(
 				newitem);
 		for (int id : cantfit.keySet()) {
