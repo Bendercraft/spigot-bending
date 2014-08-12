@@ -49,13 +49,15 @@ public class WaterSpout implements IAbility {
 			return;
 		}
 		this.player = player;
-		/* Dangerous zone : Player can have no fall damage when lag and spam clicking */
-		new Flight(player);
-		player.setAllowFlight(true);
-		 /* ---------------------------- */
-		instances.put(player, this);
-		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,this);
-		spout();
+		if (canWaterSpout(player)) {
+			new Flight(player);
+			player.setAllowFlight(true);
+			instances.put(player, this);
+			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,
+					this);
+			spout();
+		}
+
 	}
 
 	private void remove() {
@@ -75,7 +77,7 @@ public class WaterSpout implements IAbility {
 			} else if (EntityTools.hasAbility(player, Abilities.WaterSpout)
 					&& EntityTools.canBend(player, Abilities.WaterSpout)) {
 				boolean keep = spout.spout();
-				if(!keep) {
+				if (!keep) {
 					toRemoveSpout.add(spout);
 				}
 			} else {
@@ -87,7 +89,7 @@ public class WaterSpout implements IAbility {
 		}
 
 		List<Block> toRemoveBlock = new LinkedList<Block>();
-		for(Block block : affectedblocks) {
+		for (Block block : affectedblocks) {
 			if (!newaffectedblocks.contains(block)) {
 				toRemoveBlock.add(block);
 			}
@@ -111,9 +113,11 @@ public class WaterSpout implements IAbility {
 		// + affectedblocks.size());
 		if (height != -1) {
 			location = base.getLocation();
-			for (int i = 1, cardinalPoint = (int)(currentCardinalPoint/SPEED); i <= height; i++, cardinalPoint++) {
-				if (cardinalPoint == 8) {cardinalPoint = 0;}
-				
+			for (int i = 1, cardinalPoint = (int) (currentCardinalPoint / SPEED); i <= height; i++, cardinalPoint++) {
+				if (cardinalPoint == 8) {
+					cardinalPoint = 0;
+				}
+
 				block = location.clone().add(0, i, 0).getBlock();
 				if (!TempBlock.isTempBlock(block)) {
 					new TempBlock(block, Material.WATER, full);
@@ -121,23 +125,40 @@ public class WaterSpout implements IAbility {
 				if (!affectedblocks.contains(block)) {
 					affectedblocks.add(block);
 				}
-				newaffectedblocks.add(block);	
-				
+				newaffectedblocks.add(block);
+
 				switch (cardinalPoint) {
-					case 0 : block = location.clone().add(0, i, -1).getBlock(); break;
-					case 1 : block = location.clone().add(-1, i, -1).getBlock(); break;
-					case 2 : block = location.clone().add(-1, i, 0).getBlock(); break;
-					case 3 : block = location.clone().add(-1, i, 1).getBlock(); break;
-					case 4 : block = location.clone().add(0, i, 1).getBlock(); break;
-					case 5 : block = location.clone().add(1, i, 1).getBlock(); break;
-					case 6 : block = location.clone().add(1, i, 0).getBlock(); break;
-					case 7 : block = location.clone().add(1, i, -1).getBlock(); break;
-					default: break;
+				case 0:
+					block = location.clone().add(0, i, -1).getBlock();
+					break;
+				case 1:
+					block = location.clone().add(-1, i, -1).getBlock();
+					break;
+				case 2:
+					block = location.clone().add(-1, i, 0).getBlock();
+					break;
+				case 3:
+					block = location.clone().add(-1, i, 1).getBlock();
+					break;
+				case 4:
+					block = location.clone().add(0, i, 1).getBlock();
+					break;
+				case 5:
+					block = location.clone().add(1, i, 1).getBlock();
+					break;
+				case 6:
+					block = location.clone().add(1, i, 0).getBlock();
+					break;
+				case 7:
+					block = location.clone().add(1, i, -1).getBlock();
+					break;
+				default:
+					break;
 				}
-				
-				if (block.getType().equals(Material.AIR) ||
-						affectedblocks.contains(block)) {
-					
+
+				if (block.getType().equals(Material.AIR)
+						|| affectedblocks.contains(block)) {
+
 					if (!TempBlock.isTempBlock(block)) {
 						new TempBlock(block, Material.WATER, full);
 					}
@@ -145,13 +166,13 @@ public class WaterSpout implements IAbility {
 						affectedblocks.add(block);
 					}
 					newaffectedblocks.add(block);
-				}		
+				}
 			}
-			currentCardinalPoint ++;
-			if (currentCardinalPoint == SPEED*8) {
+			currentCardinalPoint++;
+			if (currentCardinalPoint == SPEED * 8) {
 				currentCardinalPoint = 0;
 			}
-			
+
 			if (player.getLocation().getBlockY() > block.getY()) {
 				player.setFlying(false);
 			} else {
@@ -159,10 +180,7 @@ public class WaterSpout implements IAbility {
 				player.setAllowFlight(true);
 				player.setFlying(true);
 			}
-			
-			
-			
-			
+
 		} else {
 			return false;
 		}
@@ -173,8 +191,8 @@ public class WaterSpout implements IAbility {
 		WaterSpout spout = instances.get(player);
 		int height = defaultheight;
 		if (Tools.isNight(player.getWorld()))
-			height = (int) PluginTools.waterbendingNightAugment((double) height,
-					player.getWorld());
+			height = (int) PluginTools.waterbendingNightAugment(
+					(double) height, player.getWorld());
 		int maxheight = (int) ((double) defaultheight * ConfigManager.nightFactor) + 5;
 		Block blocki;
 		for (int i = 0; i < maxheight; i++) {
@@ -206,8 +224,8 @@ public class WaterSpout implements IAbility {
 						return height;
 					return i;
 				}
-				if ((blocki.getType() != Material.AIR && (!BlockTools.isPlant(blocki) 
-						|| !EntityTools.canPlantbend(player)))) {
+				if ((blocki.getType() != Material.AIR && (!BlockTools
+						.isPlant(blocki) || !EntityTools.canPlantbend(player)))) {
 					revertBaseBlock(player);
 					return -1;
 				}
@@ -255,17 +273,35 @@ public class WaterSpout implements IAbility {
 					toRemove.add(instances.get(player));
 			}
 		}
-		for(WaterSpout spout : toRemove) {
+		for (WaterSpout spout : toRemove) {
 			spout.remove();
 		}
 	}
-	
+
 	public static boolean isBending(Player player) {
 		return instances.containsKey(player);
 	}
-	
+
 	public static boolean isAffected(Block block) {
 		return affectedblocks.contains(block);
+	}
+
+	public static boolean canWaterSpout(Player player) {
+		Location loc = player.getLocation();
+		if (BlockTools.isWater(loc.getBlock())
+				|| loc.getBlock().getType() == Material.SNOW_BLOCK
+				|| loc.getBlock().getType() == Material.ICE) {
+			return true;
+		}
+		while (loc.getBlock().getType() == Material.AIR) {
+			loc = loc.add(0, -1, 0);
+			if (BlockTools.isWater(loc.getBlock())
+					|| loc.getBlock().getType() == Material.SNOW_BLOCK
+					|| loc.getBlock().getType() == Material.ICE) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static String getDescription() {
