@@ -33,8 +33,9 @@ public class Lightning implements IAbility {
 	private static double misschance = ConfigManager.lightningMissChance;
 	private static double threshold = 0.1;
 	private static double blockdistance = 4;
+	private static int maxdamage = ConfigManager.lightningDamage;
 
-	private int maxdamage = 6;
+	private int damage = maxdamage;
 	private double strikeradius = 4;
 
 	private Player player;
@@ -61,7 +62,7 @@ public class Lightning implements IAbility {
 	private void strike() {
 		Location targetlocation = getTargetLocation();
 		if (AvatarState.isAvatarState(player))
-			maxdamage = AvatarState.getValue(maxdamage);
+			damage = AvatarState.getValue(damage);
 		if (!Tools.isRegionProtectedFromBuild(player, Abilities.Lightning,
 				targetlocation)) {
 			strike = player.getWorld().strikeLightning(targetlocation);
@@ -163,9 +164,9 @@ public class Lightning implements IAbility {
 		double distance = entity.getLocation().distance(strike.getLocation());
 		if (distance > strikeradius)
 			return;
-		double damage = maxdamage - (distance / strikeradius) * .5;
+		double dmg = damage - (distance / strikeradius) * .5;
 		hitentities.add(entity);
-		EntityTools.damageEntity(player, entity, (int) damage);
+		EntityTools.damageEntity(player, entity, (int) dmg);
 	}
 
 	public static boolean isNearbyChannel(Location location) {

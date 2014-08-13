@@ -294,6 +294,7 @@ public class ConfigManager {
 
 	// Lightning
 	public static long lightningWarmup = 3500;
+	public static int lightningDamage = 6;
 	public static int lightningRange = 50;
 	public static double lightningMissChance = 5;
 	public static int lightningLevelRequired = 45;
@@ -930,6 +931,8 @@ public class ConfigManager {
 		// Lightning
 		lightningWarmup = config.getLong("Properties.Fire.Lightning.Warmup",
 				lightningWarmup);
+		lightningDamage = config.getInt("Properties.Fire.Lightning.Damage",
+				lightningDamage);
 		lightningRange = config.getInt("Properties.Fire.Lightning.Range",
 				lightningRange);
 		lightningMissChance = config.getDouble(
@@ -1377,7 +1380,7 @@ public class ConfigManager {
 		config.set("Properties.Fire.Illumination.Range", illuminationRange);
 		config.set("Properties.Fire.Illumination.level-required", illuminationLevelRequired);
 		// Lightning
-		config.set("Properties.Fire.Lightning.Warmup", lightningWarmup);
+		config.set("Properties.Fire.Lightning.Damage", lightningDamage);
 		config.set("Properties.Fire.Lightning.Range", lightningRange);
 		config.set("Properties.Fire.Lightning.Miss-Chance", lightningMissChance);
 		config.set("Properties.Fire.Lightning.level-required", lightningLevelRequired);
