@@ -279,9 +279,9 @@ public class BendingListener implements Listener {
 					new AirSuction(player, null);
 				}
 				
-				if (ability == Abilities.AirBubble) {
+				/*if (ability == Abilities.AirBubble) {
 					new AirBubble(player, null);
-				}
+				}*/
 
 				if (ability == Abilities.AirSwipe) {
 					new AirSwipe(player, null);
@@ -386,9 +386,9 @@ public class BendingListener implements Listener {
 					IceSpike2.activate(player);
 				}
 				
-				if (ability == Abilities.WaterBubble) {
+				/*if (ability == Abilities.WaterBubble) {
 					new WaterBubble(player, null);
-				}
+				}*/
 
 				if (ability == Abilities.PhaseChange) {
 					new FreezeMelt(player, null);

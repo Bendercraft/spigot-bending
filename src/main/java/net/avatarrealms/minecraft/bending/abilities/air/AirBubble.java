@@ -16,6 +16,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,13 +39,13 @@ public class AirBubble implements IAbility {
 	private IAbility parent;
 
 	public AirBubble(Player player, IAbility parent) {
-		//If already present, cancel previous bubble
-		if(instances.containsKey(player.getEntityId())) {
+		// If already present, cancel previous bubble
+		if (instances.containsKey(player.getEntityId())) {
 			AirBubble bubble = instances.get(player.getEntityId());
 			bubble.removeBubble();
 			return;
 		}
-		
+
 		this.parent = parent;
 		this.player = player;
 		this.lastLocation = player.getLocation();
@@ -54,26 +55,26 @@ public class AirBubble implements IAbility {
 
 	private void pushWater() {
 		Location location = player.getLocation();
-		
-		//Do not bother entering this loop if player location has not been modified
-		if(!this.lastLocation.equals(location)) {
+
+		// Do not bother entering this loop if player location has not been
+		// modified
+		if (!this.lastLocation.equals(location)) {
 			if (EntityTools.isBender(player, BendingType.Water)) {
 				radius = defaultWaterRadius;
 				if (Tools.isNight(player.getWorld())) {
-					radius = PluginTools.waterbendingNightAugment(defaultWaterRadius,
-							player.getWorld());
+					radius = PluginTools.waterbendingNightAugment(
+							defaultWaterRadius, player.getWorld());
 				}
-			}
-			else {
+			} else {
 				radius = defaultAirRadius;
 			}
-	
+
 			if (defaultAirRadius > radius
 					&& EntityTools.isBender(player, BendingType.Air)) {
 				radius = defaultAirRadius;
 				// In case he has both element
 			}
-			
+
 			List<Block> toRemove = new LinkedList<Block>();
 			for (Entry<Block, BlockState> entry : waterorigins.entrySet()) {
 				if (entry.getKey().getWorld() != location.getWorld()) {
@@ -82,18 +83,20 @@ public class AirBubble implements IAbility {
 					toRemove.add(entry.getKey());
 				}
 			}
-			
-			for(Block block : toRemove) {
-				if (block.getType() == Material.AIR || BlockTools.isWater(block))
+
+			for (Block block : toRemove) {
+				if (block.getType() == Material.AIR
+						|| BlockTools.isWater(block))
 					waterorigins.get(block).update(true, false);
 				waterorigins.remove(block);
 			}
-	
-			for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+
+			for (Block block : BlockTools
+					.getBlocksAroundPoint(location, radius)) {
 				if (waterorigins.containsKey(block))
 					continue;
-				if (Tools.isRegionProtectedFromBuild(player, Abilities.AirBubble,
-						block.getLocation()))
+				if (Tools.isRegionProtectedFromBuild(player,
+						Abilities.AirBubble, block.getLocation()))
 					continue;
 				if (block.getType() == Material.STATIONARY_WATER
 						|| block.getType() == Material.WATER) {
@@ -110,10 +113,10 @@ public class AirBubble implements IAbility {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
-		if (((EntityTools.getBendingAbility(player) == Abilities.AirBubble) 
-				&& EntityTools.canBend(player, Abilities.AirBubble))
-				|| ((EntityTools.getBendingAbility(player) == Abilities.WaterBubble) 
-						&& EntityTools.canBend(player, Abilities.WaterBubble))) {
+		if (((EntityTools.getBendingAbility(player) == Abilities.AirBubble) && EntityTools
+				.canBend(player, Abilities.AirBubble))
+				|| ((EntityTools.getBendingAbility(player) == Abilities.WaterBubble) && EntityTools
+						.canBend(player, Abilities.WaterBubble))) {
 			pushWater();
 			return true;
 		}
@@ -121,23 +124,31 @@ public class AirBubble implements IAbility {
 	}
 
 	public static void progressAll() {
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble || EntityTools
+					.getBendingAbility(player) == Abilities.WaterBubble)
+					&& !instances.containsKey(player.getEntityId())) {
+				new AirBubble(player, null);
+			}
+		}
 		List<AirBubble> toRemove = new LinkedList<AirBubble>();
 		for (AirBubble bubble : instances.values()) {
 			boolean keep = bubble.progress();
-			if(!keep) {
+			if (!keep) {
 				toRemove.add(bubble);
 			}
 		}
-		for(AirBubble bubble : toRemove) {
+		for (AirBubble bubble : toRemove) {
 			bubble.removeBubble();
 		}
 	}
-	
+
 	private void clearBubble() {
 		for (Entry<Block, BlockState> entry : waterorigins.entrySet()) {
-			if (entry.getKey().getType() == Material.AIR || entry.getKey().isLiquid()){
+			if (entry.getKey().getType() == Material.AIR
+					|| entry.getKey().isLiquid()) {
 				entry.getValue().update(true);
-			}			
+			}
 		}
 	}
 
