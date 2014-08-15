@@ -227,15 +227,18 @@ public class BlockTools {
 	}
 	
 	public static boolean isPlant(Block block) {
-		if (plantIds.contains(block.getType()))
+		if (plantIds.contains(block.getType())) {
 			return true;
+		}
+			
 		return false;
 	}
 	
 	public static boolean isWater(Block block) {
 		if (block.getType() == Material.WATER
-				|| block.getType() == Material.STATIONARY_WATER)
+				|| block.getType() == Material.STATIONARY_WATER) {
 			return true;
+		}			
 		return false;
 	}
 	
