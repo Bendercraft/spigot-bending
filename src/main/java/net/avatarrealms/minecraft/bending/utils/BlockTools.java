@@ -150,10 +150,14 @@ public class BlockTools {
 	public static boolean isTransparentToEarthbending(Player player,
 			Abilities ability, Block block) {
 		if (Tools.isRegionProtectedFromBuild(player, ability,
-				block.getLocation()))
+				block.getLocation())) {
 			return false;
-		if (transparentEarthbending.contains(block.getType()))
+		}
+			
+		if (transparentEarthbending.contains(block.getType())) {
 			return true;
+		}
+			
 		return false;
 	}
 	
@@ -229,8 +233,7 @@ public class BlockTools {
 	public static boolean isPlant(Block block) {
 		if (plantIds.contains(block.getType())) {
 			return true;
-		}
-			
+		}	
 		return false;
 	}
 	
