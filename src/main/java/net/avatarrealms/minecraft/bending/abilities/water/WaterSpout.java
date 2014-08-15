@@ -288,16 +288,12 @@ public class WaterSpout implements IAbility {
 
 	public static boolean canWaterSpout(Player player) {
 		Location loc = player.getLocation();
-		if (BlockTools.isWater(loc.getBlock())
-				|| loc.getBlock().getType() == Material.SNOW_BLOCK
-				|| loc.getBlock().getType() == Material.ICE) {
+		if (BlockTools.isWaterBased(loc.getBlock())){
 			return true;
 		}
 		while (loc.getBlock().getType() == Material.AIR) {
 			loc = loc.add(0, -1, 0);
-			if (BlockTools.isWater(loc.getBlock())
-					|| loc.getBlock().getType() == Material.SNOW_BLOCK
-					|| loc.getBlock().getType() == Material.ICE) {
+			if (BlockTools.isWaterBased(loc.getBlock())) {
 				return true;
 			}
 		}
