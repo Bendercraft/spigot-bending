@@ -241,9 +241,23 @@ public class BlockTools {
 	
 	public static boolean isFluid(Block block) {
 		if (isWater(block) ||
-				block.getType() == Material.LAVA ||
-				block.getType() == Material.STATIONARY_LAVA ||
+				isLava(block) ||
 				block.getType() == Material.AIR) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isLava(Block block) {
+		if (block.getType() == Material.LAVA 
+				|| block.getType() == Material.STATIONARY_LAVA) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isLavaBased(Block block) {
+		if (isLava(block) || block.getType() == Material.OBSIDIAN) {
 			return true;
 		}
 		return false;
@@ -268,7 +282,6 @@ public class BlockTools {
 				&& block.getData() == full)
 			return true;
 		if (block.getType() == Material.ICE || block.getType() == Material.SNOW)
-			// || block.getType() == Material.SNOW_BLOCK)
 			return true;
 		if (EntityTools.canPlantbend(player) && isPlant(block))
 			return true;
@@ -334,15 +347,10 @@ public class BlockTools {
 
 		int r = (int) radius + 4;
 
-		// Block originblock = location.getBlock();
-
 		for (int x = xorg - r; x <= xorg + r; x++) {
 			for (int y = yorg - r; y <= yorg + r; y++) {
 				for (int z = zorg - r; z <= zorg + r; z++) {
 					Block block = location.getWorld().getBlockAt(x, y, z);
-					// if
-					// (block.getLocation().distance(originblock.getLocation())
-					// <= radius) {
 					if (block.getLocation().distance(location) <= radius) {
 						blocks.add(block);
 					}
@@ -400,9 +408,6 @@ public class BlockTools {
 			if (EarthPassive.isPassiveSand(block)) {
 				EarthPassive.revertSand(block);
 			}
-			// if (block.getType() == Material.SAND) {
-			// block.setType(Material.SANDSTONE);
-			// }
 
 			if (affectedblock == null)
 				return false;
@@ -445,10 +450,6 @@ public class BlockTools {
 					breakBlock(affectedblock);
 				}
 
-				// affectedblock.setType(block.getType());
-				// affectedblock.setData(block.getData());
-				//
-				// addTempEarthBlock(block, affectedblock);
 				moveEarthBlock(block, affectedblock);
 				block.getWorld().playEffect(block.getLocation(),
 						Effect.GHAST_SHOOT, 0, 4);
@@ -468,31 +469,17 @@ public class BlockTools {
 								moveEarthBlock(affectedblock, block);
 							}
 						}
-						// if (!Tools.adjacentToThreeOrMoreSources(block)
-						// && Tools.isWater(block)) {
-						// block.setType(Material.AIR);
-						// } else {
-						// byte full = 0x0;
-						// block.setType(Material.WATER);
-						// block.setData(full);
-						// }
 						break;
 					}
 					if (EarthPassive.isPassiveSand(affectedblock)) {
 						EarthPassive.revertSand(affectedblock);
 					}
-					// if (affectedblock.getType() == Material.SAND) {
-					// affectedblock.setType(Material.SANDSTONE);
-					// }
 					if (block == null) {
 						for (Block checkblock : blocks) {
 							tempnophysics.remove(checkblock);
 						}
 						return false;
 					}
-					// block.setType(affectedblock.getType());
-					// block.setData(affectedblock.getData());
-					// addTempEarthBlock(affectedblock, block);
 					moveEarthBlock(affectedblock, block);
 					block = affectedblock;
 				}
@@ -529,17 +516,14 @@ public class BlockTools {
 		byte full = 0x0;
 		Information info;
 		if (movedEarth.containsKey(source)) {
-			// verbose("Moving something already moved.");
 			info = movedEarth.get(source);
 			info.setTime(System.currentTimeMillis());
 			movedEarth.remove(source);
 			movedEarth.put(target, info);
 		} else {
-			// verbose("Moving something for the first time.");
 			info = new Information();
 			info.setBlock(source);
-			// info.setType(source.getType());
-			// info.setData(source.getData());
+
 			info.setTime(System.currentTimeMillis());
 			info.setState(source.getState());
 			movedEarth.put(target, info);
@@ -581,8 +565,6 @@ public class BlockTools {
 
 	public static Block getWaterSourceBlock(Player player, double range,
 			boolean plantbending) {
-		// byte full = 0x0;
-		// Block block = player.getTargetBlock(null, range);
 		Location location = player.getEyeLocation();
 		Vector vector = location.getDirection().clone().normalize();
 		for (double i = 0; i <= range; i++) {
@@ -618,8 +600,6 @@ public class BlockTools {
 		} else {
 			Information info = new Information();
 			info.setBlock(block);
-			// info.setType(block.getType());
-			// info.setData(block.getData());
 			info.setState(block.getState());
 			info.setTime(System.currentTimeMillis());
 			block.setType(Material.AIR);
@@ -684,30 +664,22 @@ public class BlockTools {
 			}
 
 			if (sourceblock.getType() == Material.AIR || sourceblock.isLiquid()) {
-				// sourceblock.setType(info.getType());
-				// sourceblock.setData(info.getData());
+
 				info.getState().update(true);
 			} else {
-				// if (info.getType() != Material.AIR) {
-				// ItemStack item = new ItemStack(info.getType());
-				// item.setData(new MaterialData(info.getType(), info
-				// .getData()));
-				// block.getWorld().dropItem(block.getLocation(), item);
 				dropItems(
 						block,
 						getDrops(block, info.getState().getType(), info
 								.getState().getRawData(), pickaxe));
-				// }
+
 			}
 
-			// if (info.getInteger() != 10) {
 			if (adjacentToThreeOrMoreSources(block)) {
 				block.setType(Material.WATER);
 				block.setData(full);
 			} else {
 				block.setType(Material.AIR);
 			}
-			// }
 
 			if (EarthColumn.blockInAllAffectedBlocks(sourceblock))
 				EarthColumn.revertBlock(sourceblock);
@@ -782,7 +754,5 @@ public class BlockTools {
 			}
 		}
 		return false;
-	}
-
-	
+	}	
 }
