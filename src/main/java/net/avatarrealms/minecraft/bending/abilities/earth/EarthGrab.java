@@ -50,11 +50,12 @@ public class EarthGrab implements IAbility {
 		this.self = self;
 		this.bender = player;
 		bPlayer = BendingPlayer.getBendingPlayer(bender);
-		if (bPlayer.isOnCooldown(Abilities.EarthGrab))
+		if (bPlayer.isOnCooldown(Abilities.EarthGrab)) {
 			return;
-
+		}		
+		boolean done;
 		if (self) {
-			grabEntity(bender, bender);
+			done = grabEntity(bender, bender);
 		} else {
 			Location origin = player.getEyeLocation();
 			Vector direction = origin.getDirection();
@@ -73,9 +74,9 @@ public class EarthGrab implements IAbility {
 					}
 				}
 			}
-			grabEntity(bender, closestentity);
+			done = grabEntity(bender, closestentity);
 		}
-		if (target != null) {
+		if (target != null && done == true) {
 			if (ID == Integer.MAX_VALUE) {
 				ID = Integer.MIN_VALUE;
 			}
@@ -85,10 +86,9 @@ public class EarthGrab implements IAbility {
 
 	}
 
-	public void grabEntity(Player player, Entity entity) {
+	public boolean grabEntity(Player player, Entity entity) {
 		if (entity != null) {
 			if (entity instanceof LivingEntity) {
-				int cpt = 0;
 				target = (LivingEntity) entity;
 				time = System.currentTimeMillis();
 				toKeep = true;
@@ -104,48 +104,62 @@ public class EarthGrab implements IAbility {
 				origin = new Location(entity.getLocation().getWorld(), x, y, z,
 						entity.getLocation().getYaw(),
 						entity.getLocation().getPitch());
+				
+				if (Tools.isRegionProtectedFromBuild(player, Abilities.RaiseEarth, origin)) {
+					return false;
+				}
 
-				target.teleport(origin);
-				// To be sure the guy is locked in the grab
+				List<Location> locs = new LinkedList<Location>();
+				List<Location> toRemove = new LinkedList<Location>();
 
-				Location cLoc[] = new Location[4];
+				locs.add(origin.clone().add(0, 0, -1));
+				locs.add(origin.clone().add(0, 0, 1));
+				locs.add(origin.clone().add(-1, 0, 0));
+				locs.add(origin.clone().add(1, 0, 0));
 
-				cLoc[0] = origin.clone().add(0, 0, -1);
-				cLoc[1] = origin.clone().add(0, 0, 1);
-				cLoc[2] = origin.clone().add(-1, 0, 0);
-				cLoc[3] = origin.clone().add(1, 0, 0);
-
-				for (int i = 0; i < 4; i++) {
-					if (cLoc[i].getBlock().getType() == Material.AIR
-							|| cLoc[i].getBlock().getType() == Material.WATER
-							|| cLoc[i].getBlock().getType() == Material.STATIONARY_WATER
-							|| cLoc[i].getBlock().getType() == Material.LAVA
-							|| cLoc[i].getBlock().getType() == Material.STATIONARY_LAVA
-							|| BlockTools.isPlant(cLoc[i].getBlock())) {
-
-						cLoc[i].add(0, -1, 0);
-						if (BlockTools.isEarthbendable(player,
-								cLoc[i].getBlock())) {
+				int cpt = 0;
+				
+				for (Location loc : locs) {
+					if (BlockTools.isFluid(loc.getBlock())
+							|| BlockTools.isPlant(loc.getBlock())) {
+						
+						loc.add(0 ,-1, 0);
+						if (BlockTools.isEarthbendable(player,loc.getBlock())) {
 							cpt++;
-							columns.add(new EarthColumn(player, cLoc[i], 1,
-									this, this));
-						} else if (cLoc[i].getBlock().getType() == Material.AIR) {
-							cLoc[i].add(0, -1, 0);
-							if (BlockTools.isEarthbendable(player,
-									cLoc[i].getBlock())) {
-								cpt++;
-								columns.add(new EarthColumn(player, cLoc[i], 2,
-										this, this));
-							}
 						}
-
-					} else if (BlockTools.isEarthbendable(bender,
-							cLoc[i].getBlock())) {
-						cpt++;
+						else if (BlockTools.isFluid(loc.getBlock()) 
+								|| BlockTools.isPlant(loc.getBlock())){
+							
+							loc.add(0, -1, 0);
+							if (BlockTools.isEarthbendable(player,loc.getBlock())) {
+								cpt++;
+							}
+							else {
+								return false;
+							}				
+						}
+						else {
+							return false;
+						}	
 					}
+					else if (BlockTools.isEarthbendable(player, loc.getBlock())) {
+						cpt ++;
+						toRemove.add(loc);			
+					}
+					else {
+						return false;
+					}
+				}
+				
+				for (Location tr : toRemove) {
+					locs.remove(tr);
 				}
 
 				if (cpt >= 4) {
+					
+					target.teleport(origin);
+					// To be sure the guy is locked in the grab
+					
 					int duration;
 					if (self) {
 						duration = benderTargettedDuration;
@@ -162,6 +176,15 @@ public class EarthGrab implements IAbility {
 																	// jump
 					target.addPotionEffect(slowness);
 					target.addPotionEffect(jumpless);
+					
+					for (Location loc : locs) {
+						int h = 1;
+						if (origin.getY() - loc.getY() >= 2) {
+							h = 2;
+						}
+						columns.add(new EarthColumn(player, loc, h,
+								this, this));
+					}
 
 					if (target instanceof Player
 							&& target.getEntityId() != bender.getEntityId()) {
@@ -172,6 +195,7 @@ public class EarthGrab implements IAbility {
 				}
 			}
 		}
+		return true;
 	}
 
 	public static String getDescription() {

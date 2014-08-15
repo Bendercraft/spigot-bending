@@ -239,6 +239,16 @@ public class BlockTools {
 		return false;
 	}
 	
+	public static boolean isFluid(Block block) {
+		if (isWater(block) ||
+				block.getType() == Material.LAVA ||
+				block.getType() == Material.STATIONARY_LAVA ||
+				block.getType() == Material.AIR) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static boolean adjacentToAnyWater(Block block) {
 		BlockFace[] faces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH,
 				BlockFace.SOUTH, BlockFace.UP, BlockFace.DOWN };
