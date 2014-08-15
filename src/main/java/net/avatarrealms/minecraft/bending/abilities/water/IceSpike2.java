@@ -62,7 +62,8 @@ public class IceSpike2 implements IAbility {
 		block(player);
 		if (EntityTools.canPlantbend(player))
 			plantbending = true;
-		range = PluginTools.waterbendingNightAugment(defaultrange, player.getWorld());
+		range = PluginTools.waterbendingNightAugment(defaultrange,
+				player.getWorld());
 		this.player = player;
 		Block sourceblock = BlockTools.getWaterSourceBlock(player, range,
 				plantbending);
@@ -138,8 +139,8 @@ public class IceSpike2 implements IAbility {
 					&& BlockTools.isTransparentToEarthbending(player,
 							eyeloc.getBlock())) {
 
-				LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(
-						player, defaultrange);
+				LivingEntity target = (LivingEntity) EntityTools
+						.getTargettedEntity(player, defaultrange);
 				Location destination;
 				if (target == null) {
 					destination = EntityTools.getTargetedLocation(player,
@@ -170,8 +171,8 @@ public class IceSpike2 implements IAbility {
 	private void throwIce() {
 		if (!prepared)
 			return;
-		LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(player,
-				range);
+		LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(
+				player, range);
 		if (target == null) {
 			destination = EntityTools.getTargetedLocation(player, range,
 					BlockTools.transparentEarthbending);
@@ -208,11 +209,11 @@ public class IceSpike2 implements IAbility {
 		List<IceSpike2> toRemove = new LinkedList<IceSpike2>();
 		for (IceSpike2 ice : instances.values()) {
 			boolean keep = ice.progress();
-			if(!keep) {
+			if (!keep) {
 				toRemove.add(ice);
 			}
 		}
-		
+
 		for (IceSpike2 ice : toRemove) {
 			ice.remove();
 		}
@@ -235,12 +236,13 @@ public class IceSpike2 implements IAbility {
 			return false;
 		}
 
-		if (EntityTools.getBendingAbility(player) != Abilities.IceSpike && prepared) {
+		if (EntityTools.getBendingAbility(player) != Abilities.IceSpike
+				&& prepared) {
 			return false;
 		}
 
 		if (System.currentTimeMillis() < time + interval) {
-			//Not enough time has passed to progress, just waiting
+			// Not enough time has passed to progress, just waiting
 			return true;
 		}
 
@@ -248,7 +250,7 @@ public class IceSpike2 implements IAbility {
 
 		if (progressing) {
 			Vector direction = null;
-			
+
 			if (location.getBlockY() == firstdestination.getBlockY()) {
 				settingup = false;
 			}
@@ -318,11 +320,12 @@ public class IceSpike2 implements IAbility {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		int mod = (int) PluginTools.waterbendingNightAugment(defaultmod,
 				player.getWorld());
-		double damage = (int) PluginTools.waterbendingNightAugment(defaultdamage,
-				player.getWorld());
-		damage = bPlayer.getCriticalHit(BendingType.Water,damage);
-		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
-			
+		double damage = (int) PluginTools.waterbendingNightAugment(
+				defaultdamage, player.getWorld());
+		damage = bPlayer.getCriticalHit(BendingType.Water, damage);
+		if (((entity instanceof Player) || (entity instanceof Monster))
+				&& (entity.getEntityId() != player.getEntityId())) {
+
 			if (bPlayer != null) {
 				bPlayer.earnXP(BendingType.Water, this);
 			}
@@ -357,9 +360,11 @@ public class IceSpike2 implements IAbility {
 
 			if (ice.player.equals(player)) {
 				Location location;
-				Entity target = EntityTools.getTargettedEntity(player, defaultrange);
+				Entity target = EntityTools.getTargettedEntity(player,
+						defaultrange);
 				if (target == null) {
-					location = EntityTools.getTargetedLocation(player, defaultrange);
+					location = EntityTools.getTargetedLocation(player,
+							defaultrange);
 				} else {
 					location = ((LivingEntity) target).getEyeLocation();
 				}
@@ -380,7 +385,8 @@ public class IceSpike2 implements IAbility {
 							.distance(location.clone().add(
 									vector.clone().multiply(-1)))) {
 				Location loc;
-				Entity target = EntityTools.getTargettedEntity(player, defaultrange);
+				Entity target = EntityTools.getTargettedEntity(player,
+						defaultrange);
 				if (target == null) {
 					loc = EntityTools.getTargetedLocation(player, defaultrange);
 				} else {
@@ -394,33 +400,44 @@ public class IceSpike2 implements IAbility {
 	}
 
 	private static void block(Player player) {
+		List<IceSpike2> toRemove = new LinkedList<IceSpike2>();
 		for (int id : instances.keySet()) {
 			IceSpike2 ice = instances.get(id);
 
-			if (ice.player.equals(player))
+			if (ice.player.equals(player)) {
 				continue;
-
-			if (!ice.location.getWorld().equals(player.getWorld()))
-				continue;
-
-			if (!ice.progressing)
-				continue;
-
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
-					ice.location))
-				continue;
-
-			Location location = player.getEyeLocation();
-			Vector vector = location.getDirection();
-			Location mloc = ice.location;
-			if (mloc.distance(location) <= defaultrange
-					&& Tools.getDistanceFromLine(vector, location, ice.location) < deflectrange
-					&& mloc.distance(location.clone().add(vector)) < mloc
-							.distance(location.clone().add(
-									vector.clone().multiply(-1)))) {
-				ice.remove();
 			}
 
+			if (!ice.location.getWorld().equals(player.getWorld())) {
+				continue;
+			}
+
+			if (!ice.progressing) {
+				continue;
+			}
+
+			if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
+					ice.location)) {
+				continue;
+			}
+
+			if (player != null) {
+				Location location = player.getEyeLocation();
+				Vector vector = location.getDirection();
+				Location mloc = ice.location;
+				if (mloc.distance(location) <= defaultrange
+						&& Tools.getDistanceFromLine(vector, location,
+								ice.location) < deflectrange
+						&& mloc.distance(location.clone().add(vector)) < mloc
+								.distance(location.clone().add(
+										vector.clone().multiply(-1)))) {
+					toRemove.add(ice);
+				}
+			}
+		}
+		
+		for (IceSpike2 ice : toRemove) {
+			ice.remove();
 		}
 	}
 
@@ -428,9 +445,10 @@ public class IceSpike2 implements IAbility {
 		this.destination = destination;
 		this.player = player;
 	}
-	
+
 	/**
-	 * Remove cleanly this ability in game, but does not remove it on instances list; assuming it is done after
+	 * Remove cleanly this ability in game, but does not remove it on instances
+	 * list; assuming it is done after
 	 */
 	private void clear() {
 		if (progressing) {
@@ -441,7 +459,8 @@ public class IceSpike2 implements IAbility {
 	}
 
 	/**
-	 * Safe effect as "clear" but remove it from instances list, and thus not concurrent safe when iterating on it
+	 * Safe effect as "clear" but remove it from instances list, and thus not
+	 * concurrent safe when iterating on it
 	 */
 	private void remove() {
 		this.clear();
