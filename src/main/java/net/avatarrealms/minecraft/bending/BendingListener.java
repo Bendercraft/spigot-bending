@@ -831,10 +831,8 @@ public class BendingListener implements Listener {
 					&& event.getCause() == DamageCause.ENTITY_ATTACK
 					&& !EntityTools.isWeapon(((Player) event.getDamager())
 							.getItemInHand().getType())) {
-				// event.setDamage((int) (ConfigManager.punchdamage));
 			}
 		}
-
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -907,12 +905,12 @@ public class BendingListener implements Listener {
 		if (grab != null) {
 			grab.setToKeep(false);
 			event.setCancelled(true);
-			/*Location loc = block.getLocation().clone();
+			Location loc = block.getLocation().clone();
 			loc.add(0, -1, 0);
 			if (loc.getBlock().getType() == Material.AIR) {
 				loc.getBlock().setType(block.getType());
 				block.setType(Material.AIR);
-			}*/
+			}
 		}
 
 		if (FreezeMelt.isFrozen(block)) {

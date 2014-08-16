@@ -60,13 +60,13 @@ public class BendingLevel {
 		Integer xpArr = (int) 0;
 		xp = (8*level);
 		if (level >= 32) {
-			xp += 5*(level-30);
+			xp += 6*(level-30);
 		}
 		else if (level == 31){
-			xp += 6;
+			xp += 7;
 		}
 		else if (level == 30) {
-			xp += 3;
+			xp += 4;
 		}
 		else {
 			xp += 1;
