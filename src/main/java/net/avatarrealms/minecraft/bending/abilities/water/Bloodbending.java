@@ -74,8 +74,11 @@ public class Bloodbending implements IAbility {
 				return;
 			if (target instanceof Player) {
 				if (EntityTools.canBend((Player) target, Abilities.Bloodbending)
-						|| AvatarState.isAvatarState((Player) target))
+						|| AvatarState.isAvatarState((Player) target)
+						|| ((Player)target).isOp()) {
 					return;
+				}
+					
 			}
 			EntityTools.damageEntity(player, target, 0);
 			targetEntities.put(target, target.getLocation().clone());
