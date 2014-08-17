@@ -109,15 +109,15 @@ public class ConfigManager {
 	public static double tornadoRange = 25;
 	public static double tornadoMobPush = 1;
 	public static double tornadoPlayerPush = 1;
-	public static int tornadoLevelRequired = 45;
+	public static int tornadoLevelRequired = 1;
 	
 	// Air Manipulation
 	public static int airManipulationDamage = 2;
 	public static int airManipulationRange = 25;
-	public static int airManipulationLevelRequired = 20;
+	public static int airManipulationLevelRequired = 1;
 	
 	// Lungs control
-	public static int lungsControlLevelRequired = 45;
+	public static int lungsControlLevelRequired = 1;
 	
 	// ChiBlocker
 	// HighJump
@@ -162,7 +162,7 @@ public class ConfigManager {
 	public static int catapultLength = 7;
 	public static double catapultSpeed = 12;
 	public static double catapultPush = 5;
-	public static int catapultLevelRequired = 45;
+	public static int catapultLevelRequired = 1;
 	
 	//ShockWave
 	public static int shockwaveLevelRequired = 1;
@@ -182,7 +182,7 @@ public class ConfigManager {
 	public static int earthArmorStrength = 2;
 	public static long earthArmorCooldown = 60000;
 	public static int earthArmorLevelRequired = 1;
-	public static int ironArmorLevelRequired = 20;
+	public static int ironArmorLevelRequired = 1;
 
 	// EarthBlast
 	public static int earthBlastDamage = 3;
@@ -194,7 +194,7 @@ public class ConfigManager {
 	public static boolean earthBlastRevert = true;
 	public static double earthBlastPush = 0.3;
 	public static int earthBlastLevelRequired = 1;
-	public static int ironBlastLevelRequired = 15;
+	public static int ironBlastLevelRequired = 1;
 
 	// EarthColumn
 	public static int earthColumnHeight = 6;
@@ -223,7 +223,7 @@ public class ConfigManager {
 	public static int earthWallRange = 15;
 	public static int earthWallHeight = 6;
 	public static int earthWallWidth = 6;
-	public static int earthWallLevelRequired = 3;
+	public static int earthWallLevelRequired = 1;
 
 	// Tremorsense
 	public static long tremorsenseCooldown = 1000;
@@ -238,7 +238,7 @@ public class ConfigManager {
 	public static int earthMeltRange = 15;
 	public static int earthMeltDamage = 10;
 	public static int earthMeltChargeTime = 3000; // time in millisecs.
-	public static int earthMeltLevelRequired = 50;
+	public static int earthMeltLevelRequired = 1;
 
 	// Fire
 	// ArcOfFire
@@ -276,7 +276,7 @@ public class ConfigManager {
 	public static double fireJetSpeed = 0.7;
 	public static long fireJetDuration = 1500;
 	public static long fireJetCooldown = 6000;
-	public static int fireJetLevelRequired = 45;
+	public static int fireJetLevelRequired = 1;
 
 	// FireStream
 	public static double fireStreamSpeed = 15;
@@ -297,7 +297,7 @@ public class ConfigManager {
 	public static int lightningDamage = 6;
 	public static int lightningRange = 50;
 	public static double lightningMissChance = 5;
-	public static int lightningLevelRequired = 45;
+	public static int lightningLevelRequired = 1;
 
 	// RingOfFire
 	public static int ringOfFireRange = 7;
@@ -315,7 +315,7 @@ public class ConfigManager {
 	
 	//ThunderArmor
 	public static int thunderArmorThornsLevel = 2;
-	public static int thunderArmorLevelRequired = 50;
+	public static int thunderArmorLevelRequired = 1;
 	
 	//MentalExplosion
 	public static int mentalExplosionDamage = 5;
@@ -323,7 +323,7 @@ public class ConfigManager {
 	public static int mentalExplosionSpeed = 25;
 	public static int mentalExplosionChargeTime = 1000; //time in millisecs
 	public static int mentalExplosionCooldown = 2000;
-	public static int mentalExplosionLevelRequired = 50;
+	public static int mentalExplosionLevelRequired = 1;
 
 	// Day
 	public static double dayFactor = 1.5;
@@ -394,21 +394,19 @@ public class ConfigManager {
 	public static int waveLevelRequired = 1;
 	
 	//Torrent
-	public static int torrentLevelRequired = 45;
+	public static int torrentLevelRequired = 1;
 	
 	//OctopusForm
 	
-	public static int octopusFormLevelRequired = 45;
+	public static int octopusFormLevelRequired = 1;
 	
 	//IceSwipe
 	public static int iceSwipeDamage = 4;
-	public static int iceSwipeRange = 16;
-	public static int iceSwipeArc = 20;
+	public static int iceSwipeRange = 25;
 	public static double iceSwipeSpeed = 25;
-	public static double iceSwipeRadius = 2;
 	public static double iceSwipePush = 1;
 	public static long iceSwipeCooldown = 1500;
-	public static int iceSwipeLevelRequired = 15;
+	public static int iceSwipeLevelRequired = 1;
 
 	// Night
 	public static double nightFactor = 1.5;
@@ -1097,11 +1095,8 @@ public class ConfigManager {
 		iceSwipeDamage = config.getInt("Properties.Water.IceSwipe.Damage", iceSwipeDamage);
 		iceSwipeRange = config.getInt("Properties.Water.IceSwipe.Range",
 				iceSwipeRange);
-		iceSwipeArc = config.getInt("Properties.Water.IceSwipe.Arc", iceSwipeArc);
 		iceSwipeSpeed = config.getDouble("Properties.Water.IceSwipe.Speed",
 				iceSwipeSpeed);
-		iceSwipeRadius = config.getDouble(
-				"Properties.Water.IceSwipe.Affecting-Radius", iceSwipeRadius);
 		iceSwipePush = config.getDouble("Properties.Water.IceSwipe.Push-Factor",
 				iceSwipePush);
 		iceSwipeCooldown = config.getLong("Properties.Water.IceSwipe.Cooldown",
@@ -1462,9 +1457,7 @@ public class ConfigManager {
 		//IceSwipe
 		config.set("Properties.Water.IceSwipe.Damage", iceSwipeDamage);
 		config.set("Properties.Water.IceSwipe.Range", iceSwipeRange);
-		config.set("Properties.Water.IceSwipe.Arc", iceSwipeArc);
 		config.set("Properties.Water.IceSwipe.Speed", iceSwipeSpeed);
-		config.set("Properties.Water.IceSwipe.Affecting-Radius", iceSwipeRadius);
 		config.set("Properties.Water.IceSwipe.Push-Factor", iceSwipePush);
 		config.set("Properties.Water.IceSwipe.Cooldown", iceSwipeCooldown);
 		config.set("Properties.Water.IceSwipe.level-required", iceSwipeLevelRequired);

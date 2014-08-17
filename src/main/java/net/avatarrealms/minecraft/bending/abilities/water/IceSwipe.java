@@ -19,6 +19,10 @@ public class IceSwipe implements IAbility{
 	//TODO : Not to forget to check for the protected region
 	//TODO : As Kya against Zaheer
 	
+	public IceSwipe(Player player, Block sourceblock) {
+		
+	}
+	
 	public static void prepare(Player player) {
 		
 		
