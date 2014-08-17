@@ -61,9 +61,9 @@ public class SmokeBomb implements IAbility {
 			List<Block> blocks = BlockTools
 					.getBlocksAroundPoint(origin, radius);
 			for (Block block : blocks) {
-				locs.add(block.getLocation().clone());
+				locs.add(block.getLocation());
 			}
-			List<Entity> entitiesAround = EntityTools.getEntitiesAroundPoint(origin,radius+10);
+			List<Entity> entitiesAround = EntityTools.getEntitiesAroundPoint(origin, radius+7);
 			for (Entity ent : entitiesAround) {
 				if (ent instanceof Player) {
 					((Player)ent).playSound(origin,Sound.FIREWORK_BLAST,10,1);
@@ -144,7 +144,7 @@ public class SmokeBomb implements IAbility {
 
 	@Override
 	public int getBaseExperience() {
-		return 3;
+		return 2;
 	}
 
 	@Override
