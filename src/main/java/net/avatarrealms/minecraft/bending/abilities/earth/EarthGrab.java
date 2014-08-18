@@ -46,7 +46,6 @@ public class EarthGrab implements IAbility {
 
 	public EarthGrab(Player player, boolean self, IAbility parent) {
 		this.parent = parent;
-		// Tools.verbose("initiating");
 		this.self = self;
 		this.bender = player;
 		bPlayer = BendingPlayer.getBendingPlayer(bender);
@@ -57,23 +56,7 @@ public class EarthGrab implements IAbility {
 		if (self) {
 			done = grabEntity(bender, bender);
 		} else {
-			Location origin = player.getEyeLocation();
-			Vector direction = origin.getDirection();
-			double lowestdistance = range + 1;
-			Entity closestentity = null;
-			for (Entity entity : EntityTools.getEntitiesAroundPoint(origin,
-					range)) {
-				if (Tools.getDistanceFromLine(direction, origin,
-						entity.getLocation()) <= 3
-						&& (entity instanceof LivingEntity)
-						&& (entity.getEntityId() != bender.getEntityId())) {
-					double distance = origin.distance(entity.getLocation());
-					if (distance < lowestdistance) {
-						closestentity = entity;
-						lowestdistance = distance;
-					}
-				}
-			}
+			Entity closestentity = EntityTools.getTargettedEntity(player, range);
 			done = grabEntity(bender, closestentity);
 		}
 		if (target != null && done == true) {

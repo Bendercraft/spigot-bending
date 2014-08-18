@@ -7,10 +7,14 @@ import java.util.Map;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 
 public class IceSwipe implements IAbility{
 	
+	
+	private static int range = ConfigManager.iceSwipeRange;
+	private static int damage = ConfigManager.iceSwipeDamage;
 	private static Map<Player, IceSwipe> instances = new HashMap<Player, IceSwipe>();
 	private LinkedList<Block> blocks;
 	

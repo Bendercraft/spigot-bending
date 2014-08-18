@@ -372,11 +372,6 @@ public class EntityTools {
 				damage = AvatarState.getValue(damage);
 			}
 
-			// EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
-			// player, entity, DamageCause.CUSTOM, damage);
-			// Bending.plugin.getServer().getPluginManager().callEvent(event);
-			// verbose(event.isCancelled());
-
 			((LivingEntity) entity).damage(damage, player);
 			((LivingEntity) entity)
 					.setLastDamageCause(new EntityDamageByEntityEvent(player,

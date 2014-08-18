@@ -92,7 +92,6 @@ public class WaterManipulation implements IAbility {
 	}
 
 	private boolean prepare() {
-		// Block block = player.getTargetBlock(null, (int) range);
 		Block block = BlockTools.getWaterSourceBlock(player, range,
 				EntityTools.canPlantbend(player));
 		cancelPrevious();
