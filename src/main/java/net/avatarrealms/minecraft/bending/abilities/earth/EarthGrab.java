@@ -23,7 +23,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 
 public class EarthGrab implements IAbility {
 
@@ -34,7 +33,7 @@ public class EarthGrab implements IAbility {
 	private static int otherTargettedDuration = 6000; // 5 minutes
 
 	private int id;
-	private List<EarthColumn> columns = new ArrayList<EarthColumn>();
+	private List<EarthColumn> columns = new ArrayList<EarthColumn>(4);
 	private boolean self;
 	private BendingPlayer bPlayer;
 	private Player bender;
@@ -43,6 +42,7 @@ public class EarthGrab implements IAbility {
 	private Location origin;
 	private long time = 0;
 	private boolean toKeep = true;
+	private List<Location> columnsLoc = new LinkedList<Location>();
 
 	public EarthGrab(Player player, boolean self, IAbility parent) {
 		this.parent = parent;
@@ -56,6 +56,7 @@ public class EarthGrab implements IAbility {
 		if (self) {
 			done = grabEntity(bender, bender);
 		} else {
+			//TODO : Try to find why you can grab behind you.
 			Entity closestentity = EntityTools.getTargettedEntity(player, range);
 			done = grabEntity(bender, closestentity);
 		}
@@ -138,8 +139,7 @@ public class EarthGrab implements IAbility {
 					locs.remove(tr);
 				}
 
-				if (cpt >= 4) {
-					
+				if (cpt >= 4) {			
 					target.teleport(origin);
 					// To be sure the guy is locked in the grab
 					
@@ -167,6 +167,7 @@ public class EarthGrab implements IAbility {
 						}
 						columns.add(new EarthColumn(player, loc, h,
 								this, this));
+						columnsLoc.add(loc.clone().add(0,h,0));
 					}
 
 					if (target instanceof Player
@@ -184,6 +185,10 @@ public class EarthGrab implements IAbility {
 	public static String getDescription() {
 		return "To use, simply left-click while targeting a creature within range. "
 				+ "This ability will erect a circle of earth to trap the creature in.";
+	}
+	
+	public Player getBender() {
+		return bender;
 	}
 
 	public void setToKeep(boolean k) {
@@ -258,7 +263,23 @@ public class EarthGrab implements IAbility {
 				BlockTools.revertBlock(block);
 			}
 		}
+		
 		columns.clear();
+		
+		// This loop is there because a block can have been not destroyed because of a faction protection
+		// Conditions are only guessing stuff
+		//TODO : Check if this loop works
+		for (Location loc : columnsLoc) {
+			if (BlockTools.isEarthbendable(bender, loc.getBlock())) {
+				Location loc2 = loc.clone().add(0, -1, 0);
+				if (loc2.getBlock().getType() == Material.AIR) {
+					loc2.getBlock().setType(loc.getBlock().getType());
+					loc.getBlock().setType(Material.AIR);
+				}
+			}
+		}
+		columnsLoc.clear();
+		
 
 		if (target != null) {
 			target.removePotionEffect(PotionEffectType.SLOW);

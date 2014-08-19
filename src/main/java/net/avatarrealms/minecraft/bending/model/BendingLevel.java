@@ -71,7 +71,7 @@ public class BendingLevel {
 		else {
 			xp += 1;
 		}
-		xp*=(5*level + 45);
+		xp*=(6*level + 45);
 		xpArr = ((int)(xp/100))*100;;
 
 		return xpArr;

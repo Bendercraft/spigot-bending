@@ -278,10 +278,11 @@ public class BendingListener implements Listener {
 				if (ability == Abilities.AirSuction) {
 					new AirSuction(player, null);
 				}
-				
-				/*if (ability == Abilities.AirBubble) {
-					new AirBubble(player, null);
-				}*/
+
+				/*
+				 * if (ability == Abilities.AirBubble) { new AirBubble(player,
+				 * null); }
+				 */
 
 				if (ability == Abilities.AirSwipe) {
 					new AirSwipe(player, null);
@@ -385,10 +386,11 @@ public class BendingListener implements Listener {
 				if (ability == Abilities.IceSpike) {
 					IceSpike2.activate(player);
 				}
-				
-				/*if (ability == Abilities.WaterBubble) {
-					new WaterBubble(player, null);
-				}*/
+
+				/*
+				 * if (ability == Abilities.WaterBubble) { new
+				 * WaterBubble(player, null); }
+				 */
 
 				if (ability == Abilities.PhaseChange) {
 					new FreezeMelt(player, null);
@@ -905,12 +907,6 @@ public class BendingListener implements Listener {
 		if (grab != null) {
 			grab.setToKeep(false);
 			event.setCancelled(true);
-			Location loc = block.getLocation().clone();
-			loc.add(0, -1, 0);
-			if (loc.getBlock().getType() == Material.AIR) {
-				loc.getBlock().setType(block.getType());
-				block.setType(Material.AIR);
-			}
 		}
 
 		if (FreezeMelt.isFrozen(block)) {
@@ -1041,7 +1037,7 @@ public class BendingListener implements Listener {
 			if (Paralyze.isParalyzed(entity)
 					|| Bloodbending.isBloodbended(entity)) {
 				event.setCancelled(true);
-			}		
+			}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

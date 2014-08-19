@@ -77,6 +77,7 @@ public class SmokeBomb implements IAbility {
 	}
 
 	public void progress() {
+		//TODO : Try to make it less laggy
 		List<LivingEntity> newTargets = new LinkedList<LivingEntity>();
 		List<Entity> entitiesAround = EntityTools.getEntitiesAroundPoint(
 				origin, radius);
@@ -96,8 +97,7 @@ public class SmokeBomb implements IAbility {
 				}
 				else {
 					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
-				}
-				
+				}	
 			}
 		}
 		

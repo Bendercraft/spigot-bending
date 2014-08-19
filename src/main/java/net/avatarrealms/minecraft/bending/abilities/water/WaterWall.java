@@ -237,6 +237,7 @@ public class WaterWall implements IAbility {
 	}
 
 	public boolean progress() {
+		//TODO : Try to find why sometimes, the watersource is going far in the sky.
 		if (player.isDead() || !player.isOnline()) {
 			breakBlock();
 			return false;
@@ -419,14 +420,6 @@ public class WaterWall implements IAbility {
 			// new TempBlock(block, Material.ICE, (byte) 0);
 			affectedblocks.put(block, block);
 		}
-
-		// if (!affectedblocks.containsKey(block)) {
-		// affectedblocks.put(block, block);
-		// }
-		// if (FreezeMelt.frozenblocks.containsKey(block))
-		// FreezeMelt.frozenblocks.remove(block);
-		// block.setType(Material.WATER);
-		// block.setData(full);
 	}
 
 	public static void moveWater(Player player) {
