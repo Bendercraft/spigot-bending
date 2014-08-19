@@ -63,11 +63,10 @@ public class SmokeBomb implements IAbility {
 			for (Block block : blocks) {
 				locs.add(block.getLocation());
 			}
-			List<Entity> entitiesAround = EntityTools.getEntitiesAroundPoint(origin, radius+7);
+			List<LivingEntity> entitiesAround = EntityTools.getLivingEntitiesAroundPoint(origin, radius+7);
 			for (Entity ent : entitiesAround) {
 				if (ent instanceof Player) {
 					((Player)ent).playSound(origin,Sound.FIREWORK_BLAST,10,1);
-					//((Player)ent).playSound(origin,Sound.FIREWORK_BLAST2,10,1);
 				}
 			}
 			player.addPotionEffect(blindnessBomber);
@@ -77,16 +76,9 @@ public class SmokeBomb implements IAbility {
 	}
 
 	public void progress() {
-		//TODO : Try to make it less laggy
-		List<LivingEntity> newTargets = new LinkedList<LivingEntity>();
-		List<Entity> entitiesAround = EntityTools.getEntitiesAroundPoint(
+		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(
 				origin, radius);
-		for (Entity e : entitiesAround) {
-			if (e instanceof LivingEntity) {
-				newTargets.add((LivingEntity) e);
-			}
-		}
-		entitiesAround.clear();
+
 		blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS,
 				ticksRemaining, 2);
 		
@@ -114,7 +106,7 @@ public class SmokeBomb implements IAbility {
 			targets.add(targ);
 		}
 		
-		if (ticksRemaining % 10 == 0) {
+		if (ticksRemaining % 16 == 0) {
 			for (Location loc : locs) {
 				loc.getWorld().playEffect(loc, Effect.SMOKE, 1, 15);
 			}

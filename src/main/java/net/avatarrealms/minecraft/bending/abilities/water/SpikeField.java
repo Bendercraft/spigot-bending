@@ -59,7 +59,7 @@ public class SpikeField implements IAbility {
 			}
 		}
 
-		List<Entity> entities = EntityTools.getEntitiesAroundPoint(p.getLocation(),
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(p.getLocation(),
 				radius);
 
 		for (int i = 0; i < numofspikes; i++) {
@@ -69,8 +69,7 @@ public class SpikeField implements IAbility {
 			Entity target = null;
 			Block targetblock = null;
 			for (Entity entity : entities) {
-				if (entity instanceof LivingEntity
-						&& entity.getEntityId() != p.getEntityId()) {
+				if (entity.getEntityId() != p.getEntityId()) {
 					if ((entity instanceof Player)) {
 						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 						if (bPlayer != null) {
@@ -97,9 +96,6 @@ public class SpikeField implements IAbility {
 				targetblock = iceblocks.get(ran.nextInt(iceblocks.size()));
 			}
 
-			// Tools.verbose("X: " + targetblock.getLocation().getX() + " Y: " +
-			// targetblock.getLocation().getY() + " Z: " +
-			// targetblock.getLocation().getZ());
 			if (targetblock.getRelative(BlockFace.UP).getType() != Material.ICE) {
 				new IceSpike(p, targetblock.getLocation(), damage, thrown,
 						cooldown, this);

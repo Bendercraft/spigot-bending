@@ -257,11 +257,13 @@ public class AirSwipe implements IAbility {
 			
 				//Check affected people
 				PluginTools.removeSpouts(location, player);
-				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
+				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						affectingradius)) {
 					if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
-							entity.getLocation()))
+							entity.getLocation())) {
 						continue;
+					}
+						
 					if (entity.getEntityId() != player.getEntityId()) {
 						if (AvatarState.isAvatarState(player)) {
 							entity.setVelocity(direction.multiply(AvatarState
@@ -269,8 +271,8 @@ public class AirSwipe implements IAbility {
 						} else {
 							entity.setVelocity(direction.multiply(pushfactor));
 						}
-						if (entity instanceof LivingEntity
-							&& !affectedentities.contains(entity)) {
+						
+						if (!affectedentities.contains(entity)) {
 							if (damage != 0)
 								EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
 							affectedentities.add(entity);

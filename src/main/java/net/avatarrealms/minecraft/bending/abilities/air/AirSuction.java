@@ -29,8 +29,6 @@ public class AirSuction implements IAbility {
 
 	private static Map<Integer, AirSuction> instances = new HashMap<Integer, AirSuction>();
 	private static Map<Player, Location> origins = new HashMap<Player, Location>();
-	// private static ConcurrentHashMap<Player, Long> timers = new
-	// ConcurrentHashMap<Player, Long>();
 	static final long soonesttime = Tools.timeinterval;
 
 	private static int ID = Integer.MIN_VALUE;
@@ -42,7 +40,6 @@ public class AirSuction implements IAbility {
 	private static double affectingradius = ConfigManager.airSuctionRadius;
 	private static double pushfactor = ConfigManager.airSuctionPush;
 	private static double originselectrange = 10;
-	// private static long interval = AirBlast.interval;
 
 	private Location location;
 	private Location origin;

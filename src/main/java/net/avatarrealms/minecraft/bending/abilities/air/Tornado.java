@@ -19,8 +19,7 @@ import net.avatarrealms.minecraft.bending.utils.Tools;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -100,10 +99,12 @@ public class Tornado implements IAbility {
 		if (origin.getBlock().getType() != Material.AIR) {
 			origin.setY(origin.getY() - 1. / 10. * height);
 
-			for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, height)) {
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, height)) {
 				if (Tools.isRegionProtectedFromBuild(player,
-						Abilities.AirBlast, entity.getLocation()))
+						Abilities.AirBlast, entity.getLocation())) {
 					continue;
+				}
+					
 				double y = entity.getLocation().getY();
 				double factor;
 				if (y > origin.getY() && y < origin.getY() + height) {

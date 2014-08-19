@@ -3,6 +3,7 @@ package net.avatarrealms.minecraft.bending.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -278,13 +279,24 @@ public class EntityTools {
 			double radius) {
 
 		List<Entity> entities = location.getWorld().getEntities();
-		List<Entity> list = location.getWorld().getEntities();
+		List<Entity> list = new LinkedList<Entity>();
 
 		for (Entity entity : entities) {
-			if (entity.getWorld() != location.getWorld()) {
-				list.remove(entity);
-			} else if (entity.getLocation().distance(location) > radius) {
-				list.remove(entity);
+			if (entity.getWorld() == location.getWorld() 
+					&& entity.getLocation().distance(location) < radius) {
+				list.add(entity);
+			}
+		}
+		return list;
+	}
+	
+	public static List<LivingEntity> getLivingEntitiesAroundPoint(Location location, double radius) {
+		List<LivingEntity> list = new LinkedList<LivingEntity>();
+		
+		for (LivingEntity le : location.getWorld().getLivingEntities()) {
+			if (le.getWorld() == location.getWorld()
+					&& le.getLocation().distance(location) < radius) {
+				list.add(le);
 			}
 		}
 		return list;

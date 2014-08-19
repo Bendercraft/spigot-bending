@@ -32,19 +32,15 @@ public class Wave implements IAbility {
 
 	private static final long interval = 30;
 
-	// public static ConcurrentHashMap<Block, Block> affectedblocks = new
-	// ConcurrentHashMap<Block, Block>();
 
 	private static final byte full = 0x0;
-	// private static final byte half = 0x4;
 	private static final double defaultmaxradius = ConfigManager.waveRadius;
 	private static final double defaultfactor = ConfigManager.waveHorizontalPush;
 	private static final double upfactor = ConfigManager.waveVerticalPush;
 	private static final double maxfreezeradius = 7;
 
 	static double defaultrange = 20;
-	// private static int damage = 5;
-	// private static double speed = 1.5;
+
 
 	Player player;
 	private Location location = null;
@@ -304,8 +300,9 @@ public class Wave implements IAbility {
 								break;
 							}
 							if (entity.getEntityId() != player.getEntityId()
-									|| canhitself)
+									|| canhitself) {
 								knockback = true;
+							}		
 						}
 					}
 					if (knockback) {
@@ -337,9 +334,9 @@ public class Wave implements IAbility {
 					return false;
 				}
 
-				if (radius < maxradius)
+				if (radius < maxradius) {
 					radius += .5;
-
+				}				
 				return true;
 			}
 		}
@@ -353,7 +350,6 @@ public class Wave implements IAbility {
 		for (Block block : temp) {
 			finalRemoveWater(block);
 		}
-		//instances.remove(player.getEntityId());
 	}
 
 	private void finalRemoveWater(Block block) {

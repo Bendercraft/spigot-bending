@@ -16,7 +16,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -164,7 +164,7 @@ public class Catapult implements IAbility {
 		if (catapult) {
 			if (location.distance(origin) < .5) {
 				boolean remove = false;
-				for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, 2)) {
+				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, 2)) {
 					if (entity instanceof Player) {
 						Player target = (Player) entity;
 						boolean equal = target.getEntityId() == player
@@ -187,7 +187,7 @@ public class Catapult implements IAbility {
 			}
 		} else {
 			if (location.distance(origin) <= length - distance) {
-				for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2)) {
+				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2)) {
 					entity.setVelocity(direction.clone().multiply(
 							push * distance / length));
 				}

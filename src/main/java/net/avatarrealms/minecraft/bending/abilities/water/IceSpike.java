@@ -68,12 +68,11 @@ public class IceSpike implements IAbility {
 
 			double lowestdistance = range + 1;
 			Entity closestentity = null;
-			for (Entity entity : EntityTools.getEntitiesAroundPoint(
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
 					player.getLocation(), range)) {
 				if (Tools.getDistanceFromLine(player.getLocation()
 						.getDirection(), player.getLocation(), entity
 						.getLocation()) <= 2
-						&& (entity instanceof LivingEntity)
 						&& (entity.getEntityId() != player.getEntityId())) {
 					double distance = player.getLocation().distance(
 							entity.getLocation());
@@ -234,9 +233,8 @@ public class IceSpike implements IAbility {
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
 				location))
 			return false;
-		for (Entity en : EntityTools.getEntitiesAroundPoint(location, 1.4)) {
-			if (en instanceof LivingEntity && en != player
-					&& !damaged.contains(((LivingEntity) en))) {
+		for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(location, 1.4)) {
+			if (en != player && !damaged.contains(((LivingEntity) en))) {
 				LivingEntity le = (LivingEntity) en;
 				affect(le);
 			}

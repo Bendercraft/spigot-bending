@@ -18,7 +18,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -136,17 +135,20 @@ public class OctopusForm implements IAbility {
 
 	private void affect(Location location) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2.5)) {
-			if (entity.getEntityId() == player.getEntityId())
+		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.5)) {
+			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
+			}
+				
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.OctopusForm,
-					entity.getLocation()))
+					entity.getLocation())) {
 				continue;
-			// if (Torrent.canThaw(entity.getLocation().getBlock())
-			// || Wave.canThaw(entity.getLocation().getBlock()))
-			// continue;
-			if (BlockTools.isObstructed(location, entity.getLocation()))
+			}
+				
+			if (BlockTools.isObstructed(location, entity.getLocation())) {
 				continue;
+			}
+				
 			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
 				if (bPlayer != null) {
 					bPlayer.earnXP(BendingType.Water, this);
@@ -155,8 +157,7 @@ public class OctopusForm implements IAbility {
 			entity.setVelocity(Tools
 					.getDirection(player.getLocation(), location).normalize()
 					.multiply(1.75));
-			if (entity instanceof LivingEntity)
-				EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damage));
+			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damage));
 		}
 	}
 

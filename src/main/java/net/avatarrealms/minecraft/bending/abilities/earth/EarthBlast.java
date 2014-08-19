@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -300,13 +299,14 @@ public class EarthBlast implements IAbility {
 					}
 				}
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
+				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						FireBlast.affectingradius)) {
 					if (Tools.isRegionProtectedFromBuild(player,
-							Abilities.EarthBlast, entity.getLocation()))
+							Abilities.EarthBlast, entity.getLocation())) {
 						continue;
-					if (entity instanceof LivingEntity
-							&& (entity.getEntityId() != player.getEntityId() || hitself)) {
+					}
+						
+					if ((entity.getEntityId() != player.getEntityId() || hitself)) {
 						Location location = player.getEyeLocation();
 				 		Vector vector = location.getDirection();
 				 		entity.setVelocity(vector.normalize().multiply(pushfactor));

@@ -125,14 +125,14 @@ public class TorrentBurst implements IAbility {
 
 		affectedentities.clear();
 
-		List<Entity> indexlist = new LinkedList<Entity>();
-		indexlist.addAll(EntityTools.getEntitiesAroundPoint(origin, radius + 2));
+		List<Entity> indexlist = EntityTools.getEntitiesAroundPoint(origin, radius + 2);
 
 		List<Block> torrentblocks = new LinkedList<Block>();
 
-		if (indexlist.contains(player))
+		if (indexlist.contains(player)) {
 			indexlist.remove(player);
-
+		}
+			
 		List<Integer> toRemoveHeights = new LinkedList<Integer>();
 		for (Entry<Integer, Map<Integer, Double>> entry : heights.entrySet()) {
 			int id = entry.getKey();

@@ -107,7 +107,7 @@ public class FireBlast implements IAbility {
 	}
 
 	private boolean progress() {
-		//TODO : Make it redirectable
+		// TODO : Make it redirectable EDIT: Nope, will make another skill
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
@@ -158,31 +158,30 @@ public class FireBlast implements IAbility {
 		Player source = player;
 		if (EarthBlast.annihilateBlasts(location, radius, source)
 				|| WaterManipulation.annihilateBlasts(location, radius, source)
-				|| FireBlast.shouldAnnihilateBlasts(location, radius, source, false)) {
+				|| FireBlast.shouldAnnihilateBlasts(location, radius, source,
+						false)) {
 			return false;
 		}
 
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
-				affectingradius)) {
+		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
+				location, affectingradius)) {
 			boolean result = affect(entity);
 
-			if (entity instanceof LivingEntity) {
-				if (((entity instanceof Player) || (entity instanceof Monster))
-						&& (entity.getEntityId() != player.getEntityId())) {
-					BendingPlayer bPlayer = BendingPlayer
-							.getBendingPlayer(player);
-					if (bPlayer != null) {
-						bPlayer.earnXP(BendingType.Fire, this);
-					}
+			if (((entity instanceof Player) || (entity instanceof Monster))
+					&& (entity.getEntityId() != player.getEntityId())) {
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+				if (bPlayer != null) {
+					bPlayer.earnXP(BendingType.Fire, this);
 				}
 			}
-			//If result is true, do not return here ! we need to iterate fully !
-			if(result == false) {
+			// If result is true, do not return here ! we need to iterate fully
+			// !
+			if (result == false) {
 				return false;
 			}
 		}
 
-		//Advance location
+		// Advance location
 		location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 0,
 				(int) range);
 		location = location.add(direction.clone().multiply(speedfactor));
@@ -198,7 +197,8 @@ public class FireBlast implements IAbility {
 					new Plantbending(block, this);
 				block.setType(Material.FIRE);
 				if (dissipate) {
-					FireStream.addIgnitedBlock(block, player, System.currentTimeMillis());
+					FireStream.addIgnitedBlock(block, player,
+							System.currentTimeMillis());
 				}
 			}
 		}
@@ -208,7 +208,7 @@ public class FireBlast implements IAbility {
 		List<FireBlast> toRemove = new LinkedList<FireBlast>();
 		for (FireBlast fireblast : instances.values()) {
 			boolean keep = fireblast.progress();
-			if(!keep) {
+			if (!keep) {
 				toRemove.add(fireblast);
 			}
 		}
@@ -221,7 +221,7 @@ public class FireBlast implements IAbility {
 		instances.remove(this.id);
 	}
 
-	private boolean affect(Entity entity) {
+	private boolean affect(LivingEntity entity) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity.getEntityId() != player.getEntityId()) {
 			if (AvatarState.isAvatarState(player)) {
@@ -230,15 +230,13 @@ public class FireBlast implements IAbility {
 			} else {
 				entity.setVelocity(direction.clone().multiply(pushfactor));
 			}
-			if (entity instanceof LivingEntity) {
-				entity.setFireTicks(50);
-				EntityTools.damageEntity(player, entity, bPlayer
-						.getCriticalHit(BendingType.Fire, PluginTools
-								.firebendingDayAugment((double) damage,
-										entity.getWorld())));
-				new Enflamed(entity, player, this);
-				return false;
-			}
+			entity.setFireTicks(50);
+			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(
+					BendingType.Fire,
+					PluginTools.firebendingDayAugment((double) damage,
+							entity.getWorld())));
+			new Enflamed(entity, player, this);
+			return false;
 		}
 		return true;
 	}
@@ -256,8 +254,8 @@ public class FireBlast implements IAbility {
 		Fireball.removeFireballsAroundPoint(location, radius);
 	}
 
-	private static boolean shouldAnnihilateBlasts(Location location, double radius,
-			Player source, boolean remove) {
+	private static boolean shouldAnnihilateBlasts(Location location,
+			double radius, Player source, boolean remove) {
 		boolean broke = false;
 		List<FireBlast> toRemove = new ArrayList<FireBlast>();
 		for (int id : instances.keySet()) {
@@ -273,13 +271,14 @@ public class FireBlast implements IAbility {
 		}
 		if (Fireball.annihilateBlasts(location, radius, source))
 			broke = true;
-		if(remove) {
+		if (remove) {
 			for (FireBlast fireblast : toRemove) {
 				fireblast.remove();
 			}
 		}
 		return broke;
 	}
+
 	public static boolean annihilateBlasts(Location location, double radius,
 			Player source) {
 		return shouldAnnihilateBlasts(location, radius, source, true);

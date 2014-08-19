@@ -316,16 +316,12 @@ public class WaterManipulation implements IAbility {
 
 				if (!displacing) {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-					for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
+					for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 							FireBlast.affectingradius)) {
-						if (entity instanceof LivingEntity
-								&& entity.getEntityId() != player.getEntityId()) {
-
+						if (entity.getEntityId() != player.getEntityId()) {
 							Location location = player.getEyeLocation();
 					 		Vector vector = location.getDirection();
 					 		entity.setVelocity(vector.normalize().multiply(pushfactor));
-//							entity.setVelocity(entity.getVelocity().clone()
-//									.add(direction));
 							if (AvatarState.isAvatarState(player)) {
 								damage = AvatarState.getValue(damage);
 							}
@@ -335,7 +331,6 @@ public class WaterManipulation implements IAbility {
 											.waterbendingNightAugment(damage,
 													player.getWorld())));
 							progressing = false;
-							// }
 							
 							if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){	
 								if (bPlayer != null) {

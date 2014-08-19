@@ -167,8 +167,9 @@ public class Fireball implements IAbility {
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
-			if (entity.getEntityId() == player.getEntityId())
+			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
+			}
 			entity.setFireTicks(120);
 			if (entity instanceof LivingEntity) {
 				explode();

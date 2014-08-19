@@ -293,11 +293,10 @@ public class IceSpike2 implements IAbility {
 				return false;
 			}
 
-			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 					affectingradius)) {
-				if (entity.getEntityId() != player.getEntityId()
-						&& entity instanceof LivingEntity) {
-					affect((LivingEntity) entity);
+				if (entity.getEntityId() != player.getEntityId()) {
+					affect(entity);
 					progressing = false;
 					returnWater();
 				}

@@ -45,24 +45,24 @@ public class Bloodbending implements IAbility {
 			instances.get(player).remove();
 			return;
 		}
-		range = (int) PluginTools.waterbendingNightAugment(range, player.getWorld());
+		range = (int) PluginTools.waterbendingNightAugment(range,
+				player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
-			for (Entity entity : EntityTools.getEntitiesAroundPoint(
-					player.getLocation(), range)) {
-				if (entity instanceof LivingEntity) {
-					if (entity instanceof Player) {
-						if (Tools.isRegionProtectedFromBuild(player,
-								Abilities.Bloodbending, entity.getLocation())
-								|| AvatarState.isAvatarState((Player) entity)
-								|| entity.getEntityId() == player.getEntityId()
-								|| EntityTools.canBend((Player) entity,
-										Abilities.Bloodbending))
-							continue;
-					}
-					EntityTools.damageEntity(player, entity, 0);
-					targetEntities.put(entity, entity.getLocation().clone());
+			for (LivingEntity entity : EntityTools
+					.getLivingEntitiesAroundPoint(player.getLocation(), range)) {
+				if (entity instanceof Player) {
+					if (Tools.isRegionProtectedFromBuild(player,
+							Abilities.Bloodbending, entity.getLocation())
+							|| AvatarState.isAvatarState((Player) entity)
+							|| entity.getEntityId() == player.getEntityId()
+							|| EntityTools.canBend((Player) entity,
+									Abilities.Bloodbending))
+						continue;
 				}
+				EntityTools.damageEntity(player, entity, 0);
+				targetEntities.put(entity, entity.getLocation().clone());
+
 			}
 		} else {
 			Entity target = EntityTools.getTargettedEntity(player, range);
@@ -73,18 +73,19 @@ public class Bloodbending implements IAbility {
 							Abilities.Bloodbending, target.getLocation()))
 				return;
 			if (target instanceof Player) {
-				if (EntityTools.canBend((Player) target, Abilities.Bloodbending)
+				if (EntityTools
+						.canBend((Player) target, Abilities.Bloodbending)
 						|| AvatarState.isAvatarState((Player) target)
-						|| ((Player)target).isOp()) {
+						|| ((Player) target).isOp()) {
 					return;
 				}
-					
+
 			}
 			EntityTools.damageEntity(player, target, 0);
 			targetEntities.put(target, target.getLocation().clone());
 		}
 		this.player = player;
-		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,this);
+		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water, this);
 		instances.put(player, this);
 	}
 
@@ -118,49 +119,48 @@ public class Bloodbending implements IAbility {
 		}
 		if (AvatarState.isAvatarState(player)) {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
-			for (Entity entity : EntityTools.getEntitiesAroundPoint(
-					player.getLocation(), range)) {
+			for (LivingEntity entity : EntityTools
+					.getLivingEntitiesAroundPoint(player.getLocation(), range)) {
 				if (Tools.isRegionProtectedFromBuild(player,
-						Abilities.Bloodbending, entity.getLocation()))
+						Abilities.Bloodbending, entity.getLocation())) {
 					continue;
+				}
 				if (entity instanceof Player) {
 					if (!EntityTools.canBeBloodbent((Player) entity))
 						continue;
 				}
 				entities.add(entity);
-				if (!targetEntities.containsKey(entity)
-						&& entity instanceof LivingEntity) {
+				if (!targetEntities.containsKey(entity)) {
 					EntityTools.damageEntity(player, entity, 0);
 					targetEntities.put(entity, entity.getLocation().clone());
 				}
-				if (entity instanceof LivingEntity) {
-					Location newlocation = entity.getLocation().clone();
-					Location location = targetEntities.get(entity);
-					double distance = location.distance(newlocation);
-					double dx, dy, dz;
-					dx = location.getX() - newlocation.getX();
-					dy = location.getY() - newlocation.getY();
-					dz = location.getZ() - newlocation.getZ();
-					Vector vector = new Vector(dx, dy, dz);
-					if (distance > .5) {
-						entity.setVelocity(vector.normalize().multiply(.5));
-					} else {
-						entity.setVelocity(new Vector(0, 0, 0));
-					}
-					new TempPotionEffect((LivingEntity) entity, effect);
-					entity.setFallDistance(0);
-					if (entity instanceof Creature) {
-						((Creature) entity).setTarget(null);
-					}
+				Location newlocation = entity.getLocation().clone();
+				Location location = targetEntities.get(entity);
+				double distance = location.distance(newlocation);
+				double dx, dy, dz;
+				dx = location.getX() - newlocation.getX();
+				dy = location.getY() - newlocation.getY();
+				dz = location.getZ() - newlocation.getZ();
+				Vector vector = new Vector(dx, dy, dz);
+				if (distance > .5) {
+					entity.setVelocity(vector.normalize().multiply(.5));
+				} else {
+					entity.setVelocity(new Vector(0, 0, 0));
 				}
+				new TempPotionEffect((LivingEntity) entity, effect);
+				entity.setFallDistance(0);
+				if (entity instanceof Creature) {
+					((Creature) entity).setTarget(null);
+				}
+
 			}
 			List<Entity> toRemove = new LinkedList<Entity>();
 			for (Entity entity : targetEntities.keySet()) {
 				if (!entities.contains(entity)) {
 					toRemove.add(entity);
-				}	
+				}
 			}
-			for(Entity entity : toRemove) {
+			for (Entity entity : toRemove) {
 				targetEntities.remove(entity);
 			}
 		} else {
@@ -174,10 +174,8 @@ public class Bloodbending implements IAbility {
 					}
 				}
 				Location newlocation = entity.getLocation();
-				Location location = EntityTools.getTargetedLocation(
-						player,
-						(int) entry.getValue().distance(
-								player.getLocation()));
+				Location location = EntityTools.getTargetedLocation(player,
+						(int) entry.getValue().distance(player.getLocation()));
 				double distance = location.distance(newlocation);
 				double dx, dy, dz;
 				dx = location.getX() - newlocation.getX();
@@ -195,7 +193,7 @@ public class Bloodbending implements IAbility {
 					((Creature) entity).setTarget(null);
 				}
 			}
-			for(Entity entity : toRemove) {
+			for (Entity entity : toRemove) {
 				targetEntities.remove(entity);
 			}
 		}
@@ -206,16 +204,16 @@ public class Bloodbending implements IAbility {
 		List<Bloodbending> toRemove = new LinkedList<Bloodbending>();
 		for (Bloodbending bloodBend : instances.values()) {
 			boolean keep = bloodBend.progress();
-			if(!keep) {
+			if (!keep) {
 				toRemove.add(bloodBend);
 			}
 		}
-		
-		for(Bloodbending bloodBend : toRemove) {
+
+		for (Bloodbending bloodBend : toRemove) {
 			bloodBend.remove();
 		}
 	}
-	
+
 	private void remove() {
 		instances.remove(player);
 	}
@@ -250,7 +248,7 @@ public class Bloodbending implements IAbility {
 	public static void removeAll() {
 		instances.clear();
 	}
-	
+
 	public Map<Entity, Location> getTargetEntities() {
 		return targetEntities;
 	}

@@ -92,8 +92,9 @@ public class FireShield implements IAbility {
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 					radius)) {
 				if (Tools.isRegionProtectedFromBuild(player,
-						Abilities.FireShield, entity.getLocation()))
+						Abilities.FireShield, entity.getLocation())) {
 					continue;
+				}	
 				if (player.getEntityId() != entity.getEntityId() && ignite) {
 					entity.setFireTicks(120);
 					new Enflamed(entity, player, this);

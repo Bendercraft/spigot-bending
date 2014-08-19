@@ -66,7 +66,7 @@ public class Torrent implements IAbility {
 	private boolean launch = false;
 	private boolean launching = false;
 	private boolean freeze = false;
-	
+
 	private IAbility parent;
 
 	public Torrent(Player player, IAbility parent) {
@@ -136,7 +136,8 @@ public class Torrent implements IAbility {
 					if (BlockTools.isPlant(sourceblock)) {
 						new Plantbending(sourceblock, this);
 						sourceblock.setType(Material.AIR);
-					} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
+					} else if (!BlockTools
+							.adjacentToThreeOrMoreSources(sourceblock)) {
 						sourceblock.setType(Material.AIR);
 					}
 					source = new TempBlock(sourceblock, Material.WATER, full);
@@ -191,8 +192,8 @@ public class Torrent implements IAbility {
 						source.revertBlock();
 						source = null;
 						Block block = location.getBlock();
-						if (!BlockTools.isTransparentToEarthbending(player, block)
-								|| block.isLiquid()) {
+						if (!BlockTools.isTransparentToEarthbending(player,
+								block) || block.isLiquid()) {
 							return false;
 						}
 						source = new TempBlock(location.getBlock(),
@@ -273,7 +274,8 @@ public class Torrent implements IAbility {
 						launchblocks.add(new TempBlock(block, Material.WATER,
 								full));
 						doneblocks.add(block);
-					} else if (!BlockTools.isTransparentToEarthbending(player, block))
+					} else if (!BlockTools.isTransparentToEarthbending(player,
+							block))
 						break;
 				}
 			}
@@ -284,8 +286,9 @@ public class Torrent implements IAbility {
 			}
 		}
 
-		Entity target = EntityTools.getTargettedEntity(player, range, hurtentities);
-		Location targetloc = EntityTools.getTargetBlock(player, range, 
+		Entity target = EntityTools.getTargettedEntity(player, range,
+				hurtentities);
+		Location targetloc = EntityTools.getTargetBlock(player, range,
 				BlockTools.getTransparentEarthbending()).getLocation();
 
 		if (target != null) {
@@ -294,7 +297,7 @@ public class Torrent implements IAbility {
 
 		ArrayList<TempBlock> newblocks = new ArrayList<TempBlock>();
 
-		List<Entity> entities = EntityTools.getEntitiesAroundPoint(
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(
 				player.getLocation(), range + 5);
 		List<Entity> affectedentities = new ArrayList<Entity>();
 
@@ -367,9 +370,10 @@ public class Torrent implements IAbility {
 				block.revertBlock();
 			} else {
 				newblocks.add(block);
-				for (Entity entity : entities) {
-					if (entity.getWorld() != block.getBlock().getWorld())
+				for (LivingEntity entity : entities) {
+					if (entity.getWorld() != block.getBlock().getWorld()) {
 						continue;
+					}
 					if (entity.getLocation().distance(block.getLocation()) <= 1.5
 							&& !affectedentities.contains(entity)) {
 						if (i == 0) {
@@ -398,12 +402,11 @@ public class Torrent implements IAbility {
 
 	private void formRing() {
 		clearRing();
-		// double startangle = Math.toDegrees(player.getEyeLocation()
-		// .getDirection().angle(new Vector(1, 0, 0)));
 		startangle += 30;
 		Location loc = player.getEyeLocation();
 		ArrayList<Block> doneblocks = new ArrayList<Block>();
-		List<Entity> entities = EntityTools.getEntitiesAroundPoint(loc, radius + 2);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(
+				loc, radius + 2);
 		List<Entity> affectedentities = new ArrayList<Entity>();
 		for (double theta = startangle; theta < angle + startangle; theta += 20) {
 			double phi = Math.toRadians(theta);
@@ -419,9 +422,10 @@ public class Torrent implements IAbility {
 						&& !block.isLiquid()) {
 					blocks.add(new TempBlock(block, Material.WATER, full));
 					doneblocks.add(block);
-					for (Entity entity : entities) {
-						if (entity.getWorld() != blockloc.getWorld())
+					for (LivingEntity entity : entities) {
+						if (entity.getWorld() != blockloc.getWorld()) {
 							continue;
+						}
 						if (!affectedentities.contains(entity)
 								&& entity.getLocation().distance(blockloc) <= 1.5) {
 							deflect(entity);
@@ -438,7 +442,7 @@ public class Torrent implements IAbility {
 		}
 		blocks.clear();
 	}
-	
+
 	private void clear() {
 		clearRing();
 		for (TempBlock block : launchblocks)
@@ -464,8 +468,10 @@ public class Torrent implements IAbility {
 	}
 
 	public static void create(Player player) {
-		if (instances.containsKey(player))
+		if (instances.containsKey(player)) {
 			return;
+		}
+
 		if (WaterReturn.hasWaterBottle(player)) {
 			Location eyeloc = player.getEyeLocation();
 			Block block = eyeloc.add(eyeloc.getDirection().normalize())
@@ -491,9 +497,10 @@ public class Torrent implements IAbility {
 			freeze = true;
 	}
 
-	private void deflect(Entity entity) {
-		if (entity.getEntityId() == player.getEntityId())
+	private void deflect(LivingEntity entity) {
+		if (entity.getEntityId() == player.getEntityId()) {
 			return;
+		}
 		double x, z, vx, vz, mag;
 		double angle = 50;
 		angle = Math.toRadians(angle);
@@ -519,56 +526,61 @@ public class Torrent implements IAbility {
 
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);
-		if (entity instanceof LivingEntity) {
-			World world = player.getWorld();
-			int damagedealt = deflectdamage;
-			if (Tools.isNight(world)) {
-				damagedealt = (int) (PluginTools.getWaterbendingNightAugment(world) * (double) deflectdamage);
-			}
-			EntityTools.damageEntity(player, entity, damagedealt);
+
+		World world = player.getWorld();
+		int damagedealt = deflectdamage;
+		if (Tools.isNight(world)) {
+			damagedealt = (int) (PluginTools.getWaterbendingNightAugment(world) * (double) deflectdamage);
 		}
+		EntityTools.damageEntity(player, entity, damagedealt);
+
 	}
 
-	private void affect(Entity entity, Vector direction) {
+	private void affect(LivingEntity entity, Vector direction) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (entity.getEntityId() == player.getEntityId())
+		if (entity.getEntityId() == player.getEntityId()) {
 			return;
+		}
+
 		if (direction.getY() > ylimit) {
 			direction.setY(ylimit);
 		}
-		if (!freeze)
+		if (!freeze) {
 			entity.setVelocity(direction.multiply(factor));
-		if (entity instanceof LivingEntity && !hurtentities.contains(entity)) {
+		}
+
+		if (!hurtentities.contains(entity)) {
 			World world = player.getWorld();
 			int damagedealt = damage;
 			if (Tools.isNight(world)) {
-				damagedealt = (int) (PluginTools.getWaterbendingNightAugment(world) * (double) damage);
+				damagedealt = (int) (PluginTools
+						.getWaterbendingNightAugment(world) * (double) damage);
 			}
-			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){	
+			if (((entity instanceof Player) || (entity instanceof Monster))
+					&& (entity.getEntityId() != player.getEntityId())) {
 				if (bPlayer != null) {
 					bPlayer.earnXP(BendingType.Water, this);
 				}
 			}
-			// if (((LivingEntity) entity).getNoDamageTicks() == 0) {
-			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damagedealt));
-			// Tools.verbose("Hit! Health at "
-			// + ((LivingEntity) entity).getHealth());
+
+			EntityTools.damageEntity(player, entity,
+					bPlayer.getCriticalHit(BendingType.Water, damagedealt));
 			hurtentities.add(entity);
-			// }
-			((LivingEntity) entity).setNoDamageTicks(0);
+
+			entity.setNoDamageTicks(0);
 		}
 	}
 
 	public static void progressAll() {
 		List<Torrent> toRemove = new LinkedList<Torrent>();
-		for(Torrent torrent : instances.values()) {
+		for (Torrent torrent : instances.values()) {
 			boolean keep = torrent.progress();
-			if(!keep) {
+			if (!keep) {
 				toRemove.add(torrent);
 			}
 		}
-		
-		for(Torrent torrent : toRemove) {
+
+		for (Torrent torrent : toRemove) {
 			torrent.remove();
 		}
 
@@ -589,10 +601,10 @@ public class Torrent implements IAbility {
 				toThawIce.add(block);
 			}
 		}
-		for(TempBlock block : toRemoveIce) {
+		for (TempBlock block : toRemoveIce) {
 			frozenblocks.remove(block);
 		}
-		for(TempBlock block : toThawIce) {
+		for (TempBlock block : toThawIce) {
 			thaw(block);
 		}
 	}
@@ -621,12 +633,12 @@ public class Torrent implements IAbility {
 	public static void removeAll() {
 		for (Torrent torrent : instances.values())
 			torrent.clear();
-		
+
 		instances.clear();
 
 		for (TempBlock block : frozenblocks.keySet())
 			block.revertBlock();
-		
+
 		frozenblocks.clear();
 	}
 
