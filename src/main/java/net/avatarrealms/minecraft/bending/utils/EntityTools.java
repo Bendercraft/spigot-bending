@@ -365,7 +365,6 @@ public class EntityTools {
 			if (entity.getLocation().distance(origin) < longestr
 					&& Tools.getDistanceFromLine(direction, origin,
 							entity.getLocation()) < 2
-					&& (entity instanceof LivingEntity)
 					&& entity.getEntityId() != player.getEntityId()
 					&& entity.getLocation().distance(
 							origin.clone().add(direction)) < entity
