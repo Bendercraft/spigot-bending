@@ -55,7 +55,7 @@ public class BendingLevel {
 	}
 
 	public Integer getExperienceNeeded() {
-		//((8*x)+9)*(5*x+45)
+		//((8*x)+9)*(8*x+45)
 		double xp = 0;
 		Integer xpArr = (int) 0;
 		xp = (8*level);
@@ -71,7 +71,7 @@ public class BendingLevel {
 		else {
 			xp += 1;
 		}
-		xp*=(6*level + 45);
+		xp*=(8*level + 45);
 		xpArr = ((int)(xp/100))*100;;
 
 		return xpArr;

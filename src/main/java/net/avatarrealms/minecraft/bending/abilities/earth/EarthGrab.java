@@ -268,7 +268,6 @@ public class EarthGrab implements IAbility {
 		
 		// This loop is there because a block can have been not destroyed because of a faction protection
 		// Conditions are only guessing stuff
-		//TODO : Check if this loop works
 		for (Location loc : columnsLoc) {
 			if (BlockTools.isEarthbendable(bender, loc.getBlock())) {
 				Location loc2 = loc.clone().add(0, -1, 0);

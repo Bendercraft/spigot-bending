@@ -280,8 +280,9 @@ public class BendingListener implements Listener {
 				}
 
 				/*
-				 * if (ability == Abilities.AirBubble) { new AirBubble(player,
-				 * null); }
+				 * if (ability == Abilities.AirBubble) { 
+				 * new AirBubble(player,null); 
+				 * }
 				 */
 
 				if (ability == Abilities.AirSwipe) {
@@ -388,8 +389,9 @@ public class BendingListener implements Listener {
 				}
 
 				/*
-				 * if (ability == Abilities.WaterBubble) { new
-				 * WaterBubble(player, null); }
+				 * if (ability == Abilities.WaterBubble) { 
+				 * new WaterBubble(player, null); 
+				 * }
 				 */
 
 				if (ability == Abilities.PhaseChange) {

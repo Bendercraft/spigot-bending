@@ -83,7 +83,7 @@ public class WaterWall implements IAbility {
 				if (instances.containsKey(player.getEntityId())) {
 					instances.get(player.getEntityId()).remove();
 				}
-				// Tools.verbose("New water wall prepared");
+
 				instances.put(player.getEntityId(), this);
 				time = System.currentTimeMillis();
 				bPlayer.earnXP(BendingType.Water, this);
@@ -92,13 +92,14 @@ public class WaterWall implements IAbility {
 			if (instances.containsKey(player.getEntityId())) {
 				instances.get(player.getEntityId()).remove();
 			}
-			// Tools.verbose("New water wall prepared");
 			instances.put(player.getEntityId(), this);
 			time = System.currentTimeMillis();
 		}
 
-		if (bPlayer.isOnCooldown(Abilities.Surge))
+		if (bPlayer.isOnCooldown(Abilities.Surge)) {
 			return;
+		}
+			
 
 		if (!instances.containsKey(player.getEntityId())
 				&& WaterReturn.hasWaterBottle(player)) {
@@ -157,7 +158,6 @@ public class WaterWall implements IAbility {
 
 	public boolean prepare() {
 		cancelPrevious();
-		// Block block = player.getTargetBlock(null, (int) range);
 		Block block = BlockTools.getWaterSourceBlock(player, range,
 				EntityTools.canPlantbend(player));
 		if (block != null) {
@@ -450,9 +450,10 @@ public class WaterWall implements IAbility {
 							(int) Wave.defaultrange, EntityTools.canPlantbend(player)) == null
 					&& WaterReturn.hasWaterBottle(player)) {
 
-				if (bPlayer.isOnCooldown(Abilities.Surge))
+				if (bPlayer.isOnCooldown(Abilities.Surge)) {
 					return;
-				
+				}
+					
 				Location eyeloc = player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize())
 						.getBlock();
@@ -473,7 +474,6 @@ public class WaterWall implements IAbility {
 					return;
 				}
 			}
-
 			new Wave(player, null);
 			return;
 		} else {
@@ -484,7 +484,6 @@ public class WaterWall implements IAbility {
 				return;
 			}
 		}
-
 		moveWater(player);
 	}
 
