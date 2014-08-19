@@ -358,9 +358,10 @@ public class EntityTools {
 		Entity target = null;
 		Location origin = player.getEyeLocation();
 		Vector direction = player.getEyeLocation().getDirection().normalize();
-		for (Entity entity : origin.getWorld().getEntities()) {
-			if (avoid.contains(entity))
+		for (Entity entity : origin.getWorld().getLivingEntities()) {
+			if (avoid.contains(entity)) {
 				continue;
+			}			
 			if (entity.getLocation().distance(origin) < longestr
 					&& Tools.getDistanceFromLine(direction, origin,
 							entity.getLocation()) < 2
