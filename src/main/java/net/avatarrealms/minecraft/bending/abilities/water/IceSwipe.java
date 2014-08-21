@@ -14,6 +14,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.IAbility;
+import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -38,6 +39,8 @@ public class IceSwipe implements IAbility{
 	private boolean ready;
 
 	//TODO : As Kya against Zaheer
+	//http://heyitsmonikashay.tumblr.com/post/91866392965/gif-request-for-imkindaprettygay-kya-vs-zaheer
+	//http://37.media.tumblr.com/3154e22530fc425125e1155e7d30d3f0/tumblr_n8pysnfjYW1rkmjxwo2_250.gif
 	
 	public IceSwipe(Player player, Block sourceblock, IAbility parent) {
 		
@@ -57,8 +60,18 @@ public class IceSwipe implements IAbility{
 	}
 	
 	public static void prepare(Player player) {
-		//TODO : Not to forget to check for the protected region
-		
+		//When they click
+		if (instances.containsKey(player)) {
+			instances.get(player).launchBlock();
+		}
+		else {
+			Block source = BlockTools.getWaterSourceBlock(player, range, 
+					EntityTools.canPlantbend(player));
+			
+			if (!Tools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, source.getLocation())) {
+				new IceSwipe(player, source, null);
+			}
+		}	
 	}
 	
 	public static void progressAll() {
@@ -81,12 +94,12 @@ public class IceSwipe implements IAbility{
 			return false;
 		}
 		
+		if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, player.getLocation())) {
+			return false;
+		}
+		
 		if (started) {
 			if (! player.isSneaking()) {
-				return false;
-			}
-			
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, player.getLocation())) {
 				return false;
 			}
 			
@@ -97,11 +110,16 @@ public class IceSwipe implements IAbility{
 			if (ready) {
 				manageBlocks();
 			}
-			
 		}	
 		return true;
 	}
 	
+	public static void start(Player player) {
+		//When they sneak
+		if (instances.containsKey(player)) {
+			instances.get(player).started = true;
+		}
+	}
 	public void manageBlocks() {
 		List<Block> blocksToRemove = new LinkedList<Block>();
 		for (Block block : blocks) {

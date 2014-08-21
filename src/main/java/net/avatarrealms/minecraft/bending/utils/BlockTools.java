@@ -588,8 +588,10 @@ public class BlockTools {
 			Block block = location.clone().add(vector.clone().multiply(i))
 					.getBlock();
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.WaterManipulation,
-					location))
+					location)) {
 				continue;
+			}
+				
 			if (isWaterbendable(block, player)
 					&& (!isPlant(block) || plantbending)) {
 				if (TempBlock.isTempBlock(block)) {
