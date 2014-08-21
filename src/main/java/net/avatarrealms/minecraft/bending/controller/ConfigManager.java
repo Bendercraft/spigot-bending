@@ -50,7 +50,7 @@ public class ConfigManager {
 
 	private static List<String> defaultearthbendable = new ArrayList<String>();
 	
-	public static int maxlevel = 50;
+	public static int maxlevel = 1;
 	private static Map<Abilities,Integer> levelsRequired;
 
 	public static int avatarStateLevelRequired = 51;
@@ -68,7 +68,7 @@ public class ConfigManager {
 
 	// AirBubble
 	public static int airBubbleRadius = 4;
-	public static int airBubbleLevelRequired = 3;
+	public static int airBubbleLevelRequired = 1;
 
 	// AirPassive
 	public static float airPassiveFactor = 0.3F;
@@ -457,7 +457,7 @@ public class ConfigManager {
 
 		// Option
 		earthbendable = defaultearthbendable;
-		maxlevel = config.getInt("Bending.Option.max-level");
+		maxlevel = config.getInt("Bending.Option.max-level", maxlevel);
 		if (config.contains("Bending.Option.EarthBendable"))
 			earthbendable = config
 					.getStringList("Bending.Option.EarthBendable");
