@@ -40,7 +40,7 @@ public class Metrics {
 			if (value != null) {
 				try {
 					int val = Integer.parseInt(value);
-					if (val >= 1) {
+					if (val >= 3) {
 						builder.append(this.incrementString(level));
 						builder.append(key);
 						builder.append(" - ");
