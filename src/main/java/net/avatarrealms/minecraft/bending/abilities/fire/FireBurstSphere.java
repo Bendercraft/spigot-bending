@@ -20,11 +20,13 @@ public class FireBurstSphere implements IAbility {
 	public FireBurstSphere(Player player, IAbility parent) {
 		this.parent = parent;
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
-				Abilities.FireBurst))
+				Abilities.FireBurst)) {
 			return;
+		}	
 		
-		if (!FireBurst.isFireBursting(player))
+		if (!FireBurst.isFireBursting(player)) {
 			return;
+		}		
 		
 		FireBurst burst = FireBurst.getFireBurst(player);
 		if (burst.isCharged()) {

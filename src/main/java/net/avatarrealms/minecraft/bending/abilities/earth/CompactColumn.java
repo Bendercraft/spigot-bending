@@ -49,8 +49,10 @@ public class CompactColumn implements IAbility {
 			return;
 
 		block = BlockTools.getEarthSourceBlock(player, range);
-		if (block == null)
+		if (block == null) {
 			return;
+		}
+			
 		origin = block.getLocation();
 		location = origin.clone();
 		this.player = player;

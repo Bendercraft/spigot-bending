@@ -174,8 +174,7 @@ public class FireBlast implements IAbility {
 					bPlayer.earnXP(BendingType.Fire, this);
 				}
 			}
-			// If result is true, do not return here ! we need to iterate fully
-			// !
+			// If result is true, do not return here ! we need to iterate fully !
 			if (result == false) {
 				return false;
 			}

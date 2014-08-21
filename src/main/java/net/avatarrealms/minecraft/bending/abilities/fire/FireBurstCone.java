@@ -46,8 +46,6 @@ public class FireBurstCone implements IAbility {
 					z = r * Math.cos(rtheta);
 					Vector direction = new Vector(x, z, y);
 					if (direction.angle(vector) <= angle) {
-						// Tools.verbose(direction.angle(vector));
-						// Tools.verbose(direction);
 						new FireBlast(location, direction.normalize(), player,
 								damage, safeblocks, this);
 					}

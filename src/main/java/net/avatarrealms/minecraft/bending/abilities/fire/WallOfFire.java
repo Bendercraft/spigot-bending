@@ -28,7 +28,7 @@ import org.bukkit.util.Vector;
 
 public class WallOfFire implements IAbility {
 	private static Map<Player, WallOfFire> instances = new HashMap<Player, WallOfFire>();
-	
+
 	private static double maxangle = 50;
 	private static int range = ConfigManager.wallOfFireRange;
 	private static long interval = 250;
@@ -64,11 +64,14 @@ public class WallOfFire implements IAbility {
 		World world = player.getWorld();
 
 		if (Tools.isDay(player.getWorld())) {
-			width = (int) PluginTools.firebendingDayAugment((double) width, world);
-			height = (int) PluginTools.firebendingDayAugment((double) height, world);
-			duration = (long) PluginTools.firebendingDayAugment((double) duration,
+			width = (int) PluginTools.firebendingDayAugment((double) width,
 					world);
-			damage = (int) PluginTools.firebendingDayAugment((double) damage, world);
+			height = (int) PluginTools.firebendingDayAugment((double) height,
+					world);
+			duration = (long) PluginTools.firebendingDayAugment(
+					(double) duration, world);
+			damage = (int) PluginTools.firebendingDayAugment((double) damage,
+					world);
 		}
 
 		time = System.currentTimeMillis();
@@ -83,8 +86,6 @@ public class WallOfFire implements IAbility {
 		Vector direction = player.getEyeLocation().getDirection();
 		Vector compare = direction.clone();
 		compare.setY(0);
-		// double angle = direction.angle(compare);
-		// Tools.verbose(Math.toDegrees(angle));
 
 		if (Math.abs(direction.angle(compare)) > Math.toRadians(maxangle)) {
 			return;
@@ -163,39 +164,45 @@ public class WallOfFire implements IAbility {
 		if (radius < width)
 			radius = width;
 		radius = radius + 1;
-		List<Entity> entities = EntityTools.getEntitiesAroundPoint(origin, radius);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(
+				origin, radius);
 		if (entities.contains(player)) {
 			entities.remove(player);
 		}
-			
-		for (Entity entity : entities) {
+
+		int cpt = 0;
+		for (LivingEntity entity : entities) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.WallOfFire,
 					entity.getLocation())) {
 				continue;
-			}		
+			}
 			for (Block block : blocks) {
 				if (entity.getLocation().distance(block.getLocation()) <= 1.5) {
 					affect(entity);
+					if (((entity instanceof Player) || (entity instanceof Monster))
+							&& (entity.getEntityId() != player.getEntityId())) {
+						cpt++;
+					}
 					break;
-				}			
-			}
-			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.Fire, this);
 				}
+			}
+		}
+		if (cpt >= 1) {
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+			if (bPlayer != null) {
+				bPlayer.earnXP(BendingType.Fire, this);
 			}
 		}
 	}
 
-	private void affect(Entity entity) {
+	private void affect(LivingEntity entity) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		entity.setFireTicks(50);
 		entity.setVelocity(new Vector(0, 0, 0));
-		if (entity instanceof LivingEntity) {
-			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Fire, damage));
-			new Enflamed(entity, player, this);
-		}
+		EntityTools.damageEntity(player, entity,
+				bPlayer.getCriticalHit(BendingType.Fire, damage));
+		new Enflamed(entity, player, this);
+
 	}
 
 	public static String getDescription() {
@@ -208,7 +215,7 @@ public class WallOfFire implements IAbility {
 		List<WallOfFire> toRemove = new LinkedList<WallOfFire>();
 		for (WallOfFire wall : instances.values()) {
 			boolean keep = wall.progress();
-			if(!keep) {
+			if (!keep) {
 				toRemove.add(wall);
 			}
 		}
@@ -216,7 +223,7 @@ public class WallOfFire implements IAbility {
 			wall.remove();
 		}
 	}
-	
+
 	public static void removeAll() {
 		instances.clear();
 	}

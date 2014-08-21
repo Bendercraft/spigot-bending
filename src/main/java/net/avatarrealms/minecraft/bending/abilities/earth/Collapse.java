@@ -34,8 +34,9 @@ public class Collapse implements IAbility {
 		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.Collapse))
+		if (bPlayer.isOnCooldown(Abilities.Collapse)) {
 			return;
+		}	
 
 		this.player = player;
 		Block sblock = BlockTools.getEarthSourceBlock(player, range);
