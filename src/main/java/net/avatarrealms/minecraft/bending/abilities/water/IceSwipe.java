@@ -68,7 +68,7 @@ public class IceSwipe implements IAbility{
 			Block source = BlockTools.getWaterSourceBlock(player, range, 
 					EntityTools.canPlantbend(player));
 			
-			if (!Tools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, source.getLocation())) {
+			if (source != null && !Tools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, source.getLocation())) {
 				new IceSwipe(player, source, null);
 			}
 		}	
