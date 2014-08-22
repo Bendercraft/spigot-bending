@@ -253,8 +253,7 @@ public class Torrent implements IAbility {
 
 		if (launchblocks.isEmpty()) {
 			clearRing();
-			// double startangle = Math.toDegrees(player.getEyeLocation()
-			// .getDirection().angle(new Vector(1, 0, 0)));
+	
 			Location loc = player.getEyeLocation();
 			ArrayList<Block> doneblocks = new ArrayList<Block>();
 			for (double theta = startangle; theta < angle + startangle; theta += 20) {
@@ -275,8 +274,9 @@ public class Torrent implements IAbility {
 								full));
 						doneblocks.add(block);
 					} else if (!BlockTools.isTransparentToEarthbending(player,
-							block))
+							block)) {
 						break;
+					}						
 				}
 			}
 			if (launchblocks.isEmpty()) {

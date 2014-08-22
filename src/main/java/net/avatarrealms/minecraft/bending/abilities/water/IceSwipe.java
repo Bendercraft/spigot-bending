@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,7 +26,8 @@ public class IceSwipe implements IAbility{
 	private static int range = ConfigManager.iceSwipeRange;
 	private static int damage = ConfigManager.iceSwipeDamage;
 	
-	private List<Block> blocks;
+	private Map<Block, Location> iceblocks;
+	private List<Block> blocksAround;
 	
 	private IAbility parent;
 	private Player player;
@@ -33,7 +35,6 @@ public class IceSwipe implements IAbility{
 	//private long time;
 	
 	private Location origin; // Could be useless
-	private Location targettedLocation;
 	
 	private boolean started;
 	private boolean ready;
@@ -51,7 +52,7 @@ public class IceSwipe implements IAbility{
 		}
 		
 		this.player = player;
-		blocks = new LinkedList<Block>();
+		iceblocks = new HashMap<Block, Location>();
 		started = false;
 		this.parent = parent;
 		//time = System.currentTimeMillis();
@@ -122,7 +123,7 @@ public class IceSwipe implements IAbility{
 	}
 	public void manageBlocks() {
 		List<Block> blocksToRemove = new LinkedList<Block>();
-		for (Block block : blocks) {
+		for (Block block : iceblocks.keySet()) {
 			if (block.getLocation().distance(player.getLocation()) > range) {
 				blocksToRemove.add(block);
 				continue;
@@ -144,7 +145,7 @@ public class IceSwipe implements IAbility{
 		}
 		
 		for (Block block : blocksToRemove) {
-			blocks.remove(block);
+			iceblocks.remove(block);
 		}
 	}
 	
@@ -157,11 +158,18 @@ public class IceSwipe implements IAbility{
 		
 	}
 	
-	public void retargetBlocks() {
-		
-	}
-	
 	public void launchBlock() {
+		Block waterblock = BlockTools.getWaterSourceBlock(player, range,
+				EntityTools.canPlantbend(player));
+		if (waterblock != null && waterblock.getType() != Material.AIR) {
+			Location targetloc = EntityTools.getTargetBlock(player, range,
+				BlockTools.getTransparentEarthbending()).getLocation();
+			
+			if (targetloc != null) {
+				waterblock.setType(Material.ICE);
+				iceblocks.put(waterblock, targetloc);
+			}
+		}
 		
 	}
 
