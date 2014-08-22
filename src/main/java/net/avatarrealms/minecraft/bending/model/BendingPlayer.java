@@ -15,7 +15,6 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -129,7 +128,6 @@ public class BendingPlayer {
 						cd = ConfigManager.dashCooldown;
 						break;
 					default:
-						//TODO Throw exception here
 						cd = 0;
 						break;
 				}
@@ -378,7 +376,7 @@ public class BendingPlayer {
 		
 		Player pl = getPlayer();
 		if (pl != null) {
-			String str = pl.getName() + " : \n"; // TODO : Add the nickname
+			String str = pl.getName() + " : \n";
 			for (BendingType type : bendings.keySet()) {
 				str+=bendings.get(type).toString() + "\n";
 			}
