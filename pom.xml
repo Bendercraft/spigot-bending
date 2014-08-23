@@ -4,7 +4,7 @@
 
 	<groupId>net.avatarrealms.minecraft</groupId>
 	<artifactId>minecraft-bending</artifactId>
-	<version>3.0.8-SNAPSHOT</version>
+	<version>3.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Minecraft Avatar bending</name>
@@ -72,7 +72,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.cbversion>1.7.2-R0.3</project.cbversion>
+		<project.cbversion>1.7.10-R0.1-SNAPSHOT</project.cbversion>
 	</properties>
 
 	<dependencies>
@@ -85,25 +85,25 @@
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>factions</artifactId>
-			<version>2.3.1</version>
+			<version>2.5.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
-			<artifactId>mcore</artifactId>
-			<version>7.1</version>
+			<artifactId>massivecore</artifactId>
+			<version>7.3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>worldedit</artifactId>
-			<version>5.5.9</version>
+			<version>5.6.3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
 			<artifactId>worldguard</artifactId>
-			<version>5.8.1</version>
+			<version>5.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -113,5 +113,3 @@
 		</dependency>
 	</dependencies>
 </project>
-
-

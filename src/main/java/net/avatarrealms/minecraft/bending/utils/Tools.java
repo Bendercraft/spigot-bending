@@ -21,7 +21,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.Vector;
 
 import com.massivecraft.factions.listeners.FactionsListenerMain;
-import com.massivecraft.mcore.ps.PS;
+import com.massivecraft.massivecore.ps.PS;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
@@ -121,7 +121,7 @@ public class Tools {
 
 		Plugin wgp = pm.getPlugin("WorldGuard");
 		Plugin fcp = pm.getPlugin("Factions");
-		Plugin mcore = pm.getPlugin("mcore");
+		Plugin mcore = pm.getPlugin("MassiveCore");
 
 		for (Location location : new Location[] { loc, player.getLocation() }) {
 
