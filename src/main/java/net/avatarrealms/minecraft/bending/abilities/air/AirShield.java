@@ -21,6 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -69,7 +70,7 @@ public class AirShield implements IAbility {
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, radius)) {
 			
 			if ((entity instanceof ExperienceOrb) || (entity instanceof FallingBlock)
-					|| (entity instanceof ItemFrame)) {
+					|| (entity instanceof ItemFrame) || (entity instanceof Item)) {
 				continue;
 			}
 			

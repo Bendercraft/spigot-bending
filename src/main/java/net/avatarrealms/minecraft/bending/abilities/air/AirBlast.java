@@ -154,12 +154,6 @@ public class AirBlast implements IAbility {
 				testblock.getWorld().playEffect(testblock.getLocation(),
 						Effect.EXTINGUISH, 0);
 			}
-			/*if (((block.getType() == Material.LEVER) || (block.getType() == Material.STONE_BUTTON))
-					&& !affectedlevers.contains(block)) {
-
-				affectedlevers.add(block);
-			}
-			*/
 		}
 		if ((BlockTools.isSolid(block) || block.isLiquid())
 				&& !affectedlevers.contains(block)) {

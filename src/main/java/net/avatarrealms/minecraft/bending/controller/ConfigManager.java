@@ -313,9 +313,12 @@ public class ConfigManager {
 	public static long wallOfFireCooldown = 7500;
 	public static int wallOfFireLevelRequired = 1;
 	
-	//ThunderArmor
-	public static int thunderArmorThornsLevel = 2;
-	public static int thunderArmorLevelRequired = 1;
+	//FireBlade
+	public static int fireBladeFireAspectLevel = 2;
+	public static int fireBladeSharpnessLevel = 1;
+	public static int fireBladeLevelRequired = 1;
+	public static int fireBladeCooldown = 60;
+	public static int fireBladeDuration = 30;
 	
 	//MentalExplosion
 	public static int mentalExplosionDamage = 5;
@@ -939,12 +942,16 @@ public class ConfigManager {
 				"Properties.Fire.Lightning.level-required", lightningLevelRequired);
 		levelsRequired.put(Abilities.Lightning, lightningLevelRequired);
 		
-		//ThunderArmor
-		thunderArmorThornsLevel= config.getInt(
-				"Properties.Fire.ThunderArmor.thorns-level", thunderArmorThornsLevel);
-		thunderArmorLevelRequired = config.getInt(
-				"Properties.Fire.ThunderArmor.level-required", thunderArmorLevelRequired);
-		levelsRequired.put(Abilities.ThunderArmor, thunderArmorLevelRequired);
+		//FireBlade
+		fireBladeSharpnessLevel = config.getInt(
+				"Properties.Fire.FireBlade.sharpness-level", fireBladeSharpnessLevel);
+		fireBladeFireAspectLevel = config.getInt("Properties.Fire.FireBlade.fireaspect-level",
+							fireBladeFireAspectLevel);
+		fireBladeDuration = config.getInt("Properties.Fire.FireBlade.Duration", fireBladeDuration);
+		fireBladeCooldown = config.getInt("Properties.Fire.FireBlade.Cooldown", fireBladeCooldown);
+		fireBladeLevelRequired = config.getInt("Properties.Fire.FireBlade.level-required",
+								fireBladeLevelRequired);
+		levelsRequired.put(Abilities.FireBlade, fireBladeLevelRequired);
 		
 		//Mental Explosion
 		mentalExplosionDamage = config.getInt(
@@ -1379,9 +1386,12 @@ public class ConfigManager {
 		config.set("Properties.Fire.Lightning.Range", lightningRange);
 		config.set("Properties.Fire.Lightning.Miss-Chance", lightningMissChance);
 		config.set("Properties.Fire.Lightning.level-required", lightningLevelRequired);
-		//ThunderArmor
-		config.set("Properties.Fire.ThunderArmor.thorns-level", thunderArmorThornsLevel);
-		config.set("Properties.Fire.ThunderArmor.level-required", thunderArmorLevelRequired);
+		//FireBlade
+		config.set("Properties.Fire.FireBlade.sharpness-level", fireBladeSharpnessLevel);
+		config.set("Properties.Fire.FireBlade.fireaspect-level", fireBladeFireAspectLevel);
+		config.set("Properties.Fire.FireBlade.Duration", fireBladeDuration);
+		config.set("Properties.Fire.FireBlade.Cooldown", fireBladeCooldown);
+		config.set("Properties.Fire.FireBlade.level-required", fireBladeLevelRequired);
 		//MentalExplosion
 		config.set("Properties.Fire.MentalExplosion.Damage", mentalExplosionDamage);
 		config.set("Properties.Fire.MentalExplosion.Range", mentalExplosionRange);

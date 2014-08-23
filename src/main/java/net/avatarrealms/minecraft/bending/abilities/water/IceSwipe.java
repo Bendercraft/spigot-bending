@@ -170,7 +170,6 @@ public class IceSwipe implements IAbility{
 				iceblocks.put(waterblock, targetloc);
 			}
 		}
-		
 	}
 
 	
