@@ -12,7 +12,7 @@ public enum Abilities {
 	EarthArmor, Shockwave, EarthMelt,
 
 	HeatControl, Blaze, FireJet, Illumination, WallOfFire, FireBlast, Lightning,
-	FireBurst, FireShield, MentalExplosion, FireBlade,
+	FireBurst, FireShield, Combustion, FireBlade,
 
 	WaterBubble, PhaseChange, HealingWaters, WaterManipulation, Surge, Bloodbending, WaterSpout,
 	IceSpike, OctopusForm, Torrent, IceSwipe,
@@ -128,7 +128,7 @@ public enum Abilities {
 		case Lightning:
 		case FireBurst :
 		case FireShield:
-		case MentalExplosion :
+		case Combustion :
 		case FireBlade : return true;
 		default : return false;
 		}
@@ -177,7 +177,7 @@ public enum Abilities {
 		case AirManipulation :
 		case LungsControl :
 		case EarthMelt :
-		case MentalExplosion :
+		case Combustion :
 		case FireBlade :
 		case IceSwipe :
 		case Dash :

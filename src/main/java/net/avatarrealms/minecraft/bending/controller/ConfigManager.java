@@ -968,7 +968,7 @@ public class ConfigManager {
 				"Properties.Fire.MentalExplosion.Cooldown", mentalExplosionCooldown);
 		mentalExplosionLevelRequired = config.getInt(
 				"Properties.Fire.MentalExplosion.level-required", mentalExplosionLevelRequired);
-		levelsRequired.put(Abilities.MentalExplosion, mentalExplosionLevelRequired);
+		levelsRequired.put(Abilities.Combustion, mentalExplosionLevelRequired);
 
 		// Day
 		dayFactor = config.getDouble("Properties.Fire.Day-Power-Factor",
@@ -1464,6 +1464,8 @@ public class ConfigManager {
 		config.set("Properties.Water.IceSpike.level-required", icespikeLevelRequired);		
 		//Torrent
 		config.set("Properties.Water.Torrent.level-required", torrentLevelRequired);
+		//OctopusForm
+		config.set("Properties.Water.OctopusForm.level-required", octopusFormLevelRequired);
 		//IceSwipe
 		config.set("Properties.Water.IceSwipe.Damage", iceSwipeDamage);
 		config.set("Properties.Water.IceSwipe.Range", iceSwipeRange);
