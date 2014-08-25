@@ -101,7 +101,7 @@ public class HealingWaters implements IAbility {
 
 	@Override
 	public int getBaseExperience() {
-		return 2;
+		return 1;
 	}
 
 	@Override

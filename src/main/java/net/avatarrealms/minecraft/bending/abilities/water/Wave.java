@@ -512,7 +512,7 @@ public class Wave implements IAbility {
 
 	@Override
 	public int getBaseExperience() {
-		return 6;
+		return 3;
 	}
 
 	@Override
