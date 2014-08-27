@@ -398,10 +398,13 @@ public class ConfigManager {
 	
 	//Torrent
 	public static int torrentLevelRequired = 1;
+	public static int torrentDamage = 2;
+	public static int torrentDeflectDamage = 1;
 	
 	//OctopusForm
 	
 	public static int octopusFormLevelRequired = 1;
+	public static int octopusFormDamage = 3;
 	
 	//IceSwipe
 	public static int iceSwipeDamage = 4;
@@ -1090,11 +1093,13 @@ public class ConfigManager {
 		levelsRequired.put(Abilities.IceSpike, icespikeLevelRequired);
 		
 		//Torrent
-		
+		torrentDamage = config.getInt("Properties.Water.Torrent.Damage",torrentDamage);
+		torrentDeflectDamage = config.getInt("Properties.Water.Torrent.DeflectDamage",torrentDeflectDamage);
 		torrentLevelRequired = config.getInt("Properties.Water.Torrent.level-required",torrentLevelRequired);
 		levelsRequired.put(Abilities.Torrent, torrentLevelRequired);
 
 		//OctopusForm
+		octopusFormDamage = config.getInt("Properties.Water.OctopusForm.Damage",octopusFormDamage);
 		octopusFormLevelRequired = config.getInt("Properties.Water.OctopusForm.level-required",octopusFormLevelRequired);
 		levelsRequired.put(Abilities.OctopusForm, octopusFormLevelRequired);
 		
@@ -1464,8 +1469,12 @@ public class ConfigManager {
 		config.set("Properties.Water.IceSpike.level-required", icespikeLevelRequired);		
 		//Torrent
 		config.set("Properties.Water.Torrent.level-required", torrentLevelRequired);
+		config.set("Properties.Water.Torrent.Damage", torrentDamage);
+		config.set("Properties.Water.Torrent.DeflectDamage", torrentDeflectDamage);
 		//OctopusForm
 		config.set("Properties.Water.OctopusForm.level-required", octopusFormLevelRequired);
+		config.set("Properties.Water.OctopusForm.Damage", octopusFormDamage);
+		
 		//IceSwipe
 		config.set("Properties.Water.IceSwipe.Damage", iceSwipeDamage);
 		config.set("Properties.Water.IceSwipe.Range", iceSwipeRange);

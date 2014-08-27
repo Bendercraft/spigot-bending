@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
@@ -37,8 +37,8 @@ public class Torrent implements IAbility {
 	private static int selectrange = 10;
 	private static double radius = 3;
 	static double range = 25;
-	private static int damage = 2;
-	private static int deflectdamage = 1;
+	private static int damage = ConfigManager.torrentDamage;
+	private static int deflectdamage = ConfigManager.torrentDeflectDamage;
 	private static double factor = 1;
 	private static int maxlayer = 3;
 	private static double ylimit = 0.2;
@@ -54,10 +54,10 @@ public class Torrent implements IAbility {
 	private double angle = 20;
 	private int layer = 0;
 
-	private ArrayList<TempBlock> blocks = new ArrayList<TempBlock>();
-	private ArrayList<TempBlock> launchblocks = new ArrayList<TempBlock>();
+	private List<TempBlock> blocks = new ArrayList<TempBlock>();
+	private List<TempBlock> launchblocks = new ArrayList<TempBlock>();
 
-	private ArrayList<Entity> hurtentities = new ArrayList<Entity>();
+	private List<Entity> hurtentities = new ArrayList<Entity>();
 
 	private boolean sourceselected = false;
 	private boolean settingup = false;

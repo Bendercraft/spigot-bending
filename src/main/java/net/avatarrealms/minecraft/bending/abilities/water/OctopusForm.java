@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
@@ -30,7 +31,7 @@ public class OctopusForm implements IAbility {
 	static final double radius = 3;
 	private static final byte full = 0x0;
 	private static long interval = 50;
-	private static int damage = 3;
+	private static int damage = ConfigManager.octopusFormDamage;
 
 	private Player player;
 	private Block sourceblock;

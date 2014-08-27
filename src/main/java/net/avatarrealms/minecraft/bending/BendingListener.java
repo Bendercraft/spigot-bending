@@ -238,20 +238,10 @@ public class BendingListener implements Listener {
 			format = format.replace("<message>", "%2$s");
 			format = format.replace("<name>", color + player.getDisplayName()
 					+ ChatColor.RESET);
-			// String format2 = format.replace("<name>", color +
-			// player.getDisplayName()).replace("<message>", ChatColor.WHITE +
-			// event.getMessage());
 			event.setFormat(format);
-			// event.setFormat("<" + color + player.getDisplayName()
-			// + ChatColor.WHITE + "> " + event.getMessage());
-			// event.setFormat(format);
-			// // event.setMessage(message + "Test");
-			// Tools.verbose(event.getFormat());
+
 		}
 	}
-
-	// event.setMessage(append + event.getMessage());
-	// }
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSwing(PlayerAnimationEvent event) {
