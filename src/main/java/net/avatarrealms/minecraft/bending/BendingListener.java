@@ -21,6 +21,7 @@ import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
@@ -30,6 +31,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -63,6 +65,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -182,6 +185,21 @@ public class BendingListener implements Listener {
 		// Cooldowns.forceCooldown(player);
 		if (Paralyze.isParalyzed(player) || Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerFish(PlayerFishEvent event) {
+		Player player = event.getPlayer();
+
+		Abilities ability = EntityTools.getBendingAbility(player);	
+		
+		if (Paralyze.isParalyzed(player) || Bloodbending.isBloodbended(player)) {
+			event.setCancelled(true);
+		}
+		
+		if (ability == Abilities.MetalBending && EntityTools.canBend(player, ability)) {
+			MetalWire.pull(player,event.getHook());
 		}
 	}
 
