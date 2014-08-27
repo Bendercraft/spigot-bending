@@ -9,7 +9,7 @@ public enum Abilities {
 	AirSpout, AirBurst, AirManipulation, LungsControl,
 
 	Catapult, RaiseEarth, EarthGrab, EarthTunnel, EarthBlast, Collapse, Tremorsense,
-	EarthArmor, Shockwave, EarthMelt,
+	EarthArmor, Shockwave, EarthMelt, LavaBlast, MetalBending,
 
 	HeatControl, Blaze, FireJet, Illumination, WallOfFire, FireBlast, Lightning,
 	FireBurst, FireShield, Combustion, FireBlade,
@@ -100,7 +100,9 @@ public enum Abilities {
 		case Tremorsense :
 		case Shockwave :
 		case EarthArmor :
-		case EarthMelt : return true;
+		case MetalBending :
+		case EarthMelt :
+		case LavaBlast : return true;
 		default : return false;
 		}
 	}
@@ -177,6 +179,8 @@ public enum Abilities {
 		case AirManipulation :
 		case LungsControl :
 		case EarthMelt :
+		case LavaBlast :
+		case MetalBending :
 		case Combustion :
 		case FireBlade :
 		case IceSwipe :

@@ -232,14 +232,23 @@ public class ConfigManager {
 	public static byte tremorsenseLightThreshold = 7;
 	public static int tremorsenseLevelRequired = 1;
 	
+	//MetalBending
+	public static int metalBendingLevelRequired = 1;
+	
 	//EarthMelt
 	
 	public static long earthMeltCooldown = 15000;
-	public static int earthMeltRange = 15;
-	public static int earthMeltDamage = 10;
-	public static int earthMeltChargeTime = 3000; // time in millisecs.
+	public static int earthMeltRange = 10;
+	public static int earthMeltChargeTime = 3000; 
 	public static int earthMeltLevelRequired = 1;
 
+	//LavaBlast
+	public static int lavaBlastLevelRequired = 1;
+	public static int lavaBlastDamage = 10;
+	public static int lavaBlastRange = 15;
+	public static int lavaBlastChargeTime = 1000; // time in millisecs.
+	
+	
 	// Fire
 	// ArcOfFire
 	public static int arcOfFireArc = 20;
@@ -812,13 +821,24 @@ public class ConfigManager {
 		//Iron Armor
 		ironArmorLevelRequired = config.getInt("Properties.Earth.IronAmor.level-required",ironArmorLevelRequired);
 		
+		//MetalBending
+		metalBendingLevelRequired = config.getInt("Properties.Earth.MetalBending.level-required",metalBendingLevelRequired);
+		levelsRequired.put(Abilities.MetalBending, metalBendingLevelRequired);
+		
 		//EarthMelt
 		earthMeltCooldown = config.getLong("Properties.Earth.EarthMelt.Cooldown",earthMeltCooldown);
 		earthMeltRange = config.getInt("Properties.Earth.EarthMelt.Range",earthMeltRange);
-		earthMeltRange = config.getInt("Properties.Earth.EarthMelt.Damage",earthMeltDamage);
 		earthMeltChargeTime = config.getInt("Properties.Earth.EarthMelt.ChargeTime",earthMeltChargeTime);
 		earthMeltLevelRequired = config.getInt("Properties.Earth.EarthMelt.level-required",earthMeltLevelRequired);
 		levelsRequired.put(Abilities.EarthMelt, earthMeltLevelRequired);
+		
+		//LavaBlast
+		lavaBlastLevelRequired = config.getInt("Properties.Earth.LavaBlast.level-required",lavaBlastLevelRequired);
+		lavaBlastRange = config.getInt("Properties.Earth.LavaBlast.Range",lavaBlastRange);
+		lavaBlastChargeTime = config.getInt("Properties.Earth.LavaBlast.ChargeTime",lavaBlastChargeTime);
+		lavaBlastDamage = config.getInt("Properties.Earth.LavaBlast.Damage",lavaBlastDamage);
+		levelsRequired.put(Abilities.LavaBlast, lavaBlastLevelRequired);
+		
 		// Fire
 		// FireBlast
 		fireBlastRange = config.getDouble("Properties.Fire.FireBlast.Range",
@@ -1294,11 +1314,13 @@ public class ConfigManager {
 		config.set("Properties.Earth.EarthGrab.Duration", earthGrabDuration);
 		config.set("Properties.Earth.EarthGrab.Cooldown", earthGrabCooldown);
 		config.set("Properties.Earth.EarthGrab.level-required", earthGrabLevelRequired);
+		
 		// EarthPassive
 		config.set("Properties.Earth.EarthPassive.Wait-Before-Reverse-Changes",
 				earthPassive);
 		config.set("Properties.Earth.EarthPassive.level-required", earthPassiveLevelRequired);
 		config.set("Properties.Earth.EarthPassive.resistance-level", passiveResistanceLevel);
+		
 		// EarthTunnel
 		config.set("Properties.Earth.EarthTunnel.Max-Radius",
 				earthTunnelMaxRadius);
@@ -1307,11 +1329,13 @@ public class ConfigManager {
 		config.set("Properties.Earth.EarthTunnel.Interval", earthTunnelInterval);
 		config.set("Properties.Earth.EarthTunnel.Revert", earthTunnelRevert);
 		config.set("Properties.Earth.EarthTunnel.level-required", earthTunnelLevelRequired);
+		
 		// EarthWall
 		config.set("Properties.Earth.EarthWall.Range", earthWallRange);
 		config.set("Properties.Earth.EarthWall.Height", earthWallHeight);
 		config.set("Properties.Earth.EarthWall.Width", earthWallWidth);
 		config.set("Properties.Earth.EarthWall.level-required", earthWallLevelRequired);
+		
 		// Collapse
 		config.set("Properties.Earth.Collapse.Range", collapseRange);
 		config.set("Properties.Earth.Collapse.Radius", collapseRadius);
@@ -1324,17 +1348,30 @@ public class ConfigManager {
 		config.set("Properties.Earth.Tremorsense.Light-Threshold",
 				tremorsenseLightThreshold);
 		config.set("Properties.Earth.Tremorsense.level-required", tremorsenseLevelRequired);
+		
 		// EarthArmor
 		config.set("Properties.Earth.EarthArmor.Duration", earthArmorDuration);
 		config.set("Properties.Earth.EarthArmor.Strength", earthArmorStrength);
 		config.set("Properties.Earth.EarthArmor.Cooldown", earthArmorCooldown);
 		config.set("Properties.Earth.EarthArmor.level-required", earthArmorLevelRequired);
+		
+		//MetalBending
+		config.set("Properties.Earth.MetalBending.level-required", metalBendingLevelRequired);
+		
+		
 		//EarthMelt
 		config.set("Properties.Earth.EarthMelt.Cooldown", earthMeltCooldown);
 		config.set("Properties.Earth.EarthMelt.Range", earthMeltRange);
-		config.set("Properties.Earth.EarthMelt.Damage", earthMeltDamage);
 		config.set("Properties.Earth.EarthMelt.ChargeTime", earthMeltChargeTime);
 		config.set("Properties.Earth.EarthMelt.level-required", earthMeltLevelRequired);
+		
+		//LavaBlast
+		config.set("Properties.Earth.LavaBlast.level-required", lavaBlastLevelRequired);
+		config.set("Properties.Earth.LavaBlast.Range", lavaBlastRange);
+		config.set("Properties.Earth.LavaBlast.ChargeTime", lavaBlastChargeTime);
+		config.set("Properties.Earth.LavaBlast.Damage", lavaBlastDamage);
+		
+		
 		// Fire
 		// FireBlast
 		config.set("Properties.Fire.FireBlast.Range", fireBlastRange);
