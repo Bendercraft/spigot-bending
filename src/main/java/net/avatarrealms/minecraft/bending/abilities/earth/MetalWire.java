@@ -16,36 +16,39 @@ import org.bukkit.util.Vector;
 
 public class MetalWire {
 
-	private static Map<Player, Fish> players = new HashMap<Player, Fish>();
+	private static Map<Player, Fish> instances = new HashMap<Player, Fish>();
+	private static Map<Player, Long> noFall = new HashMap<Player, Long>();
+	
+	private final static long timeNoFall = 4000;
 
 	// Will have to replace Fish by FishHook when available
 
 	public static void pull(Player player, Fish hook) {
 		List<Player> toRemove = new LinkedList<Player>();
-		for (Player p : players.keySet()) {
-			if (players.get(p).isDead() || !players.get(p).isValid()) {
+		for (Player p : instances.keySet()) {
+			if (instances.get(p).isDead() || !instances.get(p).isValid()) {
 				Bukkit.getLogger().info("Dead");
 				toRemove.add(p);
 			}
 		}
 
 		for (Player p : toRemove) {
-			players.remove(p);
+			instances.remove(p);
 		}
 
-		if (players.containsKey(player)) {
-			Bukkit.getLogger().info("Ground");
-			Location loc = hook.getLocation().add(0, -1, 0);
-			if (!BlockTools.isFluid(loc.getBlock())) {
-				Bukkit.getLogger().info("Not Fluid");
-				Location targetLoc = loc.clone().add(0, 1.5, 0);
+		if (instances.containsKey(player)) {
+			Bukkit.getLogger().info("Already launched");
+			if (hookHangsOn(hook)) {
+				Bukkit.getLogger().info("Hangs on ! ");
+				Location targetLoc = hook.getLocation().clone().add(0, 1.5, 0);
 				Location playerLoc = player.getLocation();
 
 				Vector dir = getVectorForPoints(playerLoc, targetLoc);
 				player.setVelocity(dir);
+				noFall.put(player, System.currentTimeMillis());
 			}
 
-			players.remove(player);
+			instances.remove(player);
 		} else {
 			Bukkit.getLogger().info("Launch");
 			// if the list doesn't contain the player, it means he just launched
@@ -66,11 +69,29 @@ public class MetalWire {
 	}
 
 	public static void launchHook(Player player, Fish hook) {
-		players.put(player, hook);
+		instances.put(player, hook);
 		Block b = player.getTargetBlock(null, 30);
 		if (b != null) {
 			hook.setVelocity(getVectorForPoints(hook.getLocation(),
 					b.getLocation()));
 		}
+	}
+	
+	public static boolean hookHangsOn(Fish hook) {
+		//Would prefer it more accurate
+		for (Block block : BlockTools.getBlocksAroundPoint(hook.getLocation(),1.5)) {
+			if (!BlockTools.isFluid(block)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean hasNoFallDamage(Player p) {
+		if (noFall.containsKey(p) 
+				&& System.currentTimeMillis() - noFall.get(p) < timeNoFall) {
+			return true;
+		}
+		return false;
 	}
 }
