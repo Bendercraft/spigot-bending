@@ -326,6 +326,7 @@ public class ConfigManager {
 	public static int fireBladeFireAspectLevel = 2;
 	public static int fireBladeSharpnessLevel = 1;
 	public static int fireBladeLevelRequired = 1;
+	public static int fireBladeStrengthLevel = 1;
 	public static int fireBladeCooldown = 60;
 	public static int fireBladeDuration = 30;
 	
@@ -971,6 +972,7 @@ public class ConfigManager {
 		fireBladeFireAspectLevel = config.getInt("Properties.Fire.FireBlade.fireaspect-level",
 							fireBladeFireAspectLevel);
 		fireBladeDuration = config.getInt("Properties.Fire.FireBlade.Duration", fireBladeDuration);
+		fireBladeStrengthLevel = config.getInt("Properties.Fire.FireBlade.strength-level", fireBladeStrengthLevel);
 		fireBladeCooldown = config.getInt("Properties.Fire.FireBlade.Cooldown", fireBladeCooldown);
 		fireBladeLevelRequired = config.getInt("Properties.Fire.FireBlade.level-required",
 								fireBladeLevelRequired);
@@ -1432,6 +1434,7 @@ public class ConfigManager {
 		config.set("Properties.Fire.FireBlade.sharpness-level", fireBladeSharpnessLevel);
 		config.set("Properties.Fire.FireBlade.fireaspect-level", fireBladeFireAspectLevel);
 		config.set("Properties.Fire.FireBlade.Duration", fireBladeDuration);
+		config.set("Properties.Fire.FireBlade.strength-level", fireBladeStrengthLevel);
 		config.set("Properties.Fire.FireBlade.Cooldown", fireBladeCooldown);
 		config.set("Properties.Fire.FireBlade.level-required", fireBladeLevelRequired);
 		//MentalExplosion

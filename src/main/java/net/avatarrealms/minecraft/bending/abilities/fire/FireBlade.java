@@ -16,6 +16,7 @@ public class FireBlade {
 	private static Map<Player, FireBlade> instances = new HashMap<Player, FireBlade>();
 	private static int sharpnessLevel = ConfigManager.fireBladeSharpnessLevel;
 	private static int fireAspectLevel = ConfigManager.fireBladeFireAspectLevel;
+	private static int strengthLevel = ConfigManager.fireBladeStrengthLevel;
 	private static int duration = ConfigManager.fireBladeDuration;
 	
 	private long time;
