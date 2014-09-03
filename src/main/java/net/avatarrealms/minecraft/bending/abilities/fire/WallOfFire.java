@@ -20,7 +20,6 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -135,7 +134,7 @@ public class WallOfFire implements IAbility {
 
 		double w = (double) width;
 		double h = (double) height;
-
+		//TODO : Make it no longer pass through the walls
 		for (double i = -w; i <= w; i++) {
 			for (double j = -h; j <= h; j++) {
 				Location location = origin.clone().add(
@@ -149,7 +148,6 @@ public class WallOfFire implements IAbility {
 					blocks.add(block);
 			}
 		}
-
 	}
 
 	private void display() {

@@ -701,7 +701,8 @@ public class BendingListener implements Listener {
 
 			BendingPlayer bPlayer = BendingPlayer
 					.getBendingPlayer((Player) event.getEntity());
-			if (bPlayer != null && event.getCause() != DamageCause.STARVATION) {
+			if (bPlayer != null && event.getCause() != DamageCause.STARVATION 
+					&& event.getCause() != DamageCause.FALL) {
 				int level = bPlayer.getMaxLevel();
 				Random rand = new Random();
 				if (rand.nextDouble() < ((double) level / 2) / 100) {

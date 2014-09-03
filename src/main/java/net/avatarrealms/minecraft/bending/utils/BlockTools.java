@@ -183,8 +183,9 @@ public class BlockTools {
 	}
 	
 	public static boolean isSolid(Block block) {
-		if (nonOpaque.contains(block.getType()))
+		if (nonOpaque.contains(block.getType())) {
 			return false;
+		}	
 		return true;
 	}
 	

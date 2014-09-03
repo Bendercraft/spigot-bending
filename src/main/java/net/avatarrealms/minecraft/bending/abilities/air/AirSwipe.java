@@ -168,8 +168,9 @@ public class AirSwipe implements IAbility {
 				}
 				charging = false;				
 				launch();
-				if (factor < 1)
+				if (factor < 1) {
 					factor = 1;
+				}				
 				damage *= factor;
 				pushfactor *= factor;
 				return true;
@@ -201,7 +202,10 @@ public class AirSwipe implements IAbility {
 						&& !Tools.isRegionProtectedFromBuild(player,
 								Abilities.AirSwipe, newlocation)) {
 					//If new location is still valid, we add it
-					toAdd.put(direction, newlocation);
+					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
+						toAdd.put(direction, newlocation);
+					}
+					
 				}
 			}
 		}
