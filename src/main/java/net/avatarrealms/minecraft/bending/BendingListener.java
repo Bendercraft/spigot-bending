@@ -187,19 +187,20 @@ public class BendingListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerFish(PlayerFishEvent event) {
 		Player player = event.getPlayer();
 
-		Abilities ability = EntityTools.getBendingAbility(player);	
-		
+		Abilities ability = EntityTools.getBendingAbility(player);
+
 		if (Paralyze.isParalyzed(player) || Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}
-		
-		if (ability == Abilities.MetalBending && EntityTools.canBend(player, ability)) {
-			MetalWire.pull(player,event.getHook());
+
+		if (ability == Abilities.MetalBending
+				&& EntityTools.canBend(player, ability)) {
+			MetalWire.pull(player, event.getHook());
 		}
 	}
 
@@ -288,9 +289,8 @@ public class BendingListener implements Listener {
 				}
 
 				/*
-				 * if (ability == Abilities.AirBubble) { 
-				 * new AirBubble(player,null); 
-				 * }
+				 * if (ability == Abilities.AirBubble) { new
+				 * AirBubble(player,null); }
 				 */
 
 				if (ability == Abilities.AirSwipe) {
@@ -397,9 +397,8 @@ public class BendingListener implements Listener {
 				}
 
 				/*
-				 * if (ability == Abilities.WaterBubble) { 
-				 * new WaterBubble(player, null); 
-				 * }
+				 * if (ability == Abilities.WaterBubble) { new
+				 * WaterBubble(player, null); }
 				 */
 
 				if (ability == Abilities.PhaseChange) {
@@ -621,60 +620,60 @@ public class BendingListener implements Listener {
 	public void onPlayerDamage(EntityDamageEvent event) {
 
 		if (event.getEntity() instanceof Player) {
-			// Tools.verbose(event.getCause());
+			
 			Player player = (Player) event.getEntity();
 			Abilities ability = EntityTools.getBendingAbility(player);
-			if (EntityTools.isBender(player, BendingType.Earth)
-					&& event.getCause() == DamageCause.FALL
-					&& ability == Abilities.Shockwave)
-				new ShockwaveFall(player, null);
+			
+			if (event.getCause() == DamageCause.FALL) {
+				if (EntityTools.isBender(player, BendingType.Earth)) {
 
-			if (EntityTools.isBender(player, BendingType.Air)
-					&& event.getCause() == DamageCause.FALL
-					&& EntityTools.canBendPassive(player, BendingType.Air)) {
-				new Flight(player);
-				player.setAllowFlight(true);
-				if (ability == Abilities.AirBurst) {
-					new AirFallBurst(player, null);
+					if (EarthPassive.softenLanding(player)
+							&& EntityTools.canBendPassive(player, BendingType.Earth)) {
+						new Flight(player);
+						player.setAllowFlight(true);
+						player.setFallDistance(0);
+						event.setDamage(0);
+						event.setCancelled(true);
+					}
+
+					if (ability == Abilities.Shockwave) {
+						new ShockwaveFall(player, null);
+					}
+
 				}
-				player.setFallDistance(0);
-				event.setDamage(0);
-				event.setCancelled(true);
-			}
 
-			if (!event.isCancelled()
-					&& EntityTools.isBender(player, BendingType.Water)
-					&& event.getCause() == DamageCause.FALL
-					&& EntityTools.canBendPassive(player, BendingType.Water)) {
-				if (WaterPassive.softenLanding(player)) {
+				if (EntityTools.isBender(player, BendingType.Air)
+						&& EntityTools.canBendPassive(player, BendingType.Air)) {
 					new Flight(player);
 					player.setAllowFlight(true);
+					if (ability == Abilities.AirBurst) {
+						new AirFallBurst(player, null);
+					}
 					player.setFallDistance(0);
 					event.setDamage(0);
 					event.setCancelled(true);
 				}
-			}
 
-			if (!event.isCancelled()
-					&& EntityTools.isBender(player, BendingType.Earth)
-					&& event.getCause() == DamageCause.FALL
-					&& EntityTools.canBendPassive(player, BendingType.Earth)) {
-				if (EarthPassive.softenLanding(player)) {
-					new Flight(player);
-					player.setAllowFlight(true);
-					player.setFallDistance(0);
-					event.setDamage(0);
-					event.setCancelled(true);
-
+				if (!event.isCancelled()
+						&& EntityTools.isBender(player, BendingType.Water)) {
+					if (WaterPassive.softenLanding(player)
+							&& EntityTools.canBendPassive(player, BendingType.Water)) {
+						new Flight(player);
+						player.setAllowFlight(true);
+						player.setFallDistance(0);
+						event.setDamage(0);
+						event.setCancelled(true);
+					}
 				}
-			}
 
-			if (!event.isCancelled()
-					&& EntityTools.isBender(player, BendingType.ChiBlocker)
-					&& event.getCause() == DamageCause.FALL
-					&& EntityTools.canBendPassive(player,
+				if (!event.isCancelled()
+						&& EntityTools.isBender(player, BendingType.ChiBlocker)) {
+					if (EntityTools.canBendPassive(player,
 							BendingType.ChiBlocker)) {
-				event.setDamage((int) ((double) event.getDamage() * (ConfigManager.falldamagereduction / 100.)));
+						event.setDamage((int) ((double) event.getDamage() * (ConfigManager.falldamagereduction / 100.)));
+					}
+				}
+
 			}
 
 			if (!event.isCancelled() && event.getCause() == DamageCause.FALL) {
@@ -701,7 +700,7 @@ public class BendingListener implements Listener {
 
 			BendingPlayer bPlayer = BendingPlayer
 					.getBendingPlayer((Player) event.getEntity());
-			if (bPlayer != null && event.getCause() != DamageCause.STARVATION 
+			if (bPlayer != null && event.getCause() != DamageCause.STARVATION
 					&& event.getCause() != DamageCause.FALL) {
 				int level = bPlayer.getMaxLevel();
 				Random rand = new Random();
