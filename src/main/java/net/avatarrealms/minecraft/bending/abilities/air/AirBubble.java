@@ -58,7 +58,7 @@ public class AirBubble implements IAbility {
 
 		// Do not bother entering this loop if player location has not been
 		// modified
-		if (!this.lastLocation.equals(location)) {
+		if (!BlockTools.locationEquals(lastLocation,location)) {
 			if (EntityTools.isBender(player, BendingType.Water)) {
 				radius = defaultWaterRadius;
 				if (Tools.isNight(player.getWorld())) {

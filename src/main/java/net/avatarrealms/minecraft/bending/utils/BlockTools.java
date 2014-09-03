@@ -774,4 +774,14 @@ public class BlockTools {
 		}
 		return false;
 	}	
+	
+	public static boolean locationEquals(Location la, Location lb) {
+		//Difference with the class method : Do not bother the pitch and the yaw
+		
+		if (la.getX() == lb.getX() && la.getY() == lb.getY()
+				&& la.getZ() == lb.getZ()) {
+			return true;
+		}
+		return false;
+	}
 }
