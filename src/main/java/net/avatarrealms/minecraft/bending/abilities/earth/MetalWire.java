@@ -19,7 +19,7 @@ public class MetalWire {
 	private static Map<Player, Fish> instances = new HashMap<Player, Fish>();
 	private static Map<Player, Long> noFall = new HashMap<Player, Long>();
 	
-	private final static long timeNoFall = 4000;
+	private final static long timeNoFall = 1500;
 
 	// Will have to replace Fish by FishHook when available
 
@@ -27,7 +27,6 @@ public class MetalWire {
 		List<Player> toRemove = new LinkedList<Player>();
 		for (Player p : instances.keySet()) {
 			if (instances.get(p).isDead() || !instances.get(p).isValid()) {
-				Bukkit.getLogger().info("Dead");
 				toRemove.add(p);
 			}
 		}
@@ -37,9 +36,7 @@ public class MetalWire {
 		}
 
 		if (instances.containsKey(player)) {
-			Bukkit.getLogger().info("Already launched");
 			if (hookHangsOn(hook)) {
-				Bukkit.getLogger().info("Hangs on ! ");
 				Location targetLoc = hook.getLocation().clone().add(0, 1.5, 0);
 				Location playerLoc = player.getLocation();
 
@@ -50,7 +47,6 @@ public class MetalWire {
 
 			instances.remove(player);
 		} else {
-			Bukkit.getLogger().info("Launch");
 			// if the list doesn't contain the player, it means he just launched
 			// the hook
 			launchHook(player, hook);
@@ -69,6 +65,7 @@ public class MetalWire {
 	}
 
 	public static void launchHook(Player player, Fish hook) {
+		//Would prefer it more accurate
 		instances.put(player, hook);
 		Block b = player.getTargetBlock(null, 30);
 		if (b != null) {
@@ -78,7 +75,6 @@ public class MetalWire {
 	}
 	
 	public static boolean hookHangsOn(Fish hook) {
-		//Would prefer it more accurate
 		for (Block block : BlockTools.getBlocksAroundPoint(hook.getLocation(),1.5)) {
 			if (!BlockTools.isFluid(block)) {
 				return true;
@@ -87,11 +83,24 @@ public class MetalWire {
 		return false;
 	}
 	
-	public static boolean hasNoFallDamage(Player p) {
-		if (noFall.containsKey(p) 
-				&& System.currentTimeMillis() - noFall.get(p) < timeNoFall) {
-			return true;
+	public static boolean hasNoFallDamage(Player pl) {
+		boolean r = false;
+		List<Player> toRemove = new LinkedList<Player>();
+		for (Player p : noFall.keySet()) {
+			if (System.currentTimeMillis() > noFall.get(p) + timeNoFall) {
+				toRemove.add(p);
+			} 
+			else {
+				if (p.equals(pl)) {
+					r = true;
+				}
+			}
 		}
-		return false;
+		
+		for (Player p : toRemove) {
+			noFall.remove(p);
+		}
+		return r;
 	}
+	
 }

@@ -639,7 +639,12 @@ public class BendingListener implements Listener {
 					if (ability == Abilities.Shockwave) {
 						new ShockwaveFall(player, null);
 					}
-
+					
+					if (MetalWire.hasNoFallDamage(player)) {
+						player.setFallDistance(0);
+						event.setDamage(0);
+						event.setCancelled(true);
+					}
 				}
 
 				if (EntityTools.isBender(player, BendingType.Air)
