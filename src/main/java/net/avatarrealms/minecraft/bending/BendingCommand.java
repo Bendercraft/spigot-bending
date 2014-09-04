@@ -454,7 +454,7 @@ public class BendingCommand {
 				sendMessage(player, color + p.getName());
 			}
 		} else if (args.length == 2) {
-			Player p = server.getPlayer(args[1]);
+			Player p = this.getOnlinePlayer(args[1]);
 			if (p == null) {
 				sendMessage(
 						player,
@@ -675,7 +675,7 @@ public class BendingCommand {
 			if (!hasPermission(player, "bending.admin.choose"))
 				return;
 			String playername = args[1];
-			Player targetplayer = server.getPlayer(playername);
+			Player targetplayer = this.getOnlinePlayer(playername);
 			if (targetplayer == null) {
 				printChooseUsage(player);
 				return;
@@ -1422,7 +1422,7 @@ public class BendingCommand {
 			String playerlist = "";
 			for (int i = 1; i < args.length; i++) {
 				String name = args[i];
-				Player targetplayer = server.getPlayer(name);
+				Player targetplayer = this.getOnlinePlayer(name);
 				String senderName = PluginTools.getMessage(targetplayer,
 						"General.the_server");
 				if (player != null)
@@ -1472,7 +1472,7 @@ public class BendingCommand {
 			String senderName = "The server";
 			if (player != null)
 				senderName = player.getName();
-			Player targetplayer = server.getPlayer(playername);
+			Player targetplayer = this.getOnlinePlayer(playername);
 			if (targetplayer != null) {
 				// config.permaRemoveBending(targetplayer);
 				// PlayerStorageWriter.permaRemoveBending(targetplayer);
@@ -1505,7 +1505,7 @@ public class BendingCommand {
 		String playerlist = "";
 		for (int i = 1; i < args.length; i++) {
 			String playername = args[i];
-			Player targetplayer = server.getPlayer(playername);
+			Player targetplayer = this.getOnlinePlayer(playername);
 			String senderName = PluginTools.getMessage(targetplayer,
 					"General.the_server");
 			if (player != null)
@@ -1628,7 +1628,7 @@ public class BendingCommand {
 			printAddUsage(player);
 		} else if (args.length == 3) {
 			String playername = args[1];
-			Player targetplayer = server.getPlayer(playername);
+			Player targetplayer = this.getOnlinePlayer(playername);
 			if (targetplayer == null) {
 				printAddUsage(player);
 				return;
@@ -2089,7 +2089,7 @@ public class BendingCommand {
 		if (args.length <= 1) {
 			bPlayer = BendingPlayer.getBendingPlayer(player);
 		} else {
-			Player target = server.getPlayer(args[1]);
+			Player target = this.getOnlinePlayer(args[1]);
 			if (target == null) {
 				player.sendMessage(ChatColor.RED + "Your target doesn't exist or is not connected.");
 				return false;
@@ -2218,5 +2218,13 @@ public class BendingCommand {
 		if (hasHelpPermission(player, "bending.command.version"))
 			sendMessage(player, "/bending version");
 	}
-
+	
+	private Player getOnlinePlayer(String name) {
+		for(Player p : server.getOnlinePlayers()) {
+			if(p.getName().equals(name)) {
+				return p;
+			}
+		}
+		return null;
+	}
 }
