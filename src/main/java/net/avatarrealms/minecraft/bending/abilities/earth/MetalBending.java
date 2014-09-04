@@ -15,7 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.material.Door;
 
 public class MetalBending {
 
@@ -46,9 +45,7 @@ public class MetalBending {
 					if (bl.getData() >= 8) {
 						bl = bl.getRelative(BlockFace.DOWN);
 					}
-					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
-						pl.sendMessage("iron door ! ");
-						
+					if (bl.getType() == Material.IRON_DOOR_BLOCK) {						
 						if (!Tools.isRegionProtectedFromBuild(pl,
 								Abilities.MetalBending, bl.getLocation())) {
 							if (bl.getData() < 4) {
