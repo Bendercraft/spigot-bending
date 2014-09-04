@@ -67,6 +67,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -1095,6 +1096,18 @@ public class BendingListener implements Listener {
 		if (event.getSlotType() == SlotType.ARMOR
 				&& !EarthArmor.canRemoveArmor((Player) event.getWhoClicked()))
 			event.setCancelled(true);
+	}
+	
+	public void onPlayerItemBreak (PlayerItemBreakEvent e) {
+		ItemStack i = e.getBrokenItem();
+		Player p = e.getPlayer();
+		if (EntityTools.isBender(p, BendingType.Earth)) {
+			Abilities a= EntityTools.getBendingAbility(p);
+			if (a == Abilities.MetalBending && i.getType() == Material.FISHING_ROD) {
+				i.setDurability((short) 10);
+				p.setItemInHand(i);
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
