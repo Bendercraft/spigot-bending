@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Material;

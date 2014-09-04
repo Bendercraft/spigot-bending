@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import net.avatarrealms.minecraft.bending.abilities.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.air.AirScooter;
 import net.avatarrealms.minecraft.bending.abilities.air.AirSpout;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
@@ -12,7 +14,6 @@ import net.avatarrealms.minecraft.bending.abilities.earth.Catapult;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireJet;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
-import net.avatarrealms.minecraft.bending.model.AvatarState;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

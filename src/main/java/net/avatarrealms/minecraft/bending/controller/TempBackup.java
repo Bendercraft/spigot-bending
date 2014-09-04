@@ -16,8 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 
 public class TempBackup {
 	public static final String FILE_NAME = "tempBackup.json";

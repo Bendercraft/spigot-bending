@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
 import net.avatarrealms.minecraft.bending.controller.TempBackup;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 

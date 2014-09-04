@@ -3,9 +3,9 @@ package net.avatarrealms.minecraft.bending.abilities.air;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.abilities.BendingType;
+import net.avatarrealms.minecraft.bending.abilities.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.model.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Server;

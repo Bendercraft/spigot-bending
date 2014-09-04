@@ -1,9 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
 import java.util.ArrayList;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.IAbility;
+
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 

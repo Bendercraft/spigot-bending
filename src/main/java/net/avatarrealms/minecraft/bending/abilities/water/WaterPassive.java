@@ -1,7 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.model.IPassiveAbility;
+import net.avatarrealms.minecraft.bending.abilities.BendingType;
+import net.avatarrealms.minecraft.bending.abilities.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 

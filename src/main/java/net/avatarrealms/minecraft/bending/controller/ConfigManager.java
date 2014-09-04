@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;

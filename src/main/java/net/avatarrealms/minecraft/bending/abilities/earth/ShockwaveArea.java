@@ -1,6 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import net.avatarrealms.minecraft.bending.model.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
+
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 

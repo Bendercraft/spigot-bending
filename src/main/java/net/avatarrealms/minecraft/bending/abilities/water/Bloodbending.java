@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.AvatarState;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.model.IAbility;
-import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;

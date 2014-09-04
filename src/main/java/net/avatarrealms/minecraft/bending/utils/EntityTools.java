@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.AvatarState;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

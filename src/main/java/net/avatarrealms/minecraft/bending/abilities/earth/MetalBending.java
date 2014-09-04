@@ -3,9 +3,9 @@ package net.avatarrealms.minecraft.bending.abilities.earth;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;

@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.model.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.BendingType;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 

@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import net.avatarrealms.minecraft.bending.Bending;
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBurst;
@@ -56,9 +59,6 @@ import net.avatarrealms.minecraft.bending.abilities.water.WaterWall;
 import net.avatarrealms.minecraft.bending.abilities.water.Wave;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.TempBlock;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

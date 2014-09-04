@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.Information;
+import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthColumn;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthPassive;
 import net.avatarrealms.minecraft.bending.abilities.water.FreezeMelt;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.Information;
-import net.avatarrealms.minecraft.bending.model.TempBlock;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;

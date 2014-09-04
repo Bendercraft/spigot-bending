@@ -10,8 +10,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

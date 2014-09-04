@@ -3,10 +3,10 @@ package net.avatarrealms.minecraft.bending.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.TempBackup;
-import net.avatarrealms.minecraft.bending.model.Abilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;

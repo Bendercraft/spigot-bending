@@ -6,12 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
+import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Metrics;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;

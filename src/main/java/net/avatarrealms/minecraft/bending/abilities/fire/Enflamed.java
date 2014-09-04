@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.model.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;

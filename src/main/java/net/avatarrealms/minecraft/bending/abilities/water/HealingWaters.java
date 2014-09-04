@@ -1,9 +1,9 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.IAbility;
-import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;

@@ -1,7 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
-import net.avatarrealms.minecraft.bending.model.IAbility;
 
 import org.bukkit.entity.Player;
 

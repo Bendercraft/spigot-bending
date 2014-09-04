@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.model;
+package net.avatarrealms.minecraft.bending.abilities;
 
 import java.util.HashMap;
 import java.util.LinkedList;

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBurst;
@@ -47,8 +49,6 @@ import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterWall;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.StorageManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 import org.bukkit.configuration.InvalidConfigurationException;

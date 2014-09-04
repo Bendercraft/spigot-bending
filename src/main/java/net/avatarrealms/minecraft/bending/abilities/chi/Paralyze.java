@@ -3,11 +3,11 @@ package net.avatarrealms.minecraft.bending.abilities.chi;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.AvatarState;
+import net.avatarrealms.minecraft.bending.abilities.BendingType;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.entity.Creature;

@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatarrealms.minecraft.bending.model.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 
 public class AirBurstCone implements IAbility  {
 	private static double pushfactor = 1.5;

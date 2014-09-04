@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.model;
+package net.avatarrealms.minecraft.bending.abilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;

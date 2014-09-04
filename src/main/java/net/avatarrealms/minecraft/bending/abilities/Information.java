@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.model;
+package net.avatarrealms.minecraft.bending.abilities;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

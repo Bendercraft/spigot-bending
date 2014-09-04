@@ -1,9 +1,10 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+
 import org.bukkit.entity.Player;
 
 public class ShockwaveFall implements IAbility {

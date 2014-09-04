@@ -1,11 +1,8 @@
-package net.avatarrealms.minecraft.bending.model.data;
+package net.avatarrealms.minecraft.bending.abilities;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 
 import org.bukkit.Material;
 

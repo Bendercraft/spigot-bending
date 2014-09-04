@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingType;
+import net.avatarrealms.minecraft.bending.abilities.IPassiveAbility;
+import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.controller.Flight;
-import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.model.IPassiveAbility;
-import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.entity.Player;

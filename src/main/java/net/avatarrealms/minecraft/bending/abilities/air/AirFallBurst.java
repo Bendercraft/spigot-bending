@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatarrealms.minecraft.bending.model.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.IAbility;
 
 public class AirFallBurst implements IAbility  {
 	private static double threshold = 10;
