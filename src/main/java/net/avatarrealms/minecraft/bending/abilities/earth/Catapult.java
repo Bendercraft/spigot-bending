@@ -9,7 +9,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -79,7 +78,6 @@ public class Catapult implements IAbility {
 			moving = true;
 			instances.put(player.getEntityId(), this);
 			bPlayer.cooldown(Abilities.Catapult);
-			bPlayer.earnXP(BendingType.Earth, this);
 		}
 
 	}
@@ -234,11 +232,6 @@ public class Catapult implements IAbility {
 				+ "Skillful use of this ability takes much time and work, and it does result in the "
 				+ "death of certain gung-ho earthbenders. If you plan to use this ability, be sure "
 				+ "you've read about your passive ability you innately have as an earthbender.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 6;
 	}
 
 	@Override

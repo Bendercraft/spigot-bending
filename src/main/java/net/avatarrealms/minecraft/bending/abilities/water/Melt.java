@@ -4,7 +4,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -62,7 +61,6 @@ public class Melt implements IAbility {
 		}
 
 		bPlayer.cooldown(Abilities.PhaseChange);
-		bPlayer.earnXP(BendingType.Water,this);
 	}
 
 	public static void melt(Player player, Block block) {
@@ -101,11 +99,6 @@ public class Melt implements IAbility {
 			block.setType(Material.AIR);
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1);
 		}
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 0;
 	}
 
 	@Override

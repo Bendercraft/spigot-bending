@@ -2,14 +2,13 @@ package net.avatarrealms.minecraft.bending.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -32,7 +31,7 @@ public class BendingPlayer {
 	private Map<Integer, Abilities> slotAbilities = new HashMap<Integer, Abilities>();
 	private Map<Material, Abilities> itemAbilities = new HashMap<Material, Abilities>();
 
-	private Map<BendingType, BendingLevel> bendings = new HashMap<BendingType,BendingLevel>();
+	private List<BendingType> bendings = new LinkedList<BendingType>();
 
 	private Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
 
@@ -186,101 +185,18 @@ public class BendingPlayer {
 	}
 
 	public boolean isBender(BendingType type) {
-		// lasttime = System.currentTimeMillis();
-		return bendings.containsKey(type);
-	}
-	
-	public boolean hasLevel(String ability) {
-		
-		if (bendings == null) {
-			return false;
-		}
-		
-		if (ability.equalsIgnoreCase("plantbending")) {
-			if (!bendings.containsKey(BendingType.Water)) {
-				return false;
-			}
-			if (bendings.get(BendingType.Water).getLevel() < ConfigManager.plantbendingLevelRequired){
-				return false;
-			}
-			
-			return true;
-		}
-		
-		return true;
-	}
-	
-	public boolean hasLevel(Abilities ability) {
-		if (bendings == null) {
-			return false;
-		}
-		
-		if (Abilities.isAirbending(ability)) {
-			if (!bendings.containsKey(BendingType.Air)) {
-				return false;
-			}
-			
-			if (bendings.get(BendingType.Air).getLevel() < ConfigManager.getLevelRequired(ability)){
-				return false;
-			}
-			return true;
-		}
-		
-		if (Abilities.isEarthbending(ability)) {
-			if (!bendings.containsKey(BendingType.Earth)) {
-				return false;
-			}
-			if (bendings.get(BendingType.Earth).getLevel() < ConfigManager.getLevelRequired(ability)){
-				return false;
-			}
-			return true;
-		}
-		
-		if (Abilities.isFirebending(ability)) {
-			if (!bendings.containsKey(BendingType.Fire)) {
-				return false;
-			}
-			if (bendings.get(BendingType.Fire).getLevel() < ConfigManager.getLevelRequired(ability)){
-				return false;
-			}
-			
-			return true;
-		}
-		
-		if (Abilities.isWaterbending(ability)){
-			if (!bendings.containsKey(BendingType.Water)) {
-				return false;
-			}
-			if (bendings.get(BendingType.Water).getLevel() < ConfigManager.getLevelRequired(ability)){
-				return false;
-			}
-			
-			return true;
-		}
-		
-		if (Abilities.isChiBlocking(ability)) {
-			if (!bendings.containsKey(BendingType.ChiBlocker)) {
-				return false;
-			}
-			if (bendings.get(BendingType.ChiBlocker).getLevel() < ConfigManager.getLevelRequired(ability)){
-				return false;
-			}
-			return true;
-		}
-		
-		
-		return true;
+		return bendings.contains(type);
 	}
 
 	public void setBender(BendingType type) {
 		removeBender();
-		bendings.put(type, new BendingLevel (type, this));
+		bendings.add(type);
 	}
 
 	public void addBender(BendingType type) {
 		permaremoved = false;
-		if (!bendings.containsKey(type))
-			bendings.put(type, new BendingLevel(type,this));
+		if (!bendings.contains(type))
+			bendings.add(type);
 	}
 
 	public void clearAbilities() {
@@ -366,7 +282,7 @@ public class BendingPlayer {
 
 	public List<BendingType> getBendingTypes() {
 		List<BendingType> list = new ArrayList<BendingType>();
-		for (BendingType index : bendings.keySet()) {
+		for (BendingType index : bendings) {
 			list.add(index);
 		}
 		return list;
@@ -377,8 +293,8 @@ public class BendingPlayer {
 		Player pl = getPlayer();
 		if (pl != null) {
 			String str = pl.getName() + " : \n";
-			for (BendingType type : bendings.keySet()) {
-				str+=bendings.get(type).toString() + "\n";
+			for (BendingType type : bendings) {
+				str+=type.toString() + "\n";
 			}
 			return str;
 		}
@@ -449,13 +365,7 @@ public class BendingPlayer {
 			players.remove(this.player);
 		}
 		
-		List<BendingLevelData> bendingData = data.getBendings();
-		
-		for (BendingLevelData bend: bendingData) {
-			BendingLevel bendingLevel = BendingLevel.deserialize(bend);
-			bendings.put(bend.getBendingType(), bendingLevel);
-			bendingLevel.setBendingPlayer(this);
-		}
+		bendings = data.getBendings();
 		language = data.getLanguage();
 		bendToItem = data.isBendToItem();
 		itemAbilities = data.getItemAbilities();
@@ -470,11 +380,7 @@ public class BendingPlayer {
 
 	public BendingPlayerData serialize() {
 		BendingPlayerData result = new BendingPlayerData();
-		List<BendingLevelData> bending = new ArrayList<BendingLevelData>();
-		for (BendingType bLev : bendings.keySet()) {
-			bending.add(bendings.get(bLev).serialize());
-		}
-		result.setBendings(bending);
+		result.setBendings(bendings);
 		result.setBendToItem(bendToItem);
 		result.setItemAbilities(itemAbilities);
 		result.setLanguage(language);
@@ -492,82 +398,6 @@ public class BendingPlayer {
 
 	public static BendingPlayer valueOf(BendingPlayerData data) {
 		return deserialize(data);
-	}
-	
-	public void resetXP() {	
-		for (BendingType type : bendings.keySet()) {
-			bendings.get(type).setXP(bendings.get(type).getXP()*0.95);
-		}
-	}
-	
-	public double getCriticalHit(BendingType type, double damage){
-		double newDamage = damage;
-		BendingLevel playerBending = bendings.get(type);
-		if (playerBending != null) {
-			int level = playerBending.getLevel();
-			double prc = ((level)/(level+2))*0.4;
-			
-			Random rand = new Random();
-			
-			if (rand.nextDouble() < prc) {
-				newDamage += 1;
-				
-				if (level >= 25) {
-					prc = ((level)/(level+2))*0.2;
-					if (rand.nextDouble() < prc) {
-						newDamage += 1;
-					}
-				}		
-			}
-		}	
-		return newDamage;
-	}
-	
-	public void earnXP(BendingType type, IAbility ability) {
-		bendings.get(type).earnXP(ability);
-	}
-	
-	public Integer getLevel (BendingType type) {
-		BendingLevel bLvl = bendings.get(type);
-		if (bLvl == null) {
-			return 0;
-		}
-		else {
-			return bLvl.getLevel();
-		}
-	}
-	
-	public void receiveXP(BendingType type, Integer amount) {
-		bendings.get(type).giveXP(amount);
-	}
-	
-	public void setBendingLevel(BendingType type, Integer level) {
-		if(bendings.containsKey(type)) {
-			bendings.get(type).setLevel(level);
-		}
-		
-	}
-	
-	public long getLastTime(BendingType type) {
-		return bendings.get(type).getLastTime();
-	}
-	
-	public double getSpamHistory(BendingType type) {
-		return bendings.get(type).getSpamHistory();
-	}
-	
-	public double getDegressionFactor(BendingType type) {
-		return bendings.get(type).getDegressFactor();
-	}
-	
-	public int getMaxLevel() {
-		int max = 0;
-		for (BendingType type : bendings.keySet()) {
-			if (bendings.get(type).getLevel() > max) {
-				max = bendings.get(type).getLevel();
-			}
-		}	
-		return max;
 	}
 
 }

@@ -4,7 +4,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
@@ -53,7 +52,6 @@ public class ArcOfFire implements IAbility {
 			new FireStream(location, direction, player, range, this);
 		}
 		bPlayer.cooldown(Abilities.Blaze);
-		bPlayer.earnXP(BendingType.Fire, this);
 	}
 
 	public static String getDescription() {
@@ -62,11 +60,6 @@ public class ArcOfFire implements IAbility {
 				+ "igniting anything in its path."
 				+ " Additionally, tap sneak to engulf the area around you "
 				+ "in roaring flames.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 3;
 	}
 
 	@Override

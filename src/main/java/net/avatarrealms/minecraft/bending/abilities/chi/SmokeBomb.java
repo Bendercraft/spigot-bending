@@ -7,7 +7,6 @@ import java.util.List;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -71,7 +70,6 @@ public class SmokeBomb implements IAbility {
 			}
 			player.addPotionEffect(blindnessBomber);
 			bPlayer.cooldown(Abilities.SmokeBomb);
-			bPlayer.earnXP(BendingType.ChiBlocker,this);
 		}
 	}
 
@@ -132,11 +130,6 @@ public class SmokeBomb implements IAbility {
 
 	public static void removeAll() {
 		instances.clear();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 2;
 	}
 
 	@Override

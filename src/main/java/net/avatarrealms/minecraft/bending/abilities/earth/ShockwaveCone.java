@@ -29,11 +29,6 @@ public class ShockwaveCone implements IAbility {
 	}
 
 	@Override
-	public int getBaseExperience() {
-		return 6;
-	}
-
-	@Override
 	public IAbility getParent() {
 		return parent;
 	}

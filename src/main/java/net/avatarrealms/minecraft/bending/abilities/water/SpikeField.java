@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Random;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -70,12 +68,6 @@ public class SpikeField implements IAbility {
 			Block targetblock = null;
 			for (Entity entity : entities) {
 				if (entity.getEntityId() != p.getEntityId()) {
-					if ((entity instanceof Player)) {
-						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
-						if (bPlayer != null) {
-							bPlayer.earnXP(BendingType.Water, this);
-						}
-					}
 					for (Block block : iceblocks) {
 						if (block.getX() == entity.getLocation().getBlockX()
 								&& block.getZ() == entity.getLocation()
@@ -103,11 +95,6 @@ public class SpikeField implements IAbility {
 				iceblocks.remove(targetblock);
 			}
 		}
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 9;
 	}
 
 	@Override

@@ -12,7 +12,6 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -89,7 +88,6 @@ public class AirBlast implements IAbility {
 		id = ID;
 		instances.put(id, this);
 		bPlayer.cooldown(Abilities.AirBlast);
-		bPlayer.earnXP(BendingType.Air, this);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
@@ -298,11 +296,6 @@ public class AirBlast implements IAbility {
 				+ " A gust of air can extinguish fires on the ground or on a player, can cool lava, and "
 				+ "can flip levers and activate buttons. Additionally, tapping sneak will change the "
 				+ "origin of your next AirBlast to your targeted location.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 5;
 	}
 
 	@Override

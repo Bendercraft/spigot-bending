@@ -9,7 +9,6 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -52,7 +51,6 @@ public class FireProtection implements IAbility {
 			starttime = time;
 			instances.put(player, this);
 			bPlayer.cooldown(Abilities.FireShield);
-			bPlayer.earnXP(BendingType.Fire, this);
 		}
 	}
 
@@ -147,11 +145,6 @@ public class FireProtection implements IAbility {
 
 	public static void removeAll() {
 		instances.clear();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 2;
 	}
 
 	@Override

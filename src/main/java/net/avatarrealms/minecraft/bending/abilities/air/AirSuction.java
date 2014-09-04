@@ -12,7 +12,6 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -84,7 +83,6 @@ public class AirSuction implements IAbility {
 
 		id = ID;
 		instances.put(id, this);
-		bPlayer.earnXP(BendingType.Air,this);
 		bPlayer.cooldown(Abilities.AirSuction);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
@@ -263,11 +261,6 @@ public class AirSuction implements IAbility {
 
 	public static void removeAll() {
 		instances.clear();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 5;
 	}
 
 	@Override

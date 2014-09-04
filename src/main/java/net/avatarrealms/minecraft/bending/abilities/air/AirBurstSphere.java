@@ -41,14 +41,7 @@ public class AirBurstSphere implements IAbility  {
 						pushfactor, this);
 			}
 		}
-		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
-		
 		burst.remove();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 10;
 	}
 
 	@Override

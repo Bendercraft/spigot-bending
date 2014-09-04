@@ -14,7 +14,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -28,9 +27,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
@@ -166,14 +163,6 @@ public class FireBlast implements IAbility {
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
 				location, affectingradius)) {
 			boolean result = affect(entity);
-
-			if (((entity instanceof Player) || (entity instanceof Monster))
-					&& (entity.getEntityId() != player.getEntityId())) {
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.Fire, this);
-				}
-			}
 			// If result is true, do not return here ! we need to iterate fully !
 			if (result == false) {
 				return false;
@@ -230,10 +219,8 @@ public class FireBlast implements IAbility {
 				entity.setVelocity(direction.clone().multiply(pushfactor));
 			}
 			entity.setFireTicks(50);
-			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(
-					BendingType.Fire,
-					PluginTools.firebendingDayAugment((double) damage,
-							entity.getWorld())));
+			EntityTools.damageEntity(player, entity, PluginTools.firebendingDayAugment((double) damage,
+							entity.getWorld()));
 			new Enflamed(entity, player, this);
 			return false;
 		}
@@ -296,11 +283,6 @@ public class FireBlast implements IAbility {
 				+ "Additionally, if you hold sneak, you will charge up the fireblast. "
 				+ "If you release it when it's charged, it will instead launch a powerful "
 				+ "fireball that explodes on contact.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 5;
 	}
 
 	@Override

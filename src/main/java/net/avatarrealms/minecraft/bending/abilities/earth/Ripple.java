@@ -255,13 +255,6 @@ public class Ripple implements IAbility {
 					if (!(entity instanceof FallingBlock)){
 						entities.add(entity); 
 					}
-					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
-						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-						if (bPlayer != null) {
-							bPlayer.earnXP(BendingType.Earth, this);
-						}
-					}
-					
 				}
 			}
 			return true;
@@ -272,7 +265,7 @@ public class Ripple implements IAbility {
 	private void affect(Entity entity) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity instanceof LivingEntity) {
-			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Earth,damage));
+			EntityTools.damageEntity(player, entity, damage);
 		}
 
 		Vector vector = direction.clone();
@@ -313,11 +306,6 @@ public class Ripple implements IAbility {
 
 	public static void removeAll() {
 		instances.clear();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 0;
 	}
 
 	@Override

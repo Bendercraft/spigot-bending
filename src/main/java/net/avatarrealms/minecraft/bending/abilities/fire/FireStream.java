@@ -232,11 +232,6 @@ public class FireStream implements IAbility {
 	}
 
 	@Override
-	public int getBaseExperience() {
-		return 3;
-	}
-
-	@Override
 	public IAbility getParent() {
 		return parent;
 	}

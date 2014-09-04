@@ -6,14 +6,12 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 
 public class Paralyze implements IAbility {
@@ -36,13 +34,6 @@ public class Paralyze implements IAbility {
 					return;
 				} else {
 					cooldowns.remove(targetentity);
-				}
-			}
-			
-			if ((targetentity instanceof Player) ||(targetentity instanceof Monster)) {
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(sourceplayer);
-				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.ChiBlocker, this);
 				}
 			}
 			paralyze(targetentity);
@@ -76,11 +67,6 @@ public class Paralyze implements IAbility {
 	public static String getDescription() {
 		return "Paralyzes the target, making them unable to do anything for a short "
 				+ "period of time. This ability has a long cooldown.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 5;
 	}
 
 	@Override

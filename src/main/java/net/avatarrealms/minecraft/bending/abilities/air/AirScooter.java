@@ -10,7 +10,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -63,7 +62,6 @@ public class AirScooter implements IAbility {
 			angles.add((double) (60 * i));
 		}
 		instances.put(player, this);
-		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
 		progress();
 	}
 
@@ -185,11 +183,6 @@ public class AirScooter implements IAbility {
 			players.add(player);
 		}
 		return players;
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 0;
 	}
 
 	@Override

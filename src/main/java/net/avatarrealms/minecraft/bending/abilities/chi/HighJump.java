@@ -3,7 +3,6 @@ package net.avatarrealms.minecraft.bending.abilities.chi;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
@@ -24,7 +23,6 @@ public class HighJump implements IAbility {
 			return;
 		jump(p);
 		bPlayer.cooldown(Abilities.HighJump);
-		bPlayer.earnXP(BendingType.ChiBlocker,this);
 	}
 
 	private void jump(Player p) {
@@ -40,11 +38,6 @@ public class HighJump implements IAbility {
 
 	public static String getDescription() {
 		return "To use this ability, simply click. You will jump quite high. This ability has a short cooldown.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 1;
 	}
 
 	@Override

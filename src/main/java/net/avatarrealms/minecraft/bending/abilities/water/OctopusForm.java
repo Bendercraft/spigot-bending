@@ -8,7 +8,6 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -20,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -149,16 +147,10 @@ public class OctopusForm implements IAbility {
 			if (BlockTools.isObstructed(location, entity.getLocation())) {
 				continue;
 			}
-				
-			if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
-				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.Water, this);
-				}
-			}
 			entity.setVelocity(Tools
 					.getDirection(player.getLocation(), location).normalize()
 					.multiply(1.75));
-			EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Water,damage));
+			EntityTools.damageEntity(player, entity, damage);
 		}
 	}
 
@@ -464,11 +456,6 @@ public class OctopusForm implements IAbility {
 				+ "While channeling, the water will form itself around you and has a chance to block incoming attacks. "
 				+ "Additionally, you can click while channeling to attack things near you, dealing damage and knocking them back. "
 				+ "Releasing shift at any time will dissipate the form.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 8;
 	}
 
 	@Override

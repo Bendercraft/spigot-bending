@@ -9,7 +9,6 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -21,7 +20,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -252,15 +250,10 @@ public class IceSpike implements IAbility {
 	private void affect(LivingEntity entity) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		entity.setVelocity(thrown);
-		entity.damage(bPlayer.getCriticalHit(BendingType.Water,damage));
+		entity.damage(damage);
 		damaged.add(entity);
 		long slowCooldown = IceSpike2.slowCooldown;
 		int mod = 2;
-		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Water, this);
-			}
-		}
 		if (entity instanceof Player) {
 			if (bPlayer.canBeSlowed()) {
 				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW,
@@ -310,11 +303,6 @@ public class IceSpike implements IAbility {
 				+ " this will launch a spike of ice at your target, dealing a bit of damage and slowing the target. "
 				+ "If you sneak (shift) while not selecting a source, many ice spikes will erupt from around you, "
 				+ "damaging and slowing those targets.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 4;
 	}
 
 	@Override

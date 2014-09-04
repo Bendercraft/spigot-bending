@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -101,10 +99,6 @@ public class Cook implements IAbility {
 		} else {
 			items.setAmount(amount - 1);
 		}
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer != null) {
-			bPlayer.earnXP(BendingType.Fire, this);
-		}
 	}
 
 	private Material getCooked(Material material) {
@@ -150,11 +144,6 @@ public class Cook implements IAbility {
 
 	public static void removeAll() {
 		instances.clear();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 0;
 	}
 
 	@Override

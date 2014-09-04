@@ -14,11 +14,6 @@ public class WaterBubble implements IAbility {
 	}
 
 	@Override
-	public int getBaseExperience() {
-		return 0;
-	}
-
-	@Override
 	public IAbility getParent() {
 		return parent;
 	}

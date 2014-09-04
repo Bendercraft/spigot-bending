@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -56,7 +55,6 @@ public class Collapse implements IAbility {
 
 		if (!baseblocks.isEmpty()) {
 			bPlayer.cooldown(Abilities.Collapse);
-			bPlayer.earnXP(BendingType.Earth, this);
 		}
 
 		for (Block block : baseblocks.keySet()) {
@@ -97,12 +95,7 @@ public class Collapse implements IAbility {
 				+ "This ability is especially risky or deadly in caves, depending on the "
 				+ "earthbender's goal and technique.";
 	}
-
-	@Override
-	public int getBaseExperience() {
-		return 4;
-	}
-
+	
 	@Override
 	public IAbility getParent() {
 		return parent;

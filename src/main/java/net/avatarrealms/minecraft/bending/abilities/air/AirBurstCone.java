@@ -4,8 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 
 public class AirBurstCone implements IAbility  {
@@ -46,13 +44,7 @@ public class AirBurstCone implements IAbility  {
 				}
 			}
 		}
-		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
 		burst.remove();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 6;
 	}
 
 	@Override

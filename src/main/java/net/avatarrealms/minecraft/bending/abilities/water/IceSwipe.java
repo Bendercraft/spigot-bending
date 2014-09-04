@@ -172,12 +172,6 @@ public class IceSwipe implements IAbility{
 		}
 	}
 
-	
-	@Override
-	public int getBaseExperience() {
-		return 4;
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

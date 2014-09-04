@@ -11,7 +11,6 @@ import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -24,7 +23,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -310,13 +308,8 @@ public class EarthBlast implements IAbility {
 						Location location = player.getEyeLocation();
 				 		Vector vector = location.getDirection();
 				 		entity.setVelocity(vector.normalize().multiply(pushfactor));
-				 		EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Earth,damage));
+				 		EntityTools.damageEntity(player, entity, damage);
 						progressing = false;
-						if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {
-							if (bPlayer != null) {
-								bPlayer.earnXP(BendingType.Earth, this);
-							}
-						}
 					}
 				}
 
@@ -536,11 +529,6 @@ public class EarthBlast implements IAbility {
 	public static boolean annihilateBlasts(Location location, double radius,
 			Player source) {
 		return shouldAnnihilateBlasts(location, radius, source, true);
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 5;
 	}
 
 	@Override

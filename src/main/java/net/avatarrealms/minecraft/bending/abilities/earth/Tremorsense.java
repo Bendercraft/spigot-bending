@@ -8,7 +8,6 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -43,7 +42,6 @@ public class Tremorsense implements IAbility {
 			this.player = player;
 			bPlayer.cooldown(Abilities.Tremorsense);
 			activate();
-			bPlayer.earnXP(BendingType.Earth, this);
 		}
 	}
 
@@ -164,11 +162,6 @@ public class Tremorsense implements IAbility {
 				+ "as you have lost contact with the earth and cannot 'see' until you can touch earth again. "
 				+ "Additionally, if you click with this ability selected, smoke will appear above nearby earth "
 				+ "with pockets of air beneath them.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 0;
 	}
 
 	@Override

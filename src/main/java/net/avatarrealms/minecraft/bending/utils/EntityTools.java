@@ -110,11 +110,6 @@ public class EntityTools {
 				&& player.hasPermission("bending.chiblocking." + ability)) {
 			return true;
 		}
-
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer.hasLevel(ability)) {
-			return true;
-		}
 		return false;
 	}
 	
@@ -171,22 +166,10 @@ public class EntityTools {
 	}
 	
 	public static boolean canBendPassive(Player player, BendingType type) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player))
 				&& !AvatarState.isAvatarState(player))
 			return false;
 		if (!player.hasPermission("bending." + type + ".passive")) {
-			if (type == BendingType.Earth
-					&& bPlayer.getLevel(type) >= ConfigManager.earthPassiveLevelRequired) {
-				return true;
-			}
-			if (type == BendingType.Air
-					&& bPlayer.getLevel(type) >= ConfigManager.airPassiveLevelRequired) {
-				return true;
-			}
-			if (type == BendingType.ChiBlocker && bPlayer.getLevel(type) >= 1) {
-				return true;
-			}
 			return false;
 		}
 		if (PluginTools.allowharmless && type != BendingType.Earth)
@@ -202,12 +185,10 @@ public class EntityTools {
 			return false;
 		}
 
-		if (player.hasPermission("bending.water.plantbending")
-				|| bPlayer.hasLevel("plantbending")) {
+		if (player.hasPermission("bending.water.plantbending")) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 	
 	public static void blockChi(Player player, long time) {

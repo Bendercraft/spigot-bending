@@ -7,7 +7,6 @@ import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -52,7 +51,6 @@ public class EarthTunnel implements IAbility {
 		time = System.currentTimeMillis();
 		
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		bPlayer.earnXP(BendingType.Earth, this);
 
 		instances.put(player, this);
 	}
@@ -137,11 +135,6 @@ public class EarthTunnel implements IAbility {
 
 	public static void removeAll() {
 		instances.clear();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 1;
 	}
 
 	@Override

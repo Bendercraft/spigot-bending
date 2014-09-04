@@ -10,8 +10,6 @@ import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -59,7 +57,6 @@ public class AirShield implements IAbility {
 		}
 
 		instances.put(player.getEntityId(), this);
-		BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Air,this);
 	}
 
 	private void rotateShield() {
@@ -192,11 +189,6 @@ public class AirShield implements IAbility {
 				+ "with a small pocket of safe space in the center. "
 				+ "This wind will deflect all projectiles and will prevent any creature from "
 				+ "entering it for as long as its maintained. ";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 1;
 	}
 
 	@Override

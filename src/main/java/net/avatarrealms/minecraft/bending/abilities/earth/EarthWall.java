@@ -4,7 +4,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -59,8 +58,7 @@ public class EarthWall implements IAbility {
 		World world = origin.getWorld();
 
 		boolean cooldown = false;
-		int cpt = 0;
-		for (int i = -halfwidth; i <= halfwidth; i++, cpt++) {
+		for (int i = -halfwidth; i <= halfwidth; i++) {
 			Block block = world.getBlockAt(origin.clone().add(
 					orth.clone().multiply((double) i)));
 
@@ -94,18 +92,9 @@ public class EarthWall implements IAbility {
 				new EarthColumn(player, block.getLocation(), height, this);
 			}
 		}
-
-		if (cpt>0) {
-			bPlayer.earnXP(BendingType.Earth, this);
-		}
 		if (cooldown) {
 			bPlayer.cooldown(Abilities.RaiseEarth);
 		}
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 9;
 	}
 
 	@Override

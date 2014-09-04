@@ -17,7 +17,6 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -30,7 +29,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -212,8 +210,6 @@ public class AirSwipe implements IAbility {
 		elements.clear();
 		elements.putAll(toAdd);
 		List<Vector> toRemove = new LinkedList<Vector>();
-		int cpt = 0;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		for(Entry<Vector, Location> entry : elements.entrySet()) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
@@ -278,12 +274,8 @@ public class AirSwipe implements IAbility {
 						
 						if (!affectedentities.contains(entity)) {
 							if (damage != 0)
-								EntityTools.damageEntity(player, entity, bPlayer.getCriticalHit(BendingType.Air,damage));
+								EntityTools.damageEntity(player, entity, damage);
 							affectedentities.add(entity);
-								
-							if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())) {			
-								cpt++;
-							}
 						}
 						
 						if (entity instanceof Player) {
@@ -294,9 +286,6 @@ public class AirSwipe implements IAbility {
 					}
 				}
 			}
-		}
-		if (cpt>= 1) {
-			bPlayer.earnXP(BendingType.Air,this);
 		}
 		
 		for(Vector direction : toRemove) {
@@ -343,11 +332,6 @@ public class AirSwipe implements IAbility {
 
 	public static void charge(Player player) {
 		new AirSwipe(player, true, null);
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 10;
 	}
 
 	@Override

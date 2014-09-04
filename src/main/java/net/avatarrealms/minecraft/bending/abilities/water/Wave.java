@@ -10,7 +10,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -128,8 +127,6 @@ public class Wave implements IAbility {
 
 		bPlayer.cooldown(Abilities.Surge);
 		if (sourceblock != null) {
-			
-			BendingPlayer.getBendingPlayer(player).earnXP(BendingType.Water,this);
 			if (sourceblock.getWorld() != player.getWorld()) {
 				return;
 			}
@@ -508,11 +505,6 @@ public class Wave implements IAbility {
 				+ "If you look towards a creature when you use this ability, it will target that creature. "
 				+ "Additionally, tapping sneak while the wave is en route will cause that wave to encase the "
 				+ "first target it hits in ice.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 3;
 	}
 
 	@Override

@@ -8,7 +8,6 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
@@ -197,7 +196,6 @@ public class EarthArmor implements IAbility {
 		formed = true;
 		starttime = System.currentTimeMillis();
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		bPlayer.earnXP(BendingType.Earth, this);
 	}
 	
 	private void remove() {
@@ -279,11 +277,6 @@ public class EarthArmor implements IAbility {
 				return false;
 		}
 		return true;
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 6;
 	}
 
 	@Override

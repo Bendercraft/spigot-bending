@@ -87,11 +87,6 @@ public class Plantbending implements IAbility {
 	}
 
 	@Override
-	public int getBaseExperience() {
-		return 0;
-	}
-
-	@Override
 	public IAbility getParent() {
 		return parent;
 	}

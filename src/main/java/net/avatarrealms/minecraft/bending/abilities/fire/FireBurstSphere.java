@@ -3,7 +3,6 @@ package net.avatarrealms.minecraft.bending.abilities.fire;
 import java.util.List;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import org.bukkit.Location;
@@ -48,19 +47,10 @@ public class FireBurstSphere implements IAbility {
 							damage, safeblocks, this);
 				}
 			}
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Fire, this);
-			}
 			burst.remove();
 		}
 	}
-
-	@Override
-	public int getBaseExperience() {
-		return 11;
-	}
-
+	
 	@Override
 	public IAbility getParent() {
 		return parent;

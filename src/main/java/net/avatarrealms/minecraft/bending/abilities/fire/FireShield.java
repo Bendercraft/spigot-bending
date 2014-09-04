@@ -135,11 +135,6 @@ public class FireShield implements IAbility {
 	}
 
 	@Override
-	public int getBaseExperience() {
-		return 2;
-	}
-
-	@Override
 	public IAbility getParent() {
 		return parent;
 	}

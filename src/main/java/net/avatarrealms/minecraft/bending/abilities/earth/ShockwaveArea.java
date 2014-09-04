@@ -25,11 +25,6 @@ public class ShockwaveArea implements IAbility {
 	}
 
 	@Override
-	public int getBaseExperience() {
-		return 11;
-	}
-
-	@Override
 	public IAbility getParent() {
 		return parent;
 	}

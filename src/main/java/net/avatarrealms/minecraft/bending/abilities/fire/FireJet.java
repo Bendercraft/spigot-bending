@@ -10,7 +10,6 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -60,7 +59,6 @@ public class FireJet implements IAbility {
 			// timers.put(player, time);
 			instances.put(player, this);
 			bPlayer.cooldown(Abilities.FireJet);
-			bPlayer.earnXP(BendingType.Fire, this);
 		}
 
 	}
@@ -130,11 +128,6 @@ public class FireJet implements IAbility {
 
 	public static void removeAll() {
 		instances.clear();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 2;
 	}
 
 	@Override

@@ -2,8 +2,6 @@ package net.avatarrealms.minecraft.bending.abilities.water;
 
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -14,7 +12,6 @@ import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -45,12 +42,6 @@ public class HealingWaters implements IAbility {
 				Entity entity = EntityTools.getTargettedEntity(player, range);
 				if (entity instanceof LivingEntity && inWater(entity)) {
 					giveHPToEntity((LivingEntity) entity);
-					if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
-						BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-						if (bPlayer != null) {
-							bPlayer.earnXP(BendingType.Water,new HealingWaters());
-						}
-					}
 				}
 			} else {
 				giveHP(player);
@@ -97,11 +88,6 @@ public class HealingWaters implements IAbility {
 				+ "he/she is channeling the healing to their target in front of them. "
 				+ "In order for this channel to be successful, the user and the target must "
 				+ "be at least partially submerged in water.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 1;
 	}
 
 	@Override

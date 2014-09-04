@@ -9,7 +9,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -21,7 +20,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -168,7 +166,6 @@ public class WallOfFire implements IAbility {
 			entities.remove(player);
 		}
 
-		int cpt = 0;
 		for (LivingEntity entity : entities) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.WallOfFire,
 					entity.getLocation())) {
@@ -177,28 +174,16 @@ public class WallOfFire implements IAbility {
 			for (Block block : blocks) {
 				if (entity.getLocation().distance(block.getLocation()) <= 1.5) {
 					affect(entity);
-					if (((entity instanceof Player) || (entity instanceof Monster))
-							&& (entity.getEntityId() != player.getEntityId())) {
-						cpt++;
-					}
 					break;
 				}
-			}
-		}
-		if (cpt >= 1) {
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Fire, this);
 			}
 		}
 	}
 
 	private void affect(LivingEntity entity) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		entity.setFireTicks(50);
 		entity.setVelocity(new Vector(0, 0, 0));
-		EntityTools.damageEntity(player, entity,
-				bPlayer.getCriticalHit(BendingType.Fire, damage));
+		EntityTools.damageEntity(player, entity, damage);
 		new Enflamed(entity, player, this);
 
 	}
@@ -228,11 +213,6 @@ public class WallOfFire implements IAbility {
 
 	private void remove() {
 		instances.remove(player);
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 6;
 	}
 
 	@Override

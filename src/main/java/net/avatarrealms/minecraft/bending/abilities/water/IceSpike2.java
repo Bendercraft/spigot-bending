@@ -7,7 +7,6 @@ import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.model.TempPotionEffect;
@@ -21,7 +20,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -321,14 +319,6 @@ public class IceSpike2 implements IAbility {
 				player.getWorld());
 		double damage = (int) PluginTools.waterbendingNightAugment(
 				defaultdamage, player.getWorld());
-		damage = bPlayer.getCriticalHit(BendingType.Water, damage);
-		if (((entity instanceof Player) || (entity instanceof Monster))
-				&& (entity.getEntityId() != player.getEntityId())) {
-
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Water, this);
-			}
-		}
 		if (entity instanceof Player) {
 			if (bPlayer.canBeSlowed()) {
 				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW,
@@ -484,11 +474,6 @@ public class IceSpike2 implements IAbility {
 				return true;
 		}
 		return false;
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 4;
 	}
 
 	@Override

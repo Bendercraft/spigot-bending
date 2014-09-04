@@ -4,7 +4,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 
 import org.bukkit.Location;
@@ -48,18 +47,12 @@ public class RingOfFire implements IAbility {
 		}
 
 		bPlayer.cooldown(Abilities.Blaze);
-		bPlayer.earnXP(BendingType.Fire, this);
 	}
 
 	public static String getDescription() {
 		return "To use, simply left-click. "
 				+ "A circle of fire will emanate from you, "
 				+ "engulfing everything around you. Use with extreme caution.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 7;
 	}
 
 	@Override

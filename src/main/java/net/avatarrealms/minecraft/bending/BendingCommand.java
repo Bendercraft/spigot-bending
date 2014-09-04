@@ -11,7 +11,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
 import net.avatarrealms.minecraft.bending.model.BendingType;
-import net.avatarrealms.minecraft.bending.model.data.BendingLevelData;
 import net.avatarrealms.minecraft.bending.model.data.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Metrics;
@@ -54,9 +53,6 @@ public class BendingCommand {
 			"chiblocker", "chiblocking" };
 
 	private final String[] levelAliases = { "level", "lvl", "lv", "l" };
-	private final String[] setlevelAliases = { "setlevel", "slvl" };
-	private final String[] givexpAliases = { "givexp", "gxp", "xp" };
-	private final String[] seeDegressionAliases = { "dxp" };
 	private final String[] saveAliases = { "save" };
 	private final String[] getbackAliases = { "getback" };
 
@@ -246,12 +242,6 @@ public class BendingCommand {
 				version(player, args);
 			} else if (Arrays.asList(levelAliases).contains(arg)) {
 				level(player, args);
-			} else if (Arrays.asList(setlevelAliases).contains(arg)) {
-				setlevel(player, args);
-			} else if (Arrays.asList(givexpAliases).contains(arg)) {
-				giveXP(player, args);
-			} else if (Arrays.asList(seeDegressionAliases).contains(arg)) {
-				seeDegressionFactor(player, args);
 			} else if (Arrays.asList(metricsAlias).contains(arg)) {
 				metrics(player, args);
 			} else if (Arrays.asList(saveAliases).contains(arg)) {
@@ -2111,165 +2101,6 @@ public class BendingCommand {
 
 	}
 
-	private boolean setlevel(Player player, String args[]) {
-		if (player != null) {
-			if (player.hasPermission("bending.admin")) {
-				// b slvl Nokorikatsu Fire 50
-				if (args.length == 4) {
-					Player target = server.getPlayer(args[1]);
-
-					if (target == null) {
-						player.sendMessage(ChatColor.RED + "Your target doesn't exist or is not connected.");
-						return false;
-					}
-
-					BendingType type;
-
-					String element = args[2].toLowerCase();
-					int level = Integer.parseInt(args[3]);
-
-					if (Arrays.asList(firebendingAliases).contains(element)) {
-						type = BendingType.Fire;
-					} else if (Arrays.asList(waterbendingAliases).contains(
-							element)) {
-						type = BendingType.Water;
-					} else if (Arrays.asList(earthbendingAliases).contains(
-							element)) {
-						type = BendingType.Earth;
-					} else if (Arrays.asList(airbendingAliases).contains(
-							element)) {
-						type = BendingType.Air;
-					} else if (Arrays.asList(chiblockingAliases).contains(
-							element)) {
-						type = BendingType.ChiBlocker;
-					} else {
-						player.sendMessage(ChatColor.RED + "Invalid element");
-						return false;
-					}
-					BendingPlayer bPlayer = BendingPlayer
-							.getBendingPlayer(target);
-					bPlayer.setBendingLevel(type, level);
-					target.sendMessage("You have received " + level
-							+ " level(s) for your " + element + " bending");
-					player.sendMessage("You have given " + level
-							+ " level(s) for the " + element + "bending of "
-							+ target.getName());
-					return true;
-				} else {
-					player.sendMessage(ChatColor.RED
-							+ "Bad use of the setlevel command.");
-					return false;
-				}
-			} else {
-				player.sendMessage(ChatColor.RED
-						+ "You're not allowed to do that.");
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private void seeDegressionFactor(Player player, String args[]) {
-		if (player.hasPermission("bending.admin")) {
-			if (args.length != 3) {
-				player.sendMessage(ChatColor.RED
-						+ "Invalid command, should have been <target> <element>");
-				return;
-			}
-			Player target = server.getPlayer(args[1]);
-			if (target == null) {
-				player.sendMessage(ChatColor.RED + "Invalid target");
-				return;
-			}
-			BendingPlayer bTarget = BendingPlayer.getBendingPlayer(target);
-			if (bTarget == null) {
-				player.sendMessage(ChatColor.RED + "Invalid target");
-				return;
-			}
-
-			String element = args[2].toLowerCase();
-			BendingType type = null;
-			if (Arrays.asList(firebendingAliases).contains(element)) {
-				type = BendingType.Fire;
-			} else if (Arrays.asList(waterbendingAliases).contains(element)) {
-				type = BendingType.Water;
-			} else if (Arrays.asList(earthbendingAliases).contains(element)) {
-				type = BendingType.Earth;
-			} else if (Arrays.asList(airbendingAliases).contains(element)) {
-				type = BendingType.Air;
-			} else if (Arrays.asList(chiblockingAliases).contains(element)) {
-				type = BendingType.ChiBlocker;
-			}
-			if (type == null) {
-				player.sendMessage(ChatColor.RED + "Invalid element");
-				return;
-			}
-
-			StringBuilder builder = new StringBuilder();
-			builder.append("Player : " + target.getName()).append("\n");
-			builder.append("  - Degression factor : ")
-					.append(bTarget.getDegressionFactor(type)).append("\n");
-			builder.append("  - Spam history : ")
-					.append(bTarget.getSpamHistory(type)).append("\n");
-			builder.append("  - Last time : ")
-					.append(bTarget.getLastTime(type)).append("\n");
-			builder.append("  - Current time : ")
-					.append(System.currentTimeMillis()).append("\n");
-			builder.append("  - Time diff : ").append(
-					System.currentTimeMillis() - bTarget.getLastTime(type));
-
-			player.sendMessage(builder.toString());
-		} else {
-			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
-		}
-	}
-
-	private boolean giveXP(Player player, String args[]) {
-		if (player.hasPermission("bending.admin")) {
-			// b givexp Nokorikatsu Fire 5000
-			if (args.length == 4) {
-				BendingType type;
-				Player target = server.getPlayer(args[1]);
-				if (target == null) {
-					player.sendMessage(ChatColor.RED + "Your target doesn't exist or is not connected.");
-					return false;
-				}
-				String element = args[2].toLowerCase();
-				int level = Integer.parseInt(args[3]);
-
-				if (Arrays.asList(firebendingAliases).contains(element)) {
-					type = BendingType.Fire;
-				} else if (Arrays.asList(waterbendingAliases).contains(element)) {
-					type = BendingType.Water;
-				} else if (Arrays.asList(earthbendingAliases).contains(element)) {
-					type = BendingType.Earth;
-				} else if (Arrays.asList(airbendingAliases).contains(element)) {
-					type = BendingType.Air;
-				} else if (Arrays.asList(chiblockingAliases).contains(element)) {
-					type = BendingType.ChiBlocker;
-				} else {
-					player.sendMessage(ChatColor.RED + "Invalid element");
-					return false;
-				}
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(target);
-				bPlayer.receiveXP(type, level);
-				target.sendMessage("You have received " + level
-						+ " experiences for your " + element + " bending");
-				player.sendMessage("You have given " + level
-						+ " experiences for the " + element + "bending of "
-						+ target.getName());
-				return true;
-			} else {
-				player.sendMessage(ChatColor.RED
-						+ "Bad use of the givexp command.");
-				return false;
-			}
-		} else {
-			player.sendMessage(ChatColor.RED + "You're not allowed to do that");
-			return false;
-		}
-	}
-
 	private void save(Player player) {
 		if (player == null) {
 			return;
@@ -2291,12 +2122,10 @@ public class BendingCommand {
 		if (player.hasPermission("bending.command.getback")) {
 			BendingPlayer bPl = BendingPlayer.getBendingPlayer(player);
 			BendingPlayerData plData = Tools.tBackup.get(player.getUniqueId());
-			List<BendingLevelData> bData = plData.getBendings();
 			bPl.removeBender();
-			for (BendingLevelData data : bData) {
-				bPl.addBender(data.getBendingType());
-				bPl.setBendingLevel(data.getBendingType(),data.getLevel());
-				bPl.receiveXP(data.getBendingType(),data.getExperience());
+			
+			for (BendingType data : plData.getBendings()) {
+				bPl.addBender(data);
 			}
 			
 			for (Entry<Integer, Abilities> data : plData.getSlotAbilities().entrySet()) {

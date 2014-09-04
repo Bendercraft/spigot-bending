@@ -13,7 +13,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -27,7 +26,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -326,17 +324,10 @@ public class WaterManipulation implements IAbility {
 								damage = AvatarState.getValue(damage);
 							}
 								
-							EntityTools.damageEntity(player, entity,
-									bPlayer.getCriticalHit(BendingType.Water,PluginTools
+							EntityTools.damageEntity(player, entity, PluginTools
 											.waterbendingNightAugment(damage,
-													player.getWorld())));
+													player.getWorld()));
 							progressing = false;
-							
-							if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){	
-								if (bPlayer != null) {
-									bPlayer.earnXP(BendingType.Water, this);
-								}
-							}
 						}
 					}
 				}
@@ -674,11 +665,6 @@ public class WaterManipulation implements IAbility {
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 3;
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.AvatarState;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -24,7 +23,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -556,15 +554,8 @@ public class Torrent implements IAbility {
 				damagedealt = (int) (PluginTools
 						.getWaterbendingNightAugment(world) * (double) damage);
 			}
-			if (((entity instanceof Player) || (entity instanceof Monster))
-					&& (entity.getEntityId() != player.getEntityId())) {
-				if (bPlayer != null) {
-					bPlayer.earnXP(BendingType.Water, this);
-				}
-			}
 
-			EntityTools.damageEntity(player, entity,
-					bPlayer.getCriticalHit(BendingType.Water, damagedealt));
+			EntityTools.damageEntity(player, entity, damagedealt);
 			hurtentities.add(entity);
 
 			entity.setNoDamageTicks(0);
@@ -655,11 +646,6 @@ public class Torrent implements IAbility {
 
 	public static String getDescription() {
 		return "Torrent is one of the strongest moves in a waterbender's arsenal. To use, first click a source block to select it; then hold shift to begin streaming the water around you. Water flowing around you this way will damage and knock back nearby enemies and projectiles. If you release shift during this, you will create a large wave that expands outwards from you, launching anything in its path back. Instead, if you click you release the water and channel it to flow towards your cursor. Anything caught in the blast will be tossed about violently and take damage. Finally, if you click again when the water is torrenting, it will freeze the area around it when it is obstructed.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 6;
 	}
 
 	@Override

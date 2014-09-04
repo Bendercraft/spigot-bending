@@ -10,7 +10,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -49,7 +48,6 @@ public class AirSpout implements IAbility {
 		new Flight(player);
 		instances.put(player, this);
 		bPlayer.cooldown(Abilities.AirSpout);
-		bPlayer.earnXP(BendingType.Air,this);
 		boolean keep = spout();
 		if(!keep) {
 			this.remove();
@@ -203,11 +201,6 @@ public class AirSpout implements IAbility {
 				+ "toggle - click to activate and form a whirling spout of air "
 				+ "beneath you, lifting you up. You can bend other abilities while using AirSpout. "
 				+ "Click again to deactivate this ability.";
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 0;
 	}
 
 	@Override

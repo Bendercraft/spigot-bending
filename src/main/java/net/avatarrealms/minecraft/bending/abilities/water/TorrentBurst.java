@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
-import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.model.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -21,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -192,12 +189,6 @@ public class TorrentBurst implements IAbility {
 		direction.normalize();
 		entity.setVelocity(entity.getVelocity().clone()
 				.add(direction.multiply(factor)));
-		if (((entity instanceof Player) ||(entity instanceof Monster)) && (entity.getEntityId() != player.getEntityId())){
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			if (bPlayer != null) {
-				bPlayer.earnXP(BendingType.Water, this);
-			}
-		}
 	}
 	
 	private void clear() {
@@ -239,11 +230,6 @@ public class TorrentBurst implements IAbility {
 			burst.clear();
 		
 		instances.clear();
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 6;
 	}
 
 	@Override

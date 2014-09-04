@@ -5,12 +5,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.avatarrealms.minecraft.bending.model.Abilities;
+import net.avatarrealms.minecraft.bending.model.BendingType;
 
 import org.bukkit.Material;
 
 public class BendingPlayerData {
 	private UUID player;
-	private List<BendingLevelData> bendings;
+	private List<BendingType> bendings;
 	private String language;
 	private boolean bendToItem;
 	private Map<Integer, Abilities> slotAbilities;
@@ -25,10 +26,10 @@ public class BendingPlayerData {
 	public void setPlayer(UUID player) {
 		this.player = player;
 	}
-	public List<BendingLevelData> getBendings() {
+	public List<BendingType> getBendings() {
 		return bendings;
 	}
-	public void setBendings(List<BendingLevelData> bending) {
+	public void setBendings(List<BendingType> bending) {
 		this.bendings = bending;
 	}
 	public String getLanguage() {

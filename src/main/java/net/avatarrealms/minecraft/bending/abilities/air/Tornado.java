@@ -11,7 +11,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.model.Abilities;
 import net.avatarrealms.minecraft.bending.model.BendingPlayer;
-import net.avatarrealms.minecraft.bending.model.BendingType;
 import net.avatarrealms.minecraft.bending.model.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -63,7 +62,6 @@ public class Tornado implements IAbility {
 		player.setAllowFlight(true);
 		instances.put(player.getEntityId(), this);
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		bPlayer.earnXP(BendingType.Air, this);
 	}
 	
 	private void remove() {
@@ -239,12 +237,7 @@ public class Tornado implements IAbility {
 	public static void removeAll() {
 		instances.clear();
 	}
-
-	@Override
-	public int getBaseExperience() {
-		return 15;
-	}
-
+	
 	@Override
 	public IAbility getParent() {
 		return parent;

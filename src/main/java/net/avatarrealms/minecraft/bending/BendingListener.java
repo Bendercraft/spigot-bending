@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import net.avatarrealms.minecraft.bending.abilities.air.*;
 import net.avatarrealms.minecraft.bending.abilities.chi.*;
@@ -704,17 +703,6 @@ public class BendingListener implements Listener {
 							.isTempBlock(player.getEyeLocation().getBlock()))) {
 				event.setDamage(0);
 				event.setCancelled(true);
-			}
-
-			BendingPlayer bPlayer = BendingPlayer
-					.getBendingPlayer((Player) event.getEntity());
-			if (bPlayer != null && event.getCause() != DamageCause.STARVATION
-					&& event.getCause() != DamageCause.FALL) {
-				int level = bPlayer.getMaxLevel();
-				Random rand = new Random();
-				if (rand.nextDouble() < ((double) level / 2) / 100) {
-					event.setCancelled(true);
-				}
 			}
 		}
 	}

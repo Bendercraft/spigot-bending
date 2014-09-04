@@ -86,7 +86,6 @@ public class WaterWall implements IAbility {
 
 				instances.put(player.getEntityId(), this);
 				time = System.currentTimeMillis();
-				bPlayer.earnXP(BendingType.Water, this);
 			}
 		} else if (prepare()) {
 			if (instances.containsKey(player.getEntityId())) {
@@ -552,11 +551,6 @@ public class WaterWall implements IAbility {
 	
 	public static boolean isWaterWallPart(Block block) {
 		return wallblocks.containsKey(block);
-	}
-
-	@Override
-	public int getBaseExperience() {
-		return 2;
 	}
 
 	@Override
