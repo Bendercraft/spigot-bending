@@ -779,8 +779,9 @@ public class BlockTools {
 	public static boolean locationEquals(Location la, Location lb) {
 		//Difference with the class method : Do not bother the pitch and the yaw
 		
-		if (la.getX() == lb.getX() && la.getY() == lb.getY()
-				&& la.getZ() == lb.getZ()) {
+		if (((int)la.getX() == (int)lb.getX())
+				&& ((int)la.getY() == (int)lb.getY())
+				&& ((int)la.getZ() == (int)lb.getZ())) {
 			return true;
 		}
 		return false;

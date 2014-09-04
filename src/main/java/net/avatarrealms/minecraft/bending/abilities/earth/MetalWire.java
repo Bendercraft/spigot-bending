@@ -19,7 +19,7 @@ public class MetalWire {
 	private static Map<Player, Fish> instances = new HashMap<Player, Fish>();
 	private static Map<Player, Long> noFall = new HashMap<Player, Long>();
 	
-	private final static long timeNoFall = 1500;
+	private final static long timeNoFall = 2200;
 
 	// Will have to replace Fish by FishHook when available
 
