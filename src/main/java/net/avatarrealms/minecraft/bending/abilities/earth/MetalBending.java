@@ -5,8 +5,6 @@ import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
-import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -17,8 +15,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 public class MetalBending {
-
-	private static final int levelRequired = ConfigManager.metalBendingLevelRequired;
 
 	private static Map<Material, Integer> metals = new HashMap<Material, Integer>();
 	static {
