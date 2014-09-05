@@ -19,6 +19,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.AirSpout;
 import net.avatarrealms.minecraft.bending.abilities.air.AirSuction;
 import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
+import net.avatarrealms.minecraft.bending.abilities.air.Suffocate;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
 import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
@@ -30,6 +31,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthColumn;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthGrab;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthPassive;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
+import net.avatarrealms.minecraft.bending.abilities.earth.LavaTrain;
 import net.avatarrealms.minecraft.bending.abilities.earth.Ripple;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
@@ -170,6 +172,11 @@ public class BendingManager implements Runnable {
 		AirSpout.spoutAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "spout")), String.valueOf(System.currentTimeMillis() - temp));
 		
+		temp = System.currentTimeMillis();
+		Suffocate.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "suffocate")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}
 
@@ -221,6 +228,10 @@ public class BendingManager implements Runnable {
 		temp = System.currentTimeMillis();
 		Tremorsense.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("earth", "tremorsense")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
+		LavaTrain.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("earth", "lavatrain")), String.valueOf(System.currentTimeMillis() - temp));
 		
 
 		temp = System.currentTimeMillis();
