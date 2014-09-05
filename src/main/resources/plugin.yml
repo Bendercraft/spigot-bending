@@ -42,6 +42,7 @@ permissions:
       bending.fire.Lightning: false
       bending.fire.FireBurst: false
       bending.fire.FireShield: false
+      bending.fire.FireBlade: false
   bending.water.*:
     description: Allows all water bending.
     children:
@@ -197,6 +198,9 @@ permissions:
     default: false
   bending.fire.FireShield:
     description: Allows the use of FireShield.
+    default: false
+  bending.fire.FireBlade:
+    description: Allows the use of FireBlade.
     default: false
     
 # WATERBENDING PERMISSIONS

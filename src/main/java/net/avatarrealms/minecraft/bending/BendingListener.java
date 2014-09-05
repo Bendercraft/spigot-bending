@@ -384,6 +384,10 @@ public class BendingListener implements Listener {
 				if (ability == Abilities.FireShield) {
 					new FireProtection(player, null);
 				}
+				
+				if (ability == Abilities.FireBlade) {
+					new FireBlade(player);
+				}
 
 			}
 
@@ -1084,8 +1088,13 @@ public class BendingListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if (event.getSlotType() == SlotType.ARMOR
-				&& !EarthArmor.canRemoveArmor((Player) event.getWhoClicked()))
+				&& !EarthArmor.canRemoveArmor((Player) event.getWhoClicked())) {
 			event.setCancelled(true);
+		}
+		
+		if (FireBlade.isFireBlading((Player)event.getWhoClicked()) && FireBlade.isFireBlade(event.getCurrentItem())) {
+			event.setCancelled(true);
+		}
 	}
 	
 	public void onPlayerItemBreak (PlayerItemBreakEvent e) {
@@ -1136,15 +1145,23 @@ public class BendingListener implements Listener {
 			}
 			// Koudja : Since "EarthArmor.removeEffect" already restore player
 			// armor, do not drop it again !
-			/*
-			 * if (EarthArmor.instances.get(event.getEntity()).oldarmor != null)
-			 * { for (ItemStack is :
-			 * EarthArmor.instances.get(event.getEntity()).oldarmor) { if
-			 * (!(is.getType() == Material.AIR)) newdrops.add(is); } }
-			 */
 			event.getDrops().clear();
 			event.getDrops().addAll(newdrops);
 			EarthArmor.removeEffect(event.getEntity());
+		}
+		
+		if (FireBlade.isFireBlading(event.getEntity())) {
+			List<ItemStack> drops = event.getDrops();
+			List<ItemStack> newdrops = new ArrayList<ItemStack>();
+			
+			for (int i = 0; i < drops.size(); i++) {
+				if (!(FireBlade.isFireBlade(drops.get(i))
+						 || drops.get(i).getType() == Material.AIR)) {
+					newdrops.add((drops.get(i)));
+				}	
+			}
+			event.getDrops().clear();
+			event.getDrops().addAll(newdrops);
 		}
 
 		if (EntityTools.isGrabed(event.getEntity())) {
