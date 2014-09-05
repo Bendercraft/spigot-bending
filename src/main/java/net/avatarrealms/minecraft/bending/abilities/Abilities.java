@@ -3,6 +3,10 @@ package net.avatarrealms.minecraft.bending.abilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * This class list all bindable abilities
+ *
+ */
 public enum Abilities {
 	AirBlast(BendingType.Air), 
 	AirBubble(BendingType.Air), 

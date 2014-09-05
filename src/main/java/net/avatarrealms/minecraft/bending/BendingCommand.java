@@ -222,8 +222,6 @@ public class BendingCommand {
 				add(player, args);
 			} else if (Arrays.asList(removeAliases).contains(arg)) {
 				remove(player, args);
-			} else if (Arrays.asList(permaremoveAliases).contains(arg)) {
-				permaremove(player, args);
 			} else if (Arrays.asList(toggleAliases).contains(arg)) {
 				toggle(player, args);
 			} else if (Arrays.asList(displayAliases).contains(arg)) {
@@ -1461,33 +1459,6 @@ public class BendingCommand {
 		printUsageMessage(player,
 				"/bending permaremove <player1> [player2] [player3] ...",
 				"General.permaremove_message");
-	}
-
-	private void permaremove(Player player, String[] args) {
-		if (!hasPermission(player, "bending.admin.permaremove"))
-			return;
-		String playerlist = "";
-		for (int i = 1; i < args.length; i++) {
-			String playername = args[i];
-			String senderName = "The server";
-			if (player != null)
-				senderName = player.getName();
-			Player targetplayer = this.getOnlinePlayer(playername);
-			if (targetplayer != null) {
-				// config.permaRemoveBending(targetplayer);
-				// PlayerStorageWriter.permaRemoveBending(targetplayer);
-				BendingPlayer.getBendingPlayer(targetplayer)
-						.permaremoveBender();
-				targetplayer.sendMessage(senderName
-						+ " "
-						+ PluginTools.getMessage(targetplayer,
-								"General.permaremove_you"));
-				playerlist = playerlist + targetplayer.getName() + " ";
-			}
-		}
-		sendMessage(player,
-				PluginTools.getMessage(player, "General.you_permaremove") + " "
-						+ playerlist);
 	}
 
 	private void printRemoveUsage(Player player) {

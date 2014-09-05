@@ -9,11 +9,11 @@ import org.bukkit.Material;
 public class BendingPlayerData {
 	private UUID player;
 	private List<BendingType> bendings;
+	private List<BendingSpecializationType> specialization;
 	private String language;
 	private boolean bendToItem;
 	private Map<Integer, Abilities> slotAbilities;
 	private Map<Material, Abilities> itemAbilities;
-	private boolean permaRemoved;
 	private long lastTime;
 	
 	
@@ -53,16 +53,16 @@ public class BendingPlayerData {
 	public void setItemAbilities(Map<Material, Abilities> itemAbilities) {
 		this.itemAbilities = itemAbilities;
 	}
-	public boolean isPermaRemoved() {
-		return permaRemoved;
-	}
-	public void setPermaRemoved(boolean permaRemoved) {
-		this.permaRemoved = permaRemoved;
-	}
 	public long getLastTime() {
 		return lastTime;
 	}
 	public void setLastTime(long lastTime) {
 		this.lastTime = lastTime;
+	}
+	public List<BendingSpecializationType> getSpecialization() {
+		return specialization;
+	}
+	public void setSpecialization(List<BendingSpecializationType> specialization) {
+		this.specialization = specialization;
 	}
 }

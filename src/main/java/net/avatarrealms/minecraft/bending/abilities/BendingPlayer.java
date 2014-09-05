@@ -31,6 +31,7 @@ public class BendingPlayer {
 	private Map<Material, Abilities> itemAbilities = new HashMap<Material, Abilities>();
 
 	private List<BendingType> bendings = new LinkedList<BendingType>();
+	private List<BendingSpecializationType> specializations = new LinkedList<BendingSpecializationType>();
 
 	private Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
 
@@ -40,8 +41,6 @@ public class BendingPlayer {
 	private long slowTime = 0;
 
 	private long lasttime = 0;
-
-	private boolean permaremoved = false;
 
 	private boolean tremorsense = true;
 
@@ -193,7 +192,6 @@ public class BendingPlayer {
 	}
 
 	public void addBender(BendingType type) {
-		permaremoved = false;
 		if (!bendings.contains(type))
 			bendings.add(type);
 	}
@@ -206,19 +204,6 @@ public class BendingPlayer {
 	public void removeBender() {
 		bendings.clear();
 		clearAbilities();
-	}
-
-	public void permaremoveBender() {
-		permaremoved = true;
-		removeBender();
-	}
-
-	public boolean isPermaRemoved() {
-		return permaremoved;
-	}
-
-	public void setPermaRemoved(boolean value) {
-		permaremoved = value;
 	}
 
 	public Abilities getAbility() {
@@ -369,8 +354,8 @@ public class BendingPlayer {
 		bendToItem = data.isBendToItem();
 		itemAbilities = data.getItemAbilities();
 		slotAbilities = data.getSlotAbilities();
-
-		permaremoved = data.isPermaRemoved();
+		
+		specializations = data.getSpecialization();
 
 		lasttime = data.getLastTime();
 
@@ -384,7 +369,7 @@ public class BendingPlayer {
 		result.setItemAbilities(itemAbilities);
 		result.setLanguage(language);
 		result.setLastTime(lasttime);
-		result.setPermaRemoved(permaremoved);
+		result.setSpecialization(specializations);
 		result.setPlayer(this.player);
 		result.setSlotAbilities(slotAbilities);
 
