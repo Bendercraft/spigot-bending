@@ -14,7 +14,6 @@ import org.bukkit.potion.PotionEffectType;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
-import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 public class Suffocate implements IAbility {
@@ -55,6 +54,10 @@ public class Suffocate implements IAbility {
 	}
 	
 	public boolean progress() {
+		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
+			return false;
+		}
+		
 		//If bender is no longer on suffocation bend, then remove his bending
 		if(!player.getAbility().equals(Abilities.Suffocate)) {
 			return false;
@@ -103,6 +106,15 @@ public class Suffocate implements IAbility {
 				toRemove.add(suffocate);
 			}
 		}
+		
+		for(Suffocate suffocate : toRemove) {
+			suffocate.remove();
+		}
+	}
+	
+	public static void removeAll() {
+		List<Suffocate> toRemove = new LinkedList<Suffocate>();
+		toRemove.addAll(instances.values());
 		
 		for(Suffocate suffocate : toRemove) {
 			suffocate.remove();

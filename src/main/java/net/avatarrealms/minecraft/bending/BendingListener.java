@@ -345,6 +345,10 @@ public class BendingListener implements Listener {
 				if (ability == Abilities.Shockwave) {
 					new ShockwaveCone(player, null);
 				}
+				
+				if (ability == Abilities.LavaTrain) {
+					new LavaTrain(player, null);
+				}
 
 			}
 

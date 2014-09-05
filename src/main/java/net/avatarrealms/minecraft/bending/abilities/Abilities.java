@@ -30,7 +30,7 @@ public enum Abilities {
 	EarthArmor(BendingType.Earth), 
 	Shockwave(BendingType.Earth), 
 	EarthMelt(BendingSpecializationType.Lavabend), 
-	LavaBlast(BendingSpecializationType.Lavabend), 
+	LavaTrain(BendingSpecializationType.Lavabend), 
 	MetalBending(BendingSpecializationType.Metalbend),
 
 	HeatControl(BendingType.Fire), 
@@ -207,7 +207,7 @@ public enum Abilities {
 		case AirManipulation :
 		case Suffocate :
 		case EarthMelt :
-		case LavaBlast :
+		case LavaTrain :
 		case MetalBending :
 		case Combustion :
 		case FireBlade :
