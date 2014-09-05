@@ -1,19 +1,13 @@
 package net.avatarrealms.minecraft.bending.abilities.fire;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
-import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
-import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
-import net.avatarrealms.minecraft.bending.abilities.water.Plantbending;
-import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -24,139 +18,210 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Furnace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
 
 public class Combustion implements IAbility {
+
 	private static Map<Player, Combustion> instances = new HashMap<Player, Combustion>();
+	//TODO : this variable seems to be never cleared of any of its content, strange
+	private static Map<Entity, Combustion> explosions = new HashMap<Entity, Combustion>();
 
-	static final int maxticks = 10000;
+	private static long defaultchargetime = 2000;
+	private static long interval = 25;
+	private static double radius = 1.5;
 
-	private static double speed = ConfigManager.fireBlastSpeed;
-	public static double affectingradius = 2;
-	private static double pushfactor = ConfigManager.fireBlastPush;
-	private static boolean canPowerFurnace = true;
-	static boolean dissipate = ConfigManager.fireBlastDissipate;
-	public static byte full = 0x0;
-
-	private Location location;
-	private List<Block> safe = new LinkedList<Block>();
-	private Location origin;
-	private Vector direction;
+	private double range = 20;
+	private int maxdamage = 4;
+	private double explosionradius = 6;
+	private double innerradius = 3;
 	private Player player;
-	private double speedfactor;
-	private int ticks = 0;
-	private int damage = ConfigManager.fireBlastDamage;
-	double range = ConfigManager.fireBlastRange;
+	private Location origin;
+	private Location location;
+	private Vector direction;
+	private long starttime;
+	private long time;
+	private long chargetime = defaultchargetime;
+	private boolean charged = false;
+	private boolean launched = false;
+	private TNTPrimed explosion = null;
 	private IAbility parent;
 
 	public Combustion(Player player, IAbility parent) {
 		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (bPlayer.isOnCooldown(Abilities.Combustion))
-			return;
-		
-		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		this.player = player;
-		location = player.getEyeLocation();
-		origin = player.getEyeLocation();
-		direction = player.getEyeLocation().getDirection().normalize();
-		location = location.add(direction.clone());
-		instances.put(player, this);
-		bPlayer.cooldown(Abilities.Combustion);
+		time = System.currentTimeMillis();
+		starttime = time;
+		if (Tools.isDay(player.getWorld())) {
+			chargetime = (long) (chargetime / ConfigManager.dayFactor);
+		}
+		if (AvatarState.isAvatarState(player)) {
+			chargetime = 0;
+			maxdamage = AvatarState.getValue(maxdamage);
+		}
+		range = PluginTools.firebendingDayAugment(range, player.getWorld());
+		if (!player.getEyeLocation().getBlock().isLiquid()) {
+			instances.put(player, this);
+		}
+
 	}
 
 	private boolean progress() {
-		// TODO : Make it redirectable EDIT: Nope, will make another skill
-		if (player.isDead() || !player.isOnline()) {
+		if ((!EntityTools.canBend(player, Abilities.Combustion) 
+				|| EntityTools.getBendingAbility(player) != Abilities.Combustion) && !launched) {
 			return false;
 		}
 
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion, location)) {
+		if (System.currentTimeMillis() > starttime + chargetime) {
+			charged = true;
+		}
+
+		if (!player.isSneaking() && !charged) {
+			new FireBlast(player, this);
 			return false;
 		}
 
-		speedfactor = speed * (Bending.time_step / 1000.);
-
-		ticks++;
-
-		if (ticks > maxticks) {
-			return false;
+		if (!player.isSneaking() && !launched) {
+			launched = true;
+			location = player.getEyeLocation();
+			origin = location.clone();
+			direction = location.getDirection().normalize().multiply(radius);
 		}
 
-		Block block = location.getBlock();
-		if (BlockTools.isSolid(block) || block.isLiquid()) {
-			if ((block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
-					&& canPowerFurnace) {
-				BlockState state = block.getState();
-				Furnace furnace = (Furnace) state;
-				FurnaceInventory inv = furnace.getInventory();
-				if (inv.getFuel() == null) {
-					ItemStack temp = inv.getSmelting();
-					ItemStack tempfuel = new ItemStack(Material.SAPLING, 1);
-					ItemStack tempsmelt = new ItemStack(Material.COBBLESTONE);
-					inv.setFuel(tempfuel);
-					inv.setSmelting(tempsmelt);
-					state.update(true);
-					inv.setSmelting(temp);
-					state.update(true);
+		if (System.currentTimeMillis() > time + interval) {
+			if (launched)
+				if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion,
+						location)) {
+					return false;
 				}
-			} else if (FireStream.isIgnitable(player,
-					block.getRelative(BlockFace.UP))) {
-				ignite(location);
+
+			time = System.currentTimeMillis();
+
+			if (!launched && !charged)
+				return true;
+			if (!launched) {
+				player.getWorld().playEffect(player.getEyeLocation(),
+						Effect.BLAZE_SHOOT, 0, 3);
+				return true ;
 			}
-			return false;
+
+			location = location.clone().add(direction);
+			if (location.distance(origin) > range) {
+				return false;
+			}
+
+			if (BlockTools.isSolid(location.getBlock())) {
+				explode();
+				return false;
+			} else if (location.getBlock().isLiquid()) {
+				return false;
+			}
+
+			return fireball();
+		}
+		return true;
+	}
+
+	public static Combustion getFireball(Entity entity) {
+		return explosions.get(entity);
+	}
+
+	public void dealDamage(Entity entity) {
+		if (explosion == null)
+			return;
+		// if (Tools.isObstructed(explosion.getLocation(),
+		// entity.getLocation())) {
+		// return 0;
+		// }
+		double distance = entity.getLocation()
+				.distance(explosion.getLocation());
+		if (distance > explosionradius)
+			return;
+		if (distance < innerradius) {
+			EntityTools.damageEntity(player, entity, maxdamage);
+			return;
+		}
+		double slope = -(maxdamage * .5) / (explosionradius - innerradius);
+
+		double damage = slope * (distance - innerradius) + maxdamage;
+		EntityTools.damageEntity(player, entity, (int) damage);
+	}
+
+	private boolean fireball() {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+			block.getWorld().playEffect(block.getLocation(),
+					Effect.MOBSPAWNER_FLAMES, 0, 20);
 		}
 
-		if (location.distance(origin) > range) {
-			return false;
-		}
-
-		PluginTools.removeSpouts(location, player);
-
-		double radius = Combustion.affectingradius;
-		Player source = player;
-		if (EarthBlast.annihilateBlasts(location, radius, source)
-				|| WaterManipulation.annihilateBlasts(location, radius, source)
-				|| Combustion.shouldAnnihilateBlasts(location, radius, source,
-						false)) {
-			return false;
-		}
-
-		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
-				location, affectingradius)) {
-			boolean result = affect(entity);
-			// If result is true, do not return here ! we need to iterate fully !
-			if (result == false) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
+			if (entity.getEntityId() == player.getEntityId()) {
+				continue;
+			}
+			entity.setFireTicks(120);
+			if (entity instanceof LivingEntity) {
+				explode();
 				return false;
 			}
 		}
-
-		// Advance location
-		location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 0,
-				(int) range);
-		location = location.add(direction.clone().multiply(speedfactor));
-
 		return true;
+	}
+
+	public static boolean isCharging(Player player) {
+		for (Combustion ball : instances.values()) {
+			if (ball.player == player && !ball.launched)
+				return true;
+		}
+		return false;
+	}
+
+	private void explode() {
+		// List<Block> blocks = Tools.getBlocksAroundPoint(location, 3);
+		// List<Block> blocks2 = new ArrayList<Block>();
+
+		// Tools.verbose("Fireball Explode!");
+		boolean explode = true;
+		for (Block block : BlockTools.getBlocksAroundPoint(location, 3)) {
+			if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion,
+					block.getLocation())) {
+				explode = false;
+				break;
+			}
+		}
+		if (explode) {
+			explosion = player.getWorld().spawn(location, TNTPrimed.class);
+			explosion.setFuseTicks(0);
+			float yield = 1;
+			switch (player.getWorld().getDifficulty()) {
+			case PEACEFUL:
+				yield *= 2.;
+				break;
+			case EASY:
+				yield *= 2.;
+				break;
+			case NORMAL:
+				yield *= 1.;
+				break;
+			case HARD:
+				yield *= 3. / 4.;
+				break;
+			}
+			explosion.setYield(yield);
+			explosions.put(explosion, this);
+		}
+		// location.getWorld().createExplosion(location, 1);
+		ignite(location);
 	}
 
 	private void ignite(Location location) {
 		for (Block block : BlockTools.getBlocksAroundPoint(location,
-				affectingradius)) {
-			if (FireStream.isIgnitable(player, block) && !safe.contains(block)) {
-				if (BlockTools.isPlant(block))
-					new Plantbending(block, this);
+				FireBlast.affectingradius)) {
+			if (FireStream.isIgnitable(player, block)) {
 				block.setType(Material.FIRE);
-				if (dissipate) {
-					FireStream.addIgnitedBlock(block, player,
-							System.currentTimeMillis());
+				if (FireBlast.dissipate) {
+					FireStream.addIgnitedBlock(block, player, System.currentTimeMillis());
 				}
 			}
 		}
@@ -164,87 +229,69 @@ public class Combustion implements IAbility {
 
 	public static void progressAll() {
 		List<Combustion> toRemove = new LinkedList<Combustion>();
-		for (Combustion fireblast : instances.values()) {
-			boolean keep = fireblast.progress();
-			if (!keep) {
-				toRemove.add(fireblast);
+		for (Combustion fireball : instances.values()) {
+			boolean keep = fireball.progress();
+			if(!keep) {
+				toRemove.add(fireball);
 			}
 		}
-		for (Combustion fireblast : toRemove) {
-			fireblast.remove();
+		for(Combustion fireball : toRemove) {
+			fireball.remove();
 		}
 	}
 
-	private void remove() {
+	public void remove() {
 		instances.remove(this.player);
-	}
-
-	private boolean affect(LivingEntity entity) {
-		if (entity.getEntityId() != player.getEntityId()) {
-			if (AvatarState.isAvatarState(player)) {
-				entity.setVelocity(direction.clone().multiply(
-						AvatarState.getValue(pushfactor)));
-			} else {
-				entity.setVelocity(direction.clone().multiply(pushfactor));
-			}
-			entity.setFireTicks(50);
-			EntityTools.damageEntity(player, entity, PluginTools.firebendingDayAugment((double) damage,
-							entity.getWorld()));
-			new Enflamed(entity, player, this);
-			return false;
-		}
-		return true;
-	}
-
-	public static void removeFireBlastsAroundPoint(Location location,
-			double radius) {
-		List<Combustion> toRemove = new ArrayList<Combustion>();
-		for (Combustion combustion : instances.values()) {
-			Location fireblastlocation = combustion.location;
-			if (location.getWorld() == fireblastlocation.getWorld()) {
-				if (location.distance(fireblastlocation) <= radius)
-					toRemove.add(combustion);
-			}
-		}
-		Fireball.removeFireballsAroundPoint(location, radius);
-	}
-
-	private static boolean shouldAnnihilateBlasts(Location location,
-			double radius, Player source, boolean remove) {
-		boolean broke = false;
-		List<Combustion> toRemove = new ArrayList<Combustion>();
-		for (Combustion combustion : instances.values()) {
-			Location fireblastlocation = combustion.location;
-			if (location.getWorld() == fireblastlocation.getWorld()
-					&& !combustion.player.equals(source)) {
-				if (location.distance(fireblastlocation) <= radius) {
-					toRemove.add(combustion);
-					broke = true;
-				}
-			}
-		}
-		if (Fireball.annihilateBlasts(location, radius, source))
-			broke = true;
-		if (remove) {
-			for (Combustion fireblast : toRemove) {
-				fireblast.remove();
-			}
-		}
-		return broke;
-	}
-
-	public static boolean annihilateBlasts(Location location, double radius,
-			Player source) {
-		return shouldAnnihilateBlasts(location, radius, source, true);
 	}
 
 	public static void removeAll() {
 		instances.clear();
 	}
 
+	public static void removeFireballsAroundPoint(Location location,
+			double radius) {
+		List<Combustion> toRemove = new LinkedList<Combustion>();
+		for (Combustion fireball : instances.values()) {
+			if (!fireball.launched)
+				continue;
+			Location fireblastlocation = fireball.location;
+			if (location.getWorld() == fireblastlocation.getWorld()) {
+				if (location.distance(fireblastlocation) <= radius)
+					toRemove.add(fireball);
+			}
+		}
+		for(Combustion fireball : toRemove) {
+			fireball.remove();
+		}
+	}
+
+	public static boolean annihilateBlasts(Location location, double radius,
+			Player source) {
+		boolean broke = false;
+		List<Combustion> toRemove = new LinkedList<Combustion>();
+		for (Combustion fireball : instances.values()) {
+			if (!fireball.launched)
+				continue;
+			Location fireblastlocation = fireball.location;
+			if (location.getWorld() == fireblastlocation.getWorld()
+					&& !source.equals(fireball.player)) {
+				if (location.distance(fireblastlocation) <= radius) {
+					fireball.explode();
+					toRemove.add(fireball);
+					broke = true;
+				}
+			}
+		}
+		
+		for(Combustion fireball : toRemove) {
+			fireball.remove();
+		}
+
+		return broke;
+	}
+
 	@Override
 	public IAbility getParent() {
 		return parent;
 	}
-
 }
