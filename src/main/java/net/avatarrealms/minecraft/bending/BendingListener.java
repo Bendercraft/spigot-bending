@@ -864,6 +864,11 @@ public class BendingListener implements Listener {
 					toblock.setType(Material.AIR);
 			}
 		}
+		if(BlockTools.isLava(fromblock)) {
+			if(LavaTrain.isLavaPart(fromblock)) {
+				event.setCancelled(true);
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

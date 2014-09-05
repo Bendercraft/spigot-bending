@@ -11,7 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
@@ -25,11 +24,12 @@ public class LavaTrain implements IAbility {
 	private static Map<Player, LavaTrain> instances = new HashMap<Player, LavaTrain>();
 	
 	//public static double speed = ConfigManager.lavaTrainSpeed;
-	public static double speed = 2;
+	public static double speed = 10;
+	private static long interval = (long) (1000. / speed);
 	public static int range = 7;
-	public static int trainWidth = 3;
-	public static int reachWidth = 5;
-	public static int maxticks = 10000;
+	public static int trainWidth = 1;
+	public static int reachWidth = 3;
+	public static int keepAlive = 10000; //ms
 	private static final byte full = 0x0;
 	
 	private IAbility parent;
@@ -37,9 +37,11 @@ public class LavaTrain implements IAbility {
 	private Location current;
 	private Vector direction;
 	private BendingPlayer player;
-	private int ticks = 0;
+	private boolean reached = false;
 	
 	private List<Block> affecteds = new LinkedList<Block>();
+
+	private long time;
 	
 	public LavaTrain(Player player, IAbility parent) {
 		if(instances.containsKey(player)) {
@@ -48,17 +50,20 @@ public class LavaTrain implements IAbility {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer.isOnCooldown(Abilities.LavaTrain))
 			return;
-		
 		if(!EntityTools.canBend(player, Abilities.LavaTrain)) {
 			return;
 		}
 		
 		this.parent = parent;
 		this.player = bPlayer;
-		origin = player.getEyeLocation();
-		current = origin;
-		direction = player.getEyeLocation().getDirection().normalize();
 		
+		this.direction = player.getEyeLocation().getDirection().clone();
+		this.direction.setY(0);
+		origin = player.getLocation().clone().add(direction.clone().multiply(trainWidth+1));
+		origin.setY(origin.getY()-1);
+		current = origin.clone();
+		
+		time = System.currentTimeMillis();
 		bPlayer.cooldown(Abilities.LavaTrain);
 		instances.put(player, this);
 	}
@@ -70,32 +75,40 @@ public class LavaTrain implements IAbility {
 		if (Tools.isRegionProtectedFromBuild(player.getPlayer(), Abilities.LavaTrain, current)) {
 			return false;
 		}
-		if(origin.distance(current) > range) {
-			ticks++;
-			if (ticks > maxticks) {
+		if (System.currentTimeMillis() - time >= interval) {
+			if(origin.distance(current) >= range) {
+				if(!reached) {
+					List<Block> potentialsBlocks = BlockTools.getBlocksOnPlane(current, reachWidth);
+					for(Block potentialsBlock : potentialsBlocks) {
+						if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
+							new TempBlock(potentialsBlock, Material.LAVA, full);
+							affecteds.add(potentialsBlock);
+						}
+					}
+					reached = true;
+				} else {
+					if (System.currentTimeMillis() - time > keepAlive) {
+						return false;
+					}
+					return true;
+				}
+			} else {
+				List<Block> potentialsBlocks = BlockTools.getBlocksOnPlane(current, trainWidth);
+				for(Block potentialsBlock : potentialsBlocks) {
+					if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
+						new TempBlock(potentialsBlock, Material.LAVA, full);
+						affecteds.add(potentialsBlock);
+					}
+				}
+			}
+			
+			if(affecteds.isEmpty()) {
 				return false;
 			}
-		} else if(origin.distance(current) == range) {
-			List<Block> potentialsBlocks = BlockTools.getBlocksAroundPoint(current, reachWidth);
-			for(Block potentialsBlock : potentialsBlocks) {
-				if(potentialsBlock.getType().equals(Material.DIRT)) {
-					new TempBlock(potentialsBlock, Material.LAVA, full);
-					affecteds.add(potentialsBlock);
-				}
-			}
-		} else {
-			List<Block> potentialsBlocks = BlockTools.getBlocksAroundPoint(current, trainWidth);
-			for(Block potentialsBlock : potentialsBlocks) {
-				if(potentialsBlock.getType().equals(Material.DIRT)) {
-					new TempBlock(potentialsBlock, Material.LAVA, full);
-					affecteds.add(potentialsBlock);
-				}
-			}
+			
+			time = System.currentTimeMillis();
+			current = current.clone().add(direction);
 		}
-		
-		//Prepare next current
-		double speedfactor = speed * (Bending.time_step / 1000.);
-		current.add(direction.clone().multiply(speedfactor));
 		
 		return true;
 	}
@@ -108,7 +121,7 @@ public class LavaTrain implements IAbility {
 			}
 		}
 		affecteds.clear();
-		instances.remove(this.player);
+		instances.remove(this.player.getPlayer());
 	}
 	
 	public static void progressAll() {
@@ -131,6 +144,28 @@ public class LavaTrain implements IAbility {
 		for(LavaTrain train : toRemove) {
 			train.remove();
 		}
+	}
+	
+	private boolean isBendable(Material material) {
+		if(material.equals(Material.DIRT)) {
+			return true;
+		}
+		if(material.equals(Material.GRASS)) {
+			return true;
+		}
+		if(material.equals(Material.GRAVEL)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isLavaPart(Block block) {
+		for(LavaTrain train : instances.values()) {
+			if(train.affecteds.contains(block)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
