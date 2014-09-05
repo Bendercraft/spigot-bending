@@ -5,7 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -23,7 +24,7 @@ public class Suffocate implements IAbility {
 	
 	private IAbility parent;
 	private BendingPlayer player;
-	private Location location;
+	private Block location;
 	private Player target;
 	
 	public Suffocate(Player player, IAbility parent) {
@@ -46,7 +47,7 @@ public class Suffocate implements IAbility {
 		
 		this.parent = parent;
 		this.player = bPlayer;
-		this.location = player.getLocation();
+		this.location = player.getLocation().getBlock();
 		this.target = (Player)target;
 		
 		bPlayer.cooldown(Abilities.Suffocate);
@@ -54,6 +55,7 @@ public class Suffocate implements IAbility {
 	}
 	
 	public boolean progress() {
+		Bukkit.getLogger().info("Suffocate : progress");
 		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
 			return false;
 		}
@@ -64,7 +66,7 @@ public class Suffocate implements IAbility {
 		}
 		
 		//If bender has moved (for some reason), remove this bending
-		if(!this.location.equals(player.getPlayer().getLocation())) {
+		if(!this.location.equals(player.getPlayer().getLocation().getBlock())) {
 			return false;
 		}
 		
@@ -80,15 +82,15 @@ public class Suffocate implements IAbility {
 		
 		//Target should be slowed to hell
 		if(!target.hasPotionEffect(PotionEffectType.SLOW)) {
-			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1, 1));
+			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 500, 1));
 		}
 		//Target is weakened
-		if(target.hasPotionEffect(PotionEffectType.WEAKNESS)) {
-			target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 1, 1));
+		if(!target.hasPotionEffect(PotionEffectType.WEAKNESS)) {
+			target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 500, 1));
 		}
 		//Target is poisoned
-		if(target.hasPotionEffect(PotionEffectType.POISON)) {
-			target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 1, 1));
+		if(!target.hasPotionEffect(PotionEffectType.POISON)) {
+			target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 500, 1));
 		}
 		
 		//TODO : Decrease the breath level of the target
@@ -99,7 +101,7 @@ public class Suffocate implements IAbility {
 	
 	public void remove() {
 		//Potions effects will end naturally, so leave them be
-		instances.remove(this.player);
+		instances.remove(this.player.getPlayer());
 	}
 	
 	public static void progressAll() {
