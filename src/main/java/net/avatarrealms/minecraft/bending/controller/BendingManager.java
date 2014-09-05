@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.Bending;
-import net.avatarrealms.minecraft.bending.abilities.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
@@ -34,6 +33,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
 import net.avatarrealms.minecraft.bending.abilities.earth.Ripple;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
+import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
 import net.avatarrealms.minecraft.bending.abilities.fire.Enflamed;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;

@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
-import net.avatarrealms.minecraft.bending.abilities.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;

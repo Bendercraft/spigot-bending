@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
-import net.avatarrealms.minecraft.bending.abilities.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.air.*;
 import net.avatarrealms.minecraft.bending.abilities.chi.*;
 import net.avatarrealms.minecraft.bending.abilities.earth.*;
+import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.*;
 import net.avatarrealms.minecraft.bending.abilities.water.*;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;

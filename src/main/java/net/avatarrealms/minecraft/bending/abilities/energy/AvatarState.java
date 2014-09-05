@@ -1,10 +1,11 @@
-package net.avatarrealms.minecraft.bending.abilities;
+package net.avatarrealms.minecraft.bending.abilities.energy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 

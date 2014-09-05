@@ -10,10 +10,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
-import net.avatarrealms.minecraft.bending.abilities.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
+import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 

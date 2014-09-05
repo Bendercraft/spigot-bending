@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
-import net.avatarrealms.minecraft.bending.abilities.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBurst;
@@ -29,6 +28,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthGrab;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
+import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.ArcOfFire;
 import net.avatarrealms.minecraft.bending.abilities.fire.Extinguish;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
