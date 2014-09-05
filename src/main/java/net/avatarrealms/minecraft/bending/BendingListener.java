@@ -290,11 +290,6 @@ public class BendingListener implements Listener {
 					new AirSuction(player, null);
 				}
 
-				/*
-				 * if (ability == Abilities.AirBubble) { new
-				 * AirBubble(player,null); }
-				 */
-
 				if (ability == Abilities.AirSwipe) {
 					new AirSwipe(player, null);
 				}
@@ -311,6 +306,9 @@ public class BendingListener implements Listener {
 					new AirBurstCone(player, null);
 				}
 
+				if (ability == Abilities.Suffocate) {
+					new Suffocate(player, null);
+				}
 			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())
@@ -346,6 +344,10 @@ public class BendingListener implements Listener {
 
 				if (ability == Abilities.Shockwave) {
 					new ShockwaveCone(player, null);
+				}
+				
+				if (ability == Abilities.LavaTrain) {
+					new LavaTrain(player, null);
 				}
 
 			}

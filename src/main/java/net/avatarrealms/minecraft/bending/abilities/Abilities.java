@@ -18,7 +18,7 @@ public enum Abilities {
 	AirBurst(BendingType.Air), 
 	AirManipulation(BendingType.Air), 
 	Tornado(BendingSpecializationType.Tornado), 
-	LungsControl(BendingSpecializationType.Suffocate),
+	Suffocate(BendingSpecializationType.Suffocate),
 
 	Catapult(BendingType.Earth), 
 	RaiseEarth(BendingType.Earth), 
@@ -30,7 +30,7 @@ public enum Abilities {
 	EarthArmor(BendingType.Earth), 
 	Shockwave(BendingType.Earth), 
 	EarthMelt(BendingSpecializationType.Lavabend), 
-	LavaBlast(BendingSpecializationType.Lavabend), 
+	LavaTrain(BendingSpecializationType.Lavabend), 
 	MetalBending(BendingSpecializationType.Metalbend),
 
 	HeatControl(BendingType.Fire), 
@@ -205,9 +205,9 @@ public enum Abilities {
 		// Temp method to make players not see new abilities
 		switch (ability) {
 		case AirManipulation :
-		case LungsControl :
+		case Suffocate :
 		case EarthMelt :
-		case LavaBlast :
+		case LavaTrain :
 		case MetalBending :
 		case Combustion :
 		case FireBlade :
