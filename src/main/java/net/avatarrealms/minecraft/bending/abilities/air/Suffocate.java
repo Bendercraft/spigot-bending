@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -20,12 +20,17 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 public class Suffocate implements IAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	//private int distance = ConfigManager.suffocateDistance;
-	private int distance = 10;
+	private static int distance = 10;
+	private static int baseDamage = 1;
+	public static double speed = 1;
+	private static long interval = (long) (1000. / speed);
 	
 	private IAbility parent;
 	private BendingPlayer player;
 	private Block location;
 	private Player target;
+	private Block targetLocation;
+	private long time;
 	
 	public Suffocate(Player player, IAbility parent) {
 		if(instances.containsKey(player)) {
@@ -49,13 +54,13 @@ public class Suffocate implements IAbility {
 		this.player = bPlayer;
 		this.location = player.getLocation().getBlock();
 		this.target = (Player)target;
+		this.targetLocation = this.target.getLocation().getBlock();
 		
 		bPlayer.cooldown(Abilities.Suffocate);
 		instances.put(player, this);
 	}
 	
 	public boolean progress() {
-		Bukkit.getLogger().info("Suffocate : progress");
 		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
 			return false;
 		}
@@ -88,9 +93,22 @@ public class Suffocate implements IAbility {
 		if(!target.hasPotionEffect(PotionEffectType.WEAKNESS)) {
 			target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 500, 1));
 		}
-		//Target is poisoned
-		if(!target.hasPotionEffect(PotionEffectType.POISON)) {
-			target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 500, 1));
+		
+		if (System.currentTimeMillis() - time >= interval) {
+			time = System.currentTimeMillis();
+			double addtionnalDamage = 0;
+			try {
+				addtionnalDamage = (this.targetLocation.getLocation().distance(target.getLocation())/10);
+				if(addtionnalDamage > 6) {
+					addtionnalDamage = 6;
+				}
+			} catch(Exception e) {
+				//Quiet, does not matter
+			}
+			target.getWorld().playEffect(target.getEyeLocation(), Effect.SMOKE, 4);
+			target.damage(baseDamage+addtionnalDamage);
+					
+			this.targetLocation = target.getLocation().getBlock();
 		}
 		
 		//TODO : Decrease the breath level of the target
