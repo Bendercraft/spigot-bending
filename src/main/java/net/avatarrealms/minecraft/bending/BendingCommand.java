@@ -52,7 +52,6 @@ public class BendingCommand {
 	private final String[] chiblockingAliases = { "chi", "c", "chiblock",
 			"chiblocker", "chiblocking" };
 
-	private final String[] levelAliases = { "level", "lvl", "lv", "l" };
 	private final String[] saveAliases = { "save" };
 	private final String[] getbackAliases = { "getback" };
 
@@ -240,8 +239,6 @@ public class BendingCommand {
 				bindMode(player, args);
 			} else if (Arrays.asList(versionAliases).contains(arg)) {
 				version(player, args);
-			} else if (Arrays.asList(levelAliases).contains(arg)) {
-				level(player, args);
 			} else if (Arrays.asList(metricsAlias).contains(arg)) {
 				metrics(player, args);
 			} else if (Arrays.asList(saveAliases).contains(arg)) {
@@ -1289,7 +1286,9 @@ public class BendingCommand {
 
 			boolean none = true;
 			boolean item = bPlayer.getBendToItem();
-
+			for(BendingSpecializationType spe : bPlayer.getSpecializations()) {
+				sendMessage(player, "You have specialization "+spe.name()+" for element "+spe.getElement().name());
+			}
 			if (!item) {
 				for (int i = 0; i <= 8; i++) {
 					// Abilities a = config.getAbility(player, i);
@@ -2093,25 +2092,6 @@ public class BendingCommand {
 			return;
 
 		}
-
-	}
-
-	private boolean level(Player player, String args[]) {
-		// b lvl
-		// b lvl Nokorikatsu
-		BendingPlayer bPlayer;
-		if (args.length <= 1) {
-			bPlayer = BendingPlayer.getBendingPlayer(player);
-		} else {
-			Player target = this.getOnlinePlayer(args[1]);
-			if (target == null) {
-				player.sendMessage(ChatColor.RED + "Your target doesn't exist or is not connected.");
-				return false;
-			}
-			bPlayer = BendingPlayer.getBendingPlayer(target);
-		}
-		player.sendMessage(bPlayer.bendingsToString());
-		return true;
 
 	}
 

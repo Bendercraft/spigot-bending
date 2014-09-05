@@ -78,13 +78,7 @@ public class LavaTrain implements IAbility {
 		if (System.currentTimeMillis() - time >= interval) {
 			if(origin.distance(current) >= range) {
 				if(!reached) {
-					List<Block> potentialsBlocks = BlockTools.getBlocksOnPlane(current, reachWidth);
-					for(Block potentialsBlock : potentialsBlocks) {
-						if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
-							new TempBlock(potentialsBlock, Material.LAVA, full);
-							affecteds.add(potentialsBlock);
-						}
-					}
+					this.affectBlocks(current, reachWidth);
 					reached = true;
 				} else {
 					if (System.currentTimeMillis() - time > keepAlive) {
@@ -93,13 +87,7 @@ public class LavaTrain implements IAbility {
 					return true;
 				}
 			} else {
-				List<Block> potentialsBlocks = BlockTools.getBlocksOnPlane(current, trainWidth);
-				for(Block potentialsBlock : potentialsBlocks) {
-					if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
-						new TempBlock(potentialsBlock, Material.LAVA, full);
-						affecteds.add(potentialsBlock);
-					}
-				}
+				this.affectBlocks(current, trainWidth);
 			}
 			
 			if(affecteds.isEmpty()) {
@@ -111,6 +99,20 @@ public class LavaTrain implements IAbility {
 		}
 		
 		return true;
+	}
+	
+	private void affectBlocks(Location current, int width) {
+		for(int i=0; i <= 2 ; i++) {
+			Location tmp = current.clone();
+			tmp.setY(current.getY()+i);
+			List<Block> potentialsBlocks = BlockTools.getBlocksOnPlane(tmp, width);
+			for(Block potentialsBlock : potentialsBlocks) {
+				if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
+					new TempBlock(potentialsBlock, Material.LAVA, full);
+					affecteds.add(potentialsBlock);
+				}
+			}
+		}
 	}
 	
 	public void remove() {

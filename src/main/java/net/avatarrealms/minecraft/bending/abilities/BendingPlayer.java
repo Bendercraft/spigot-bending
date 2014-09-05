@@ -398,5 +398,10 @@ public class BendingPlayer {
 	public static BendingPlayer valueOf(BendingPlayerData data) {
 		return deserialize(data);
 	}
+	
+
+	public List<BendingSpecializationType> getSpecializations() {
+		return specializations;
+	}
 
 }
