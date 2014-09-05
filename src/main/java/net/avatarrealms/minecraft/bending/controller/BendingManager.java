@@ -36,6 +36,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.Ripple;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
+import net.avatarrealms.minecraft.bending.abilities.fire.Combustion;
 import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
 import net.avatarrealms.minecraft.bending.abilities.fire.Enflamed;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlade;
@@ -310,6 +311,10 @@ public class BendingManager implements Runnable {
 		temp = System.currentTimeMillis();
 		FireBlade.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("fire", "blade")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
+		Combustion.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("fire", "combustion")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("fire", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}
