@@ -27,6 +27,8 @@ permissions:
       bending.air.AirSpout: false
       bending.air.AirBurst: false
       bending.air.AirScooter: false
+      bending.air.AirManipulation: false
+      bending.air.Suffocate: false
   bending.fire.*:
     description: Allows all fire bending.
     children:
@@ -43,6 +45,7 @@ permissions:
       bending.fire.FireBurst: false
       bending.fire.FireShield: false
       bending.fire.FireBlade: false
+      bending.fire.Combustion: false
   bending.water.*:
     description: Allows all water bending.
     children:
@@ -59,6 +62,7 @@ permissions:
       bending.water.IceSpike: false
       bending.water.Torrent: false
       bending.water.OctopusForm: false
+      bending.water.IceSwipe: false
   bending.earth.*:
     description: Allows all earth bending.
     children:
@@ -73,6 +77,8 @@ permissions:
       bending.earth.Tremorsense: false
       bending.earth.EarthArmor: false
       bending.earth.Shockwave: false
+      bending.earth.MetalBending: false
+      bending.earth.LavaTrain: false
   bending.chiblocker.*:
     description: Allows all chiblocking abilities.
     children:
@@ -80,6 +86,9 @@ permissions:
       bending.chiblocker.RapidPunch: false
       bending.chiblocker.HighJump: false
       bending.chiblocker.Paralyze: false
+      bending.chiblocker.SmokeBomb: false
+      bending.chiblocker.Dash: false
+      bending.chiblocker.PoisonnedDart: false
   bending.*:
     description: Allows all bending.
     children:
@@ -164,6 +173,12 @@ permissions:
   bending.air.AirBurst:
     description: Allows the use of AirBurst.
     default: false
+  bending.air.AirManipulation:
+    description: Allows the use of AirManipulation.
+    default: false
+  bending.air.Suffocate:
+   description: Allows the use of Suffocate.
+   default: false
     
 # FIREBENDING PERMISSIONS
   bending.fire:
@@ -201,6 +216,9 @@ permissions:
     default: false
   bending.fire.FireBlade:
     description: Allows the use of FireBlade.
+    default: false
+  bending.fire.Combustion:
+    description: Allows the use of Combustion.
     default: false
     
 # WATERBENDING PERMISSIONS
@@ -241,7 +259,10 @@ permissions:
     description: Allows the use of Torrent.
     default: false
   bending.water.IceSpike:
-    description: Allows the use of IceSpike
+    description: Allows the use of IceSpike.
+    default: false
+  bending.water.IceSwipe:
+    description: Allows the use of IceSwipe.
     default: false
     
 # EARTHBENDING PERMISSIONS
@@ -276,7 +297,16 @@ permissions:
     description: Allows the use of Shockwave.
     default: false
   bending.earth.EarthArmor:
-    description: Allows the use of EarthArmor
+    description: Allows the use of EarthArmor.
+    default: false
+  bending.earth.MetalBending:
+    description: Allows the use of MetalBending.
+    default: false
+  bending.earth.LavaTrain:
+    description: Allows the use of LavaTrain.
+    default: false
+  bending.earth.LavaBlast:
+    description: Allows the use of LavaBlast
     default: false
     
 # CHIBLOCKING PERMISSIONS
@@ -296,6 +326,16 @@ permissions:
   bending.chiblocker.Paralyze:
     description: Allows the use of Paralyze
     default: false
+  bending.chiblocker.SmokeBomb:
+    description: Allows the use of SmokeBomb
+    default: false
+  bending.chiblocker.Dash:
+    description: Allows the use of Dash.
+    default: false
+  bending.chiblocker.PoisonnedDart:
+    description: Allows the use of PoisonnedDart
+    default: false
+  
     
 # ADMIN PERMISSIONS
   bending.admin.AvatarState: 
