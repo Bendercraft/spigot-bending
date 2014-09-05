@@ -23,6 +23,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.AirSpout;
 import net.avatarrealms.minecraft.bending.abilities.air.AirSuction;
 import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
+import net.avatarrealms.minecraft.bending.abilities.air.Suffocate;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
 import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
@@ -33,6 +34,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthColumn;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthPassive;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
+import net.avatarrealms.minecraft.bending.abilities.earth.LavaTrain;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
 import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
@@ -194,6 +196,7 @@ public class PluginTools {
 		Speed.removeAll();
 		Tornado.removeAll();
 		AirBurst.removeAll();
+		Suffocate.removeAll();
 
 		Catapult.removeAll();
 		CompactColumn.removeAll();
@@ -204,6 +207,7 @@ public class PluginTools {
 		EarthTunnel.removeAll();
 		Shockwave.removeAll();
 		Tremorsense.removeAll();
+		LavaTrain.removeAll();
 
 		FreezeMelt.removeAll();
 		IceSpike.removeAll();
