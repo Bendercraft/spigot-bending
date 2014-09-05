@@ -51,8 +51,7 @@ public class FireBlade {
 	}
 	
 	
-	public static void progressAll() {
-		
+	public static void progressAll() {		
 		List<Player> toRemove = new LinkedList<Player>();
 		for (Player player : instances.keySet()) {
 			boolean keep = instances.get(player).progress();

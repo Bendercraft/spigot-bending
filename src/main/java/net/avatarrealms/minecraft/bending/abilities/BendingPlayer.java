@@ -124,6 +124,9 @@ public class BendingPlayer {
 					case Dash :
 						cd = ConfigManager.dashCooldown;
 						break;
+					case FireBlade :
+						cd = ConfigManager.fireBladeCooldown;
+						break;
 					default:
 						cd = 0;
 						break;
