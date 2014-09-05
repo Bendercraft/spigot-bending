@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
@@ -52,6 +53,13 @@ public class EntityTools {
 		if (bPlayer == null)
 			return false;
 		return bPlayer.isBender(type);
+	}
+	
+	public static boolean isSpecialized(Player player, BendingSpecializationType specialization) {
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer == null)
+			return false;
+		return bPlayer.isSpecialized(specialization);
 	}
 	
 	public static boolean isBender(Player player) {
@@ -151,6 +159,13 @@ public class EntityTools {
 				&& !isBender(player, BendingType.Water)) {
 			return false;
 		}
+		
+		if(ability.isSpecialization()) {
+			if(!isSpecialized(player, ability.getSpecialization())) {
+				return false;
+			}
+		}
+		
 		if (hasPermission(player, ability)
 				&& (!PluginTools.isLocalAbility(ability) || !Tools.isRegionProtectedFromBuild(
 						player, Abilities.AirBlast, player.getLocation()))

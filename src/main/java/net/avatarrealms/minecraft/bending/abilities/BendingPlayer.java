@@ -185,6 +185,10 @@ public class BendingPlayer {
 	public boolean isBender(BendingType type) {
 		return bendings.contains(type);
 	}
+	
+	public boolean isSpecialized(BendingSpecializationType specialization) {
+		return specializations.contains(specialization);
+	}
 
 	public void setBender(BendingType type) {
 		removeBender();
