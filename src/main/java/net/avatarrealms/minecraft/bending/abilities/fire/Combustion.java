@@ -8,7 +8,6 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
-import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
@@ -30,7 +29,6 @@ public class Combustion implements IAbility {
 	//TODO : this variable seems to be never cleared of any of its content, strange
 	private static Map<Entity, Combustion> explosions = new HashMap<Entity, Combustion>();
 
-	private static long defaultchargetime = 2000;
 	private static long interval = 25;
 	private static double radius = 1.5;
 
@@ -42,11 +40,7 @@ public class Combustion implements IAbility {
 	private Location origin;
 	private Location location;
 	private Vector direction;
-	private long starttime;
 	private long time;
-	private long chargetime = defaultchargetime;
-	private boolean charged = false;
-	private boolean launched = false;
 	private TNTPrimed explosion = null;
 	private IAbility parent;
 
@@ -54,15 +48,13 @@ public class Combustion implements IAbility {
 		this.parent = parent;
 		this.player = player;
 		time = System.currentTimeMillis();
-		starttime = time;
-		if (Tools.isDay(player.getWorld())) {
-			chargetime = (long) (chargetime / ConfigManager.dayFactor);
-		}
 		if (AvatarState.isAvatarState(player)) {
-			chargetime = 0;
 			maxdamage = AvatarState.getValue(maxdamage);
 		}
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
+		location = player.getEyeLocation();
+		origin = location.clone();
+		direction = location.getDirection().normalize().multiply(radius);
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			instances.put(player, this);
 		}
@@ -71,42 +63,17 @@ public class Combustion implements IAbility {
 
 	private boolean progress() {
 		if ((!EntityTools.canBend(player, Abilities.Combustion) 
-				|| EntityTools.getBendingAbility(player) != Abilities.Combustion) && !launched) {
+				|| EntityTools.getBendingAbility(player) != Abilities.Combustion)) {
 			return false;
-		}
-
-		if (System.currentTimeMillis() > starttime + chargetime) {
-			charged = true;
-		}
-
-		if (!player.isSneaking() && !charged) {
-			new FireBlast(player, this);
-			return false;
-		}
-
-		if (!player.isSneaking() && !launched) {
-			launched = true;
-			location = player.getEyeLocation();
-			origin = location.clone();
-			direction = location.getDirection().normalize().multiply(radius);
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
-			if (launched)
-				if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion,
+			if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion,
 						location)) {
-					return false;
-				}
+				return false;
+			}
 
 			time = System.currentTimeMillis();
-
-			if (!launched && !charged)
-				return true;
-			if (!launched) {
-				player.getWorld().playEffect(player.getEyeLocation(),
-						Effect.BLAZE_SHOOT, 0, 3);
-				return true ;
-			}
 
 			location = location.clone().add(direction);
 			if (location.distance(origin) > range) {
@@ -153,7 +120,7 @@ public class Combustion implements IAbility {
 	private boolean fireball() {
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			block.getWorld().playEffect(block.getLocation(),
-					Effect.MOBSPAWNER_FLAMES, 0, 20);
+					Effect.SMOKE, 0, 1);
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
@@ -167,14 +134,6 @@ public class Combustion implements IAbility {
 			}
 		}
 		return true;
-	}
-
-	public static boolean isCharging(Player player) {
-		for (Combustion ball : instances.values()) {
-			if (ball.player == player && !ball.launched)
-				return true;
-		}
-		return false;
 	}
 
 	private void explode() {
@@ -252,8 +211,6 @@ public class Combustion implements IAbility {
 			double radius) {
 		List<Combustion> toRemove = new LinkedList<Combustion>();
 		for (Combustion fireball : instances.values()) {
-			if (!fireball.launched)
-				continue;
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld()) {
 				if (location.distance(fireblastlocation) <= radius)
@@ -270,8 +227,6 @@ public class Combustion implements IAbility {
 		boolean broke = false;
 		List<Combustion> toRemove = new LinkedList<Combustion>();
 		for (Combustion fireball : instances.values()) {
-			if (!fireball.launched)
-				continue;
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld()
 					&& !source.equals(fireball.player)) {

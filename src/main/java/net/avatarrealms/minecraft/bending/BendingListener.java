@@ -389,6 +389,10 @@ public class BendingListener implements Listener {
 				if (ability == Abilities.FireBlade) {
 					new FireBlade(player);
 				}
+				
+				if (ability == Abilities.Combustion) {
+					new Combustion(player, null);
+				}
 
 			}
 
