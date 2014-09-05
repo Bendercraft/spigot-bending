@@ -4,22 +4,94 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public enum Abilities {
+	AirBlast(BendingType.Air), 
+	AirBubble(BendingType.Air), 
+	AirShield(BendingType.Air), 
+	AirSuction(BendingType.Air), 
+	AirSwipe(BendingType.Air), 
+	AirScooter(BendingType.Air),
+	AirSpout(BendingType.Air), 
+	AirBurst(BendingType.Air), 
+	AirManipulation(BendingType.Air), 
+	Tornado(BendingSpecializationType.Tornado), 
+	LungsControl(BendingSpecializationType.Suffocate),
 
-	AirBlast, AirBubble, AirShield, AirSuction, AirSwipe, Tornado, AirScooter,
-	AirSpout, AirBurst, AirManipulation, LungsControl,
+	Catapult(BendingType.Earth), 
+	RaiseEarth(BendingType.Earth), 
+	EarthGrab(BendingType.Earth), 
+	EarthTunnel(BendingType.Earth), 
+	EarthBlast(BendingType.Earth), 
+	Collapse(BendingType.Earth), 
+	Tremorsense(BendingType.Earth),
+	EarthArmor(BendingType.Earth), 
+	Shockwave(BendingType.Earth), 
+	EarthMelt(BendingSpecializationType.Lavabend), 
+	LavaBlast(BendingSpecializationType.Lavabend), 
+	MetalBending(BendingSpecializationType.Metalbend),
 
-	Catapult, RaiseEarth, EarthGrab, EarthTunnel, EarthBlast, Collapse, Tremorsense,
-	EarthArmor, Shockwave, EarthMelt, LavaBlast, MetalBending,
+	HeatControl(BendingType.Fire), 
+	Blaze(BendingType.Fire), 
+	FireJet(BendingType.Fire), 
+	Illumination(BendingType.Fire), 
+	WallOfFire(BendingType.Fire), 
+	FireBlast(BendingType.Fire), 
+	FireBurst(BendingType.Fire), 
+	FireShield(BendingType.Fire), 
+	FireBlade(BendingType.Fire),
+	Combustion(BendingSpecializationType.Combustion),
+	Lightning(BendingSpecializationType.Lightning),
 
-	HeatControl, Blaze, FireJet, Illumination, WallOfFire, FireBlast, Lightning,
-	FireBurst, FireShield, Combustion, FireBlade,
+	WaterBubble(BendingType.Water), 
+	PhaseChange(BendingType.Water), 
+	HealingWaters(BendingType.Water), 
+	WaterManipulation(BendingType.Water), 
+	Surge(BendingType.Water),
+	WaterSpout(BendingType.Water),
+	IceSpike(BendingType.Water), 
+	OctopusForm(BendingType.Water), 
+	Torrent(BendingType.Water), 
+	IceSwipe(BendingType.Water),
+	Bloodbending(BendingSpecializationType.Bloodbend), 
 
-	WaterBubble, PhaseChange, HealingWaters, WaterManipulation, Surge, Bloodbending, WaterSpout,
-	IceSpike, OctopusForm, Torrent, IceSwipe,
+	HighJump(BendingType.ChiBlocker), 
+	RapidPunch(BendingType.ChiBlocker), 
+	Paralyze(BendingType.ChiBlocker), 
+	SmokeBomb(BendingType.ChiBlocker), 
+	PoisonnedDart(BendingType.ChiBlocker), 
+	Dash(BendingType.ChiBlocker),
 
-	HighJump, RapidPunch, Paralyze, SmokeBomb, PoisonnedDart, Dash,
-
-	AvatarState;
+	AvatarState(BendingType.Energy);
+	
+	private BendingType element;
+	private BendingSpecializationType specialization;
+	
+	Abilities(BendingType element) {
+		this.element = element;
+		this.specialization = null;
+	}
+	
+	Abilities(BendingSpecializationType specialization) {
+		this.element = specialization.getElement();
+		this.specialization = specialization;
+	}
+	
+	public BendingType getElement() {
+		return element;
+	}
+	public BendingSpecializationType getSpecialization() {
+		return specialization;
+	}
+	public boolean isSpecialization() {
+		if(specialization != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	
+	//Statci methods
 
 	public static Abilities getAbility(String ability) {
 		for (Abilities a : Abilities.values()) {
@@ -31,20 +103,10 @@ public enum Abilities {
 	}
 
 	public static boolean isAirbending(Abilities ability) {
-		switch (ability) {
-		case AirBlast:
-		case AirBubble :
-		case AirShield : 
-		case AirSuction : 
-		case AirSwipe : 
-		case Tornado : 
-		case AirScooter : 
-		case AirSpout : 
-		case AirBurst :
-		case AirManipulation :
-		case LungsControl : return true;
-		default : return false;
+		if(ability.getElement().equals(BendingType.Air)) {
+			return true;
 		}
+		return false;
 	}
 
 	public static String[] getAirbendingAbilities() {
@@ -60,21 +122,10 @@ public enum Abilities {
 	}
 
 	public static boolean isWaterbending(Abilities ability) {
-		switch (ability) {
-		case WaterBubble : 
-		case PhaseChange :
-		case HealingWaters : 
-		case WaterManipulation : 
-		case Surge : 
-		case Bloodbending :
-		case WaterSpout : 
-		case IceSpike : 
-		case OctopusForm : 
-		case Torrent : 
-		case IceSwipe : return true;		
-		default : return false;
+		if(ability.getElement().equals(BendingType.Water)) {
+			return true;
 		}
-
+		return false;
 	}
 
 	public static String[] getWaterbendingAbilities() {
@@ -90,21 +141,10 @@ public enum Abilities {
 	}
 
 	public static boolean isEarthbending(Abilities ability) {
-		switch (ability) {
-		case Catapult :
-		case RaiseEarth :
-		case EarthGrab :
-		case EarthTunnel :
-		case EarthBlast : 
-		case Collapse: 
-		case Tremorsense :
-		case Shockwave :
-		case EarthArmor :
-		case MetalBending :
-		case EarthMelt :
-		case LavaBlast : return true;
-		default : return false;
+		if(ability.getElement().equals(BendingType.Earth)) {
+			return true;
 		}
+		return false;
 	}
 
 	public static String[] getEarthbendingAbilities() {
@@ -120,20 +160,10 @@ public enum Abilities {
 	}
 
 	public static boolean isFirebending(Abilities ability) {
-		switch (ability) {
-		case HeatControl :
-		case Blaze :
-		case FireJet:
-		case Illumination:
-		case WallOfFire :
-		case FireBlast :
-		case Lightning:
-		case FireBurst :
-		case FireShield:
-		case Combustion :
-		case FireBlade : return true;
-		default : return false;
+		if(ability.getElement().equals(BendingType.Fire)) {
+			return true;
 		}
+		return false;
 	}
 
 	public static String[] getFirebendingAbilities() {
@@ -149,16 +179,10 @@ public enum Abilities {
 	}
 
 	public static boolean isChiBlocking(Abilities ability) {
-		switch (ability) {
-		case HighJump : 
-		case RapidPunch :
-		case Paralyze :
-		case SmokeBomb :
-		case Dash : 
-		case PoisonnedDart : return true;
-		default : return false;
+		if(ability.getElement().equals(BendingType.ChiBlocker)) {
+			return true;
 		}
-		
+		return false;
 	}
 
 	public static String[] getChiBlockingAbilities() {
