@@ -1,7 +1,5 @@
 package net.avatarrealms.minecraft.bending.abilities;
 
-import java.util.Arrays;
-
 public enum BendingType {
 
 	Air, Water, Earth, Fire, ChiBlocker;
@@ -12,18 +10,6 @@ public enum BendingType {
 				return type;
 		}
 		return null;
-	}
-
-	public static int getIndex(BendingType type) {
-		if (type == null)
-			return -1;
-		return Arrays.asList(BendingType.values()).indexOf(type);
-	}
-
-	public static BendingType getType(int index) {
-		if (index == -1)
-			return null;
-		return Arrays.asList(BendingType.values()).get(index);
 	}
 
 }
