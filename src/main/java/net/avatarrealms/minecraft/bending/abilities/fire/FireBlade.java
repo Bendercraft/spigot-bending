@@ -154,7 +154,13 @@ public class FireBlade {
 					duration*20, strengthLevel-1);
 			player.addPotionEffect(strengthEffect);
 		}
-		
+	}
+	
+	public static void removeAll() {
+		for (Player p : instances.keySet()) {
+			instances.get(p).removeFireBlade();
+		}
+		instances.clear();
 	}
 
 }
