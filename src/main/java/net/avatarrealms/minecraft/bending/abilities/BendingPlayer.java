@@ -40,7 +40,7 @@ public class BendingPlayer {
 	private long paralyzeTime = 0;
 	private long slowTime = 0;
 
-	private long lasttime = 0;
+	private long lastTime = 0;
 
 	private boolean tremorsense = true;
 
@@ -51,7 +51,7 @@ public class BendingPlayer {
 
 		language = PluginTools.getDefaultLanguage();
 		this.player = player;
-		lasttime = System.currentTimeMillis();
+		lastTime = System.currentTimeMillis();
 
 		players.put(player, this);
 	}
@@ -134,7 +134,7 @@ public class BendingPlayer {
 	}
 
 	public boolean isOnGlobalCooldown() {
-		return (System.currentTimeMillis() <= lasttime + globalCooldown);
+		return (System.currentTimeMillis() <= lastTime + globalCooldown);
 	}
 
 	public boolean isOnCooldown(Abilities ability) {
@@ -171,7 +171,7 @@ public class BendingPlayer {
 		long time = System.currentTimeMillis();
 		if (ability != null)
 			cooldowns.put(ability, time);
-		lasttime = time;
+		lastTime = time;
 	}
 
 	public UUID getPlayerID() {
@@ -319,7 +319,7 @@ public class BendingPlayer {
 	}
 
 	public long getLastTime() {
-		return lasttime;
+		return lastTime;
 	}
 
 	public void delete() {
@@ -357,7 +357,7 @@ public class BendingPlayer {
 		
 		specializations = data.getSpecialization();
 
-		lasttime = data.getLastTime();
+		lastTime = data.getLastTime();
 
 		players.put(this.player, this);
 	}
@@ -368,7 +368,7 @@ public class BendingPlayer {
 		result.setBendToItem(bendToItem);
 		result.setItemAbilities(itemAbilities);
 		result.setLanguage(language);
-		result.setLastTime(lasttime);
+		result.setLastTime(lastTime);
 		result.setSpecialization(specializations);
 		result.setPlayer(this.player);
 		result.setSlotAbilities(slotAbilities);
