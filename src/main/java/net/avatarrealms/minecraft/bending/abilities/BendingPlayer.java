@@ -195,6 +195,15 @@ public class BendingPlayer {
 		if (!bendings.contains(type))
 			bendings.add(type);
 	}
+	
+	public void setSpecialization(BendingSpecializationType specialization) {
+		specializations.clear();
+		specializations.add(specialization);
+	}
+	public void addSpecialization(BendingSpecializationType specialization) {
+		if (!specializations.contains(specialization))
+			specializations.add(specialization);
+	}
 
 	public void clearAbilities() {
 		slotAbilities = new HashMap<Integer, Abilities>();
@@ -203,6 +212,7 @@ public class BendingPlayer {
 
 	public void removeBender() {
 		bendings.clear();
+		specializations.clear();
 		clearAbilities();
 	}
 
