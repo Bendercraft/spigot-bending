@@ -179,6 +179,17 @@ public class Tools {
 		return false;
 	}
 
+	public static Vector getVectorForPoints(Location origin, Location target) {
+		double g = -0.08;
+		double d = target.distance(origin);
+		double t = d;
+		double vX = (1.0 + 0.07 * t) * (target.getX() - origin.getX()) / t;
+		double vY = (1.0 + 0.03 * t) * (target.getY() - origin.getY()) / t - 0.5 * g
+				* t;
+		double vZ = (1.0 + 0.07 * t) * (target.getZ() - origin.getZ()) / t;
+		return new Vector(vX, vY, vZ);
+	}
+	
 	public static void playFocusWaterEffect(Block block) {
 		block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 4, 20);
 	}

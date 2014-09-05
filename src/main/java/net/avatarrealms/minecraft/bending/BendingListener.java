@@ -1098,18 +1098,6 @@ public class BendingListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
-	public void onPlayerItemBreak (PlayerItemBreakEvent e) {
-		ItemStack i = e.getBrokenItem();
-		Player p = e.getPlayer();
-		if (EntityTools.isBender(p, BendingType.Earth)) {
-			Abilities a= EntityTools.getBendingAbility(p);
-			if (a == Abilities.MetalBending && i.getType() == Material.FISHING_ROD) {
-				i.setDurability((short) 10);
-				p.setItemInHand(i);
-			}
-		}
-	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent event) {
