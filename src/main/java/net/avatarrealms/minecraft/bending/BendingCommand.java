@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
+import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -27,9 +28,8 @@ public class BendingCommand {
 	private final String[] clearAliases = { "clear", "cl" };
 	private final String[] chooseAliases = { "choose", "ch" };
 	private final String[] addAliases = { "add", "a" };
+	private final String[] specializeAliases = { "specialize", "spe" };
 	private final String[] removeAliases = { "remove", "r" };
-	private final String[] permaremoveAliases = { "permaremove", "premove",
-			"pr", "p" };
 	private final String[] toggleAliases = { "toggle", "t" };
 	private final String[] displayAliases = { "display", "disp", "dis", "d" };
 	private final String[] reloadAliases = { "reload" };
@@ -220,6 +220,8 @@ public class BendingCommand {
 				choose(player, args);
 			} else if (Arrays.asList(addAliases).contains(arg)) {
 				add(player, args);
+			} else if (Arrays.asList(specializeAliases).contains(arg)) {
+				specialize(player, args);
 			} else if (Arrays.asList(removeAliases).contains(arg)) {
 				remove(player, args);
 			} else if (Arrays.asList(toggleAliases).contains(arg)) {
@@ -1117,6 +1119,17 @@ public class BendingCommand {
 				aliases = aliases + alias + " ";
 			sendMessage(player, color + "Aliases: " + aliases);
 			printAddUsage(player);
+		} else if (Arrays.asList(specializeAliases).contains(command)) {
+			if (!hasHelpPermission(player, "bending.command.admin.specialize")) {
+				sendNoCommandPermissionMessage(player, "specialize");
+				return;
+			}
+			sendMessage(player, color + "Command: /bending specialize");
+			String aliases = "";
+			for (String alias : specializeAliases)
+				aliases = aliases + alias + " ";
+			sendMessage(player, color + "Aliases: " + aliases);
+			printAddUsage(player);
 		} else if (Arrays.asList(removeAliases).contains(command)) {
 			if (!hasHelpPermission(player, "bending.command.remove")) {
 				sendNoCommandPermissionMessage(player, "remove");
@@ -1128,17 +1141,6 @@ public class BendingCommand {
 				aliases = aliases + alias + " ";
 			sendMessage(player, color + "Aliases: " + aliases);
 			printRemoveUsage(player);
-		} else if (Arrays.asList(permaremoveAliases).contains(command)) {
-			if (!hasHelpPermission(player, "bending.command.permaremove")) {
-				sendNoCommandPermissionMessage(player, "permaremove");
-				return;
-			}
-			sendMessage(player, color + "Command: /bending permaremove");
-			String aliases = "";
-			for (String alias : permaremoveAliases)
-				aliases = aliases + alias + " ";
-			sendMessage(player, color + "Aliases: " + aliases);
-			printPermaremoveUsage(player);
 		} else if (Arrays.asList(toggleAliases).contains(command)) {
 			if (!hasHelpPermission(player, "bending.command.toggle")) {
 				sendNoCommandPermissionMessage(player, "toggle");
@@ -1449,16 +1451,6 @@ public class BendingCommand {
 	private void printNotFromConsole() {
 		PluginTools.sendMessage(null, "General.not_from_console");
 
-	}
-
-	private void printPermaremoveUsage(Player player) {
-		if (!hasHelpPermission(player, "bending.admin.permaremove")) {
-			sendNoCommandPermissionMessage(player, "permaremove");
-			return;
-		}
-		printUsageMessage(player,
-				"/bending permaremove <player1> [player2] [player3] ...",
-				"General.permaremove_message");
 	}
 
 	private void printRemoveUsage(Player player) {
@@ -1773,6 +1765,57 @@ public class BendingCommand {
 				return;
 			}
 			printAddUsage(player);
+		}
+
+	}
+	
+	private void specialize(Player player, String[] args) {
+		if (!hasPermission(player, "bending.admin.specialize"))
+			return;
+		if (args.length != 2 && args.length != 3) {
+			printAddUsage(player);
+			return;
+		}
+		if (args.length == 2) {
+			String choice = args[1].toLowerCase();
+			BendingSpecializationType spe = BendingSpecializationType.getType(choice);
+			if(spe == null) {
+				PluginTools.sendMessage(player, "General.bad_specialization");
+				return;
+			}
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+			if(bPlayer == null) {
+				//Wut !
+				return;
+			}
+			if(!bPlayer.isBender(spe.getElement())) {
+				PluginTools.sendMessage(player, "General.bad_specialization_element");
+				return;
+			}
+			bPlayer.setSpecialization(spe);
+		} else if (args.length == 3) {
+			String playername = args[1];
+			Player targetplayer = this.getOnlinePlayer(playername);
+			if (targetplayer == null) {
+				printAddUsage(player);
+				return;
+			}
+			String choice = args[2].toLowerCase();
+			BendingSpecializationType spe = BendingSpecializationType.getType(choice);
+			if(spe == null) {
+				PluginTools.sendMessage(player, "General.bad_specialization");
+				return;
+			}
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
+			if(bPlayer == null) {
+				//Wut !
+				return;
+			}
+			if(!bPlayer.isBender(spe.getElement())) {
+				PluginTools.sendMessage(player, "General.bad_specialization_element");
+				return;
+			}
+			bPlayer.setSpecialization(spe);
 		}
 
 	}
