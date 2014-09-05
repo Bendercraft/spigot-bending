@@ -1,6 +1,6 @@
 name: Bending
 main: net.avatarrealms.minecraft.bending.Bending
-version: 3.1.0
+version: 4.0.1
 commands:
     bending:
         description: Chooses the many features of Bending.
