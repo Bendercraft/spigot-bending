@@ -68,6 +68,9 @@ public class FireBlade {
 	}
 	
 	public boolean progress() {
+		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
+			return false;
+		}
 		
 		if (System.currentTimeMillis() > time + (1000*duration)) {
 			return false;

@@ -91,6 +91,9 @@ public class Suffocate implements IAbility {
 			target.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 1, 1));
 		}
 		
+		//TODO : Decrease the breath level of the target
+		//TODO : Display a smoke effect on the target head
+		
 		return true;
 	}
 	
