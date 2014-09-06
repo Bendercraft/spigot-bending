@@ -32,7 +32,9 @@ public class EarthBlast implements IAbility {
 	private static boolean hitself = ConfigManager.earthBlastHitSelf;
 	private static double preparerange = ConfigManager.earthBlastPrepareRange;
 	private static double range = ConfigManager.earthBlastRange;
-	private static int damage = ConfigManager.earthBlastDamage;
+	private static int earthDamage = ConfigManager.earthBlastDamage;
+	private static int ironDamage = ConfigManager.ironBlastDamage;
+	private int damage;
 	private static double speed = ConfigManager.earthBlastSpeed;
 	private static final double deflectrange = 3;
 
@@ -121,6 +123,7 @@ public class EarthBlast implements IAbility {
 			EarthPassive.revertSand(sourceblock);
 		}		
 		sourcetype = sourceblock.getType();
+		damage = earthDamage;
 		if (sourcetype == Material.SAND) {
 			sourceblock.setType(Material.SANDSTONE);
 		} else if (sourcetype == Material.STONE) {
@@ -134,6 +137,7 @@ public class EarthBlast implements IAbility {
 				else {
 					sourceblock.setType(Material.IRON_BLOCK);
 				}
+				damage = ironDamage;
 			}
 			else {
 				sourceblock.setType(Material.STONE);
