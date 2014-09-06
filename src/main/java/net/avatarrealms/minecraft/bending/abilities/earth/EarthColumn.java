@@ -13,6 +13,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -145,7 +146,9 @@ public class EarthColumn implements IAbility {
 		for (int i = 0; i <= distance; i++) {
 			thisblock = block.getWorld().getBlockAt(
 					location.clone().add(direction.clone().multiply(-i)));
-			affectedBlocks.add(thisblock);
+			if (thisblock.getType() != Material.ANVIL) {
+				affectedBlocks.add(thisblock);
+			}	
 			if (CompactColumn.blockInAllAffectedBlocks(thisblock))
 				CompactColumn.revertBlock(thisblock);
 		}

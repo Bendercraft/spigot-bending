@@ -213,8 +213,10 @@ public class BlockTools {
 	public static boolean isEarthbendable(Player player, Abilities ability,
 			Block block) {
 		if (Tools.isRegionProtectedFromBuild(player, ability,
-				block.getLocation()))
+				block.getLocation())){
 			return false;
+		}
+			
 		Material material = block.getType();
 
 		for (String s : ConfigManager.earthbendable) {
@@ -591,8 +593,9 @@ public class BlockTools {
 	public static Block getEarthSourceBlock(Player player, double range) {
 		Block testblock = EntityTools.getTargetBlock(player, (int) range,
 				getTransparentEarthbending());
-		if (isEarthbendable(player, testblock))
+		if (isEarthbendable(player, testblock)){
 			return testblock;
+		}	
 		Location location = player.getEyeLocation();
 		Vector vector = location.getDirection().clone().normalize();
 		for (double i = 0; i <= range; i++) {

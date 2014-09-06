@@ -2,11 +2,10 @@ package net.avatarrealms.minecraft.bending.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,7 +21,7 @@ public class ConfigManager {
 
 	public static Map<String, String> prefixes = new HashMap<String, String>();
 	public static Map<String, String> color = new HashMap<String, String>();
-	public static List<String> earthbendable = new ArrayList<String>();
+	public static List<String> earthbendable = new LinkedList<String>();
 	public static Map<String, Boolean> useWeapon = new HashMap<String, Boolean>();
 	public static boolean useMySQL = false;
 	public static String dbHost = "localhost";
@@ -46,7 +45,25 @@ public class ConfigManager {
 
 	public static boolean useTagAPI = true;
 
-	private static List<String> defaultearthbendable = new ArrayList<String>();
+	private static List<String> defaultearthbendable = new LinkedList<String>();
+	static {
+		defaultearthbendable.add("STONE");
+		defaultearthbendable.add("CLAY");
+		defaultearthbendable.add("COAL_ORE");
+		defaultearthbendable.add("DIAMOND_ORE");
+		defaultearthbendable.add("DIRT");
+		defaultearthbendable.add("GOLD_ORE");
+		defaultearthbendable.add("EMERALD_ORE");
+		defaultearthbendable.add("GRASS");
+		defaultearthbendable.add("GRAVEL");
+		defaultearthbendable.add("IRON_ORE");
+		defaultearthbendable.add("LAPIS_ORE");
+		defaultearthbendable.add("REDSTONE_ORE");
+		defaultearthbendable.add("SAND");
+		defaultearthbendable.add("SANDSTONE");
+		defaultearthbendable.add("GLOWING_REDSTONE_ORE");
+		defaultearthbendable.add("MYCEL");
+	}
 	
 	// Air
 	// AirBlast
@@ -1246,38 +1263,4 @@ public class ConfigManager {
 		return prefixes.get(element);
 	}
 
-	static {
-		defaultearthbendable.add("STONE");
-
-		defaultearthbendable.add("CLAY");
-
-		defaultearthbendable.add("COAL_ORE");
-
-		defaultearthbendable.add("DIAMOND_ORE");
-
-		defaultearthbendable.add("DIRT");
-
-		defaultearthbendable.add("GOLD_ORE");
-
-		defaultearthbendable.add("EMERALD_ORE");
-
-		defaultearthbendable.add("GRASS");
-
-		defaultearthbendable.add("GRAVEL");
-
-		defaultearthbendable.add("IRON_ORE");
-
-		defaultearthbendable.add("LAPIS_ORE");
-
-		defaultearthbendable.add("REDSTONE_ORE");
-
-		defaultearthbendable.add("SAND");
-
-		defaultearthbendable.add("SANDSTONE");
-
-		defaultearthbendable.add("GLOWING_REDSTONE_ORE");
-
-		defaultearthbendable.add("MYCEL");
-
-	}
 }

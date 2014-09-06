@@ -61,14 +61,10 @@ public class EarthBlast implements IAbility {
 		this.parent = parent;
 		this.player = player;
 		if (prepare()) {
-			// if (instances.containsKey(player.getEntityId())) {
-			// instances.get(player.getEntityId()).cancel();
-			// }
 			id = ID++;
 			if (ID >= Integer.MAX_VALUE)
 				ID = Integer.MIN_VALUE;
 			instances.put(id, this);
-			// prepared.put(player, this);
 			time = System.currentTimeMillis();
 		}
 
@@ -120,18 +116,32 @@ public class EarthBlast implements IAbility {
 	}
 
 	private void focusBlock() {
-		if (EarthPassive.isPassiveSand(sourceblock))
+		
+		if (EarthPassive.isPassiveSand(sourceblock)) {
 			EarthPassive.revertSand(sourceblock);
-		if (sourceblock.getType() == Material.SAND) {
+		}		
+		sourcetype = sourceblock.getType();
+		if (sourcetype == Material.SAND) {
 			sourceblock.setType(Material.SANDSTONE);
-			sourcetype = Material.SAND;
-		} else if (sourceblock.getType() == Material.STONE) {
+		} else if (sourcetype == Material.STONE) {
 			sourceblock.setType(Material.COBBLESTONE);
-			sourcetype = Material.STONE;
 		} else {
-			sourcetype = sourceblock.getType();
-			sourceblock.setType(Material.STONE);
+			if (EntityTools.canBend(player, Abilities.MetalBending)
+					&& BlockTools.isIronBendable(player, sourceblock)) {
+				if (sourcetype == Material.IRON_BLOCK){
+					sourceblock.setType(Material.IRON_ORE);
+				}
+				else {
+					sourceblock.setType(Material.IRON_BLOCK);
+				}
+			}
+			else {
+				sourceblock.setType(Material.STONE);
+			}
+			
 		}
+		
+		
 
 		location = sourceblock.getLocation();
 	}

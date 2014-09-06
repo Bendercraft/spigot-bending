@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class MetalBending {
 
-	private static final long meltTime = 1500;
+	private static final long meltTime = 2000;
 	private static Map<Player, MetalBending> instances = new HashMap<Player, MetalBending>();
 
 	private static Map<Material, Integer> metals = new HashMap<Material, Integer>();
