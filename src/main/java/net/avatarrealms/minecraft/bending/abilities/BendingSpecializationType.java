@@ -6,7 +6,7 @@ public enum BendingSpecializationType {
 	Suffocate(BendingType.Air), 
 	
 	Bloodbend(BendingType.Water), 
-	ExtractWater(BendingType.Water), 
+	DrainBend(BendingType.Water), 
 	
 	Lightning(BendingType.Fire), 
 	Combustion(BendingType.Fire), 
