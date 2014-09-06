@@ -441,6 +441,11 @@ public class BendingCommand {
 					color = PluginTools.getColor(ConfigManager
 							.getColor("ChiBlocker"));
 				sendMessage(player, color + p.getName());
+				for (Abilities ability : Abilities.values()) {
+					if(EntityTools.hasPermission(player, ability)) {
+						sendMessage(player, ability.name());
+					}
+				}
 			}
 		} else if (args.length == 2) {
 			Player p = this.getOnlinePlayer(args[1]);
