@@ -24,12 +24,14 @@ public class LavaTrain implements IAbility {
 	private static Map<Player, LavaTrain> instances = new HashMap<Player, LavaTrain>();
 	
 	//public static double speed = ConfigManager.lavaTrainSpeed;
-	public static double speed = 10;
+	public static double speed = 5;
 	private static long interval = (long) (1000. / speed);
 	public static int range = 7;
 	public static int trainWidth = 1;
+	public static int randomWidth = 2;
+	public static double randomChance = 0.25;
 	public static int reachWidth = 3;
-	public static int keepAlive = 10000; //ms
+	public static int keepAlive = 20000; //ms
 	private static final byte full = 0x0;
 	
 	private IAbility parent;
@@ -59,7 +61,7 @@ public class LavaTrain implements IAbility {
 		
 		this.direction = player.getEyeLocation().getDirection().clone();
 		this.direction.setY(0);
-		origin = player.getLocation().clone().add(direction.clone().multiply(trainWidth+1));
+		origin = player.getLocation().clone().add(direction.clone().multiply(trainWidth+1+randomWidth));
 		origin.setY(origin.getY()-1);
 		current = origin.clone();
 		
@@ -102,10 +104,18 @@ public class LavaTrain implements IAbility {
 	}
 	
 	private void affectBlocks(Location current, int width) {
-		for(int i=0; i <= 2 ; i++) {
+		for(int i=-1; i <= 2 ; i++) {
 			Location tmp = current.clone();
 			tmp.setY(current.getY()+i);
 			List<Block> potentialsBlocks = BlockTools.getBlocksOnPlane(tmp, width);
+			//Add small random in generation
+			List<Block> potentialsAddsBlocks = BlockTools.getBlocksOnPlane(tmp, width+randomWidth);
+			for(Block potentialsBlock : potentialsAddsBlocks) {
+				if(Math.random() < randomChance) {
+					potentialsBlocks.add(potentialsBlock);
+				}
+			}
+			
 			for(Block potentialsBlock : potentialsBlocks) {
 				if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
 					new TempBlock(potentialsBlock, Material.LAVA, full);
