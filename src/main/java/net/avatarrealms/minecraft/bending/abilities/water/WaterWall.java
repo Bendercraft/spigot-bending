@@ -173,8 +173,7 @@ public class WaterWall implements IAbility {
 			drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 			sourceblock = block;
 			focusBlock();
-			//Range and max radius is halfed for Drainbending
-			range = range/2;
+			//Radius is halfed for Drainbending
 			radius = radius/2;
 			return true;
 		}
