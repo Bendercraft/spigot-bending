@@ -1525,6 +1525,14 @@ public class BendingCommand {
 		printUsageMessage(player, "/bending add <player> <element>",
 				"General.add_other");
 	}
+	
+	private void printSpecializationUsage(Player player) {
+		if (player != null)
+			printUsageMessage(player, "/bending spe <specialization>",
+					"General.spe_self");
+		printUsageMessage(player, "/bending spe <player> <specialization>",
+				"General.spe_other");
+	}
 
 	private void add(Player player, String[] args) {
 		if (!hasPermission(player, "bending.admin.add"))
@@ -1800,10 +1808,20 @@ public class BendingCommand {
 	private void specialize(Player player, String[] args) {
 		if (!hasPermission(player, "bending.admin.specialize"))
 			return;
-		if (args.length != 2 && args.length != 3) {
-			printAddUsage(player);
+		//If no args, just list
+		if(args.length == 1) {
+			for(BendingSpecializationType spe : BendingSpecializationType.values()) {
+				ChatColor color = PluginTools.getColor(ConfigManager
+						.getColor(spe.getElement().name()));
+				sendMessage(player, color + spe.name());
+			}
 			return;
 		}
+		if (args.length != 2 && args.length != 3) {
+			printSpecializationUsage(player);
+			return;
+		}
+		//If 2 args, apply specialization on himself, else (3 args) on player targeted
 		if (args.length == 2) {
 			String choice = args[1].toLowerCase();
 			BendingSpecializationType spe = BendingSpecializationType.getType(choice);

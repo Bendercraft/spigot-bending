@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
-import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
@@ -45,7 +44,6 @@ public class Tornado implements IAbility {
 	public Tornado(Player player, IAbility parent) {
 		this.parent = parent;
 		this.player = player;
-
 		
 		origin = EntityTools.getTargetBlock(player, range).getLocation();
 		origin.setY(origin.getY() - 1. / 10. * height);
@@ -61,7 +59,6 @@ public class Tornado implements IAbility {
 		new Flight(player);
 		player.setAllowFlight(true);
 		instances.put(player.getEntityId(), this);
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 	}
 	
 	private void remove() {
