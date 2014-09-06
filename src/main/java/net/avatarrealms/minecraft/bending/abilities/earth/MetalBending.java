@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class MetalBending {
-	
+
 	private static final long meltTime = 1500;
 	private static Map<Player, MetalBending> instances = new HashMap<Player, MetalBending>();
 
@@ -43,12 +43,12 @@ public class MetalBending {
 		metals.put(Material.RAILS, 6);
 		metals.put(Material.TRIPWIRE, 1);
 		metals.put(Material.IRON_PLATE, 2);
-	}	
-	
+	}
+
 	private long time;
 	private Player player;
 	private ItemStack items;
-	
+
 	private MetalBending(Player player, ItemStack i) {
 		this.player = player;
 		this.time = System.currentTimeMillis();
@@ -65,16 +65,17 @@ public class MetalBending {
 					if (bl.getData() >= 8) {
 						bl = bl.getRelative(BlockFace.DOWN);
 					}
-					if (bl.getType() == Material.IRON_DOOR_BLOCK) {						
+					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
 						if (!Tools.isRegionProtectedFromBuild(pl,
 								Abilities.MetalBending, bl.getLocation())) {
 							if (bl.getData() < 4) {
-								bl.setData((byte)(bl.getData() + 4));
-								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);
-							}
-							else {
-								bl.setData((byte)(bl.getData() - 4));
-								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);
+								bl.setData((byte) (bl.getData() + 4));
+								bl.getWorld().playEffect(bl.getLocation(),
+										Effect.DOOR_TOGGLE, 0);
+							} else {
+								bl.setData((byte) (bl.getData() - 4));
+								bl.getWorld().playEffect(bl.getLocation(),
+										Effect.DOOR_TOGGLE, 0);
 							}
 						}
 					}
@@ -89,11 +90,11 @@ public class MetalBending {
 			new MetalBending(player, is);
 		}
 	}
-	
+
 	public static boolean isMeltable(Material m) {
 		return metals.containsKey(m);
 	}
-	
+
 	public static void progressAll() {
 		List<Player> toRemove = new LinkedList<Player>();
 		for (Player p : instances.keySet()) {
@@ -102,50 +103,56 @@ public class MetalBending {
 				toRemove.add(p);
 			}
 		}
-		
+
 		for (Player p : toRemove) {
 			instances.remove(p);
 		}
-		
+
 	}
-	
+
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
-		
 		if (!player.isSneaking()
 				|| EntityTools.getBendingAbility(player) != Abilities.MetalBending) {
 			return false;
 		}
-		
+
 		if (!items.equals(player.getItemInHand())) {
 			time = System.currentTimeMillis();
 			items = player.getItemInHand();
 		}
-		
+
 		if (!isMeltable(items.getType())) {
 			return false;
 		}
-		
+
 		if (System.currentTimeMillis() > time + meltTime) {
 			melt();
 			time = System.currentTimeMillis();
 		}
-		
+
 		return true;
 	}
-	
+
 	private void melt() {
-		ItemStack newItem = new ItemStack (Material.IRON_INGOT);
-		int max = newItem.getType().getMaxDurability();
-		int cur = newItem.getDurability();
-		double prc = (double)cur / max;
+		ItemStack newItem = new ItemStack(Material.IRON_INGOT);
+		int max = items.getType().getMaxDurability();
 		int nb = metals.get(items.getType());
-		nb *= prc;
-		if (nb < 1) {
-			nb = 1;
+		if (max > 0) {
+			int cur = max - items.getDurability();
+			player.sendMessage(cur + "/" + max);
+			double prc = (double) cur / max;
+
+			player.sendMessage(nb + " " + prc);
+			nb *= prc;
+			if (nb < 1) {
+				nb = 1;
+			}
 		}
+
+		player.sendMessage("" + nb);
 		newItem.setAmount(nb);
 		HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(
 				newItem);
@@ -160,11 +167,11 @@ public class MetalBending {
 		} else {
 			items.setAmount(amount - 1);
 		}
+		player.sendMessage("melted");
 	}
-	
+
 	public static void removeAll() {
 		instances.clear();
 	}
-	
-	
+
 }

@@ -49,7 +49,7 @@ public class MetalWire {
 				int slot = player.getInventory().getHeldItemSlot();
 				ItemStack rod = player.getInventory().getItem(slot);
 				if (rod != null && rod.getType()== Material.FISHING_ROD) {
-					rod.setDurability((short) (rod.getDurability() + 2));
+					rod.setDurability((short) (rod.getDurability() - 2));
 					player.getInventory().setItem(slot, rod);
 				}
 			}

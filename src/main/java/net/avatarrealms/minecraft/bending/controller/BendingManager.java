@@ -32,6 +32,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthGrab;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthPassive;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
 import net.avatarrealms.minecraft.bending.abilities.earth.LavaTrain;
+import net.avatarrealms.minecraft.bending.abilities.earth.MetalBending;
 import net.avatarrealms.minecraft.bending.abilities.earth.Ripple;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
@@ -233,6 +234,10 @@ public class BendingManager implements Runnable {
 		temp = System.currentTimeMillis();
 		LavaTrain.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("earth", "lavatrain")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
+		MetalBending.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("earth", "metal")), String.valueOf(System.currentTimeMillis() - temp));
 		
 
 		temp = System.currentTimeMillis();
