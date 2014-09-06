@@ -9,7 +9,6 @@ import java.util.Set;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
-import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
@@ -58,6 +57,8 @@ public class WaterWall implements IAbility {
 	private long time;
 	private double radius = defaultradius;
 	private IAbility parent;
+
+	private TempBlock drainedBlock;
 
 	public WaterWall(Player player, IAbility parent) {
 		this.parent = parent;
@@ -164,6 +165,16 @@ public class WaterWall implements IAbility {
 			focusBlock();
 			return true;
 		}
+		//If no block available, check if bender can drainbend !
+		if(Drainbending.canDrainBend(player)) {
+			Location location = player.getEyeLocation();
+			Vector vector = location.getDirection().clone().normalize();
+			block = location.clone().add(vector.clone().multiply(2)).getBlock();
+			drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+			sourceblock = block;
+			focusBlock();
+			return true;
+		}
 		return false;
 	}
 
@@ -179,6 +190,9 @@ public class WaterWall implements IAbility {
 	}
 
 	public void remove() {
+		if(drainedBlock != null) {
+			drainedBlock.revertBlock();
+		}
 		instances.remove(player.getEntityId());
 	}
 
