@@ -63,6 +63,7 @@ public class LavaTrain implements IAbility {
 		
 		this.direction = player.getEyeLocation().getDirection().clone();
 		this.direction.setY(0);
+		this.direction = this.direction.normalize();
 		origin = player.getLocation().clone().add(direction.clone().multiply(trainWidth+1+randomWidth));
 		origin.setY(origin.getY()-1);
 		current = origin.clone();
@@ -79,8 +80,19 @@ public class LavaTrain implements IAbility {
 		if (Tools.isRegionProtectedFromBuild(player.getPlayer(), Abilities.LavaTrain, current)) {
 			return false;
 		}
+		if(this.direction.getX() == 0 && this.direction.getY() == 0) {
+			if(!reached) {
+				this.affectBlocks(current, reachWidth);
+				reached = true;
+			} else {
+				if (System.currentTimeMillis() - time > keepAlive) {
+					return false;
+				}
+				return true;
+			}
+		}
 		if (System.currentTimeMillis() - time >= interval) {
-			if(origin.distance(current) >= range || origin.distance(current) < 1) {
+			if(origin.distance(current) >= range) {
 				if(!reached) {
 					this.affectBlocks(current, reachWidth);
 					reached = true;
@@ -121,7 +133,7 @@ public class LavaTrain implements IAbility {
 			for(Block potentialsBlock : potentialsBlocks) {
 				if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
 					//Do not let block behind bender to be bend, this whill be stupid
-					if(!potentialsBlock.equals(this.safePoint)) {
+					if(!potentialsBlock.getLocation().equals(this.safePoint.getLocation())) {
 						new TempBlock(potentialsBlock, Material.LAVA, full);
 						affecteds.add(potentialsBlock);
 					}
