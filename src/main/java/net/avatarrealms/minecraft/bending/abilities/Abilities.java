@@ -1,7 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class list all bindable abilities
@@ -113,16 +113,14 @@ public enum Abilities {
 		return false;
 	}
 
-	public static String[] getAirbendingAbilities() {
-		ArrayList<String> list = new ArrayList<String>();
+	public static List<Abilities> getAirbendingAbilities() {
+		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
-			if (isAirbending(a) && !isSecret(a)) {
-				list.add(a.name());
+			if (isAirbending(a)) {
+				result.add(a);
 			}
 		}
-		String[] abilities = list.toArray(new String[list.size()]);
-		Arrays.sort(abilities);
-		return abilities;
+		return result;
 	}
 
 	public static boolean isWaterbending(Abilities ability) {
@@ -132,16 +130,14 @@ public enum Abilities {
 		return false;
 	}
 
-	public static String[] getWaterbendingAbilities() {
-		ArrayList<String> list = new ArrayList<String>();
+	public static List<Abilities> getWaterbendingAbilities() {
+		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
-			if (isWaterbending(a) && !isSecret(a)) {
-				list.add(a.name());
+			if (isWaterbending(a)) {
+				result.add(a);
 			}
 		}
-		String[] abilities = list.toArray(new String[list.size()]);
-		Arrays.sort(abilities);
-		return abilities;
+		return result;
 	}
 
 	public static boolean isEarthbending(Abilities ability) {
@@ -151,16 +147,14 @@ public enum Abilities {
 		return false;
 	}
 
-	public static String[] getEarthbendingAbilities() {
-		ArrayList<String> list = new ArrayList<String>();
+	public static List<Abilities> getEarthbendingAbilities() {
+		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
-			if (isEarthbending(a) && !isSecret(a)) {
-				list.add(a.name());
+			if (isEarthbending(a)) {
+				result.add(a);
 			}
 		}
-		String[] abilities = list.toArray(new String[list.size()]);
-		Arrays.sort(abilities);
-		return abilities;
+		return result;
 	}
 
 	public static boolean isFirebending(Abilities ability) {
@@ -170,16 +164,14 @@ public enum Abilities {
 		return false;
 	}
 
-	public static String[] getFirebendingAbilities() {
-		ArrayList<String> list = new ArrayList<String>();
+	public static List<Abilities> getFirebendingAbilities() {
+		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
-			if (isFirebending(a) && !isSecret(a)) {
-				list.add(a.name());
+			if (isFirebending(a)) {
+				result.add(a);
 			}
 		}
-		String[] abilities = list.toArray(new String[list.size()]);
-		Arrays.sort(abilities);
-		return abilities;
+		return result;
 	}
 
 	public static boolean isChiBlocking(Abilities ability) {
@@ -189,32 +181,13 @@ public enum Abilities {
 		return false;
 	}
 
-	public static String[] getChiBlockingAbilities() {
-		ArrayList<String> list = new ArrayList<String>();
+	public static List<Abilities> getChiBlockingAbilities() {
+		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
-			if (isChiBlocking(a) && !isSecret(a)) {
-				list.add(a.name());
+			if (isChiBlocking(a)) {
+				result.add(a);
 			}
 		}
-		String[] abilities = list.toArray(new String[list.size()]);
-		Arrays.sort(abilities);
-		return abilities;
-	}
-
-	public static boolean isSecret(Abilities ability) {
-		// Temp method to make players not see new abilities
-		switch (ability) {
-		case AirManipulation :
-		case Suffocate :
-		case EarthMelt :
-		case LavaTrain :
-		case MetalBending :
-		case Combustion :
-		case FireBlade :
-		case IceSwipe :
-		case Dash :
-		case PoisonnedDart: return true;			
-		default : return false;
-		}
+		return result;
 	}
 }

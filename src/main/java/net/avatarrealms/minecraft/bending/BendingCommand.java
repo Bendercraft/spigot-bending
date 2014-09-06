@@ -60,14 +60,6 @@ public class BendingCommand {
 
 	private final String[] metricsAlias = { "metrics" };
 
-	private String[] waterbendingabilities = Abilities
-			.getWaterbendingAbilities();
-	private String[] airbendingabilities = Abilities.getAirbendingAbilities();
-	private String[] earthbendingabilities = Abilities
-			.getEarthbendingAbilities();
-	private String[] firebendingabilities = Abilities.getFirebendingAbilities();
-	private String[] chiblockingabilities = Abilities.getChiBlockingAbilities();
-
 	private File dataFolder;
 	private Server server;
 	private boolean verbose = true;
@@ -1353,30 +1345,32 @@ public class BendingCommand {
 		}
 
 		if (args.length == 2) {
-			String[] abilitylist = null;
+			List<Abilities> abilitylist = null;
 			String choice = args[1].toLowerCase();
 			ChatColor color = ChatColor.WHITE;
 			if (Arrays.asList(airbendingAliases).contains(choice)) {
-				abilitylist = airbendingabilities;
+				abilitylist = Abilities.getAirbendingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("Air"));
 			} else if (Arrays.asList(waterbendingAliases).contains(choice)) {
-				abilitylist = waterbendingabilities;
+				abilitylist = Abilities.getWaterbendingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("Water"));
 			} else if (Arrays.asList(earthbendingAliases).contains(choice)) {
-				abilitylist = earthbendingabilities;
+				abilitylist = Abilities.getEarthbendingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 			} else if (Arrays.asList(firebendingAliases).contains(choice)) {
-				abilitylist = firebendingabilities;
+				abilitylist = Abilities.getFirebendingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 			} else if (Arrays.asList(chiblockingAliases).contains(choice)) {
-				abilitylist = chiblockingabilities;
+				abilitylist = Abilities.getChiBlockingAbilities();
 				color = PluginTools.getColor(ConfigManager
 						.getColor("ChiBlocker"));
 			}
 
 			if (abilitylist != null) {
-				for (String ability : abilitylist) {
-					sendMessage(player, color + ability);
+				for (Abilities ability : abilitylist) {
+					if(EntityTools.hasPermission(player, ability)) {
+						sendMessage(player, color + ability.name());
+					}
 				}
 				return;
 			} else {
