@@ -1,6 +1,8 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
@@ -13,8 +15,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class MetalBending {
+	
+	private static final long meltTime = 1500;
+	private static Map<Player, MetalBending> instances = new HashMap<Player, MetalBending>();
 
 	private static Map<Material, Integer> metals = new HashMap<Material, Integer>();
 	static {
@@ -30,6 +36,17 @@ public class MetalBending {
 		metals.put(Material.IRON_BOOTS, 4);
 		metals.put(Material.IRON_CHESTPLATE, 8);
 		metals.put(Material.SHEARS, 2);
+	}	
+	
+	private long time;
+	private Player player;
+	private ItemStack items;
+	
+	private MetalBending(Player player, ItemStack i) {
+		this.player = player;
+		this.time = System.currentTimeMillis();
+		this.items = i;
+		instances.put(player, this);
 	}
 
 	public static void use(Player pl, Block bl) {
@@ -60,6 +77,87 @@ public class MetalBending {
 	}
 
 	public static void metalMelt(Player player) {
-
+		ItemStack is = player.getItemInHand();
+		if (isMeltable(is.getType())) {
+			new MetalBending(player, is);
+		}
 	}
+	
+	public static boolean isMeltable(Material m) {
+		return metals.containsKey(m);
+	}
+	
+	public static void progressAll() {
+		List<Player> toRemove = new LinkedList<Player>();
+		for (Player p : instances.keySet()) {
+			boolean keep = instances.get(p).progress();
+			if (!keep) {
+				toRemove.add(p);
+			}
+		}
+		
+		for (Player p : toRemove) {
+			instances.remove(p);
+		}
+		
+	}
+	
+	public boolean progress() {
+		if (player.isDead() || !player.isOnline()) {
+			return false;
+		}
+		
+		if (!player.isSneaking()
+				|| EntityTools.getBendingAbility(player) != Abilities.MetalBending) {
+			return false;
+		}
+		
+		if (!items.equals(player.getItemInHand())) {
+			time = System.currentTimeMillis();
+			items = player.getItemInHand();
+		}
+		
+		if (!isMeltable(items.getType())) {
+			return false;
+		}
+		
+		if (System.currentTimeMillis() > time + meltTime) {
+			melt();
+			time = System.currentTimeMillis();
+		}
+		
+		return true;
+	}
+	
+	private void melt() {
+		ItemStack newItem = new ItemStack (Material.IRON_INGOT);
+		int max = newItem.getType().getMaxDurability();
+		int cur = newItem.getDurability();
+		double prc = (double)cur / max;
+		int nb = metals.get(items.getType());
+		nb *= prc;
+		if (nb < 1) {
+			nb = 1;
+		}
+		newItem.setAmount(nb);
+		HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(
+				newItem);
+		for (int id : cantfit.keySet()) {
+			player.getWorld()
+					.dropItem(player.getEyeLocation(), cantfit.get(id));
+		}
+		int amount = items.getAmount();
+		if (amount == 1) {
+			player.getInventory()
+					.clear(player.getInventory().getHeldItemSlot());
+		} else {
+			items.setAmount(amount - 1);
+		}
+	}
+	
+	public static void removeAll() {
+		instances.clear();
+	}
+	
+	
 }
