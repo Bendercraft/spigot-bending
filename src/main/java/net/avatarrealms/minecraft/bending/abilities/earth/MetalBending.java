@@ -24,6 +24,7 @@ public class MetalBending {
 
 	private static Map<Material, Integer> metals = new HashMap<Material, Integer>();
 	static {
+		metals.put(Material.IRON_SPADE, 1);
 		metals.put(Material.IRON_ORE, 1);
 		metals.put(Material.IRON_BLOCK, 9);
 		metals.put(Material.IRON_DOOR, 6);
@@ -36,6 +37,12 @@ public class MetalBending {
 		metals.put(Material.IRON_BOOTS, 4);
 		metals.put(Material.IRON_CHESTPLATE, 8);
 		metals.put(Material.SHEARS, 2);
+		metals.put(Material.ANVIL, 31);
+		metals.put(Material.HOPPER, 5);
+		metals.put(Material.CAULDRON, 7);
+		metals.put(Material.RAILS, 6);
+		metals.put(Material.TRIPWIRE, 1);
+		metals.put(Material.IRON_PLATE, 2);
 	}	
 	
 	private long time;

@@ -132,6 +132,16 @@ public class BlockTools {
 		nonOpaque.add(Material.TRIPWIRE);
 	}
 	
+	public static Set<Material> ironBendables = new HashSet<Material>();
+	static {
+		ironBendables.add(Material.IRON_BLOCK);
+		ironBendables.add(Material.IRON_ORE);
+		ironBendables.add(Material.ANVIL);
+		ironBendables.add(Material.IRON_FENCE);
+		ironBendables.add(Material.HOPPER);
+		ironBendables.add(Material.CAULDRON);
+	}
+	
 	public static ConcurrentHashMap<Block, Information> movedEarth = new ConcurrentHashMap<Block, Information>();
 	public static ConcurrentHashMap<Integer, Information> tempAir = new ConcurrentHashMap<Integer, Information>();
 	
@@ -212,7 +222,24 @@ public class BlockTools {
 				return true;
 			}
 		}
+		
+		if (isIronBendable(player,block)) {
+			return true;
+		}
+		
 		return false;
+	}
+	
+	public static boolean isIronBendable(Player p, Block b) {
+		if (!EntityTools.canBend(p, Abilities.MetalBending)) {
+			return false;
+		}
+		
+		if (!ironBendables.contains(b.getType())) {
+			return false;
+		}
+		
+		return true;
 	}
 		
 	public static int getEarthbendableBlocksLength(Player player, Block block,
