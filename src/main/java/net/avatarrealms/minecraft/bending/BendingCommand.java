@@ -441,11 +441,6 @@ public class BendingCommand {
 					color = PluginTools.getColor(ConfigManager
 							.getColor("ChiBlocker"));
 				sendMessage(player, color + p.getName());
-				for (Abilities ability : Abilities.values()) {
-					if(EntityTools.hasPermission(player, ability)) {
-						sendMessage(player, ability.name());
-					}
-				}
 			}
 		} else if (args.length == 2) {
 			Player p = this.getOnlinePlayer(args[1]);
@@ -469,34 +464,69 @@ public class BendingCommand {
 					if (!EntityTools.isBender(p)) {
 						sendMessage(player, "-No bending");
 					} else {
-						if (EntityTools.isBender(p, BendingType.Air))
+						if (EntityTools.isBender(p, BendingType.Air)) {
 							sendMessage(
 									player,
 									PluginTools.getColor(ConfigManager
 											.getColor("Air")) + "-Airbending");
-						if (EntityTools.isBender(p, BendingType.Water))
+							for (Abilities ability : Abilities.getAirbendingAbilities()) {
+								if(EntityTools.hasPermission(player, ability)) {
+									sendMessage(player, PluginTools.getColor(ConfigManager
+											.getColor("Air"))+"   -- "+ability.name());
+								}
+							}
+						}
+						if (EntityTools.isBender(p, BendingType.Water)) {
 							sendMessage(
 									player,
 									PluginTools.getColor(ConfigManager
 											.getColor("Water"))
 											+ "-Waterbending");
-						if (EntityTools.isBender(p, BendingType.Fire))
+							for (Abilities ability : Abilities.getWaterbendingAbilities()) {
+								if(EntityTools.hasPermission(player, ability)) {
+									sendMessage(player, PluginTools.getColor(ConfigManager
+											.getColor("Water"))+"   -- "+ability.name());
+								}
+							}
+						}
+						if (EntityTools.isBender(p, BendingType.Fire)) {
 							sendMessage(
 									player,
 									PluginTools.getColor(ConfigManager
 											.getColor("Fire")) + "-Firebending");
-						if (EntityTools.isBender(p, BendingType.Earth))
+							for (Abilities ability : Abilities.getFirebendingAbilities()) {
+								if(EntityTools.hasPermission(player, ability)) {
+									sendMessage(player, PluginTools.getColor(ConfigManager
+											.getColor("Fire"))+"   -- "+ability.name());
+								}
+							}
+						}
+						if (EntityTools.isBender(p, BendingType.Earth)) {
 							sendMessage(
 									player,
 									PluginTools.getColor(ConfigManager
 											.getColor("Earth"))
 											+ "-Earthbending");
-						if (EntityTools.isBender(p, BendingType.ChiBlocker))
+							for (Abilities ability : Abilities.getEarthbendingAbilities()) {
+								if(EntityTools.hasPermission(player, ability)) {
+									sendMessage(player, PluginTools.getColor(ConfigManager
+											.getColor("Earth"))+"   -- "+ability.name());
+								}
+							}
+						}
+						if (EntityTools.isBender(p, BendingType.ChiBlocker)) {
 							sendMessage(
 									player,
 									PluginTools.getColor(ConfigManager
 											.getColor("ChiBlocker"))
 											+ "-Chiblocking");
+							for (Abilities ability : Abilities.getChiBlockingAbilities()) {
+								if(EntityTools.hasPermission(player, ability)) {
+									sendMessage(player, PluginTools.getColor(ConfigManager
+											.getColor("ChiBlocker"))+"   -- "+ability.name());
+								}
+							}
+						}
 					}
 				}
 			} else {
@@ -2220,7 +2250,7 @@ public class BendingCommand {
 	
 	private Player getOnlinePlayer(String name) {
 		for(Player p : server.getOnlinePlayers()) {
-			if(p.getName().equals(name)) {
+			if(p.getName().equalsIgnoreCase(name)) {
 				return p;
 			}
 		}
