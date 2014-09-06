@@ -60,6 +60,8 @@ public class Wave implements IAbility {
 	boolean canhitself = true;
 	private IAbility parent;
 
+	private TempBlock drainedBlock;
+
 	public Wave(Player player, IAbility parent) {
 		this.parent = parent;
 		this.player = player;
@@ -95,6 +97,19 @@ public class Wave implements IAbility {
 			focusBlock();
 			return true;
 		}
+		//If no block available, check if bender can drainbend !
+		if(Drainbending.canDrainBend(player)) {
+			Location location = player.getEyeLocation();
+			Vector vector = location.getDirection().clone().normalize();
+			block = location.clone().add(vector.clone().multiply(2)).getBlock();
+			drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+			sourceblock = block;
+			focusBlock();
+			//Range and max radius is halfed for Drainbending
+			range = range/2;
+			maxradius = maxradius/2;
+			return true;
+		}
 		return false;
 	}
 
@@ -112,6 +127,9 @@ public class Wave implements IAbility {
 	}
 
 	public void remove() {
+		if(drainedBlock != null) {
+			drainedBlock.revertBlock();
+		}
 		instances.remove(player.getEntityId());
 	}
 
