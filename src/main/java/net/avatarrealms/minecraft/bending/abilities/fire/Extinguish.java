@@ -5,6 +5,7 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
+import net.avatarrealms.minecraft.bending.abilities.earth.LavaTrain;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -44,6 +45,10 @@ public class Extinguish implements IAbility {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze,
 					block.getLocation()))
 				continue;
+			//Do not allow firebender to completly negate lavabend
+			if(LavaTrain.isLavaPart(block)) {
+				continue;
+			}
 			if (block.getType() == Material.FIRE) {
 				block.setType(Material.AIR);
 				block.getWorld().playEffect(block.getLocation(),
