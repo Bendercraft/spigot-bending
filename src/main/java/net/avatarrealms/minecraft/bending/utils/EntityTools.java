@@ -203,6 +203,9 @@ public class EntityTools {
 		if (player.hasPermission("bending.water.plantbending")) {
 			return true;
 		}
+		if (EntityTools.isSpecialized(player, BendingSpecializationType.DrainBend)) {
+			return true;
+		}
 		return false;
 	}
 	

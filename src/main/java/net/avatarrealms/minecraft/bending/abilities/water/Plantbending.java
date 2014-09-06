@@ -69,13 +69,6 @@ public class Plantbending implements IAbility {
 		}
 	}
 
-	public static void regrowAll() {
-		for (Plantbending plantbending : instances.values())
-			plantbending.clear();
-		
-		instances.clear();
-	}
-
 	public static String getDescription() {
 		return "Plantbending gives great utility to waterbenders. Provided you have Plantbending bound to any of your slots, "
 				+ "it augments the rest of your abilities. Instead of being limited to water, "

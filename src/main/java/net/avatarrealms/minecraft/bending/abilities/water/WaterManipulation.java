@@ -54,7 +54,7 @@ public class WaterManipulation implements IAbility {
 	private int id;
 	private Location location = null;
 	private Block sourceblock = null;
-	private TempBlock trail, trail2;
+	private TempBlock trail, trail2, drainedBlock;
 	private boolean progressing = false;
 	private Location firstdestination = null;
 	private Location targetdestination = null;
@@ -99,6 +99,18 @@ public class WaterManipulation implements IAbility {
 			focusBlock();
 			return true;
 		}
+		
+		//If no block available, check if bender can drainbend !
+		if(Drainbending.canDrainBend(player)) {
+			Location location = player.getEyeLocation();
+			Vector vector = location.getDirection().clone().normalize();
+			block = location.clone().add(vector.clone().multiply(2)).getBlock();
+			drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+			sourceblock = block;
+			focusBlock();
+			return true;
+		}
+		
 		return false;
 	}
 
@@ -114,6 +126,9 @@ public class WaterManipulation implements IAbility {
 	}
 
 	public void remove() {
+		if(drainedBlock != null) {
+			drainedBlock.revertBlock();
+		}
 		remove(id);
 	}
 

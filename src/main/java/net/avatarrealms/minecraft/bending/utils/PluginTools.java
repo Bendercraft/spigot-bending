@@ -217,7 +217,7 @@ public class PluginTools {
 		WaterSpout.removeAll();
 		WaterWall.removeAll();
 		Wave.removeAll();
-		Plantbending.regrowAll();
+		Plantbending.regrow();
 		OctopusForm.removeAll();
 		Bloodbending.removeAll();
 
