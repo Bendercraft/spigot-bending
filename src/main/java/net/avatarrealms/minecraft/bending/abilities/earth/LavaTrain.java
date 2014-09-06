@@ -36,6 +36,7 @@ public class LavaTrain implements IAbility {
 	
 	private IAbility parent;
 	private Location origin;
+	private Block safePoint;
 	private Location current;
 	private Vector direction;
 	private BendingPlayer player;
@@ -58,6 +59,7 @@ public class LavaTrain implements IAbility {
 		
 		this.parent = parent;
 		this.player = bPlayer;
+		this.safePoint = this.player.getPlayer().getLocation().getBlock();
 		
 		this.direction = player.getEyeLocation().getDirection().clone();
 		this.direction.setY(0);
@@ -78,7 +80,7 @@ public class LavaTrain implements IAbility {
 			return false;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
-			if(origin.distance(current) >= range) {
+			if(origin.distance(current) >= range || origin.distance(current) < 1) {
 				if(!reached) {
 					this.affectBlocks(current, reachWidth);
 					reached = true;
@@ -118,8 +120,11 @@ public class LavaTrain implements IAbility {
 			
 			for(Block potentialsBlock : potentialsBlocks) {
 				if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
-					new TempBlock(potentialsBlock, Material.LAVA, full);
-					affecteds.add(potentialsBlock);
+					//Do not let block behind bender to be bend, this whill be stupid
+					if(!potentialsBlock.equals(this.safePoint)) {
+						new TempBlock(potentialsBlock, Material.LAVA, full);
+						affecteds.add(potentialsBlock);
+					}
 				}
 			}
 		}
