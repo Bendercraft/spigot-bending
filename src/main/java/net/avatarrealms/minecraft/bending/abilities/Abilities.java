@@ -56,6 +56,7 @@ public enum Abilities {
 	Torrent(BendingType.Water), 
 	IceSwipe(BendingType.Water),
 	Bloodbending(BendingSpecializationType.Bloodbend), 
+	Drainbending(BendingSpecializationType.DrainBend), 
 
 	HighJump(BendingType.ChiBlocker), 
 	RapidPunch(BendingType.ChiBlocker), 
