@@ -1916,6 +1916,12 @@ public class BendingCommand {
 			printNoPermissions(player);
 			return;
 		}
+		if(ability.isSpecialization()) {
+			if(!EntityTools.isSpecialized(player, ability.getSpecialization())) {
+				printNoPermissions(player);
+				return;
+			}
+		}
 
 		int slot = player.getInventory().getHeldItemSlot();
 		Material mat = player.getInventory().getItemInHand().getType();
