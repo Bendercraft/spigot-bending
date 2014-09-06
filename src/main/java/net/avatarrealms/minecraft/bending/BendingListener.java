@@ -601,10 +601,14 @@ public class BendingListener implements Listener {
 			if (ability == Abilities.HeatControl) {
 				new Cook(player, null);
 			}
+			
+			if (ability == Abilities.MetalBending) {
+				MetalBending.metalMelt(player);
+			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
 				if (ability == Abilities.Dash) {
-					// new Dash(player, null);
+					new Dash(player, null);
 				}
 			}
 		}
