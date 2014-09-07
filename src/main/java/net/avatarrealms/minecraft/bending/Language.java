@@ -48,7 +48,6 @@ import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterWall;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
-import net.avatarrealms.minecraft.bending.controller.StorageManager;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -59,6 +58,22 @@ public class Language {
 
 	private HashMap<String, HashMap<String, String>> descriptions = new HashMap<String, HashMap<String, String>>();
 	private HashMap<String, String> defaultdescriptions = new HashMap<String, String>();
+	
+	public static final String on_air_choose = "As an airbender, you now take no falling damage, have faster sprinting and higher "
+	+ "jumps. Additionally, daily activities are easier for you - your food meter decays at a "
+	+ "much slower rate";
+	public static final String on_earth_choose = "As an earthbender, upon landing on bendable earth, you will briefly turn the "
+	+ "area to soft sand, negating any fall damage you would have otherwise taken.";
+	public static final String on_water_choose = "As a waterbender, you no longer take any fall damage when landing on ice, snow "
+	+ "or even 1-block-deep water. Additionally, sneaking in the water with a bending ability "
+	+ "selected that does not utilize sneak (or no ability at all)"
+	+ " will give you accelerated swimming. "
+	+ "Lastly, you can pull water from plants with your abilities.";
+	public static final String on_fire_choose = "As a firebender, you now more quickly smother yourself when you catch on fire.";
+	public static final String on_chi_choose = "As a chiblocker, you have no active abilities to bind. Instead, you have improved "
+	+ "sprinting and jumping, have a dodge chance and deal more damage with your fists. "
+	+ "Additionally, punching a bender will block his/her chi for a few seconds, preventing "
+	+ "him/her from bending (and even stopping their passive!).";
 
 	private List<String> supportedlanguages = new ArrayList<String>();
 	private String defaultlanguage = "en";
@@ -107,11 +122,11 @@ public class Language {
 		defaultdescriptions.put("AirSuction", AirSuction.getDescription());
 		defaultdescriptions.put("AirSwipe", AirSwipe.getDescription());
 		defaultdescriptions.put("Tornado", Tornado.getDescription());
-		defaultdescriptions.put("AirChoose", StorageManager.on_air_choose);
+		defaultdescriptions.put("AirChoose", on_air_choose);
 		defaultdescriptions.put("HighJump", HighJump.getDescription());
 		defaultdescriptions.put("Paralyze", Paralyze.getDescription());
 		defaultdescriptions.put("RapidPunch", RapidPunch.getDescription());
-		defaultdescriptions.put("ChiChoose", StorageManager.on_chi_choose);
+		defaultdescriptions.put("ChiChoose", on_chi_choose);
 		defaultdescriptions.put("Catapult", Catapult.getDescription());
 		defaultdescriptions.put("Collapse", Collapse.getDescription());
 		defaultdescriptions.put("EarthArmor", EarthArmor.getDescription());
@@ -121,7 +136,7 @@ public class Language {
 		defaultdescriptions.put("EarthTunnel", EarthTunnel.getDescription());
 		defaultdescriptions.put("Shockwave", Shockwave.getDescription());
 		defaultdescriptions.put("Tremorsense", Tremorsense.getDescription());
-		defaultdescriptions.put("EarthChoose", StorageManager.on_earth_choose);
+		defaultdescriptions.put("EarthChoose", on_earth_choose);
 		defaultdescriptions.put("Blaze", ArcOfFire.getDescription());
 		defaultdescriptions.put("HeatControl", Extinguish.getDescription());
 		defaultdescriptions.put("FireBlast", FireBlast.getDescription());
@@ -131,7 +146,7 @@ public class Language {
 		defaultdescriptions.put("Illumination", Illumination.getDescription());
 		defaultdescriptions.put("Lightning", Lightning.getDescription());
 		defaultdescriptions.put("WallOfFire", WallOfFire.getDescription());
-		defaultdescriptions.put("FireChoose", StorageManager.on_fire_choose);
+		defaultdescriptions.put("FireChoose", on_fire_choose);
 		defaultdescriptions.put("Bloodbending", Bloodbending.getDescription());
 		defaultdescriptions.put("PhaseChange", FreezeMelt.getDescription());
 		defaultdescriptions
@@ -144,7 +159,7 @@ public class Language {
 		defaultdescriptions.put("WaterSpout", WaterSpout.getDescription());
 		defaultdescriptions.put("Surge", WaterWall.getDescription());
 		defaultdescriptions.put("Torrent", Torrent.getDescription());
-		defaultdescriptions.put("WaterChoose", StorageManager.on_water_choose);
+		defaultdescriptions.put("WaterChoose", on_water_choose);
 		defaultdescriptions.put("AvatarState", AvatarState.getDescription());
 
 		for (String language : supportedlanguages) {

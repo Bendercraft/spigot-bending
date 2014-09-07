@@ -23,12 +23,6 @@ public class ConfigManager {
 	public static Map<String, String> color = new HashMap<String, String>();
 	public static List<String> earthbendable = new LinkedList<String>();
 	public static Map<String, Boolean> useWeapon = new HashMap<String, Boolean>();
-	public static boolean useMySQL = false;
-	public static String dbHost = "localhost";
-	public static String dbUser = "root";
-	public static String dbPass = "";
-	public static String dbDB = "minecraft";
-	public static String dbPort = "3306";
 
 	public static int seaLevel = 63;
 
@@ -917,16 +911,6 @@ public class ConfigManager {
 		nightFactor = config.getDouble("Properties.Water.Night-Power-Factor",
 				nightFactor);
 
-		// MySQL
-		useMySQL = config.getBoolean("MySQL.Use-MySQL", useMySQL);
-		dbHost = config.getString("MySQL.MySQL-host", dbHost);
-		dbUser = config.getString("MySQL.User", dbUser);
-		dbPass = config.getString("MySQL.Password", dbPass);
-		dbDB = config.getString("MySQL.Database", dbDB);
-		Integer dbPortint = (Integer) config.getInt("MySQL.MySQL-portnumber",
-				Integer.parseInt(dbPort));
-		dbPort = dbPortint.toString();
-
 		// set defaults
 		config.set("Chat.Enabled", enabled);
 		config.set("Chat.Colors", colors);
@@ -1235,13 +1219,6 @@ public class ConfigManager {
 		config.set("Properties.Water.IceSwipe.Cooldown", iceSwipeCooldown);
 		// Night
 		config.set("Properties.Water.Night-Power-Factor", nightFactor);
-		// MySQL
-		config.set("MySQL.Use-MySQL", useMySQL);
-		config.set("MySQL.MySQL-host", dbHost);
-		config.set("MySQL.User", dbUser);
-		config.set("MySQL.Password", dbPass);
-		config.set("MySQL.Database", dbDB);
-		config.set("MySQL.MySQL-portnumber", Integer.parseInt(dbPort));
 
 		// Option
 		config.set("Bending.Option.EarthBendable", earthbendable);
