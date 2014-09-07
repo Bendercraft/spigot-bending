@@ -88,6 +88,12 @@ public class EntityTools {
 		return bPlayer.getAbility();
 	}
 	
+
+	
+	public static String getPermission(Abilities ability) {
+		return "bending."+ability.getElement().name()+"."+ability.name();
+	}
+	
 	public static boolean hasPermission(Player player, Abilities ability) {
 		if (ability == Abilities.AvatarState
 				&& player.hasPermission("bending.admin.AvatarState")) {

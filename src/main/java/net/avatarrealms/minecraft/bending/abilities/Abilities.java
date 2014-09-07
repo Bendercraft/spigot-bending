@@ -93,13 +93,7 @@ public enum Abilities {
 		return false;
 	}
 	
-	public String getPermission() {
-		return "bending."+this.getElement().name()+"."+this.name();
-	}
-	
-	
-	//Statci methods
-
+	//Static methods
 	public static Abilities getAbility(String ability) {
 		for (Abilities a : Abilities.values()) {
 			if (ability.equalsIgnoreCase(a.name())) {
