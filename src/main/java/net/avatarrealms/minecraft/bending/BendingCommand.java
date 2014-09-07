@@ -1904,6 +1904,26 @@ public class BendingCommand {
 			}
 			bPlayer.addSpecialization(spe);
 			return;
+		} else if(subAction.equals("clear")) {
+			BendingPlayer bPlayer = null;
+			
+			if(args.length == 2) {
+				String playername = args[1];
+				Player targetplayer = this.getOnlinePlayer(playername);
+				if (targetplayer == null) {
+					//TODO unknown player
+					return;
+				}
+				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
+			} else {
+				bPlayer = BendingPlayer.getBendingPlayer(player);
+			}
+			if(bPlayer == null) {
+				//Wut !
+				return;
+			}
+			bPlayer.clearSpecialization();
+			return;
 		}
 		printSpecializationUsage(player);
 	}

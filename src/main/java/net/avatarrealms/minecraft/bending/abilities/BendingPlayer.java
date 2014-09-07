@@ -207,7 +207,7 @@ public class BendingPlayer {
 	}
 	
 	public void setSpecialization(BendingSpecializationType specialization) {
-		specializations.clear();
+		this.clearSpecialization(specialization.getElement());
 		specializations.add(specialization);
 	}
 	public void addSpecialization(BendingSpecializationType specialization) {
@@ -216,6 +216,17 @@ public class BendingPlayer {
 	}
 	public void removeSpecialization(BendingSpecializationType specialization) {
 		specializations.remove(specialization);
+	}
+	public void clearSpecialization(BendingType element) {
+		List<BendingSpecializationType> toRemove = new LinkedList<BendingSpecializationType>();
+		for(BendingSpecializationType spe : specializations) {
+			if(spe.getElement().equals(element)) {
+				toRemove.add(spe);
+			}
+		}
+		for(BendingSpecializationType spe : toRemove) {
+			this.removeSpecialization(spe);
+		}
 	}
 	public void clearSpecialization() {
 		specializations.clear();
