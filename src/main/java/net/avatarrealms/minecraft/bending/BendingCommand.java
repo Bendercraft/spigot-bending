@@ -1817,19 +1817,27 @@ public class BendingCommand {
 			}
 			return;
 		}
-		if (args.length != 2 && args.length != 3) {
-			printSpecializationUsage(player);
-			return;
-		}
-		//If 2 args, apply specialization on himself, else (3 args) on player targeted
-		if (args.length == 2) {
+		String subAction = args[1];
+		if(subAction.equals("set")) {
 			String choice = args[1].toLowerCase();
 			BendingSpecializationType spe = BendingSpecializationType.getType(choice);
 			if(spe == null) {
 				PluginTools.sendMessage(player, "General.bad_specialization");
 				return;
 			}
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+			BendingPlayer bPlayer = null;
+			
+			if(args.length == 3) {
+				String playername = args[2];
+				Player targetplayer = this.getOnlinePlayer(playername);
+				if (targetplayer == null) {
+					//TODO unknown player
+					return;
+				}
+				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
+			} else {
+				bPlayer = BendingPlayer.getBendingPlayer(player);
+			}
 			if(bPlayer == null) {
 				//Wut !
 				return;
@@ -1839,20 +1847,53 @@ public class BendingCommand {
 				return;
 			}
 			bPlayer.setSpecialization(spe);
-		} else if (args.length == 3) {
-			String playername = args[1];
-			Player targetplayer = this.getOnlinePlayer(playername);
-			if (targetplayer == null) {
-				printAddUsage(player);
-				return;
-			}
-			String choice = args[2].toLowerCase();
+			return;
+		} else if(subAction.equals("remove")) {
+			String choice = args[1].toLowerCase();
 			BendingSpecializationType spe = BendingSpecializationType.getType(choice);
 			if(spe == null) {
 				PluginTools.sendMessage(player, "General.bad_specialization");
 				return;
 			}
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
+			BendingPlayer bPlayer = null;
+			
+			if(args.length == 3) {
+				String playername = args[2];
+				Player targetplayer = this.getOnlinePlayer(playername);
+				if (targetplayer == null) {
+					//TODO unknown player
+					return;
+				}
+				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
+			} else {
+				bPlayer = BendingPlayer.getBendingPlayer(player);
+			}
+			if(bPlayer == null) {
+				//Wut !
+				return;
+			}
+			bPlayer.removeSpecialization(spe);
+			return;
+		} else if(subAction.equals("add")) {
+			String choice = args[1].toLowerCase();
+			BendingSpecializationType spe = BendingSpecializationType.getType(choice);
+			if(spe == null) {
+				PluginTools.sendMessage(player, "General.bad_specialization");
+				return;
+			}
+			BendingPlayer bPlayer = null;
+			
+			if(args.length == 3) {
+				String playername = args[2];
+				Player targetplayer = this.getOnlinePlayer(playername);
+				if (targetplayer == null) {
+					//TODO unknown player
+					return;
+				}
+				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
+			} else {
+				bPlayer = BendingPlayer.getBendingPlayer(player);
+			}
 			if(bPlayer == null) {
 				//Wut !
 				return;
@@ -1861,9 +1902,10 @@ public class BendingCommand {
 				PluginTools.sendMessage(player, "General.bad_specialization_element");
 				return;
 			}
-			bPlayer.setSpecialization(spe);
+			bPlayer.addSpecialization(spe);
+			return;
 		}
-
+		printSpecializationUsage(player);
 	}
 
 	private void printClearUsage(Player player) {
