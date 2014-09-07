@@ -12,6 +12,9 @@ import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
 import net.avatarrealms.minecraft.bending.controller.TempBackup;
+import net.avatarrealms.minecraft.bending.listeners.BendingBlockListener;
+import net.avatarrealms.minecraft.bending.listeners.BendingEntityListener;
+import net.avatarrealms.minecraft.bending.listeners.BendingPlayerListener;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -30,7 +33,9 @@ public class Bending extends JavaPlugin {
 	public static Bending plugin;
 
 	public final BendingManager manager = new BendingManager(this);
-	public final BendingListener listener = new BendingListener(this);
+	public final BendingEntityListener listener = new BendingEntityListener(this);
+	public final BendingPlayerListener bpListener = new BendingPlayerListener(this);
+	public final BendingBlockListener blListener = new BendingBlockListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
 	private final BendingPlayersSaver saver = new BendingPlayersSaver();
 
@@ -55,6 +60,8 @@ public class Bending extends JavaPlugin {
 		tools = new Tools(config,tBackup);
 
 		getServer().getPluginManager().registerEvents(listener, this);
+		getServer().getPluginManager().registerEvents(bpListener, this);
+		getServer().getPluginManager().registerEvents(blListener, this);
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, manager, 0,
 				1);
