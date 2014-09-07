@@ -13,6 +13,7 @@ public class AbilityCooldownTriggered extends Event {
 	private BendingPlayer bender;
 
 	public AbilityCooldownTriggered(BendingPlayer bender, Abilities ability) {
+		super();
 		this.bender = bender;
 		this.ability = ability;
 	}
@@ -29,5 +30,9 @@ public class AbilityCooldownTriggered extends Event {
 	public BendingPlayer getBender() {
 		return bender;
 	}
+	
+	public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
 }
