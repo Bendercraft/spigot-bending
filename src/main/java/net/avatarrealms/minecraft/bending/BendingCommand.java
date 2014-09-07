@@ -1527,11 +1527,27 @@ public class BendingCommand {
 	}
 	
 	private void printSpecializationUsage(Player player) {
-		if (player != null)
-			printUsageMessage(player, "/bending spe <specialization>",
-					"General.spe_self");
-		printUsageMessage(player, "/bending spe <player> <specialization>",
-				"General.spe_other");
+		printUsageMessage(player, "/bending spe",
+				"General.spe_list");
+		if (player != null) {
+			printUsageMessage(player, "/bending spe set <specialization>",
+					"General.spe_set_self");
+			printUsageMessage(player, "/bending spe add <specialization>",
+					"General.spe_add_self");
+			printUsageMessage(player, "/bending spe remove <specialization>",
+					"General.spe_remove_self");
+			printUsageMessage(player, "/bending spe clear",
+					"General.spe_clear_self");
+		} else {
+			printUsageMessage(player, "/bending spe set <specialization> <player>",
+				"General.spe_set_other");
+			printUsageMessage(player, "/bending spe add <specialization> <player>",
+					"General.spe_add_other");
+			printUsageMessage(player, "/bending spe remove <specialization> <player>",
+					"General.spe_remove_self");
+			printUsageMessage(player, "/bending spe clear <player>",
+					"General.spe_clear_self");
+		}
 	}
 
 	private void add(Player player, String[] args) {
@@ -1817,9 +1833,13 @@ public class BendingCommand {
 			}
 			return;
 		}
+		
 		String subAction = args[1];
 		if(subAction.equals("set")) {
-			String choice = args[1].toLowerCase();
+			if(args.length < 3) {
+				printSpecializationUsage(player);
+			}
+			String choice = args[2].toLowerCase();
 			BendingSpecializationType spe = BendingSpecializationType.getType(choice);
 			if(spe == null) {
 				PluginTools.sendMessage(player, "General.bad_specialization");
@@ -1827,8 +1847,8 @@ public class BendingCommand {
 			}
 			BendingPlayer bPlayer = null;
 			
-			if(args.length == 3) {
-				String playername = args[2];
+			if(args.length == 4) {
+				String playername = args[3];
 				Player targetplayer = this.getOnlinePlayer(playername);
 				if (targetplayer == null) {
 					//TODO unknown player
@@ -1849,7 +1869,10 @@ public class BendingCommand {
 			bPlayer.setSpecialization(spe);
 			return;
 		} else if(subAction.equals("remove")) {
-			String choice = args[1].toLowerCase();
+			if(args.length < 3) {
+				printSpecializationUsage(player);
+			}
+			String choice = args[2].toLowerCase();
 			BendingSpecializationType spe = BendingSpecializationType.getType(choice);
 			if(spe == null) {
 				PluginTools.sendMessage(player, "General.bad_specialization");
@@ -1857,8 +1880,8 @@ public class BendingCommand {
 			}
 			BendingPlayer bPlayer = null;
 			
-			if(args.length == 3) {
-				String playername = args[2];
+			if(args.length == 4) {
+				String playername = args[3];
 				Player targetplayer = this.getOnlinePlayer(playername);
 				if (targetplayer == null) {
 					//TODO unknown player
@@ -1875,7 +1898,10 @@ public class BendingCommand {
 			bPlayer.removeSpecialization(spe);
 			return;
 		} else if(subAction.equals("add")) {
-			String choice = args[1].toLowerCase();
+			if(args.length < 3) {
+				printSpecializationUsage(player);
+			}
+			String choice = args[2].toLowerCase();
 			BendingSpecializationType spe = BendingSpecializationType.getType(choice);
 			if(spe == null) {
 				PluginTools.sendMessage(player, "General.bad_specialization");
@@ -1883,8 +1909,8 @@ public class BendingCommand {
 			}
 			BendingPlayer bPlayer = null;
 			
-			if(args.length == 3) {
-				String playername = args[2];
+			if(args.length == 4) {
+				String playername = args[3];
 				Player targetplayer = this.getOnlinePlayer(playername);
 				if (targetplayer == null) {
 					//TODO unknown player
@@ -1906,9 +1932,8 @@ public class BendingCommand {
 			return;
 		} else if(subAction.equals("clear")) {
 			BendingPlayer bPlayer = null;
-			
-			if(args.length == 2) {
-				String playername = args[1];
+			if(args.length == 3) {
+				String playername = args[2];
 				Player targetplayer = this.getOnlinePlayer(playername);
 				if (targetplayer == null) {
 					//TODO unknown player
