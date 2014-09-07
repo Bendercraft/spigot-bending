@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.event.AbilityCooldownTriggered;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -173,6 +175,7 @@ public class BendingPlayer {
 		if (ability != null)
 			cooldowns.put(ability, time);
 		lastTime = time;
+		Bending.callEvent(new AbilityCooldownTriggered(this, ability));
 	}
 
 	public UUID getPlayerID() {
