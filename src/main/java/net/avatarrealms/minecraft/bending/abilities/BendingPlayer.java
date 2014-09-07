@@ -175,7 +175,9 @@ public class BendingPlayer {
 		if (ability != null)
 			cooldowns.put(ability, time);
 		lastTime = time;
-		Bending.callEvent(new AbilityCooldownEvent(this, ability));
+		if(ability != null) {
+			Bending.callEvent(new AbilityCooldownEvent(this, ability));
+		}
 	}
 
 	public UUID getPlayerID() {

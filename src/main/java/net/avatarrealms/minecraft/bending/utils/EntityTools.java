@@ -91,7 +91,7 @@ public class EntityTools {
 
 	
 	public static String getPermissionKey(Abilities ability) {
-		return "bending."+ability.getElement().name()+"."+ability.name();
+		return "bending."+ability.getElement().name().toLowerCase()+"."+ability.name().toLowerCase();
 	}
 	
 	public static boolean hasPermission(Player player, Abilities ability) {
