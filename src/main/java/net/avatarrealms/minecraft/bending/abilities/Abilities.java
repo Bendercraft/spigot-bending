@@ -93,7 +93,9 @@ public enum Abilities {
 		return false;
 	}
 	
-	
+	public String getPermission() {
+		return "bending."+this.getElement().name()+"."+this.name();
+	}
 	
 	
 	//Statci methods
