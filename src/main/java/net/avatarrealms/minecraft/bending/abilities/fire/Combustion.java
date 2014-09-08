@@ -55,7 +55,7 @@ public class Combustion implements IAbility {
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		location = player.getEyeLocation();
 		origin = location.clone();
-		block = origin.getBlock();
+		block = player.getLocation().getBlock();
 		direction = location.getDirection().normalize().multiply(radius);
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			instances.put(player, this);
@@ -68,21 +68,24 @@ public class Combustion implements IAbility {
 				|| EntityTools.getBendingAbility(player) != Abilities.Combustion)) {
 			return false;
 		}
+		
+		if(!charged) {
+			if(!player.getLocation().getBlock().getLocation().equals(block.getLocation())) {
+				return false;
+			}
+			if(!player.isSneaking()) {
+				return false;
+			}
+			if (System.currentTimeMillis() > time + chargeTime) {
+				charged = true;
+			}
+			return true;
+		}
 
 		if (System.currentTimeMillis() > time + interval) {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion,
 						location)) {
 				return false;
-			}
-			
-			if(!charged) {
-				if(!player.getLocation().getBlock().getLocation().equals(block.getLocation())) {
-					return false;
-				}
-				if (System.currentTimeMillis() > time + chargeTime) {
-					charged = true;
-				}
-				return true;
 			}
 
 			time = System.currentTimeMillis();
