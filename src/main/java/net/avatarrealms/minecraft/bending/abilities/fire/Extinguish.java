@@ -86,15 +86,6 @@ public class Extinguish implements IAbility {
 		return true;
 	}
 
-	public static String getDescription() {
-		return "While this ability is selected, the firebender becomes impervious "
-				+ "to fire damage and cannot be ignited. "
-				+ "If the user left-clicks with this ability, the targeted area will be "
-				+ "extinguished, although it will leave any creature burning engulfed in flames. "
-				+ "This ability can also cool lava. If this ability is used while targetting ice or snow, it"
-				+ " will instead melt blocks in that area. Finally, sneaking with this ability will cook any food in your hand.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

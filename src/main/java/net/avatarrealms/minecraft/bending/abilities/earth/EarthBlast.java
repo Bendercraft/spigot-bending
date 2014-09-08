@@ -492,18 +492,6 @@ public class EarthBlast implements IAbility {
 		}
 	}
 
-	public static String getDescription() {
-		return "To use, place your cursor over an earthbendable object (dirt, rock, ores, etc) "
-				+ "and tap sneak (default: shift). The object will temporarily turn to stone, "
-				+ "indicating that you have it focused as the source for your ability. "
-				+ "After you have selected an origin (you no longer need to be sneaking), "
-				+ "simply left-click in any direction and you will see your object launch "
-				+ "off in that direction, smashing into any creature in its path. If you look "
-				+ "towards a creature when you use this ability, it will target that creature. "
-				+ "A collision from Earth Blast both knocks the target back and deals some damage. "
-				+ "You cannot have multiple of these abilities flying at the same time.";
-	}
-
 	public static void removeAroundPoint(Location location, double radius) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
 		for (EarthBlast blast : instances.values()) {

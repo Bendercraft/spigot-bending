@@ -210,19 +210,6 @@ public class Tornado implements IAbility {
 		}
 	}
 
-	public static String getDescription() {
-		return "To use, simply sneak (default: shift). "
-				+ "This will create a swirling vortex at the targeted location. "
-				+ "Any creature or object caught in the vortex will be launched up "
-				+ "and out in some random direction. If another player gets caught "
-				+ "in the vortex, the launching effect is minimal. Tornado can "
-				+ "also be used to transport the user. If the user gets caught in his/her "
-				+ "own tornado, his movements are much more manageable. Provided the user doesn't "
-				+ "fall out of the vortex, it will take him to a maximum height and move him in "
-				+ "the general direction he's looking. Skilled airbenders can scale anything "
-				+ "with this ability.";
-	}
-
 	public static List<Player> getPlayers() {
 		List<Player> players = new ArrayList<Player>();
 		for (Tornado tornado : instances.values()) {

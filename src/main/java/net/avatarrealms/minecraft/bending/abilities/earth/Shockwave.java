@@ -79,16 +79,6 @@ public class Shockwave implements IAbility {
 		}
 	}
 
-	public static String getDescription() {
-		return "This is one of the most powerful moves in the earthbender's arsenal. "
-				+ "To use, you must first charge it by holding sneak (default: shift). "
-				+ "Once charged, you can release sneak to create an enormous shockwave of earth, "
-				+ "disturbing all earth around you and expanding radially outwards. "
-				+ "Anything caught in the shockwave will be blasted back and dealt damage. "
-				+ "If you instead click while charged, the disruption is focused in a cone in front of you. "
-				+ "Lastly, if you fall from a great enough height with this ability selected, you will automatically create a shockwave.";
-	}
-
 	public static void removeAll() {
 		instances.clear();
 		Ripple.removeAll();

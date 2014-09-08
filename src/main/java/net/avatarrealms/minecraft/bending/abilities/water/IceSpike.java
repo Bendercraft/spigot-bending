@@ -296,15 +296,6 @@ public class IceSpike implements IAbility {
 		return true;
 	}
 
-	public static String getDescription() {
-		return "This ability has many functions. Clicking while targetting ice, or an entity over some ice, "
-				+ "will raise a spike of ice up, damaging and slowing the target. Tapping sneak (shift) while"
-				+ " selecting a water source will select that source that can then be fired with a click. Firing"
-				+ " this will launch a spike of ice at your target, dealing a bit of damage and slowing the target. "
-				+ "If you sneak (shift) while not selecting a source, many ice spikes will erupt from around you, "
-				+ "damaging and slowing those targets.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

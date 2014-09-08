@@ -4,49 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
-import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
-import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
-import net.avatarrealms.minecraft.bending.abilities.air.AirBurst;
-import net.avatarrealms.minecraft.bending.abilities.air.AirScooter;
-import net.avatarrealms.minecraft.bending.abilities.air.AirShield;
-import net.avatarrealms.minecraft.bending.abilities.air.AirSpout;
-import net.avatarrealms.minecraft.bending.abilities.air.AirSuction;
-import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
-import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
-import net.avatarrealms.minecraft.bending.abilities.chi.HighJump;
-import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
-import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
-import net.avatarrealms.minecraft.bending.abilities.earth.Catapult;
-import net.avatarrealms.minecraft.bending.abilities.earth.Collapse;
-import net.avatarrealms.minecraft.bending.abilities.earth.EarthArmor;
-import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
-import net.avatarrealms.minecraft.bending.abilities.earth.EarthColumn;
-import net.avatarrealms.minecraft.bending.abilities.earth.EarthGrab;
-import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
-import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
-import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
-import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
-import net.avatarrealms.minecraft.bending.abilities.fire.ArcOfFire;
-import net.avatarrealms.minecraft.bending.abilities.fire.Extinguish;
-import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
-import net.avatarrealms.minecraft.bending.abilities.fire.FireBurst;
-import net.avatarrealms.minecraft.bending.abilities.fire.FireJet;
-import net.avatarrealms.minecraft.bending.abilities.fire.FireShield;
-import net.avatarrealms.minecraft.bending.abilities.fire.Illumination;
-import net.avatarrealms.minecraft.bending.abilities.fire.Lightning;
-import net.avatarrealms.minecraft.bending.abilities.fire.WallOfFire;
-import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
-import net.avatarrealms.minecraft.bending.abilities.water.FreezeMelt;
-import net.avatarrealms.minecraft.bending.abilities.water.HealingWaters;
-import net.avatarrealms.minecraft.bending.abilities.water.IceSpike;
-import net.avatarrealms.minecraft.bending.abilities.water.OctopusForm;
-import net.avatarrealms.minecraft.bending.abilities.water.Torrent;
-import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
-import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
-import net.avatarrealms.minecraft.bending.abilities.water.WaterWall;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
@@ -101,71 +63,23 @@ public class Language {
 
 		config.set("SupportedLanguages", supportedlanguages);
 
-		String[] indexlist = new String[] { "AirBlast", "AirBubble",
-				"AirBurst", "AirScooter", "AirShield", "AirSpout",
-				"AirSuction", "AirSwipe", "Tornado", "HighJump", "Paralyze",
-				"RapidPunch", "Catapult", "Collapse", "EarthArmor",
-				"EarthBlast", "RaiseEarth", "EarthGrab", "EarthTunnel",
-				"Shockwave", "Tremorsense", "Blaze", "HeatControl",
-				"FireBlast", "FireBurst", "FireJet", "FireShield",
-				"Illumination", "Lightning", "WallOfFire", "Bloodbending",
-				"PhaseChange", "HealingWaters", "IceSpike", "OctopusForm",
-				"WaterBubble", "WaterManipulation", "WaterSpout", "Surge",
-				"Torrent", "AvatarState" };
-
-		defaultdescriptions.put("AirBlast", AirBlast.getDescription());
-		defaultdescriptions.put("AirBubble", AirBubble.getDescription());
-		defaultdescriptions.put("AirBurst", AirBurst.getDescription());
-		defaultdescriptions.put("AirScooter", AirScooter.getDescription());
-		defaultdescriptions.put("AirShield", AirShield.getDescription());
-		defaultdescriptions.put("AirSpout", AirSpout.getDescription());
-		defaultdescriptions.put("AirSuction", AirSuction.getDescription());
-		defaultdescriptions.put("AirSwipe", AirSwipe.getDescription());
-		defaultdescriptions.put("Tornado", Tornado.getDescription());
+		Set<String> indexList = new HashSet<String>();
+		
+		for (Abilities a : Abilities.values()){
+			indexList.add(a.name());
+			defaultdescriptions.put(a.name(), a.getDescription());
+		}
+		
 		defaultdescriptions.put("AirChoose", on_air_choose);
-		defaultdescriptions.put("HighJump", HighJump.getDescription());
-		defaultdescriptions.put("Paralyze", Paralyze.getDescription());
-		defaultdescriptions.put("RapidPunch", RapidPunch.getDescription());
 		defaultdescriptions.put("ChiChoose", on_chi_choose);
-		defaultdescriptions.put("Catapult", Catapult.getDescription());
-		defaultdescriptions.put("Collapse", Collapse.getDescription());
-		defaultdescriptions.put("EarthArmor", EarthArmor.getDescription());
-		defaultdescriptions.put("EarthBlast", EarthBlast.getDescription());
-		defaultdescriptions.put("RaiseEarth", EarthColumn.getDescription());
-		defaultdescriptions.put("EarthGrab", EarthGrab.getDescription());
-		defaultdescriptions.put("EarthTunnel", EarthTunnel.getDescription());
-		defaultdescriptions.put("Shockwave", Shockwave.getDescription());
-		defaultdescriptions.put("Tremorsense", Tremorsense.getDescription());
 		defaultdescriptions.put("EarthChoose", on_earth_choose);
-		defaultdescriptions.put("Blaze", ArcOfFire.getDescription());
-		defaultdescriptions.put("HeatControl", Extinguish.getDescription());
-		defaultdescriptions.put("FireBlast", FireBlast.getDescription());
-		defaultdescriptions.put("FireBurst", FireBurst.getDescription());
-		defaultdescriptions.put("FireJet", FireJet.getDescription());
-		defaultdescriptions.put("FireShield", FireShield.getDescription());
-		defaultdescriptions.put("Illumination", Illumination.getDescription());
-		defaultdescriptions.put("Lightning", Lightning.getDescription());
-		defaultdescriptions.put("WallOfFire", WallOfFire.getDescription());
 		defaultdescriptions.put("FireChoose", on_fire_choose);
-		defaultdescriptions.put("Bloodbending", Bloodbending.getDescription());
-		defaultdescriptions.put("PhaseChange", FreezeMelt.getDescription());
-		defaultdescriptions
-				.put("HealingWaters", HealingWaters.getDescription());
-		defaultdescriptions.put("IceSpike", IceSpike.getDescription());
-		defaultdescriptions.put("OctopusForm", OctopusForm.getDescription());
-		defaultdescriptions.put("WaterBubble", AirBubble.getDescription());
-		defaultdescriptions.put("WaterManipulation",
-				WaterManipulation.getDescription());
-		defaultdescriptions.put("WaterSpout", WaterSpout.getDescription());
-		defaultdescriptions.put("Surge", WaterWall.getDescription());
-		defaultdescriptions.put("Torrent", Torrent.getDescription());
 		defaultdescriptions.put("WaterChoose", on_water_choose);
-		defaultdescriptions.put("AvatarState", AvatarState.getDescription());
 
 		for (String language : supportedlanguages) {
 			HashMap<String, String> langdescriptions = new HashMap<String, String>();
 
-			for (String index : indexlist) {
+			for (String index : indexList) {
 				String element;
 				if (Abilities.isAirbending(Abilities.getAbility(index))) {
 					element = "Air";

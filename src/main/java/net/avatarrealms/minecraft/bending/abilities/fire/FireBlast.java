@@ -274,17 +274,6 @@ public class FireBlast implements IAbility {
 		instances.clear();
 	}
 
-	public static String getDescription() {
-		return "FireBlast is the most fundamental bending technique of a firebender. "
-				+ "To use, simply left-click in a direction. A blast of fire will be created at your fingertips. "
-				+ "If this blast contacts an enemy, it will dissipate and engulf them in flames, "
-				+ "doing additional damage and knocking them back slightly. "
-				+ "If the blast hits terrain, it will ignite the nearby area. "
-				+ "Additionally, if you hold sneak, you will charge up the fireblast. "
-				+ "If you release it when it's charged, it will instead launch a powerful "
-				+ "fireball that explodes on contact.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

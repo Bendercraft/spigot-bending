@@ -289,15 +289,6 @@ public class AirBlast implements IAbility {
 		instances.clear();
 	}
 
-	public static String getDescription() {
-		return "AirBlast is the most fundamental bending technique of an airbender."
-				+ " To use, simply left-click in a direction. A gust of wind will be"
-				+ " created at your fingertips, launching anything in its path harmlessly back."
-				+ " A gust of air can extinguish fires on the ground or on a player, can cool lava, and "
-				+ "can flip levers and activate buttons. Additionally, tapping sneak will change the "
-				+ "origin of your next AirBlast to your targeted location.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

@@ -125,14 +125,6 @@ public class EarthTunnel implements IAbility {
 		}
 	}
 
-	public static String getDescription() {
-		return "Earth Tunnel is a completely utility ability for earthbenders. "
-				+ "To use, simply sneak (default: shift) in the direction you want to tunnel. "
-				+ "You will slowly begin tunneling in the direction you're facing for as long as you "
-				+ "sneak or if the tunnel has been dug long enough. This ability will be interupted "
-				+ "if it hits a block that cannot be earthbent.";
-	}
-
 	public static void removeAll() {
 		instances.clear();
 	}

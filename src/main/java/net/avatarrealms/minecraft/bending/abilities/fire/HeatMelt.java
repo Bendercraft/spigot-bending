@@ -42,11 +42,6 @@ public class HeatMelt implements IAbility {
 		return false;
 	}
 
-	public static String getDescription() {
-		return "To use, simply left-click. "
-				+ "Any meltable blocks around that target location will immediately melt.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

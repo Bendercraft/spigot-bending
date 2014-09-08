@@ -89,11 +89,6 @@ public class RapidPunch implements IAbility {
 		instances.clear();
 	}
 
-	public static String getDescription() {
-		return "This ability allows the chiblocker to punch rapidly in a short period. To use, simply punch."
-				+ " This has a short cooldown.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

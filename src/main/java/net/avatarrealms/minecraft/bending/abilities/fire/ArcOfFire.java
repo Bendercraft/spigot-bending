@@ -54,14 +54,6 @@ public class ArcOfFire implements IAbility {
 		bPlayer.cooldown(Abilities.Blaze);
 	}
 
-	public static String getDescription() {
-		return "To use, simply left-click in any direction. "
-				+ "An arc of fire will flow from your location, "
-				+ "igniting anything in its path."
-				+ " Additionally, tap sneak to engulf the area around you "
-				+ "in roaring flames.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

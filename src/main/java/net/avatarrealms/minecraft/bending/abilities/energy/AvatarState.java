@@ -86,14 +86,4 @@ public class AvatarState{
 		}
 		return players;
 	}
-
-	public static String getDescription() {
-		return "The signature ability of the Avatar, this is a toggle. Click to activate to become "
-				+ "nearly unstoppable. While in the Avatar State, the user takes severely reduced damage from "
-				+ "all sources, regenerates health rapidly, and is granted extreme speed. Nearly all abilities "
-				+ "are incredibly amplified in this state. Additionally, AirShield and FireJet become toggle-able "
-				+ "abilities and last until you deactivate them or the Avatar State. Click again with the Avatar "
-				+ "State selected to deactivate it.";
-	}
-
 }

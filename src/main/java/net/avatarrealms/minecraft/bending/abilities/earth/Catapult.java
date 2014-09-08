@@ -225,15 +225,6 @@ public class Catapult implements IAbility {
 		instances.clear();
 	}
 
-	public static String getDescription() {
-		return "To use, left-click while looking in the direction you want to be launched. "
-				+ "A pillar of earth will jut up from under you and launch you in that direction - "
-				+ "if and only if there is enough earth behind where you're looking to launch you. "
-				+ "Skillful use of this ability takes much time and work, and it does result in the "
-				+ "death of certain gung-ho earthbenders. If you plan to use this ability, be sure "
-				+ "you've read about your passive ability you innately have as an earthbender.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

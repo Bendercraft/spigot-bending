@@ -55,7 +55,6 @@ public class EarthGrab implements IAbility {
 		if (self) {
 			done = grabEntity(bender, bender);
 		} else {
-			//TODO : Try to find why you can grab behind you.
 			Entity closestentity = EntityTools.getTargettedEntity(player, range);
 			done = grabEntity(bender, closestentity);
 		}
@@ -178,11 +177,6 @@ public class EarthGrab implements IAbility {
 			}
 		}
 		return true;
-	}
-
-	public static String getDescription() {
-		return "To use, simply left-click while targeting a creature within range. "
-				+ "This ability will erect a circle of earth to trap the creature in.";
 	}
 	
 	public Player getBender() {

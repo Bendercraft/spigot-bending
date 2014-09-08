@@ -188,12 +188,6 @@ public class WallOfFire implements IAbility {
 
 	}
 
-	public static String getDescription() {
-		return "To use this ability, click at a location. A wall of fire "
-				+ "will appear at this location, igniting enemies caught in it "
-				+ "and blocking projectiles.";
-	}
-
 	public static void progressAll() {
 		List<WallOfFire> toRemove = new LinkedList<WallOfFire>();
 		for (WallOfFire wall : instances.values()) {

@@ -182,15 +182,6 @@ public class AirShield implements IAbility {
 		instances.clear();
 	}
 
-	public static String getDescription() {
-		return "Air Shield is one of the most powerful defensive techniques in existence. "
-				+ "To use, simply sneak (default: shift). "
-				+ "This will create a whirlwind of air around the user, "
-				+ "with a small pocket of safe space in the center. "
-				+ "This wind will deflect all projectiles and will prevent any creature from "
-				+ "entering it for as long as its maintained. ";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

@@ -265,11 +265,6 @@ public class EarthArmor implements IAbility {
 		instances.clear();
 	}
 
-	public static String getDescription() {
-		return "This ability encases the earthbender in temporary armor. To use, click on a block that is earthbendable. If there is another block under"
-				+ " it that is earthbendable, the block will fly to you and grant you temporary armor and damage reduction. This ability has a long cooldown.";
-	}
-
 	public static boolean canRemoveArmor(Player player) {
 		if (instances.containsKey(player)) {
 			EarthArmor eartharmor = instances.get(player);

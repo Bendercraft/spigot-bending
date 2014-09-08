@@ -118,14 +118,6 @@ public class FireJet implements IAbility {
 		return new LinkedList<Player>(instances.keySet());
 	}
 
-	public static String getDescription() {
-		return "This ability is used for a limited burst of flight for firebenders. Clicking with this "
-				+ "ability selected will launch you in the direction you're looking, granting you "
-				+ "controlled flight for a short time. This ability can be used mid-air to prevent falling "
-				+ "to your death, but on the ground it can only be used if standing on a block that's "
-				+ "ignitable (e.g. not snow or water).";
-	}
-
 	public static void removeAll() {
 		instances.clear();
 	}

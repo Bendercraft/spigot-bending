@@ -64,11 +64,6 @@ public class Paralyze implements IAbility {
 
 	}
 
-	public static String getDescription() {
-		return "Paralyzes the target, making them unable to do anything for a short "
-				+ "period of time. This ability has a long cooldown.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

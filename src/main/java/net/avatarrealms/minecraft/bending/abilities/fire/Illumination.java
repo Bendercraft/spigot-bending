@@ -135,14 +135,6 @@ public class Illumination implements IAbility {
 		instances.clear();
 	}
 
-	public static String getDescription() {
-		return "This ability gives firebenders a means of illuminating the area. It is a toggle - clicking "
-				+ "will create a torch that follows you around. The torch will only appear on objects that are "
-				+ "ignitable and can hold a torch (e.g. not leaves or ice). If you get too far away from the torch, "
-				+ "it will disappear, but will reappear when you get on another ignitable block. Clicking again "
-				+ "dismisses this torch.";
-	}
-
 	public static boolean isIlluminated(Block block) {
 		return blocks.containsKey(block);
 	}

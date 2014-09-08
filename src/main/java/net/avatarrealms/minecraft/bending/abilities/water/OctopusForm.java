@@ -450,14 +450,6 @@ public class OctopusForm implements IAbility {
 		return instances.containsKey(player);
 	}
 
-	public static String getDescription() {
-		return "This ability allows the waterbender to manipulate a large quantity of water into a form resembling that of an octopus. "
-				+ "To use, click to select a water source. Then, hold sneak to channel this ability. "
-				+ "While channeling, the water will form itself around you and has a chance to block incoming attacks. "
-				+ "Additionally, you can click while channeling to attack things near you, dealing damage and knocking them back. "
-				+ "Releasing shift at any time will dissipate the form.";
-	}
-
 	@Override
 	public IAbility getParent() {
 		return parent;

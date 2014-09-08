@@ -121,15 +121,6 @@ public class FireShield implements IAbility {
 		}
 	}
 
-	public static String getDescription() {
-		return "FireShield is a basic defensive ability. "
-				+ "Clicking with this ability selected will create a "
-				+ "small disc of fire in front of you, which will block most "
-				+ "attacks and bending. Alternatively, pressing and holding "
-				+ "sneak creates a very small shield of fire, blocking most attacks. "
-				+ "Creatures that contact this fire are ignited.";
-	}
-
 	public static void removeAll() {
 		instances.clear();
 	}

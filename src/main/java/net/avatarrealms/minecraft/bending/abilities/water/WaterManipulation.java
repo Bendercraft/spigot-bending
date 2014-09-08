@@ -625,19 +625,6 @@ public class WaterManipulation implements IAbility {
 		return canPhysicsChange(block);
 	}
 
-
-	public static String getDescription() {
-		// TODO Auto-generated method stub
-		return "To use, place your cursor over a waterbendable object and tap sneak (default: shift). "
-				+ "Smoke will appear where you've selected, indicating the origin of your ability. "
-				+ "After you have selected an origin, simply left-click in any direction and you will "
-				+ "see your water spout off in that direction, slicing any creature in its path. "
-				+ "If you look towards a creature when you use this ability, it will target that creature. "
-				+ "A collision from Water Manipulation both knocks the target back and deals some damage. "
-				+ "Alternatively, if you have source selected and tap shift again, "
-				+ "you will be able to control the water more directly.";
-	}
-
 	public static void removeAroundPoint(Location location, double radius) {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
 		for(WaterManipulation manip : instances.values()) {

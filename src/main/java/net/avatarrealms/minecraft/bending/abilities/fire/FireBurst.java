@@ -84,13 +84,6 @@ public class FireBurst implements IAbility {
 		}
 	}
 
-	public static String getDescription() {
-		return "FireBurst is a very powerful firebending ability. "
-				+ "To use, press and hold sneak to charge your burst. "
-				+ "Once charged, you can either release sneak to launch a cone-shaped burst "
-				+ "of flames in front of you, or click to release the burst in a sphere around you. ";
-	}
-
 	public static void removeAll() {
 		instances.clear();
 	}
