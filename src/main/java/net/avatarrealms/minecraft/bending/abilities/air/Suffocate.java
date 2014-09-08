@@ -5,10 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Effect;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -30,6 +34,8 @@ public class Suffocate implements IAbility {
 	private Block location;
 	private Player target;
 	private Block targetLocation;
+	private ItemStack helmet;
+	private ItemStack temp;
 	private long time;
 	
 	public Suffocate(Player player, IAbility parent) {
@@ -55,7 +61,9 @@ public class Suffocate implements IAbility {
 		this.location = player.getLocation().getBlock();
 		this.target = (Player)target;
 		this.targetLocation = this.target.getLocation().getBlock();
-		
+		helmet = this.target.getInventory().getHelmet();
+		temp = new ItemStack(Material.STAINED_GLASS, 1, (byte) 0x0);
+		this.target.getInventory().setHelmet(temp);
 		bPlayer.cooldown(Abilities.Suffocate);
 		instances.put(player, this);
 	}
@@ -119,6 +127,7 @@ public class Suffocate implements IAbility {
 	
 	public void remove() {
 		//Potions effects will end naturally, so leave them be
+		this.target.getInventory().setHelmet(helmet);
 		instances.remove(this.player.getPlayer());
 	}
 	
@@ -147,5 +156,25 @@ public class Suffocate implements IAbility {
 	@Override
 	public IAbility getParent() {
 		return parent;
+	}
+	
+	public static boolean isTempHelmet(ItemStack stack) {
+		for(Suffocate suffocate : instances.values()) {
+			if(suffocate.temp.equals(stack)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean isTargeted(Player p) {
+		for(Suffocate suffocate : instances.values()) {
+			if(suffocate.target.getUniqueId().equals(p.getUniqueId())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

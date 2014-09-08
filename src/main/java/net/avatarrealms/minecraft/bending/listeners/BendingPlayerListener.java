@@ -802,6 +802,10 @@ public class BendingPlayerListener implements Listener{
 		if (FireBlade.isFireBlading((Player)event.getWhoClicked()) && FireBlade.isFireBlade(event.getCurrentItem())) {
 			event.setCancelled(true);
 		}
+		
+		if(Suffocate.isTempHelmet(event.getCurrentItem())) {
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -861,6 +865,16 @@ public class BendingPlayerListener implements Listener{
 
 		if (EntityTools.isGrabed(event.getEntity())) {
 			EntityTools.unGrab(event.getEntity());
+		}
+		
+		if(Suffocate.isTargeted(event.getEntity())) {
+			ItemStack toRemove = null;
+			for(ItemStack item : event.getDrops()) {
+				if(Suffocate.isTempHelmet(item)) {
+					toRemove = item;
+				}
+			}
+			event.getDrops().remove(toRemove);
 		}
 	}
 }
