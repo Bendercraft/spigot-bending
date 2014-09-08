@@ -131,7 +131,7 @@ public class LavaTrain implements IAbility {
 			}
 			
 			for(Block potentialsBlock : potentialsBlocks) {
-				if(isBendable(potentialsBlock.getType()) && !TempBlock.isTempBlock(potentialsBlock)) {
+				if(BlockTools.isEarthbendable(player.getPlayer(), potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
 					//Do not let block behind bender to be bend, this whill be stupid
 					if(!potentialsBlock.getLocation().equals(this.safePoint.getLocation())) {
 						new TempBlock(potentialsBlock, Material.LAVA, full);
@@ -173,19 +173,6 @@ public class LavaTrain implements IAbility {
 		for(LavaTrain train : toRemove) {
 			train.remove();
 		}
-	}
-	
-	private boolean isBendable(Material material) {
-		if(material.equals(Material.DIRT)) {
-			return true;
-		}
-		if(material.equals(Material.GRASS)) {
-			return true;
-		}
-		if(material.equals(Material.GRAVEL)) {
-			return true;
-		}
-		return false;
 	}
 	
 	public static boolean isLavaPart(Block block) {
