@@ -415,11 +415,6 @@ public class BendingPlayerListener implements Listener{
 				if (ability == Abilities.FireBlade) {
 					new FireBlade(player);
 				}
-				
-				if (ability == Abilities.Combustion) {
-					new Combustion(player, null);
-				}
-
 			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())
@@ -630,6 +625,10 @@ public class BendingPlayerListener implements Listener{
 			
 			if (ability == Abilities.MetalBending) {
 				MetalBending.metalMelt(player);
+			}
+			
+			if (ability == Abilities.Combustion) {
+				new Combustion(player, null);
 			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
