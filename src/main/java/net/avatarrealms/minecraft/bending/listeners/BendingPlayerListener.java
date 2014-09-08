@@ -371,7 +371,7 @@ public class BendingPlayerListener implements Listener{
 					new ShockwaveCone(player, null);
 				}
 				
-				if (ability == Abilities.LavaTrain) {
+				if (ability == Abilities.LavaTrain && player.isSneaking()) {
 					new LavaTrain(player, null);
 				}
 
