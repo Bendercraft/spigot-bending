@@ -656,10 +656,6 @@ public class BendingCommand {
 					return;
 				}
 				PluginTools.sendMessage(player, "General.choosen_earth");
-				// config.removeBending(player);
-				// config.setBending(player, "earth");
-				// PlayerStorageWriter.removeBending(player);
-				// PlayerStorageWriter.setBending(player, BendingType.Earth);
 				BendingPlayer.getBendingPlayer(player).setBender(
 						BendingType.Earth);
 				return;
@@ -670,10 +666,6 @@ public class BendingCommand {
 					return;
 				}
 				PluginTools.sendMessage(player, "General.choosen_water");
-				// config.removeBending(player);
-				// config.setBending(player, "water");
-				// PlayerStorageWriter.removeBending(player);
-				// PlayerStorageWriter.setBending(player, BendingType.Water);
 				BendingPlayer.getBendingPlayer(player).setBender(
 						BendingType.Water);
 				return;
@@ -685,11 +677,6 @@ public class BendingCommand {
 					return;
 				}
 				PluginTools.sendMessage(player, "General.choosen_chi");
-				// config.removeBending(player);
-				// config.setBending(player, "chiblocker");
-				// PlayerStorageWriter.removeBending(player);
-				// PlayerStorageWriter.setBending(player,
-				// BendingType.ChiBlocker);
 				BendingPlayer.getBendingPlayer(player).setBender(
 						BendingType.ChiBlocker);
 				return;
@@ -727,11 +714,6 @@ public class BendingCommand {
 								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
 				PluginTools.sendMessage(targetplayer, "General.choosen_air");
-				// config.removeBending(targetplayer);
-				// config.setBending(targetplayer, "air");
-				// PlayerStorageWriter.removeBending(targetplayer);
-				// PlayerStorageWriter.setBending(targetplayer,
-				// BendingType.Air);
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(
 						BendingType.Air);
 				return;
@@ -752,11 +734,7 @@ public class BendingCommand {
 								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
 				PluginTools.sendMessage(targetplayer, "General.choosen_fire");
-				// config.removeBending(targetplayer);
-				// config.setBending(targetplayer, "fire");
-				// PlayerStorageWriter.removeBending(targetplayer);
-				// PlayerStorageWriter.setBending(targetplayer,
-				// BendingType.Fire);
+
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(
 						BendingType.Fire);
 				return;
@@ -777,11 +755,7 @@ public class BendingCommand {
 								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
 				PluginTools.sendMessage(targetplayer, "General.choosen_earth");
-				// config.removeBending(targetplayer);
-				// config.setBending(targetplayer, "earth");
-				// PlayerStorageWriter.removeBending(targetplayer);
-				// PlayerStorageWriter.setBending(targetplayer,
-				// BendingType.Earth);
+
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(
 						BendingType.Earth);
 				return;
@@ -802,11 +776,7 @@ public class BendingCommand {
 								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
 				PluginTools.sendMessage(targetplayer, "General.choosen_water");
-				// config.removeBending(targetplayer);
-				// config.setBending(targetplayer, "water");
-				// PlayerStorageWriter.removeBending(targetplayer);
-				// PlayerStorageWriter.setBending(targetplayer,
-				// BendingType.Water);
+
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(
 						BendingType.Water);
 				return;
@@ -826,11 +796,6 @@ public class BendingCommand {
 								+ PluginTools.getMessage(targetplayer,
 										"General.changed_you"));
 				PluginTools.sendMessage(targetplayer, "General.choosen_chi");
-				// config.removeBending(targetplayer);
-				// config.setBending(targetplayer, "chiblocker");
-				// PlayerStorageWriter.removeBending(targetplayer);
-				// PlayerStorageWriter.setBending(targetplayer,
-				// BendingType.ChiBlocker);
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(
 						BendingType.ChiBlocker);
 				return;
@@ -868,8 +833,7 @@ public class BendingCommand {
 	}
 
 	private void help(Player player, String[] args) {
-		// int pages = 0;
-		// int page = 1;
+
 		List<String> command = new ArrayList<String>();
 		for (String s : Bending.commands.keySet()) {
 			if (hasHelpPermission(player, "bending." + s)) {
@@ -886,38 +850,34 @@ public class BendingCommand {
 					cc = PluginTools.getColor(ConfigManager.color.get("Air"));
 					element = "Air";
 				}
-				if (Abilities.isFirebending(Abilities.getAbility(args[1]))) {
+				else if (Abilities.isFirebending(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color.get("Fire"));
 					element = "Fire";
 				}
-				if (Abilities.isEarthbending(Abilities.getAbility(args[1]))) {
+				else if (Abilities.isEarthbending(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color.get("Earth"));
 					element = "Earth";
 				}
-				if (Abilities.isWaterbending(Abilities.getAbility(args[1]))) {
+				else if (Abilities.isWaterbending(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color.get("Water"));
 					element = "Water";
 				}
-				if (Abilities.isChiBlocking(Abilities.getAbility(args[1]))) {
+				else if (Abilities.isChiBlocking(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color
 							.get("ChiBlocker"));
 					element = "Chiblocker";
 				}
-				if (EntityTools.hasPermission(player,
-						Abilities.getAbility(args[1]))) {
-
+				if (EntityTools.hasPermission(player,ability)) {
 					sendMessage(
 							player,
 							("                                                "
-									+ cc + Abilities.getAbility(args[1]).name()));
+									+ cc + ability.name()));
 
-					Abilities a = Abilities.getAbility(args[1]);
-					PluginTools.sendMessage(player, cc, element +"."+a.name());
+					PluginTools.sendMessage(player, cc, element +"."+ability.name());
 					
 					return;
 				} else {
-					sendMessage(
-							player,
+					sendMessage(player,
 							PluginTools.getMessage(player,
 									"General.no_bind_perms")
 									+ " "
@@ -1339,8 +1299,7 @@ public class BendingCommand {
 			if (player != null)
 				senderName = player.getName();
 			if (targetplayer != null) {
-				// config.removeBending(targetplayer);
-				// PlayerStorageWriter.removeBending(targetplayer);
+
 				BendingPlayer.getBendingPlayer(targetplayer).removeBender();
 				targetplayer.sendMessage(senderName
 						+ " "
@@ -1407,8 +1366,7 @@ public class BendingCommand {
 					return;
 				}
 				PluginTools.sendMessage(player, "General.add_air");
-				// config.addBending(player, "air");
-				// PlayerStorageWriter.addBending(player, BendingType.Air);
+
 				BendingPlayer.getBendingPlayer(player).addBender(
 						BendingType.Air);
 				return;
@@ -1423,8 +1381,7 @@ public class BendingCommand {
 					return;
 				}
 				PluginTools.sendMessage(player, "General.add_fire");
-				// config.addBending(player, "fire");
-				// PlayerStorageWriter.addBending(player, BendingType.Fire);
+
 				BendingPlayer.getBendingPlayer(player).addBender(
 						BendingType.Fire);
 				return;
@@ -1440,8 +1397,7 @@ public class BendingCommand {
 					return;
 				}
 				PluginTools.sendMessage(player, "General.add_earth");
-				// config.addBending(player, "earth");
-				// PlayerStorageWriter.addBending(player, BendingType.Earth);
+
 				BendingPlayer.getBendingPlayer(player).addBender(
 						BendingType.Earth);
 				return;
@@ -1457,8 +1413,7 @@ public class BendingCommand {
 					return;
 				}
 				PluginTools.sendMessage(player, "General.add_water");
-				// config.addBending(player, "water");
-				// PlayerStorageWriter.addBending(player, BendingType.Water);
+
 				BendingPlayer.getBendingPlayer(player).addBender(
 						BendingType.Water);
 				return;
@@ -1548,9 +1503,6 @@ public class BendingCommand {
 								+ " "
 								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_fire"));
-				// config.addBending(targetplayer, "fire");
-				// PlayerStorageWriter.addBending(targetplayer,
-				// BendingType.Fire);
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(
 						BendingType.Fire);
 				return;
@@ -1581,9 +1533,7 @@ public class BendingCommand {
 								+ " "
 								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_earth"));
-				// config.addBending(targetplayer, "earth");
-				// PlayerStorageWriter.addBending(targetplayer,
-				// BendingType.Earth);
+
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(
 						BendingType.Earth);
 				return;
@@ -1613,9 +1563,7 @@ public class BendingCommand {
 								+ " "
 								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_water"));
-				// config.addBending(targetplayer, "water");
-				// PlayerStorageWriter.addBending(targetplayer,
-				// BendingType.Water);
+
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(
 						BendingType.Water);
 				return;
@@ -1646,9 +1594,7 @@ public class BendingCommand {
 								+ " "
 								+ PluginTools.getMessage(targetplayer,
 										"General.add_you_chi"));
-				// config.addBending(targetplayer, "chiblocker");
-				// PlayerStorageWriter.addBending(targetplayer,
-				// BendingType.ChiBlocker);
+
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(
 						BendingType.ChiBlocker);
 				return;
@@ -2053,15 +1999,13 @@ public class BendingCommand {
 
 			color = ChatColor.DARK_PURPLE;
 			if (!item) {
-				// config.setAbility(player, ability, slot);
-				// PlayerStorageWriter.bindSlot(player, slot, ability);
+
 				BendingPlayer.getBendingPlayer(player)
 						.setAbility(slot, ability);
 				sendMessage(player, color + ability.name() + white
 						+ " bound to slot " + (slot + 1));
 			} else {
-				// config.setAbility(player, ability, mat);
-				// PlayerStorageWriter.bindItem(player, mat, ability);
+
 				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
 				sendMessage(player, color + ability.name() + white
 						+ " bound to " + mat.name().replaceAll("_", " "));

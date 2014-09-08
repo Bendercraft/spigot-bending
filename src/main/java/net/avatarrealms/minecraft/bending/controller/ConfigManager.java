@@ -282,7 +282,7 @@ public class ConfigManager {
 	public static int fireBladeFireAspectLevel = 2;
 	public static int fireBladeSharpnessLevel = 1;
 	public static int fireBladeStrengthLevel = 1;
-	public static int fireBladeCooldown = 60;
+	public static int fireBladeCooldown = 60000;
 	public static int fireBladeDuration = 30;
 	
 	//MentalExplosion
