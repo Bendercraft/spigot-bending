@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -22,7 +23,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
 
 public class Combustion implements IAbility {
@@ -30,6 +30,7 @@ public class Combustion implements IAbility {
 
 	private static long interval = 25;
 	private static double radius = 1.5;
+	private static long chargeTime = 2000;
 
 	private double range = 20;
 	private int maxdamage = 6;
@@ -37,11 +38,12 @@ public class Combustion implements IAbility {
 	private double innerradius = 3;
 	private Player player;
 	private Location origin;
+	private Block block;
 	private Location location;
 	private Vector direction;
 	private long time;
-	private TNTPrimed explosion = null;
 	private IAbility parent;
+	private boolean charged = false;
 
 	public Combustion(Player player, IAbility parent) {
 		this.parent = parent;
@@ -53,11 +55,12 @@ public class Combustion implements IAbility {
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		location = player.getEyeLocation();
 		origin = location.clone();
+		block = origin.getBlock();
 		direction = location.getDirection().normalize().multiply(radius);
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			instances.put(player, this);
 		}
-
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Combustion);
 	}
 
 	private boolean progress() {
@@ -70,6 +73,16 @@ public class Combustion implements IAbility {
 			if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion,
 						location)) {
 				return false;
+			}
+			
+			if(!charged) {
+				if(!player.getLocation().getBlock().getLocation().equals(block.getLocation())) {
+					return false;
+				}
+				if (System.currentTimeMillis() > time + chargeTime) {
+					charged = true;
+				}
+				return true;
 			}
 
 			time = System.currentTimeMillis();
@@ -92,14 +105,8 @@ public class Combustion implements IAbility {
 	}
 
 	public void dealDamage(Entity entity) {
-		if (explosion == null)
-			return;
-		// if (Tools.isObstructed(explosion.getLocation(),
-		// entity.getLocation())) {
-		// return 0;
-		// }
 		double distance = entity.getLocation()
-				.distance(explosion.getLocation());
+				.distance(location);
 		if (distance > explosionradius)
 			return;
 		if (distance < innerradius) {
@@ -164,6 +171,10 @@ public class Combustion implements IAbility {
 				}
 			}
 			location.getWorld().playSound(location, Sound.EXPLODE, 1, 0);
+			List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, explosionradius);
+			for(LivingEntity entity : entities) {
+				this.dealDamage(entity);
+			}
 		}
 	}
 
