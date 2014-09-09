@@ -204,10 +204,10 @@ public class EarthArmor implements IAbility {
 		
 		if (BlockTools.isIronBendable(player, headtype)) {
 			ItemStack is = new ItemStack(Material.IRON_CHESTPLATE, 1);
-			is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			//is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			armors.add(is);
 			is = new ItemStack(Material.IRON_HELMET, 1);
-			is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			//is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			armors.add(is);
 		}
 		else {

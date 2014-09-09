@@ -27,8 +27,9 @@ public class FireBlade {
 	private static int fireAspectLevel = ConfigManager.fireBladeFireAspectLevel;
 	private static final Enchantment dura = Enchantment.DURABILITY;
 	private static final int duraLevel = 3;
-	private static int strengthLevel = ConfigManager.fireBladeStrengthLevel;
+	//private static int strengthLevel = ConfigManager.fireBladeStrengthLevel;
 	private static int duration = ConfigManager.fireBladeDuration;
+	private static final Enchantment knockback = Enchantment.KNOCKBACK;
 	private static PotionEffect strengthEffect;
 	
 	private long time;
@@ -138,6 +139,8 @@ public class FireBlade {
 			fireB.addEnchantment(dura, duraLevel);
 		}
 		
+		fireB.addEnchantment(knockback, 1);
+		
 		
 		int slot = player.getInventory().getHeldItemSlot();
 		ItemStack hand = player.getInventory().getItem(slot);
@@ -149,11 +152,11 @@ public class FireBlade {
 			}
 		}
 		player.getInventory().setItem(slot,fireB);
-		if (strengthLevel > 0) {
+		/*if (strengthLevel > 0) {
 			strengthEffect = new PotionEffect(PotionEffectType.INCREASE_DAMAGE,
 					duration*20, strengthLevel-1);
 			player.addPotionEffect(strengthEffect);
-		}
+		}*/
 	}
 	
 	public static void removeAll() {
