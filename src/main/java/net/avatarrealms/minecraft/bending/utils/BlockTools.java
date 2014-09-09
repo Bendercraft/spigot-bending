@@ -225,19 +225,19 @@ public class BlockTools {
 			}
 		}
 		
-		if (isIronBendable(player,block)) {
+		if (isIronBendable(player,block.getType())) {
 			return true;
 		}
 		
 		return false;
 	}
 	
-	public static boolean isIronBendable(Player p, Block b) {
+	public static boolean isIronBendable(Player p, Material m) {
 		if (!EntityTools.canBend(p, Abilities.MetalBending)) {
 			return false;
 		}
 		
-		if (!ironBendables.contains(b.getType())) {
+		if (!ironBendables.contains(m)) {
 			return false;
 		}
 		

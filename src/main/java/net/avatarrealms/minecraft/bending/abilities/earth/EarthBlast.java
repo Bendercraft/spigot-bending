@@ -130,7 +130,7 @@ public class EarthBlast implements IAbility {
 			sourceblock.setType(Material.COBBLESTONE);
 		} else {
 			if (EntityTools.canBend(player, Abilities.MetalBending)
-					&& BlockTools.isIronBendable(player, sourceblock)) {
+					&& BlockTools.isIronBendable(player, sourceblock.getType())) {
 				if (sourcetype == Material.IRON_BLOCK){
 					sourceblock.setType(Material.IRON_ORE);
 				}

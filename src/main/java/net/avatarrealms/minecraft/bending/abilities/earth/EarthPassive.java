@@ -42,7 +42,7 @@ public class EarthPassive implements IPassiveAbility {
 			for (Block affectedblock : BlockTools.getBlocksAroundPoint(
 					block.getLocation(), 2)) {
 				if (BlockTools.isEarthbendable(player, affectedblock)
-						&& !BlockTools.isIronBendable(player,affectedblock)) {
+						&& !BlockTools.isIronBendable(player,affectedblock.getType())) {
 					if (BlockTools.isSolid(affectedblock.getRelative(BlockFace.DOWN))) {
 						Material type = affectedblock.getType();
 						affectedblock.setType(Material.SAND);

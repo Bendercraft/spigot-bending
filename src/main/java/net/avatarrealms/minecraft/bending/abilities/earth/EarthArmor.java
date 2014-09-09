@@ -1,5 +1,6 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -34,6 +36,7 @@ public class EarthArmor implements IAbility {
 
 	private Player player;
 	private Block headblock, legsblock;
+	private Block headOriginBlock, legsOriginBlock;
 	private Location headblocklocation, legsblocklocation;
 	private Material headtype, legstype;
 	private byte headdata, legsdata;
@@ -41,6 +44,7 @@ public class EarthArmor implements IAbility {
 	private boolean formed = false;
 	private boolean complete = false;
 	public ItemStack[] oldarmor;
+	public List<ItemStack> armors = new ArrayList<ItemStack>(4);
 	private IAbility parent;
 
 	private static long interval = 2000;
@@ -70,8 +74,9 @@ public class EarthArmor implements IAbility {
 			Block oldheadblock, oldlegsblock;
 			oldheadblock = headblock;
 			oldlegsblock = legsblock;
-			if (!moveBlocks())
+			if (!moveBlocks()) {
 				return;
+			}	
 			if (ConfigManager.reverseearthbending) {
 				BlockTools.addTempAirBlock(oldheadblock);
 				BlockTools.addTempAirBlock(oldlegsblock);
@@ -175,34 +180,55 @@ public class EarthArmor implements IAbility {
 	}
 
 	private void formArmor() {
-		if (TempBlock.isTempBlock(headblock))
+		if (TempBlock.isTempBlock(headblock)) {
 			TempBlock.revertBlock(headblock, Material.AIR);
-		if (TempBlock.isTempBlock(legsblock))
+		}
+			
+		if (TempBlock.isTempBlock(legsblock)) {
 			TempBlock.revertBlock(legsblock, Material.AIR);
+		}
 
 		oldarmor = player.getInventory().getArmorContents();
-		ItemStack armors[] = { new ItemStack(Material.LEATHER_BOOTS, 1),
-				new ItemStack(Material.LEATHER_LEGGINGS, 1),
-				new ItemStack(Material.LEATHER_CHESTPLATE, 1),
-				new ItemStack(Material.LEATHER_HELMET, 1) };
-		player.getInventory().setArmorContents(armors);
+		if (BlockTools.isIronBendable(player, legstype)) {
+			ItemStack is = new ItemStack(Material.IRON_BOOTS, 1);
+			is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			armors.add(is);
+			is = new ItemStack(Material.IRON_LEGGINGS, 1);
+			is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			armors.add(is);
+		}
+		else {
+			armors.add(new ItemStack(Material.LEATHER_BOOTS, 1));
+			armors.add(new ItemStack(Material.LEATHER_LEGGINGS, 1));
+		}
+		
+		if (BlockTools.isIronBendable(player, headtype)) {
+			ItemStack is = new ItemStack(Material.IRON_CHESTPLATE, 1);
+			is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			armors.add(is);
+			is = new ItemStack(Material.IRON_HELMET, 1);
+			is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			armors.add(is);
+		}
+		else {
+			armors.add(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
+			armors.add(new ItemStack(Material.LEATHER_HELMET, 1));
+		}			
+				
+		ItemStack[] ar = armors.toArray(new ItemStack[armors.size()]);
+		player.getInventory().setArmorContents(ar);
 		PotionEffect resistance = new PotionEffect(
 				PotionEffectType.DAMAGE_RESISTANCE, (int) duration / 50,
 				strength - 1);
 		new TempPotionEffect(player, resistance);
-		// player.addPotionEffect(new PotionEffect(
-		// PotionEffectType.DAMAGE_RESISTANCE, (int) duration / 50,
-		// strength - 1));
 		formed = true;
 		starttime = System.currentTimeMillis();
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 	}
 	
 	private void remove() {
 		instances.remove(player);
 	}
 
-	//Old static moveArmor(Player player)
 	private boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
 			cancel();
@@ -245,6 +271,19 @@ public class EarthArmor implements IAbility {
 	
 	public static boolean hasEarthArmor(Player player) {
 		return instances.containsKey(player);
+	}
+	
+	public static EarthArmor getEarthArmor(Player pl) {
+		return instances.get(pl);
+	}
+	
+	public boolean isArmor(ItemStack is) {
+		for (ItemStack part : armors) {
+			if (part.isSimilar(is)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void removeEffect() {
