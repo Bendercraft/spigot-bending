@@ -716,6 +716,9 @@ public class BendingPlayerListener implements Listener{
 					if (EntityTools.canBendPassive(player,
 							BendingType.ChiBlocker)) {
 						event.setDamage((int) ((double) event.getDamage() * (ConfigManager.falldamagereduction / 100.)));
+						if (event.getEntity().getFallDistance() < 10) {
+							event.setCancelled(true);
+						}
 					}
 				}
 
