@@ -191,10 +191,10 @@ public class EarthArmor implements IAbility {
 		oldarmor = player.getInventory().getArmorContents();
 		if (BlockTools.isIronBendable(player, legstype)) {
 			ItemStack is = new ItemStack(Material.IRON_BOOTS, 1);
-			is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			//is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			armors.add(is);
 			is = new ItemStack(Material.IRON_LEGGINGS, 1);
-			is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			//is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			armors.add(is);
 		}
 		else {
@@ -279,7 +279,7 @@ public class EarthArmor implements IAbility {
 	
 	public boolean isArmor(ItemStack is) {
 		for (ItemStack part : armors) {
-			if (part.isSimilar(is)) {
+			if (part.getType().equals(is.getType())) {
 				return true;
 			}
 		}
