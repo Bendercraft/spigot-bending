@@ -1205,7 +1205,7 @@ public class BendingCommand {
 
 			if (abilitylist != null) {
 				for (Abilities ability : abilitylist) {
-					if(EntityTools.hasPermission(player, ability)) {
+					if(EntityTools.canBend(player, ability)) {
 						sendMessage(player, color + ability.name());
 					}
 				}
