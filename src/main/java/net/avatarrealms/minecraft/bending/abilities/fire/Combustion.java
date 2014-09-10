@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -44,6 +45,8 @@ public class Combustion implements IAbility {
 	private long time;
 	private IAbility parent;
 	private boolean charged = false;
+	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
+	private static final ParticleEffect EXPLODE = ParticleEffect.HUGE_EXPLOSION;
 
 	public Combustion(Player player, IAbility parent) {
 		this.parent = parent;
@@ -95,6 +98,8 @@ public class Combustion implements IAbility {
 				return false;
 			}
 
+			CRIT.display(location, 0, 0, 0, 1, 3);
+			
 			if (BlockTools.isSolid(location.getBlock())) {
 				explode();
 				return false;
@@ -174,6 +179,7 @@ public class Combustion implements IAbility {
 				}
 			}
 			location.getWorld().playSound(location, Sound.EXPLODE, 1, 0);
+			EXPLODE.display(location, 0, 0, 0, 1, 1);
 			List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, explosionradius);
 			for(LivingEntity entity : entities) {
 				this.dealDamage(entity);
