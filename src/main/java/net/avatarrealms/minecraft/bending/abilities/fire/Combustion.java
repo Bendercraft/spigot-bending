@@ -56,7 +56,7 @@ public class Combustion implements IAbility {
 			maxdamage = AvatarState.getValue(maxdamage);
 		}
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
-		location = player.getEyeLocation();
+		
 		origin = location.clone();
 		block = player.getLocation().getBlock();
 		direction = location.getDirection().normalize().multiply(radius);
@@ -80,6 +80,7 @@ public class Combustion implements IAbility {
 				return false;
 			}
 			if (System.currentTimeMillis() > time + chargeTime) {
+				location = player.getEyeLocation();
 				charged = true;
 			}
 			return true;
