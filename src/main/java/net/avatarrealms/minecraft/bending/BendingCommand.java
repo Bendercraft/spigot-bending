@@ -1113,7 +1113,7 @@ public class BendingCommand {
 			for(BendingType type : bPlayer.getBendingTypes()) {
 				ChatColor color = PluginTools.getColor(ConfigManager
 						.getColor(type.name()));
-				sendMessage(player, color+"You are a "+type.name());
+				sendMessage(player, color+"You are a "+type.name()+" bender");
 			}
 			for(BendingSpecializationType spe : bPlayer.getSpecializations()) {
 				sendMessage(player, "You have specialization "+spe.name()+" for element "+spe.getElement().name());
