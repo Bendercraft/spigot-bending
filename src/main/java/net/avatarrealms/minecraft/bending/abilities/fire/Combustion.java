@@ -34,7 +34,7 @@ public class Combustion implements IAbility {
 	private static long chargeTime = 2000;
 
 	private double range = 20;
-	private int maxdamage = 6;
+	private int maxdamage = 9;
 	private double explosionradius = 3;
 	private double innerradius = 3;
 	private Player player;
@@ -57,9 +57,8 @@ public class Combustion implements IAbility {
 		}
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		
-		origin = location.clone();
 		block = player.getLocation().getBlock();
-		direction = location.getDirection().normalize().multiply(radius);
+		
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			instances.put(player, this);
 		}
@@ -81,6 +80,8 @@ public class Combustion implements IAbility {
 			}
 			if (System.currentTimeMillis() > time + chargeTime) {
 				location = player.getEyeLocation();
+				origin = location.clone();
+				direction = location.getDirection().normalize().multiply(radius);
 				charged = true;
 			}
 			return true;
@@ -96,6 +97,7 @@ public class Combustion implements IAbility {
 
 			location = location.clone().add(direction);
 			if (location.distance(origin) > range) {
+				explode();
 				return false;
 			}
 
