@@ -32,11 +32,15 @@ public class Combustion implements IAbility {
 	private static long interval = 25;
 	private static double radius = 1.5;
 	private static long chargeTime = 2000;
+	private static double explosionradius = 3;
+	private static double innerradius = 3;
+	
+	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
+	private static final ParticleEffect EXPLODE = ParticleEffect.HUGE_EXPLOSION;
 
 	private double range = 20;
 	private int maxdamage = 9;
-	private double explosionradius = 3;
-	private double innerradius = 3;
+	
 	private Player player;
 	private Location origin;
 	private Block block;
@@ -45,8 +49,6 @@ public class Combustion implements IAbility {
 	private long time;
 	private IAbility parent;
 	private boolean charged = false;
-	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
-	private static final ParticleEffect EXPLODE = ParticleEffect.HUGE_EXPLOSION;
 
 	public Combustion(Player player, IAbility parent) {
 		this.parent = parent;
@@ -118,8 +120,9 @@ public class Combustion implements IAbility {
 	public void dealDamage(Entity entity) {
 		double distance = entity.getLocation()
 				.distance(location);
-		if (distance > explosionradius)
+		if (distance > explosionradius){
 			return;
+		}	
 		if (distance < innerradius) {
 			EntityTools.damageEntity(player, entity, maxdamage);
 			return;

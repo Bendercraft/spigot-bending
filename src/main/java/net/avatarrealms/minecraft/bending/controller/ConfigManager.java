@@ -285,12 +285,16 @@ public class ConfigManager {
 	public static int fireBladeCooldown = 60000;
 	public static int fireBladeDuration = 30;
 	
-	//MentalExplosion
-	public static int mentalExplosionDamage = 5;
-	public static int mentalExplosionRange = 20;
-	public static int mentalExplosionSpeed = 25;
-	public static int mentalExplosionChargeTime = 1000; //time in millisecs
-	public static int mentalExplosionCooldown = 2000;
+	//Combustion
+	public static double combustionRadius = 1.5f;
+	public static double combustionExplosionRadius = 3;
+	public static double combustionInnerRadius = 3;
+	public static int combustionDamage = 9;
+	public static int combustionRange = 20;
+	public static int combustionChargeTime = 2000; //time in millisecs
+	public static int combustionCooldown = 2000;
+	
+	
 
 	// Day
 	public static double dayFactor = 1.5;
@@ -787,19 +791,21 @@ public class ConfigManager {
 		fireBladeStrengthLevel = config.getInt("Properties.Fire.FireBlade.strength-level", fireBladeStrengthLevel);
 		fireBladeCooldown = config.getInt("Properties.Fire.FireBlade.Cooldown", fireBladeCooldown);
 		
-		//Mental Explosion
-		mentalExplosionDamage = config.getInt(
-				"Properties.Fire.MentalExplosion.Damage", mentalExplosionDamage);
-		mentalExplosionRange = config.getInt(
-				"Properties.Fire.MentalExplosion.Range", mentalExplosionRange);
-		mentalExplosionRange = config.getInt(
-				"Properties.Fire.MentalExplosion.Range", mentalExplosionRange);
-		mentalExplosionSpeed = config.getInt(
-				"Properties.Fire.MentalExplosion.Speed", mentalExplosionSpeed);
-		mentalExplosionChargeTime = config.getInt(
-				"Properties.Fire.MentalExplosion.ChargeTime", mentalExplosionChargeTime);
-		mentalExplosionDamage = config.getInt(
-				"Properties.Fire.MentalExplosion.Cooldown", mentalExplosionCooldown);
+		//Combustion
+		combustionDamage = config.getInt("Properties.Fire.Combustion.Damage",
+							combustionDamage);
+		combustionRange = config.getInt("Properties.Fire.Combustion.Range",
+							combustionRange);
+		combustionRadius = config.getDouble("Properties.Fire.Combustion.Radius", 
+							combustionRadius);
+		combustionExplosionRadius = config.getDouble("Properties.Fire.Combustion.Explosion-Radius",
+							combustionExplosionRadius);
+		combustionInnerRadius = config.getDouble("Properties.Fire.Combustion.Inner-Radius",
+				combustionInnerRadius);
+		combustionChargeTime = config.getInt("Properties.Fire.Combustion.ChargeTime",
+							combustionChargeTime);
+		combustionCooldown = config.getInt("Properties.Fire.Combustion.Cooldown",
+							combustionCooldown);
 
 		// Day
 		dayFactor = config.getDouble("Properties.Fire.Day-Power-Factor",
@@ -1148,11 +1154,13 @@ public class ConfigManager {
 		config.set("Properties.Fire.FireBlade.strength-level", fireBladeStrengthLevel);
 		config.set("Properties.Fire.FireBlade.Cooldown", fireBladeCooldown);
 		//MentalExplosion
-		config.set("Properties.Fire.MentalExplosion.Damage", mentalExplosionDamage);
-		config.set("Properties.Fire.MentalExplosion.Range", mentalExplosionRange);
-		config.set("Properties.Fire.MentalExplosion.Speed", mentalExplosionSpeed);
-		config.set("Properties.Fire.MentalExplosion.ChargeTime", mentalExplosionChargeTime);
-		config.set("Properties.Fire.MentalExplosion.Cooldown", mentalExplosionCooldown);
+		config.set("Properties.Fire.Combustion.Damage", combustionDamage);
+		config.set("Properties.Fire.Combustion.Range", combustionRange);
+		config.set("Properties.Fire.Combustion.ChargeTime", combustionChargeTime);
+		config.set("Properties.Fire.Combustion.Cooldown", combustionCooldown);
+		config.set("Properties.Fire.Combustion.Radius", combustionRadius);
+		config.set("Properties.Fire.Combustion.Explosion-Radius", combustionExplosionRadius);
+		config.set("Properties.Fire.Combustion.Inner-Radius", combustionInnerRadius);
 		// Day
 		config.set("Properties.Fire.Day-Power-Factor", dayFactor);
 		// Water
