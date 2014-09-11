@@ -109,7 +109,9 @@ public class ConfigManager {
 	public static int airManipulationDamage = 2;
 	public static int airManipulationRange = 25;
 	
-	// Lungs control
+	// Suffocate
+	public static int suffocateDistance = 10;
+	public static int suffocateBaseDamage = 1;
 	
 	// ChiBlocker
 	// HighJump
@@ -577,8 +579,10 @@ public class ConfigManager {
 		//Air Manipulation
 		airManipulationDamage = config.getInt("Properties.Air.AirManipulation.Damage",airManipulationDamage);
 		airManipulationRange = config.getInt("Properties.Air.AirManipulation.Range",airManipulationRange);
-		//Lungs Control
 		
+		//Suffocate
+		suffocateBaseDamage = config.getInt("Properties.Air.Suffocate.Damage",suffocateBaseDamage);
+		suffocateDistance = config.getInt("Properties.Air.Suffocate.Distance",suffocateDistance);
 		// Earth
 		// Catapult
 		catapultLength = config.getInt("Properties.Earth.Catapult.Length",
@@ -1030,7 +1034,11 @@ public class ConfigManager {
 		//Air manipulation
 		config.set("Properties.Air.AirManipulation.Damage", airManipulationDamage);
 		config.set("Properties.Air.AirManipulation.Range", airManipulationRange);
-		//LungsControl
+		
+		//Suffocate
+		config.set("Properties.Air.Suffocate.Distance", suffocateDistance);
+		config.set("Properties.Air.Suffocate.Damage", suffocateBaseDamage);
+		
 		// Earth
 		// Catapult
 		config.set("Properties.Earth.Catapult.Length", catapultLength);
@@ -1161,7 +1169,7 @@ public class ConfigManager {
 		config.set("Properties.Fire.FireBlade.Duration", fireBladeDuration);
 		config.set("Properties.Fire.FireBlade.strength-level", fireBladeStrengthLevel);
 		config.set("Properties.Fire.FireBlade.Cooldown", fireBladeCooldown);
-		//MentalExplosion
+		//Combustion
 		config.set("Properties.Fire.Combustion.Damage", combustionDamage);
 		config.set("Properties.Fire.Combustion.Range", combustionRange);
 		config.set("Properties.Fire.Combustion.ChargeTime", combustionChargeTime);

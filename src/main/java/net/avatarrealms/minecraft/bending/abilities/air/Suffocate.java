@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -118,9 +116,6 @@ public class Suffocate implements IAbility {
 					
 			this.targetLocation = target.getLocation().getBlock();
 		}
-		
-		//TODO : Decrease the breath level of the target
-		//TODO : Display a smoke effect on the target head
 		
 		return true;
 	}
