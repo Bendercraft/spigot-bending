@@ -14,7 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
+//import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class FireBlade {
@@ -30,7 +30,7 @@ public class FireBlade {
 	//private static int strengthLevel = ConfigManager.fireBladeStrengthLevel;
 	private static int duration = ConfigManager.fireBladeDuration;
 	private static final Enchantment knockback = Enchantment.KNOCKBACK;
-	private static PotionEffect strengthEffect;
+	//private static PotionEffect strengthEffect;
 	
 	private long time;
 	private Player player;

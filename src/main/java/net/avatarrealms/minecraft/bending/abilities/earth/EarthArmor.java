@@ -36,7 +36,6 @@ public class EarthArmor implements IAbility {
 
 	private Player player;
 	private Block headblock, legsblock;
-	private Block headOriginBlock, legsOriginBlock;
 	private Location headblocklocation, legsblocklocation;
 	private Material headtype, legstype;
 	private byte headdata, legsdata;

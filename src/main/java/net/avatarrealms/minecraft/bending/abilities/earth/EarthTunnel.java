@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -50,8 +49,6 @@ public class EarthTunnel implements IAbility {
 		radius = radiusinc;
 		time = System.currentTimeMillis();
 		
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
 		instances.put(player, this);
 	}
 	

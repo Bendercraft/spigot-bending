@@ -44,6 +44,8 @@ public class PoisonnedDart {
 		direction = origin.getDirection().normalize();
 		
 		instances.put(player, this);
+		
+		bPlayer.cooldown(Abilities.PoisonnedDart);
 	}
 	public static void progressAll() {
 		List<Player> toRemove = new LinkedList<Player>();

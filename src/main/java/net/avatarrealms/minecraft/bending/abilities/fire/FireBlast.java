@@ -104,7 +104,6 @@ public class FireBlast implements IAbility {
 	}
 
 	private boolean progress() {
-		// TODO : Make it redirectable EDIT: Nope, will make another skill
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
@@ -210,7 +209,6 @@ public class FireBlast implements IAbility {
 	}
 
 	private boolean affect(LivingEntity entity) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity.getEntityId() != player.getEntityId()) {
 			if (AvatarState.isAvatarState(player)) {
 				entity.setVelocity(direction.clone().multiply(

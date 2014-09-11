@@ -4,8 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
-import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 
 public class AirBurstSphere implements IAbility  {

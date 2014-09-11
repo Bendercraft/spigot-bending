@@ -310,7 +310,6 @@ public class EarthBlast implements IAbility {
 						return false;
 					}
 				}
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						FireBlast.affectingradius)) {
 					if (Tools.isRegionProtectedFromBuild(player,
