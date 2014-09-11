@@ -28,7 +28,8 @@ public class Suffocate implements IAbility {
 	private static long interval = (long) (1000. / speed);
 	
 	private IAbility parent;
-	private BendingPlayer player;
+	private Player player;
+	private BendingPlayer bPlayer;
 	private Block location;
 	private Player target;
 	private Block targetLocation;
@@ -55,7 +56,8 @@ public class Suffocate implements IAbility {
 		}
 		
 		this.parent = parent;
-		this.player = bPlayer;
+		this.player = player;
+		this.bPlayer = bPlayer;
 		this.location = player.getLocation().getBlock();
 		this.target = (Player)target;
 		this.targetLocation = this.target.getLocation().getBlock();
@@ -67,17 +69,21 @@ public class Suffocate implements IAbility {
 	}
 	
 	public boolean progress() {
-		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
+		if (bPlayer.getPlayer().isDead() || !bPlayer.getPlayer().isOnline()) {
 			return false;
 		}
 		
 		//If bender is no longer on suffocation bend, then remove his bending
-		if(!player.getAbility().equals(Abilities.Suffocate)) {
+		if(!bPlayer.getAbility().equals(Abilities.Suffocate)) {
+			return false;
+		}
+		
+		if (!player.isSneaking()) {
 			return false;
 		}
 		
 		//If bender has moved (for some reason), remove this bending
-		if(!this.location.equals(player.getPlayer().getLocation().getBlock())) {
+		if(!this.location.equals(bPlayer.getPlayer().getLocation().getBlock())) {
 			return false;
 		}
 		
@@ -87,7 +93,7 @@ public class Suffocate implements IAbility {
 		}
 		
 		//Must have line of sight anyway
-		if(!player.getPlayer().hasLineOfSight(target)) {
+		if(!bPlayer.getPlayer().hasLineOfSight(target)) {
 			return false;
 		}
 		
@@ -123,7 +129,7 @@ public class Suffocate implements IAbility {
 	public void remove() {
 		//Potions effects will end naturally, so leave them be
 		this.target.getInventory().setHelmet(helmet);
-		instances.remove(this.player.getPlayer());
+		instances.remove(this.bPlayer.getPlayer());
 	}
 	
 	public static void progressAll() {

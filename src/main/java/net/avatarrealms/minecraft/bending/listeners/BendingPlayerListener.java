@@ -330,10 +330,6 @@ public class BendingPlayerListener implements Listener{
 				if (ability == Abilities.AirBurst) {
 					new AirBurstCone(player, null);
 				}
-
-				if (ability == Abilities.Suffocate) {
-					new Suffocate(player, null);
-				}
 			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())
@@ -532,6 +528,10 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.AirSwipe) {
 					AirSwipe.charge(player);
+				}
+				
+				if (ability == Abilities.Suffocate) {
+					new Suffocate(player, null);
 				}
 			}
 
