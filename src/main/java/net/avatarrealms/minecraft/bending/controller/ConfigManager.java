@@ -208,9 +208,12 @@ public class ConfigManager {
 	
 	//EarthMelt
 	
-	public static long earthMeltCooldown = 15000;
-	public static int earthMeltRange = 10;
-	public static int earthMeltChargeTime = 3000; 
+	public static long lavaTrainDuration = 20000;
+	public static int lavaTrainRange = 7;
+	public static int lavaTrainWidth = 1;
+	public static int lavaTrainRandomWidth = 2;
+	public static double lavaTrainRandomChance = 0.25;
+	public static int lavaTrainReachWidth = 3;
 
 	//LavaBlast
 	public static int lavaBlastDamage = 10;
@@ -680,11 +683,13 @@ public class ConfigManager {
 		
 		//MetalBending
 		
-		//EarthMelt
-		earthMeltCooldown = config.getLong("Properties.Earth.EarthMelt.Cooldown",earthMeltCooldown);
-		earthMeltRange = config.getInt("Properties.Earth.EarthMelt.Range",earthMeltRange);
-		earthMeltChargeTime = config.getInt("Properties.Earth.EarthMelt.ChargeTime",earthMeltChargeTime);
-		
+		//LavaTrain
+		lavaTrainDuration = config.getLong("Properties.Earth.LavaTrain.Duration",lavaTrainDuration);
+		lavaTrainRange = config.getInt("Properties.Earth.LavaTrain.Range",lavaTrainRange);
+		lavaTrainWidth = config.getInt("Properties.Earth.LavaTrain.Train-Width",lavaTrainWidth);
+		lavaTrainRandomWidth = config.getInt("Properties.Earth.LavaTrain.Random-Width",lavaTrainRandomWidth);
+		lavaTrainRandomChance = config.getDouble("Properties.Earth.LavaTrain.Random-Chance",lavaTrainRandomChance);
+		lavaTrainReachWidth = config.getInt("Properties.Earth.LavaTrain.Reach-Width",lavaTrainReachWidth);
 		
 		//LavaBlast
 		lavaBlastRange = config.getInt("Properties.Earth.LavaBlast.Range",lavaBlastRange);
@@ -801,7 +806,7 @@ public class ConfigManager {
 		combustionExplosionRadius = config.getDouble("Properties.Fire.Combustion.Explosion-Radius",
 							combustionExplosionRadius);
 		combustionInnerRadius = config.getDouble("Properties.Fire.Combustion.Inner-Radius",
-				combustionInnerRadius);
+							combustionInnerRadius);
 		combustionChargeTime = config.getInt("Properties.Fire.Combustion.ChargeTime",
 							combustionChargeTime);
 		combustionCooldown = config.getInt("Properties.Fire.Combustion.Cooldown",
@@ -1092,10 +1097,13 @@ public class ConfigManager {
 		//MetalBending
 		
 		
-		//EarthMelt
-		config.set("Properties.Earth.EarthMelt.Cooldown", earthMeltCooldown);
-		config.set("Properties.Earth.EarthMelt.Range", earthMeltRange);
-		config.set("Properties.Earth.EarthMelt.ChargeTime", earthMeltChargeTime);
+		//LavaTrain
+		config.set("Properties.Earth.LavaTrain.Duration", lavaTrainDuration);
+		config.set("Properties.Earth.LavaTrain.Range", lavaTrainRange);
+		config.set("Properties.Earth.LavaTrain.Train-Width", lavaTrainWidth);
+		config.set("Properties.Earth.LavaTrain.Random-Width", lavaTrainRandomWidth);
+		config.set("Properties.Earth.LavaTrain.Random-Chance", lavaTrainRandomChance);
+		config.set("Properties.Earth.LavaTrain.Reach-Width", lavaTrainReachWidth);
 		
 		//LavaBlast
 		config.set("Properties.Earth.LavaBlast.Range", lavaBlastRange);
