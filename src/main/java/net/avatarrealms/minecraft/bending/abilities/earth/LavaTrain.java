@@ -15,6 +15,7 @@ import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -26,12 +27,12 @@ public class LavaTrain implements IAbility {
 	//public static double speed = ConfigManager.lavaTrainSpeed;
 	public static double speed = 5;
 	private static long interval = (long) (1000. / speed);
-	public static int range = 7;
-	public static int trainWidth = 1;
-	public static int randomWidth = 2;
-	public static double randomChance = 0.25;
-	public static int reachWidth = 3;
-	public static int keepAlive = 20000; //ms
+	public static int range = ConfigManager.lavaTrainRange;
+	public static int trainWidth = ConfigManager.lavaTrainWidth;
+	public static int randomWidth = ConfigManager.lavaTrainRandomWidth;
+	public static double randomChance = ConfigManager.lavaTrainRandomChance;
+	public static int reachWidth = ConfigManager.lavaTrainReachWidth;
+	public static long keepAlive = ConfigManager.lavaTrainDuration; //ms
 	private static final byte full = 0x0;
 	
 	private IAbility parent;

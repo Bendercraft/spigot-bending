@@ -9,6 +9,7 @@ import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
@@ -30,16 +31,16 @@ public class Combustion implements IAbility {
 	private static Map<Player, Combustion> instances = new HashMap<Player, Combustion>();
 
 	private static long interval = 25;
-	private static double radius = 1.5;
-	private static long chargeTime = 2000;
-	private static double explosionradius = 3;
-	private static double innerradius = 3;
+	private static double radius = ConfigManager.combustionRadius;
+	private static long chargeTime = ConfigManager.combustionChargeTime;
+	private static double explosionradius = ConfigManager.combustionExplosionRadius;
+	private static double innerradius = ConfigManager.combustionInnerRadius;
 	
 	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
 	private static final ParticleEffect EXPLODE = ParticleEffect.HUGE_EXPLOSION;
 
-	private double range = 20;
-	private int maxdamage = 9;
+	private double range = ConfigManager.combustionRange;
+	private int maxdamage = ConfigManager.combustionDamage;
 	
 	private Player player;
 	private Location origin;
