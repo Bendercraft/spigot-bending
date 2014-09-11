@@ -75,7 +75,6 @@ public class PoisonnedDart {
 			return false;
 		}
 		
-		PluginTools.removeSpouts(location, player);
 		affectAround();
 		advanceLocation();
 		return true;
@@ -85,6 +84,8 @@ public class PoisonnedDart {
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.PoisonnedDart, location)) {
 			return;
 		}
+		
+		PluginTools.removeSpouts(location, player);
 	}
 	private void advanceLocation() {
 		VISUAL.display(location, 0,0,0, 1,1);
