@@ -13,6 +13,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -26,6 +27,8 @@ public class AirSpout implements IAbility {
 
 	private static final double height = ConfigManager.airSpoutHeight;
 	private static final long interval = 100;
+	
+	private static final ParticleEffect VISUAL = ParticleEffect.ENCHANTMENT_TABLE;
 
 	private Player player;
 	private long time;
@@ -152,8 +155,8 @@ public class AirSpout implements IAbility {
 				Location effectloc2 = new Location(location.getWorld(),
 						location.getX(), block.getY() + i, location.getZ());
 
-				location.getWorld().playEffect(effectloc2, Effect.SMOKE,
-						(int) directions[index], (int) height + 5);
+				//location.getWorld().playEffect(effectloc2, Effect.SMOKE, (int) directions[index], (int) height + 5);
+				VISUAL.display(effectloc2, 0, 0, 0, 1, 1);
 			}
 		}
 	}
