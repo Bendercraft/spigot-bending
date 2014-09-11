@@ -84,7 +84,7 @@ public class AirBlast implements IAbility {
 			}
 		} else {
 			origin = player.getEyeLocation();
-			direction = player.getEyeLocation().getDirection().normalize();
+			direction = origin.getDirection().normalize();
 		}
 		location = origin.clone();
 		id = ID;
