@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -74,7 +75,7 @@ public class PoisonnedDart {
 			return false;
 		}
 		
-		
+		PluginTools.removeSpouts(location, player);
 		affectAround();
 		advanceLocation();
 		return true;

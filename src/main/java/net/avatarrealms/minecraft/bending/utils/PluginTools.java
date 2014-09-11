@@ -364,8 +364,9 @@ public class PluginTools {
 	}
 
 	public static double getFirebendingDayAugment(World world) {
-		if (Tools.isDay(world))
+		if (Tools.isDay(world)) {
 			return ConfigManager.dayFactor;
+		}		
 		return 1;
 	}
 

@@ -335,10 +335,14 @@ public class EarthBlast implements IAbility {
 					// Tools.addTempEarthBlock(sourceblock, block);
 					sourceblock.setType(sourcetype);
 					BlockTools.moveEarthBlock(sourceblock, block);
-					if (block.getType() == Material.SAND)
+					if (block.getType() == Material.SAND) {
 						block.setType(Material.SANDSTONE);
-					if (block.getType() == Material.GRAVEL)
+					}
+						
+					if (block.getType() == Material.GRAVEL) {
 						block.setType(Material.STONE);
+					}
+						
 				} else {
 					block.setType(sourceblock.getType());
 					sourceblock.setType(Material.AIR);
