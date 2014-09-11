@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -38,6 +39,8 @@ public class AirShield implements IAbility {
 	private Player player;
 	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
 	private IAbility parent;
+	
+	private static final ParticleEffect VISUAL = ParticleEffect.CLOUD;
 
 	public AirShield(Player player, IAbility parent) {
 		this.parent = parent;
@@ -63,6 +66,8 @@ public class AirShield implements IAbility {
 		Location origin = player.getLocation();
 		
 		FireBlast.removeFireBlastsAroundPoint(origin, radius);
+		
+		VISUAL.display(origin, 2,2,2, 1, 5);
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, radius)) {
 			
@@ -104,7 +109,7 @@ public class AirShield implements IAbility {
 			}
 		}
 
-		Set<Integer> keys = angles.keySet();
+		/*Set<Integer> keys = angles.keySet();
 		for (int i : keys) {
 			double x, y, z;
 			double angle = (double) angles.get(i);
@@ -123,19 +128,23 @@ public class AirShield implements IAbility {
 
 			Location effect = new Location(origin.getWorld(), x, y, z);
 			if (!Tools.isRegionProtectedFromBuild(player, Abilities.AirShield,
-					effect))
+					effect)) {
 				origin.getWorld().playEffect(effect, Effect.SMOKE, 4,
 						(int) AirBlast.defaultrange);
+			}
+				
 
 			angles.put(i, angles.get(i) + (int) (10 * speedfactor));
-		}
+		}*/
 
 		if (radius < maxradius) {
 			radius += .3;
 		}
 
-		if (radius > maxradius)
+		if (radius > maxradius) {
 			radius = maxradius;
+		}
+			
 
 	}
 

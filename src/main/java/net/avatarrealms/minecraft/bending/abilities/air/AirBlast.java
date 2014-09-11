@@ -15,7 +15,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -43,7 +42,6 @@ public class AirBlast implements IAbility {
 	// public static long interval = 2000;
 	public static byte full = 0x0;
 
-	private static final ParticleEffect VISUAL = ParticleEffect.SNOWBALL_POOF;
 	private Location location;
 	private Location origin;
 	private Vector direction;
@@ -183,8 +181,7 @@ public class AirBlast implements IAbility {
 	}
 
 	private void advanceLocation() {
-		//location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) range);
-		VISUAL.display(location, 0, 0, 0, 1, 3);
+		location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) range);
 		location = location.add(direction.clone().multiply(speedfactor));
 	}
 

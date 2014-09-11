@@ -15,7 +15,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -39,8 +38,6 @@ public class AirSuction implements IAbility {
 	private static double affectingradius = ConfigManager.airSuctionRadius;
 	private static double pushfactor = ConfigManager.airSuctionPush;
 	private static double originselectrange = 10;
-	
-	private static final ParticleEffect VISUAL = ParticleEffect.CLOUD;
 
 	private Location location;
 	private Location origin;
@@ -201,8 +198,7 @@ public class AirSuction implements IAbility {
 	}
 
 	private void advanceLocation() {
-		//location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) AirBlast.defaultrange);
-		VISUAL.display(location, 0, 0, 0, 1 ,1);
+		location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) AirBlast.defaultrange);
 		location = location.add(direction.clone().multiply(speedfactor));
 	}
 
