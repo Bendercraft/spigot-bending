@@ -89,7 +89,7 @@ public enum Abilities {
 	}, 
 	AirManipulation(BendingType.Air){
 		public String getDescription() {
-			return " ";
+			return " Not ready yet";
 		}
 	}, 
 	Tornado(BendingSpecializationType.Tornado){
@@ -108,7 +108,9 @@ public enum Abilities {
 	}, 
 	Suffocate(BendingSpecializationType.Suffocate){
 		public String getDescription() {
-			return " ";
+			return "To use, keep sneaking while watching a player "
+					+ "and the target while slowly lose his health."
+					+ " The target will also be slower and weaker than before.";
 		}
 	},
 	
@@ -141,7 +143,7 @@ public enum Abilities {
 	EarthGrab(BendingType.Earth){
 		public String getDescription() {
 			return "To use, simply left-click while targeting a creature within range. "
-					+ "This ability will erect a circle of earth to trap the creature in.";
+					+ "Four earthbendables blocks will come from the ground to trap the creature in.";
 		}
 	}, 
 	EarthTunnel(BendingType.Earth){
@@ -209,12 +211,15 @@ public enum Abilities {
 	}, 
 	LavaTrain(BendingSpecializationType.Lavabend){
 		public String getDescription() {
-			return " ";
+			return "Simply sneaking + clic and a lava lake will form under your eyes.";
 		}
 	}, 
 	MetalBending(BendingSpecializationType.Metalbend){
 		public String getDescription() {
-			return " ";
+			return "The MetalBending skill is one of the most useful earthbender technique."
+					+ " You can open iron door by clicking while you're on this slot. "
+					+ "You can transform most of iron items into iron ingots. "
+					+ "You can travel as you were spider-man by using a fishing rod.";
 		}
 	},
 	
@@ -299,12 +304,15 @@ public enum Abilities {
 	}, 
 	FireBlade(BendingType.Fire){
 		public String getDescription() {
-			return "test";
+			return "To use, simply click and a powerful blade will appear in your hand.";
 		}
 	},
 	Combustion(BendingSpecializationType.Combustion){
 		public String getDescription() {
-			return " ";
+			return "Combustion is a powerful Firebender skill."
+					+ " You just need to sneak and aim what you want."
+					+ "Then, when the skill will be ready,  the air"
+					+ " around the target will explode";
 		}
 	},
 	Lightning(BendingSpecializationType.Lightning){
@@ -416,7 +424,7 @@ public enum Abilities {
 	}, 
 	IceSwipe(BendingType.Water){
 		public String getDescription() {
-			return " ";
+			return " Not ready yet";
 		}
 	},
 	Bloodbending(BendingSpecializationType.Bloodbend){
@@ -431,7 +439,8 @@ public enum Abilities {
 	}, 
 	Drainbending(BendingSpecializationType.DrainBend){
 		public String getDescription() {
-			return " ";
+			return " The drainbending skill allows the water bender using it to take water"
+					+ " from plants and even from the air.";
 		}
 	}, 
 	
@@ -461,17 +470,19 @@ public enum Abilities {
 	}, 
 	SmokeBomb(BendingType.ChiBlocker){
 		public String getDescription() {
-			return " ";
+			return " To use, simply click and a smokebomb will make every player around you blind."
+					+ "While you're in the smokebomb area, you also are invisible.";
 		}
 	}, 
 	PoisonnedDart(BendingType.ChiBlocker){
 		public String getDescription() {
-			return " ";
+			return " Not ready yet.";
 		}
 	}, 
 	Dash(BendingType.ChiBlocker){
 		public String getDescription() {
-			return " ";
+			return "This ChiBlocker skill is very useful when you want to travel faster"
+					+ " or if you want to avoid some dangerous technics ";
 		}
 	},
 	
