@@ -170,8 +170,9 @@ public class BlockTools {
 			
 		return false;
 	}
-	
+
 	public static boolean isObstructed(Location location1, Location location2) {
+		// Only used in octopus form
 		Vector loc1 = location1.toVector();
 		Vector loc2 = location2.toVector();
 
@@ -310,34 +311,32 @@ public class BlockTools {
 		return false;
 	}
 	
-	public static boolean adjacentToAnyWater(Block block) {
-		BlockFace[] faces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH,
-				BlockFace.SOUTH, BlockFace.UP, BlockFace.DOWN };
-		for (BlockFace face : faces) {
-			Block blocki = block.getRelative(face);
-			if (isWater(blocki))
-				return true;
-		}
-		return false;
-	}
-	
 	public static boolean isWaterbendable(Block block, Player player) {
 		byte full = 0x0;
-		if (TempBlock.isTempBlock(block))
+		if (TempBlock.isTempBlock(block)) {
 			return false;
-		if ((block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER)
-				&& block.getData() == full)
+		}
+			
+		if (isWater(block) && block.getData() == full) {
+					return true;
+		}
+			
+		if (block.getType() == Material.ICE || block.getType() == Material.SNOW) {
 			return true;
-		if (block.getType() == Material.ICE || block.getType() == Material.SNOW)
+		}
+			
+		if (EntityTools.canPlantbend(player) && isPlant(block)) {
 			return true;
-		if (EntityTools.canPlantbend(player) && isPlant(block))
-			return true;
+		}
+			
 		return false;
 	}
 	
 	public static boolean adjacentToThreeOrMoreSources(Block block) {
-		if (TempBlock.isTempBlock(block))
+		if (TempBlock.isTempBlock(block)) {
 			return false;
+		}
+			
 		int sources = 0;
 		byte full = 0x0;
 		BlockFace[] faces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH,
@@ -365,8 +364,9 @@ public class BlockTools {
 				BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH };
 		boolean adjacent = false;
 		for (BlockFace face : faces) {
-			if (FreezeMelt.isFrozen((block.getRelative(face))))
+			if (FreezeMelt.isFrozen((block.getRelative(face)))) {
 				adjacent = true;
+			}	
 		}
 		return adjacent;
 	}
@@ -789,10 +789,11 @@ public class BlockTools {
 	}
 
 	public static void dropItems(Block block, Collection<ItemStack> items) {
-		for (ItemStack item : items)
+		for (ItemStack item : items) {
 			block.getWorld().dropItem(block.getLocation(), item);
+		}
 	}
-
+	
 	public static boolean isBlockTouching(Block block1, Block block2) {
 		BlockFace[] faces = { BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH,
 				BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH };
