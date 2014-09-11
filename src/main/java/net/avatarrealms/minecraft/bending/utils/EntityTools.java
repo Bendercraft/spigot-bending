@@ -7,8 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
-
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
@@ -18,10 +16,8 @@ import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -36,17 +32,6 @@ public class EntityTools {
 	public static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
 	public static Map<Player, Long> grabedPlayers = new HashMap<Player, Long>();
 	public static List<Player> toggledBending = new ArrayList<Player>();
-
-	public static Entity getEntityByUUID(UUID uuid) {
-		for(World world : Bukkit.getServer().getWorlds()) {
-			for(Entity entity : world.getEntities()) {
-				if(entity.getUniqueId().equals(uuid)) {
-					return entity;
-				}
-			}
-		}
-		return null;
-	}
 	
 	public static boolean isBender(Player player, BendingType type) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -64,8 +49,9 @@ public class EntityTools {
 	
 	public static boolean isBender(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer == null)
+		if (bPlayer == null) {
 			return false;
+		}		
 		return true;
 	}
 	
@@ -264,19 +250,26 @@ public class EntityTools {
 			return false;
 		}
 		
-		if (AvatarState.isAvatarState(player))
+		if (AvatarState.isAvatarState(player)) {
 			return false;
-		if ((isChiBlocked(player)) || isGrabed(player))
+		}
+			
+		if ((isChiBlocked(player)) || isGrabed(player)) {
 			return true;
-		Abilities ability = Abilities.Bloodbending;
-		if (canBend(player, ability) && !toggledBending(player))
+		}
+			
+		if (canBend(player, Abilities.Bloodbending) && !toggledBending(player)) {
 			return false;
+		}
+			
 		return true;
 	}
 	
 	public static boolean toggledBending(Player player) {
-		if (toggledBending.contains(player))
+		if (toggledBending.contains(player)) {
 			return true;
+		}
+			
 		return false;
 	}
 	

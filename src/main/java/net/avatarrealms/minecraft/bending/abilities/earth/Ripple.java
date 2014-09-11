@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
-import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -17,7 +15,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -263,7 +260,6 @@ public class Ripple implements IAbility {
 	}
 
 	private void affect(Entity entity) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity instanceof LivingEntity) {
 			EntityTools.damageEntity(player, entity, damage);
 		}

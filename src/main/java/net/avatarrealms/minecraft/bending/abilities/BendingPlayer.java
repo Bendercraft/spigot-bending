@@ -15,6 +15,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -298,7 +299,7 @@ public class BendingPlayer {
 	}
 
 	public Player getPlayer() {
-		return (Player) EntityTools.getEntityByUUID(this.player);
+		return Bukkit.getServer().getPlayer(player);
 	}
 
 	public List<BendingType> getBendingTypes() {
