@@ -217,6 +217,7 @@ public class BendingPlayer {
 	}
 	public void removeSpecialization(BendingSpecializationType specialization) {
 		specializations.remove(specialization);
+		this.clearAbilities();
 	}
 	public void clearSpecialization(BendingType element) {
 		List<BendingSpecializationType> toRemove = new LinkedList<BendingSpecializationType>();
@@ -228,6 +229,7 @@ public class BendingPlayer {
 		for(BendingSpecializationType spe : toRemove) {
 			this.removeSpecialization(spe);
 		}
+		this.clearAbilities();
 	}
 	public void clearSpecialization() {
 		specializations.clear();
