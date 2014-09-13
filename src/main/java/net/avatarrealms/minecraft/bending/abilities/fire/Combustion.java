@@ -83,6 +83,7 @@ public class Combustion implements IAbility {
 			}
 			if (System.currentTimeMillis() > time + chargeTime) {
 				location = player.getEyeLocation();
+				location.getWorld().playSound(location, Sound.FIRE_IGNITE, 0, 1);
 				origin = location.clone();
 				direction = location.getDirection().normalize().multiply(radius);
 				charged = true;
