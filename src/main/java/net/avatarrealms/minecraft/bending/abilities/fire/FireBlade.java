@@ -30,6 +30,8 @@ public class FireBlade {
 	//private static int strengthLevel = ConfigManager.fireBladeStrengthLevel;
 	private static int duration = ConfigManager.fireBladeDuration;
 	private static final Enchantment knockback = Enchantment.KNOCKBACK;
+	
+	private ItemStack blade;
 	//private static PotionEffect strengthEffect;
 	
 	private long time;
@@ -97,28 +99,17 @@ public class FireBlade {
 		player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
 	}
 	
+	public ItemStack getBlade() {
+		return blade;
+	}
+	
 	public static boolean isFireBlade(ItemStack is) {
-		if (is == null) {
-			return false;
+		for (Player p : instances.keySet()) {
+			if (instances.get(p).getBlade() == is) {
+				return true;
+			}
 		}
-		
-		if (is.getType() != Material.GOLD_SWORD) {
-			return false;
-		}
-		
-		if (!is.containsEnchantment(sharp)) {
-			return false;
-		}
-		
-		if (!is.containsEnchantment(fire)) {
-			return false;
-		}
-		
-		if (!is.containsEnchantment(dura)) {
-			return false;
-		}
-		
-		return true;
+		return false;
 	}
 	
 	public static boolean isFireBlading(Player p)  {
