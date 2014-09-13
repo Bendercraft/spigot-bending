@@ -111,6 +111,7 @@ public class Tools {
 		List<Abilities> explode = new ArrayList<Abilities>();
 		explode.add(Abilities.FireBlast);
 		explode.add(Abilities.Lightning);
+		explode.add(Abilities.Combustion);
 
 		if (ability == null && PluginTools.allowharmless)
 			return false;
