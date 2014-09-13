@@ -470,7 +470,7 @@ public class BendingCommand {
 									PluginTools.getColor(ConfigManager
 											.getColor("Air")) + "-Airbending");
 							for (Abilities ability : Abilities.getAirbendingAbilities()) {
-								if(EntityTools.hasPermission(player, ability)) {
+								if(EntityTools.hasPermission(p, ability)) {
 									sendMessage(player, PluginTools.getColor(ConfigManager
 											.getColor("Air"))+"   -- "+ability.name());
 								}
@@ -483,7 +483,7 @@ public class BendingCommand {
 											.getColor("Water"))
 											+ "-Waterbending");
 							for (Abilities ability : Abilities.getWaterbendingAbilities()) {
-								if(EntityTools.hasPermission(player, ability)) {
+								if(EntityTools.hasPermission(p, ability)) {
 									sendMessage(player, PluginTools.getColor(ConfigManager
 											.getColor("Water"))+"   -- "+ability.name());
 								}
@@ -495,7 +495,7 @@ public class BendingCommand {
 									PluginTools.getColor(ConfigManager
 											.getColor("Fire")) + "-Firebending");
 							for (Abilities ability : Abilities.getFirebendingAbilities()) {
-								if(EntityTools.hasPermission(player, ability)) {
+								if(EntityTools.hasPermission(p, ability)) {
 									sendMessage(player, PluginTools.getColor(ConfigManager
 											.getColor("Fire"))+"   -- "+ability.name());
 								}
@@ -508,7 +508,7 @@ public class BendingCommand {
 											.getColor("Earth"))
 											+ "-Earthbending");
 							for (Abilities ability : Abilities.getEarthbendingAbilities()) {
-								if(EntityTools.hasPermission(player, ability)) {
+								if(EntityTools.hasPermission(p, ability)) {
 									sendMessage(player, PluginTools.getColor(ConfigManager
 											.getColor("Earth"))+"   -- "+ability.name());
 								}
@@ -521,7 +521,7 @@ public class BendingCommand {
 											.getColor("ChiBlocker"))
 											+ "-Chiblocking");
 							for (Abilities ability : Abilities.getChiBlockingAbilities()) {
-								if(EntityTools.hasPermission(player, ability)) {
+								if(EntityTools.hasPermission(p, ability)) {
 									sendMessage(player, PluginTools.getColor(ConfigManager
 											.getColor("ChiBlocker"))+"   -- "+ability.name());
 								}
