@@ -191,10 +191,11 @@ public class EntityTools {
 		if (bPlayer == null) {
 			return false;
 		}
-
+		/*
 		if (player.hasPermission("bending.water.plantbending")) {
 			return true;
 		}
+		*/
 		if (EntityTools.isSpecialized(player, BendingSpecializationType.DrainBend)) {
 			return true;
 		}
