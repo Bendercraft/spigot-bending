@@ -61,7 +61,7 @@ public class OctopusForm implements IAbility {
 		}
 		this.player = player;
 		time = System.currentTimeMillis();
-		sourceblock = BlockTools.getWaterSourceBlock(player, range, true);
+		sourceblock = BlockTools.getWaterSourceBlock(player, range, EntityTools.canPlantbend(player));
 		if (sourceblock != null) {
 			sourcelocation = sourceblock.getLocation();
 			sourceselected = true;
