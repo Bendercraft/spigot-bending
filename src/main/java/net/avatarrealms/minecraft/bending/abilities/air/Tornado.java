@@ -45,6 +45,10 @@ public class Tornado implements IAbility {
 		this.parent = parent;
 		this.player = player;
 		
+		if (!EntityTools.canBend(player, Abilities.Tornado)) {
+			return;
+		}
+		
 		origin = EntityTools.getTargetBlock(player, range).getLocation();
 		origin.setY(origin.getY() - 1. / 10. * height);
 
