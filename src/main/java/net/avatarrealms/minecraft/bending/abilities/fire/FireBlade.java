@@ -105,7 +105,7 @@ public class FireBlade {
 	
 	public static boolean isFireBlade(ItemStack is) {
 		for (Player p : instances.keySet()) {
-			if (instances.get(p).getBlade() == is) {
+			if (instances.get(p).getBlade().equals(is)) {
 				return true;
 			}
 		}
