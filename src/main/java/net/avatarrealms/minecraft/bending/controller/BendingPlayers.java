@@ -38,13 +38,19 @@ public class BendingPlayers {
 		}
 		return null;
 	}
+	
+	public void removePlayer(UUID playerID) {
+		if (bendingPlayers != null) {
+			bendingPlayers.remove(playerID);
+			this.save();
+		}
+	}
 
 	public void setPlayer(UUID playerID, BendingPlayer player) {
 		if (bendingPlayers != null) {
 			bendingPlayers.put(playerID, player.serialize());
 			this.save();
 		}
-		return;
 	}
 
 	public BendingPlayer getBendingPlayer(Player player) {

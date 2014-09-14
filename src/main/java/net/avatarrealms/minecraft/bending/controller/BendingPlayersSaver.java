@@ -32,7 +32,7 @@ public class BendingPlayersSaver implements Runnable {
 			if (nowtime - time >= timelimit && timelimitdays != 0) {
 				PluginTools.verbose("Old player: " + player.getPlayerID() + " deleted.");
 				player.delete();
-				config.setPlayer(player.getPlayerID(), null);
+				config.removePlayer(player.getPlayerID());
 			} else {
 				config.setPlayer(player.getPlayerID(), player);
 			}
