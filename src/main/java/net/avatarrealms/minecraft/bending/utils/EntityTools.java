@@ -163,18 +163,12 @@ public class EntityTools {
 				return false;
 			}
 		}
-		
-		if (!PluginTools.isLocalAbility(ability) || 
-				!Tools.isRegionProtectedFromBuild(player, ability, player.getLocation())) {
-			return true;
-		}
 
 		if (PluginTools.allowharmless && PluginTools.isHarmlessAbility(ability)) {
 			return true;
 		}
 		
-		return false;
-
+		return !Tools.isRegionProtectedFromBuild(player, ability, player.getLocation());
 	}
 	
 	public static boolean canBendPassive(Player player, BendingType type) {

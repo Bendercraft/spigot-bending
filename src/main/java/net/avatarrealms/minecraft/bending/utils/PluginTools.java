@@ -87,20 +87,6 @@ public class PluginTools {
 		harmlessAbilities.add(Abilities.Tremorsense);
 		harmlessAbilities.add(Abilities.WaterSpout);
 	}
-	private static Set<Abilities> localAbilities = new HashSet<Abilities>();
-	static {
-		localAbilities.add(Abilities.AirScooter);
-		localAbilities.add(Abilities.AirSpout);
-		localAbilities.add(Abilities.HealingWaters);
-		localAbilities.add(Abilities.HighJump);
-		localAbilities.add(Abilities.Illumination);
-		localAbilities.add(Abilities.Tremorsense);
-		localAbilities.add(Abilities.WaterSpout);
-		localAbilities.add(Abilities.AvatarState);
-		localAbilities.add(Abilities.FireJet);
-		localAbilities.add(Abilities.Paralyze);
-		localAbilities.add(Abilities.RapidPunch);
-	}
 	private static final Map<String, ChatColor> colors;	
 	static {
 		Map<String, ChatColor> tmpMap = new HashMap<String, ChatColor>();
@@ -177,14 +163,6 @@ public class PluginTools {
 	
 	public static boolean isHarmlessAbility(Abilities ability) {
 		return harmlessAbilities.contains(ability);
-	}
-
-	public static boolean isLocalAbility(Abilities ability) {
-		return localAbilities.contains(ability);
-	}
-
-	public static boolean isRangedAbility(Abilities ability) {
-		return !isLocalAbility(ability);
 	}
 	
 	public static void stopAllBending() {

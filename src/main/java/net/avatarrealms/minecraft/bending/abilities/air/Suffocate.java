@@ -62,6 +62,12 @@ public class Suffocate implements IAbility {
 		this.location = player.getLocation().getBlock();
 		this.target = (Player)target;
 		this.targetLocation = this.target.getLocation().getBlock();
+		
+		if (Tools.isRegionProtectedFromBuild(player, Abilities.Suffocate, target.getLocation())) {
+			return;
+		}
+		
+		
 		helmet = this.target.getInventory().getHelmet();
 		temp = new ItemStack(Material.STAINED_GLASS, 1, (byte) 0x0);
 		this.target.getInventory().setHelmet(temp);

@@ -119,6 +119,9 @@ public class LavaTrain implements IAbility {
 	}
 	
 	private void affectBlocks(Location current, int width) {
+		List<Block> safe = BlockTools.getBlocksOnPlane(this.safePoint.getLocation(), 1);
+		safe.add(safePoint);
+		
 		for(int i=-1; i <= 2 ; i++) {
 			Location tmp = current.clone();
 			tmp.setY(current.getY()+i);
@@ -134,7 +137,7 @@ public class LavaTrain implements IAbility {
 			for(Block potentialsBlock : potentialsBlocks) {
 				if(BlockTools.isEarthbendable(player.getPlayer(), potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
 					//Do not let block behind bender to be bend, this whill be stupid
-					if(!potentialsBlock.getLocation().equals(this.safePoint.getLocation())) {
+					if(!safe.contains(potentialsBlock)) {
 						new TempBlock(potentialsBlock, Material.LAVA, full);
 						affecteds.add(potentialsBlock);
 					}
