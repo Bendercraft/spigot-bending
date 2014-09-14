@@ -50,6 +50,7 @@ public class Combustion implements IAbility {
 	private long time;
 	private IAbility parent;
 	private boolean charged = false;
+	private int progressed = 0;
 
 	public Combustion(Player player, IAbility parent) {
 		this.parent = parent;
@@ -83,7 +84,6 @@ public class Combustion implements IAbility {
 			}
 			if (System.currentTimeMillis() > time + chargeTime) {
 				location = player.getEyeLocation();
-				location.getWorld().playSound(location, Sound.FIRE_IGNITE, 0, 1);
 				origin = location.clone();
 				direction = location.getDirection().normalize().multiply(radius);
 				charged = true;
@@ -104,8 +104,6 @@ public class Combustion implements IAbility {
 				explode();
 				return false;
 			}
-
-			CRIT.display(location, 0, 0, 0, 1, 3);
 			
 			if (BlockTools.isSolid(location.getBlock())) {
 				explode();
@@ -140,12 +138,15 @@ public class Combustion implements IAbility {
 			block.getWorld().playEffect(block.getLocation(),
 					Effect.SMOKE, 0, 1);
 		}
-
+		CRIT.display(location, 0, 0, 0, 1, 3);
+		if(progressed % 5 == 0) {
+			location.getWorld().playSound(location, Sound.SHOOT_ARROW, 1, 0);
+		}
+		progressed++;
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
 			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
 			}
-			entity.setFireTicks(120);
 			if (entity instanceof LivingEntity) {
 				explode();
 				return false;

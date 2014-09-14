@@ -121,13 +121,19 @@ public class EntityTools {
 		if (player == null) {
 			return false;
 		}
-
-		if (hasPermission(player, ability) && ability == Abilities.AvatarState)
-			return true;
-
+		
 		if (!hasPermission(player, ability)) {
 			return false;
 		}
+
+		if (ability == Abilities.AvatarState) {
+			return true;
+		}
+		
+		if(toggledBending(player)) {
+			return false;
+		}
+		
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player)))
 			return false;
 
@@ -158,16 +164,15 @@ public class EntityTools {
 			}
 		}
 		
-		if (hasPermission(player, ability)
-				&& (!PluginTools.isLocalAbility(ability) || !Tools.isRegionProtectedFromBuild(
-						player, Abilities.AirBlast, player.getLocation()))
-				&& !toggledBending(player)) {
+		if (!PluginTools.isLocalAbility(ability) || 
+				!Tools.isRegionProtectedFromBuild(player, ability, player.getLocation())) {
 			return true;
 		}
 
-		if (PluginTools.allowharmless && PluginTools.isHarmlessAbility(ability)
-				&& !toggledBending(player))
+		if (PluginTools.allowharmless && PluginTools.isHarmlessAbility(ability)) {
 			return true;
+		}
+		
 		return false;
 
 	}

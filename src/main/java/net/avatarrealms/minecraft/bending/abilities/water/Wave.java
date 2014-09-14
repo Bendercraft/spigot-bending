@@ -98,7 +98,7 @@ public class Wave implements IAbility {
 			return true;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if(bPlayer != null) {
+		if(bPlayer == null) {
 			return false;
 		}
 		//If no block available, check if bender can drainbend !
