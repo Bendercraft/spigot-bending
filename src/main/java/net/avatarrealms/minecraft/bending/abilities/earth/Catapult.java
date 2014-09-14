@@ -168,7 +168,6 @@ public class Catapult implements IAbility {
 						boolean equal = target.getEntityId() == player
 								.getEntityId();
 						if (equal) {
-							remove();
 							remove = true;
 						}
 						if (equal || target.isSneaking()) {
