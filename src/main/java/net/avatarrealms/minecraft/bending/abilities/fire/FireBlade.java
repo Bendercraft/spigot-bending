@@ -143,6 +143,7 @@ public class FireBlade {
 			}
 		}
 		player.getInventory().setItem(slot,fireB);
+		blade = fireB;
 		/*if (strengthLevel > 0) {
 			strengthEffect = new PotionEffect(PotionEffectType.INCREASE_DAMAGE,
 					duration*20, strengthLevel-1);
