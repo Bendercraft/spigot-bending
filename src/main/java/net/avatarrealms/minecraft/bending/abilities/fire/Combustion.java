@@ -178,11 +178,13 @@ public class Combustion implements IAbility {
 					
 					if(affecteds.containsAll(adjacent)) {
 						//Explosion ok
-						block.setType(Material.AIR);
+						block.getDrops().clear();
+						block.breakNaturally();
 					} else {
 						double rand = Math.random();
 						if(rand < 0.8) {
-							block.setType(Material.AIR);
+							block.getDrops().clear();
+							block.breakNaturally();
 						}
 					}
 				}
