@@ -135,6 +135,7 @@ public class WaterManipulation implements IAbility {
 		finalRemoveWater(sourceblock);
 		if(drainedBlock != null) {
 			drainedBlock.revertBlock();
+			drainedBlock = null;
 		}
 		remove(id);
 	}
@@ -335,7 +336,6 @@ public class WaterManipulation implements IAbility {
 				}
 
 				if (!displacing) {
-					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 					for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 							FireBlast.affectingradius)) {
 						if (entity.getEntityId() != player.getEntityId()) {
@@ -384,11 +384,6 @@ public class WaterManipulation implements IAbility {
 		}
 		
 		return true;
-	}
-
-	private void breakBlock() {
-		finalRemoveWater(sourceblock);
-		remove(id);
 	}
 
 	private void reduceWater(Block block) {
@@ -547,7 +542,7 @@ public class WaterManipulation implements IAbility {
 		}
 		
 		for(WaterManipulation manip : toBreak) {
-			manip.breakBlock();
+			manip.remove();
 		}
 	}
 
@@ -560,7 +555,7 @@ public class WaterManipulation implements IAbility {
 			}
 		}
 		for(WaterManipulation manip : toBreak) {
-			manip.breakBlock();
+			manip.remove();
 		}
 	}
 
@@ -624,7 +619,7 @@ public class WaterManipulation implements IAbility {
 	public static void removeAll() {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>(instances.values());
 		for (WaterManipulation manip : toBreak)
-			manip.breakBlock();
+			manip.remove();
 		prepared.clear();
 	}
 
@@ -640,7 +635,7 @@ public class WaterManipulation implements IAbility {
 					toBreak.add(manip);
 		}
 		for (WaterManipulation manip : toBreak)
-			manip.breakBlock();
+			manip.remove();
 	}
 	
 	private static boolean shouldAnnihilateBlasts(Location location, double radius,
@@ -657,7 +652,7 @@ public class WaterManipulation implements IAbility {
 		}
 		if(remove) {
 			for (WaterManipulation manip : toBreak)
-				manip.breakBlock();
+				manip.remove();
 		}
 		return broke;
 	}
