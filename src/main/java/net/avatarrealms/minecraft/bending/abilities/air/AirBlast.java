@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
@@ -156,7 +157,7 @@ public class AirBlast implements IAbility {
 		if ((BlockTools.isSolid(block) || block.isLiquid())
 				&& !affectedlevers.contains(block)) {
 			if (block.getType() == Material.LAVA
-					|| block.getType() == Material.STATIONARY_LAVA) {
+					|| block.getType() == Material.STATIONARY_LAVA && !TempBlock.isTempBlock(block)) {
 				if (block.getData() == full) {
 					block.setType(Material.OBSIDIAN);
 				} else {
