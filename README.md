@@ -11,3 +11,4 @@ mvn org.apache.maven.plugins:maven-install-plugin:2.5.1:install-file  -Dfile=./l
 mvn org.apache.maven.plugins:maven-install-plugin:2.5.1:install-file  -Dfile=./lib/massivecore-7.3.0.jar -DgroupId=net.minecraft -DartifactId=massivecore -Dversion=7.3.0 -Dpackaging=jar
 mvn org.apache.maven.plugins:maven-install-plugin:2.5.1:install-file  -Dfile=./lib/worldedit-5.6.3.jar -DgroupId=net.minecraft -DartifactId=worldedit -Dversion=5.6.3 -Dpackaging=jar
 mvn org.apache.maven.plugins:maven-install-plugin:2.5.1:install-file  -Dfile=./lib/worldguard-5.9.jar -DgroupId=net.minecraft -DartifactId=worldguard -Dversion=5.9 -Dpackaging=jar
+mvn org.apache.maven.plugins:maven-install-plugin:2.5.1:install-file  -Dfile=./lib/CoreProtect_2.0.9.jar -DgroupId=net.minecraft -DartifactId=coreprotect -Dversion=2.0.9 -Dpackaging=jar

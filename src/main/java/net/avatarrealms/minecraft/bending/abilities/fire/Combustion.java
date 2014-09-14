@@ -15,7 +15,9 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.coreprotect.CoreProtectAPI;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,6 +27,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 public class Combustion implements IAbility {
@@ -140,7 +143,7 @@ public class Combustion implements IAbility {
 		}
 		CRIT.display(location, 0, 0, 0, 1, 3);
 		if(progressed % 5 == 0) {
-			location.getWorld().playSound(location, Sound.SHOOT_ARROW, 1, 0);
+			location.getWorld().playSound(location, Sound.SHOOT_ARROW, 5, 1);
 		}
 		progressed++;
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
@@ -178,24 +181,34 @@ public class Combustion implements IAbility {
 					
 					if(affecteds.containsAll(adjacent)) {
 						//Explosion ok
-						block.getDrops().clear();
-						block.breakNaturally();
+						this.removeBlock(block);
 					} else {
 						double rand = Math.random();
 						if(rand < 0.8) {
-							block.getDrops().clear();
-							block.breakNaturally();
+							this.removeBlock(block);
 						}
 					}
 				}
 			}
-			location.getWorld().playSound(location, Sound.EXPLODE, 1, 0);
+			location.getWorld().playSound(location, Sound.EXPLODE, 10, 1);
 			EXPLODE.display(location, 0, 0, 0, 1, 1);
 			List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, explosionradius);
 			for(LivingEntity entity : entities) {
 				this.dealDamage(entity);
 			}
 		}
+	}
+	
+	private void removeBlock(Block block) {
+		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
+			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
+			cp.logRemoval(player.getName(), block.getLocation(), block.getType().getId(), block.getData());
+		}
+		double rand = Math.random();
+		if(rand < 0.5) {
+			block.getDrops().clear();
+		}
+		block.breakNaturally();
 	}
 
 	public static void progressAll() {

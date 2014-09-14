@@ -107,6 +107,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>coreprotect</artifactId>
+			<version>2.0.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.3.1</version>
