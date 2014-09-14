@@ -165,8 +165,12 @@ public class WaterWall implements IAbility {
 			focusBlock();
 			return true;
 		}
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if(bPlayer != null) {
+			return false;
+		}
 		//If no block available, check if bender can drainbend !
-		if(Drainbending.canDrainBend(player)) {
+		if(Drainbending.canDrainBend(player) && !bPlayer.isOnCooldown(Abilities.Drainbending)) {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
@@ -175,6 +179,7 @@ public class WaterWall implements IAbility {
 			focusBlock();
 			//Radius is thirded for Drainbending
 			radius = radius/3;
+			bPlayer.cooldown(Abilities.Drainbending);
 			return true;
 		}
 		return false;
@@ -192,6 +197,7 @@ public class WaterWall implements IAbility {
 	}
 
 	public void remove() {
+		finalRemoveWater(sourceblock);
 		if(drainedBlock != null) {
 			drainedBlock.revertBlock();
 		}
