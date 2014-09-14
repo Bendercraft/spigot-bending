@@ -101,7 +101,7 @@ public class WaterManipulation implements IAbility {
 		}
 		
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if(bPlayer != null) {
+		if(bPlayer == null) {
 			return false;
 		}
 		
