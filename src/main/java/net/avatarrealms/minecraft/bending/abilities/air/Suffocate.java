@@ -18,6 +18,7 @@ import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.Tools;
 
 public class Suffocate implements IAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
@@ -70,6 +71,10 @@ public class Suffocate implements IAbility {
 	
 	public boolean progress() {
 		if (bPlayer.getPlayer().isDead() || !bPlayer.getPlayer().isOnline()) {
+			return false;
+		}
+		
+		if (Tools.isRegionProtectedFromBuild(player, Abilities.Suffocate, target.getLocation())) {
 			return false;
 		}
 		
