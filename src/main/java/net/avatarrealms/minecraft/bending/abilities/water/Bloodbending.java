@@ -178,7 +178,7 @@ public class Bloodbending implements IAbility {
 				dx = location.getX() - newlocation.getX();
 				dy = location.getY() - newlocation.getY();
 				dz = location.getZ() - newlocation.getZ();
-				Vector vector = new Vector(dx, 0, dz);
+				Vector vector = new Vector(dx, dy/3, dz);
 				if (distance > .5) {
 					entity.setVelocity(vector.normalize().multiply(.5));
 				} else {
