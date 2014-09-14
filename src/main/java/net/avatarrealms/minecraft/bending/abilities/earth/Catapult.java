@@ -9,7 +9,6 @@ import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
@@ -82,20 +81,6 @@ public class Catapult implements IAbility {
 
 	}
 
-	public Catapult(Player player, Catapult source, IAbility parent) {
-		this.parent = parent;
-		flying = true;
-		this.player = player;
-		moving = false;
-		location = source.location.clone();
-		starttime = source.starttime;
-		direction = source.direction.clone();
-		distance = source.distance;
-		time = source.time;
-		instances.put(player.getEntityId(), this);
-		fly();
-	}
-
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
@@ -165,20 +150,13 @@ public class Catapult implements IAbility {
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, 2)) {
 					if (entity instanceof Player) {
 						Player target = (Player) entity;
-						boolean equal = target.getEntityId() == player
-								.getEntityId();
+						boolean equal = target.getEntityId() == player.getEntityId();
 						if (equal) {
 							remove = true;
-						}
-						if (equal || target.isSneaking()) {
-							new Flight(target);
-							target.setAllowFlight(true);
-							new Catapult(target, this);
 						}
 					}
 					entity.setVelocity(direction.clone().multiply(
 							push * distance / length));
-
 				}
 				return remove;
 			}
