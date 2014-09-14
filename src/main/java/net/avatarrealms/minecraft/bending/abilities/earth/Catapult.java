@@ -215,8 +215,9 @@ public class Catapult implements IAbility {
 		List<Player> players = new LinkedList<Player>();
 		for (Catapult catapult : instances.values()) {
 			Player player = catapult.player;
-			if (!players.contains(player))
+			if (!players.contains(player)){
 				players.add(player);
+			}
 		}
 		return players;
 	}
