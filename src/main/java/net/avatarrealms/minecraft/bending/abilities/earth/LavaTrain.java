@@ -52,6 +52,10 @@ public class LavaTrain implements IAbility {
 			return;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if(bPlayer == null) {
+			return;
+		}
+		
 		if (bPlayer.isOnCooldown(Abilities.LavaTrain))
 			return;
 		if(!EntityTools.canBend(player, Abilities.LavaTrain)) {
@@ -75,6 +79,10 @@ public class LavaTrain implements IAbility {
 	}
 	
 	public boolean progress() {
+		if(player == null || player.getPlayer() == null) {
+			return false;
+		}
+		
 		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
 			return false;
 		}
