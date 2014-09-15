@@ -31,7 +31,6 @@ public class Suffocate implements IAbility {
 	private IAbility parent;
 	private Player player;
 	private BendingPlayer bPlayer;
-	private Block location;
 	private Player target;
 	private Block targetLocation;
 	private ItemStack helmet;
@@ -59,7 +58,6 @@ public class Suffocate implements IAbility {
 		this.parent = parent;
 		this.player = player;
 		this.bPlayer = bPlayer;
-		this.location = player.getLocation().getBlock();
 		this.target = (Player)target;
 		this.targetLocation = this.target.getLocation().getBlock();
 		
@@ -81,20 +79,6 @@ public class Suffocate implements IAbility {
 		}
 		
 		if (Tools.isRegionProtectedFromBuild(player, Abilities.Suffocate, target.getLocation())) {
-			return false;
-		}
-		
-		//If bender is no longer on suffocation bend, then remove his bending
-		if(!bPlayer.getAbility().equals(Abilities.Suffocate)) {
-			return false;
-		}
-		
-		if (!player.isSneaking()) {
-			return false;
-		}
-		
-		//If bender has moved (for some reason), remove this bending
-		if(!this.location.equals(bPlayer.getPlayer().getLocation().getBlock())) {
 			return false;
 		}
 		
