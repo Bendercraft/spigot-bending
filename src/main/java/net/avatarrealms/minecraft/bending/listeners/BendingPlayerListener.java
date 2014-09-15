@@ -60,7 +60,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.FireBurstSphere;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireJet;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireProtection;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireShield;
-import net.avatarrealms.minecraft.bending.abilities.fire.Fireball;
+import net.avatarrealms.minecraft.bending.abilities.fire.FireBall;
 import net.avatarrealms.minecraft.bending.abilities.fire.Illumination;
 import net.avatarrealms.minecraft.bending.abilities.fire.Lightning;
 import net.avatarrealms.minecraft.bending.abilities.fire.RingOfFire;
@@ -613,7 +613,7 @@ public class BendingPlayerListener implements Listener{
 			}
 
 			if (ability == Abilities.FireBlast) {
-				new Fireball(player, null);
+				new FireBall(player, null);
 			}
 
 			if (ability == Abilities.FireShield) {

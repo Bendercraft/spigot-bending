@@ -66,7 +66,7 @@ public class FireBlast implements IAbility {
 			return;
 
 		if (player.getEyeLocation().getBlock().isLiquid()
-				|| Fireball.isCharging(player)) {
+				|| FireBall.isCharging(player)) {
 			return;
 		}
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
@@ -235,7 +235,7 @@ public class FireBlast implements IAbility {
 					toRemove.add(id);
 			}
 		}
-		Fireball.removeFireballsAroundPoint(location, radius);
+		FireBall.removeFireballsAroundPoint(location, radius);
 	}
 
 	private static boolean shouldAnnihilateBlasts(Location location,
@@ -253,7 +253,7 @@ public class FireBlast implements IAbility {
 				}
 			}
 		}
-		if (Fireball.annihilateBlasts(location, radius, source))
+		if (FireBall.annihilateBlasts(location, radius, source))
 			broke = true;
 		if (remove) {
 			for (FireBlast fireblast : toRemove) {
