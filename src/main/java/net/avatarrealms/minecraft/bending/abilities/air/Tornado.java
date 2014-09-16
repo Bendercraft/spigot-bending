@@ -114,7 +114,7 @@ public class Tornado implements IAbility {
 							* factor) {
 						double x, z, vx, vz, mag;
 						double angle = 100;
-						double vy = 0.7 * NPCpushfactor;
+						double vy = NPCpushfactor;
 						angle = Math.toRadians(angle);
 
 						x = entity.getLocation().getX() - origin.getX();
@@ -126,7 +126,7 @@ public class Tornado implements IAbility {
 						vz = (x * Math.sin(angle) + z * Math.cos(angle)) / mag;
 
 						if (entity instanceof Player) {
-							vy = 0.05 * PCpushfactor;
+							vy = PCpushfactor;
 						}
 
 						if (entity.getEntityId() == player.getEntityId()) {
