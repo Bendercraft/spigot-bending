@@ -1,6 +1,7 @@
 name: Bending
 main: net.avatarrealms.minecraft.bending.Bending
 version: 4.0.1
+softdepend: [MassiveCore,Factions,WorldGuard,WorldEdit,CoreProtect]
 commands:
     bending:
         description: Chooses the many features of Bending.

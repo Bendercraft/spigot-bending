@@ -24,11 +24,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
 
-public class Fireball implements IAbility {
+public class FireBall implements IAbility {
 
-	private static Map<Integer, Fireball> instances = new HashMap<Integer, Fireball>();
-	//TODO : this variable seems to be never cleared of any of its content, strange
-	private static Map<Entity, Fireball> explosions = new HashMap<Entity, Fireball>();
+	private static Map<Integer, FireBall> instances = new HashMap<Integer, FireBall>();
 
 	private static long defaultchargetime = 2000;
 	private static long interval = 25;
@@ -53,7 +51,7 @@ public class Fireball implements IAbility {
 	private TNTPrimed explosion = null;
 	private IAbility parent;
 
-	public Fireball(Player player, IAbility parent) {
+	public FireBall(Player player, IAbility parent) {
 		this.parent = parent;
 		this.player = player;
 		time = System.currentTimeMillis();
@@ -132,11 +130,7 @@ public class Fireball implements IAbility {
 		return true;
 	}
 
-	public static Fireball getFireball(Entity entity) {
-		return explosions.get(entity);
-	}
-
-	public void dealDamage(Entity entity) {
+	private void dealDamage(Entity entity) {
 		if (explosion == null)
 			return;
 		// if (Tools.isObstructed(explosion.getLocation(),
@@ -175,52 +169,26 @@ public class Fireball implements IAbility {
 		}
 		return true;
 	}
+	
+	private void explode() {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
+			if (entity.getEntityId() == player.getEntityId()) {
+				continue;
+			}
+			if (entity instanceof LivingEntity) {
+				dealDamage(entity);
+			}
+		}
+		ignite(location);
+	}
 
 	public static boolean isCharging(Player player) {
 		for (int id : instances.keySet()) {
-			Fireball ball = instances.get(id);
+			FireBall ball = instances.get(id);
 			if (ball.player == player && !ball.launched)
 				return true;
 		}
 		return false;
-	}
-
-	private void explode() {
-		// List<Block> blocks = Tools.getBlocksAroundPoint(location, 3);
-		// List<Block> blocks2 = new ArrayList<Block>();
-
-		// Tools.verbose("Fireball Explode!");
-		boolean explode = true;
-		for (Block block : BlockTools.getBlocksAroundPoint(location, 3)) {
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.FireBlast,
-					block.getLocation())) {
-				explode = false;
-				break;
-			}
-		}
-		if (explode) {
-			explosion = player.getWorld().spawn(location, TNTPrimed.class);
-			explosion.setFuseTicks(0);
-			float yield = 1;
-			switch (player.getWorld().getDifficulty()) {
-			case PEACEFUL:
-				yield *= 2.;
-				break;
-			case EASY:
-				yield *= 2.;
-				break;
-			case NORMAL:
-				yield *= 1.;
-				break;
-			case HARD:
-				yield *= 3. / 4.;
-				break;
-			}
-			explosion.setYield(yield);
-			explosions.put(explosion, this);
-		}
-		// location.getWorld().createExplosion(location, 1);
-		ignite(location);
 	}
 
 	private void ignite(Location location) {
@@ -236,14 +204,14 @@ public class Fireball implements IAbility {
 	}
 
 	public static void progressAll() {
-		List<Fireball> toRemove = new LinkedList<Fireball>();
-		for (Fireball fireball : instances.values()) {
+		List<FireBall> toRemove = new LinkedList<FireBall>();
+		for (FireBall fireball : instances.values()) {
 			boolean keep = fireball.progress();
 			if(!keep) {
 				toRemove.add(fireball);
 			}
 		}
-		for(Fireball fireball : toRemove) {
+		for(FireBall fireball : toRemove) {
 			fireball.remove();
 		}
 	}
@@ -258,8 +226,8 @@ public class Fireball implements IAbility {
 
 	public static void removeFireballsAroundPoint(Location location,
 			double radius) {
-		List<Fireball> toRemove = new LinkedList<Fireball>();
-		for (Fireball fireball : instances.values()) {
+		List<FireBall> toRemove = new LinkedList<FireBall>();
+		for (FireBall fireball : instances.values()) {
 			if (!fireball.launched)
 				continue;
 			Location fireblastlocation = fireball.location;
@@ -268,7 +236,7 @@ public class Fireball implements IAbility {
 					toRemove.add(fireball);
 			}
 		}
-		for(Fireball fireball : toRemove) {
+		for(FireBall fireball : toRemove) {
 			fireball.remove();
 		}
 	}
@@ -276,8 +244,8 @@ public class Fireball implements IAbility {
 	public static boolean annihilateBlasts(Location location, double radius,
 			Player source) {
 		boolean broke = false;
-		List<Fireball> toRemove = new LinkedList<Fireball>();
-		for (Fireball fireball : instances.values()) {
+		List<FireBall> toRemove = new LinkedList<FireBall>();
+		for (FireBall fireball : instances.values()) {
 			if (!fireball.launched)
 				continue;
 			Location fireblastlocation = fireball.location;
@@ -291,7 +259,7 @@ public class Fireball implements IAbility {
 			}
 		}
 		
-		for(Fireball fireball : toRemove) {
+		for(FireBall fireball : toRemove) {
 			fireball.remove();
 		}
 

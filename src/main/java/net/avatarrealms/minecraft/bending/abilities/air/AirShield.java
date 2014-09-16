@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
@@ -57,6 +58,7 @@ public class AirShield implements IAbility {
 		}
 
 		instances.put(player.getEntityId(), this);
+		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.AirShield);
 	}
 
 	private void rotateShield() {

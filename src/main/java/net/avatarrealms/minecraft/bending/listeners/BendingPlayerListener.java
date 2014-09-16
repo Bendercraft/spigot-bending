@@ -60,7 +60,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.FireBurstSphere;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireJet;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireProtection;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireShield;
-import net.avatarrealms.minecraft.bending.abilities.fire.Fireball;
+import net.avatarrealms.minecraft.bending.abilities.fire.FireBall;
 import net.avatarrealms.minecraft.bending.abilities.fire.Illumination;
 import net.avatarrealms.minecraft.bending.abilities.fire.Lightning;
 import net.avatarrealms.minecraft.bending.abilities.fire.RingOfFire;
@@ -99,6 +99,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -612,7 +613,7 @@ public class BendingPlayerListener implements Listener{
 			}
 
 			if (ability == Abilities.FireBlast) {
-				new Fireball(player, null);
+				new FireBall(player, null);
 			}
 
 			if (ability == Abilities.FireShield) {
@@ -794,6 +795,13 @@ public class BendingPlayerListener implements Listener{
 		}
 	}
 	
+	@EventHandler
+	public void onPlayerDropitem(PlayerDropItemEvent event) {
+		if(FireBlade.isFireBlade(event.getItemDrop().getItemStack())) {
+			event.getItemDrop().remove();
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if (event.getSlotType() == SlotType.ARMOR
@@ -849,18 +857,14 @@ public class BendingPlayerListener implements Listener{
 			EarthArmor.removeEffect(event.getEntity());
 		}
 		
-		if (FireBlade.isFireBlading(event.getEntity())) {
-			List<ItemStack> drops = event.getDrops();
-			List<ItemStack> newdrops = new ArrayList<ItemStack>();
-			
-			for (int i = 0; i < drops.size(); i++) {
-				if (!(FireBlade.isFireBlade(drops.get(i))
-						 || drops.get(i).getType() == Material.AIR)) {
-					newdrops.add((drops.get(i)));
-				}	
+		if(FireBlade.isFireBlading(event.getEntity())) {
+			ItemStack toRemove = null;
+			for(ItemStack item : event.getDrops()) {
+				if(FireBlade.isFireBlade(item)) {
+					toRemove = item;
+				}
 			}
-			event.getDrops().clear();
-			event.getDrops().addAll(newdrops);
+			event.getDrops().remove(toRemove);
 		}
 
 		if (EntityTools.isGrabed(event.getEntity())) {

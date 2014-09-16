@@ -27,7 +27,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
 public class Combustion implements IAbility {
@@ -135,6 +134,23 @@ public class Combustion implements IAbility {
 		double damage = slope * (distance - innerradius) + maxdamage;
 		EntityTools.damageEntity(player, entity, (int) damage);
 	}
+	
+	private void knockBack(Entity entity) {
+		double distance = entity.getLocation()
+				.distance(location);
+		if (distance > explosionradius){
+			return;
+		}	
+		double dx = entity.getLocation().getX() - location.getX();
+		double dy = entity.getLocation().getY() - location.getY();
+		double dz = entity.getLocation().getZ() - location.getZ();
+		Vector v = new Vector(dx, dy, dz);
+		v = v.normalize();
+		
+		v.multiply(distance);
+		
+		entity.setVelocity(v);
+	}
 
 	private boolean fireball() {
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
@@ -195,6 +211,7 @@ public class Combustion implements IAbility {
 			List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, explosionradius);
 			for(LivingEntity entity : entities) {
 				this.dealDamage(entity);
+				this.knockBack(entity);
 			}
 		}
 	}

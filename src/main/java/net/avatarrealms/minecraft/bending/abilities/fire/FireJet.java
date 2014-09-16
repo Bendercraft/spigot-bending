@@ -50,7 +50,7 @@ public class FireJet implements IAbility {
 				|| AvatarState.isAvatarState(player)) {
 			player.setVelocity(player.getEyeLocation().getDirection().clone()
 					.normalize().multiply(factor));
-			block.setType(Material.FIRE);
+			//block.setType(Material.FIRE);
 			this.player = player;
 			// canfly = player.getAllowFlight();
 			new Flight(player);

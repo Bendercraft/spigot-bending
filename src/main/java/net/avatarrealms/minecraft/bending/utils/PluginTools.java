@@ -47,7 +47,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.FireJet;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireProtection;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireShield;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireStream;
-import net.avatarrealms.minecraft.bending.abilities.fire.Fireball;
+import net.avatarrealms.minecraft.bending.abilities.fire.FireBall;
 import net.avatarrealms.minecraft.bending.abilities.fire.Illumination;
 import net.avatarrealms.minecraft.bending.abilities.fire.Lightning;
 import net.avatarrealms.minecraft.bending.abilities.fire.WallOfFire;
@@ -201,7 +201,7 @@ public class PluginTools {
 		Bloodbending.removeAll();
 
 		FireStream.removeAll();
-		Fireball.removeAll();
+		FireBall.removeAll();
 		WallOfFire.removeAll();
 		Lightning.removeAll();
 		FireShield.removeAll();

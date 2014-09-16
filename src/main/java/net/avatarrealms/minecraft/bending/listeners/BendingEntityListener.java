@@ -72,14 +72,7 @@ public class BendingEntityListener implements Listener {
 
 		Entity source = event.getDamager();
 		Entity entity = event.getEntity();
-		Fireball fireball = Fireball.getFireball(source);
 		Lightning lightning = Lightning.getLightning(source);
-
-		if (fireball != null) {
-			event.setCancelled(true);
-			fireball.dealDamage(entity);
-			return;
-		}
 
 		if (event.getCause() == DamageCause.LIGHTNING) {
 			if (Lightning.isNearbyChannel(source.getLocation())) {

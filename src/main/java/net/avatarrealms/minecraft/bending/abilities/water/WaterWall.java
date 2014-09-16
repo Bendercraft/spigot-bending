@@ -174,13 +174,15 @@ public class WaterWall implements IAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
-			drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-			sourceblock = block;
-			focusBlock();
-			//Radius is thirded for Drainbending
-			radius = radius/3;
-			bPlayer.cooldown(Abilities.Drainbending);
-			return true;
+			if(Drainbending.canBeSource(block)) {
+				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				sourceblock = block;
+				focusBlock();
+				//Radius is thirded for Drainbending
+				radius = radius/3;
+				bPlayer.cooldown(Abilities.Drainbending);
+				return true;
+			}
 		}
 		return false;
 	}
