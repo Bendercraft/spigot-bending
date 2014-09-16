@@ -106,23 +106,20 @@ public class Tools {
 	public static boolean isRegionProtectedFromExplosion(Player player,
 			Abilities ability, Location loc) {
 		PluginManager pm = Bukkit.getPluginManager();
-
 		Plugin wgp = pm.getPlugin("WorldGuard");
-		for (Location location : new Location[] { loc, player.getLocation() }) {
-			if (wgp != null && PluginTools.respectWorldGuard) {
-				WorldGuardPlugin wg = (WorldGuardPlugin) Bukkit
-						.getPluginManager().getPlugin("WorldGuard");
-				if (!player.isOnline())
+		if (wgp != null && PluginTools.respectWorldGuard) {
+			WorldGuardPlugin wg = (WorldGuardPlugin) wgp;
+			for (Location location : new Location[] { loc, player.getLocation() }) {
+				if (!player.isOnline()) {
 					return true;
-				
+				}
 				if(!wg.getGlobalRegionManager()
-				.get(location.getWorld())
-				.getApplicableRegions(location).allows(DefaultFlag.OTHER_EXPLOSION)) {
+						.get(location.getWorld())
+						.getApplicableRegions(location).allows(DefaultFlag.OTHER_EXPLOSION)) {
 					return true;
 				}
 			}
 		}
-		
 		return false;
 	}
 
