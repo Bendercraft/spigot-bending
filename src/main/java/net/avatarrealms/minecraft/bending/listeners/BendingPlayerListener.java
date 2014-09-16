@@ -666,7 +666,11 @@ public class BendingPlayerListener implements Listener{
 			
 			if (event.getCause() == DamageCause.FALL) {
 				if (EntityTools.isBender(player, BendingType.Earth)) {
-
+		
+					if (ability == Abilities.Shockwave) {
+						new ShockwaveFall(player, null);
+					}
+					
 					if (EarthPassive.softenLanding(player)
 							&& EntityTools.canBendPassive(player, BendingType.Earth)) {
 						new Flight(player);
@@ -674,10 +678,6 @@ public class BendingPlayerListener implements Listener{
 						player.setFallDistance(0);
 						event.setDamage(0);
 						event.setCancelled(true);
-					}
-
-					if (ability == Abilities.Shockwave) {
-						new ShockwaveFall(player, null);
 					}
 					
 					if (MetalWire.hasNoFallDamage(player)) {
