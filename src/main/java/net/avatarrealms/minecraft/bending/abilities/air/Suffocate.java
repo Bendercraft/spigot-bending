@@ -113,7 +113,7 @@ public class Suffocate implements IAbility {
 				//Quiet, does not matter
 			}
 			target.getWorld().playEffect(target.getEyeLocation(), Effect.SMOKE, 4);
-			target.damage(baseDamage+addtionnalDamage);
+			target.damage(baseDamage+addtionnalDamage, bPlayer.getPlayer());
 					
 			this.targetLocation = target.getLocation().getBlock();
 		}
