@@ -74,6 +74,10 @@ public class Suffocate implements IAbility {
 	}
 	
 	public boolean progress() {
+		if(bPlayer.getPlayer() == null || target == null) {
+			return false;
+		}
+		
 		if (bPlayer.getPlayer().isDead() || !bPlayer.getPlayer().isOnline()) {
 			return false;
 		}
