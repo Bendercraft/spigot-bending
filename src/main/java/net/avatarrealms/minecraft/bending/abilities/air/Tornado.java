@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
@@ -22,8 +23,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class Tornado implements IAbility {
-
 	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
+	private static Map<UUID, Long> affecteds = new HashMap<UUID, Long>();
 
 	private static double maxradius = ConfigManager.tornadoRadius;
 	private static double maxheight = ConfigManager.tornadoHeight;
@@ -40,6 +41,8 @@ public class Tornado implements IAbility {
 	private Location origin;
 	private Player player;
 	private IAbility parent;
+	
+	
 
 	public Tornado(Player player, IAbility parent) {
 		this.parent = parent;
@@ -126,7 +129,14 @@ public class Tornado implements IAbility {
 						vz = (x * Math.sin(angle) + z * Math.cos(angle)) / mag;
 
 						if (entity instanceof Player) {
-							vy = PCpushfactor;
+							double dy = y - origin.getY();
+							if (dy >= height * .95) {
+								vy = 0;
+							} else if (dy >= height * .85) {
+								vy = 6.0 * (.95 - dy / height);
+							} else {
+								vy = PCpushfactor;
+							}
 						}
 
 						if (entity.getEntityId() == player.getEntityId()) {
@@ -151,7 +161,7 @@ public class Tornado implements IAbility {
 						velocity.setX(vx);
 						velocity.setZ(vz);
 						velocity.setY(vy);
-						velocity.multiply(timefactor);
+						velocity.multiply(timefactor*0.75);
 						entity.setVelocity(velocity);
 						entity.setFallDistance(0);
 
@@ -160,6 +170,7 @@ public class Tornado implements IAbility {
 						}
 					}
 				}
+				affecteds.put(entity.getUniqueId(), System.currentTimeMillis());
 			}
 
 			
@@ -198,6 +209,23 @@ public class Tornado implements IAbility {
 			height = maxheight;
 		}
 
+	}
+	
+	public static boolean isAffected(LivingEntity entity) {
+		return affecteds.containsKey(entity.getUniqueId());
+	}
+	
+	public static boolean preventFall(LivingEntity entity) {
+		if(isAffected(entity)) {
+			long old = affecteds.get(entity.getUniqueId());
+			long diff = System.currentTimeMillis() - old;
+			
+			affecteds.remove(entity.getUniqueId());
+			if(diff < 5000) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static void progressAll() {
