@@ -186,22 +186,24 @@ public class Combustion implements IAbility {
 		}
 		if (explode) {
 			for (Block block : affecteds) {
-				if(!block.getType().equals(Material.OBSIDIAN) && !block.getType().equals(Material.BEDROCK)) {
-					List<Block> adjacent = new LinkedList<Block>();
-					adjacent.add(block.getRelative(BlockFace.NORTH));
-					adjacent.add(block.getRelative(BlockFace.SOUTH));
-					adjacent.add(block.getRelative(BlockFace.EAST));
-					adjacent.add(block.getRelative(BlockFace.WEST));
-					adjacent.add(block.getRelative(BlockFace.UP));
-					adjacent.add(block.getRelative(BlockFace.DOWN));
-					
-					if(affecteds.containsAll(adjacent)) {
-						//Explosion ok
-						this.removeBlock(block);
-					} else {
-						double rand = Math.random();
-						if(rand < 0.8) {
+				if(!Tools.isRegionProtectedFromExplosion(player, Abilities.Combustion, block.getLocation())) {
+					if(!block.getType().equals(Material.OBSIDIAN) && !block.getType().equals(Material.BEDROCK)) {
+						List<Block> adjacent = new LinkedList<Block>();
+						adjacent.add(block.getRelative(BlockFace.NORTH));
+						adjacent.add(block.getRelative(BlockFace.SOUTH));
+						adjacent.add(block.getRelative(BlockFace.EAST));
+						adjacent.add(block.getRelative(BlockFace.WEST));
+						adjacent.add(block.getRelative(BlockFace.UP));
+						adjacent.add(block.getRelative(BlockFace.DOWN));
+						
+						if(affecteds.containsAll(adjacent)) {
+							//Explosion ok
 							this.removeBlock(block);
+						} else {
+							double rand = Math.random();
+							if(rand < 0.8) {
+								this.removeBlock(block);
+							}
 						}
 					}
 				}

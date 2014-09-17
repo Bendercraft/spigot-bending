@@ -102,16 +102,32 @@ public class Tools {
 
 		return new Vector(x1 - x0, y1 - y0, z1 - z0);
 	}
+	
+	public static boolean isRegionProtectedFromExplosion(Player player,
+			Abilities ability, Location loc) {
+		PluginManager pm = Bukkit.getPluginManager();
+		Plugin wgp = pm.getPlugin("WorldGuard");
+		if (wgp != null && PluginTools.respectWorldGuard) {
+			WorldGuardPlugin wg = (WorldGuardPlugin) wgp;
+			for (Location location : new Location[] { loc, player.getLocation() }) {
+				if (!player.isOnline()) {
+					return true;
+				}
+				if(!wg.getGlobalRegionManager()
+						.get(location.getWorld())
+						.getApplicableRegions(location).allows(DefaultFlag.OTHER_EXPLOSION)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	public static boolean isRegionProtectedFromBuild(Player player,
 			Abilities ability, Location loc) {
 
 		List<Abilities> ignite = new ArrayList<Abilities>();
 		ignite.add(Abilities.Blaze);
-		List<Abilities> explode = new ArrayList<Abilities>();
-		explode.add(Abilities.FireBlast);
-		explode.add(Abilities.Lightning);
-		explode.add(Abilities.Combustion);
 
 		if (ability == null && PluginTools.allowharmless)
 			return false;
@@ -148,15 +164,6 @@ public class Tools {
 
 				}
 
-				if (explode.contains(ability)) {
-					if (wg.getGlobalStateManager().get(location.getWorld()).blockTNTExplosions)
-						return true;
-					if (!wg.getGlobalRegionManager().get(location.getWorld())
-							.getApplicableRegions(location)
-							.allows(DefaultFlag.TNT))
-						return true;
-				}
-
 				if ((!(wg.getGlobalRegionManager().canBuild(player, location)) || !(wg
 						.getGlobalRegionManager()
 						.canConstruct(player, location)))) {
@@ -166,9 +173,6 @@ public class Tools {
 
 			if (fcp != null && mcore != null && PluginTools.respectFactions) {
 				if (ignite.contains(ability)) {
-				}
-
-				if (explode.contains(ability)) {
 				}
 
 				if (!FactionsListenerMain.canPlayerBuildAt(player,

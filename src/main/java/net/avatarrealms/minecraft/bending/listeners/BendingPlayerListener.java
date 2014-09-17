@@ -722,7 +722,12 @@ public class BendingPlayerListener implements Listener{
 						}
 					}
 				}
-
+				
+				if(!event.isCancelled()) {
+					if(Tornado.preventFall(player)) {
+						event.setCancelled(true);
+					}
+				}
 			}
 
 			if (!event.isCancelled() && event.getCause() == DamageCause.FALL) {
