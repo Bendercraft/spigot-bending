@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -60,6 +61,7 @@ public class Lightning implements IAbility {
 		Location targetlocation = getTargetLocation();
 		if (AvatarState.isAvatarState(player))
 			damage = AvatarState.getValue(damage);
+		
 		if (!Tools.isRegionProtectedFromBuild(player, Abilities.Lightning,
 				targetlocation)) {
 			strike = player.getWorld().strikeLightning(targetlocation);
@@ -78,10 +80,25 @@ public class Lightning implements IAbility {
 			if (target instanceof LivingEntity
 					&& player.getLocation().distance(targetlocation) > target
 							.getLocation().distance(player.getLocation())) {
-				targetlocation = target.getLocation();
-				if (target.getVelocity().length() < threshold) {
-					misschance = 0;
+				//Check redirection
+				if(target instanceof Player){
+					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) target);
+					if(bPlayer != null && bPlayer.getAbility().equals(Abilities.Lightning)) {
+						//Redirection !
+						targetlocation = EntityTools.getTargetedLocation((Player) target, distance);
+					} else {
+						targetlocation = target.getLocation();
+						if (target.getVelocity().length() < threshold) {
+							misschance = 0;
+						}
+					}
+				} else {
+					targetlocation = target.getLocation();
+					if (target.getVelocity().length() < threshold) {
+						misschance = 0;
+					}
 				}
+				
 			}
 		} else {
 			misschance = 0;

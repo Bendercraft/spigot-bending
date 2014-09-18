@@ -127,6 +127,9 @@ public class FireBlade {
 	}
 	
 	public static boolean isFireBlade(ItemStack is) {
+		if(is == null) {
+			return false;
+		}
 		if(is.getItemMeta() != null 
 				&& is.getItemMeta().getLore() != null
 				&& is.getItemMeta().getLore().contains(LORE_NAME)) {

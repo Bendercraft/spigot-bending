@@ -175,6 +175,9 @@ public class Suffocate implements IAbility {
 	}
 	
 	public static boolean isTempHelmet(ItemStack is) {
+		if(is == null) {
+			return false;
+		}
 		if(is.getItemMeta() != null 
 				&& is.getItemMeta().getLore() != null
 				&& is.getItemMeta().getLore().contains(LORE_NAME)) {
