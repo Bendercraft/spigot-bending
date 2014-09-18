@@ -14,13 +14,13 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 //import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class FireBlade {
-	
 	private static Map<Player, FireBlade> instances = new HashMap<Player, FireBlade>();
-	
+	private static String LORE_NAME = "FireBlade";
 	private static final Enchantment sharp = Enchantment.DAMAGE_ALL;
 	private static int sharpnessLevel = ConfigManager.fireBladeSharpnessLevel;
 	private static final Enchantment fire = Enchantment.FIRE_ASPECT;
@@ -55,27 +55,36 @@ public class FireBlade {
 	
 	
 	public static void progressAll() {		
-		List<Player> toRemove = new LinkedList<Player>();
-		for (Player player : instances.keySet()) {
-			boolean keep = instances.get(player).progress();
+		List<FireBlade> toRemove = new LinkedList<FireBlade>();
+		for (FireBlade blade : instances.values()) {
+			boolean keep = blade.progress();
 			if (!keep) {
-				instances.get(player).removeFireBlade();
-				toRemove.add(player);
+				toRemove.add(blade);
 			}
 		}
 		
-		for (Player pl : toRemove) {
-			instances.remove(pl);
+		for (FireBlade pl : toRemove) {
+			pl.remove();
 		}
 		
 	}
 	
 	public boolean progress() {
-		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
+		if (player.getPlayer() == null 
+				|| player.getPlayer().isDead() 
+				|| !player.getPlayer().isOnline()) {
+			return false;
+		}
+		
+		if(blade == null) {
 			return false;
 		}
 		
 		if (System.currentTimeMillis() > time + (1000*duration)) {
+			return false;
+		}
+		
+		if(!isFireBlade(player.getItemInHand())) {
 			return false;
 		}
 		
@@ -85,7 +94,7 @@ public class FireBlade {
 		return true;
 	}
 	
-	public void removeFireBlade() {
+	public void remove() {
 		ItemStack toRemove = null;
 		for (ItemStack is : player.getInventory().getContents()) {
 			if (is != null && isFireBlade(is)) {
@@ -97,6 +106,20 @@ public class FireBlade {
 			player.getInventory().remove(toRemove);
 		}
 		player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
+		instances.remove(player);
+	}
+	
+	public static void removeFireBlade(ItemStack is) {
+		FireBlade toRemove = null;
+		for (FireBlade blade : instances.values()) {
+			if(blade.getBlade() != null && isFireBlade(blade.getBlade())) {
+				toRemove = blade;
+			}
+		}
+		
+		if(toRemove != null) {
+			toRemove.remove();
+		}
 	}
 	
 	public ItemStack getBlade() {
@@ -104,10 +127,10 @@ public class FireBlade {
 	}
 	
 	public static boolean isFireBlade(ItemStack is) {
-		for (Player p : instances.keySet()) {
-			if (instances.get(p).getBlade().equals(is)) {
-				return true;
-			}
+		if(is.getItemMeta() != null 
+				&& is.getItemMeta().getLore() != null
+				&& is.getItemMeta().getLore().contains(LORE_NAME)) {
+			return true;
 		}
 		return false;
 	}
@@ -116,22 +139,27 @@ public class FireBlade {
 		return instances.containsKey(p);
 	}
 	
+	public static FireBlade getFireBlading(Player p) {
+		return instances.get(p);
+	}
+	
 	public void giveFireBlade() {
 		ItemStack fireB = new ItemStack(Material.GOLD_SWORD);
 		if (sharpnessLevel > 0) {
 			fireB.addEnchantment(sharp, sharpnessLevel);
 		}
-		
 		if (fireAspectLevel > 0) {
 			fireB.addEnchantment(fire, fireAspectLevel);
 		}
-		
 		if (duraLevel > 0) {
 			fireB.addEnchantment(dura, duraLevel);
 		}
-		
 		fireB.addEnchantment(knockback, 1);
-		
+		List<String> lore = new LinkedList<String>();
+		lore.add(LORE_NAME);
+		ItemMeta meta = fireB.getItemMeta();
+		meta.setLore(lore);
+		fireB.setItemMeta(meta);
 		
 		int slot = player.getInventory().getHeldItemSlot();
 		ItemStack hand = player.getInventory().getItem(slot);
@@ -147,8 +175,9 @@ public class FireBlade {
 	}
 	
 	public static void removeAll() {
-		for (Player p : instances.keySet()) {
-			instances.get(p).removeFireBlade();
+		List<FireBlade> toRemove = new LinkedList<FireBlade>(instances.values());
+		for (FireBlade blade : toRemove) {
+			blade.remove();
 		}
 		instances.clear();
 	}

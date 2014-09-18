@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,6 +23,7 @@ import net.avatarrealms.minecraft.bending.utils.Tools;
 
 public class Suffocate implements IAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
+	private static String LORE_NAME = "Suffocation";
 	//private int distance = ConfigManager.suffocateDistance;
 	private static int distance = 10;
 	private static int baseDamage = 1;
@@ -67,7 +69,14 @@ public class Suffocate implements IAbility {
 		
 		
 		helmet = this.target.getInventory().getHelmet();
+		
 		temp = new ItemStack(Material.STAINED_GLASS, 1, (byte) 0x0);
+		List<String> lore = new LinkedList<String>();
+		lore.add(LORE_NAME);
+		ItemMeta meta = temp.getItemMeta();
+		meta.setLore(lore);
+		temp.setItemMeta(meta);
+		
 		this.target.getInventory().setHelmet(temp);
 		bPlayer.cooldown(Abilities.Suffocate);
 		instances.put(player, this);
@@ -125,9 +134,16 @@ public class Suffocate implements IAbility {
 		return true;
 	}
 	
+	public void restoreTargetHelmet() {
+		if(temp != null) {
+			this.target.getInventory().setHelmet(helmet);
+			temp = null;
+		}
+	}
+	
 	public void remove() {
 		//Potions effects will end naturally, so leave them be
-		this.target.getInventory().setHelmet(helmet);
+		this.restoreTargetHelmet();
 		instances.remove(this.bPlayer.getPlayer());
 	}
 	
@@ -158,13 +174,12 @@ public class Suffocate implements IAbility {
 		return parent;
 	}
 	
-	public static boolean isTempHelmet(ItemStack stack) {
-		for(Suffocate suffocate : instances.values()) {
-			if(suffocate.temp.equals(stack)) {
-				return true;
-			}
+	public static boolean isTempHelmet(ItemStack is) {
+		if(is.getItemMeta() != null 
+				&& is.getItemMeta().getLore() != null
+				&& is.getItemMeta().getLore().contains(LORE_NAME)) {
+			return true;
 		}
-		
 		return false;
 	}
 	
@@ -176,5 +191,14 @@ public class Suffocate implements IAbility {
 		}
 		
 		return false;
+	}
+	
+	public static Suffocate getSuffocateByTarget(Player p) {
+		for(Suffocate suffocate : instances.values()) {
+			if(suffocate.target.getUniqueId().equals(p.getUniqueId())) {
+				return suffocate;
+			}
+		}
+		return null;
 	}
 }
