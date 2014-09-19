@@ -3,6 +3,7 @@ package net.avatarrealms.minecraft.bending.listeners;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.avatarrealms.minecraft.bending.Bending;
@@ -794,7 +795,11 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerKick(PlayerKickEvent event) {
-		if (Bloodbending.isBloodbended(event.getPlayer())) {
+		if(Bloodbending.isBloodbended(event.getPlayer())) {
+			event.setCancelled(true);
+			event.setReason(null);
+		}
+		if(Tornado.isAffected(event.getPlayer())) {
 			event.setCancelled(true);
 			event.setReason(null);
 		}
@@ -803,7 +808,10 @@ public class BendingPlayerListener implements Listener{
 	@EventHandler
 	public void onPlayerDropitem(PlayerDropItemEvent event) {
 		if(FireBlade.isFireBlade(event.getItemDrop().getItemStack())) {
-			event.getItemDrop().remove();
+			event.setCancelled(true);
+		}
+		if(Suffocate.isTempHelmet(event.getItemDrop().getItemStack())) {
+			event.setCancelled(true);
 		}
 	}
 	
@@ -814,7 +822,7 @@ public class BendingPlayerListener implements Listener{
 			event.setCancelled(true);
 		}
 		
-		if (FireBlade.isFireBlading((Player)event.getWhoClicked()) && FireBlade.isFireBlade(event.getCurrentItem())) {
+		if (FireBlade.isFireBlade(event.getCurrentItem())) {
 			event.setCancelled(true);
 		}
 		
@@ -829,6 +837,12 @@ public class BendingPlayerListener implements Listener{
 			EarthArmor.removeEffect(event.getPlayer());
 			event.getPlayer().removePotionEffect(
 					PotionEffectType.DAMAGE_RESISTANCE);
+		}
+		if(Suffocate.isTargeted(event.getPlayer())) {
+			Suffocate.getSuffocateByTarget(event.getPlayer()).remove();
+		}
+		if(FireBlade.isFireBlading(event.getPlayer())) {
+			FireBlade.getFireBlading(event.getPlayer()).remove();
 		}
 	}
 	
@@ -862,28 +876,17 @@ public class BendingPlayerListener implements Listener{
 			EarthArmor.removeEffect(event.getEntity());
 		}
 		
-		if(FireBlade.isFireBlading(event.getEntity())) {
-			ItemStack toRemove = null;
-			for(ItemStack item : event.getDrops()) {
-				if(FireBlade.isFireBlade(item)) {
-					toRemove = item;
-				}
+		//Fireblade & Suffocate
+		List<ItemStack> toRemove = new LinkedList<ItemStack>();
+		for(ItemStack item : event.getDrops()) {
+			if(FireBlade.isFireBlade(item) || Suffocate.isTempHelmet(item)) {
+				toRemove.add(item);
 			}
-			event.getDrops().remove(toRemove);
 		}
+		event.getDrops().removeAll(toRemove);
 
 		if (EntityTools.isGrabed(event.getEntity())) {
 			EntityTools.unGrab(event.getEntity());
-		}
-		
-		if(Suffocate.isTargeted(event.getEntity())) {
-			ItemStack toRemove = null;
-			for(ItemStack item : event.getDrops()) {
-				if(Suffocate.isTempHelmet(item)) {
-					toRemove = item;
-				}
-			}
-			event.getDrops().remove(toRemove);
 		}
 	}
 }
