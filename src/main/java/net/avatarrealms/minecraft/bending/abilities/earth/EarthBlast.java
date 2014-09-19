@@ -73,8 +73,8 @@ public class EarthBlast implements IAbility {
 	}
 
 	public boolean prepare() {
-		cancelPrevious();
 		Block block = BlockTools.getEarthSourceBlock(player, preparerange);
+		cancelPrevious(block);	
 		block(player);
 		if (block != null) {
 			sourceblock = block;
@@ -97,10 +97,10 @@ public class EarthBlast implements IAbility {
 		return location;
 	}
 
-	private void cancelPrevious() {
+	private void cancelPrevious(Block b) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
 		for (EarthBlast blast : instances.values()) {
-			if (blast.player == player && !blast.progressing) {
+			if ((blast.sourceblock.equals(b) || blast.player == player) && !blast.progressing) {
 				blast.cancel();
 				toRemove.add(blast);
 			}

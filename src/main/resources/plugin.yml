@@ -342,6 +342,9 @@ permissions:
   bending.admin.AvatarState: 
     description: Allows the use of AvatarState.
     default: op 
+  bending.admin.AstralProjection:
+    description: Allows the use of Astral Projection.
+    default: op
   bending.admin.remove: 
     description: Allows the use of /bending remove <player>
     default: op
