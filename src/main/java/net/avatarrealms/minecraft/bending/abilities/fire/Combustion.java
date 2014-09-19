@@ -113,6 +113,10 @@ public class Combustion implements IAbility {
 			} else if (location.getBlock().isLiquid()) {
 				return false;
 			}
+			
+			if (location.distance(origin)%8 == 0) {
+				location.getWorld().playSound(location, Sound.NOTE_BASS_DRUM, 10, 1);
+			}
 
 			return fireball();
 		}

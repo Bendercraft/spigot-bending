@@ -47,12 +47,10 @@ public class RapidPunch implements IAbility {
 		numpunches = 0;
 		player = p;
 		instances.put(p, this);
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.RapidPunch);
 	}
 
 	public boolean progress() {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (numpunches >= punches) {
 			return false;
 		}

@@ -16,7 +16,6 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -62,12 +61,8 @@ public class SmokeBomb implements IAbility {
 			for (Block block : blocks) {
 				locs.add(block.getLocation());
 			}
-			List<LivingEntity> entitiesAround = EntityTools.getLivingEntitiesAroundPoint(origin, radius+7);
-			for (Entity ent : entitiesAround) {
-				if (ent instanceof Player) {
-					((Player)ent).playSound(origin,Sound.FIREWORK_BLAST,10,1);
-				}
-			}
+			
+			origin.getWorld().playSound(origin, Sound.FIREWORK_BLAST, 10, 1);
 			player.addPotionEffect(blindnessBomber);
 			bPlayer.cooldown(Abilities.SmokeBomb);
 		}
