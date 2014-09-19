@@ -76,7 +76,7 @@ public class PluginTools {
 	
 	public static boolean allowharmless = true;
 	public static boolean respectWorldGuard = true;
-	public static boolean respectFactions = false;
+	public static boolean respectFactions = true;
 	private static Set<Abilities> harmlessAbilities = new HashSet<Abilities>();
 	static { 
 		harmlessAbilities.add(Abilities.AirScooter);
