@@ -20,6 +20,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.Vector;
 
+import com.massivecraft.factions.entity.BoardColls;
+import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.listeners.FactionsListenerMain;
 import com.massivecraft.massivecore.ps.PS;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -105,6 +107,10 @@ public class Tools {
 	
 	public static boolean isRegionProtectedFromExplosion(Player player,
 			Abilities ability, Location loc) {
+		if(Tools.isRegionProtectedFromBuild(player, ability, loc)) {
+			return true;
+		}
+		
 		PluginManager pm = Bukkit.getPluginManager();
 		Plugin wgp = pm.getPlugin("WorldGuard");
 		if (wgp != null && PluginTools.respectWorldGuard) {
@@ -116,6 +122,17 @@ public class Tools {
 				if(!wg.getGlobalRegionManager()
 						.get(location.getWorld())
 						.getApplicableRegions(location).allows(DefaultFlag.OTHER_EXPLOSION)) {
+					return true;
+				}
+			}
+		}
+		
+		Plugin fcp = pm.getPlugin("Factions");
+		Plugin mcore = pm.getPlugin("MassiveCore");
+		if (fcp != null && mcore != null && PluginTools.respectFactions) {
+			Faction faction = BoardColls.get().getFactionAt(PS.valueOf(loc));
+			if(faction != null) {
+				if(!faction.isExplosionsAllowed()) {
 					return true;
 				}
 			}
@@ -172,9 +189,6 @@ public class Tools {
 			}
 
 			if (fcp != null && mcore != null && PluginTools.respectFactions) {
-				if (ignite.contains(ability)) {
-				}
-
 				if (!FactionsListenerMain.canPlayerBuildAt(player,
 						PS.valueOf(loc.getBlock()), false)) {
 					return true;
