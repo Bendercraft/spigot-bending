@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
@@ -82,6 +83,9 @@ public class SmokeBomb implements IAbility {
 				}
 				else {
 					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
+					if (targ instanceof Player) {
+						Bending.plugin.ghostManager.addGhost((Player)targ);
+					}	
 				}	
 			}
 		}
@@ -93,8 +97,9 @@ public class SmokeBomb implements IAbility {
 				targ.addPotionEffect(blindnessTarget);
 			}
 			else {
-				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY,ticksRemaining,1);
+				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, ticksRemaining,1);
 				targ.addPotionEffect(invisibilityLauncher);
+				Bending.plugin.ghostManager.removeGhost((Player)targ);
 			}
 			targets.add(targ);
 		}
