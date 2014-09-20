@@ -51,8 +51,12 @@ public class Paralyze implements IAbility {
 
 	public static boolean isParalyzed(Entity entity) {
 		if (entity instanceof Player) {
-			if (AvatarState.isAvatarState((Player) entity))
+			if (AvatarState.isAvatarState((Player) entity)){
 				return false;
+			}
+			if (((Player)entity).isOp()){
+				return false;
+			}
 		}
 		if (entities.containsKey(entity)) {
 			if (System.currentTimeMillis() < entities.get(entity) + duration) {
