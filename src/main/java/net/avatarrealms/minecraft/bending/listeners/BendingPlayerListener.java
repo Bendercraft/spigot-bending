@@ -329,6 +329,21 @@ public class BendingPlayerListener implements Listener{
 		}
 			
 		if (EntityTools.canBend(player, ability)) {
+			
+			if (ability == Abilities.AvatarState) {
+				new AvatarState(player);
+				return;
+			}
+			
+			if (ability == Abilities.AstralProjection) {
+				new AstralProjection(player);
+				return;
+			}
+			
+			if (ability == Abilities.HighJump) {
+				new HighJump(player, null);
+				return;
+			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Air")) {
@@ -362,7 +377,7 @@ public class BendingPlayerListener implements Listener{
 				}
 			}
 
-			if (!EntityTools.isWeapon(player.getItemInHand().getType())
+			else if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Earth")) {
 
 				if (ability == Abilities.Catapult) {
@@ -408,7 +423,7 @@ public class BendingPlayerListener implements Listener{
 
 			}
 
-			if (!EntityTools.isWeapon(player.getItemInHand().getType())
+			else if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Fire")) {
 
 				if (ability == Abilities.FireBlast) {
@@ -450,7 +465,7 @@ public class BendingPlayerListener implements Listener{
 				}
 			}
 
-			if (!EntityTools.isWeapon(player.getItemInHand().getType())
+			else if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Water")) {
 
 				if (ability == Abilities.WaterManipulation) {
@@ -493,19 +508,7 @@ public class BendingPlayerListener implements Listener{
 
 			}
 
-			if (ability == Abilities.AvatarState) {
-				new AvatarState(player);
-			}
-			
-			if (ability == Abilities.AstralProjection) {
-				new AstralProjection(player);
-			}
-
-			if (ability == Abilities.HighJump) {
-				new HighJump(player, null);
-			}
-
-			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
+			else if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
 
 				if (ability == Abilities.RapidPunch) {
 					new RapidPunch(player, null);
@@ -555,6 +558,7 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.AirShield) {
 				new AirShield(player, null);
+				return;
 			}
 
 			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
@@ -574,6 +578,7 @@ public class BendingPlayerListener implements Listener{
 				
 				if (ability == Abilities.Suffocate) {
 					new Suffocate(player, null);
+					return;
 				}
 			}
 
@@ -583,10 +588,12 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.EarthBlast) {
 				new EarthBlast(player, null);
+				return;
 			}
 
 			if (ability == Abilities.EarthGrab) {
 				new EarthGrab(player, true, null);
+				return;
 			}
 
 			if (ability == Abilities.Shockwave) {
@@ -607,6 +614,7 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.WaterManipulation) {
 				new WaterManipulation(player, null);
+				return;
 			}
 
 			if (ability == Abilities.IceSpike) {
