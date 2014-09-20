@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.utils;
+/*package net.avatarrealms.minecraft.bending.utils;
 
 import java.util.Set;
 
@@ -107,4 +107,4 @@ public class GhostManager {
 					"Ghost factory has closed. Cannot reuse instances.");
 		}
 	}
-}
+}*/

@@ -239,11 +239,11 @@ public class BendingCommand {
 				save(player);
 			} else if (Arrays.asList(getbackAliases).contains(arg)) {
 				getback(player);
-			} else if (Arrays.asList(joinAliases).contains(arg)) {
+			} /*else if (Arrays.asList(joinAliases).contains(arg)) {
 				Bending.plugin.ghostManager.addGhost(player);
 			} else if(Arrays.asList(leaveAliases).contains(arg)) {
 				Bending.plugin.ghostManager.removeGhost(player);
-			}
+			}*/
 			else {
 				printHelpDialogue(player);
 			}
@@ -1637,9 +1637,18 @@ public class BendingCommand {
 
 	}
 	
-	private void specialize(Player player, String[] args) {
-		if (!hasPermission(player, "bending.admin.specialize"))
+	private void specialize(Player player, String[] args) {	
+		boolean toggled = false;
+		if (args.length == 2) {
+			toggled = toggleSpe(player, args);
+			if (toggled) {
+				return;
+			}
+		}
+		if (!hasPermission(player, "bending.admin.specialize")){
 			return;
+		}
+			
 		//If no args, just list
 		if(args.length == 1) {
 			for(BendingSpecializationType spe : BendingSpecializationType.values()) {
@@ -1648,14 +1657,6 @@ public class BendingCommand {
 				sendMessage(player, color + spe.name());
 			}
 			return;
-		}
-		
-		boolean toggled = false;
-		if (args.length == 2) {
-			toggled = toggleSpe(player, args);
-			if (toggled) {
-				return;
-			}
 		}
 		
 		String subAction = args[1];

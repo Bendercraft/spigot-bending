@@ -133,7 +133,7 @@ public class BendingPlayerListener implements Listener{
 		BendingPlayer.getBendingPlayer(player);
 		
 		if (!player.isOp()) {
-			plugin.ghostManager.addGhost(player);	 
+			//plugin.ghostManager.addGhost(player);	 
 		}	 
 		 
 		String append = "";
@@ -370,14 +370,16 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.AirSpout) {
 					new AirSpout(player, null);
+					return;
 				}
 
 				if (ability == Abilities.AirBurst) {
 					new AirBurstCone(player, null);
+					return;
 				}
 			}
 
-			else if (!EntityTools.isWeapon(player.getItemInHand().getType())
+			 if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Earth")) {
 
 				if (ability == Abilities.Catapult) {
@@ -407,23 +409,27 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.Tremorsense) {
 					new Tremorsense(player, null);
+					return;
 				}
 
 				if (ability == Abilities.EarthArmor) {
 					new EarthArmor(player, null);
+					return;
 				}
 
 				if (ability == Abilities.Shockwave) {
 					new ShockwaveCone(player, null);
+					return;
 				}
 				
 				if (ability == Abilities.LavaTrain && player.isSneaking()) {
 					new LavaTrain(player, null);
+					return;
 				}
 
 			}
 
-			else if (!EntityTools.isWeapon(player.getItemInHand().getType())
+			 if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Fire")) {
 
 				if (ability == Abilities.FireBlast) {
@@ -433,10 +439,12 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.HeatControl) {
 					new Extinguish(player, null);
+					return;
 				}
 
 				if (ability == Abilities.Blaze) {
 					new ArcOfFire(player, null);
+					return;
 				}
 
 				if (ability == Abilities.FireJet) {
@@ -446,26 +454,31 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.Illumination) {
 					new Illumination(player, null);
+					return;
 				}
 
 				if (ability == Abilities.WallOfFire) {
 					new WallOfFire(player, null);
+					return;
 				}
 
 				if (ability == Abilities.FireBurst) {
 					new FireBurstCone(player, null);
+					return;
 				}
 
 				if (ability == Abilities.FireShield) {
 					new FireProtection(player, null);
+					return;
 				}
 				
 				if (ability == Abilities.FireBlade) {
 					new FireBlade(player);
+					return;
 				}
 			}
 
-			else if (!EntityTools.isWeapon(player.getItemInHand().getType())
+			 if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Water")) {
 
 				if (ability == Abilities.WaterManipulation) {
@@ -475,6 +488,7 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.IceSpike) {
 					IceSpike2.activate(player);
+					return;
 				}
 
 				/*
@@ -484,44 +498,53 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.PhaseChange) {
 					new FreezeMelt(player, null);
+					return;
 				}
 
 				if (ability == Abilities.Surge) {
 					new WaterWall(player, null);
+					return;
 				}
 
 				if (ability == Abilities.OctopusForm) {
 					new OctopusForm(player, null);
+					return;
 				}
 
 				if (ability == Abilities.Torrent) {
 					new Torrent(player, null);
+					return;
 				}
 
 				if (ability == Abilities.WaterSpout) {
 					new WaterSpout(player, null);
+					return;
 				}
 
 				if (ability == Abilities.Bloodbending) {
 					Bloodbending.launch(player);
+					return;
 				}
 
 			}
 
-			else if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
+			 if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
 
 				if (ability == Abilities.RapidPunch) {
 					new RapidPunch(player, null);
+					return;
 				}
 
 				if (ability == Abilities.Paralyze) {
 					Entity t = EntityTools.getTargettedEntity(player,
 							ConfigManager.rapidPunchDistance);
 					new Paralyze(player, t, null);
+					return;
 				}
 
 				if (ability == Abilities.SmokeBomb) {
 					new SmokeBomb(player, null);
+					return;
 				}
 			}
 		}
