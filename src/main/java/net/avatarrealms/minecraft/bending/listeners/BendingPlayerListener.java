@@ -335,18 +335,22 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.AirBlast) {
 					new AirBlast(player, null);
+					return;
 				}
 
 				if (ability == Abilities.AirSuction) {
 					new AirSuction(player, null);
+					return;
 				}
 
 				if (ability == Abilities.AirSwipe) {
 					new AirSwipe(player, null);
+					return;
 				}
 
 				if (ability == Abilities.AirScooter) {
 					new AirScooter(player, null);
+					return;
 				}
 
 				if (ability == Abilities.AirSpout) {
@@ -363,22 +367,27 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.Catapult) {
 					new Catapult(player, null);
+					return;
 				}
 
 				if (ability == Abilities.RaiseEarth) {
 					new EarthColumn(player, null);
+					return;
 				}
 
 				if (ability == Abilities.Collapse) {
 					new CompactColumn(player, null);
+					return;
 				}
 
 				if (ability == Abilities.EarthGrab) {
 					new EarthGrab(player, false, null);
+					return;
 				}
 
 				if (ability == Abilities.EarthBlast) {
 					EarthBlast.throwEarth(player);
+					return;
 				}
 
 				if (ability == Abilities.Tremorsense) {
@@ -404,6 +413,7 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.FireBlast) {
 					new FireBlast(player, null);
+					return;
 				}
 
 				if (ability == Abilities.HeatControl) {
@@ -416,6 +426,7 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.FireJet) {
 					new FireJet(player, null);
+					return;
 				}
 
 				if (ability == Abilities.Illumination) {
@@ -444,6 +455,7 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.WaterManipulation) {
 					WaterManipulation.moveWater(player);
+					return;
 				}
 
 				if (ability == Abilities.IceSpike) {
@@ -483,6 +495,10 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.AvatarState) {
 				new AvatarState(player);
+			}
+			
+			if (ability == Abilities.AstralProjection) {
+				new AstralProjection(player);
 			}
 
 			if (ability == Abilities.HighJump) {

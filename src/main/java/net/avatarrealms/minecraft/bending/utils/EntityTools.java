@@ -143,7 +143,7 @@ public class EntityTools {
 		if ((isChiBlocked(player) 
 				|| Bloodbending.isBloodbended(player) 
 				|| isGrabed(player)
-				|| AstralProjection.isAstralProjecting(player)))
+				|| (AstralProjection.isAstralProjecting(player) && ability != Abilities.AstralProjection)))
 			return false;
 
 		if (Abilities.isAirbending(ability)

@@ -2031,6 +2031,26 @@ public class BendingCommand {
 			return;
 
 		}
+		if (ability == Abilities.AstralProjection) {
+			if (!hasPermission(player, "bending.admin.AstralProjection"))
+				return;
+
+			color = ChatColor.DARK_PURPLE;
+			if (!item) {
+
+				BendingPlayer.getBendingPlayer(player)
+						.setAbility(slot, ability);
+				sendMessage(player, color + ability.name() + white
+						+ " bound to slot " + (slot + 1));
+			} else {
+
+				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
+				sendMessage(player, color + ability.name() + white
+						+ " bound to " + mat.name().replaceAll("_", " "));
+			}
+			return;
+
+		}
 
 	}
 

@@ -21,6 +21,12 @@ public class AstralProjection {
 	
 	public AstralProjection(Player p) {
 		
+		if (instances.containsKey(p)) {
+			instances.get(p).removeEffect();
+			instances.remove(p);
+			return;
+			
+		}
 		if (Tools.isRegionProtectedFromBuild(p, Abilities.AstralProjection, p.getLocation())) {
 			return;
 		}
@@ -34,6 +40,7 @@ public class AstralProjection {
 		this.player = p;
 		foodLevel = p.getFoodLevel();
 		instances.put(p, this);
+		player.setCustomNameVisible(false);
 		
 		bPlayer.cooldown(Abilities.AstralProjection);
 	}
@@ -80,7 +87,8 @@ public class AstralProjection {
 		return true;
 	}
 	
-	public void removeEffect() {	
+	public void removeEffect() {
+		player.setCustomNameVisible(true);
 		if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
 			player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		}
