@@ -78,7 +78,7 @@ public class AstralProjection {
 		
 		if (!player.hasPotionEffect(PotionEffectType.SPEED)) {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,
-													Integer.MAX_VALUE, 2));
+													Integer.MAX_VALUE, 1));
 		}
 		
 		if (!player.hasPotionEffect(PotionEffectType.JUMP)) {

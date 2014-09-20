@@ -34,6 +34,7 @@ public class EntityTools {
 	public static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
 	public static Map<Player, Long> grabedPlayers = new HashMap<Player, Long>();
 	public static List<Player> toggledBending = new ArrayList<Player>();
+	public static List<Player> speToggledBenders = new ArrayList<Player>();
 	
 	public static boolean isBender(Player player, BendingType type) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -171,6 +172,9 @@ public class EntityTools {
 			if(!isSpecialized(player, ability.getSpecialization())) {
 				return false;
 			}
+			if (speToggled(player)) {
+				return false;
+			}
 		}
 
 		if (PluginTools.allowharmless && PluginTools.isHarmlessAbility(ability)) {
@@ -280,6 +284,10 @@ public class EntityTools {
 		}
 			
 		return false;
+	}
+	
+	public static boolean speToggled(Player p) {
+		return speToggledBenders.contains(p);
 	}
 	
 	public static List<Entity> getEntitiesAroundPoint(Location location,

@@ -929,6 +929,9 @@ public class BendingPlayerListener implements Listener{
 		if (AstralProjection.isAstralProjecting(event.getPlayer())) {
 			AstralProjection.getAstralProjection(event.getPlayer()).removeEffect();
 		}
+		if (EntityTools.speToggled(event.getPlayer())) {
+			EntityTools.speToggledBenders.remove(event.getPlayer());
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

@@ -1236,6 +1236,23 @@ public class BendingCommand {
 		}
 		printUsageMessage(player, "/bending toggle", "General.toggle_usage");
 	}
+	
+	private boolean toggleSpe(Player player, String[] args) {
+		if (args.length == 2 
+				&& Arrays.asList(specializeAliases).contains(args[0])
+				&& Arrays.asList(toggleAliases).contains(args[1])) {
+			if (EntityTools.speToggledBenders.contains(player)) {
+				EntityTools.speToggledBenders.remove(player);
+				player.sendMessage("You toggled back your specialization");
+			}
+			else {
+				EntityTools.speToggledBenders.add(player);
+				player.sendMessage("You toggled your specialization");
+			}
+			return true;
+		}
+		return false;
+	}
 
 	private void toggle(Player player, String[] args) {
 		if (args.length == 1) {
@@ -1633,8 +1650,16 @@ public class BendingCommand {
 			return;
 		}
 		
+		boolean toggled = false;
+		if (args.length == 2) {
+			toggled = toggleSpe(player, args);
+			if (toggled) {
+				return;
+			}
+		}
+		
 		String subAction = args[1];
-		if(subAction.equals("set")) {
+		if (subAction.equals("set")) {
 			if(args.length < 3) {
 				printSpecializationUsage(player);
 			}
