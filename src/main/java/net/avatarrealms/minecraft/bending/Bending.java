@@ -15,6 +15,7 @@ import net.avatarrealms.minecraft.bending.controller.TempBackup;
 import net.avatarrealms.minecraft.bending.listeners.BendingBlockListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingEntityListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingPlayerListener;
+import net.avatarrealms.minecraft.bending.utils.GhostManager;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
@@ -47,6 +48,8 @@ public class Bending extends JavaPlugin {
 	public TempBackup tBackup;
 	public Tools tools;
 	
+	public GhostManager ghostManager;
+	
 	@Override
 	public void onEnable() {
 		plugin = this;
@@ -58,6 +61,8 @@ public class Bending extends JavaPlugin {
 		BendingPlayer.initializeCooldowns();
 
 		tools = new Tools(config,tBackup);
+		
+		ghostManager = new GhostManager(this);
 
 		getServer().getPluginManager().registerEvents(listener, this);
 		getServer().getPluginManager().registerEvents(bpListener, this);
@@ -83,6 +88,7 @@ public class Bending extends JavaPlugin {
 	public void onDisable() {
 		PluginTools.stopAllBending();
 		BendingPlayersSaver.save();
+		ghostManager.close();
 		getServer().getScheduler().cancelTasks(plugin);
 	}
 

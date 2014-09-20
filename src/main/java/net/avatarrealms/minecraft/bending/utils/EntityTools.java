@@ -85,6 +85,10 @@ public class EntityTools {
 				&& player.hasPermission("bending.admin.AvatarState")) {
 			return true;
 		}
+		if (ability == Abilities.AstralProjection 
+				&& player.hasPermission("bending.admin.AstralProjection")){
+			return true;
+		}
 
 		if (Abilities.isAirbending(ability)
 				&& player.hasPermission("bending.air." + ability)) {

@@ -1,6 +1,6 @@
 name: Bending
 main: net.avatarrealms.minecraft.bending.Bending
-version: 4.0.1
+version: 4.0.5
 softdepend: [MassiveCore,Factions,WorldGuard,WorldEdit,CoreProtect]
 commands:
     bending:
@@ -102,6 +102,7 @@ permissions:
   bending.admin:
     description: Allows all commands.
     children:
+      bending.admin.AstralProjection: true
       bending.admin.AvatarState: true
       bending.admin.remove: true
       bending.admin.reload: true

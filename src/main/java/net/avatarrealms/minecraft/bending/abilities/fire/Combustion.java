@@ -113,10 +113,6 @@ public class Combustion implements IAbility {
 			} else if (location.getBlock().isLiquid()) {
 				return false;
 			}
-			
-			if (location.distance(origin)%8 == 0) {
-				location.getWorld().playSound(location, Sound.NOTE_BASS_DRUM, 10, 1);
-			}
 
 			return fireball();
 		}
@@ -163,7 +159,7 @@ public class Combustion implements IAbility {
 		}
 		CRIT.display(location, 0, 0, 0, 1, 3);
 		if(progressed % 5 == 0) {
-			location.getWorld().playSound(location, Sound.SHOOT_ARROW, 5, 1);
+			location.getWorld().playSound(location, Sound.NOTE_BASS_DRUM, 5, 1);
 		}
 		progressed++;
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {

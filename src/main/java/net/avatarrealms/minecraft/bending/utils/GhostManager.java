@@ -2,12 +2,12 @@ package net.avatarrealms.minecraft.bending.utils;
 
 import java.util.Set;
 
+import net.avatarrealms.minecraft.bending.Bending;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -45,15 +45,9 @@ public class GhostManager {
 			public void run() {
 				for (OfflinePlayer ghostPlayer : getGhosts()) {
 					Player player = ghostPlayer.getPlayer();
-
-					if (player != null) {
-						if (!player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-							player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,
-																	Integer.MAX_VALUE, 15));
-						}
-					} else {
+					if (player == null) {
 						ghostTeam.removePlayer(ghostPlayer);
-					}
+					} 
 				}
 			}
 		}, UPDATE_DELAY, UPDATE_DELAY);
@@ -70,9 +64,8 @@ public class GhostManager {
 	public void addGhost(Player player) {
 		validateState();
 		if (!ghostTeam.hasPlayer(player)) {
+			Bending.log.info(player.getName() + " added to the ghost team");
 			ghostTeam.addPlayer(player);
-			player.addPotionEffect(new PotionEffect(
-					PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 15));
 		}
 	}
 
@@ -83,9 +76,7 @@ public class GhostManager {
 
 	public void removeGhost(Player player) {
 		validateState();
-		if (ghostTeam.removePlayer(player)) {
-			player.removePotionEffect(PotionEffectType.INVISIBILITY);
-		}
+		ghostTeam.removePlayer(player);
 	}
 
 	public OfflinePlayer[] getGhosts() {

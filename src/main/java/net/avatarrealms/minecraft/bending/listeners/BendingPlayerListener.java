@@ -127,6 +127,11 @@ public class BendingPlayerListener implements Listener{
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 		BendingPlayer.getBendingPlayer(player);
+		
+		if (!player.isOp()) {
+			plugin.ghostManager.addGhost(player);	 
+		}	 
+		 
 		String append = "";
 		if ((player.hasPermission("bending.avatar")) && ConfigManager.enabled) {
 			append = ConfigManager.getPrefix("Avatar");
@@ -147,8 +152,9 @@ public class BendingPlayerListener implements Listener{
 			append = ConfigManager.getPrefix("ChiBlocker");
 		}
 
-		if (!(ConfigManager.compatibility) && (ConfigManager.enabled))
+		if (!(ConfigManager.compatibility) && (ConfigManager.enabled)) {
 			player.setDisplayName(append + player.getName());
+		}	
 
 		if ((ConfigManager.compatibility) && (ConfigManager.enabled)) {
 			ChatColor color = ChatColor.WHITE;

@@ -54,6 +54,8 @@ public class BendingCommand {
 
 	private final String[] saveAliases = { "save" };
 	private final String[] getbackAliases = { "getback" };
+	private final String[] joinAliases = {"joinghost", "jghost"};
+	private final String[] leaveAliases = {"leaveghost", "lghost"};
 
 	private final String[] itemAliases = { "item", "ite", "it", "i" };
 	private final String[] slotAliases = { "slot", "slo", "sl", "s" };
@@ -237,7 +239,12 @@ public class BendingCommand {
 				save(player);
 			} else if (Arrays.asList(getbackAliases).contains(arg)) {
 				getback(player);
-			} else {
+			} else if (Arrays.asList(joinAliases).contains(arg)) {
+				Bending.plugin.ghostManager.addGhost(player);
+			} else if(Arrays.asList(leaveAliases).contains(arg)) {
+				Bending.plugin.ghostManager.removeGhost(player);
+			}
+			else {
 				printHelpDialogue(player);
 			}
 		} else {
@@ -1824,8 +1831,10 @@ public class BendingCommand {
 	}
 
 	private void bind(Player player, String[] args) {
-		if (!hasPermission(player, "bending.command.bind"))
+		if (!hasPermission(player, "bending.command.bind")) {
 			return;
+		}
+		
 		if (player == null) {
 			printNotFromConsole();
 			return;
