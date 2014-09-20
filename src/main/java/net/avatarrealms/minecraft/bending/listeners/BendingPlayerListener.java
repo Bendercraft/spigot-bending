@@ -925,6 +925,10 @@ public class BendingPlayerListener implements Listener{
 		if(FireBlade.isFireBlading(event.getPlayer())) {
 			FireBlade.getFireBlading(event.getPlayer()).remove();
 		}
+		
+		if (AstralProjection.isAstralProjecting(event.getPlayer())) {
+			AstralProjection.getAstralProjection(event.getPlayer()).removeEffect();
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

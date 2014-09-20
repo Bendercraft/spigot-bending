@@ -37,6 +37,7 @@ public class AstralProjection {
 			return;
 		}
 		
+		//TODO : Find a way to place a 'body' that can be attack and where you get back when you turn off the ability
 		this.player = p;
 		foodLevel = p.getFoodLevel();
 		instances.put(p, this);
