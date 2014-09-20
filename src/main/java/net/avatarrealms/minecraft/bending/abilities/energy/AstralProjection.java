@@ -40,8 +40,7 @@ public class AstralProjection {
 		if (bPlayer.isOnCooldown(Abilities.AstralProjection)) {
 			return;
 		}
-		
-		//TODO : Find a way to place a 'body' that can be attack and where you get back when you turn off the ability
+				
 		this.player = p;
 		this.origin = p.getLocation().getBlock().getLocation();
 		foodLevel = p.getFoodLevel();
@@ -84,7 +83,7 @@ public class AstralProjection {
 		
 		if (!player.hasPotionEffect(PotionEffectType.JUMP)) {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP,
-													Integer.MAX_VALUE, 2));
+													Integer.MAX_VALUE, 3));
 		}
 		
 		if (player.getFoodLevel() < foodLevel) {
