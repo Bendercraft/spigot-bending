@@ -36,6 +36,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.MetalBending;
 import net.avatarrealms.minecraft.bending.abilities.earth.Ripple;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
+import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.Combustion;
 import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
@@ -111,6 +112,7 @@ public class BendingManager implements Runnable {
 			// manageMessages();
 			TempPotionEffect.progressAll();
 			AvatarState.progressAll();
+			AstralProjection.progressAll();
 			// handleFlying();
 			Flight.handle();
 			handleDayNight();

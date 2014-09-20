@@ -38,6 +38,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
 import net.avatarrealms.minecraft.bending.abilities.earth.LavaTrain;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
+import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.fire.Combustion;
 import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlade;
@@ -217,6 +218,8 @@ public class PluginTools {
 		RapidPunch.removeAll();
 		SmokeBomb.removeAll();
 		PoisonnedDart.removeAll();
+		
+		AstralProjection.removeAll();
 
 		// BendingManager.removeFlyers();
 		Flight.removeAll();

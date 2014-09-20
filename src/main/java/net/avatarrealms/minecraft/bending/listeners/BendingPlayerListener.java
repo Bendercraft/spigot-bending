@@ -48,6 +48,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.ShockwaveArea;
 import net.avatarrealms.minecraft.bending.abilities.earth.ShockwaveCone;
 import net.avatarrealms.minecraft.bending.abilities.earth.ShockwaveFall;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
+import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.ArcOfFire;
 import net.avatarrealms.minecraft.bending.abilities.fire.Combustion;
@@ -101,11 +102,15 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerEditBookEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
@@ -222,15 +227,22 @@ public class BendingPlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+		
+		
+		if (Paralyze.isParalyzed(player) 
+				|| Bloodbending.isBloodbended(player) 
+				|| AstralProjection.isAstralProjecting(player)) {
+			event.setCancelled(true);
+			return;
+		}
+
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			BendingPlayer.getBendingPlayer(player).cooldown();
 		}
 			
 		MetalBending.use(player, event.getClickedBlock());
 		// Cooldowns.forceCooldown(player);
-		if (Paralyze.isParalyzed(player) || Bloodbending.isBloodbended(player)) {
-			event.setCancelled(true);
-		}
+		
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -239,8 +251,11 @@ public class BendingPlayerListener implements Listener{
 
 		Abilities ability = EntityTools.getBendingAbility(player);
 
-		if (Paralyze.isParalyzed(player) || Bloodbending.isBloodbended(player)) {
+		if (Paralyze.isParalyzed(player) 
+				|| Bloodbending.isBloodbended(player)
+				|| AstralProjection.isAstralProjecting(player)) {
 			event.setCancelled(true);
+			return;
 		}
 
 		if (ability == Abilities.MetalBending
@@ -301,15 +316,19 @@ public class BendingPlayerListener implements Listener{
 	public void onPlayerSwing(PlayerAnimationEvent event) {
 
 		Player player = event.getPlayer();
-		if (Bloodbending.isBloodbended(player) || Paralyze.isParalyzed(player)) {
+		if (Bloodbending.isBloodbended(player) 
+				|| Paralyze.isParalyzed(player)
+				|| AstralProjection.isAstralProjecting(player)) {
 			event.setCancelled(true);
 		}
 
 		AirScooter.check(player);
 
 		Abilities ability = EntityTools.getBendingAbility(player);
-		if (ability == null)
+		if (ability == null) {
 			return;
+		}
+			
 		if (EntityTools.canBend(player, ability)) {
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())
@@ -672,6 +691,11 @@ public class BendingPlayerListener implements Listener{
 			Player player = (Player) event.getEntity();
 			Abilities ability = EntityTools.getBendingAbility(player);
 			
+			if (AstralProjection.isAstralProjecting(player)) {
+				event.setDamage(0);
+				event.setCancelled(true);
+			}
+			
 			if (event.getCause() == DamageCause.FALL) {
 				if (EntityTools.isBender(player, BendingType.Earth)) {
 		
@@ -813,11 +837,39 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerDropitem(PlayerDropItemEvent event) {
+		if (AstralProjection.isAstralProjecting(event.getPlayer())) {
+			event.setCancelled(true);
+		}
 		if(FireBlade.isFireBlade(event.getItemDrop().getItemStack())) {
 			event.setCancelled(true);
 		}
 		if(Suffocate.isTempHelmet(event.getItemDrop().getItemStack())) {
 			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void OnPlayerPickUpItem(PlayerPickupItemEvent e) {
+		Player p = e.getPlayer();
+		if (AstralProjection.isAstralProjecting(p)) {
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void OnPlayerEditBook(PlayerEditBookEvent e) {
+		Player p = e.getPlayer();
+		
+		if (AstralProjection.isAstralProjecting(p)) {
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void OnPlayerConsumeItem(PlayerItemConsumeEvent e) {
+		Player p = e.getPlayer();
+		if (AstralProjection.isAstralProjecting(p)) {
+			e.setCancelled(true);
 		}
 	}
 	

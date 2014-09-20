@@ -1,6 +1,8 @@
 package net.avatarrealms.minecraft.bending.abilities.energy;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
@@ -15,6 +17,7 @@ public class AstralProjection {
 	public static Map<Player, AstralProjection> instances = new HashMap<Player, AstralProjection>();
 	
 	private Player player;
+	private int foodLevel;
 	
 	public AstralProjection(Player p) {
 		
@@ -29,9 +32,26 @@ public class AstralProjection {
 		}
 		
 		this.player = p;
+		foodLevel = p.getFoodLevel();
 		instances.put(p, this);
 		
 		bPlayer.cooldown(Abilities.AstralProjection);
+	}
+	
+	public static void progressAll() {
+		boolean keep;
+		List<Player> toRemove = new LinkedList<Player>();
+		for (Player p : instances.keySet()) {
+			keep = instances.get(p).progress();
+			if (!keep) {
+				toRemove.add(p);
+				instances.get(p).removeEffect();
+			}
+		}
+		
+		for (Player p : toRemove) {
+			instances.remove(p);
+		}
 	}
 	
 	public boolean progress() {
@@ -43,14 +63,51 @@ public class AstralProjection {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,
 													Integer.MAX_VALUE, 15));
 		}
+		
+		if (!player.hasPotionEffect(PotionEffectType.SPEED)) {
+			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,
+													Integer.MAX_VALUE, 2));
+		}
+		
+		if (!player.hasPotionEffect(PotionEffectType.JUMP)) {
+			player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP,
+													Integer.MAX_VALUE, 2));
+		}
+		
+		if (player.getFoodLevel() < foodLevel) {
+			player.setFoodLevel(foodLevel);
+		}
 		return true;
 	}
 	
-	public boolean isAstralProjecting(Player p) {
+	public void removeEffect() {	
+		if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+			player.removePotionEffect(PotionEffectType.INVISIBILITY);
+		}
+		
+		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
+			player.removePotionEffect(PotionEffectType.SPEED);
+		}
+		
+		if (player.hasPotionEffect(PotionEffectType.JUMP)) {
+			player.removePotionEffect(PotionEffectType.JUMP);
+		}
+		
+	}
+	
+	public static void removeAll() {
+		for (Player p : instances.keySet()) {
+			instances.get(p).removeEffect();
+		}
+		
+		instances.clear();
+	}
+	
+	public static boolean isAstralProjecting(Player p) {
 		return instances.containsKey(p);
 	}
 	
-	public AstralProjection getAstralProjection(Player p) {
+	public static AstralProjection getAstralProjection(Player p) {
 		return instances.get(p);
 	}
 	

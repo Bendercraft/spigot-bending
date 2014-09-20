@@ -7,11 +7,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
+import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -138,7 +140,10 @@ public class EntityTools {
 			return false;
 		}
 		
-		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player)))
+		if ((isChiBlocked(player) 
+				|| Bloodbending.isBloodbended(player) 
+				|| isGrabed(player)
+				|| AstralProjection.isAstralProjecting(player)))
 			return false;
 
 		if (Abilities.isAirbending(ability)
