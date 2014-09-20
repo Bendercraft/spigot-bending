@@ -24,8 +24,9 @@ public class AstralProjection {
 	public AstralProjection(Player p) {
 		
 		if (instances.containsKey(p)) {
-			instances.get(p).removeEffect();
-			player.teleport(origin);
+			AstralProjection ap = instances.get(p);
+			ap.removeEffect();
+			ap.player.teleport(ap.origin);
 			instances.remove(p);	
 			return;
 			

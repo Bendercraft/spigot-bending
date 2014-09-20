@@ -14,6 +14,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
@@ -164,6 +165,17 @@ public class BendingEntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
+		Entity e = event.getEntity();
+		if (e instanceof Creeper) {
+			Creeper cr = (Creeper) e;
+			if (cr.getTarget() instanceof Player) {
+				Player p = (Player) cr.getTarget();
+				if (AstralProjection.isAstralProjecting(p)) {
+					cr.setHealth(0);
+					event.setCancelled(true);
+				}
+			}
+		}
 		for (Block block : event.blockList()) {
 			EarthBlast blast = EarthBlast.getBlastFromSource(block);
 
