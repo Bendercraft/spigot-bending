@@ -84,7 +84,7 @@ public class SmokeBomb implements IAbility {
 				else {
 					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
 					if (targ instanceof Player) {
-						//Bending.plugin.ghostManager.addGhost((Player)targ);
+						Bending.plugin.ghostManager.addGhost((Player)targ);
 					}	
 				}	
 			}
@@ -99,7 +99,7 @@ public class SmokeBomb implements IAbility {
 			else {
 				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, ticksRemaining,1);
 				targ.addPotionEffect(invisibilityLauncher);
-				//Bending.plugin.ghostManager.removeGhost((Player)targ);
+				Bending.plugin.ghostManager.removeGhost((Player)targ);
 			}
 			targets.add(targ);
 		}
