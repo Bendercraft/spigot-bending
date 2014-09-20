@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.utils;
+/*package net.avatarrealms.minecraft.bending.utils;
 
 import java.util.LinkedList;
 import java.util.Set;
@@ -158,4 +158,4 @@ public class GhostManager {
 			}	
 		}
 	}
-}
+}*/

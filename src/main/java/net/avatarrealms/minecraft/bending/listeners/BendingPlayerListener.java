@@ -133,7 +133,7 @@ public class BendingPlayerListener implements Listener{
 		BendingPlayer.getBendingPlayer(player);
 		
 		if (!player.isOp()) {
-			plugin.ghostManager.addGhost(player);	 
+			//plugin.ghostManager.addGhost(player);	 
 		}	 
 		 
 		String append = "";

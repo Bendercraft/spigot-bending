@@ -240,9 +240,9 @@ public class BendingCommand {
 			} else if (Arrays.asList(getbackAliases).contains(arg)) {
 				getback(player);
 			} else if (Arrays.asList(joinAliases).contains(arg)) {
-				Bending.plugin.ghostManager.addGhost(player);
+				//Bending.plugin.ghostManager.addGhost(player);
 			} else if(Arrays.asList(leaveAliases).contains(arg)) {
-				Bending.plugin.ghostManager.removeGhost(player);
+				//Bending.plugin.ghostManager.removeGhost(player);
 			}
 			else {
 				printHelpDialogue(player);
