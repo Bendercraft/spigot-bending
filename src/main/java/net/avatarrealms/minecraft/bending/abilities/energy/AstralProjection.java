@@ -9,6 +9,7 @@ import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -18,12 +19,14 @@ public class AstralProjection {
 	
 	private Player player;
 	private int foodLevel;
+	private Location origin;
 	
 	public AstralProjection(Player p) {
 		
 		if (instances.containsKey(p)) {
 			instances.get(p).removeEffect();
-			instances.remove(p);
+			player.teleport(origin);
+			instances.remove(p);	
 			return;
 			
 		}
@@ -39,6 +42,7 @@ public class AstralProjection {
 		
 		//TODO : Find a way to place a 'body' that can be attack and where you get back when you turn off the ability
 		this.player = p;
+		this.origin = p.getLocation().getBlock().getLocation();
 		foodLevel = p.getFoodLevel();
 		instances.put(p, this);
 		player.setCustomNameVisible(false);
