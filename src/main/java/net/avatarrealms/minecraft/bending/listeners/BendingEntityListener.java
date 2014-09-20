@@ -4,11 +4,13 @@ import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.chi.*;
 import net.avatarrealms.minecraft.bending.abilities.earth.*;
+import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.fire.*;
 import net.avatarrealms.minecraft.bending.abilities.water.*;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -144,13 +146,17 @@ public class BendingEntityListener implements Listener {
 		if (source instanceof Player) {
 
 			if (!dodged)
-				new Paralyze((Player) event.getDamager(), event.getEntity(),
+				new Paralyze((Player) source, event.getEntity(),
 						null);
 			if (EntityTools.isBender(((Player) event.getDamager()),
 					BendingType.ChiBlocker)
 					&& event.getCause() == DamageCause.ENTITY_ATTACK
 					&& !EntityTools.isWeapon(((Player) event.getDamager())
 							.getItemInHand().getType())) {
+			}
+			
+			if (AstralProjection.isAstralProjecting((Player) source)) {
+				event.setCancelled(true);
 			}
 		}
 	}
