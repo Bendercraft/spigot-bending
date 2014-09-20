@@ -130,6 +130,9 @@ public class BendingPlayer {
 					case FireBlade :
 						cd = ConfigManager.fireBladeCooldown;
 						break;
+					case AstralProjection :
+						cd = 1000;
+						break;
 					default:
 						cd = 0;
 						break;
@@ -144,8 +147,10 @@ public class BendingPlayer {
 	}
 
 	public boolean isOnCooldown(Abilities ability) {
-		if (ability == Abilities.AvatarState)
+		if (ability == Abilities.AvatarState){
 			return false;
+		}
+			
 		if (isOnGlobalCooldown()) {
 			return true;
 		}

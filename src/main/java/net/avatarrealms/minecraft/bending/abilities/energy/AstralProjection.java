@@ -3,6 +3,10 @@ package net.avatarrealms.minecraft.bending.abilities.energy;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.utils.Tools;
+
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -14,9 +18,20 @@ public class AstralProjection {
 	
 	public AstralProjection(Player p) {
 		
-		this.player = p;
+		if (Tools.isRegionProtectedFromBuild(p, Abilities.AstralProjection, p.getLocation())) {
+			return;
+		}
 		
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
+		
+		if (bPlayer.isOnCooldown(Abilities.AstralProjection)) {
+			return;
+		}
+		
+		this.player = p;
 		instances.put(p, this);
+		
+		bPlayer.cooldown(Abilities.AstralProjection);
 	}
 	
 	public boolean progress() {
