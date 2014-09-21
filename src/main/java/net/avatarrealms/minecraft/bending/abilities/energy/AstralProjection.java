@@ -26,7 +26,6 @@ public class AstralProjection {
 		if (instances.containsKey(p)) {
 			AstralProjection ap = instances.get(p);
 			ap.removeEffect();
-			ap.player.teleport(ap.origin);
 			instances.remove(p);	
 			return;
 			
@@ -105,6 +104,8 @@ public class AstralProjection {
 		if (player.hasPotionEffect(PotionEffectType.JUMP)) {
 			player.removePotionEffect(PotionEffectType.JUMP);
 		}
+		
+		player.teleport(origin);
 		
 	}
 	
