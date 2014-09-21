@@ -247,11 +247,8 @@ public class BendingPlayerListener implements Listener{
 			BendingPlayer.getBendingPlayer(player).cooldown();
 		}
 		
-		if (event.getAction() == Action.RIGHT_CLICK_AIR 
-				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {
-				event.setCancelled(true);
-			}
+		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {
+			event.setCancelled(true);
 		}
 			
 		MetalBending.use(player, event.getClickedBlock());
@@ -344,7 +341,6 @@ public class BendingPlayerListener implements Listener{
 		}
 			
 		if (EntityTools.canBend(player, ability)) {
-			
 			if (ability == Abilities.AvatarState) {
 				new AvatarState(player);
 				return;
