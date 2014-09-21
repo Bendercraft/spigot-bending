@@ -344,7 +344,7 @@ public class BendingPlayerListener implements Listener{
 			}
 			
 			if (ability == Abilities.AstralProjection) {
-				new AstralProjection(player);
+				new AstralProjection(player, false);
 				return;
 			}
 			
@@ -611,6 +611,10 @@ public class BendingPlayerListener implements Listener{
 					new Suffocate(player, null);
 					return;
 				}
+			}
+			if (ability == Abilities.AstralProjection) {
+				new AstralProjection(player, true);
+				return;
 			}
 
 			if (ability == Abilities.Tornado) {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
@@ -15,17 +16,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class AstralProjection {
-	public static Map<Player, AstralProjection> instances = new HashMap<Player, AstralProjection>();
+	private static Map<Player, AstralProjection> instances = new HashMap<Player, AstralProjection>();
+	private static Map<UUID, Location> previousLoc = new HashMap<UUID, Location>();
 	
 	private Player player;
 	private int foodLevel;
 	private Location origin;
 	
-	public AstralProjection(Player p) {
+	public AstralProjection(Player p, boolean previous) {
 		
 		if (instances.containsKey(p)) {
 			AstralProjection ap = instances.get(p);
 			ap.removeEffect();
+			previousLoc.put(p.getUniqueId(), p.getLocation());
 			instances.remove(p);	
 			return;
 			
@@ -44,6 +47,12 @@ public class AstralProjection {
 		this.origin = p.getLocation();
 		foodLevel = p.getFoodLevel();
 		instances.put(p, this);
+		
+		if (previous) {
+			if (previousLoc.containsKey(player.getUniqueId())) {
+				player.teleport(previousLoc.get(player.getUniqueId()));
+			}
+		}
 		player.setCustomNameVisible(false);
 		
 		bPlayer.cooldown(Abilities.AstralProjection);

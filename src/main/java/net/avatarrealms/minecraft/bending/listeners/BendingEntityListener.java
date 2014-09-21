@@ -15,10 +15,13 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,8 +36,11 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class BendingEntityListener implements Listener {
 
@@ -51,6 +57,17 @@ public class BendingEntityListener implements Listener {
 		if (FireStream.isIgnited(block) && entity instanceof LivingEntity) {
 			// TODO parent is FireStream !
 			new Enflamed(entity, FireStream.getIgnited(block), null);
+		}
+	}
+	
+	@EventHandler
+	public void onPotionThrown (PotionSplashEvent e) {
+		ProjectileSource source = e.getEntity().getShooter();
+		if (source instanceof Player) {
+			Player p = (Player) source;
+			if (AstralProjection.isAstralProjecting(p)) {
+				e.setCancelled(true);
+			}
 		}
 	}
 
@@ -265,7 +282,14 @@ public class BendingEntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityProjectileLaunchEvent(ProjectileLaunchEvent event) {
-		Entity entity = event.getEntity();
+		Projectile pr = event.getEntity();
+		Entity entity = null;
+		if (pr.getShooter() instanceof LivingEntity) {
+			entity = (LivingEntity) pr.getShooter();
+		}
+		if (entity == null) {
+			return;
+		}
 		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}	
