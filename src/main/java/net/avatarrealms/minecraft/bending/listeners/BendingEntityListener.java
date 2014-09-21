@@ -246,7 +246,13 @@ public class BendingEntityListener implements Listener {
 		Entity entity = event.getEntity();
 		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
-		}	
+		}
+		if (entity instanceof Player) {
+			Player p = (Player) entity;
+			if (AstralProjection.isAstralProjecting(p)) {
+				event.setCancelled(true);
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -263,6 +269,13 @@ public class BendingEntityListener implements Listener {
 		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}	
+		
+		if (entity instanceof Player) {
+			Player p = (Player) entity;
+			if (AstralProjection.isAstralProjecting(p)) {
+				event.setCancelled(true);
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

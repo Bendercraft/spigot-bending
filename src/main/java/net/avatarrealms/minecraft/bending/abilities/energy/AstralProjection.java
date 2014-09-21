@@ -41,7 +41,7 @@ public class AstralProjection {
 		}
 				
 		this.player = p;
-		this.origin = p.getLocation().getBlock().getLocation();
+		this.origin = p.getLocation();
 		foodLevel = p.getFoodLevel();
 		instances.put(p, this);
 		player.setCustomNameVisible(false);
