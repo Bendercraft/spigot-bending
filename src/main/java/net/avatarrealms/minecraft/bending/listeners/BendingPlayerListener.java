@@ -87,6 +87,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -227,10 +228,19 @@ public class BendingPlayerListener implements Listener{
 		
 		
 		if (Paralyze.isParalyzed(player) 
-				|| Bloodbending.isBloodbended(player) 
-				|| AstralProjection.isAstralProjecting(player)) {
+				|| Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 			return;
+		}
+		
+		Block b = event.getClickedBlock();
+		if (!event.isCancelled() 
+				&& AstralProjection.isAstralProjecting(player)
+				&& (b.getType()!= Material.WOOD_DOOR)
+				&& (b.getType()!= Material.WOOD_PLATE)) {
+			event.setCancelled(true);;
+			return;
+			
 		}
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
