@@ -246,6 +246,13 @@ public class BendingPlayerListener implements Listener{
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			BendingPlayer.getBendingPlayer(player).cooldown();
 		}
+		
+		if (event.getAction() == Action.RIGHT_CLICK_AIR 
+				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {
+				event.setCancelled(true);
+			}
+		}
 			
 		MetalBending.use(player, event.getClickedBlock());
 		// Cooldowns.forceCooldown(player);

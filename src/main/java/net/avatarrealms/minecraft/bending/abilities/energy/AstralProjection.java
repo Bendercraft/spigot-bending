@@ -27,8 +27,8 @@ public class AstralProjection {
 		
 		if (instances.containsKey(p)) {
 			AstralProjection ap = instances.get(p);
-			ap.removeEffect();
 			previousLoc.put(p.getUniqueId(), p.getLocation());
+			ap.removeEffect();
 			instances.remove(p);	
 			return;
 			
