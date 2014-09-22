@@ -90,6 +90,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -105,6 +106,7 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -254,6 +256,17 @@ public class BendingPlayerListener implements Listener{
 		MetalBending.use(player, event.getClickedBlock());
 		// Cooldowns.forceCooldown(player);
 		
+	}
+	
+	@EventHandler
+	public void onPlayerInteractWithEntity(PlayerInteractEntityEvent e) {
+		Entity ent = e.getRightClicked();
+		Player p = e.getPlayer();
+		if (FireBlade.isFireBlading(p) && FireBlade.isFireBlade(p.getItemInHand())){
+			if (ent instanceof ItemFrame) {
+				e.setCancelled(true);
+			}
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
