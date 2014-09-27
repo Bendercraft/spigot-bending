@@ -308,6 +308,8 @@ public class ConfigManager {
 	// Bloodbending
 	public static double bloodbendingThrowFactor = 2;
 	public static int bloodbendingRange = 10;
+	public static int bloodbendingMaxDuration = 10;
+	public static int bloodbendingCooldown = 5;
 
 	// FastSwimming
 	public static double fastSwimmingFactor = 0.7;
@@ -827,6 +829,10 @@ public class ConfigManager {
 				bloodbendingThrowFactor);
 		bloodbendingRange = config.getInt(
 				"Properties.Water.Bloodbending.Range", bloodbendingRange);
+		bloodbendingMaxDuration = config.getInt(
+				"Properties.Water.Bloodbending.Max-Duration", bloodbendingMaxDuration);
+		bloodbendingCooldown = config.getInt(
+				"Properties.Water.Bloodbending.Cooldown", bloodbendingCooldown);
 		
 		//WaterBubble
 
@@ -1184,6 +1190,9 @@ public class ConfigManager {
 		config.set("Properties.Water.Bloodbending.Throw-Factor",
 				bloodbendingThrowFactor);
 		config.set("Properties.Water.Bloodbending.Range", bloodbendingRange);
+		config.set("Properties.Water.Bloodbending.Max-Duration", bloodbendingMaxDuration);
+		config.set("Properties.Water.Bloodbending.Cooldown", bloodbendingCooldown);
+		
 		//WaterBubble
 		// FreezeMelt
 		config.set("Properties.Water.FreezeMelt.Range", freezeMeltRange);

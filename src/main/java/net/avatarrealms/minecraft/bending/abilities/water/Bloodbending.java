@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
@@ -32,10 +33,12 @@ public class Bloodbending implements IAbility {
 	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
 
 	private static final double factor = ConfigManager.bloodbendingThrowFactor;
+	private static final int maxduration = ConfigManager.bloodbendingMaxDuration;
 
 	private Player player;
 	private int range = ConfigManager.bloodbendingRange;
 	private IAbility parent;
+	private Long time;
 
 	public Bloodbending(Player player, IAbility parent) {
 		this.parent = parent;
@@ -63,9 +66,13 @@ public class Bloodbending implements IAbility {
 
 			}
 		} else {
-			Entity target = EntityTools.getTargettedEntity(player, range);
-			if (target == null)
+			if (BendingPlayer.getBendingPlayer(player).isOnCooldown(Abilities.Bloodbending)) {
 				return;
+			}
+			Entity target = EntityTools.getTargettedEntity(player, range);
+			if (target == null) {
+				return;
+			}		
 			if (!(target instanceof LivingEntity)
 					|| Tools.isRegionProtectedFromBuild(player,
 							Abilities.Bloodbending, target.getLocation()))
@@ -82,6 +89,7 @@ public class Bloodbending implements IAbility {
 			EntityTools.damageEntity(player, target, 0);
 			targetEntities.put(target, target.getLocation().clone());
 		}
+		this.time = System.currentTimeMillis();
 		this.player = player;
 		instances.put(player, this);
 	}
@@ -114,6 +122,11 @@ public class Bloodbending implements IAbility {
 				|| !EntityTools.canBend(player, Abilities.Bloodbending)) {
 			return false;
 		}
+		
+		if (System.currentTimeMillis() - time > maxduration) {
+			return false;
+		}
+		
 		if (AvatarState.isAvatarState(player)) {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
 			for (LivingEntity entity : EntityTools
@@ -212,6 +225,7 @@ public class Bloodbending implements IAbility {
 	}
 
 	private void remove() {
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Bloodbending);
 		instances.remove(player);
 	}
 

@@ -132,6 +132,9 @@ public class BendingPlayer {
 					case AstralProjection :
 						cd = 1000;
 						break;
+					case Bloodbending:
+						cd = ConfigManager.bloodbendingCooldown;
+						break;
 					default:
 						cd = 0;
 						break;
