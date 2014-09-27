@@ -83,7 +83,7 @@ public class Lightning implements IAbility {
 				//Check redirection
 				if(target instanceof Player){
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) target);
-					if(bPlayer != null && bPlayer.getAbility().equals(Abilities.Lightning)) {
+					if(bPlayer != null && bPlayer.getAbility() != null && bPlayer.getAbility().equals(Abilities.Lightning)) {
 						//Redirection !
 						targetlocation = EntityTools.getTargetedLocation((Player) target, distance);
 					} else {

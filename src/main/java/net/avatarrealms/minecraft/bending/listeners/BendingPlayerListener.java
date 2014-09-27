@@ -258,7 +258,7 @@ public class BendingPlayerListener implements Listener{
 		
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerInteractWithEntity(PlayerInteractEntityEvent e) {
 		Entity ent = e.getRightClicked();
 		Player p = e.getPlayer();

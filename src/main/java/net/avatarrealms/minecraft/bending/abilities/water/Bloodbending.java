@@ -33,7 +33,7 @@ public class Bloodbending implements IAbility {
 	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
 
 	private static final double factor = ConfigManager.bloodbendingThrowFactor;
-	private static final int maxduration = ConfigManager.bloodbendingMaxDuration;
+	private static final int maxduration = ConfigManager.bloodbendingMaxDuration * 1000;
 
 	private Player player;
 	private int range = ConfigManager.bloodbendingRange;
