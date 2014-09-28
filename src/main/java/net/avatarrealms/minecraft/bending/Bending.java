@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
@@ -89,6 +90,7 @@ public class Bending extends JavaPlugin {
 		PluginTools.stopAllBending();
 		BendingPlayersSaver.save();
 		ghostManager.close();
+		AstralProjection.saveLocations();
 		getServer().getScheduler().cancelTasks(plugin);
 	}
 

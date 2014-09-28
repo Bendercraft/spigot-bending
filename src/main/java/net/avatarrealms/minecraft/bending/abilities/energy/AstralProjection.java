@@ -1,13 +1,18 @@
 package net.avatarrealms.minecraft.bending.abilities.energy;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.controller.DataLocation;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -15,19 +20,46 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 public class AstralProjection {
-	private static Map<Player, AstralProjection> instances = new HashMap<Player, AstralProjection>();
+	
 	private static Map<UUID, Location> previousLoc = new HashMap<UUID, Location>();
+	
+	private static final String FILE_NAME = "AstralLocations.json";
+	private static ObjectMapper mapper = new ObjectMapper();
+	private static File prevLocations = new File(Bending.plugin.getDataFolder(), FILE_NAME);
+	static {
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		
+		if (!prevLocations.exists()) {
+			try {
+				prevLocations.createNewFile();
+				FileWriter content = new FileWriter(prevLocations);
+				content.write("{}");
+				content.close();
+			} catch (IOException e) {
+				Bending.log.warning("Could not create the file current.json");
+			}
+		}
+		
+		readLocations();
+
+	}
+	
+	private static Map<Player, AstralProjection> instances = new HashMap<Player, AstralProjection>();
 	
 	private Player player;
 	private int foodLevel;
 	private Location origin;
 	
+	
 	public AstralProjection(Player p, boolean previous) {
 		
 		if (instances.containsKey(p)) {
 			AstralProjection ap = instances.get(p);
-			previousLoc.put(p.getUniqueId(), p.getLocation());
 			ap.removeEffect();
 			instances.remove(p);	
 			return;
@@ -114,6 +146,8 @@ public class AstralProjection {
 			player.removePotionEffect(PotionEffectType.JUMP);
 		}
 		
+		previousLoc.put(player.getUniqueId(), player.getLocation());
+		saveLocations();	
 		player.teleport(origin);
 		
 	}
@@ -132,6 +166,34 @@ public class AstralProjection {
 	
 	public static AstralProjection getAstralProjection(Player p) {
 		return instances.get(p);
+	}
+	
+	public static void saveLocations() {
+		Map<String, DataLocation> tempMap = new HashMap<String, DataLocation>();
+		for (UUID id : previousLoc.keySet()) {
+			tempMap.put(id.toString(), DataLocation.fromLocation(previousLoc.get(id)));
+		}
+		
+		try {
+			mapper.writeValue(prevLocations, tempMap);
+		} catch (Exception e) {
+			Bending.log.severe("Was not able to write into AstralLocation.json : "+ e.getMessage());
+			e.printStackTrace();
+		} 
+	}
+	
+	public static void readLocations() {
+		try {
+			Map<String, DataLocation> tempMap = mapper.readValue(prevLocations,
+					new TypeReference<Map<String, DataLocation>>(){});
+			previousLoc.clear();
+			for (String id : tempMap.keySet()) {
+				previousLoc.put(UUID.fromString(id), DataLocation.toLocation(tempMap.get(id)));
+			}
+		}  catch (Exception e) {
+			Bending.log.severe("Was not able to read from AstralLocation.json : "+ e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 }

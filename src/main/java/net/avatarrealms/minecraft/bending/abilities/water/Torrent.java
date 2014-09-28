@@ -564,6 +564,7 @@ public class Torrent implements IAbility {
 
 	public static void progressAll() {
 		List<Torrent> toRemove = new LinkedList<Torrent>();
+		//Concurrent modification exception here
 		for (Torrent torrent : instances.values()) {
 			boolean keep = torrent.progress();
 			if (!keep) {
