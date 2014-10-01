@@ -177,7 +177,7 @@ public class EntityTools {
 			}
 		}
 
-		if (PluginTools.allowharmless && PluginTools.isHarmlessAbility(ability)) {
+		if (PluginTools.allowharmless && PluginTools.isAllowedEverywhereAbility(ability)) {
 			return true;
 		}
 		

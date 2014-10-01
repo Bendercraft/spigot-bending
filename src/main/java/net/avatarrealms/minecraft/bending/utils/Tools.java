@@ -146,11 +146,14 @@ public class Tools {
 		List<Abilities> ignite = new ArrayList<Abilities>();
 		ignite.add(Abilities.Blaze);
 
-		if (ability == null && PluginTools.allowharmless)
+		if (ability == null){
 			return false;
-		if (PluginTools.isHarmlessAbility(ability) && PluginTools.allowharmless)
+		}
+			
+		if (PluginTools.isAllowedEverywhereAbility(ability) && PluginTools.allowharmless) {
 			return false;
-
+		}
+		
 		PluginManager pm = Bukkit.getPluginManager();
 
 		Plugin wgp = pm.getPlugin("WorldGuard");

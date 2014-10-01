@@ -78,15 +78,12 @@ public class PluginTools {
 	public static boolean allowharmless = true;
 	public static boolean respectWorldGuard = true;
 	public static boolean respectFactions = false;
-	private static Set<Abilities> harmlessAbilities = new HashSet<Abilities>();
+	private static Set<Abilities> allowedEverywhereAbilities = new HashSet<Abilities>();
 	static { 
-		harmlessAbilities.add(Abilities.AirScooter);
-		harmlessAbilities.add(Abilities.AirSpout);
-		harmlessAbilities.add(Abilities.HealingWaters);
-		harmlessAbilities.add(Abilities.HighJump);
-		harmlessAbilities.add(Abilities.Illumination);
-		harmlessAbilities.add(Abilities.Tremorsense);
-		harmlessAbilities.add(Abilities.WaterSpout);
+		allowedEverywhereAbilities.add(Abilities.HealingWaters);
+		allowedEverywhereAbilities.add(Abilities.HighJump);
+		allowedEverywhereAbilities.add(Abilities.Illumination);
+		allowedEverywhereAbilities.add(Abilities.Tremorsense);
 	}
 	private static final Map<String, ChatColor> colors;	
 	static {
@@ -162,8 +159,8 @@ public class PluginTools {
 		colors = Collections.unmodifiableMap(tmpMap);
 	}
 	
-	public static boolean isHarmlessAbility(Abilities ability) {
-		return harmlessAbilities.contains(ability);
+	public static boolean isAllowedEverywhereAbility(Abilities ability) {
+		return allowedEverywhereAbilities.contains(ability);
 	}
 	
 	public static void stopAllBending() {
