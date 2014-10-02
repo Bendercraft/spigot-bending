@@ -81,7 +81,6 @@ public class PluginTools {
 	private static Set<Abilities> allowedEverywhereAbilities = new HashSet<Abilities>();
 	static { 
 		allowedEverywhereAbilities.add(Abilities.HealingWaters);
-		allowedEverywhereAbilities.add(Abilities.HighJump);
 		allowedEverywhereAbilities.add(Abilities.Illumination);
 		allowedEverywhereAbilities.add(Abilities.Tremorsense);
 	}
