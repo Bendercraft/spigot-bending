@@ -239,7 +239,8 @@ public class BendingPlayerListener implements Listener{
 		if (!event.isCancelled() 
 				&& AstralProjection.isAstralProjecting(player)
 				&& (b.getType()!= Material.WOOD_DOOR)
-				&& (b.getType()!= Material.WOOD_PLATE)) {
+				&& (b.getType()!= Material.WOOD_PLATE)
+				&& (b.getType()!= Material.GOLD_PLATE)) {
 			event.setCancelled(true);;
 			return;
 			
