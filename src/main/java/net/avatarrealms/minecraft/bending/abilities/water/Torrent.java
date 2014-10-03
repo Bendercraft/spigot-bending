@@ -264,7 +264,7 @@ public class Torrent implements IAbility {
 					location = blockloc.clone();
 				Block block = blockloc.getBlock();
 				if (!doneblocks.contains(block)
-						&& !Tools.isRegionProtectedFromBuild(player,
+						&& !PluginTools.isRegionProtectedFromBuild(player,
 								Abilities.Torrent, blockloc)) {
 					if (BlockTools.isTransparentToEarthbending(player, block)
 							&& !block.isLiquid()) {
@@ -316,7 +316,7 @@ public class Torrent implements IAbility {
 		// player.sendBlockChange(location, 20, (byte) 0);
 
 		if (location.distance(player.getLocation()) > range
-				|| Tools.isRegionProtectedFromBuild(player, Abilities.Torrent,
+				|| PluginTools.isRegionProtectedFromBuild(player, Abilities.Torrent,
 						location)) {
 			if (layer < maxlayer)
 				if (freeze || layer < 1)
@@ -414,7 +414,7 @@ public class Torrent implements IAbility {
 			Location blockloc = loc.clone().add(dx, dy, dz);
 			Block block = blockloc.getBlock();
 			if (!doneblocks.contains(block)
-					&& !Tools.isRegionProtectedFromBuild(player,
+					&& !PluginTools.isRegionProtectedFromBuild(player,
 							Abilities.Torrent, blockloc)) {
 				if (BlockTools.isTransparentToEarthbending(player, block)
 						&& !block.isLiquid()) {

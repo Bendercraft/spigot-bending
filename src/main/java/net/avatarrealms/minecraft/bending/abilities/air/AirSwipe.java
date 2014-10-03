@@ -198,7 +198,7 @@ public class AirSwipe implements IAbility {
 				Location newlocation = location.clone().add(
 						direction.clone().multiply(speedfactor));
 				if (newlocation.distance(origin) <= range
-						&& !Tools.isRegionProtectedFromBuild(player,
+						&& !PluginTools.isRegionProtectedFromBuild(player,
 								Abilities.AirSwipe, newlocation)) {
 					//If new location is still valid, we add it
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
@@ -260,7 +260,7 @@ public class AirSwipe implements IAbility {
 				PluginTools.removeSpouts(location, player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						affectingradius)) {
-					if (Tools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
+					if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
 							entity.getLocation())) {
 						continue;
 					}

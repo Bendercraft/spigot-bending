@@ -312,7 +312,7 @@ public class WaterWall implements IAbility {
 						// loc.getBlock().setType(Material.GLOWSTONE);
 						vec = Tools.getOrthogonalVector(dir.clone(), angle, i);
 						block = loc.clone().add(vec).getBlock();
-						if (Tools.isRegionProtectedFromBuild(player,
+						if (PluginTools.isRegionProtectedFromBuild(player,
 								Abilities.Surge, block.getLocation()))
 							continue;
 						if (wallblocks.containsKey(block)) {
@@ -434,7 +434,7 @@ public class WaterWall implements IAbility {
 
 	private void addWater(Block block) {
 
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.Surge,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Surge,
 				block.getLocation()))
 			return;
 

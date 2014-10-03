@@ -18,7 +18,7 @@ import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 //Tchou tchou !
 public class LavaTrain implements IAbility {
@@ -86,7 +86,7 @@ public class LavaTrain implements IAbility {
 		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
 			return false;
 		}
-		if (Tools.isRegionProtectedFromBuild(player.getPlayer(), Abilities.LavaTrain, current)) {
+		if (PluginTools.isRegionProtectedFromBuild(player.getPlayer(), Abilities.LavaTrain, current)) {
 			return false;
 		}
 		if(this.direction.getX() == 0 && this.direction.getY() == 0) {

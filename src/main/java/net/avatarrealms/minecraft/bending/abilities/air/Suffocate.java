@@ -19,7 +19,7 @@ import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 public class Suffocate implements IAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
@@ -63,7 +63,7 @@ public class Suffocate implements IAbility {
 		this.target = (Player)target;
 		this.targetLocation = this.target.getLocation().getBlock();
 		
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.Suffocate, target.getLocation())) {
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Suffocate, target.getLocation())) {
 			return;
 		}
 		
@@ -91,7 +91,7 @@ public class Suffocate implements IAbility {
 			return false;
 		}
 		
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.Suffocate, target.getLocation())) {
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Suffocate, target.getLocation())) {
 			return false;
 		}
 		

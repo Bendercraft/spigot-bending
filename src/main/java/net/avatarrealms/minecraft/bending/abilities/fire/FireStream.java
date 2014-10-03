@@ -66,7 +66,7 @@ public class FireStream implements IAbility {
 	}
 
 	public boolean progress() {
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze, location)) {
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Blaze, location)) {
 			return false;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
@@ -105,7 +105,7 @@ public class FireStream implements IAbility {
 	}
 
 	public static boolean isIgnitable(Player player, Block block) {
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Blaze,
 				block.getLocation()))
 			return false;
 

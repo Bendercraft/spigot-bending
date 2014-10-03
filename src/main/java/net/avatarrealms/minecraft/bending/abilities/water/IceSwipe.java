@@ -17,7 +17,7 @@ import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 
 public class IceSwipe implements IAbility{
 	
@@ -69,7 +69,7 @@ public class IceSwipe implements IAbility{
 			Block source = BlockTools.getWaterSourceBlock(player, range, 
 					EntityTools.canPlantbend(player));
 			
-			if (source != null && !Tools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, source.getLocation())) {
+			if (source != null && !PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, source.getLocation())) {
 				new IceSwipe(player, source, null);
 			}
 		}	
@@ -95,7 +95,7 @@ public class IceSwipe implements IAbility{
 			return false;
 		}
 		
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, player.getLocation())) {
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, player.getLocation())) {
 			return false;
 		}
 		
@@ -129,7 +129,7 @@ public class IceSwipe implements IAbility{
 				continue;
 			}
 			
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, block.getLocation())) {
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, block.getLocation())) {
 				blocksToRemove.add(block);
 				continue;
 			}

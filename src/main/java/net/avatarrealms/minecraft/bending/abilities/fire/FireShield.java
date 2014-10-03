@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -84,7 +85,7 @@ public class FireShield implements IAbility {
 			}
 
 			for (Block block : blocks) {
-				if (!Tools.isRegionProtectedFromBuild(player,
+				if (!PluginTools.isRegionProtectedFromBuild(player,
 						Abilities.FireShield, block.getLocation()))
 					block.getWorld().playEffect(block.getLocation(),
 							Effect.MOBSPAWNER_FLAMES, 0, 20);
@@ -92,7 +93,7 @@ public class FireShield implements IAbility {
 
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 					radius)) {
-				if (Tools.isRegionProtectedFromBuild(player,
+				if (PluginTools.isRegionProtectedFromBuild(player,
 						Abilities.FireShield, entity.getLocation())) {
 					continue;
 				}	

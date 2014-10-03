@@ -13,8 +13,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -78,7 +77,7 @@ public class AirScooter implements IAbility {
 			return false;
 		}
 
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirScooter,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirScooter,
 				player.getLocation())) {
 			return false;
 		}

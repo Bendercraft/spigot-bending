@@ -6,8 +6,7 @@ import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -71,7 +70,7 @@ public class HealingWaters implements IAbility {
 	}
 
 	private static void applyHealing(Player player) {
-		if (!Tools.isRegionProtectedFromBuild(player, Abilities.HealingWaters,
+		if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.HealingWaters,
 				player.getLocation()))
 			player.addPotionEffect(new PotionEffect(
 					PotionEffectType.REGENERATION, 70, 1));

@@ -159,7 +159,7 @@ public class BlockTools {
 
 	public static boolean isTransparentToEarthbending(Player player,
 			Abilities ability, Block block) {
-		if (Tools.isRegionProtectedFromBuild(player, ability,
+		if (PluginTools.isRegionProtectedFromBuild(player, ability,
 				block.getLocation())) {
 			return false;
 		}
@@ -213,7 +213,7 @@ public class BlockTools {
 
 	public static boolean isEarthbendable(Player player, Abilities ability,
 			Block block) {
-		if (Tools.isRegionProtectedFromBuild(player, ability,
+		if (PluginTools.isRegionProtectedFromBuild(player, ability,
 				block.getLocation())){
 			return false;
 		}
@@ -426,7 +426,7 @@ public class BlockTools {
 	public static boolean moveEarth(Player player, Block block,
 			Vector direction, int chainlength, boolean throwplayer) {
 		if (isEarthbendable(player, block)
-				&& !Tools.isRegionProtectedFromBuild(player, Abilities.RaiseEarth,
+				&& !PluginTools.isRegionProtectedFromBuild(player, Abilities.RaiseEarth,
 						block.getLocation())) {
 
 			boolean up = false;
@@ -601,7 +601,7 @@ public class BlockTools {
 		for (double i = 0; i <= range; i++) {
 			Block block = location.clone().add(vector.clone().multiply(i))
 					.getBlock();
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.RaiseEarth,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.RaiseEarth,
 					location))
 				continue;
 			if (isEarthbendable(player, block)) {
@@ -618,7 +618,7 @@ public class BlockTools {
 		for (double i = 0; i <= range; i++) {
 			Block block = location.clone().add(vector.clone().multiply(i))
 					.getBlock();
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.WaterManipulation,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.WaterManipulation,
 					location)) {
 				continue;
 			}

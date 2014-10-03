@@ -95,7 +95,7 @@ public class AirBubble implements IAbility {
 					.getBlocksAroundPoint(location, radius)) {
 				if (waterorigins.containsKey(block))
 					continue;
-				if (Tools.isRegionProtectedFromBuild(player,
+				if (PluginTools.isRegionProtectedFromBuild(player,
 						Abilities.AirBubble, block.getLocation()))
 					continue;
 				if (block.getType() == Material.STATIONARY_WATER

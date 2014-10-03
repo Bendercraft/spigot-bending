@@ -11,8 +11,7 @@ import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -45,7 +44,7 @@ public class SmokeBomb implements IAbility {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		this.origin = player.getLocation();
 		
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.SmokeBomb,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.SmokeBomb,
 				origin)) {
 			return;
 		}

@@ -18,8 +18,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -108,7 +106,7 @@ public class FireBlast implements IAbility {
 			return false;
 		}
 
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze, location)) {
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Blaze, location)) {
 			return false;
 		}
 

@@ -43,7 +43,7 @@ public class WaterReturn implements IAbility {
 			return;
 		this.player = player;
 		location = block.getLocation();
-		if (!Tools.isRegionProtectedFromBuild(player,
+		if (!PluginTools.isRegionProtectedFromBuild(player,
 				Abilities.WaterManipulation, location)
 				&& EntityTools.canBend(player, Abilities.WaterManipulation)) {
 			if (BlockTools.isTransparentToEarthbending(player, block)
@@ -84,7 +84,7 @@ public class WaterReturn implements IAbility {
 		if (location.getBlock().equals(block.getLocation().getBlock()))
 			return true;
 
-		if (Tools.isRegionProtectedFromBuild(player,
+		if (PluginTools.isRegionProtectedFromBuild(player,
 				Abilities.WaterManipulation, location)) {
 			return false;
 		}

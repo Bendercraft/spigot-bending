@@ -194,7 +194,7 @@ public class WaterSpout implements IAbility {
 		Block blocki;
 		for (int i = 0; i < maxheight; i++) {
 			blocki = location.clone().add(0, -i, 0).getBlock();
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.WaterSpout,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.WaterSpout,
 					blocki.getLocation()))
 				return -1;
 			if (!affectedblocks.contains(blocki)) {

@@ -16,6 +16,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -120,7 +121,7 @@ public class AirBlast implements IAbility {
 				|| BlockTools.isSolid(location.getBlock()))
 			return;
 
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirBlast,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirBlast,
 				location))
 			return;
 
@@ -132,7 +133,7 @@ public class AirBlast implements IAbility {
 			return false;
 		}
 
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.AirBlast,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirBlast,
 				location)) {
 			return false;
 		}

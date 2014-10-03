@@ -98,7 +98,7 @@ public class FireBall implements IAbility {
 
 		if (System.currentTimeMillis() > time + interval) {
 			if (launched)
-				if (Tools.isRegionProtectedFromBuild(player, Abilities.Blaze,
+				if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Blaze,
 						location)) {
 					return false;
 				}

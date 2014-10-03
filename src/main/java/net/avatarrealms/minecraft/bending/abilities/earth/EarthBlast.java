@@ -312,7 +312,7 @@ public class EarthBlast implements IAbility {
 				}
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						FireBlast.affectingradius)) {
-					if (Tools.isRegionProtectedFromBuild(player,
+					if (PluginTools.isRegionProtectedFromBuild(player,
 							Abilities.EarthBlast, entity.getLocation())) {
 						continue;
 					}
@@ -430,7 +430,7 @@ public class EarthBlast implements IAbility {
 			if (!blast.location.getWorld().equals(player.getWorld()))
 				continue;
 
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.EarthBlast,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.EarthBlast,
 					blast.location))
 				continue;
 
@@ -473,7 +473,7 @@ public class EarthBlast implements IAbility {
 			if (!blast.progressing)
 				continue;
 
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.EarthBlast,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.EarthBlast,
 					blast.location))
 				continue;
 

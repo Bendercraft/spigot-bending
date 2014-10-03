@@ -285,7 +285,7 @@ public class IceSpike2 implements IAbility {
 				return false;
 			}
 
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
 					location)) {
 				returnWater();
 				return false;
@@ -365,7 +365,7 @@ public class IceSpike2 implements IAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = ice.location;
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
 					mloc))
 				continue;
 			if (mloc.distance(location) <= defaultrange
@@ -405,7 +405,7 @@ public class IceSpike2 implements IAbility {
 				continue;
 			}
 
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
 					ice.location)) {
 				continue;
 			}

@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -75,7 +76,7 @@ public class FireProtection implements IAbility {
 			Vector direction = location.getDirection();
 			location = location.clone().add(direction.multiply(radius));
 
-			if (Tools.isRegionProtectedFromBuild(player,
+			if (PluginTools.isRegionProtectedFromBuild(player,
 					Abilities.FireShield, location)) {
 				return false;
 			}
@@ -90,7 +91,7 @@ public class FireProtection implements IAbility {
 			}
 
 			for (Block block : blocks) {
-				if (!Tools.isRegionProtectedFromBuild(player,
+				if (!PluginTools.isRegionProtectedFromBuild(player,
 						Abilities.FireShield, block.getLocation()))
 					block.getWorld().playEffect(block.getLocation(),
 							Effect.MOBSPAWNER_FLAMES, 0, 20);
@@ -98,7 +99,7 @@ public class FireProtection implements IAbility {
 
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 					discradius)) {
-				if (Tools.isRegionProtectedFromBuild(player,
+				if (PluginTools.isRegionProtectedFromBuild(player,
 						Abilities.FireShield, entity.getLocation())) {
 					continue;
 				}

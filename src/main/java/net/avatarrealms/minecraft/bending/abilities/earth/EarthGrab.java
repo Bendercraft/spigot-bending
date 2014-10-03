@@ -12,8 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -87,7 +86,7 @@ public class EarthGrab implements IAbility {
 						entity.getLocation().getYaw(),
 						entity.getLocation().getPitch());
 				
-				if (Tools.isRegionProtectedFromBuild(player, Abilities.RaiseEarth, origin)) {
+				if (PluginTools.isRegionProtectedFromBuild(player, Abilities.RaiseEarth, origin)) {
 					return false;
 				}
 

@@ -62,7 +62,7 @@ public class Lightning implements IAbility {
 		if (AvatarState.isAvatarState(player))
 			damage = AvatarState.getValue(damage);
 		
-		if (!Tools.isRegionProtectedFromBuild(player, Abilities.Lightning,
+		if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.Lightning,
 				targetlocation)) {
 			strike = player.getWorld().strikeLightning(targetlocation);
 			strikes.put(strike, this);

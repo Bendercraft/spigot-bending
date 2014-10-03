@@ -15,8 +15,6 @@ import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
@@ -53,7 +51,7 @@ public class Bloodbending implements IAbility {
 			for (LivingEntity entity : EntityTools
 					.getLivingEntitiesAroundPoint(player.getLocation(), range)) {
 				if (entity instanceof Player) {
-					if (Tools.isRegionProtectedFromBuild(player,
+					if (PluginTools.isRegionProtectedFromBuild(player,
 							Abilities.Bloodbending, entity.getLocation())
 							|| AvatarState.isAvatarState((Player) entity)
 							|| entity.getEntityId() == player.getEntityId()
@@ -74,7 +72,7 @@ public class Bloodbending implements IAbility {
 				return;
 			}		
 			if (!(target instanceof LivingEntity)
-					|| Tools.isRegionProtectedFromBuild(player,
+					|| PluginTools.isRegionProtectedFromBuild(player,
 							Abilities.Bloodbending, target.getLocation()))
 				return;
 			if (target instanceof Player) {
@@ -131,7 +129,7 @@ public class Bloodbending implements IAbility {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
 			for (LivingEntity entity : EntityTools
 					.getLivingEntitiesAroundPoint(player.getLocation(), range)) {
-				if (Tools.isRegionProtectedFromBuild(player,
+				if (PluginTools.isRegionProtectedFromBuild(player,
 						Abilities.Bloodbending, entity.getLocation())) {
 					continue;
 				}

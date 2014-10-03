@@ -14,7 +14,6 @@ import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 import net.coreprotect.CoreProtectAPI;
 
 import org.bukkit.Bukkit;
@@ -94,7 +93,7 @@ public class Combustion implements IAbility {
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion,
 						location)) {
 				return false;
 			}
@@ -178,7 +177,7 @@ public class Combustion implements IAbility {
 		boolean explode = true;
 		List<Block> affecteds = BlockTools.getBlocksAroundPoint(location, explosionradius);
 		for (Block block : affecteds) {
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.Combustion,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion,
 					block.getLocation())) {
 				explode = false;
 				break;
@@ -186,7 +185,7 @@ public class Combustion implements IAbility {
 		}
 		if (explode) {
 			for (Block block : affecteds) {
-				if(!Tools.isRegionProtectedFromExplosion(player, Abilities.Combustion, block.getLocation())) {
+				if(!PluginTools.isRegionProtectedFromExplosion(player, Abilities.Combustion, block.getLocation())) {
 					if(!block.getType().equals(Material.OBSIDIAN) && !block.getType().equals(Material.BEDROCK)) {
 						List<Block> adjacent = new LinkedList<Block>();
 						adjacent.add(block.getRelative(BlockFace.NORTH));

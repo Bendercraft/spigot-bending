@@ -138,7 +138,7 @@ public class WallOfFire implements IAbility {
 				Location location = origin.clone().add(
 						orthoud.clone().multiply(j));
 				location = location.add(ortholr.clone().multiply(i));
-				if (Tools.isRegionProtectedFromBuild(player,
+				if (PluginTools.isRegionProtectedFromBuild(player,
 						Abilities.WallOfFire, location))
 					continue;
 				Block block = location.getBlock();
@@ -167,7 +167,7 @@ public class WallOfFire implements IAbility {
 		}
 
 		for (LivingEntity entity : entities) {
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.WallOfFire,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.WallOfFire,
 					entity.getLocation())) {
 				continue;
 			}

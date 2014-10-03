@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -139,7 +140,7 @@ public class OctopusForm implements IAbility {
 				continue;
 			}
 				
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.OctopusForm,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.OctopusForm,
 					entity.getLocation())) {
 				continue;
 			}
@@ -369,7 +370,7 @@ public class OctopusForm implements IAbility {
 
 	private void addWater(Block block) {
 		clearNearbyWater(block);
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.OctopusForm,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.OctopusForm,
 				block.getLocation()))
 			return;
 		if (TempBlock.isTempBlock(block)) {

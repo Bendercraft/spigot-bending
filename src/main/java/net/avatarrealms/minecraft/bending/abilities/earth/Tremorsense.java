@@ -11,8 +11,7 @@ import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
+import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -63,7 +62,7 @@ public class Tremorsense implements IAbility {
 					Block blocki = block.getRelative(BlockFace.EAST, i)
 							.getRelative(BlockFace.NORTH, j)
 							.getRelative(BlockFace.DOWN, k);
-					if (Tools.isRegionProtectedFromBuild(player,
+					if (PluginTools.isRegionProtectedFromBuild(player,
 							Abilities.RaiseEarth, blocki.getLocation()))
 						continue;
 					if (BlockTools.isEarthbendable(player, Abilities.Tremorsense,

@@ -261,7 +261,7 @@ public class Wave implements IAbility {
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!Tools.isRegionProtectedFromBuild(player, Abilities.Surge,
+				if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.Surge,
 						location)
 						&& (((blockl.getType() == Material.AIR
 								|| blockl.getType() == Material.FIRE
@@ -383,7 +383,7 @@ public class Wave implements IAbility {
 	}
 
 	private void addWater(Block block) {
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.Surge,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Surge,
 				block.getLocation()))
 			return;
 		if (!TempBlock.isTempBlock(block)) {
@@ -457,13 +457,16 @@ public class Wave implements IAbility {
 
 		for (Block block : BlockTools.getBlocksAroundPoint(frozenlocation,
 				freezeradius)) {
-			if (Tools.isRegionProtectedFromBuild(player, Abilities.Surge,
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Surge,
 					block.getLocation())
-					|| Tools.isRegionProtectedFromBuild(player,
-							Abilities.PhaseChange, block.getLocation()))
+					|| PluginTools.isRegionProtectedFromBuild(player,
+							Abilities.PhaseChange, block.getLocation())){
 				continue;
-			if (TempBlock.isTempBlock(block))
+			}
+				
+			if (TempBlock.isTempBlock(block)){
 				continue;
+			}		
 			if (block.getType() == Material.AIR
 					|| block.getType() == Material.SNOW) {
 				// block.setType(Material.ICE);

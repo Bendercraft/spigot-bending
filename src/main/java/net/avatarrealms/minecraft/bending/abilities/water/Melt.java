@@ -9,8 +9,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -64,7 +62,7 @@ public class Melt implements IAbility {
 	}
 
 	public static void melt(Player player, Block block) {
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.PhaseChange,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.PhaseChange,
 				block.getLocation()))
 			return;
 		if (!Wave.canThaw(block)) {
@@ -91,7 +89,7 @@ public class Melt implements IAbility {
 	}
 
 	public static void evaporate(Player player, Block block) {
-		if (Tools.isRegionProtectedFromBuild(player, Abilities.PhaseChange,
+		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.PhaseChange,
 				block.getLocation()))
 			return;
 		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block)

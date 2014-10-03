@@ -235,7 +235,7 @@ public class WaterManipulation implements IAbility {
 		}
 		if (System.currentTimeMillis() - time >= interval) {
 			// removeWater(oldwater);
-			if (Tools.isRegionProtectedFromBuild(player,
+			if (PluginTools.isRegionProtectedFromBuild(player,
 					Abilities.WaterManipulation, location)) {
 				return false;
 			}
@@ -491,7 +491,7 @@ public class WaterManipulation implements IAbility {
 			if (!manip.location.getWorld().equals(player.getWorld()))
 				continue;
 
-			if (Tools.isRegionProtectedFromBuild(player,
+			if (PluginTools.isRegionProtectedFromBuild(player,
 					Abilities.WaterManipulation, manip.location))
 				continue;
 
@@ -525,7 +525,7 @@ public class WaterManipulation implements IAbility {
 			if (!manip.progressing)
 				continue;
 
-			if (Tools.isRegionProtectedFromBuild(player,
+			if (PluginTools.isRegionProtectedFromBuild(player,
 					Abilities.WaterManipulation, manip.location))
 				continue;
 
