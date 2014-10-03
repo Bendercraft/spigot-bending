@@ -462,8 +462,7 @@ public class Wave implements IAbility {
 					|| PluginTools.isRegionProtectedFromBuild(player,
 							Abilities.PhaseChange, block.getLocation())){
 				continue;
-			}
-				
+			}			
 			if (TempBlock.isTempBlock(block)){
 				continue;
 			}		
