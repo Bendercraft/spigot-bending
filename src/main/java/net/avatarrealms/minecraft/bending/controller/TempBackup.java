@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
@@ -91,6 +92,7 @@ public class TempBackup {
 				backupFile.createNewFile();
 			}
 			ObjectMapper mapper = new ObjectMapper();
+			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			mapper.writeValue(backupFile, backupPlayers);
 		} catch (Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,

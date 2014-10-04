@@ -120,6 +120,8 @@ permissions:
       bending.command.who: true
       bending.admin.toggle: true
       bending.command.language: true
+      bending.command.save: true
+      bending.command.getback: true
       
   bending.command:
     description: Allows all user commands.

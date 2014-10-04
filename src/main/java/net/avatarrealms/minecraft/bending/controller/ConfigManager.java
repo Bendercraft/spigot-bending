@@ -38,6 +38,8 @@ public class ConfigManager {
 	public static long revertchecktime = 120000;
 
 	public static boolean useTagAPI = true;
+	
+	public static int astralProjectionCooldown = 2000;
 
 	private static List<String> defaultearthbendable = new LinkedList<String>();
 	static {
@@ -387,6 +389,8 @@ public class ConfigManager {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+		
+		astralProjectionCooldown = config.getInt("Bending.Spirit.AstralProjection.Cooldown", astralProjectionCooldown);
 
 		// Chat:
 		enabled = config.getBoolean("Chat.Enabled", enabled);
@@ -933,6 +937,7 @@ public class ConfigManager {
 				nightFactor);
 
 		// set defaults
+		config.set("Bending.Spirit.AstralProjection.Cooldown", astralProjectionCooldown);
 		config.set("Chat.Enabled", enabled);
 		config.set("Chat.Colors", colors);
 		config.set("Chat.Compatibility", compatibility);
