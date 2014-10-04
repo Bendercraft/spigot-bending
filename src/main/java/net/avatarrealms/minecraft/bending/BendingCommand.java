@@ -2085,10 +2085,10 @@ public class BendingCommand {
 		if (player.hasPermission("bending.command.save")) {
 			Tools.tBackup.setPlayer(player.getUniqueId(),
 					BendingPlayer.getBendingPlayer(player));
-			player.sendMessage("Bending properly saved.");
+			player.sendMessage(ChatColor.GREEN + "Bending properly saved.");
 		}
 		else {
-			player.sendMessage("You're not allowed to do that.");
+			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
 		}
 	}
 
@@ -2105,13 +2105,17 @@ public class BendingCommand {
 				bPl.addBender(data);
 			}
 			
+			for (BendingSpecializationType spe : plData.getSpecialization()) {
+				bPl.addSpecialization(spe);
+			}
+			
 			for (Entry<Integer, Abilities> data : plData.getSlotAbilities().entrySet()) {
 				bPl.setAbility(data.getKey(),data.getValue());
 			}
-			player.sendMessage("Bending properly set back");
+			player.sendMessage(ChatColor.GREEN + "Bending properly set back");
 		}
 		else {
-			player.sendMessage("You're not allowed to do that.");
+			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
 		}
 	}
 
