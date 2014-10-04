@@ -24,22 +24,22 @@ public class ConfigManager {
 	public static List<String> earthbendable = new LinkedList<String>();
 	public static Map<String, Boolean> useWeapon = new HashMap<String, Boolean>();
 
-	public static int seaLevel = 63;
+	public static int seaLevel;
 
-	public static long globalCooldown = 500;
+	public static long globalCooldown;
 
-	public static long chiblockduration = 3000;
-	public static double dodgechance = 10;
-	public static double punchdamage = 2;
-	public static double falldamagereduction = 1;
+	public static long chiblockduration;
+	public static double dodgechance;
+	public static double punchdamage;
+	public static double falldamagereduction;
 
-	public static boolean reverseearthbending = true;
-	public static boolean safeRevert = true;
-	public static long revertchecktime = 120000;
+	public static boolean reverseearthbending;
+	public static boolean safeRevert;
+	public static long revertchecktime;
 
-	public static boolean useTagAPI = true;
+	public static boolean useTagAPI;
 	
-	public static int astralProjectionCooldown = 2000;
+	public static int astralProjectionCooldown;
 
 	private static List<String> defaultearthbendable = new LinkedList<String>();
 	static {
@@ -63,319 +63,319 @@ public class ConfigManager {
 	
 	// Air
 	// AirBlast
-	public static double airBlastSpeed = 25;
-	public static double airBlastRange = 20;
-	public static double airBlastRadius = 2;
-	public static double airBlastPush = 3.0;
+	public static double airBlastSpeed;
+	public static double airBlastRange;
+	public static double airBlastRadius;
+	public static double airBlastPush;
 	
 	//AirBurst
 
 	// AirBubble
-	public static int airBubbleRadius = 4;
+	public static int airBubbleRadius;
 
 	// AirPassive
-	public static float airPassiveFactor = 0.3F;
+	public static float airPassiveFactor;
 
 	// AirScooter
-	public static double airScooterSpeed = 0.675;
+	public static double airScooterSpeed;
 
 	// AirShield
-	public static double airShieldRadius = 5;
+	public static double airShieldRadius;
 
 	// AirSpout
-	public static double airSpoutHeight = 20;
+	public static double airSpoutHeight;
 
 	// AirSuction
-	public static double airSuctionSpeed = 25;
-	public static double airSuctionRange = 20;
-	public static double airSuctionRadius = 2;
-	public static double airSuctionPush = 3.5;
+	public static double airSuctionSpeed;
+	public static double airSuctionRange;
+	public static double airSuctionRadius;
+	public static double airSuctionPush;
 
 	// AirSwipe
-	public static int airSwipeDamage = 4;
-	public static double airSwipeRange = 16;
-	public static int airSwipeArc = 20;
-	public static double airSwipeSpeed = 25;
-	public static double airSwipeRadius = 2;
-	public static double airSwipePush = 1;
-	public static long airSwipeCooldown = 1500;
+	public static int airSwipeDamage;
+	public static double airSwipeRange;
+	public static int airSwipeArc;
+	public static double airSwipeSpeed;
+	public static double airSwipeRadius;
+	public static double airSwipePush;
+	public static long airSwipeCooldown;
 
 	// Tornado
-	public static double tornadoRadius = 10;
-	public static double tornadoHeight = 25;
-	public static double tornadoRange = 25;
-	public static double tornadoMobPush = 1;
-	public static double tornadoPlayerPush = 1;
+	public static double tornadoRadius;
+	public static double tornadoHeight;
+	public static double tornadoRange;
+	public static double tornadoMobPush;
+	public static double tornadoPlayerPush;
 	
 	// Air Manipulation
-	public static int airManipulationDamage = 2;
-	public static int airManipulationRange = 25;
+	public static int airManipulationDamage;
+	public static int airManipulationRange;
 	
 	// Suffocate
-	public static int suffocateDistance = 10;
-	public static int suffocateBaseDamage = 1;
+	public static int suffocateDistance;
+	public static int suffocateBaseDamage;
 	
 	// ChiBlocker
 	// HighJump
-	public static double jumpHeight = 1.5;
-	public static long highJumpCooldown = 4000;
+	public static double jumpHeight;
+	public static long highJumpCooldown;
 
 	// Paralyze
-	public static long paralyzeCooldown = 10000;
-	public static long paralyzeDuration = 2500;
+	public static long paralyzeCooldown;
+	public static long paralyzeDuration;
 
 	// RapidPunch
-	public static int rapidPunchDamage = 2;
-	public static int rapidPunchDistance = 1;
-	public static long rapidPunchCooldown = 3000;
-	public static int rapidPunchPunches = 4;
+	public static int rapidPunchDamage;
+	public static int rapidPunchDistance;
+	public static long rapidPunchCooldown;
+	public static int rapidPunchPunches;
 	
 	//Smoke Bomb
-	public static int smokeRadius = 6;
-	public static int smokeDuration = 10;    // time in secs
-	public static int smokeBombCooldown = 6000;
+	public static int smokeRadius;
+	public static int smokeDuration;    // time in secs
+	public static int smokeBombCooldown; // time in ms
 	
 	//Poisonned dart
-	public static int dartRange = 10;
-	public static int dartDamage = 2;
-	public static int poisonLevel = 1;
-	public static int poisonnedDartCooldown = 1500;
+	public static int dartRange;
+	public static int dartDamage;
+	public static int poisonLevel;
+	public static int poisonnedDartCooldown;
 	
 	//Dash
-	public static int dashCooldown = 6000;
-	public static double dashLength = 1.90; // Not really accurate as it's used with the setVelocity()
-	public static double dashHeight = 0.70;
+	public static int dashCooldown;
+	public static double dashLength; // Not really accurate as it's used with the setVelocity()
+	public static double dashHeight;
 	
 
 	// Earth
 	// Catapult
-	public static int catapultLength = 7;
-	public static double catapultSpeed = 12;
-	public static double catapultPush = 5;
+	public static int catapultLength;
+	public static double catapultSpeed;
+	public static double catapultPush;
 	
 	//ShockWave
 
 	// Collapse
-	public static int collapseRange = 20;
-	public static double collapseRadius = 7;
+	public static int collapseRange;
+	public static double collapseRadius;
 
 	// CompactColumn
-	public static double compactColumnRange = 20;
-	public static double compactColumnSpeed = 8;
+	public static double compactColumnRange;
+	public static double compactColumnSpeed;
 
 	// EarthArmor
-	public static long earthArmorDuration = 60000;
-	public static int earthArmorStrength = 2;
-	public static long earthArmorCooldown = 60000;
+	public static long earthArmorDuration;
+	public static int earthArmorStrength;
+	public static long earthArmorCooldown;
 
 	// EarthBlast
-	public static int earthBlastDamage = 3;
-	public static int ironBlastDamage = 5;
-	public static boolean earthBlastHitSelf = false;
-	public static double earthBlastPrepareRange = 10;
-	public static double earthBlastRange = 20;
-	public static double earthBlastSpeed = 35;
-	public static boolean earthBlastRevert = true;
-	public static double earthBlastPush = 0.3;
+	public static int earthBlastDamage;
+	public static int ironBlastDamage;
+	public static boolean earthBlastHitSelf;
+	public static double earthBlastPrepareRange;
+	public static double earthBlastRange;
+	public static double earthBlastSpeed;
+	public static boolean earthBlastRevert;
+	public static double earthBlastPush;
 
 	// EarthColumn
-	public static int earthColumnHeight = 6;
+	public static int earthColumnHeight;
 
 	// EarthGrab
-	public static double earthGrabRange = 15;
-	public static int earthGrabDuration = 150000;
-	public static long earthGrabCooldown = 15000;
+	public static double earthGrabRange;
+	public static int earthGrabDuration;
+	public static long earthGrabCooldown;
 
 	// EarthPassive
-	public static long earthPassive = 3000;
-	public static int passiveResistanceLevel = 0;
+	public static long earthPassive;
+	public static int passiveResistanceLevel;
 
 	// EarthTunnel
-	public static double earthTunnelMaxRadius = 1;
-	public static double earthTunnelRange = 10;
-	public static double earthTunnelRadius = 0.25;
-	public static long earthTunnelInterval = 30;
-	public static boolean earthTunnelRevert = true;
+	public static double earthTunnelMaxRadius;
+	public static double earthTunnelRange;
+	public static double earthTunnelRadius;
+	public static long earthTunnelInterval;
+	public static boolean earthTunnelRevert;
 
 	// EarthWall
-	public static int earthWallRange = 15;
-	public static int earthWallHeight = 6;
-	public static int earthWallWidth = 6;
+	public static int earthWallRange;
+	public static int earthWallHeight;
+	public static int earthWallWidth;
 
 	// Tremorsense
-	public static long tremorsenseCooldown = 1000;
-	public static int tremorsenseMaxDepth = 10;
-	public static int tremorsenseRadius = 5;
-	public static byte tremorsenseLightThreshold = 7;
+	public static long tremorsenseCooldown;
+	public static int tremorsenseMaxDepth;
+	public static int tremorsenseRadius;
+	public static byte tremorsenseLightThreshold;
 	
 	//MetalBending
 	
 	//EarthMelt
 	
-	public static long lavaTrainDuration = 20000;
-	public static int lavaTrainRange = 7;
-	public static int lavaTrainWidth = 1;
-	public static int lavaTrainRandomWidth = 2;
-	public static double lavaTrainRandomChance = 0.25;
-	public static int lavaTrainReachWidth = 3;
+	public static long lavaTrainDuration;
+	public static int lavaTrainRange;
+	public static int lavaTrainWidth;
+	public static int lavaTrainRandomWidth;
+	public static double lavaTrainRandomChance;
+	public static int lavaTrainReachWidth;
 
 	//LavaBlast
-	public static int lavaBlastDamage = 10;
-	public static int lavaBlastRange = 15;
-	public static int lavaBlastChargeTime = 1000; // time in millisecs.
+	public static int lavaBlastDamage;
+	public static int lavaBlastRange;
+	public static int lavaBlastChargeTime; // time in millisecs.
 	
 	
 	// Fire
 	// ArcOfFire
-	public static int arcOfFireArc = 20;
-	public static int arcOfFireRange = 9;
+	public static int arcOfFireArc;
+	public static int arcOfFireRange;
 
 	// Extinguish
-	public static double extinguishRange = 20;
-	public static double extinguishRadius = 7;
+	public static double extinguishRange;
+	public static double extinguishRadius;
 
 	// Fireball
-	public static long fireballCooldown = 300000;
-	public static double fireballSpeed = 0.3;
+	public static long fireballCooldown;
+	public static double fireballSpeed;
 
 	// FireBlast
-	public static double fireBlastSpeed = 15;
-	public static double fireBlastRange = 25;
-	public static double fireBlastRadius = 2;
-	public static double fireBlastPush = .3;
-	public static int fireBlastDamage = 7;
-	public static long fireBlastCooldown = 1500;
-	public static boolean fireBlastDissipate = false;
+	public static double fireBlastSpeed;
+	public static double fireBlastRange;
+	public static double fireBlastRadius;
+	public static double fireBlastPush;
+	public static int fireBlastDamage;
+	public static long fireBlastCooldown;
+	public static boolean fireBlastDissipate;
 	
 	//FireBurst
 	
 	//FireShield
 
 	// FireJet
-	public static double fireJetSpeed = 0.7;
-	public static long fireJetDuration = 1500;
-	public static long fireJetCooldown = 6000;
+	public static double fireJetSpeed;
+	public static long fireJetDuration;
+	public static long fireJetCooldown;
 
 	// FireStream
-	public static double fireStreamSpeed = 15;
-	public static long dissipateAfter = 400;
+	public static double fireStreamSpeed;
+	public static long dissipateAfter;
 
 	// HeatMelt
-	public static int heatMeltRange = 15;
-	public static int heatMeltRadius = 5;
+	public static int heatMeltRange;
+	public static int heatMeltRadius;
 
 	// Illumination
-	public static int illuminationRange = 5;
+	public static int illuminationRange;
 
 	// Lightning
-	public static long lightningWarmup = 3500;
-	public static int lightningDamage = 6;
-	public static int lightningRange = 50;
-	public static double lightningMissChance = 5;
+	public static long lightningWarmup;
+	public static int lightningDamage;
+	public static int lightningRange;
+	public static double lightningMissChance;
 
 	// RingOfFire
-	public static int ringOfFireRange = 7;
+	public static int ringOfFireRange;
 
 	// WallOfFire
-	public static int wallOfFireRange = 4;
-	public static int wallOfFireHeight = 4;
-	public static int wallOfFireWidth = 4;
-	public static long wallOfFireDuration = 5000;
-	public static int wallOfFireDamage = 2;
-	public static long wallOfFireInterval = 500;
-	public static long wallOfFireCooldown = 7500;
+	public static int wallOfFireRange;
+	public static int wallOfFireHeight;
+	public static int wallOfFireWidth;
+	public static long wallOfFireDuration;
+	public static int wallOfFireDamage;
+	public static long wallOfFireInterval;
+	public static long wallOfFireCooldown;
 	
 	//FireBlade
-	public static int fireBladeFireAspectLevel = 2;
-	public static int fireBladeSharpnessLevel = 1;
-	public static int fireBladeStrengthLevel = 1;
-	public static int fireBladeCooldown = 60000;
-	public static int fireBladeDuration = 30;
+	public static int fireBladeFireAspectLevel;
+	public static int fireBladeSharpnessLevel;
+	public static int fireBladeStrengthLevel;
+	public static int fireBladeCooldown;
+	public static int fireBladeDuration;
 	
 	//Combustion
-	public static double combustionRadius = 1.5f;
-	public static double combustionExplosionRadius = 3;
-	public static double combustionInnerRadius = 3;
-	public static int combustionDamage = 9;
-	public static int combustionRange = 20;
-	public static int combustionChargeTime = 2000; //time in millisecs
-	public static int combustionCooldown = 2000;
+	public static double combustionRadius;
+	public static double combustionExplosionRadius;
+	public static double combustionInnerRadius;
+	public static int combustionDamage;
+	public static int combustionRange;
+	public static int combustionChargeTime; //time in millisecs
+	public static int combustionCooldown;
 
 	// Day
-	public static double dayFactor = 1.5;
+	public static double dayFactor;
 
 	// Water
 	// Bloodbending
-	public static double bloodbendingThrowFactor = 2;
-	public static int bloodbendingRange = 10;
-	public static int bloodbendingMaxDuration = 10;
-	public static int bloodbendingCooldown = 5;
+	public static double bloodbendingThrowFactor;
+	public static int bloodbendingRange;
+	public static int bloodbendingMaxDuration;
+	public static int bloodbendingCooldown;
 
 	// FastSwimming
-	public static double fastSwimmingFactor = 0.7;
+	public static double fastSwimmingFactor;
 
 	// FreezeMelt
-	public static int freezeMeltRange = 20;
-	public static int freezeMeltRadius = 3;
-	public static int freezeMeltDepth = 1;
+	public static int freezeMeltRange;
+	public static int freezeMeltRadius;
+	public static int freezeMeltDepth;
 
 	// HealingWaters
-	public static double healingWatersRadius = 5;
-	public static long healingWatersInterval = 750;
+	public static double healingWatersRadius;
+	public static long healingWatersInterval;
 
 	// IceSpike
-	public static long icespikeCooldown = 2000;
-	public static int icespikeDamage = 2;
-	public static int icespikeRange = 20;
-	public static double icespikeThrowingMult = 0.7;
+	public static long icespikeCooldown;
+	public static int icespikeDamage;
+	public static int icespikeRange;
+	public static double icespikeThrowingMult;
 
 	// Plantbending
-	public static long plantbendingRegrowTime = 180000;
+	public static long plantbendingRegrowTime;
 
 	// SpikeField
-	public static long icespikeAreaCooldown = 3000;
-	public static int icespikeAreaDamage = 2;
-	public static int icespikeAreaRadius = 6;
-	public static double icespikeAreaThrowingMult = 1;
+	public static long icespikeAreaCooldown;
+	public static int icespikeAreaDamage;
+	public static int icespikeAreaRadius;
+	public static double icespikeAreaThrowingMult;
 	
 	// WaterBubble
 	public static double waterBubbleRadius = airBubbleRadius;
 
 	// WaterManipulation
-	public static int waterManipulationDamage = 3;
-	public static double waterManipulationRange = 25;
-	public static double waterManipulationSpeed = 35;
-	public static double WaterManipulationPush = .3;
+	public static int waterManipulationDamage;
+	public static double waterManipulationRange;
+	public static double waterManipulationSpeed;
+	public static double WaterManipulationPush;
 
 	// WaterSpout
-	public static int waterSpoutHeight = 16;
-	public static int waterSpoutRotationSpeed = 4;
+	public static int waterSpoutHeight;
+	public static int waterSpoutRotationSpeed;
 
 	// WaterWall
-	public static double waterWallRange = 5;
-	public static double waterWallRadius = 2;
+	public static double waterWallRange;
+	public static double waterWallRadius;
 
 	// Wave
-	public static double waveRadius = 3;
-	public static double waveHorizontalPush = 1;
-	public static double waveVerticalPush = 0.2;
+	public static double waveRadius;
+	public static double waveHorizontalPush;
+	public static double waveVerticalPush;
 	
 	//Torrent
-	public static int torrentDamage = 2;
-	public static int torrentDeflectDamage = 1;
+	public static int torrentDamage;
+	public static int torrentDeflectDamage;
 	
 	//OctopusForm
-	public static int octopusFormDamage = 3;
+	public static int octopusFormDamage;
 	
 	//IceSwipe
-	public static int iceSwipeDamage = 4;
-	public static int iceSwipeRange = 25;
-	public static double iceSwipeSpeed = 25;
-	public static double iceSwipePush = 1;
-	public static long iceSwipeCooldown = 1500;
+	public static int iceSwipeDamage;
+	public static int iceSwipeRange;
+	public static double iceSwipeSpeed;
+	public static double iceSwipePush;
+	public static long iceSwipeCooldown;
 
 	// Night
-	public static double nightFactor = 1.5;
+	public static double nightFactor;
 
 	public void load(File file) {
 		FileConfiguration config = new YamlConfiguration();
