@@ -54,6 +54,7 @@ public class Bending extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		plugin = this;
+		saveDefaultConfig();
 		configManager.load(new File(getDataFolder(), "config.yml"));
 		language.load(new File(getDataFolder(), "language.yml"));
 
