@@ -390,7 +390,7 @@ public class ConfigManager {
 			e.printStackTrace();
 		}
 		
-		astralProjectionCooldown = config.getInt("Bending.Spirit.AstralProjection.Cooldown", astralProjectionCooldown);
+		astralProjectionCooldown = config.getInt("Properties.Spirit.AstralProjection.Cooldown", astralProjectionCooldown);
 
 		// Chat:
 		enabled = config.getBoolean("Chat.Enabled", enabled);
@@ -937,7 +937,7 @@ public class ConfigManager {
 				nightFactor);
 
 		// set defaults
-		config.set("Bending.Spirit.AstralProjection.Cooldown", astralProjectionCooldown);
+		config.set("Properties.Spirit.AstralProjection.Cooldown", astralProjectionCooldown);
 		config.set("Chat.Enabled", enabled);
 		config.set("Chat.Colors", colors);
 		config.set("Chat.Compatibility", compatibility);
