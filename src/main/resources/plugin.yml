@@ -251,7 +251,7 @@ permissions:
     description: Allows the use of WaterSpout.
     default: false
   bending.water.Surge:
-    description: Allows the use of Sruge.
+    description: Allows the use of Surge.
     default: false
   bending.water.Bloodbending:
     description: Allows the use of Bloodbending.
