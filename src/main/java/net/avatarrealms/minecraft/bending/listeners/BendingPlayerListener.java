@@ -165,22 +165,17 @@ public class BendingPlayerListener implements Listener{
 			ChatColor color = ChatColor.WHITE;
 			if (ConfigManager.colors) {
 				if (player.hasPermission("bending.avatar")) {
-					color = PluginTools.getColor(ConfigManager
-							.getColor("Avatar"));
+					color = PluginTools.getColor(ConfigManager.getColor("Avatar"));
+				} else if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
+					color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+				} else if (EntityTools.isBender(player, BendingType.Earth)) {
+					color = PluginTools.getColor(ConfigManager.getColor("Earth"));
+				} else if (EntityTools.isBender(player, BendingType.Fire)) {
+					color = PluginTools.getColor(ConfigManager.getColor("Fire"));
+				} else if (EntityTools.isBender(player, BendingType.Water)) {
+					color = PluginTools.getColor(ConfigManager.getColor("Water"));
 				} else if (EntityTools.isBender(player, BendingType.Air)) {
 					color = PluginTools.getColor(ConfigManager.getColor("Air"));
-				} else if (EntityTools.isBender(player, BendingType.Earth)) {
-					color = PluginTools.getColor(ConfigManager
-							.getColor("Earth"));
-				} else if (EntityTools.isBender(player, BendingType.Fire)) {
-					color = PluginTools
-							.getColor(ConfigManager.getColor("Fire"));
-				} else if (EntityTools.isBender(player, BendingType.Water)) {
-					color = PluginTools.getColor(ConfigManager
-							.getColor("Water"));
-				} else if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
-					color = PluginTools.getColor(ConfigManager
-							.getColor("ChiBlocker"));
 				}
 			}
 			player.setDisplayName("<" + color + append + player.getName()
