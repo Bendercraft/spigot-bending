@@ -339,7 +339,7 @@ public class ConfigManager {
 	public static double icespikeAreaThrowingMult;
 	
 	// WaterBubble
-	public static double waterBubbleRadius = airBubbleRadius;
+	public static double waterBubbleRadius;
 
 	// WaterManipulation
 	public static int waterManipulationDamage;
@@ -491,6 +491,7 @@ public class ConfigManager {
 
 		// AirBubble
 		airBubbleRadius = config.getInt("Properties.Air.AirBubble.Radius");
+		waterBubbleRadius = airBubbleRadius;
 
 		// AirPassive
 		airPassiveFactor = (float) config.getDouble("Properties.Air.Passive.Factor");

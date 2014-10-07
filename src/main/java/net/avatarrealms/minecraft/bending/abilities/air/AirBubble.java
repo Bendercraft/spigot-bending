@@ -113,10 +113,10 @@ public class AirBubble implements IAbility {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
-		if (((EntityTools.getBendingAbility(player) == Abilities.AirBubble) && EntityTools
-				.canBend(player, Abilities.AirBubble))
-				|| ((EntityTools.getBendingAbility(player) == Abilities.WaterBubble) && EntityTools
-						.canBend(player, Abilities.WaterBubble))) {
+		if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble 
+				&& EntityTools.canBend(player, Abilities.AirBubble))
+				|| (EntityTools.getBendingAbility(player) == Abilities.WaterBubble) 
+						&& EntityTools.canBend(player, Abilities.WaterBubble)) {
 			pushWater();
 			return true;
 		}
@@ -125,8 +125,8 @@ public class AirBubble implements IAbility {
 
 	public static void progressAll() {
 		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble || EntityTools
-					.getBendingAbility(player) == Abilities.WaterBubble)
+			if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble ||
+					EntityTools.getBendingAbility(player) == Abilities.WaterBubble)
 					&& !instances.containsKey(player.getEntityId())) {
 				new AirBubble(player, null);
 			}
