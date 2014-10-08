@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,7 +42,8 @@ public class LavaTrain implements IAbility {
 	private Block safePoint;
 	private Location current;
 	private Vector direction;
-	private BendingPlayer player;
+	private BendingPlayer bPlayer;
+	private Player player;
 	private boolean reached = false;
 	
 	private List<Block> affecteds = new LinkedList<Block>();
@@ -63,8 +66,9 @@ public class LavaTrain implements IAbility {
 		}
 		
 		this.parent = parent;
-		this.player = bPlayer;
-		this.safePoint = this.player.getPlayer().getLocation().getBlock();
+		this.player = player;
+		this.bPlayer = bPlayer;
+		this.safePoint = this.bPlayer.getPlayer().getLocation().getBlock();
 		
 		this.direction = player.getEyeLocation().getDirection().clone();
 		this.direction.setY(0);
@@ -79,14 +83,14 @@ public class LavaTrain implements IAbility {
 	}
 	
 	public boolean progress() {
-		if(player == null || player.getPlayer() == null) {
+		if(bPlayer == null || bPlayer.getPlayer() == null) {
 			return false;
 		}
 		
-		if (player.getPlayer().isDead() || !player.getPlayer().isOnline()) {
+		if (bPlayer.getPlayer().isDead() || !bPlayer.getPlayer().isOnline()) {
 			return false;
 		}
-		if (PluginTools.isRegionProtectedFromBuild(player.getPlayer(), Abilities.LavaTrain, current)) {
+		if (PluginTools.isRegionProtectedFromBuild(bPlayer.getPlayer(), Abilities.LavaTrain, current)) {
 			return false;
 		}
 		if(this.direction.getX() == 0 && this.direction.getY() == 0) {
@@ -143,7 +147,7 @@ public class LavaTrain implements IAbility {
 			}
 			
 			for(Block potentialsBlock : potentialsBlocks) {
-				if(BlockTools.isEarthbendable(player.getPlayer(), potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
+				if(BlockTools.isEarthbendable(bPlayer.getPlayer(), potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
 					//Do not let block behind bender to be bend, this whill be stupid
 					if(!safe.contains(potentialsBlock)) {
 						new TempBlock(potentialsBlock, Material.LAVA, full);
@@ -154,6 +158,10 @@ public class LavaTrain implements IAbility {
 		}
 	}
 	
+	public Player getPlayer() {
+		return player;
+	}
+	
 	public void remove() {
 		for(Block affected : affecteds) {
 			TempBlock temp = TempBlock.get(affected);
@@ -162,7 +170,7 @@ public class LavaTrain implements IAbility {
 			}
 		}
 		affecteds.clear();
-		instances.remove(this.player.getPlayer());
+		instances.remove(this.bPlayer.getPlayer());
 	}
 	
 	public static void progressAll() {
@@ -199,6 +207,16 @@ public class LavaTrain implements IAbility {
 	@Override
 	public IAbility getParent() {
 		return parent;
+	}
+	
+	@Nullable
+	public static LavaTrain getLavaTrain(Block b) {
+		for (LavaTrain inst : instances.values()){
+			if (inst.affecteds.contains(b)) {
+				return inst;
+			}
+		}	
+		return null;
 	}
 
 }

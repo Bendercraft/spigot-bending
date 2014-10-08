@@ -994,6 +994,16 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent event) {
+		if (event.getEntity().getLastDamageCause().getCause() == DamageCause.LAVA) {
+			Player player = event.getEntity();
+			Location loc = player.getLocation();
+			LavaTrain lT = LavaTrain.getLavaTrain(loc.getBlock());
+			if (lT != null) {
+				event.setDeathMessage(player.getName() + " died swimming in the " 
+						+ lT.getPlayer().getName() + "'s lava train");
+			}
+		}
+		
 		if (EarthArmor.hasEarthArmor(event.getEntity())) {
 			List<ItemStack> drops = event.getDrops();
 			List<ItemStack> newdrops = new ArrayList<ItemStack>();
