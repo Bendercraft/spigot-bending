@@ -96,6 +96,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -994,12 +995,14 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		if (event.getEntity().getLastDamageCause().getCause() == DamageCause.LAVA) {
+	
+		EntityDamageEvent ede = event.getEntity().getLastDamageCause();
+		if (ede.getCause() == DamageCause.LAVA) {
 			Player player = event.getEntity();
 			Location loc = player.getLocation();
 			LavaTrain lT = LavaTrain.getLavaTrain(loc.getBlock());
 			if (lT != null) {
-				event.setDeathMessage(player.getName() + " died swimming in the " 
+				event.setDeathMessage(player.getName() + " died swimming in " 
 						+ lT.getPlayer().getName() + "'s lava train");
 			}
 		}

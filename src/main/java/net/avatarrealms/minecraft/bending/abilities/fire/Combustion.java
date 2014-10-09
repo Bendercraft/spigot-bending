@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
@@ -93,8 +94,7 @@ public class Combustion implements IAbility {
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion,
-						location)) {
+			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion, location)) {
 				return false;
 			}
 
@@ -105,11 +105,12 @@ public class Combustion implements IAbility {
 				explode();
 				return false;
 			}
-			
 			if (BlockTools.isSolid(location.getBlock())) {
+				Bending.log.info("Contact Explode");
 				explode();
 				return false;
-			} else if (location.getBlock().isLiquid()) {
+			}
+			else if (location.getBlock().isLiquid()) {
 				return false;
 			}
 
@@ -174,48 +175,56 @@ public class Combustion implements IAbility {
 	}
 
 	private void explode() {
-		boolean explode = true;
-		List<Block> affecteds = BlockTools.getBlocksAroundPoint(location, explosionradius);
-		for (Block block : affecteds) {
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion,
-					block.getLocation())) {
-				explode = false;
-				break;
+		boolean obsidian = false;
+		
+		List<Block> affecteds = new LinkedList<Block>();
+		for (Block block : BlockTools.getBlocksAroundPoint(location, explosionradius)) {
+			if (block.getType() == Material.OBSIDIAN) {
+				obsidian = true;
 			}
-		}
-		if (explode) {
-			for (Block block : affecteds) {
-				if(!PluginTools.isRegionProtectedFromExplosion(player, Abilities.Combustion, block.getLocation())) {
-					if(!block.getType().equals(Material.OBSIDIAN) && !block.getType().equals(Material.BEDROCK)) {
-						List<Block> adjacent = new LinkedList<Block>();
-						adjacent.add(block.getRelative(BlockFace.NORTH));
-						adjacent.add(block.getRelative(BlockFace.SOUTH));
-						adjacent.add(block.getRelative(BlockFace.EAST));
-						adjacent.add(block.getRelative(BlockFace.WEST));
-						adjacent.add(block.getRelative(BlockFace.UP));
-						adjacent.add(block.getRelative(BlockFace.DOWN));
-						
-						if(affecteds.containsAll(adjacent)) {
-							//Explosion ok
-							this.removeBlock(block);
-						} else {
-							double rand = Math.random();
-							if(rand < 0.8) {
-								this.removeBlock(block);
-							}
-						}
-					}
+			if (!obsidian || (obsidian && location.distance(block.getLocation()) < explosionradius/2.0)) {
+				if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion,
+						block.getLocation())) {
+					affecteds.add(block);
 				}
 			}
-			location.getWorld().playSound(location, Sound.EXPLODE, 10, 1);
-			EXPLODE.display(location, 0, 0, 0, 1, 1);
-			List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, explosionradius);
-			for(LivingEntity entity : entities) {
-				this.dealDamage(entity);
-				this.knockBack(entity);
+		}		
+		for (Block block : affecteds) {
+			if(!block.getType().equals(Material.BEDROCK)) {
+				if (!obsidian || location.distance(block.getLocation())<2.0) {
+					List<Block> adjacent = new LinkedList<Block>();
+					adjacent.add(block.getRelative(BlockFace.NORTH));
+					adjacent.add(block.getRelative(BlockFace.SOUTH));
+					adjacent.add(block.getRelative(BlockFace.EAST));
+					adjacent.add(block.getRelative(BlockFace.WEST));
+					adjacent.add(block.getRelative(BlockFace.UP));
+					adjacent.add(block.getRelative(BlockFace.DOWN));
+				
+					if(affecteds.containsAll(adjacent)) {
+						//Explosion ok
+						this.removeBlock(block);
+					} else {
+						double rand = Math.random();
+						if(rand < 0.8) {
+							this.removeBlock(block);
+						}
+					}
+				}	
 			}
 		}
+		location.getWorld().playSound(location, Sound.EXPLODE, 10, 1);
+		EXPLODE.display(location, 0, 0, 0, 1, 1);
+		double radius = explosionradius;
+		if (obsidian) {
+			radius = explosionradius/2.0;
+		}
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius);
+		for(LivingEntity entity : entities) {
+			this.dealDamage(entity);
+			this.knockBack(entity);
+		}
 	}
+	
 	
 	private void removeBlock(Block block) {
 		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {

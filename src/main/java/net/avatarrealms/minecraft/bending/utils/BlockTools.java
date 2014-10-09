@@ -130,6 +130,7 @@ public class BlockTools {
 		nonOpaque.add(Material.COCOA);
 		nonOpaque.add(Material.TRIPWIRE_HOOK);
 		nonOpaque.add(Material.TRIPWIRE);
+
 	}
 	
 	public static Set<Material> ironBendables = new HashSet<Material>();

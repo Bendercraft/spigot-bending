@@ -56,6 +56,10 @@ public class Lightning implements IAbility {
 	public static Lightning getLightning(Entity entity) {
 		return strikes.get(entity);
 	}
+	
+	public Player getPlayer() {
+		return player;
+	}
 
 	private void strike() {
 		Location targetlocation = getTargetLocation();
