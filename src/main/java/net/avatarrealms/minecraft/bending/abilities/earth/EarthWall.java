@@ -48,7 +48,7 @@ public class EarthWall implements IAbility {
 		Vector orth = new Vector(ox, oy, oz);
 		orth = orth.normalize();
 
-		Block sblock = BlockTools.getEarthSourceBlock(player, range);
+		Block sblock = BlockTools.getEarthSourceBlock(player, Abilities.RaiseEarth, range);
 		Location origin;
 		if (sblock == null) {
 			origin = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
@@ -65,7 +65,7 @@ public class EarthWall implements IAbility {
 			if (BlockTools.isTransparentToEarthbending(player, block)) {
 				for (int j = 1; j < height; j++) {
 					block = block.getRelative(BlockFace.DOWN);
-					if (BlockTools.isEarthbendable(player, block)) {
+					if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth, block)) {
 						cooldown = true;
 						new EarthColumn(player, block.getLocation(), height, this);
 						// } else if (block.getType() != Material.AIR
@@ -74,8 +74,8 @@ public class EarthWall implements IAbility {
 						break;
 					}
 				}
-			} else if (BlockTools.isEarthbendable(player,
-					block.getRelative(BlockFace.UP))) {
+			} else if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth,
+						block.getRelative(BlockFace.UP))) {
 				for (int j = 1; j < height; j++) {
 					block = block.getRelative(BlockFace.UP);
 					

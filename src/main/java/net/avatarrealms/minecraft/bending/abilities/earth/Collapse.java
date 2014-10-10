@@ -38,7 +38,7 @@ public class Collapse implements IAbility {
 		}	
 
 		this.player = player;
-		Block sblock = BlockTools.getEarthSourceBlock(player, range);
+		Block sblock = BlockTools.getEarthSourceBlock(player, Abilities.Collapse, range);
 		Location location;
 		if (sblock == null) {
 			location = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
@@ -46,7 +46,7 @@ public class Collapse implements IAbility {
 			location = sblock.getLocation();
 		}
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-			if (BlockTools.isEarthbendable(player, block)
+			if (BlockTools.isEarthbendable(player, Abilities.Collapse, block)
 					&& !blocks.containsKey(block)
 					&& block.getY() >= location.getBlockY()) {
 				getAffectedBlocks(block);
@@ -69,7 +69,7 @@ public class Collapse implements IAbility {
 		bendableblocks.add(block);
 		for (int i = 1; i <= height; i++) {
 			Block blocki = block.getRelative(BlockFace.DOWN, i);
-			if (BlockTools.isEarthbendable(player, blocki)) {
+			if (BlockTools.isEarthbendable(player, Abilities.Collapse, blocki)) {
 				baseblock = blocki;
 				bendableblocks.add(blocki);
 				tall++;

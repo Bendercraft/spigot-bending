@@ -33,7 +33,7 @@ public class EarthBlast implements IAbility {
 	private static double preparerange = ConfigManager.earthBlastPrepareRange;
 	private static double range = ConfigManager.earthBlastRange;
 	private static int earthDamage = ConfigManager.earthBlastDamage;
-	private static int ironDamage = ConfigManager.ironBlastDamage;
+	private static int speDamage = ConfigManager.ironBlastDamage;
 	private int damage;
 	private static double speed = ConfigManager.earthBlastSpeed;
 	private static final double deflectrange = 3;
@@ -73,7 +73,7 @@ public class EarthBlast implements IAbility {
 	}
 
 	public boolean prepare() {
-		Block block = BlockTools.getEarthSourceBlock(player, preparerange);
+		Block block = BlockTools.getEarthSourceBlock(player, Abilities.EarthBlast, preparerange);
 		cancelPrevious(block);	
 		block(player);
 		if (block != null) {
@@ -137,7 +137,12 @@ public class EarthBlast implements IAbility {
 				else {
 					sourceblock.setType(Material.IRON_BLOCK);
 				}
-				damage = ironDamage;
+				damage = speDamage;
+			}
+			else if (EntityTools.canBend(player, Abilities.LavaTrain)
+					&& sourceblock.getType() == Material.OBSIDIAN) {
+				damage = speDamage;
+				sourceblock.setType(Material.BEDROCK);
 			}
 			else {
 				sourceblock.setType(Material.STONE);
@@ -218,8 +223,10 @@ public class EarthBlast implements IAbility {
 				return false;
 			}
 
-			if (!BlockTools.isEarthbendable(player, sourceblock)
-					&& sourceblock.getType() != Material.COBBLESTONE) {
+			if (!BlockTools.isEarthbendable(player, Abilities.EarthBlast, sourceblock)
+					&& sourceblock.getType() != Material.COBBLESTONE
+					&& sourceblock.getType() != Material.SANDSTONE
+					&& sourceblock.getType() != Material.BEDROCK) {
 				return false;
 			}
 

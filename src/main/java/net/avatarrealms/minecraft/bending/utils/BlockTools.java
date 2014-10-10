@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthColumn;
@@ -228,6 +229,13 @@ public class BlockTools {
 		}
 		
 		if (isIronBendable(player,block.getType())) {
+			return true;
+		}
+		
+		if (EntityTools.isSpecialized(player, BendingSpecializationType.Lavabend) 
+				&& block.getType() == Material.OBSIDIAN
+				&& (ability == Abilities.EarthBlast
+				|| ability == Abilities.LavaTrain)) {
 			return true;
 		}
 		
@@ -591,10 +599,10 @@ public class BlockTools {
 		}
 	}
 	
-	public static Block getEarthSourceBlock(Player player, double range) {
+	public static Block getEarthSourceBlock(Player player, Abilities ability, double range) {
 		Block testblock = EntityTools.getTargetBlock(player, (int) range,
 				getTransparentEarthbending());
-		if (isEarthbendable(player, testblock)){
+		if (isEarthbendable(player, ability, testblock)){
 			return testblock;
 		}	
 		Location location = player.getEyeLocation();
@@ -602,10 +610,10 @@ public class BlockTools {
 		for (double i = 0; i <= range; i++) {
 			Block block = location.clone().add(vector.clone().multiply(i))
 					.getBlock();
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.RaiseEarth,
+			if (PluginTools.isRegionProtectedFromBuild(player, ability,
 					location))
 				continue;
-			if (isEarthbendable(player, block)) {
+			if (isEarthbendable(player, ability, block)) {
 				return block;
 			}
 		}

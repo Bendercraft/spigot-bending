@@ -117,7 +117,7 @@ public class EarthArmor implements IAbility {
 		if (BlockTools.isTransparentToEarthbending(player, newheadblock)
 				&& !newheadblock.isLiquid()) {
 			BlockTools.breakBlock(newheadblock);
-		} else if (!BlockTools.isEarthbendable(player, newheadblock)
+		} else if (!BlockTools.isEarthbendable(player, Abilities.EarthArmor, newheadblock)
 				&& !newheadblock.isLiquid()
 				&& newheadblock.getType() != Material.AIR) {
 			cancel();
@@ -127,7 +127,7 @@ public class EarthArmor implements IAbility {
 		if (BlockTools.isTransparentToEarthbending(player, newlegsblock)
 				&& !newlegsblock.isLiquid()) {
 			BlockTools.breakBlock(newlegsblock);
-		} else if (!BlockTools.isEarthbendable(player, newlegsblock)
+		} else if (!BlockTools.isEarthbendable(player, Abilities.EarthArmor, newlegsblock)
 				&& !newlegsblock.isLiquid()
 				&& newlegsblock.getType() != Material.AIR) {
 			cancel();

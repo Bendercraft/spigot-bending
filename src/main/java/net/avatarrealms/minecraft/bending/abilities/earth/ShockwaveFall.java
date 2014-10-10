@@ -8,7 +8,7 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import org.bukkit.entity.Player;
 
 public class ShockwaveFall implements IAbility {
-	private static final double threshold = 10;
+	private static final double threshold = 9;
 
 	private IAbility parent;
 

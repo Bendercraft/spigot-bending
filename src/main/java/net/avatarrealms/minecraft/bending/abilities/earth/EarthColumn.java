@@ -54,7 +54,7 @@ public class EarthColumn implements IAbility {
 		}
 			
 		try {
-			block = BlockTools.getEarthSourceBlock(player, range);
+			block = BlockTools.getEarthSourceBlock(player, Abilities.RaiseEarth, range);
 			if (block == null)
 				return;
 			origin = block.getLocation();

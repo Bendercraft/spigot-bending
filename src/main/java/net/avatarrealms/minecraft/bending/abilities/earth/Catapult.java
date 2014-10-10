@@ -45,8 +45,9 @@ public class Catapult implements IAbility {
 		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.Catapult))
+		if (bPlayer.isOnCooldown(Abilities.Catapult)) {
 			return;
+		}	
 
 		this.player = player;
 		origin = player.getEyeLocation().clone();
@@ -58,7 +59,7 @@ public class Catapult implements IAbility {
 		for (int i = 0; i <= length; i++) {
 			location = origin.clone().add(neg.clone().multiply((double) i));
 			block = location.getBlock();
-			if (BlockTools.isEarthbendable(player, block)) {
+			if (BlockTools.isEarthbendable(player, Abilities.Catapult, block)) {
 				// block.setType(Material.SANDSTONE);
 				distance = BlockTools.getEarthbendableBlocksLength(player, block,
 						neg, length - i);

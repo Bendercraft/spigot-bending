@@ -47,7 +47,7 @@ public class CompactColumn implements IAbility {
 		if (bPlayer.isOnCooldown(Abilities.Collapse))
 			return;
 
-		block = BlockTools.getEarthSourceBlock(player, range);
+		block = BlockTools.getEarthSourceBlock(player, Abilities.Collapse, range);
 		if (block == null) {
 			return;
 		}
