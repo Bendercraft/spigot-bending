@@ -326,11 +326,7 @@ public class BlockTools {
 			return false;
 		}
 			
-		if (isWater(block) && block.getData() == full) {
-					return true;
-		}
-			
-		if (block.getType() == Material.ICE || block.getType() == Material.SNOW) {
+		if (isWaterBased(block)) {
 			return true;
 		}
 			
@@ -723,11 +719,9 @@ public class BlockTools {
 			}
 
 			if (sourceblock.getType() == Material.AIR || sourceblock.isLiquid()) {
-
 				info.getState().update(true);
 			} else {
-				dropItems(
-						block,
+				dropItems(block,
 						getDrops(block, info.getState().getType(), info
 								.getState().getRawData(), pickaxe));
 
@@ -768,10 +762,12 @@ public class BlockTools {
 		if (movedEarth.containsKey(block)) {
 			Information info = movedEarth.get(block);
 			if (block.getType() == Material.SANDSTONE
-					&& info.getType() == Material.SAND)
+					&& info.getType() == Material.SAND) {
 				block.setType(Material.SAND);
-			if (EarthColumn.blockInAllAffectedBlocks(block))
+			}	
+			if (EarthColumn.blockInAllAffectedBlocks(block)){
 				EarthColumn.revertBlock(block);
+			}		
 			EarthColumn.resetBlock(block);
 			movedEarth.remove(block);
 		}

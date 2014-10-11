@@ -118,8 +118,7 @@ public class EarthBlast implements IAbility {
 		sourceblock.setType(sourcetype);
 	}
 
-	private void focusBlock() {
-		
+	private void focusBlock() {	
 		if (EarthPassive.isPassiveSand(sourceblock)) {
 			EarthPassive.revertSand(sourceblock);
 		}		
@@ -151,9 +150,6 @@ public class EarthBlast implements IAbility {
 			}
 			
 		}
-		
-		
-
 		location = sourceblock.getLocation();
 	}
 
@@ -162,44 +158,47 @@ public class EarthBlast implements IAbility {
 	}
 
 	public void throwEarth() {
-		if (sourceblock != null) {		
-			if (sourceblock.getWorld() == player.getWorld()) {
-				if (BlockTools.movedEarth.containsKey(sourceblock)) {
-					if (!revert)
-						BlockTools.removeRevertIndex(sourceblock);
-					// Tools.removeEarthbendedBlockIndex(sourceblock);
-				}
-				Entity target = EntityTools.getTargettedEntity(player, range);
-				// Tools.verbose(target);
-				if (target == null) {
-					destination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
-					firstdestination = sourceblock.getLocation().clone();
-					firstdestination.setY(destination.getY());
-				} else {
-					destination = ((LivingEntity) target).getEyeLocation();
-					firstdestination = sourceblock.getLocation().clone();
-					firstdestination.setY(destination.getY());
-					destination = Tools.getPointOnLine(firstdestination,
-							destination, range);
-				}
-
-				if (destination.distance(location) <= 1) {
-					progressing = false;
-					destination = null;
-				} else {
-					progressing = true;
-					sourceblock.getWorld().playEffect(
-							sourceblock.getLocation(), Effect.GHAST_SHOOT, 0,
-							10);
-					// direction = getDirection().normalize();
-					if (sourcetype != Material.SAND
-							&& sourcetype != Material.GRAVEL) {
-						sourceblock.setType(sourcetype);
-					}
-				}
-			}
-
+		if (sourceblock == null) {
+			return;
 		}
+		
+		if (sourceblock.getWorld() != player.getWorld()) {
+			return;
+		}	
+
+		if (BlockTools.movedEarth.containsKey(sourceblock)) {
+			if (!revert) {
+				BlockTools.removeRevertIndex(sourceblock);
+			// Tools.removeEarthbendedBlockIndex(sourceblock);
+			}				
+		}
+		LivingEntity target = EntityTools.getTargettedEntity(player, range);
+		// Tools.verbose(target);
+		if (target == null) {
+			destination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
+			firstdestination = sourceblock.getLocation().clone();
+			firstdestination.setY(destination.getY());
+		} else {
+			destination = target.getEyeLocation();
+			firstdestination = sourceblock.getLocation().clone();
+			firstdestination.setY(destination.getY());
+			destination = Tools.getPointOnLine(firstdestination,
+					destination, range);
+		}
+
+		if (destination.distance(location) <= 1) {
+			progressing = false;
+			destination = null;
+		} else {
+			progressing = true;
+			sourceblock.getWorld().playEffect(sourceblock.getLocation(),
+												Effect.GHAST_SHOOT, 0,
+												10);
+			if (sourcetype != Material.SAND
+					&& sourcetype != Material.GRAVEL) {
+				sourceblock.setType(sourcetype);
+			}
+		}	
 	}
 
 	public static EarthBlast getBlastFromSource(Block block) {
@@ -473,18 +472,22 @@ public class EarthBlast implements IAbility {
 	private static void block(Player player) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
 		for (EarthBlast blast : instances.values()) {
-			if (blast.player.equals(player))
+			if (blast.player.equals(player)) {
 				continue;
+			}			
 
-			if (!blast.location.getWorld().equals(player.getWorld()))
+			if (!blast.location.getWorld().equals(player.getWorld())){
 				continue;
+			}			
 
-			if (!blast.progressing)
+			if (!blast.progressing){
 				continue;
+			}			
 
 			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.EarthBlast,
-					blast.location))
+					blast.location)) {
 				continue;
+			}		
 
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();

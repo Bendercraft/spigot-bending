@@ -55,17 +55,14 @@ public class RevertChecker implements Runnable {
 				if (!chunks.contains(chunk))
 					chunks.add(chunk);
 			}
-
 			return chunks;
 		}
-
 	}
 
 	public void run() {
 		time = System.currentTimeMillis();
 
 		if (ConfigManager.reverseearthbending) {
-
 			try {
 				returnFuture = plugin
 						.getServer()
@@ -78,8 +75,9 @@ public class RevertChecker implements Runnable {
 				earth.putAll(BlockTools.movedEarth);
 
 				for (Block block : earth.keySet()) {
-					if (revertQueue.containsKey(block))
+					if (revertQueue.containsKey(block)){
 						continue;
+					}				
 					boolean remove = true;
 					Information info = earth.get(block);
 					if (time < info.getTime() + ConfigManager.revertchecktime

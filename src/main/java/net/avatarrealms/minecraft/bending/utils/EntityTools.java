@@ -365,17 +365,17 @@ public class EntityTools {
 		return block;
 	}
 	
-	public static Entity getTargettedEntity(Player player, double range) {
+	public static LivingEntity getTargettedEntity(Player player, double range) {
 		return getTargettedEntity(player, range, new ArrayList<Entity>());
 	}
 
-	public static Entity getTargettedEntity(Player player, double range,
+	public static LivingEntity getTargettedEntity(Player player, double range,
 			List<Entity> avoid) {
 		double longestr = range + 1;
-		Entity target = null;
+		LivingEntity target = null;
 		Location origin = player.getEyeLocation();
 		Vector direction = player.getEyeLocation().getDirection().normalize();
-		for (Entity entity : origin.getWorld().getLivingEntities()) {
+		for (LivingEntity entity : origin.getWorld().getLivingEntities()) {
 			if (avoid.contains(entity)) {
 				continue;
 			}			
