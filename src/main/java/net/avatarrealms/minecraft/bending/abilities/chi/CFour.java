@@ -62,7 +62,8 @@ public class CFour {
 		}
 		this.player = player;
 		this.location = temp.getLocation();
-		this.generateCFour(temp);
+		this.previousType = temp.getType();
+		this.generateCFour(temp, face);
 		instances.put(player, this);
 	}
 	
@@ -81,15 +82,16 @@ public class CFour {
 		if (bPlayer != null) {
 			bPlayer.cooldown(Abilities.PlasticBomb);
 		}
-		
+		instances.remove(player);
 	}
 	
-	private void generateCFour(Block block) {
+	private void generateCFour(Block block, BlockFace face) {
 		bomb = block;
 		bomb.setType(Material.SKULL);
 		Skull skull = (Skull) bomb.getState();
 		skull.setSkullType(SkullType.PLAYER);
 		skull.setOwner("MHF_TNT");
+		skull.setRotation(face);
 		skull.update();
 	}
 	
