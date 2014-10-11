@@ -184,7 +184,8 @@ public class Combustion implements IAbility {
 			}
 			if (!obsidian || (obsidian && location.distance(block.getLocation()) < explosionradius/2.0)) {
 				if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion,
-						block.getLocation())) {
+						block.getLocation()) 
+						&& !PluginTools.isRegionProtectedFromExplosion(player, Abilities.Combustion, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}

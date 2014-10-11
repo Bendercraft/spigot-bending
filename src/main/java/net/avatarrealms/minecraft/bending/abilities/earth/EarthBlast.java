@@ -33,6 +33,7 @@ public class EarthBlast implements IAbility {
 	private static double preparerange = ConfigManager.earthBlastPrepareRange;
 	private static double range = ConfigManager.earthBlastRange;
 	private static int earthDamage = ConfigManager.earthBlastDamage;
+	private static final int sandDamage = 5;
 	private static int speDamage = ConfigManager.ironBlastDamage;
 	private int damage;
 	private static double speed = ConfigManager.earthBlastSpeed;
@@ -126,6 +127,7 @@ public class EarthBlast implements IAbility {
 		damage = earthDamage;
 		if (sourcetype == Material.SAND) {
 			sourceblock.setType(Material.SANDSTONE);
+			damage = sandDamage;
 		} else if (sourcetype == Material.STONE) {
 			sourceblock.setType(Material.COBBLESTONE);
 		} else {
