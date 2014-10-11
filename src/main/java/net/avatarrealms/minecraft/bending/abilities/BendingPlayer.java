@@ -135,6 +135,9 @@ public class BendingPlayer {
 					case Bloodbending:
 						cd = ConfigManager.bloodbendingCooldown;
 						break;
+					case PlasticBomb:
+						cd = ConfigManager.plasticCooldown;
+						break;
 					default:
 						cd = 0;
 						break;

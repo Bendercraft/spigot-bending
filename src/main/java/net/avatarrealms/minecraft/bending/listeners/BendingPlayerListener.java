@@ -735,6 +735,10 @@ public class BendingPlayerListener implements Listener{
 			if (ability == Abilities.Combustion) {
 				new Combustion(player, null);
 			}
+			
+			if (ability == Abilities.PlasticBomb) {
+				CFour.activate(player);
+			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
 				if (ability == Abilities.Dash) {

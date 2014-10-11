@@ -148,7 +148,8 @@ public class ConfigManager {
 	
 	//PlasticBomb
 	public static int plasticCooldown;
-	public static int plasticRadius;
+	public static double plasticRadius;
+	public static int plasticDamage;
 	
 
 	// Earth
@@ -486,7 +487,8 @@ public class ConfigManager {
 		
 		//Plastic bomb
 		plasticCooldown = config.getInt("Properties.ChiBlocker.PlasticBomb.Cooldown");
-		plasticRadius = config.getInt("Properties.ChiBlocker.PlasticBomb.Radius");
+		plasticRadius = config.getDouble("Properties.ChiBlocker.PlasticBomb.Radius");
+		plasticDamage = config.getInt("Properties.ChiBlocker.PlasticBomb.Damage");
 
 		// Air
 		// AirBlast
