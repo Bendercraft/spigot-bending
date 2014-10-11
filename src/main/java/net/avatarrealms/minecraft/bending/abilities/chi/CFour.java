@@ -62,7 +62,8 @@ public class CFour {
 		}
 		this.player = player;
 		this.location = temp.getLocation();
-		this.generateCFour(temp);		
+		this.generateCFour(temp);
+		instances.put(player, this);
 	}
 	
 	public static void activate(Player player) {
