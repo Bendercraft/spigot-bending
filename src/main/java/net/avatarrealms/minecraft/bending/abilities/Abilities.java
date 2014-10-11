@@ -485,6 +485,13 @@ public enum Abilities {
 					+ " or if you want to avoid some dangerous technics ";
 		}
 	},
+	PlasticBomb(BendingType.ChiBlocker) {
+		@Override
+		public String getDescription() {
+			return " Not ready yet.";
+		}
+		
+	},
 	
 	/*
 	 * 

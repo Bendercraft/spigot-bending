@@ -146,6 +146,10 @@ public class ConfigManager {
 	public static double dashLength; // Not really accurate as it's used with the setVelocity()
 	public static double dashHeight;
 	
+	//PlasticBomb
+	public static int plasticCooldown;
+	public static int plasticRadius;
+	
 
 	// Earth
 	// Catapult
@@ -479,6 +483,10 @@ public class ConfigManager {
 		dashCooldown = config.getInt("Properties.ChiBlocker.Dash.Cooldown");
 		dashLength = config.getDouble("Properties.ChiBlocker.Dash.Length");
 		dashHeight = config.getDouble("Properties.ChiBlocker.Dash.Height");
+		
+		//Plastic bomb
+		plasticCooldown = config.getInt("Properties.ChiBlocker.PlasticBomb.Cooldown");
+		plasticRadius = config.getInt("Properties.ChiBlocker.PlasticBomb.Radius");
 
 		// Air
 		// AirBlast

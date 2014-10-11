@@ -90,6 +90,7 @@ permissions:
       bending.chiblocker.SmokeBomb: false
       bending.chiblocker.Dash: false
       bending.chiblocker.PoisonnedDart: false
+      bending.chiblocker.PlasticBomb: false
   bending.*:
     description: Allows all bending.
     children:

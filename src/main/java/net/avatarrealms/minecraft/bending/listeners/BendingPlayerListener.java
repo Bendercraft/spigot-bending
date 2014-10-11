@@ -24,6 +24,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
 import net.avatarrealms.minecraft.bending.abilities.air.Suffocate;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
+import net.avatarrealms.minecraft.bending.abilities.chi.CFour;
 import net.avatarrealms.minecraft.bending.abilities.chi.Dash;
 import net.avatarrealms.minecraft.bending.abilities.chi.HighJump;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
@@ -96,7 +97,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -222,8 +222,7 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		
+		Player player = event.getPlayer();	
 		
 		if (Paralyze.isParalyzed(player) 
 				|| Bloodbending.isBloodbended(player)) {
@@ -243,7 +242,15 @@ public class BendingPlayerListener implements Listener{
 		}
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			BendingPlayer.getBendingPlayer(player).cooldown();
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+			
+			if (bPlayer.isBender(BendingType.ChiBlocker)) {
+				Abilities abi = bPlayer.getAbility();
+				if (abi == Abilities.PlasticBomb && EntityTools.canBend(player, abi)){
+					new CFour(player, event.getClickedBlock(), event.getBlockFace());
+				}
+			}
+			bPlayer.cooldown();
 		}
 		
 		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {

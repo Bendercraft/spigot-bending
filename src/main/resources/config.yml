@@ -75,6 +75,9 @@ Properties:
       Cooldown: 6000
       Length: 1.9
       Height: 0.7
+    PlasticBomb:
+      Cooldown: 60000
+      Radius: 1
   GlobalCooldown: 500
   Air:
     AirBlast:
