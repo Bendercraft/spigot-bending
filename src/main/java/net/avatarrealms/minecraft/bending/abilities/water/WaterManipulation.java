@@ -10,6 +10,7 @@ import java.util.Set;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
@@ -147,37 +148,38 @@ public class WaterManipulation implements IAbility {
 	}
 
 	public void moveWater() {
-		if (sourceblock != null) {
-			if (sourceblock.getWorld() == player.getWorld()) {
-				targetdestination = getTargetLocation(player);
-
-				if (targetdestination.distance(location) <= 1) {
-					progressing = false;
-					targetdestination = null;
-					remove(id);
-				} else {
-					progressing = true;
-					settingup = true;
-					firstdestination = getToEyeLevel();
-					firstdirection = Tools.getDirection(
-							sourceblock.getLocation(), firstdestination)
-							.normalize();
-					targetdestination = Tools.getPointOnLine(firstdestination,
-							targetdestination, range);
-					targetdirection = Tools.getDirection(firstdestination,
-							targetdestination).normalize();
-
-					if (BlockTools.isPlant(sourceblock))
-						new Plantbending(sourceblock, this);
-					addWater(sourceblock);
-				}
-
-			}
-
-			BendingPlayer.getBendingPlayer(player).cooldown(
-					Abilities.WaterManipulation);
-
+		if (sourceblock == null) {
+			return;
 		}
+		if (sourceblock.getWorld() != player.getWorld()) {
+			return;
+		}
+		
+		//TODO : Test this :
+		if (drainedBlock == null) {
+			Information info = Information.fromBlock(sourceblock);
+			BlockTools.bendedBlocks.put(sourceblock, info);
+		}	
+		targetdestination = getTargetLocation(player);
+		if (targetdestination.distance(location) <= 1) {
+			progressing = false;
+			targetdestination = null;
+			remove(id);
+		} else {
+			progressing = true;
+			settingup = true;
+			firstdestination = getToEyeLevel();
+			firstdirection = Tools.getDirection(sourceblock.getLocation(), firstdestination).normalize();
+			targetdestination = Tools.getPointOnLine(firstdestination,
+					targetdestination, range);
+			targetdirection = Tools.getDirection(firstdestination,
+					targetdestination).normalize();
+
+			if (BlockTools.isPlant(sourceblock))
+				new Plantbending(sourceblock, this);
+			addWater(sourceblock);
+		}
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.WaterManipulation);
 	}
 
 	private static Location getTargetLocation(Player player) {
@@ -440,8 +442,10 @@ public class WaterManipulation implements IAbility {
 		if (!affectedblocks.containsKey(block)) {
 			affectedblocks.put(block, block);
 		}
-		if (FreezeMelt.isFrozen(block))
+		if (FreezeMelt.isFrozen(block)){
 			FreezeMelt.thawThenRemove(block);
+		}
+			
 		block.setType(Material.WATER);
 		block.setData(full);
 	}
@@ -485,18 +489,22 @@ public class WaterManipulation implements IAbility {
 
 	private static void redirectTargettedBlasts(Player player) {
 		for(WaterManipulation manip : instances.values()) {
-			if (!manip.progressing)
+			if (!manip.progressing){
 				continue;
+			}				
 
-			if (!manip.location.getWorld().equals(player.getWorld()))
+			if (!manip.location.getWorld().equals(player.getWorld())){
 				continue;
+			}			
 
 			if (PluginTools.isRegionProtectedFromBuild(player,
-					Abilities.WaterManipulation, manip.location))
+					Abilities.WaterManipulation, manip.location)){
 				continue;
+			}				
 
-			if (manip.player.equals(player))
+			if (manip.player.equals(player)){
 				manip.redirect(player, getTargetLocation(player));
+			}			
 
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();

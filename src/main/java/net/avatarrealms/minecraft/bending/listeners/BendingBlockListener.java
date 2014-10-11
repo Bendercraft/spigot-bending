@@ -150,7 +150,7 @@ public class BendingBlockListener implements Listener{
 		} else if (!Wave.canThaw(block)) {
 			Wave.thaw(block);
 			event.setCancelled(true);
-		} else if (BlockTools.movedEarth.containsKey(block)) {
+		} else if (BlockTools.bendedBlocks.containsKey(block)) {
 			BlockTools.removeRevertIndex(block);
 		} else if (TempBlock.isTempBlock(block)) {
 			TempBlock.revertBlock(block, Material.AIR);

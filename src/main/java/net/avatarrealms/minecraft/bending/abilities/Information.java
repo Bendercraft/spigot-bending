@@ -1,22 +1,20 @@
 package net.avatarrealms.minecraft.bending.abilities;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
 
 public class Information {
 
-	private Player player;
+	//private Player player;
 	private long time;
 	private Block block;
-	private Location location;
+	//private Location location;
 	private Material type;
-	private int integer;
-	private double value;
+	//private int integer;
+	//private double value;
 	private byte data;
-	private String string;
+	//private String string;
 	private BlockState state;
 
 	private static int ID = Integer.MIN_VALUE;
@@ -41,22 +39,6 @@ public class Information {
 		return state;
 	}
 
-	public void setString(String string) {
-		this.string = string;
-	}
-
-	public String getString() {
-		return string;
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
-	public Player getPlayer() {
-		return player;
-	}
-
 	public void setTime(long time) {
 		this.time = time;
 	}
@@ -73,14 +55,6 @@ public class Information {
 		return block;
 	}
 
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-	public Location getLocation() {
-		return location;
-	}
-
 	public void setType(Material type) {
 		this.type = type;
 	}
@@ -89,28 +63,27 @@ public class Information {
 		return type;
 	}
 
-	public void setInteger(int integer) {
-		this.integer = integer;
-	}
-
-	public int getInteger() {
-		return integer;
-	}
-
-	public void setDouble(double value) {
-		this.value = value;
-	}
-
-	public double getDouble() {
-		return value;
-	}
-
 	public void setData(byte data) {
 		this.data = data;
 	}
 
 	public byte getData() {
 		return data;
+	}
+	
+	public static Information fromBlock(Block block) {
+		if (block == null) {
+			return null;
+		}
+		Information info = null;
+		info = new Information();
+		info.setBlock(block);
+		info.setType(block.getType());
+		info.setData(block.getData());
+		info.setState(block.getState());
+		info.setTime(System.currentTimeMillis());
+		
+		return info;
 	}
 
 }

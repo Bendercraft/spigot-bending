@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
@@ -152,37 +153,42 @@ public class Wave implements IAbility {
 			return;
 
 		bPlayer.cooldown(Abilities.Surge);
-		if (sourceblock != null) {
-			if (sourceblock.getWorld() != player.getWorld()) {
-				return;
+		if (sourceblock == null) {
+			return;
+		}
+		if (sourceblock.getWorld() != player.getWorld()) {
+			return;
+		}
+		
+		range = PluginTools.waterbendingNightAugment(range, player.getWorld());
+		if (AvatarState.isAvatarState(player)){
+			factor = AvatarState.getValue(factor);
+		}			
+		Entity target = EntityTools.getTargettedEntity(player, range);
+		if (target == null) {
+			targetdestination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
+		} else {
+			targetdestination = ((LivingEntity) target).getEyeLocation();
+		}
+		if (targetdestination.distance(location) <= 1) {
+			progressing = false;
+			targetdestination = null;
+		} else {
+			if (drainedBlock == null) {
+				Information info = Information.fromBlock(sourceblock);
+				BlockTools.bendedBlocks.put(sourceblock, info);
 			}
-			range = PluginTools.waterbendingNightAugment(range, player.getWorld());
-			if (AvatarState.isAvatarState(player))
-				factor = AvatarState.getValue(factor);
-			Entity target = EntityTools.getTargettedEntity(player, range);
-			if (target == null) {
-				targetdestination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
-			} else {
-				targetdestination = ((LivingEntity) target).getEyeLocation();
+			progressing = true;
+			targetdirection = getDirection(sourceblock.getLocation(),
+					targetdestination).normalize();
+			targetdestination = location.clone().add(
+					targetdirection.clone().multiply(range));
+			if (BlockTools.isPlant(sourceblock))
+				new Plantbending(sourceblock, this);
+			if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
+				sourceblock.setType(Material.AIR);
 			}
-			if (targetdestination.distance(location) <= 1) {
-				progressing = false;
-				targetdestination = null;
-			} else {
-				progressing = true;
-				targetdirection = getDirection(sourceblock.getLocation(),
-						targetdestination).normalize();
-				targetdestination = location.clone().add(
-						targetdirection.clone().multiply(range));
-				if (BlockTools.isPlant(sourceblock))
-					new Plantbending(sourceblock, this);
-				if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
-					sourceblock.setType(Material.AIR);
-				}
-				addWater(sourceblock);
-
-			}
-
+			addWater(sourceblock);
 		}
 	}
 

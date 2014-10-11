@@ -72,7 +72,7 @@ public class RevertChecker implements Runnable {
 				ArrayList<Chunk> chunks = returnFuture.get();
 
 				Map<Block, Information> earth = new HashMap<Block, Information>();
-				earth.putAll(BlockTools.movedEarth);
+				earth.putAll(BlockTools.bendedBlocks);
 
 				for (Block block : earth.keySet()) {
 					if (revertQueue.containsKey(block)){

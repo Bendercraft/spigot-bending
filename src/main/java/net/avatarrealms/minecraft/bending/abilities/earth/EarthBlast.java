@@ -166,7 +166,7 @@ public class EarthBlast implements IAbility {
 			return;
 		}	
 
-		if (BlockTools.movedEarth.containsKey(sourceblock)) {
+		if (BlockTools.bendedBlocks.containsKey(sourceblock)) {
 			if (!revert) {
 				BlockTools.removeRevertIndex(sourceblock);
 			// Tools.removeEarthbendedBlockIndex(sourceblock);

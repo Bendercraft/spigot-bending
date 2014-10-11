@@ -10,6 +10,7 @@ import java.util.Set;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
@@ -221,6 +222,10 @@ public class WaterWall implements IAbility {
 			} else {
 				progressing = true;
 				settingup = true;
+				if (drainedBlock == null) {
+					Information info = Information.fromBlock(sourceblock);
+					BlockTools.bendedBlocks.put(sourceblock, info);
+				}
 				firstdestination = getToEyeLevel();
 				firstdirection = getDirection(sourceblock.getLocation(),
 						firstdestination);

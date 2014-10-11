@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -110,9 +111,10 @@ public class IceSpike2 implements IAbility {
 		boolean activate = false;
 
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
-				Abilities.IceSpike))
+				Abilities.IceSpike)){
 			return;
-
+		}
+			
 		for (IceSpike2 ice : getInstances(player)) {
 			if (ice.prepared) {
 				ice.throwIce();
@@ -178,6 +180,9 @@ public class IceSpike2 implements IAbility {
 			destination = target.getEyeLocation();
 		}
 
+		Information info = Information.fromBlock(sourceblock);
+		BlockTools.bendedBlocks.put(sourceblock, info);
+	
 		location = sourceblock.getLocation();
 		if (destination.distance(location) < 1)
 			return;

@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
@@ -170,6 +171,11 @@ public class IceSwipe implements IAbility{
 				iceblocks.put(waterblock, targetloc);
 			}
 		}
+		
+		/* 
+			Information info = Information.fromBlock(sourceblock);
+			BlockTools.bendedBlocks.put(sourceblock, info);
+		*/
 	}
 
 	@Override

@@ -206,7 +206,7 @@ public class BendingEntityListener implements Listener {
 			if (!Wave.canThaw(block)) {
 				Wave.thaw(block);
 			}
-			if (BlockTools.movedEarth.containsKey(block)) {
+			if (BlockTools.bendedBlocks.containsKey(block)) {
 				BlockTools.removeRevertIndex(block);
 			}
 		}

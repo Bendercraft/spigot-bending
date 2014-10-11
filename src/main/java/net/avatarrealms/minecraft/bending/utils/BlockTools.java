@@ -144,7 +144,7 @@ public class BlockTools {
 		ironBendables.add(Material.CAULDRON);
 	}
 	
-	public static ConcurrentHashMap<Block, Information> movedEarth = new ConcurrentHashMap<Block, Information>();
+	public static ConcurrentHashMap<Block, Information> bendedBlocks = new ConcurrentHashMap<Block, Information>();
 	public static ConcurrentHashMap<Integer, Information> tempAir = new ConcurrentHashMap<Integer, Information>();
 	
 	public static Set<Material> getTransparentEarthbending() {
@@ -567,18 +567,19 @@ public class BlockTools {
 	public static void moveEarthBlock(Block source, Block target) {
 		byte full = 0x0;
 		Information info;
-		if (movedEarth.containsKey(source)) {
-			info = movedEarth.get(source);
+		if (bendedBlocks.containsKey(source)) {
+			info = bendedBlocks.get(source);
 			info.setTime(System.currentTimeMillis());
-			movedEarth.remove(source);
-			movedEarth.put(target, info);
+			bendedBlocks.remove(source);
+			bendedBlocks.put(target, info);
 		} else {
 			info = new Information();
 			info.setBlock(source);
+			info.setType(source.getType());
 
 			info.setTime(System.currentTimeMillis());
 			info.setState(source.getState());
-			movedEarth.put(target, info);
+			bendedBlocks.put(target, info);
 		}
 
 		if (adjacentToThreeOrMoreSources(source)) {
@@ -646,11 +647,11 @@ public class BlockTools {
 	}
 	
 	public static void addTempAirBlock(Block block) {
-		if (movedEarth.containsKey(block)) {
-			Information info = movedEarth.get(block);
+		if (bendedBlocks.containsKey(block)) {
+			Information info = bendedBlocks.get(block);
 			block.setType(Material.AIR);
 			info.setTime(System.currentTimeMillis());
-			movedEarth.remove(block);
+			bendedBlocks.remove(block);
 			tempAir.put(info.getID(), info);
 		} else {
 			Information info = new Information();
@@ -673,7 +674,7 @@ public class BlockTools {
 		Information info = tempAir.get(i);
 		Block block = info.getState().getBlock();
 		if (block.getType() != Material.AIR && !block.isLiquid()) {
-			if (force || !movedEarth.containsKey(block)) {
+			if (force || !bendedBlocks.containsKey(block)) {
 				dropItems(
 						block,
 						getDrops(block, info.getState().getType(), info
@@ -691,12 +692,12 @@ public class BlockTools {
 
 	public static boolean revertBlock(Block block) {
 		byte full = 0x0;
-		if (movedEarth.containsKey(block)) {
-			Information info = movedEarth.get(block);
+		if (bendedBlocks.containsKey(block)) {
+			Information info = bendedBlocks.get(block);
 			Block sourceblock = info.getState().getBlock();
 
 			if (info.getState().getType() == Material.AIR) {
-				movedEarth.remove(block);
+				bendedBlocks.remove(block);
 				return true;
 			}
 
@@ -708,13 +709,13 @@ public class BlockTools {
 					EarthColumn.revertBlock(block);
 				EarthColumn.resetBlock(sourceblock);
 				EarthColumn.resetBlock(block);
-				movedEarth.remove(block);
+				bendedBlocks.remove(block);
 				return true;
 			}
 
-			if (movedEarth.containsKey(sourceblock)) {
+			if (bendedBlocks.containsKey(sourceblock)) {
 				addTempAirBlock(block);
-				movedEarth.remove(block);
+				bendedBlocks.remove(block);
 				return true;
 			}
 
@@ -740,7 +741,7 @@ public class BlockTools {
 				EarthColumn.revertBlock(block);
 			EarthColumn.resetBlock(sourceblock);
 			EarthColumn.resetBlock(block);
-			movedEarth.remove(block);
+			bendedBlocks.remove(block);
 		}
 		return true;
 	}
@@ -759,8 +760,8 @@ public class BlockTools {
 	}
 	
 	public static void removeRevertIndex(Block block) {
-		if (movedEarth.containsKey(block)) {
-			Information info = movedEarth.get(block);
+		if (bendedBlocks.containsKey(block)) {
+			Information info = bendedBlocks.get(block);
 			if (block.getType() == Material.SANDSTONE
 					&& info.getType() == Material.SAND) {
 				block.setType(Material.SAND);
@@ -769,12 +770,12 @@ public class BlockTools {
 				EarthColumn.revertBlock(block);
 			}		
 			EarthColumn.resetBlock(block);
-			movedEarth.remove(block);
+			bendedBlocks.remove(block);
 		}
 	}
 
 	public static void removeAllEarthbendedBlocks() {
-		for (Block block : movedEarth.keySet()) {
+		for (Block block : bendedBlocks.keySet()) {
 			revertBlock(block);
 		}
 

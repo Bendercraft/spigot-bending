@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
@@ -108,6 +109,10 @@ public class OctopusForm implements IAbility {
 
 	private void form() {
 		incrementStep();
+		
+		Information info = Information.fromBlock(sourceblock);
+		BlockTools.bendedBlocks.put(sourceblock, info);
+		
 		if (BlockTools.isPlant(sourceblock)) {
 			new Plantbending(sourceblock, this);
 			sourceblock.setType(Material.AIR);
