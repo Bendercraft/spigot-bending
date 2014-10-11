@@ -26,6 +26,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
 import net.avatarrealms.minecraft.bending.abilities.air.Suffocate;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
+import net.avatarrealms.minecraft.bending.abilities.chi.CFour;
 import net.avatarrealms.minecraft.bending.abilities.chi.PoisonnedDart;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
 import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
@@ -319,6 +320,7 @@ public class PluginTools {
 		RapidPunch.removeAll();
 		SmokeBomb.removeAll();
 		PoisonnedDart.removeAll();
+		CFour.removeAll();
 		
 		AstralProjection.removeAll();
 
