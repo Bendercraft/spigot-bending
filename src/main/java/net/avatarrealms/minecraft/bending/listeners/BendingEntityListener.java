@@ -1,6 +1,8 @@
 package net.avatarrealms.minecraft.bending.listeners;
 
 import net.avatarrealms.minecraft.bending.Bending;
+import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.chi.*;
 import net.avatarrealms.minecraft.bending.abilities.earth.*;
@@ -13,7 +15,9 @@ import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -35,9 +39,11 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.BlockIterator;
 
 public class BendingEntityListener implements Listener {
 
@@ -295,6 +301,47 @@ public class BendingEntityListener implements Listener {
 			Player p = (Player) entity;
 			if (AstralProjection.isAstralProjecting(p)) {
 				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onProjectileHit(ProjectileHitEvent event) {
+		Projectile ent = event.getEntity();
+		if (ent instanceof Arrow) {
+			Arrow arrow = (Arrow) ent;
+			ProjectileSource shooter =  arrow.getShooter();
+			if (shooter instanceof Player) {
+				Player player = (Player) shooter;
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+				if (bPlayer == null) {
+					return;
+				}
+				Abilities ability = bPlayer.getAbility();
+				if (ability == Abilities.PlasticBomb && EntityTools.canBend(player, ability)){
+					World world = arrow.getLocation().getWorld();
+					Block block = arrow.getLocation().getBlock();
+					BlockIterator bi = null;
+					Block hitBlock = null;
+					if (block.getType() == Material.AIR) {
+						bi = new BlockIterator(world, arrow.getLocation().toVector(), arrow.getVelocity().normalize(), 0, 1);
+						if (bi.hasNext()) {
+							hitBlock = bi.next();
+						}
+					}
+					else {
+						bi = new BlockIterator(world, arrow.getLocation().toVector(), arrow.getVelocity().multiply(-1).normalize(), 0, 1);
+						if (bi.hasNext()) {
+							hitBlock = block;
+							block = bi.next();
+						}			
+					}			
+					if (hitBlock == null) {
+						return;
+					}
+					
+					new CFour(player, block, hitBlock.getFace(block));
+				}
 			}
 		}
 	}
