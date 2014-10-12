@@ -148,6 +148,7 @@ public class CFour {
 		skull.setSkullType(SkullType.PLAYER);
 		skull.setOwner("MHF_TNT");
 		skull.update();
+		bomb.getDrops().clear();
 	}
 	
 	private void explode() {
@@ -190,11 +191,7 @@ public class CFour {
 			}
 		}
 		
-		double explosionradius = radius;
-		if (obsidian) {
-			explosionradius = radius/2.0;
-		}
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, explosionradius);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius);
 		for(LivingEntity entity : entities) {
 			this.dealDamage(entity);
 			this.knockBack(entity);
