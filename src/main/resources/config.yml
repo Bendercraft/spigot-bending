@@ -76,8 +76,8 @@ Properties:
       Length: 1.9
       Height: 0.7
     PlasticBomb:
-      Cooldown: 80000
-      Radius: 1.2
+      Cooldown: 20000
+      Radius: 2.55
       Damage: 4
   GlobalCooldown: 500
   Air:

@@ -25,6 +25,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class CFour {
@@ -34,16 +35,22 @@ public class CFour {
 	private static int maxDamage = ConfigManager.plasticDamage;
 	private static final ParticleEffect EXPLODE = ParticleEffect.HUGE_EXPLOSION;
 	
+	private static final int fuseInterval = 1500;
+	
 	private Player player;
 	private Block bomb;
 	private Location location;
 	private Material previousType;
+	private long fuseTime = 0;
 	
 	public CFour (Player player, Block block, BlockFace face){
 		if (player == null || block == null || face == null){
 			return;
 		}
 		if (instances.containsKey(player)) {
+			return;
+		}
+		if (!hasDetonator(player)){
 			return;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -63,8 +70,19 @@ public class CFour {
 		this.player = player;
 		this.location = temp.getLocation();
 		this.previousType = temp.getType();
+		this.fuseTime = System.currentTimeMillis();
 		this.generateCFour(temp, face);
 		instances.put(player, this);
+	}
+	
+	private boolean hasDetonator(Player player) {
+		ItemStack held = player.getItemInHand();
+		if (held.getType() == Material.WOOD_BUTTON ||
+				held.getType() == Material.STONE_BUTTON ||
+				held.getType() == Material.BOW) {
+			return true;
+		}
+		return false;
 	}
 	
 	public static void activate(Player player) {
@@ -74,7 +92,35 @@ public class CFour {
 		}
 	}
 	
+	public static void progressAll() {
+		List<Player> toRemove = new LinkedList<Player>();
+		for (Player p : instances.keySet()){
+			boolean keep = instances.get(p).progress();
+			if (!keep) {
+				toRemove.add(p);
+			}
+		}
+		
+		for (Player p : toRemove){
+			instances.get(p).remove();
+			instances.remove(p);
+		}
+	}
+	
+	public boolean progress() {
+		if (!player.isOnline() || player.isDead()) {
+			return false;
+		}
+		return true;
+	}
+	
 	public void activate() {
+		if (System.currentTimeMillis() <= fuseTime + fuseInterval) {
+			return;
+		}
+		if (!hasDetonator(player)) {
+			return;
+		}
 		location.getWorld().playSound(location, Sound.EXPLODE, 10, 1);
 		EXPLODE.display(location, 0, 0, 0, 1, 1);
 		explode();
@@ -87,11 +133,18 @@ public class CFour {
 	
 	private void generateCFour(Block block, BlockFace face) {
 		bomb = block;
-		bomb.setType(Material.SKULL);
+		byte facing = 0x1;
+		switch (face) {
+			case SOUTH : facing = 0x3; break;
+			case NORTH : facing = 0x2; break;
+			case WEST : facing = 0x4; break;
+			case EAST : facing = 0x5; break;
+			default : facing = 0x1; break;
+		}
+		bomb.setTypeIdAndData(Material.SKULL.getId(), facing, true);
 		Skull skull = (Skull) bomb.getState();
 		skull.setSkullType(SkullType.PLAYER);
 		skull.setOwner("MHF_TNT");
-		skull.setRotation(face);
 		skull.update();
 	}
 	
@@ -187,9 +240,13 @@ public class CFour {
 	
 	public static void removeAll() {
 		for (CFour plastic : instances.values()) {
-			plastic.bomb.setType(plastic.previousType);
+			plastic.remove();
 		}
 		instances.clear();
+	}
+	
+	public void remove() {
+		bomb.setType(previousType);
 	}
 
 }
