@@ -27,6 +27,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
@@ -170,22 +171,27 @@ public class CFour {
 		for (Block block : affecteds) {
 			if(!block.getType().equals(Material.BEDROCK)) {
 				if (!obsidian || location.distance(block.getLocation())<2.0) {
-					List<Block> adjacent = new LinkedList<Block>();
-					adjacent.add(block.getRelative(BlockFace.NORTH));
-					adjacent.add(block.getRelative(BlockFace.SOUTH));
-					adjacent.add(block.getRelative(BlockFace.EAST));
-					adjacent.add(block.getRelative(BlockFace.WEST));
-					adjacent.add(block.getRelative(BlockFace.UP));
-					adjacent.add(block.getRelative(BlockFace.DOWN));
-				
-					if(affecteds.containsAll(adjacent)) {
-						//Explosion ok
-						this.removeBlock(block);
-					} else {
-						double rand = Math.random();
-						if(rand < 0.8) {
+					if (block.getType() == Material.TNT) {
+						block.setType(Material.AIR);
+						block.getWorld().spawn(block.getLocation().add(0.5, 0.5, 0.5), TNTPrimed.class);
+					}else {
+						List<Block> adjacent = new LinkedList<Block>();
+						adjacent.add(block.getRelative(BlockFace.NORTH));
+						adjacent.add(block.getRelative(BlockFace.SOUTH));
+						adjacent.add(block.getRelative(BlockFace.EAST));
+						adjacent.add(block.getRelative(BlockFace.WEST));
+						adjacent.add(block.getRelative(BlockFace.UP));
+						adjacent.add(block.getRelative(BlockFace.DOWN));
+						if(affecteds.containsAll(adjacent)) {
+							//Explosion ok
 							this.removeBlock(block);
+						} else {
+							double rand = Math.random();
+							if(rand < 0.8) {
+								this.removeBlock(block);
+							}
 						}
+						
 					}
 				}	
 			}

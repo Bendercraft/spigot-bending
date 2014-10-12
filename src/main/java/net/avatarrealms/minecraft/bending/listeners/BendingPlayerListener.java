@@ -238,7 +238,6 @@ public class BendingPlayerListener implements Listener{
 				&& (b.getType()!= Material.GOLD_PLATE)) {
 			event.setCancelled(true);;
 			return;
-			
 		}
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
