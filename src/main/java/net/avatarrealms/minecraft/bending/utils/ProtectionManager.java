@@ -40,6 +40,8 @@ public class ProtectionManager {
 	private static StateFlag BENDING_FIRE;
 	private static StateFlag BENDING_WATER;
 	private static StateFlag BENDING_PASSIVES;
+	private static StateFlag BENDING_SPE;
+	private static StateFlag BENDING_ENERGY;
 	
 	static {
 		pm = Bending.plugin.getServer().getPluginManager();
@@ -65,6 +67,8 @@ public class ProtectionManager {
 			BENDING_FIRE =  new StateFlag("bending-fire", true);
 			BENDING_WATER = new StateFlag("bending-water", true);
 			BENDING_PASSIVES = new StateFlag("bending-passives", true);
+			BENDING_SPE = new StateFlag("bending_spe",true);
+			BENDING_ENERGY = new StateFlag("bending_energy", true);
 			
 			wgCustomFlags.addCustomFlag(BENDING);
 			wgCustomFlags.addCustomFlag(BENDING_AIR);
@@ -73,6 +77,8 @@ public class ProtectionManager {
 			wgCustomFlags.addCustomFlag(BENDING_FIRE);
 			wgCustomFlags.addCustomFlag(BENDING_WATER);
 			wgCustomFlags.addCustomFlag(BENDING_PASSIVES);
+			wgCustomFlags.addCustomFlag(BENDING_SPE);
+			wgCustomFlags.addCustomFlag(BENDING_ENERGY);
 		}
 		
 	}
@@ -106,10 +112,64 @@ public class ProtectionManager {
 	}
 	
 	public static boolean isRegionProtectedFromBending(Player player, Abilities ability, Location loc) {
+		if (!respectWorldGuard) {
+			return false;
+		}
+		
+		if (ability == null){
+			return false;
+		}
+		
+		if (isAllowedEverywhereAbility(ability)) {
+			return false;
+		}
+		
+		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING,
+				worldguard.wrapPlayer(player))) {
+			return true;
+		}
+		
+		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_AIR,
+				worldguard.wrapPlayer(player))) {
+			return true;
+		}
+		
+		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_CHI,
+				worldguard.wrapPlayer(player))) {
+			return true;
+		}
+		
+		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_EARTH,
+				worldguard.wrapPlayer(player))) {
+			return true;
+		}
+		
+		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_FIRE,
+				worldguard.wrapPlayer(player))) {
+			return true;
+		}
+		
+		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_WATER,
+				worldguard.wrapPlayer(player))) {
+			return true;
+		}
+		
+		//TODO : Remove this when Wan is ready
 		if (isRegionProtectedFromBuild(player, ability, loc)) {
 			return true;
 		}
 		
+		return false;
+	}
+	
+	public static boolean isRegionProtectedFromBendingPassives(Player player, Location loc) {
+		if (!respectWorldGuard) {
+			return false;
+		}
+		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_PASSIVES,
+									worldguard.wrapPlayer(player))) {
+			return true;
+		}
 		return false;
 	}
 
@@ -118,49 +178,31 @@ public class ProtectionManager {
 
 		List<Abilities> ignite = new ArrayList<Abilities>();
 		ignite.add(Abilities.Blaze);
-
-		if (ability == null){
-			return false;
-		}
-			
-		if (isAllowedEverywhereAbility(ability)) {
-			return false;
-		}
-		
-		PluginManager pm = Bukkit.getPluginManager();
-
-		Plugin wgp = pm.getPlugin("WorldGuard");
-
 		for (Location location : new Location[] { loc, player.getLocation() }) {
-
-			if (wgp != null && respectWorldGuard) {
-				WorldGuardPlugin wg = (WorldGuardPlugin) Bukkit
-						.getPluginManager().getPlugin("WorldGuard");
 				if (!player.isOnline())
 					return true;
 
 				if (ignite.contains(ability)) {
-					if (!wg.hasPermission(player, "worldguard.override.lighter")) {
-						if (wg.getGlobalStateManager().get(location.getWorld()).blockLighter)
+					if (!worldguard.hasPermission(player, "worldguard.override.lighter")) {
+						if (worldguard.getGlobalStateManager().get(location.getWorld()).blockLighter){
 							return true;
-						if (!wg.getGlobalRegionManager().hasBypass(player,
+						}					
+						if (!worldguard.getGlobalRegionManager().hasBypass(player,
 								location.getWorld())
-								&& !wg.getGlobalRegionManager()
+								&& !worldguard.getGlobalRegionManager()
 										.get(location.getWorld())
 										.getApplicableRegions(location)
 										.allows(DefaultFlag.LIGHTER,
-												wg.wrapPlayer(player)))
+												worldguard.wrapPlayer(player)))
 							return true;
 					}
-
 				}
 
-				if ((!(wg.getGlobalRegionManager().canBuild(player, location)) || !(wg
+				if ((!(worldguard.getGlobalRegionManager().canBuild(player, location)) || !(worldguard
 						.getGlobalRegionManager()
 						.canConstruct(player, location)))) {
 					return true;
 				}
-			}
 		}
 		return false;
 	}	
