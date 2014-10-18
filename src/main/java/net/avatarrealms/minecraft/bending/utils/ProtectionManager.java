@@ -17,6 +17,7 @@ import org.bukkit.plugin.PluginManager;
 import com.mewin.WGCustomFlags.WGCustomFlagsPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 
 public class ProtectionManager {
 	
@@ -31,6 +32,15 @@ public class ProtectionManager {
 	private static WorldGuardPlugin worldguard = null;
 	private static WGCustomFlagsPlugin wgCustomFlags = null;
 	private static PluginManager pm;
+	
+	private static StateFlag BENDING;
+	private static StateFlag BENDING_AIR;
+	private static StateFlag BENDING_CHI;
+	private static StateFlag BENDING_EARTH;
+	private static StateFlag BENDING_FIRE;
+	private static StateFlag BENDING_WATER;
+	private static StateFlag BENDING_PASSIVES;
+	
 	static {
 		pm = Bending.plugin.getServer().getPluginManager();
 		Plugin plugin = pm.getPlugin("WorldGuard");
@@ -45,6 +55,24 @@ public class ProtectionManager {
 		
 		if (worldguard!= null && wgCustomFlags != null) {
 			respectWorldGuard = true;
+		}
+		
+		if (respectWorldGuard) {
+			BENDING = new StateFlag("bending", true);
+			BENDING_AIR = new StateFlag("bending-air", true);
+			BENDING_CHI =  new StateFlag("bending-chi", true);
+			BENDING_EARTH = new StateFlag("bending-earth", true);
+			BENDING_FIRE =  new StateFlag("bending-fire", true);
+			BENDING_WATER = new StateFlag("bending-water", true);
+			BENDING_PASSIVES = new StateFlag("bending-passives", true);
+			
+			wgCustomFlags.addCustomFlag(BENDING);
+			wgCustomFlags.addCustomFlag(BENDING_AIR);
+			wgCustomFlags.addCustomFlag(BENDING_CHI);
+			wgCustomFlags.addCustomFlag(BENDING_EARTH);
+			wgCustomFlags.addCustomFlag(BENDING_FIRE);
+			wgCustomFlags.addCustomFlag(BENDING_WATER);
+			wgCustomFlags.addCustomFlag(BENDING_PASSIVES);
 		}
 		
 	}
