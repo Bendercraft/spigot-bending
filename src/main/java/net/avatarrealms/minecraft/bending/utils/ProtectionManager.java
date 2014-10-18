@@ -24,8 +24,6 @@ public class ProtectionManager {
 	private static Set<Abilities> allowedEverywhereAbilities = new HashSet<Abilities>();
 	static { 
 		allowedEverywhereAbilities.add(Abilities.HealingWaters);
-		allowedEverywhereAbilities.add(Abilities.Illumination);
-		allowedEverywhereAbilities.add(Abilities.Tremorsense);
 	}
 
 	public static boolean respectWorldGuard = false;	

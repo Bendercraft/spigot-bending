@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -21,8 +22,6 @@ public class AvatarState{
 	private static final double factor = 5;
 
 	private Player player;
-
-	// boolean canfly = false;
 
 	public AvatarState(Player player) {
 		this.player = player;
@@ -45,6 +44,9 @@ public class AvatarState{
 	}
 
 	public boolean progress() {
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AvatarState, player.getLocation())) {
+			return false;
+		}
 		if (!EntityTools.canBend(player, Abilities.AvatarState)) {
 			toRemove.add(player);
 			return false;
