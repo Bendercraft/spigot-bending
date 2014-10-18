@@ -129,27 +129,37 @@ public class ProtectionManager {
 			return true;
 		}
 		
-		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_AIR,
+		if (ability.isSpecialization() && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_SPE,
+				worldguard.wrapPlayer(player))){
+			return true;
+		}
+		
+		if (ability == Abilities.AvatarState && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_ENERGY,
+				worldguard.wrapPlayer(player))){
+			return true;
+		}
+		
+		if (Abilities.isAirbending(ability) && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_AIR,
 				worldguard.wrapPlayer(player))) {
 			return true;
 		}
 		
-		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_CHI,
+		if (Abilities.isChiBlocking(ability) && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_CHI,
 				worldguard.wrapPlayer(player))) {
 			return true;
 		}
 		
-		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_EARTH,
+		if (Abilities.isEarthbending(ability) && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_EARTH,
 				worldguard.wrapPlayer(player))) {
 			return true;
 		}
 		
-		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_FIRE,
+		if (Abilities.isFirebending(ability) && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_FIRE,
 				worldguard.wrapPlayer(player))) {
 			return true;
 		}
 		
-		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_WATER,
+		if (Abilities.isWaterbending(ability) && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc).allows(BENDING_WATER,
 				worldguard.wrapPlayer(player))) {
 			return true;
 		}
