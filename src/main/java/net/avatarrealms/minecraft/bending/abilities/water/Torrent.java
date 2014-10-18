@@ -9,13 +9,13 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
-import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -132,9 +132,6 @@ public class Torrent implements IAbility {
 				if (player.isSneaking()) {
 					sourceselected = false;
 					settingup = true;				
-
-						Information info = Information.fromBlock(sourceblock);
-						BlockTools.bendedBlocks.put(sourceblock, info);
 					
 					if (BlockTools.isPlant(sourceblock)) {
 						new Plantbending(sourceblock, this);
@@ -269,7 +266,7 @@ public class Torrent implements IAbility {
 					location = blockloc.clone();
 				Block block = blockloc.getBlock();
 				if (!doneblocks.contains(block)
-						&& !PluginTools.isRegionProtectedFromBuild(player,
+						&& !ProtectionManager.isRegionProtectedFromBending(player,
 								Abilities.Torrent, blockloc)) {
 					if (BlockTools.isTransparentToEarthbending(player, block)
 							&& !block.isLiquid()) {
@@ -321,7 +318,7 @@ public class Torrent implements IAbility {
 		// player.sendBlockChange(location, 20, (byte) 0);
 
 		if (location.distance(player.getLocation()) > range
-				|| PluginTools.isRegionProtectedFromBuild(player, Abilities.Torrent,
+				|| ProtectionManager.isRegionProtectedFromBending(player, Abilities.Torrent,
 						location)) {
 			if (layer < maxlayer)
 				if (freeze || layer < 1)
@@ -419,7 +416,7 @@ public class Torrent implements IAbility {
 			Location blockloc = loc.clone().add(dx, dy, dz);
 			Block block = blockloc.getBlock();
 			if (!doneblocks.contains(block)
-					&& !PluginTools.isRegionProtectedFromBuild(player,
+					&& !ProtectionManager.isRegionProtectedFromBending(player,
 							Abilities.Torrent, blockloc)) {
 				if (BlockTools.isTransparentToEarthbending(player, block)
 						&& !block.isLiquid()) {

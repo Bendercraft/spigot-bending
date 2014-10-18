@@ -15,6 +15,7 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -194,7 +195,7 @@ public class WaterSpout implements IAbility {
 		Block blocki;
 		for (int i = 0; i < maxheight; i++) {
 			blocki = location.clone().add(0, -i, 0).getBlock();
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.WaterSpout,
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.WaterSpout,
 					blocki.getLocation()))
 				return -1;
 			if (!affectedblocks.contains(blocki)) {

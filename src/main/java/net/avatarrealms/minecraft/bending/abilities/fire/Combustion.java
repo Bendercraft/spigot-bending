@@ -15,6 +15,7 @@ import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
 import org.bukkit.Bukkit;
@@ -94,7 +95,7 @@ public class Combustion implements IAbility {
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion, location)) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Combustion, location)) {
 				return false;
 			}
 
@@ -183,9 +184,9 @@ public class Combustion implements IAbility {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && location.distance(block.getLocation()) < explosionradius/2.0)) {
-				if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.Combustion,
+				if (!ProtectionManager.isRegionProtectedFromBending(player, Abilities.Combustion,
 						block.getLocation()) 
-						&& !PluginTools.isRegionProtectedFromExplosion(player, Abilities.Combustion, block.getLocation())) {
+						&& !ProtectionManager.isRegionProtectedFromExplosion(player, Abilities.Combustion, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}

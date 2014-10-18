@@ -177,11 +177,11 @@ public class EntityTools {
 			}
 		}
 
-		if (PluginTools.allowharmless && PluginTools.isAllowedEverywhereAbility(ability)) {
+		if (ProtectionManager.isAllowedEverywhereAbility(ability)) {
 			return true;
 		}
 		
-		return !PluginTools.isRegionProtectedFromBuild(player, ability, player.getLocation());
+		return !ProtectionManager.isRegionProtectedFromBending(player, ability, player.getLocation());
 	}
 	
 	public static boolean canBendPassive(Player player, BendingType type) {
@@ -190,11 +190,8 @@ public class EntityTools {
 			return false;
 		if (!player.hasPermission("bending." + type + ".passive")) {
 			return false;
-		}
-		if (PluginTools.allowharmless && type != BendingType.Earth){
-			return true;
-		}		
-		if (PluginTools.isRegionProtectedFromBuild(player, null, player.getLocation())) {
+		}	
+		if (ProtectionManager.isRegionProtectedFromBending(player, null, player.getLocation())) {
 			return false;
 		}		
 		return true;

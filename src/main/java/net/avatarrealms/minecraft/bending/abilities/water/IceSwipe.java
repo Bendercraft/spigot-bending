@@ -14,11 +14,10 @@ import org.bukkit.entity.Player;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
-import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 public class IceSwipe implements IAbility{
 	
@@ -70,7 +69,7 @@ public class IceSwipe implements IAbility{
 			Block source = BlockTools.getWaterSourceBlock(player, range, 
 					EntityTools.canPlantbend(player));
 			
-			if (source != null && !PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, source.getLocation())) {
+			if (source != null && !ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSwipe, source.getLocation())) {
 				new IceSwipe(player, source, null);
 			}
 		}	
@@ -96,7 +95,7 @@ public class IceSwipe implements IAbility{
 			return false;
 		}
 		
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, player.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSwipe, player.getLocation())) {
 			return false;
 		}
 		
@@ -130,7 +129,7 @@ public class IceSwipe implements IAbility{
 				continue;
 			}
 			
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSwipe, block.getLocation())) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSwipe, block.getLocation())) {
 				blocksToRemove.add(block);
 				continue;
 			}
@@ -171,11 +170,6 @@ public class IceSwipe implements IAbility{
 				iceblocks.put(waterblock, targetloc);
 			}
 		}
-		
-		/* 
-			Information info = Information.fromBlock(sourceblock);
-			BlockTools.bendedBlocks.put(sourceblock, info);
-		*/
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -138,7 +139,7 @@ public class WallOfFire implements IAbility {
 				Location location = origin.clone().add(
 						orthoud.clone().multiply(j));
 				location = location.add(ortholr.clone().multiply(i));
-				if (PluginTools.isRegionProtectedFromBuild(player,
+				if (ProtectionManager.isRegionProtectedFromBending(player,
 						Abilities.WallOfFire, location))
 					continue;
 				Block block = location.getBlock();
@@ -167,7 +168,7 @@ public class WallOfFire implements IAbility {
 		}
 
 		for (LivingEntity entity : entities) {
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.WallOfFire,
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.WallOfFire,
 					entity.getLocation())) {
 				continue;
 			}

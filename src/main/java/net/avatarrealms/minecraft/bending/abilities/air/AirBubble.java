@@ -14,6 +14,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Bukkit;
@@ -95,7 +96,7 @@ public class AirBubble implements IAbility {
 					.getBlocksAroundPoint(location, radius)) {
 				if (waterorigins.containsKey(block))
 					continue;
-				if (PluginTools.isRegionProtectedFromBuild(player,
+				if (ProtectionManager.isRegionProtectedFromBending(player,
 						Abilities.AirBubble, block.getLocation()))
 					continue;
 				if (block.getType() == Material.STATIONARY_WATER

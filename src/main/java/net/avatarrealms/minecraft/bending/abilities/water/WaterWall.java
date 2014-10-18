@@ -10,7 +10,6 @@ import java.util.Set;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
-import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
@@ -18,6 +17,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -222,10 +222,6 @@ public class WaterWall implements IAbility {
 			} else {
 				progressing = true;
 				settingup = true;
-				if (drainedBlock == null) {
-					Information info = Information.fromBlock(sourceblock);
-					BlockTools.bendedBlocks.put(sourceblock, info);
-				}
 				firstdestination = getToEyeLevel();
 				firstdirection = getDirection(sourceblock.getLocation(),
 						firstdestination);
@@ -317,7 +313,7 @@ public class WaterWall implements IAbility {
 						// loc.getBlock().setType(Material.GLOWSTONE);
 						vec = Tools.getOrthogonalVector(dir.clone(), angle, i);
 						block = loc.clone().add(vec).getBlock();
-						if (PluginTools.isRegionProtectedFromBuild(player,
+						if (ProtectionManager.isRegionProtectedFromBending(player,
 								Abilities.Surge, block.getLocation()))
 							continue;
 						if (wallblocks.containsKey(block)) {
@@ -439,7 +435,7 @@ public class WaterWall implements IAbility {
 
 	private void addWater(Block block) {
 
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Surge,
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Surge,
 				block.getLocation()))
 			return;
 

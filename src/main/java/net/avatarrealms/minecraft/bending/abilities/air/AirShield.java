@@ -13,7 +13,8 @@ import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlast;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
+
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -72,7 +73,7 @@ public class AirShield implements IAbility {
 				continue;
 			}
 			
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirShield,
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirShield,
 					entity.getLocation())){
 				continue;
 			}
@@ -123,7 +124,7 @@ public class AirShield implements IAbility {
 			z = origin.getZ() + radius * Math.sin(angle) * f;
 
 			Location effect = new Location(origin.getWorld(), x, y, z);
-			if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.AirShield,
+			if (!ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirShield,
 					effect)) {
 				origin.getWorld().playEffect(effect, Effect.SMOKE, 4,
 						(int) AirBlast.defaultrange);
@@ -148,7 +149,7 @@ public class AirShield implements IAbility {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirShield,
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirShield,
 				player.getLocation())) {
 			return false;
 		}

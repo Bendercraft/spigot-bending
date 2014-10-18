@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -98,7 +99,7 @@ public class FireBall implements IAbility {
 
 		if (System.currentTimeMillis() > time + interval) {
 			if (launched)
-				if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Blaze,
+				if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Blaze,
 						location)) {
 					return false;
 				}

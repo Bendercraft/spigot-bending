@@ -15,7 +15,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -95,7 +95,7 @@ public class AirSuction implements IAbility {
 		for (double i = 1; i <= range; i++) {
 			location = origin.clone().add(direction.clone().multiply(i));
 			if (!BlockTools.isTransparentToEarthbending(player, location.getBlock())
-					|| PluginTools.isRegionProtectedFromBuild(player,
+					|| ProtectionManager.isRegionProtectedFromBending(player,
 							Abilities.AirSuction, location)) {
 				return origin.clone().add(direction.clone().multiply(i - 1));
 			}
@@ -110,7 +110,7 @@ public class AirSuction implements IAbility {
 				|| BlockTools.isSolid(location.getBlock()))
 			return;
 
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirSuction,
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirSuction,
 				location))
 			return;
 
@@ -121,7 +121,7 @@ public class AirSuction implements IAbility {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirSuction,
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirSuction,
 				location)) {
 			return false;
 		}

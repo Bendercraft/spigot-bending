@@ -22,6 +22,7 @@ import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -198,7 +199,7 @@ public class AirSwipe implements IAbility {
 				Location newlocation = location.clone().add(
 						direction.clone().multiply(speedfactor));
 				if (newlocation.distance(origin) <= range
-						&& !PluginTools.isRegionProtectedFromBuild(player,
+						&& !ProtectionManager.isRegionProtectedFromBending(player,
 								Abilities.AirSwipe, newlocation)) {
 					//If new location is still valid, we add it
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
@@ -260,7 +261,7 @@ public class AirSwipe implements IAbility {
 				PluginTools.removeSpouts(location, player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						affectingradius)) {
-					if (PluginTools.isRegionProtectedFromBuild(player, Abilities.AirSwipe,
+					if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirSwipe,
 							entity.getLocation())) {
 						continue;
 					}

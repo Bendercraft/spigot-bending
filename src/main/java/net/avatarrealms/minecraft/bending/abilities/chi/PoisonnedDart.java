@@ -11,6 +11,8 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -34,7 +36,7 @@ public class PoisonnedDart {
 			return;
 		}
 		
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.PoisonnedDart, player.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PoisonnedDart, player.getLocation())) {
 			return;
 		}
 		
@@ -79,7 +81,7 @@ public class PoisonnedDart {
 	}
 	
 	private void affectAround() {
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.PoisonnedDart, location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PoisonnedDart, location)) {
 			return;
 		}
 		

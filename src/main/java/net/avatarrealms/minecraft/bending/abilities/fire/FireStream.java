@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.water.Plantbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -66,7 +67,7 @@ public class FireStream implements IAbility {
 	}
 
 	public boolean progress() {
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Blaze, location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Blaze, location)) {
 			return false;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
@@ -105,7 +106,7 @@ public class FireStream implements IAbility {
 	}
 
 	public static boolean isIgnitable(Player player, Block block) {
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Blaze,
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Blaze,
 				block.getLocation()))
 			return false;
 

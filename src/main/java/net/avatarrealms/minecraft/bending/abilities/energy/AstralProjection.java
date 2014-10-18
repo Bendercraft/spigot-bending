@@ -13,7 +13,8 @@ import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.controller.DataLocation;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -64,7 +65,7 @@ public class AstralProjection {
 			return;
 			
 		}
-		if (PluginTools.isRegionProtectedFromBuild(p, Abilities.AstralProjection, p.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(p, Abilities.AstralProjection, p.getLocation())) {
 			return;
 		}
 		

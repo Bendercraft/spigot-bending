@@ -11,7 +11,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
 import org.bukkit.Bukkit;
@@ -62,7 +62,7 @@ public class CFour {
 			return;
 		}
 		Block temp = block.getRelative(face);
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.PlasticBomb, temp.getLocation())){
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb, temp.getLocation())){
 			return;
 		}		
 		if (!BlockTools.isFluid(temp) && !BlockTools.isPlant(temp)) {
@@ -158,9 +158,9 @@ public class CFour {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && location.distance(block.getLocation()) < radius/2.0)) {
-				if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.PlasticBomb,
+				if (!ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb,
 						block.getLocation()) 
-						&& !PluginTools.isRegionProtectedFromExplosion(player, Abilities.PlasticBomb, block.getLocation())) {
+						&& !ProtectionManager.isRegionProtectedFromExplosion(player, Abilities.PlasticBomb, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}

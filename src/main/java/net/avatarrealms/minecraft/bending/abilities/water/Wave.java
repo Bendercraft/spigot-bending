@@ -16,6 +16,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -174,10 +175,6 @@ public class Wave implements IAbility {
 			progressing = false;
 			targetdestination = null;
 		} else {
-			if (drainedBlock == null) {
-				Information info = Information.fromBlock(sourceblock);
-				BlockTools.bendedBlocks.put(sourceblock, info);
-			}
 			progressing = true;
 			targetdirection = getDirection(sourceblock.getLocation(),
 					targetdestination).normalize();
@@ -267,7 +264,7 @@ public class Wave implements IAbility {
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.Surge,
+				if (!ProtectionManager.isRegionProtectedFromBending(player, Abilities.Surge,
 						location)
 						&& (((blockl.getType() == Material.AIR
 								|| blockl.getType() == Material.FIRE
@@ -389,7 +386,7 @@ public class Wave implements IAbility {
 	}
 
 	private void addWater(Block block) {
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Surge,
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Surge,
 				block.getLocation()))
 			return;
 		if (!TempBlock.isTempBlock(block)) {
@@ -463,9 +460,9 @@ public class Wave implements IAbility {
 
 		for (Block block : BlockTools.getBlocksAroundPoint(frozenlocation,
 				freezeradius)) {
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Surge,
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Surge,
 					block.getLocation())
-					|| PluginTools.isRegionProtectedFromBuild(player,
+					|| ProtectionManager.isRegionProtectedFromBending(player,
 							Abilities.PhaseChange, block.getLocation())){
 				continue;
 			}			

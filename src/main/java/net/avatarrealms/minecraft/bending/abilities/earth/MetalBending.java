@@ -8,7 +8,8 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
+
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -65,7 +66,7 @@ public class MetalBending {
 						bl = bl.getRelative(BlockFace.DOWN);
 					}
 					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
-						if (!PluginTools.isRegionProtectedFromBuild(pl,
+						if (!ProtectionManager.isRegionProtectedFromBending(pl,
 								Abilities.MetalBending, bl.getLocation())) {
 							if (bl.getData() < 4) {
 								bl.setData((byte) (bl.getData() + 4));

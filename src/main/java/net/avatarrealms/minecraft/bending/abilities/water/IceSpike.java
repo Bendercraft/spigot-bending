@@ -12,7 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -229,7 +229,7 @@ public class IceSpike implements IAbility {
 		progress++;
 		Block affectedblock = location.clone().add(direction).getBlock();
 		location = location.add(direction);
-		if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
 				location))
 			return false;
 		for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(location, 1.4)) {

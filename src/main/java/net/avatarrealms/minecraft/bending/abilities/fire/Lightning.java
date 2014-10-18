@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -66,7 +67,7 @@ public class Lightning implements IAbility {
 		if (AvatarState.isAvatarState(player))
 			damage = AvatarState.getValue(damage);
 		
-		if (!PluginTools.isRegionProtectedFromBuild(player, Abilities.Lightning,
+		if (!ProtectionManager.isRegionProtectedFromBending(player, Abilities.Lightning,
 				targetlocation)) {
 			strike = player.getWorld().strikeLightning(targetlocation);
 			strikes.put(strike, this);

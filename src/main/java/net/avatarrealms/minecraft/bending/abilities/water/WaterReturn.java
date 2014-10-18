@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -43,7 +44,7 @@ public class WaterReturn implements IAbility {
 			return;
 		this.player = player;
 		location = block.getLocation();
-		if (!PluginTools.isRegionProtectedFromBuild(player,
+		if (!ProtectionManager.isRegionProtectedFromBending(player,
 				Abilities.WaterManipulation, location)
 				&& EntityTools.canBend(player, Abilities.WaterManipulation)) {
 			if (BlockTools.isTransparentToEarthbending(player, block)
@@ -84,7 +85,7 @@ public class WaterReturn implements IAbility {
 		if (location.getBlock().equals(block.getLocation().getBlock()))
 			return true;
 
-		if (PluginTools.isRegionProtectedFromBuild(player,
+		if (ProtectionManager.isRegionProtectedFromBending(player,
 				Abilities.WaterManipulation, location)) {
 			return false;
 		}

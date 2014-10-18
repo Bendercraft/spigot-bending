@@ -10,7 +10,6 @@ import java.util.Set;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
-import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
@@ -19,6 +18,7 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Effect;
@@ -154,12 +154,7 @@ public class WaterManipulation implements IAbility {
 		if (sourceblock.getWorld() != player.getWorld()) {
 			return;
 		}
-		
-		//TODO : Test this :
-		if (drainedBlock == null) {
-			Information info = Information.fromBlock(sourceblock);
-			BlockTools.bendedBlocks.put(sourceblock, info);
-		}	
+	
 		targetdestination = getTargetLocation(player);
 		if (targetdestination.distance(location) <= 1) {
 			progressing = false;
@@ -237,7 +232,7 @@ public class WaterManipulation implements IAbility {
 		}
 		if (System.currentTimeMillis() - time >= interval) {
 			// removeWater(oldwater);
-			if (PluginTools.isRegionProtectedFromBuild(player,
+			if (ProtectionManager.isRegionProtectedFromBending(player,
 					Abilities.WaterManipulation, location)) {
 				return false;
 			}
@@ -497,7 +492,7 @@ public class WaterManipulation implements IAbility {
 				continue;
 			}			
 
-			if (PluginTools.isRegionProtectedFromBuild(player,
+			if (ProtectionManager.isRegionProtectedFromBending(player,
 					Abilities.WaterManipulation, manip.location)){
 				continue;
 			}				
@@ -533,7 +528,7 @@ public class WaterManipulation implements IAbility {
 			if (!manip.progressing)
 				continue;
 
-			if (PluginTools.isRegionProtectedFromBuild(player,
+			if (ProtectionManager.isRegionProtectedFromBending(player,
 					Abilities.WaterManipulation, manip.location))
 				continue;
 

@@ -8,12 +8,12 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
-import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -179,9 +179,6 @@ public class IceSpike2 implements IAbility {
 		} else {
 			destination = target.getEyeLocation();
 		}
-
-		Information info = Information.fromBlock(sourceblock);
-		BlockTools.bendedBlocks.put(sourceblock, info);
 	
 		location = sourceblock.getLocation();
 		if (destination.distance(location) < 1)
@@ -290,7 +287,7 @@ public class IceSpike2 implements IAbility {
 				return false;
 			}
 
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
 					location)) {
 				returnWater();
 				return false;
@@ -370,7 +367,7 @@ public class IceSpike2 implements IAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = ice.location;
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
 					mloc))
 				continue;
 			if (mloc.distance(location) <= defaultrange
@@ -410,7 +407,7 @@ public class IceSpike2 implements IAbility {
 				continue;
 			}
 
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.IceSpike,
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
 					ice.location)) {
 				continue;
 			}

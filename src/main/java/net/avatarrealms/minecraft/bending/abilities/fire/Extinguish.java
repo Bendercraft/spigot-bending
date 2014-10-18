@@ -10,6 +10,8 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
+
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,7 +42,7 @@ public class Extinguish implements IAbility {
 				player.getWorld());
 		for (Block block : BlockTools.getBlocksAroundPoint(
 				EntityTools.getTargetBlock(player, range).getLocation(), radius)) {
-			if (PluginTools.isRegionProtectedFromBuild(player, Abilities.Blaze,
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Blaze,
 					block.getLocation()))
 				continue;
 			//Do not allow firebender to completly negate lavabend

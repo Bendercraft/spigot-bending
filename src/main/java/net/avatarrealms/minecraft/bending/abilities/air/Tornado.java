@@ -13,7 +13,8 @@ import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
+
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -83,8 +84,7 @@ public class Tornado implements IAbility {
 				|| (!player.isSneaking())) {
 			return false;
 		}
-		if (PluginTools
-				.isRegionProtectedFromBuild(player, Abilities.AirBlast, origin)) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirBlast, origin)) {
 			return false;
 		}
 		rotateTornado();
@@ -101,7 +101,7 @@ public class Tornado implements IAbility {
 			origin.setY(origin.getY() - 1. / 10. * height);
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, height)) {
-				if (PluginTools.isRegionProtectedFromBuild(player,
+				if (ProtectionManager.isRegionProtectedFromBending(player,
 						Abilities.AirBlast, entity.getLocation())) {
 					continue;
 				}
@@ -190,7 +190,7 @@ public class Tornado implements IAbility {
 						* Math.sin(angle);
 
 				Location effect = new Location(origin.getWorld(), x, y, z);
-				if (!PluginTools.isRegionProtectedFromBuild(player,
+				if (!ProtectionManager.isRegionProtectedFromBending(player,
 						Abilities.AirBlast, effect))
 					origin.getWorld().playEffect(effect, Effect.SMOKE, 4,
 							(int) AirBlast.defaultrange);

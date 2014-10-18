@@ -2,17 +2,12 @@ package net.avatarrealms.minecraft.bending.utils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import net.avatarrealms.minecraft.bending.Bending;
-import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
@@ -74,26 +69,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-
-import com.massivecraft.factions.entity.BoardColls;
-import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.factions.listeners.FactionsListenerMain;
-import com.massivecraft.massivecore.ps.PS;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 public class PluginTools {
 	
-	public static boolean allowharmless = true;
-	public static boolean respectWorldGuard = true;
 	public static boolean respectFactions = false;
-	private static Set<Abilities> allowedEverywhereAbilities = new HashSet<Abilities>();
-	static { 
-		allowedEverywhereAbilities.add(Abilities.HealingWaters);
-		allowedEverywhereAbilities.add(Abilities.Illumination);
-		allowedEverywhereAbilities.add(Abilities.Tremorsense);
-	}
 	private static final Map<String, ChatColor> colors;	
 	static {
 		Map<String, ChatColor> tmpMap = new HashMap<String, ChatColor>();
@@ -166,106 +145,6 @@ public class PluginTools {
 		tmpMap.put("k", ChatColor.MAGIC);
 
 		colors = Collections.unmodifiableMap(tmpMap);
-	}
-	
-	public static boolean isAllowedEverywhereAbility(Abilities ability) {
-		return allowedEverywhereAbilities.contains(ability);
-	}
-	
-	public static boolean isRegionProtectedFromExplosion(Player player,
-			Abilities ability, Location loc) {
-		if(isRegionProtectedFromBuild(player, ability, loc)) {
-			return true;
-		}
-		
-		PluginManager pm = Bukkit.getPluginManager();
-		Plugin wgp = pm.getPlugin("WorldGuard");
-		if (wgp != null && respectWorldGuard) {
-			WorldGuardPlugin wg = (WorldGuardPlugin) wgp;
-			for (Location location : new Location[] { loc, player.getLocation() }) {
-				if (!player.isOnline()) {
-					return true;
-				}
-				if(!wg.getGlobalRegionManager()
-						.get(location.getWorld())
-						.getApplicableRegions(location).allows(DefaultFlag.OTHER_EXPLOSION)) {
-					return true;
-				}
-			}
-		}
-		
-		Plugin fcp = pm.getPlugin("Factions");
-		Plugin mcore = pm.getPlugin("MassiveCore");
-		if (fcp != null && mcore != null && respectFactions) {
-			Faction faction = BoardColls.get().getFactionAt(PS.valueOf(loc));
-			if(faction != null) {
-				if(!faction.isExplosionsAllowed()) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	public static boolean isRegionProtectedFromBuild(Player player,
-			Abilities ability, Location loc) {
-
-		List<Abilities> ignite = new ArrayList<Abilities>();
-		ignite.add(Abilities.Blaze);
-
-		if (ability == null){
-			return false;
-		}
-			
-		if (PluginTools.isAllowedEverywhereAbility(ability) && allowharmless) {
-			return false;
-		}
-		
-		PluginManager pm = Bukkit.getPluginManager();
-
-		Plugin wgp = pm.getPlugin("WorldGuard");
-		Plugin fcp = pm.getPlugin("Factions");
-		Plugin mcore = pm.getPlugin("MassiveCore");
-
-		for (Location location : new Location[] { loc, player.getLocation() }) {
-
-			if (wgp != null && respectWorldGuard) {
-				WorldGuardPlugin wg = (WorldGuardPlugin) Bukkit
-						.getPluginManager().getPlugin("WorldGuard");
-				if (!player.isOnline())
-					return true;
-
-				if (ignite.contains(ability)) {
-					if (!wg.hasPermission(player, "worldguard.override.lighter")) {
-						if (wg.getGlobalStateManager().get(location.getWorld()).blockLighter)
-							return true;
-						if (!wg.getGlobalRegionManager().hasBypass(player,
-								location.getWorld())
-								&& !wg.getGlobalRegionManager()
-										.get(location.getWorld())
-										.getApplicableRegions(location)
-										.allows(DefaultFlag.LIGHTER,
-												wg.wrapPlayer(player)))
-							return true;
-					}
-
-				}
-
-				if ((!(wg.getGlobalRegionManager().canBuild(player, location)) || !(wg
-						.getGlobalRegionManager()
-						.canConstruct(player, location)))) {
-					return true;
-				}
-			}
-
-			if (fcp != null && mcore != null && respectFactions) {
-				if (!FactionsListenerMain.canPlayerBuildAt(player,
-						PS.valueOf(loc.getBlock()), false)) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	
 	public static void stopAllBending() {
@@ -403,7 +282,7 @@ public class PluginTools {
 		Plugin wgp = Bukkit.getPluginManager().getPlugin("WorldGuard");
 		if (wgp != null) {
 			verbose("Recognized WorldGuard...");
-			if (respectWorldGuard) {
+			if (ProtectionManager.respectsWorldGuard()) {
 				verbose("Bending is set to respect WorldGuard's build flags.");
 			} else {
 				verbose("But Bending is set to ignore WorldGuard's flags.");
