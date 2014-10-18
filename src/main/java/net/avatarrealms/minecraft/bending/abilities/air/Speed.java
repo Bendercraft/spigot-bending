@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -26,6 +27,9 @@ public class Speed implements IPassiveAbility {
 
 
 	public Speed(Player player) {
+		if (ProtectionManager.isRegionProtectedFromBendingPassives(player, player.getLocation())) {
+			return;
+		}
 		this.player = player;
 		id = player.getEntityId();
 		new Flight(player);
@@ -34,6 +38,9 @@ public class Speed implements IPassiveAbility {
 	}
 
 	public boolean progress() {
+		if (ProtectionManager.isRegionProtectedFromBendingPassives(player, player.getLocation())) {
+			return false;
+		}
 		if (player.isSprinting()
 				&& EntityTools.isBender(player, BendingType.Air)
 				&& EntityTools.canBendPassive(player, BendingType.Air)) {

@@ -191,7 +191,7 @@ public class EntityTools {
 		if (!player.hasPermission("bending." + type + ".passive")) {
 			return false;
 		}	
-		if (ProtectionManager.isRegionProtectedFromBending(player, null, player.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBendingPassives(player, player.getLocation())) {
 			return false;
 		}		
 		return true;
@@ -202,11 +202,6 @@ public class EntityTools {
 		if (bPlayer == null) {
 			return false;
 		}
-		/*
-		if (player.hasPermission("bending.water.plantbending")) {
-			return true;
-		}
-		*/
 		if (EntityTools.isSpecialized(player, BendingSpecializationType.DrainBend)) {
 			return true;
 		}

@@ -9,6 +9,7 @@ import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.IPassiveAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,6 +24,9 @@ public class EarthPassive implements IPassiveAbility {
 	public static boolean softenLanding(Player player) {
 		Block block = player.getLocation().getBlock()
 				.getRelative(BlockFace.DOWN);
+		if (ProtectionManager.isRegionProtectedFromBendingPassives(player, player.getLocation())) {
+			return false;
+		}
 		if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth, block)
 				|| BlockTools.isTransparentToEarthbending(player,
 						Abilities.RaiseEarth, block)) {

@@ -67,16 +67,16 @@ public class ProtectionManager {
 			BENDING_FIRE =  new StateFlag("bending-fire", true);
 			BENDING_WATER = new StateFlag("bending-water", true);
 			BENDING_PASSIVES = new StateFlag("bending-passives", true);
-			BENDING_SPE = new StateFlag("bending_spe",true);
-			BENDING_ENERGY = new StateFlag("bending_energy", true);
+			BENDING_SPE = new StateFlag("bending-spe",true);
+			BENDING_ENERGY = new StateFlag("bending-energy", true);
 			
 			wgCustomFlags.addCustomFlag(BENDING);
+			wgCustomFlags.addCustomFlag(BENDING_PASSIVES);
 			wgCustomFlags.addCustomFlag(BENDING_AIR);
 			wgCustomFlags.addCustomFlag(BENDING_CHI);
 			wgCustomFlags.addCustomFlag(BENDING_EARTH);
 			wgCustomFlags.addCustomFlag(BENDING_FIRE);
 			wgCustomFlags.addCustomFlag(BENDING_WATER);
-			wgCustomFlags.addCustomFlag(BENDING_PASSIVES);
 			wgCustomFlags.addCustomFlag(BENDING_SPE);
 			wgCustomFlags.addCustomFlag(BENDING_ENERGY);
 		}
