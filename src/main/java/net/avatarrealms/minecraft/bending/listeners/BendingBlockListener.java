@@ -4,6 +4,7 @@ import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
+import net.avatarrealms.minecraft.bending.abilities.chi.CFour;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthGrab;
@@ -132,6 +133,13 @@ public class BendingBlockListener implements Listener{
 		if (blast != null) {
 			blast.cancel();
 		}
+
+		Player bomber =CFour.isCFour(block);
+		if (bomber != null) {
+			block.getDrops().clear();
+			CFour.getCFour(bomber).cancel();
+		}
+		
 
 		EarthGrab grab = EarthGrab.blockInEarthGrab(block);
 		if (grab != null) {

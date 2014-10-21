@@ -250,5 +250,30 @@ public class CFour {
 	public void remove() {
 		bomb.setType(previousType);
 	}
+	
+	public static Player isCFour(Block block) {
+		if (block.getType() != Material.SKULL) {
+			return null;
+		}
+		
+		for (Player p : instances.keySet()) {
+			if (instances.get(p).bomb.equals(block)) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
+	public static CFour getCFour (Player p) {
+		if (instances.containsKey(p)) {
+			return instances.get(p);
+		}
+		return null;
+	}
+	
+	public void cancel() {
+		bomb.setType(previousType);
+		instances.remove(player);
+	}
 
 }
