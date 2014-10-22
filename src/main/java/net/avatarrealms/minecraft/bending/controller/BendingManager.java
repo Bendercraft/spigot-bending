@@ -22,6 +22,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.Speed;
 import net.avatarrealms.minecraft.bending.abilities.air.Suffocate;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
 import net.avatarrealms.minecraft.bending.abilities.chi.CFour;
+import net.avatarrealms.minecraft.bending.abilities.chi.PoisonnedDart;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
 import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
 import net.avatarrealms.minecraft.bending.abilities.earth.Catapult;
@@ -342,6 +343,10 @@ public class BendingManager implements Runnable {
 		temp = System.currentTimeMillis();
 		CFour.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("chi", "C4")), String.valueOf(System.currentTimeMillis() - temp));
+		
+		temp = System.currentTimeMillis();
+		PoisonnedDart.progressAll();
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("chi", "dart")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("chi", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}

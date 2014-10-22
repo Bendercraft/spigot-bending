@@ -14,6 +14,7 @@ import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -30,7 +31,7 @@ public class PoisonnedDart {
 	private static int damage = ConfigManager.dartDamage;
 	private static int range = ConfigManager.dartRange;
 	
-	private static final ParticleEffect VISUAL = ParticleEffect.PORTAL;
+	private static final ParticleEffect VISUAL = ParticleEffect.FIREWORKS_SPARK;
 	
 	private Player player;
 	private Location origin;
@@ -44,9 +45,14 @@ public class PoisonnedDart {
 			return;
 		}
 		
+		if (instances.containsKey(player)) {
+			return;
+		}
+		
 		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PoisonnedDart, player.getLocation())) {
 			return;
 		}
+		Bukkit.getLogger().info("new PD");
 		
 		ItemStack is = player.getItemInHand();
 		if (is.getType() == Material.POTION) {
@@ -59,6 +65,7 @@ public class PoisonnedDart {
 		}
 		this.player = player;
 		origin = player.getEyeLocation();
+		location = origin;
 		direction = origin.getDirection().normalize();
 		
 		instances.put(player, this);
@@ -80,11 +87,12 @@ public class PoisonnedDart {
 	}
 	
 	public boolean progress() {
+		Bukkit.getLogger().info("progress");
 		if (!player.isOnline() || player.isDead()) {
 			return false;
 		}
 		
-		if (origin.distance(location) > range) {
+		if (!player.getWorld().equals(location.getWorld()) || location.distance(origin) > range) {
 			return false;
 		}
 		
@@ -92,38 +100,39 @@ public class PoisonnedDart {
 			return false;
 		}
 		
+		advanceLocation();
 		if (!affectAround()) {
 			return false;
 		}
-		advanceLocation();
 		return true;
 	}
 	
 	private boolean affectAround() {
 		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PoisonnedDart, location)) {
 			return false;
-		}
-		
+		}		
 		int cptEnt = 0;
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 1.2)) {
 			boolean health = false;
-			for (PotionEffect ef : potions) {
-				if (ef.getType() == PotionEffectType.HEAL
-						|| ef.getType() == PotionEffectType.HEALTH_BOOST
-						|| ef.getType() == PotionEffectType.REGENERATION) {
-					health = true;
+			if (potions != null) {
+				for (PotionEffect ef : potions) {
+					if (ef.getType() == PotionEffectType.HEAL
+							|| ef.getType() == PotionEffectType.HEALTH_BOOST
+							|| ef.getType() == PotionEffectType.REGENERATION) {
+						health = true;
+					}
+					entity.addPotionEffect(ef);
 				}
-				entity.addPotionEffect(ef);
-			}
+			}			
 			if (!health) {
 				EntityTools.damageEntity(player, entity, damage);
 			}
 			cptEnt++;
 		}
+		PluginTools.removeSpouts(location, player);
 		if (cptEnt > 0) {
 			return false;
 		}
-		PluginTools.removeSpouts(location, player);
 		return true;
 	}
 	private void advanceLocation() {

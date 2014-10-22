@@ -28,6 +28,7 @@ import net.avatarrealms.minecraft.bending.abilities.chi.CFour;
 import net.avatarrealms.minecraft.bending.abilities.chi.Dash;
 import net.avatarrealms.minecraft.bending.abilities.chi.HighJump;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
+import net.avatarrealms.minecraft.bending.abilities.chi.PoisonnedDart;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
 import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
 import net.avatarrealms.minecraft.bending.abilities.earth.Catapult;
@@ -518,11 +519,6 @@ public class BendingPlayerListener implements Listener{
 					return;
 				}
 
-				/*
-				 * if (ability == Abilities.WaterBubble) { new
-				 * WaterBubble(player, null); }
-				 */
-
 				if (ability == Abilities.PhaseChange) {
 					new FreezeMelt(player, null);
 					return;
@@ -571,6 +567,11 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.SmokeBomb) {
 					new SmokeBomb(player, null);
+					return;
+				}
+				
+				if (ability == Abilities.PoisonnedDart) {
+					new PoisonnedDart(player);
 					return;
 				}
 			}
