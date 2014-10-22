@@ -12,7 +12,11 @@ public enum BendingSpecializationType {
 	Combustion(BendingType.Fire), 
 	
 	Metalbend(BendingType.Earth), 
-	Lavabend(BendingType.Earth);
+	Lavabend(BendingType.Earth),
+	
+	Inventor(BendingType.ChiBlocker);
+	
+	
 
 	private BendingType element;
 	

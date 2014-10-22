@@ -339,6 +339,9 @@ public class BendingEntityListener implements Listener {
 					if (hitBlock == null) {
 						return;
 					}
+					if (block.getType() == Material.AIR && hitBlock.getType() == Material.AIR){
+						return;
+					}
 					
 					new CFour(player, block, hitBlock.getFace(block));
 				}

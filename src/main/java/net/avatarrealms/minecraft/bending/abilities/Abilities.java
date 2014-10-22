@@ -474,18 +474,18 @@ public enum Abilities {
 					+ "While you're in the smokebomb area, you also are invisible.";
 		}
 	}, 
-	PoisonnedDart(BendingType.ChiBlocker){
-		public String getDescription() {
-			return " Not ready yet.";
-		}
-	}, 
 	Dash(BendingType.ChiBlocker){
 		public String getDescription() {
 			return "This ChiBlocker skill is very useful when you want to travel faster"
 					+ " or if you want to avoid some dangerous technics ";
 		}
 	},
-	PlasticBomb(BendingType.ChiBlocker) {
+	PoisonnedDart(BendingSpecializationType.Inventor){
+		public String getDescription() {
+			return " Not ready yet.";
+		}
+	}, 
+	PlasticBomb(BendingSpecializationType.Inventor) {
 		@Override
 		public String getDescription() {
 			return " Not ready yet.";

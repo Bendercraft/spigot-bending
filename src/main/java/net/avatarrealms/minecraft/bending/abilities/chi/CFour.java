@@ -111,6 +111,12 @@ public class CFour {
 		if (!player.isOnline() || player.isDead()) {
 			return false;
 		}
+		
+		if (bomb.getType() != Material.SKULL) {
+			return false;
+		}
+		
+		bomb.getDrops().clear();
 		return true;
 	}
 	

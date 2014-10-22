@@ -134,7 +134,7 @@ public class BendingBlockListener implements Listener{
 			blast.cancel();
 		}
 
-		Player bomber =CFour.isCFour(block);
+		Player bomber = CFour.isCFour(block);
 		if (bomber != null) {
 			block.getDrops().clear();
 			CFour.getCFour(bomber).cancel();

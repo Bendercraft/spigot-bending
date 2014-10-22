@@ -9,12 +9,19 @@ import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ParticleEffect;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class PoisonnedDart {
@@ -29,6 +36,7 @@ public class PoisonnedDart {
 	private Location origin;
 	private Location location;
 	private Vector direction;
+	private List<PotionEffect> potions = null;
 	
 	public PoisonnedDart(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -40,6 +48,15 @@ public class PoisonnedDart {
 			return;
 		}
 		
+		ItemStack is = player.getItemInHand();
+		if (is.getType() == Material.POTION) {
+			Potion p = Potion.fromItemStack(is);
+			potions = new LinkedList<PotionEffect>();
+			for (PotionEffect e : p.getEffects()) {
+				potions.add(e);
+			}
+			player.getInventory().remove(is);		
+		}
 		this.player = player;
 		origin = player.getEyeLocation();
 		direction = origin.getDirection().normalize();
@@ -75,17 +92,39 @@ public class PoisonnedDart {
 			return false;
 		}
 		
-		affectAround();
+		if (!affectAround()) {
+			return false;
+		}
 		advanceLocation();
 		return true;
 	}
 	
-	private void affectAround() {
+	private boolean affectAround() {
 		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PoisonnedDart, location)) {
-			return;
+			return false;
 		}
 		
+		int cptEnt = 0;
+		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 1.2)) {
+			boolean health = false;
+			for (PotionEffect ef : potions) {
+				if (ef.getType() == PotionEffectType.HEAL
+						|| ef.getType() == PotionEffectType.HEALTH_BOOST
+						|| ef.getType() == PotionEffectType.REGENERATION) {
+					health = true;
+				}
+				entity.addPotionEffect(ef);
+			}
+			if (!health) {
+				EntityTools.damageEntity(player, entity, damage);
+			}
+			cptEnt++;
+		}
+		if (cptEnt > 0) {
+			return false;
+		}
 		PluginTools.removeSpouts(location, player);
+		return true;
 	}
 	private void advanceLocation() {
 		VISUAL.display(location, 0,0,0, 1,1);
