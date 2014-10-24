@@ -153,6 +153,7 @@ public class CFour {
 		skull.setOwner("MHF_TNT");
 		skull.update();
 		bomb.getDrops().clear();
+		location.getWorld().playSound(location, Sound.STEP_GRAVEL,10,1);
 	}
 	
 	private void explode() {

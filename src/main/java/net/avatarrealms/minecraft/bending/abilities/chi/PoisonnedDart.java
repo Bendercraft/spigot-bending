@@ -17,10 +17,10 @@ import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -31,13 +31,13 @@ public class PoisonnedDart {
 	private static int damage = ConfigManager.dartDamage;
 	private static int range = ConfigManager.dartRange;
 	
-	private static final ParticleEffect VISUAL = ParticleEffect.FIREWORKS_SPARK;
+	private static final ParticleEffect VISUAL = ParticleEffect.HAPPY_VILLAGER;
 	
 	private Player player;
 	private Location origin;
 	private Location location;
 	private Vector direction;
-	private List<PotionEffect> potions = null;
+	private PotionEffect effect;
 	
 	public PoisonnedDart(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -52,21 +52,18 @@ public class PoisonnedDart {
 		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PoisonnedDart, player.getLocation())) {
 			return;
 		}
-		Bukkit.getLogger().info("new PD");
 		
 		ItemStack is = player.getItemInHand();
 		if (is.getType() == Material.POTION) {
-			Potion p = Potion.fromItemStack(is);
-			potions = new LinkedList<PotionEffect>();
-			for (PotionEffect e : p.getEffects()) {
-				potions.add(e);
-			}
+			effect = EntityTools.fromItemStack(is);
 			player.getInventory().remove(is);		
 		}
 		this.player = player;
 		origin = player.getEyeLocation();
-		location = origin;
+		location = origin.clone();
 		direction = origin.getDirection().normalize();
+		
+		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
 		
 		instances.put(player, this);
 		
@@ -87,12 +84,14 @@ public class PoisonnedDart {
 	}
 	
 	public boolean progress() {
-		Bukkit.getLogger().info("progress");
 		if (!player.isOnline() || player.isDead()) {
 			return false;
 		}
 		
-		if (!player.getWorld().equals(location.getWorld()) || location.distance(origin) > range) {
+		if (!player.getWorld().equals(location.getWorld())) {
+			return false;
+		}
+		if (location.distance(origin) > range) {
 			return false;
 		}
 		
@@ -112,17 +111,16 @@ public class PoisonnedDart {
 			return false;
 		}		
 		int cptEnt = 0;
-		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 1.2)) {
+		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 1.65)) {
 			boolean health = false;
-			if (potions != null) {
-				for (PotionEffect ef : potions) {
-					if (ef.getType() == PotionEffectType.HEAL
-							|| ef.getType() == PotionEffectType.HEALTH_BOOST
-							|| ef.getType() == PotionEffectType.REGENERATION) {
-						health = true;
-					}
-					entity.addPotionEffect(ef);
+			if (effect != null) {
+				Bukkit.getLogger().info(effect.getType().getName());
+				if (effect.getType() == PotionEffectType.HEAL
+						|| effect.getType() == PotionEffectType.HEALTH_BOOST
+						|| effect.getType() == PotionEffectType.REGENERATION) {
+					health = true;
 				}
+				entity.addPotionEffect(effect);	
 			}			
 			if (!health) {
 				EntityTools.damageEntity(player, entity, damage);
@@ -137,7 +135,7 @@ public class PoisonnedDart {
 	}
 	private void advanceLocation() {
 		VISUAL.display(location, 0,0,0, 1,1);
-		location = location.add(direction.clone().multiply(2));
+		location = location.add(direction.clone().multiply(1));
 	}
 	
 	public static void removeAll() {
