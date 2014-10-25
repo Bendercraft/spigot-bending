@@ -67,7 +67,7 @@ Properties:
       Duration: 10
       Cooldown: 6000
     PoisonnedDart:
-      Range: 10
+      Range: 16
       Damage: 2
       poison-level: 1
       Cooldown: 1500

@@ -54,9 +54,21 @@ public class PoisonnedDart {
 		}
 		
 		ItemStack is = player.getItemInHand();
-		if (is.getType() == Material.POTION) {
+		if (is.getType() == Material.MILK_BUCKET) {
+			effect = null;
+		}
+		else if (is.getType() == Material.POTION) {
 			effect = EntityTools.fromItemStack(is);
 			player.getInventory().remove(is);		
+		}
+		else if (is.getType() == Material.EYE_OF_ENDER) {
+			effect = new PotionEffect(PotionEffectType.BLINDNESS,20*10,1);
+		}
+		else if (is.getType() == Material.MUSHROOM_SOUP) {
+			effect = new PotionEffect(PotionEffectType.CONFUSION,20*12,1);
+		}
+		else {
+			effect = new PotionEffect(PotionEffectType.POISON,1,1);
 		}
 		this.player = player;
 		origin = player.getEyeLocation();
@@ -121,7 +133,10 @@ public class PoisonnedDart {
 					health = true;
 				}
 				entity.addPotionEffect(effect);	
-			}			
+			}
+			else {
+				entity.getActivePotionEffects().clear();
+			}
 			if (!health) {
 				EntityTools.damageEntity(player, entity, damage);
 			}
