@@ -68,7 +68,7 @@ public class PoisonnedDart {
 			effect = new PotionEffect(PotionEffectType.CONFUSION,20*12,1);
 		}
 		else {
-			effect = new PotionEffect(PotionEffectType.POISON,20*2,1);
+			effect = new PotionEffect(PotionEffectType.POISON, 20*2, 0);
 		}
 		this.player = player;
 		origin = player.getEyeLocation();
