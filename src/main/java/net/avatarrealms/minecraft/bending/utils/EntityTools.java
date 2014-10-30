@@ -462,9 +462,9 @@ public class EntityTools {
 			case 8197:
 			case 8261:
 			case 16389:
-			case 16453: return new PotionEffect(PotionEffectType.HEAL, 20*60,0);
+			case 16453: return new PotionEffect(PotionEffectType.HEAL, 10*1,0);
 			case 8229:
-			case 16421: return new PotionEffect(PotionEffectType.HEAL, 20*60,1);
+			case 16421: return new PotionEffect(PotionEffectType.HEAL, 10*1,1);
 			case 8198:
 			case 8262:
 			case 16390:
@@ -498,9 +498,9 @@ public class EntityTools {
 			case 8204:
 			case 8268:
 			case 16396:
-			case 16460: return new PotionEffect(PotionEffectType.HARM, 20,0);
+			case 16460: return new PotionEffect(PotionEffectType.HARM, 5,0);
 			case 8236:
-			case 16428: return new PotionEffect(PotionEffectType.HARM, 20, 1);
+			case 16428: return new PotionEffect(PotionEffectType.HARM, 5, 1);
 			case 8205:
 			case 8269:
 			case 16397:

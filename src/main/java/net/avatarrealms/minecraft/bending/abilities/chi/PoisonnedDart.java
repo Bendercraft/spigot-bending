@@ -68,7 +68,7 @@ public class PoisonnedDart {
 			effect = new PotionEffect(PotionEffectType.CONFUSION,20*12,1);
 		}
 		else {
-			effect = new PotionEffect(PotionEffectType.POISON,1,1);
+			effect = new PotionEffect(PotionEffectType.POISON,20*2,1);
 		}
 		this.player = player;
 		origin = player.getEyeLocation();
@@ -123,7 +123,10 @@ public class PoisonnedDart {
 			return false;
 		}		
 		int cptEnt = 0;
-		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 1.65)) {
+		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 1.9)) {
+			if (entity.getEntityId() == player.getEntityId()) {
+				continue;
+			}
 			boolean health = false;
 			if (effect != null) {
 				Bukkit.getLogger().info(effect.getType().getName());
@@ -150,7 +153,7 @@ public class PoisonnedDart {
 	}
 	private void advanceLocation() {
 		VISUAL.display(location, 0,0,0, 1,1);
-		location = location.add(direction.clone().multiply(1));
+		location = location.add(direction.clone().multiply(1.5));
 	}
 	
 	public static void removeAll() {

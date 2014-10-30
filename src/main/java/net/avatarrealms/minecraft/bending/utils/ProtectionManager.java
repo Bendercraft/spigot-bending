@@ -181,6 +181,7 @@ public class ProtectionManager {
 		return false;
 	}
 
+	@Deprecated
 	public static boolean isRegionProtectedFromBuild(Player player,
 			Abilities ability, Location loc) {
 

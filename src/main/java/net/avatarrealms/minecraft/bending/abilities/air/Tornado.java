@@ -20,6 +20,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class Tornado implements IAbility {
@@ -154,6 +156,9 @@ public class Tornado implements IAbility {
 							} else {
 								vy = .6;
 							}
+						}
+						else {
+							entity.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20*5, 1));
 						}
 
 						Vector velocity = entity.getVelocity();

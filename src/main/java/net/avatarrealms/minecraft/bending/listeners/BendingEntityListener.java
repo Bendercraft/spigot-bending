@@ -115,12 +115,12 @@ public class BendingEntityListener implements Listener {
 			return;
 		}
 
-		if (source instanceof Player && entity instanceof Monster
-				&& event.getCause() == DamageCause.CUSTOM) {
+		if ((source instanceof Player) && (entity instanceof Monster)
+				&& (event.getCause() == DamageCause.CUSTOM)) {
 			event.setDamage(event.getDamage() * 2.5);
 		}
 
-		if (entity instanceof Player && source instanceof Monster) {
+		if ((entity instanceof Player) && (source instanceof Monster)) {
 			event.setDamage(event.getDamage() * 2 / 3);
 		}
 
@@ -165,7 +165,6 @@ public class BendingEntityListener implements Listener {
 			}
 		}
 		if (source instanceof Player) {
-
 			if (!dodged)
 				new Paralyze((Player) source, event.getEntity(),
 						null);
@@ -319,6 +318,12 @@ public class BendingEntityListener implements Listener {
 				}
 				Abilities ability = bPlayer.getAbility();
 				if (ability == Abilities.PlasticBomb && EntityTools.canBend(player, ability)){
+					for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(arrow.getLocation(), 1.7)) {
+						if (entity instanceof Player) {
+							new CFour(player, (Player)entity);
+							return;
+						}
+					}
 					World world = arrow.getLocation().getWorld();
 					Block block = arrow.getLocation().getBlock();
 					BlockIterator bi = null;
@@ -337,9 +342,6 @@ public class BendingEntityListener implements Listener {
 						}			
 					}			
 					if (hitBlock == null) {
-						return;
-					}
-					if (block.getType() == Material.AIR && hitBlock.getType() == Material.AIR){
 						return;
 					}
 					

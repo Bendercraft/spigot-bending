@@ -1035,6 +1035,16 @@ public class BendingPlayerListener implements Listener{
 			EarthArmor.removeEffect(event.getEntity());
 		}
 		
+		CFour plastic = CFour.isTarget(event.getEntity());
+		if (plastic != null) {
+			ItemStack is = plastic.getHeadBomb();
+			if (event.getDrops().contains(is)) {
+				event.getDrops().remove(is);
+				
+			}
+			// Should do the same with earth armor ?
+		}
+		
 		//Fireblade & Suffocate
 		List<ItemStack> toRemove = new LinkedList<ItemStack>();
 		for(ItemStack item : event.getDrops()) {

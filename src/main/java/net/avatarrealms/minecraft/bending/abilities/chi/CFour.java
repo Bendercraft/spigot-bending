@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -27,6 +29,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
 public class CFour {
@@ -39,7 +42,10 @@ public class CFour {
 	private static final int fuseInterval = 1500;
 	
 	private Player player;
-	private Block bomb;
+	private Player target = null;
+	private Block bomb = null;;
+	private ItemStack headBomb = null;
+	private ItemStack saveHead = null;
 	private Location location;
 	private Material previousType;
 	private long fuseTime = 0;
@@ -74,6 +80,31 @@ public class CFour {
 		this.fuseTime = System.currentTimeMillis();
 		this.generateCFour(temp, face);
 		instances.put(player, this);
+	}
+	
+	public CFour (Player player, LivingEntity target) {
+		if (player == null || target == null) {
+			return;
+		}	
+		if (!(target instanceof Player)) {
+			return;
+		}	
+		if (!hasDetonator(player)) {
+			return;
+		}
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		if (bPlayer == null) {
+			return;
+		}
+		if (bPlayer.isOnCooldown(Abilities.PlasticBomb)) {
+			return;
+		}
+		
+		this.player = player;
+		this.target = (Player) target;
+		this.fuseTime = System.currentTimeMillis();
+		this.generateHeadBomb();
+		instances.put(player,this);
 	}
 	
 	private boolean hasDetonator(Player player) {
@@ -112,7 +143,15 @@ public class CFour {
 			return false;
 		}
 		
-		if (bomb.getType() != Material.SKULL) {
+		if (bomb == null && headBomb == null) {
+			return false;
+		}
+		
+		if ((bomb!=null) && (bomb.getType() != Material.SKULL)) {
+			return false;
+		}
+		
+		if (((headBomb!=null) && (headBomb.getType() != Material.SKULL_ITEM))) {
 			return false;
 		}
 		
@@ -127,8 +166,20 @@ public class CFour {
 		if (!hasDetonator(player)) {
 			return;
 		}
+		if (headBomb != null && target != null) {
+			location = target.getEyeLocation();
+		}
+		
 		location.getWorld().playSound(location, Sound.EXPLODE, 10, 1);
 		EXPLODE.display(location, 0, 0, 0, 1, 1);
+		
+		if (bomb != null && previousType != null) {
+			bomb.setType(previousType);
+		}
+		else if (headBomb != null && target != null){
+			target.getInventory().setHelmet(saveHead);
+		}
+		
 		explode();
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer != null) {
@@ -153,12 +204,22 @@ public class CFour {
 		skull.setOwner("MHF_TNT");
 		skull.update();
 		bomb.getDrops().clear();
-		location.getWorld().playSound(location, Sound.STEP_GRAVEL,10,1);
+		location.getWorld().playSound(location, Sound.STEP_GRAVEL, 10, 1);
+	}
+	
+	private void generateHeadBomb() {
+		headBomb = new ItemStack(397, 1, (short) 3);
+		SkullMeta meta = (SkullMeta) headBomb.getItemMeta();
+		meta.setOwner("MHF_TNT");
+		headBomb.setItemMeta(meta);
+		
+		this.saveHead = target.getInventory().getHelmet();
+		target.getInventory().setHelmet(headBomb);
 	}
 	
 	private void explode() {
 		boolean obsidian = false;
-		bomb.setType(previousType);
+		
 		List<Block> affecteds = new LinkedList<Block>();
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (block.getType() == Material.OBSIDIAN) {
@@ -201,7 +262,7 @@ public class CFour {
 			}
 		}
 		
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius+1);
 		for(LivingEntity entity : entities) {
 			this.dealDamage(entity);
 			this.knockBack(entity);
@@ -209,8 +270,7 @@ public class CFour {
 	}
 	
 	public void dealDamage(Entity entity) {
-		double distance = entity.getLocation()
-				.distance(location);
+		double distance = entity.getLocation().distance(location);
 		if (distance > radius){
 			return;
 		}	
@@ -219,8 +279,7 @@ public class CFour {
 	}
 	
 	private void knockBack(Entity entity) {
-		double distance = entity.getLocation()
-				.distance(bomb.getLocation());
+		double distance = entity.getLocation().distance(location);
 		if (distance > radius){
 			return;
 		}	
@@ -254,8 +313,31 @@ public class CFour {
 		instances.clear();
 	}
 	
+	@Nullable
+	public static CFour isTarget(Player targ) {
+		for (Player p : instances.keySet()) {
+			if (instances.get(p).target.equals(targ)) {
+				return instances.get(p);
+			}
+		}
+		return null;
+	}
+	
+	@Nullable
+	public ItemStack getHeadBomb(){
+		return headBomb;
+	}
+	
 	public void remove() {
-		bomb.setType(previousType);
+		if (bomb != null) {
+			bomb.setType(previousType);
+		}
+		else if (headBomb != null) {
+			if (target != null) {
+				target.getInventory().setHelmet(saveHead);
+			}
+		}
+		
 	}
 	
 	public static Player isCFour(Block block) {
