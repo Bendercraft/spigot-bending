@@ -2102,10 +2102,12 @@ public class BendingCommand {
 			bPl.removeBender();
 			
 			for (BendingType data : plData.getBendings()) {
+				Bending.log.info("Adding " + data.toString());
 				bPl.addBender(data);
 			}
 			
 			for (BendingSpecializationType spe : plData.getSpecialization()) {
+				Bending.log.info("Adding " + spe.toString());
 				bPl.addSpecialization(spe);
 			}
 			

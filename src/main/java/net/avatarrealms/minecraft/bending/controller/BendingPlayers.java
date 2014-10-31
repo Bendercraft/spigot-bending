@@ -65,7 +65,7 @@ public class BendingPlayers {
 	}
 	
 	public void reload() {
-bendingPlayers = new HashMap<UUID, BendingPlayerData>();
+		bendingPlayers = new HashMap<UUID, BendingPlayerData>();
 		
 		if (bendingPlayersFile == null) {
 			bendingPlayersFile = new File(dataFolder, FILE_NAME);
