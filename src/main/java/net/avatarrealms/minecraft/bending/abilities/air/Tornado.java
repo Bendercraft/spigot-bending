@@ -158,7 +158,7 @@ public class Tornado implements IAbility {
 							}
 						}
 						else {
-							entity.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20*5, 1));
+							entity.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20*10, 1));
 						}
 
 						Vector velocity = entity.getVelocity();
@@ -167,7 +167,7 @@ public class Tornado implements IAbility {
 						velocity.setY(vy);
 						velocity.multiply(timefactor*0.75);
 						entity.setVelocity(velocity);
-						entity.setFallDistance(0);
+						entity.setFallDistance(entity.getFallDistance()/3);
 
 						if (entity instanceof Player) {
 							new Flight((Player) entity);

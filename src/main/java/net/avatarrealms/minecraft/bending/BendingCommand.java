@@ -2110,7 +2110,7 @@ public class BendingCommand {
 			}
 			
 			for (Entry<Integer, Abilities> data : plData.getSlotAbilities().entrySet()) {
-				bPl.setAbility(data.getKey(),data.getValue());
+				bPl.setAbility(data.getKey(), data.getValue());
 			}
 			player.sendMessage(ChatColor.GREEN + "Bending properly set back");
 		}

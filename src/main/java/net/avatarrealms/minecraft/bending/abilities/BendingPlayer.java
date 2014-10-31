@@ -213,8 +213,9 @@ public class BendingPlayer {
 	}
 
 	public void addBender(BendingType type) {
-		if (!bendings.contains(type))
+		if (!bendings.contains(type)) {
 			bendings.add(type);
+		}
 	}
 	
 	public void setSpecialization(BendingSpecializationType specialization) {
@@ -222,8 +223,9 @@ public class BendingPlayer {
 		specializations.add(specialization);
 	}
 	public void addSpecialization(BendingSpecializationType specialization) {
-		if (!specializations.contains(specialization))
+		if (!specializations.contains(specialization)) {
 			specializations.add(specialization);
+		}		
 	}
 	public void removeSpecialization(BendingSpecializationType specialization) {
 		specializations.remove(specialization);
@@ -251,9 +253,9 @@ public class BendingPlayer {
 	}
 
 	public void removeBender() {
-		bendings.clear();
-		specializations.clear();
 		clearAbilities();
+		specializations.clear();
+		bendings.clear();
 	}
 
 	public Abilities getAbility() {

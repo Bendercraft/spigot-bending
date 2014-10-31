@@ -145,7 +145,7 @@ public class PoisonnedDart {
 			}
 			cptEnt++;
 		}
-		PluginTools.removeSpouts(location, player);
+
 		if (cptEnt > 0) {
 			return false;
 		}

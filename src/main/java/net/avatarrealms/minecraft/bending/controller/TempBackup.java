@@ -34,7 +34,7 @@ public class TempBackup {
 	}
 
 	public BendingPlayerData get(UUID id) {
-		if (backupPlayers != null) {
+		if (backupPlayers != null && backupPlayers.containsKey(id)) {
 			return backupPlayers.get(id);
 		}
 		return null;

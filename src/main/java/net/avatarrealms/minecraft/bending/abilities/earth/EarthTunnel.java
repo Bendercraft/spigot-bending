@@ -78,7 +78,6 @@ public class EarthTunnel implements IAbility {
 						if (radius >= maxradius) {
 							radius = radiusinc;
 							if (depth >= range) {
-								instances.remove(player);
 								return false;
 							} else {
 								depth += .5;

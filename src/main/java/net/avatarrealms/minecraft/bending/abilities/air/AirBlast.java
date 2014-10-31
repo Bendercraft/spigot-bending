@@ -52,7 +52,6 @@ public class AirBlast implements IAbility {
 	private double speedfactor;
 	private double range = defaultrange;
 	private double pushfactor = defaultpushfactor;
-	private boolean otherorigin = false;
 	private int ticks = 0;
 
 	private List<Block> affectedlevers = new ArrayList<Block>();
@@ -71,7 +70,6 @@ public class AirBlast implements IAbility {
 		
 		this.player = player;
 		if (origins.containsKey(player)) {
-			otherorigin = true;
 			origin = origins.get(player);
 			origins.remove(player);
 			Entity entity = EntityTools.getTargettedEntity(player, range);
@@ -174,11 +172,9 @@ public class AirBlast implements IAbility {
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
-			affect(entity);
-		}
-		
+				affect(entity);
+		}	
 		advanceLocation();
-
 		return true;
 	}
 
@@ -189,8 +185,11 @@ public class AirBlast implements IAbility {
 
 	private void affect(Entity entity) {
 		boolean isUser = entity.getEntityId() == player.getEntityId();
-
-		if (!isUser || otherorigin) {
+		if (entity.getFireTicks() > 0) {
+			entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
+			entity.setFireTicks(0);
+		}	
+		if (!isUser) {
 			Vector velocity = entity.getVelocity();
 			// double mag = Math.abs(velocity.getY());
 			double max = maxspeed;
@@ -234,11 +233,7 @@ public class AirBlast implements IAbility {
 			entity.setFallDistance(0);
 			if (!isUser && entity instanceof Player) {
 				new Flight((Player) entity, player);
-			}
-			if (entity.getFireTicks() > 0)
-				entity.getWorld().playEffect(entity.getLocation(),
-						Effect.EXTINGUISH, 0);
-			entity.setFireTicks(0);
+			}			
 		}
 	}
 	

@@ -618,6 +618,10 @@ public class BendingPlayerListener implements Listener{
 				if (ability == Abilities.AirSuction) {
 					AirSuction.setOrigin(player);
 				}
+				
+				if (ability == Abilities.AirBlast) {
+					AirBlast.setOrigin(player);
+				}
 
 				if (ability == Abilities.AirBurst) {
 					new AirBurst(player, null);
