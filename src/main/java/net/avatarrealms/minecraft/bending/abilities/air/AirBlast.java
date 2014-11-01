@@ -189,52 +189,52 @@ public class AirBlast implements IAbility {
 			entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
 			entity.setFireTicks(0);
 		}	
-		if (!isUser) {
-			Vector velocity = entity.getVelocity();
-			// double mag = Math.abs(velocity.getY());
-			double max = maxspeed;
-			double factor = pushfactor;
-			if (AvatarState.isAvatarState(player)) {
-				max = AvatarState.getValue(maxspeed);
-				factor = AvatarState.getValue(factor);
-			}
-
-			Vector push = direction.clone();
-			if (Math.abs(push.getY()) > max && !isUser) {
-				if (push.getY() < 0)
-					push.setY(-max);
-				else
-					push.setY(max);
-			}
-
-			factor *= 1 - location.distance(origin) / (2 * range);
-
-			if (isUser
-					&& BlockTools.isSolid(player.getLocation().add(0, -.5, 0)
-							.getBlock())) {
-				factor *= .5;
-			}
-
-			double comp = velocity.dot(push.clone().normalize());
-			if (comp > factor) {
-				velocity.multiply(.5);
-				velocity.add(push
-						.clone()
-						.normalize()
-						.multiply(
-								velocity.clone().dot(push.clone().normalize())));
-			} else if (comp + factor * .5 > factor) {
-				velocity.add(push.clone().multiply(factor - comp));
-			} else {
-				velocity.add(push.clone().multiply(factor * .5));
-			}
-
-			entity.setVelocity(velocity);
-			entity.setFallDistance(0);
-			if (!isUser && entity instanceof Player) {
-				new Flight((Player) entity, player);
-			}			
+		Vector velocity = entity.getVelocity();
+		// double mag = Math.abs(velocity.getY());
+		double max = maxspeed;
+		double factor = pushfactor;
+		if (AvatarState.isAvatarState(player)) {
+			max = AvatarState.getValue(maxspeed);
+			factor = AvatarState.getValue(factor);
 		}
+
+		Vector push = direction.clone();
+		if (Math.abs(push.getY()) > max && !isUser) {
+			if (push.getY() < 0)
+				push.setY(-max);
+			else
+				push.setY(max);
+		}
+
+		factor *= 1 - location.distance(origin) / (2 * range);
+
+		if (isUser
+				&& BlockTools.isSolid(player.getLocation().add(0, -.5, 0)
+						.getBlock())) {
+			factor *= .5;
+		}
+
+		double comp = velocity.dot(push.clone().normalize());
+		if (comp > factor) {
+			velocity.multiply(.5);
+			velocity.add(push
+					.clone()
+					.normalize()
+					.multiply(
+							velocity.clone().dot(push.clone().normalize())));
+		} else if (comp + factor * .5 > factor) {
+			velocity.add(push.clone().multiply(factor - comp));
+		} else {
+			velocity.add(push.clone().multiply(factor * .5));
+		}
+		if (isUser) {
+			velocity.multiply(1.0/2.0);
+		}
+		entity.setVelocity(velocity);
+		entity.setFallDistance(0);
+		if (!isUser && entity instanceof Player) {
+			new Flight((Player) entity, player);
+		}			
 	}
 	
 	private void remove() {

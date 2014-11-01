@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
 public class Tornado implements IAbility {
 	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 	private static Map<UUID, Long> affecteds = new HashMap<UUID, Long>();
-	private static int fallImmunity = 10000;
+	private static int fallImmunity = 5000;
 	private static double maxradius = ConfigManager.tornadoRadius;
 	private static double maxheight = ConfigManager.tornadoHeight;
 	private static double range = ConfigManager.tornadoRange;

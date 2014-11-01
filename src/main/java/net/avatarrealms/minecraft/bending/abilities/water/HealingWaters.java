@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -24,10 +26,11 @@ import org.bukkit.potion.PotionEffectType;
 public class HealingWaters implements IAbility {
 
 	private static final double range = ConfigManager.healingWatersRadius;
-	private static final long interval = ConfigManager.healingWatersInterval;
+	//private static final long interval = ConfigManager.healingWatersInterval;
 	private static Map<Player, HealingWaters> instances = new HashMap<Player, HealingWaters>();
 
 	private Player healer;
+	private BendingPlayer bPlayer;
 	private long time = 0;
 	private IAbility parent;
 	private LivingEntity target;
@@ -42,6 +45,7 @@ public class HealingWaters implements IAbility {
 		}
 		
 		this.healer = player;
+		this.bPlayer = BendingPlayer.getBendingPlayer(healer);
 		this.time = System.currentTimeMillis();
 		
 		LivingEntity temp = EntityTools.getTargettedEntity(player, range);
@@ -50,7 +54,6 @@ public class HealingWaters implements IAbility {
 		}
 		
 		target = temp;
-		
 		instances.put(player, this);
 	}
 	
@@ -63,7 +66,6 @@ public class HealingWaters implements IAbility {
 				toRemove.add(p);
 			}
 		}
-	
 		for (Player p : toRemove) {
 			instances.remove(p);
 		}
@@ -74,7 +76,11 @@ public class HealingWaters implements IAbility {
 			return false;
 		}
 		
-		if (healer.isSneaking()) {
+		if (!healer.isSneaking()) {
+			return false;
+		}
+		
+		if (bPlayer.getAbility() != Abilities.HealingWaters) {
 			return false;
 		}
 		
@@ -90,9 +96,7 @@ public class HealingWaters implements IAbility {
 		if (entity.getEntityId() != target.getEntityId()) {
 			time = System.currentTimeMillis();
 		}
-		target = entity;
-		
-		
+		target = entity;	
 		
 		if (isWaterPotion(healer.getItemInHand())) {
 			giveHPToEntity(target);
@@ -106,36 +110,40 @@ public class HealingWaters implements IAbility {
 		else {
 			return true;
 		}
-		if (System.currentTimeMillis() - time > 2500) {
-			for (PotionEffect pe : target.getActivePotionEffects()) {
-				if (isNegativePotionEffect(pe.getType())) {
-					target.removePotionEffect(pe.getType());
+		long now = System.currentTimeMillis();
+		if (now - time > 1000) {
+			target.setFireTicks(0);
+			if (now - time > 3500) {
+				for (PotionEffect pe : target.getActivePotionEffects()) {
+					if (isNegativePotionEffect(pe.getType())) {
+						target.removePotionEffect(pe.getType());
+					}
 				}
 			}
-		}
+		}		
 		return true;
 	}
 	
 	public static boolean isNegativePotionEffect(PotionEffectType peType) {
-		if (peType == PotionEffectType.BLINDNESS) {
+		if (peType.equals(PotionEffectType.BLINDNESS)) {
 			return true;
 		}
-		if (peType == PotionEffectType.CONFUSION) {
+		if (peType.equals(PotionEffectType.CONFUSION)) {
 			return true;
 		}
-		if (peType == PotionEffectType.HUNGER) {
+		if (peType.equals(PotionEffectType.HUNGER)) {
 			return true;
 		}
-		if (peType == PotionEffectType.POISON) {
+		if (peType.equals(PotionEffectType.POISON)) {
 			return true;
 		}
-		if (peType == PotionEffectType.SLOW) {
+		if (peType.equals(PotionEffectType.SLOW)) {
 			return true;
 		}
-		if (peType == PotionEffectType.WEAKNESS) {
+		if (peType.equals(PotionEffectType.WEAKNESS)) {
 			return true;
 		}
-		if (peType == PotionEffectType.WITHER) {
+		if (peType.equals(PotionEffectType.WITHER)) {
 			return true;
 		}		
 		return false;
