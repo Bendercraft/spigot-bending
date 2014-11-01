@@ -60,7 +60,6 @@ public class Catapult implements IAbility {
 			location = origin.clone().add(neg.clone().multiply((double) i));
 			block = location.getBlock();
 			if (BlockTools.isEarthbendable(player, Abilities.Catapult, block)) {
-				// block.setType(Material.SANDSTONE);
 				distance = BlockTools.getEarthbendableBlocksLength(player, block,
 						neg, length - i);
 				break;

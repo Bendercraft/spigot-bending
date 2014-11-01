@@ -71,6 +71,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.RingOfFire;
 import net.avatarrealms.minecraft.bending.abilities.fire.WallOfFire;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
 import net.avatarrealms.minecraft.bending.abilities.water.FreezeMelt;
+import net.avatarrealms.minecraft.bending.abilities.water.HealingWaters;
 import net.avatarrealms.minecraft.bending.abilities.water.IceSpike2;
 import net.avatarrealms.minecraft.bending.abilities.water.Melt;
 import net.avatarrealms.minecraft.bending.abilities.water.OctopusForm;
@@ -674,6 +675,10 @@ public class BendingPlayerListener implements Listener{
 			if (ability == Abilities.WaterManipulation) {
 				new WaterManipulation(player, null);
 				return;
+			}
+			
+			if (ability == Abilities.HealingWaters) {
+				new HealingWaters(player);
 			}
 
 			if (ability == Abilities.IceSpike) {

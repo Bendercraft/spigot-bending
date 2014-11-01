@@ -392,7 +392,7 @@ public class BendingManager implements Runnable {
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "bloodBend")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();
-		HealingWaters.heal(plugin.getServer());
+		HealingWaters.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "heal")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();

@@ -334,6 +334,9 @@ public class Wave implements IAbility {
 					if (knockback) {
 						Vector dir = direction.clone();
 						dir.setY(dir.getY() * upfactor);
+						if (entity.getEntityId() == player.getEntityId()) {
+							dir.multiply(2.0/3.0);
+						}
 						entity.setVelocity(entity
 								.getVelocity()
 								.clone()

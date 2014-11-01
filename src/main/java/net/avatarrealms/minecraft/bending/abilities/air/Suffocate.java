@@ -105,6 +105,10 @@ public class Suffocate implements IAbility {
 			return false;
 		}
 		
+		if (target.getLocation().distance(player.getLocation()) > 2*distance) {
+			return false;
+		}
+		
 		//Target should be slowed to hell
 		if(!target.hasPotionEffect(PotionEffectType.SLOW)) {
 			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 500, 1));

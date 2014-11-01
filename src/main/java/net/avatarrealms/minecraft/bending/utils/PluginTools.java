@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
@@ -51,6 +52,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.Lightning;
 import net.avatarrealms.minecraft.bending.abilities.fire.WallOfFire;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
 import net.avatarrealms.minecraft.bending.abilities.water.FreezeMelt;
+import net.avatarrealms.minecraft.bending.abilities.water.HealingWaters;
 import net.avatarrealms.minecraft.bending.abilities.water.IceSpike;
 import net.avatarrealms.minecraft.bending.abilities.water.IceSpike2;
 import net.avatarrealms.minecraft.bending.abilities.water.OctopusForm;
@@ -181,6 +183,7 @@ public class PluginTools {
 		Plantbending.regrow();
 		OctopusForm.removeAll();
 		Bloodbending.removeAll();
+		HealingWaters.removeAll();
 
 		FireStream.removeAll();
 		FireBall.removeAll();

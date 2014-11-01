@@ -167,7 +167,7 @@ public class Tornado implements IAbility {
 						velocity.setY(vy);
 						velocity.multiply(timefactor*0.75);
 						entity.setVelocity(velocity);
-						entity.setFallDistance(entity.getFallDistance()/3);
+						entity.setFallDistance((float) (entity.getFallDistance()/3.0));
 
 						if (entity instanceof Player) {
 							new Flight((Player) entity);
