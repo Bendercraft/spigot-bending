@@ -53,6 +53,7 @@ public class AirBlast implements IAbility {
 	private double range = defaultrange;
 	private double pushfactor = defaultpushfactor;
 	private int ticks = 0;
+	private boolean otherorigin = false;
 
 	private List<Block> affectedlevers = new ArrayList<Block>();
 	private IAbility parent;
@@ -72,6 +73,7 @@ public class AirBlast implements IAbility {
 		if (origins.containsKey(player)) {
 			origin = origins.get(player);
 			origins.remove(player);
+			otherorigin = true;
 			Entity entity = EntityTools.getTargettedEntity(player, range);
 			if (entity != null) {
 				direction = Tools.getDirection(origin, entity.getLocation())
@@ -172,7 +174,9 @@ public class AirBlast implements IAbility {
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
+			if ((entity.getEntityId() != player.getEntityId() || otherorigin)) {
 				affect(entity);
+			}		
 		}	
 		advanceLocation();
 		return true;
@@ -228,7 +232,7 @@ public class AirBlast implements IAbility {
 			velocity.add(push.clone().multiply(factor * .5));
 		}
 		if (isUser) {
-			velocity.multiply(1.0/2.0);
+			velocity.multiply(1.0/2.2);
 		}
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);

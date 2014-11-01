@@ -29,7 +29,7 @@ public class WallOfFire implements IAbility {
 
 	private static double maxangle = 50;
 	private static int range = ConfigManager.wallOfFireRange;
-	private static long interval = 200;
+	private static long interval = 250;
 	private static long cooldown = ConfigManager.wallOfFireCooldown;
 	private static long damageinterval = ConfigManager.wallOfFireInterval;
 

@@ -47,6 +47,7 @@ public class AirSuction implements IAbility {
 	private int id;
 	private int ticks = 0;
 	private IAbility parent;
+	private boolean otherorigin = false;
 
 	private double speedfactor;
 
@@ -68,6 +69,7 @@ public class AirSuction implements IAbility {
 		if (origins.containsKey(player)) {
 			origin = origins.get(player);
 			origins.remove(player);
+			otherorigin = true;
 		} else {
 			origin = player.getEyeLocation();
 		}
@@ -142,7 +144,10 @@ public class AirSuction implements IAbility {
 			if (entity.getFireTicks() > 0) {
 				entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
 				entity.setFireTicks(0);
-			}	
+			}
+			if (!(entity.getEntityId() != player.getEntityId() || otherorigin)) {
+				continue;
+			}
 			Vector velocity = entity.getVelocity();
 			double max = maxspeed;
 			double factor = pushfactor;
@@ -177,7 +182,7 @@ public class AirSuction implements IAbility {
 				velocity.add(push.clone().multiply(factor * .5));
 			}
 			if (entity.getEntityId() == player.getEntityId()) {
-				velocity.multiply(1.0/2.0);
+				velocity.multiply(1.0/1.85);
 			}
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);

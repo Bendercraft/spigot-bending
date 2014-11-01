@@ -4,7 +4,7 @@
 
 	<groupId>net.avatarrealms.minecraft</groupId>
 	<artifactId>minecraft-bending</artifactId>
-	<version>4.3.1-SNAPSHOT</version>
+	<version>4.3.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Minecraft Avatar bending</name>
