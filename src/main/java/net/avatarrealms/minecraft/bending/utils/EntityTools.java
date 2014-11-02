@@ -75,8 +75,9 @@ public class EntityTools {
 	
 	public static Abilities getBendingAbility(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer == null)
+		if (bPlayer == null) {
 			return null;
+		}		
 		return bPlayer.getAbility();
 	}
 	
@@ -514,7 +515,7 @@ public class EntityTools {
 			case 8238:
 			case 16430: return new PotionEffect(PotionEffectType.INVISIBILITY, 20*100, 1);
 			
-			default: return new PotionEffect(PotionEffectType.POISON, 20*10, 0);
+			default: return new PotionEffect(PotionEffectType.POISON, 20*5, 0);
 		}
 	}
 }

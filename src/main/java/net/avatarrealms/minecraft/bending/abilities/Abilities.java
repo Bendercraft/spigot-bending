@@ -12,7 +12,7 @@ public enum Abilities {
 	/*
 	 *  AIR Abilities
 	 */
-	AirBlast(BendingType.Air) {
+	AirBlast(BendingType.Air, true) {
 		public String getDescription() {
 			return "AirBlast is the most fundamental bending technique of an airbender."
 					+ " To use, simply left-click in a direction. A gust of wind will be"
@@ -22,14 +22,14 @@ public enum Abilities {
 					+ "origin of your next AirBlast to your targeted location.";
 		}
 	}, 
-	AirBubble(BendingType.Air){
+	AirBubble(BendingType.Air, false){
 		public String getDescription() {
 			return "To use, the bender must merely have the ability selected."
 					+ " All water around the user in a small bubble will vanish,"
 					+ " replacing itself once the user either gets too far away or selects a different ability.";
 		}
 	}, 
-	AirShield(BendingType.Air){
+	AirShield(BendingType.Air, true){
 		public String getDescription() {
 			return "Air Shield is one of the most powerful defensive techniques in existence. "
 					+ "To use, simply sneak (default: shift). "
@@ -39,7 +39,7 @@ public enum Abilities {
 					+ "entering it for as long as its maintained. ";
 		}
 	}, 
-	AirSuction(BendingType.Air){
+	AirSuction(BendingType.Air, true){
 		public String getDescription() {
 			return "To use, simply left-click in a direction. "
 					+ "A gust of wind will originate as far as it can in that direction"
@@ -49,7 +49,7 @@ public enum Abilities {
 					+ "AirSuction to your targeted location.";
 		}
 	}, 
-	AirSwipe(BendingType.Air){
+	AirSwipe(BendingType.Air, true){
 		public String getDescription() {
 			return "To use, simply left-click in a direction. "
 					+ "An arc of air will flow from you towards that direction, "
@@ -60,7 +60,7 @@ public enum Abilities {
 					+ "Charging before attacking will increase damage and knockback, up to a maximum.";
 		}
 	}, 
-	AirScooter(BendingType.Air){
+	AirScooter(BendingType.Air, false){
 		public String getDescription() {
 			return "AirScooter is a fast means of transportation. To use, sprint, jump then click with "
 					+ "this ability selected. You will hop on a scooter of air and be propelled forward "
@@ -69,7 +69,7 @@ public enum Abilities {
 					+ "Any other actions will deactivate this ability.";
 		}
 	},
-	AirSpout(BendingType.Air){
+	AirSpout(BendingType.Air, false){
 		public String getDescription() {
 			return "This ability gives the airbender limited sustained levitation. It is a "
 					+ "toggle - click to activate and form a whirling spout of air "
@@ -77,7 +77,7 @@ public enum Abilities {
 					+ "Click again to deactivate this ability.";
 		}
 	}, 
-	AirBurst(BendingType.Air){
+	AirBurst(BendingType.Air, true){
 		public String getDescription() {
 			return "AirBurst is one of the most powerful abilities in the airbender's arsenal. "
 					+ "To use, press and hold sneak to charge your burst. "
@@ -87,12 +87,12 @@ public enum Abilities {
 					+ "large enough fall will create a burst of air around you.";
 		}
 	}, 
-	AirManipulation(BendingType.Air){
+	AirManipulation(BendingType.Air, true){
 		public String getDescription() {
 			return " Not ready yet";
 		}
 	}, 
-	Tornado(BendingSpecializationType.Tornado){
+	Tornado(BendingSpecializationType.Tornado, true){
 		public String getDescription() {
 			return "To use, simply sneak (default: shift). "
 					+ "This will create a swirling vortex at the targeted location. "
@@ -106,7 +106,7 @@ public enum Abilities {
 					+ "with this ability.";
 		}
 	}, 
-	Suffocate(BendingSpecializationType.Suffocate){
+	Suffocate(BendingSpecializationType.Suffocate, true){
 		public String getDescription() {
 			return "To use, keep sneaking while watching a player "
 					+ "and the target while slowly lose his health."
@@ -119,7 +119,7 @@ public enum Abilities {
 	 * EARTH Abilities
 	 */
 
-	Catapult(BendingType.Earth){
+	Catapult(BendingType.Earth, true){
 		public String getDescription() {
 			return "To use, left-click while looking in the direction you want to be launched. "
 					+ "A pillar of earth will jut up from under you and launch you in that direction - "
@@ -129,7 +129,7 @@ public enum Abilities {
 					+ "you've read about your passive ability you innately have as an earthbender.";
 		}
 	}, 
-	RaiseEarth(BendingType.Earth){
+	RaiseEarth(BendingType.Earth, true){
 		public String getDescription() {
 			return "To use, simply left-click on an earthbendable block. "
 					+ "A column of earth will shoot upwards from that location. "
@@ -140,13 +140,13 @@ public enum Abilities {
 					+ "Anything in the way of the wall will be brought up with it. ";
 		}
 	}, 
-	EarthGrab(BendingType.Earth){
+	EarthGrab(BendingType.Earth, true){
 		public String getDescription() {
 			return "To use, simply left-click while targeting a creature within range. "
 					+ "Four earthbendables blocks will come from the ground to trap the creature in.";
 		}
 	}, 
-	EarthTunnel(BendingType.Earth){
+	EarthTunnel(BendingType.Earth, true){
 		public String getDescription() {
 			return "Earth Tunnel is a completely utility ability for earthbenders. "
 			+ "To use, simply sneak (default: shift) in the direction you want to tunnel. "
@@ -155,7 +155,7 @@ public enum Abilities {
 			+ "if it hits a block that cannot be earthbent.";
 			}
 	}, 
-	EarthBlast(BendingType.Earth){
+	EarthBlast(BendingType.Earth, true){
 		public String getDescription() {
 			return "To use, place your cursor over an earthbendable object (dirt, rock, ores, etc) "
 			+ "and tap sneak (default: shift). The object will temporarily turn to stone, "
@@ -168,7 +168,7 @@ public enum Abilities {
 			+ "You cannot have multiple of these abilities flying at the same time.";
 			}
 	}, 
-	Collapse(BendingType.Earth){
+	Collapse(BendingType.Earth, true){
 		public String getDescription() {
 			return " To use, simply left-click on an earthbendable block. "
 					+ "That block and the earthbendable blocks above it will be shoved "
@@ -181,7 +181,7 @@ public enum Abilities {
 					+ "earthbender's goal and technique.";
 		}
 	}, 
-	Tremorsense(BendingType.Earth){
+	Tremorsense(BendingType.Earth, true){
 		public String getDescription() {
 			return "This is a pure utility ability for earthbenders. If you have this ability bound to any "
 					+ "slot whatsoever, then you are able to 'see' using the earth. If you are in an area of low-light "
@@ -192,13 +192,13 @@ public enum Abilities {
 					+ "with pockets of air beneath them.";
 		}
 	},
-	EarthArmor(BendingType.Earth){
+	EarthArmor(BendingType.Earth, true){
 		public String getDescription() {
 			return "This ability encases the earthbender in temporary armor. To use, click on a block that is earthbendable. If there is another block under"
 					+ " it that is earthbendable, the block will fly to you and grant you temporary armor and damage reduction. This ability has a long cooldown.";
 		}
 	}, 
-	Shockwave(BendingType.Earth){
+	Shockwave(BendingType.Earth, true){
 		public String getDescription() {
 			return "This is one of the most powerful moves in the earthbender's arsenal. "
 					+ "To use, you must first charge it by holding sneak (default: shift). "
@@ -209,12 +209,12 @@ public enum Abilities {
 					+ "Lastly, if you fall from a great enough height with this ability selected, you will automatically create a shockwave.";
 		}
 	}, 
-	LavaTrain(BendingSpecializationType.Lavabend){
+	LavaTrain(BendingSpecializationType.Lavabend, true){
 		public String getDescription() {
 			return "Simply sneaking + clic and a lava lake will form under your eyes.";
 		}
 	}, 
-	MetalBending(BendingSpecializationType.Metalbend){
+	MetalBending(BendingSpecializationType.Metalbend, true){
 		public String getDescription() {
 			return "The MetalBending skill is one of the most useful earthbender technique."
 					+ " You can open iron door by clicking while you're on this slot. "
@@ -228,7 +228,7 @@ public enum Abilities {
 	 * FIRE Abilities
 	 */
 
-	HeatControl(BendingType.Fire){
+	HeatControl(BendingType.Fire, true){
 		public String getDescription() {
 			return "While this ability is selected, the firebender becomes impervious "
 					+ "to fire damage and cannot be ignited. "
@@ -238,7 +238,7 @@ public enum Abilities {
 					+ " will instead melt blocks in that area. Finally, sneaking with this ability will cook any food in your hand.";
 		}
 	}, 
-	Blaze(BendingType.Fire){
+	Blaze(BendingType.Fire, true){
 		public String getDescription() {
 			return "To use, simply left-click in any direction. "
 					+ "An arc of fire will flow from your location, "
@@ -247,7 +247,7 @@ public enum Abilities {
 					+ "in roaring flames.";
 		}
 	}, 
-	FireJet(BendingType.Fire){
+	FireJet(BendingType.Fire, false){
 		public String getDescription() {
 			return "This ability is used for a limited burst of flight for firebenders. Clicking with this "
 					+ "ability selected will launch you in the direction you're looking, granting you "
@@ -256,7 +256,7 @@ public enum Abilities {
 					+ "ignitable (e.g. not snow or water).";
 		}
 	}, 
-	Illumination(BendingType.Fire){
+	Illumination(BendingType.Fire, false){
 		public String getDescription() {
 			return "This ability gives firebenders a means of illuminating the area. It is a toggle - clicking "
 					+ "will create a torch that follows you around. The torch will only appear on objects that are "
@@ -265,14 +265,14 @@ public enum Abilities {
 					+ "dismisses this torch.";
 		}
 	}, 
-	WallOfFire(BendingType.Fire){
+	WallOfFire(BendingType.Fire, false){
 		public String getDescription() {
 			return "To use this ability, click at a location. A wall of fire "
 					+ "will appear at this location, igniting enemies caught in it "
 					+ "and blocking projectiles.";
 		}
 	}, 
-	FireBlast(BendingType.Fire){
+	FireBlast(BendingType.Fire, true){
 		public String getDescription() {
 			return "FireBlast is the most fundamental bending technique of a firebender. "
 					+ "To use, simply left-click in a direction. A blast of fire will be created at your fingertips. "
@@ -284,7 +284,7 @@ public enum Abilities {
 					+ "fireball that explodes on contact.";
 		}
 	}, 
-	FireBurst(BendingType.Fire){
+	FireBurst(BendingType.Fire, true){
 		public String getDescription() {
 			return "FireBurst is a very powerful firebending ability. "
 					+ "To use, press and hold sneak to charge your burst. "
@@ -292,7 +292,7 @@ public enum Abilities {
 					+ "of flames in front of you, or click to release the burst in a sphere around you. ";
 		}
 	}, 
-	FireShield(BendingType.Fire){
+	FireShield(BendingType.Fire, true){
 		public String getDescription() {
 			return "FireShield is a basic defensive ability. "
 					+ "Clicking with this ability selected will create a "
@@ -302,12 +302,12 @@ public enum Abilities {
 					+ "Creatures that contact this fire are ignited.";
 		}
 	}, 
-	FireBlade(BendingType.Fire){
+	FireBlade(BendingType.Fire, false){
 		public String getDescription() {
 			return "To use, simply click and a powerful blade will appear in your hand.";
 		}
 	},
-	Combustion(BendingSpecializationType.Combustion){
+	Combustion(BendingSpecializationType.Combustion, true){
 		public String getDescription() {
 			return "Combustion is a powerful Firebender skill."
 					+ " You just need to sneak and aim what you want."
@@ -315,7 +315,7 @@ public enum Abilities {
 					+ " around the target will explode";
 		}
 	},
-	Lightning(BendingSpecializationType.Lightning){
+	Lightning(BendingSpecializationType.Lightning, true){
 		public String getDescription() {
 			return "Hold sneak while selecting this ability to charge up a lightning strike. Once "
 					+ "charged, release sneak to discharge the lightning to the targetted location.";
@@ -327,14 +327,14 @@ public enum Abilities {
 	 * WATER Abilities
 	 */
 	
-	WaterBubble(BendingType.Water){
+	WaterBubble(BendingType.Water, true){
 		public String getDescription() {
 			return "To use, the bender must merely have the ability selected."
 					+ " All water around the user in a small bubble will vanish,"
 					+ " replacing itself once the user either gets too far away or selects a different ability.";
 		}
 	}, 
-	PhaseChange(BendingType.Water){
+	PhaseChange(BendingType.Water, true){
 		public String getDescription() {
 			return "To use, simply left-click. "
 					+ "Any water you are looking at within range will instantly freeze over into solid ice. "
@@ -347,7 +347,7 @@ public enum Abilities {
 					+ "sea level. ";
 		}
 	}, 
-	HealingWaters(BendingType.Water){
+	HealingWaters(BendingType.Water, true){
 		public String getDescription() {
 			return "To use, the bender must be at least partially submerged in water. "
 					+ "If the user is not sneaking, this ability will automatically begin "
@@ -357,7 +357,7 @@ public enum Abilities {
 					+ "be at least partially submerged in water.";
 		}
 	}, 
-	WaterManipulation(BendingType.Water){
+	WaterManipulation(BendingType.Water, true){
 		public String getDescription() {
 			return "To use, place your cursor over a waterbendable object and tap sneak (default: shift). "
 					+ "Smoke will appear where you've selected, indicating the origin of your ability. "
@@ -369,7 +369,7 @@ public enum Abilities {
 					+ "you will be able to control the water more directly.";
 		}
 	}, 
-	Surge(BendingType.Water){
+	Surge(BendingType.Water, true){
 		public String getDescription() {
 			return "This ability has two distinct features. If you sneak to select a source block, "
 					+ "you can then click in a direction and a large wave will be launched in that direction. "
@@ -379,7 +379,7 @@ public enum Abilities {
 					+ "Release sneak to dissipate it.";
 		}
 	},
-	WaterSpout(BendingType.Water){
+	WaterSpout(BendingType.Water, false){
 		public String getDescription() {
 			return "To use this ability, click while over or in water. "
 					+ "You will spout water up from beneath you to experience controlled levitation. "
@@ -388,7 +388,7 @@ public enum Abilities {
 					+ "the spout will dissipate and you will fall. Click again with this ability selected to deactivate it.";
 		}
 	},
-	IceSpike(BendingType.Water){
+	IceSpike(BendingType.Water, true){
 		public String getDescription() {
 			return "This ability has many functions. Clicking while targetting ice, or an entity over some ice, "
 					+ "will raise a spike of ice up, damaging and slowing the target. Tapping sneak (shift) while"
@@ -398,7 +398,7 @@ public enum Abilities {
 					+ "damaging and slowing those targets.";
 		}
 	}, 
-	OctopusForm(BendingType.Water){
+	OctopusForm(BendingType.Water, true){
 		public String getDescription() {
 			return "This ability allows the waterbender to manipulate a large quantity of water into a form resembling that of an octopus. "
 					+ "To use, click to select a water source. Then, hold sneak to channel this ability. "
@@ -407,7 +407,7 @@ public enum Abilities {
 					+ "Releasing shift at any time will dissipate the form.";
 		}
 	}, 
-	Torrent(BendingType.Water){
+	Torrent(BendingType.Water, true){
 		public String getDescription() {
 			return "Torrent is one of the strongest moves in a waterbender's arsenal."
 					+ " To use, first click a source block to select it; "
@@ -422,12 +422,12 @@ public enum Abilities {
 					+ "it will freeze the area around it when it is obstructed.";
 		}
 	}, 
-	IceSwipe(BendingType.Water){
+	IceSwipe(BendingType.Water, true){
 		public String getDescription() {
 			return " Not ready yet";
 		}
 	},
-	Bloodbending(BendingSpecializationType.Bloodbend){
+	Bloodbending(BendingSpecializationType.Bloodbend, true){
 		public String getDescription() {
 			return "This ability was made illegal for a reason. With this ability selected, sneak while "
 					+ "targetting something and you will bloodbend that target. Bloodbent targets cannot move, "
@@ -437,7 +437,7 @@ public enum Abilities {
 					+ "People who are capable of bloodbending are immune to your technique, and you are immune to theirs.";
 		}
 	}, 
-	Drainbending(BendingSpecializationType.DrainBend){
+	Drainbending(BendingSpecializationType.DrainBend, false){
 		public String getDescription() {
 			return " The drainbending skill allows the water bender using it to take water"
 					+ " from plants and even from the air.";
@@ -449,46 +449,46 @@ public enum Abilities {
 	 * CHI-BLOCKERS Abilities
 	 */
 
-	HighJump(BendingType.ChiBlocker){
+	HighJump(BendingType.ChiBlocker, false){
 		public String getDescription() {
 			return "To use this ability, simply click. "
 					+ "You will jump quite high. "
 					+ "This ability has a short cooldown.";
 		}
 	}, 
-	RapidPunch(BendingType.ChiBlocker){
+	RapidPunch(BendingType.ChiBlocker, false){
 		public String getDescription() {
 			return "This ability allows the chiblocker to punch rapidly in a short period. To use, simply punch."
 					+ " This has a short cooldown.";
 		}
 	}, 
-	Paralyze(BendingType.ChiBlocker){
+	Paralyze(BendingType.ChiBlocker, false){
 		public String getDescription() {
 			return "Paralyzes the target, making them unable to do anything for a short "
 					+ "period of time. This ability has a long cooldown.";
 		}
 	}, 
-	SmokeBomb(BendingType.ChiBlocker){
+	SmokeBomb(BendingType.ChiBlocker, false){
 		public String getDescription() {
 			return " To use, simply click and a smokebomb will make every player around you blind."
 					+ "While you're in the smokebomb area, you also are invisible.";
 		}
 	}, 
-	Dash(BendingType.ChiBlocker){
+	Dash(BendingType.ChiBlocker, true){
 		public String getDescription() {
 			return "This ChiBlocker skill is very useful when you want to travel faster"
 					+ " or if you want to avoid some dangerous technics ";
 		}
 	},
-	PoisonnedDart(BendingSpecializationType.Inventor){
+	PoisonnedDart(BendingSpecializationType.Inventor, false){
 		public String getDescription() {
-			return " Not ready yet.";
+			return " Not description yet.";
 		}
 	}, 
-	PlasticBomb(BendingSpecializationType.Inventor) {
+	PlasticBomb(BendingSpecializationType.Inventor, true) {
 		@Override
 		public String getDescription() {
-			return " Not ready yet.";
+			return " Not description yet.";
 		}
 		
 	},
@@ -498,7 +498,7 @@ public enum Abilities {
 	 * AVATAR Abilities
 	 */
 
-	AvatarState(BendingType.Energy){
+	AvatarState(BendingType.Energy, false){
 		public String getDescription() {
 			return "The signature ability of the Avatar, this is a toggle. Click to activate to become "
 					+ "nearly unstoppable. While in the Avatar State, the user takes severely reduced damage from "
@@ -508,7 +508,7 @@ public enum Abilities {
 					+ "State selected to deactivate it.";
 		}
 	},
-	AstralProjection(BendingType.Energy) {
+	AstralProjection(BendingType.Energy, true) {
 		@Override
 		public String getDescription() {
 			return "";
@@ -522,15 +522,18 @@ public enum Abilities {
 	
 	private BendingType element;
 	private BendingSpecializationType specialization;
+	private boolean shift;
 	
-	Abilities(BendingType element) {
+	Abilities(BendingType element, boolean shift) {
 		this.element = element;
 		this.specialization = null;
+		this.shift = shift;
 	}
 	
-	Abilities(BendingSpecializationType specialization) {
+	Abilities(BendingSpecializationType specialization, boolean shift) {
 		this.element = specialization.getElement();
 		this.specialization = specialization;
+		this.shift = shift;
 	}
 	
 	public BendingType getElement() {
@@ -641,5 +644,9 @@ public enum Abilities {
 			}
 		}
 		return result;
+	}
+	
+	public boolean isShiftAbility() {
+		return this.shift;
 	}
 }

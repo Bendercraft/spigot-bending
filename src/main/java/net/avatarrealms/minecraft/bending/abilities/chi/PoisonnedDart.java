@@ -56,10 +56,13 @@ public class PoisonnedDart {
 		ItemStack is = player.getItemInHand();
 		if (is.getType() == Material.MILK_BUCKET) {
 			effect = null;
+			player.getInventory().remove(is);
+			player.getInventory().addItem(new ItemStack(Material.BUCKET));
 		}
 		else if (is.getType() == Material.POTION) {
 			effect = EntityTools.fromItemStack(is);
-			player.getInventory().remove(is);		
+			player.getInventory().remove(is);	
+			player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
 		}
 		else if (is.getType() == Material.EYE_OF_ENDER) {
 			effect = new PotionEffect(PotionEffectType.BLINDNESS,20*10,1);
@@ -68,7 +71,7 @@ public class PoisonnedDart {
 			effect = new PotionEffect(PotionEffectType.CONFUSION,20*12,1);
 		}
 		else {
-			effect = new PotionEffect(PotionEffectType.POISON, 20*2, 0);
+			effect = new PotionEffect(PotionEffectType.POISON, 20*1, 0);
 		}
 		this.player = player;
 		origin = player.getEyeLocation();
@@ -130,9 +133,9 @@ public class PoisonnedDart {
 			boolean health = false;
 			if (effect != null) {
 				Bukkit.getLogger().info(effect.getType().getName());
-				if (effect.getType() == PotionEffectType.HEAL
-						|| effect.getType() == PotionEffectType.HEALTH_BOOST
-						|| effect.getType() == PotionEffectType.REGENERATION) {
+				if (effect.getType().equals(PotionEffectType.HEAL)
+						|| effect.getType().equals(PotionEffectType.HEALTH_BOOST)
+						|| effect.getType().equals(PotionEffectType.REGENERATION)) {
 					health = true;
 				}
 				entity.addPotionEffect(effect);	

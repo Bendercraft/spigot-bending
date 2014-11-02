@@ -1,7 +1,5 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
 
-import java.util.Arrays;
-
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.IPassiveAbility;
@@ -11,35 +9,38 @@ import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Server;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class FastSwimming implements IPassiveAbility {
 
 	private static double factor = ConfigManager.fastSwimmingFactor;
 
-	private static final Abilities[] shiftabilities = {
-			Abilities.WaterManipulation, Abilities.Surge,
-			Abilities.HealingWaters, Abilities.PhaseChange,
-			Abilities.Bloodbending, Abilities.IceSpike, Abilities.OctopusForm,
-			Abilities.Torrent, Abilities.AirBlast, Abilities.AirBurst,
-			Abilities.AirShield, Abilities.AirSuction, Abilities.AirSwipe,
-			Abilities.Blaze, Abilities.Collapse, Abilities.EarthBlast,
-			Abilities.EarthTunnel, Abilities.FireBlast, Abilities.FireBurst,
-			Abilities.FireShield, Abilities.Lightning, Abilities.RaiseEarth,
-			Abilities.Shockwave, Abilities.Tornado, Abilities.Tremorsense };
-
 	public static void HandleSwim(Server server) {
-		for (Player player : server.getOnlinePlayers()) {
-			Abilities ability = EntityTools.getBendingAbility(player);
-			if (EntityTools.isBender(player, BendingType.Water)
+		for (Player player : server.getOnlinePlayers()) {				
+			if (!(EntityTools.isBender(player, BendingType.Water)
 					&& EntityTools.canBendPassive(player, BendingType.Water)
-					&& player.isSneaking()
-					&& BlockTools.isWater(player.getLocation().getBlock())
-					&& !TempBlock.isTempBlock(player.getLocation().getBlock())
-					&& !(Arrays.asList(shiftabilities).contains(ability))) {
-				player.setVelocity(player.getEyeLocation().getDirection()
-						.clone().normalize().multiply(factor));
-
+					&& player.isSneaking())){
+				continue;
+			}
+			Abilities ability = EntityTools.getBendingAbility(player);
+			if (ability != null && ability.isShiftAbility()) {
+				continue;
+			}
+			if (BlockTools.isWater(player.getLocation().getBlock())
+					&& !TempBlock.isTempBlock(player.getLocation().getBlock())) {
+				Vector dir = player.getEyeLocation().getDirection().clone();
+				player.setVelocity(dir.normalize().multiply(factor));
+			}
+			else {
+				Block block = player.getLocation().clone().add(0, -1, 0).getBlock();
+				if (BlockTools.isWaterbendable(block, player)) {
+					if (BlockTools.isWater(block)) {
+						
+					}
+				}
+				
 			}
 		}
 		

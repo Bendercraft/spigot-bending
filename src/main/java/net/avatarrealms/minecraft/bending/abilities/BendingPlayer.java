@@ -260,10 +260,12 @@ public class BendingPlayer {
 
 	public Abilities getAbility() {
 		Player player = this.getPlayer();
-		if (player == null)
+		if (player == null) {
 			return null;
-		if (!player.isOnline() || player.isDead())
+		}
+		if (!player.isOnline() || player.isDead()) {
 			return null;
+		}
 		if (bendToItem) {
 			Material item = player.getItemInHand().getType();
 			return getAbility(item);
