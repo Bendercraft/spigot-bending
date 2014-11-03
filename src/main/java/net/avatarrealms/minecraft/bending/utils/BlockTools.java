@@ -288,7 +288,7 @@ public class BlockTools {
 	public static boolean isWaterBased(Block block) {
 		if (isWater(block) 
 				|| block.getType() == Material.ICE 
-				//|| block.getType() == Material.SNOW_BLOCK
+				|| block.getType() == Material.SNOW_BLOCK
 				|| block.getType() == Material.SNOW) {
 			return true;
 		}

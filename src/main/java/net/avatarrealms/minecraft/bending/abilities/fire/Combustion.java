@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
@@ -107,7 +106,6 @@ public class Combustion implements IAbility {
 				return false;
 			}
 			if (BlockTools.isSolid(location.getBlock())) {
-				Bending.log.info("Contact Explode");
 				explode();
 				return false;
 			}

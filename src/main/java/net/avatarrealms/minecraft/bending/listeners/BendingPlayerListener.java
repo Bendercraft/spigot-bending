@@ -70,6 +70,7 @@ import net.avatarrealms.minecraft.bending.abilities.fire.Lightning;
 import net.avatarrealms.minecraft.bending.abilities.fire.RingOfFire;
 import net.avatarrealms.minecraft.bending.abilities.fire.WallOfFire;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
+import net.avatarrealms.minecraft.bending.abilities.water.FastSwimming;
 import net.avatarrealms.minecraft.bending.abilities.water.FreezeMelt;
 import net.avatarrealms.minecraft.bending.abilities.water.HealingWaters;
 import net.avatarrealms.minecraft.bending.abilities.water.IceSpike2;
@@ -590,8 +591,14 @@ public class BendingPlayerListener implements Listener{
 		AirScooter.check(player);
 
 		Abilities ability = EntityTools.getBendingAbility(player);
-		if (ability == null)
+		if (ability == null || !ability.isShiftAbility()) {
+			if (EntityTools.isBender(player,BendingType.Water)
+					&& EntityTools.canBendPassive(player, BendingType.Water)){
+				new FastSwimming(player);
+			}
 			return;
+		}
+			
 		if (player.isSneaking() && EntityTools.canBend(player, ability)) {
 			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
 					|| ConfigManager.useWeapon.get("Air")) {

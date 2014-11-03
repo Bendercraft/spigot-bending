@@ -400,7 +400,7 @@ public class BendingManager implements Runnable {
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "passive")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();
-		FastSwimming.HandleSwim(plugin.getServer());
+		FastSwimming.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "fSwim")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();
