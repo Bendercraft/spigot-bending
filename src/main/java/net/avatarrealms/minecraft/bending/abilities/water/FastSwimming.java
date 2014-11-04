@@ -122,14 +122,6 @@ public class FastSwimming implements IPassiveAbility {
 				if (!BlockTools.isFluid(advancedBlock) && upperBlock.getType().equals(Material.AIR)) {
 					upperBlock.setType(Material.SNOW);
 				}
-				else if (BlockTools.isWaterBased(upperBlock)) {
-					if (block.getType().equals(Material.AIR)) {
-						block.setType(Material.SNOW);
-					}
-					if (block.getLocation().add(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
-						dir.setY((i+1)/2.0);
-					}			
-				}
 			}				
 		}
 		player.setVelocity(dir.normalize().multiply(factor/1.35));

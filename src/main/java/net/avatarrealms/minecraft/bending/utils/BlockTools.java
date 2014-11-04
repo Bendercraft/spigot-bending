@@ -326,7 +326,7 @@ public class BlockTools {
 			return false;
 		}
 			
-		if (isWaterBased(block)) {
+		if (isWaterBased(block) && !block.getType().equals(Material.SNOW_BLOCK)) {
 			return true;
 		}
 			
