@@ -6,15 +6,10 @@ import org.bukkit.block.BlockState;
 
 public class Information {
 
-	//private Player player;
 	private long time;
 	private Block block;
-	//private Location location;
 	private Material type;
-	//private int integer;
-	//private double value;
 	private byte data;
-	//private String string;
 	private BlockState state;
 
 	private static int ID = Integer.MIN_VALUE;
