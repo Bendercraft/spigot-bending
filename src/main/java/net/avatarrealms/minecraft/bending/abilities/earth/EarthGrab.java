@@ -9,11 +9,13 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,9 +32,9 @@ public class EarthGrab implements IAbility {
 	private static Integer ID = Integer.MIN_VALUE;
 	private static int benderTargettedDuration = 100; // 5 secs
 	private static int otherTargettedDuration = 6000; // 5 minutes
+	private static final byte full = 0x0;
 
 	private int id;
-	private List<EarthColumn> columns = new ArrayList<EarthColumn>(4);
 	private boolean self;
 	private BendingPlayer bPlayer;
 	private Player bender;
@@ -41,7 +43,7 @@ public class EarthGrab implements IAbility {
 	private Location origin;
 	private long time = 0;
 	private boolean toKeep = true;
-	private List<Location> columnsLoc = new LinkedList<Location>();
+	private List<TempBlock> affectedBlocks = new ArrayList<TempBlock>(8);
 
 	public EarthGrab(Player player, boolean self, IAbility parent) {
 		this.parent = parent;
@@ -113,7 +115,7 @@ public class EarthGrab implements IAbility {
 								|| BlockTools.isPlant(loc.getBlock())){
 							
 							loc.add(0, -1, 0);
-							if (BlockTools.isEarthbendable(player,loc.getBlock())) {
+							if (BlockTools.isEarthbendable(player,loc.getBlock())) {	
 								cpt++;
 							}
 							else {
@@ -157,15 +159,16 @@ public class EarthGrab implements IAbility {
 																	// jump
 					target.addPotionEffect(slowness);
 					target.addPotionEffect(jumpless);
-					
+					target.getWorld().playEffect(target.getLocation(),Effect.GHAST_SHOOT, 0, 4);
 					for (Location loc : locs) {
 						int h = 1;
 						if (origin.getY() - loc.getY() >= 2) {
 							h = 2;
 						}
-						columns.add(new EarthColumn(player, loc, h,
-								this, this));
-						columnsLoc.add(loc.clone().add(0,h,0));
+						Material t = loc.getBlock().getType();
+						for (int i = 0; i < h; i++) {
+							affectedBlocks.add(new TempBlock(loc.add(0,1,0).getBlock(), t, full));
+						}
 					}
 
 					if (target instanceof Player
@@ -249,29 +252,10 @@ public class EarthGrab implements IAbility {
 	}
 
 	public boolean revertEarthGrab() {
-		for (EarthColumn column : columns) {
-			List<Block> affecteds = new LinkedList<Block>(column.getAffectedBlocks());
-			for (Block block : affecteds) {
-				BlockTools.revertBlock(block);
-			}
+		for (TempBlock tb : affectedBlocks)  {
+			tb.revertBlock();
 		}
 		
-		columns.clear();
-		
-		// This loop is there because a block can have been not destroyed because of a faction protection
-		// Conditions are only guessing stuff
-		for (Location loc : columnsLoc) {
-			if (BlockTools.isEarthbendable(bender, loc.getBlock())) {
-				Location loc2 = loc.clone().add(0, -1, 0);
-				if (loc2.getBlock().getType() == Material.AIR) {
-					loc2.getBlock().setType(loc.getBlock().getType());
-					loc.getBlock().setType(Material.AIR);
-				}
-			}
-		}
-		columnsLoc.clear();
-		
-
 		if (target != null) {
 			target.removePotionEffect(PotionEffectType.SLOW);
 			target.removePotionEffect(PotionEffectType.JUMP);
