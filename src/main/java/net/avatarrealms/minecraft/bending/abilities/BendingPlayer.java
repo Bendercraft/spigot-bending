@@ -8,23 +8,17 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.avatarrealms.minecraft.bending.Bending;
-import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.event.AbilityCooldownEvent;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class BendingPlayer {
-
-	private static Map<UUID, BendingPlayer> players = new HashMap<UUID, BendingPlayer>();
-
 	private static Map<Abilities, Long> abilityCooldowns = new HashMap<Abilities, Long>();
 	private static long globalCooldown = 250;
-	private static BendingPlayers config = Tools.config;
 
 	private UUID player;
 	private String language;
@@ -46,40 +40,28 @@ public class BendingPlayer {
 
 	private boolean tremorsense = true;
 
-	public BendingPlayer(UUID player) {
-		if (players.containsKey(player)) {
-			players.remove(player);
-		}
-
+	public BendingPlayer(UUID id) {
+		this.player = id;
 		language = PluginTools.getDefaultLanguage();
-		this.player = player;
 		lastTime = System.currentTimeMillis();
-
-		players.put(player, this);
 	}
+	
+	public BendingPlayer(BendingPlayerData data) {
+		this.player = data.getPlayer();
+		
+		bendings = data.getBendings();
+		language = data.getLanguage();
+		bendToItem = data.isBendToItem();
+		itemAbilities = data.getItemAbilities();
+		slotAbilities = data.getSlotAbilities();
+		
+		specializations = data.getSpecialization();
 
-	public static List<BendingPlayer> getBendingPlayers() {
-		List<BendingPlayer> bPlayers = new ArrayList<BendingPlayer>(
-				players.values());
-		return bPlayers;
+		lastTime = data.getLastTime();
 	}
 
 	public static BendingPlayer getBendingPlayer(Player player) {
-		if (players.containsKey(player.getUniqueId())) {
-			return players.get(player.getUniqueId());
-		}
-
-		if (config == null) {
-			config = Tools.config;
-		}
-
-		BendingPlayer bender = config.getBendingPlayer(player);
-		if (bender != null) {
-			players.put(player.getUniqueId(), bender);
-			return bender;
-		} else {
-			return new BendingPlayer(player.getUniqueId());
-		}
+		return Bending.database.get(player.getUniqueId());
 	}
 
 	public static void initializeCooldowns() {
@@ -377,7 +359,7 @@ public class BendingPlayer {
 	}
 
 	public void delete() {
-		players.remove(this.player);
+		Bending.database.remove(player);
 	}
 
 	public String toString() {
@@ -396,26 +378,12 @@ public class BendingPlayer {
 		string += "}";
 		return string;
 	}
+	
 
-	public BendingPlayer(BendingPlayerData data) {
-		this.player = data.getPlayer();
-		if (players.containsKey(this.player)) {
-			players.remove(this.player);
-		}
-		
-		bendings = data.getBendings();
-		language = data.getLanguage();
-		bendToItem = data.isBendToItem();
-		itemAbilities = data.getItemAbilities();
-		slotAbilities = data.getSlotAbilities();
-		
-		specializations = data.getSpecialization();
-
-		lastTime = data.getLastTime();
-
-		players.put(this.player, this);
+	public List<BendingSpecializationType> getSpecializations() {
+		return specializations;
 	}
-
+	
 	public BendingPlayerData serialize() {
 		BendingPlayerData result = new BendingPlayerData();
 		result.setBendings(bendings);
@@ -428,19 +396,6 @@ public class BendingPlayer {
 		result.setSlotAbilities(slotAbilities);
 
 		return result;
-	}
-
-	public static BendingPlayer deserialize(BendingPlayerData data) {
-		return new BendingPlayer(data);
-	}
-
-	public static BendingPlayer valueOf(BendingPlayerData data) {
-		return deserialize(data);
-	}
-	
-
-	public List<BendingSpecializationType> getSpecializations() {
-		return specializations;
 	}
 
 }

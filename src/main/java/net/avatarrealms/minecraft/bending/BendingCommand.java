@@ -11,13 +11,10 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
-import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Metrics;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
-import net.avatarrealms.minecraft.bending.utils.Tools;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -1073,8 +1070,6 @@ public class BendingCommand {
 		Bending.configManager.load(new File(dataFolder, "config.yml"));
 		Bending.language.load(new File(dataFolder, "language.yml"));
 		// config.initialize(dataFolder);
-		server.getScheduler().runTaskAsynchronously(Bending.plugin,
-				new BendingPlayersSaver());
 		// String append = StorageManager.useMySQL ? " Database "
 		// : "Players file ";
 		PluginTools.stopAllBending();
@@ -2083,7 +2078,7 @@ public class BendingCommand {
 			return;
 		}
 		if (player.hasPermission("bending.command.save")) {
-			Tools.tBackup.setPlayer(player.getUniqueId(),
+			Bending.backup.setPlayer(player.getUniqueId(),
 					BendingPlayer.getBendingPlayer(player));
 			player.sendMessage(ChatColor.GREEN + "Bending properly saved.");
 		}
@@ -2098,7 +2093,7 @@ public class BendingCommand {
 		}
 		if (player.hasPermission("bending.command.getback")) {
 			BendingPlayer bPl = BendingPlayer.getBendingPlayer(player);
-			BendingPlayerData plData = Tools.tBackup.get(player.getUniqueId());
+			BendingPlayerData plData = Bending.backup.get(player.getUniqueId());
 			bPl.removeBender();
 			
 			for (BendingType data : plData.getBendings()) {

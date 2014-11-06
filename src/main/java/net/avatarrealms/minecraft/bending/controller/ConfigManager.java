@@ -16,6 +16,7 @@ public class ConfigManager {
 	public static boolean bendToItem = false;
 	public static boolean colors = true;
 	public static boolean compatibility = false;
+	public static String database = "flat";
 
 	public static String chat = "<name>: <message>";
 
@@ -395,6 +396,8 @@ public class ConfigManager {
 		
 		astralProjectionCooldown = config.getInt("Properties.Spirit.AstralProjection.Cooldown");
 
+		database = config.getString("Database");
+		
 		// Chat:
 		enabled = config.getBoolean("Chat.Enabled");
 		colors = config.getBoolean("Chat.Colors");
