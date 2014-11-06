@@ -192,26 +192,31 @@ public class BendingPlayer {
 	public void setBender(BendingType type) {
 		removeBender();
 		bendings.add(type);
+		Bending.database.save(player);
 	}
 
 	public void addBender(BendingType type) {
 		if (!bendings.contains(type)) {
 			bendings.add(type);
+			Bending.database.save(player);
 		}
 	}
 	
 	public void setSpecialization(BendingSpecializationType specialization) {
 		this.clearSpecialization(specialization.getElement());
 		specializations.add(specialization);
+		Bending.database.save(player);
 	}
 	public void addSpecialization(BendingSpecializationType specialization) {
 		if (!specializations.contains(specialization)) {
 			specializations.add(specialization);
+			Bending.database.save(player);
 		}		
 	}
 	public void removeSpecialization(BendingSpecializationType specialization) {
 		specializations.remove(specialization);
 		this.clearAbilities();
+		//clear abilities will save for us
 	}
 	public void clearSpecialization(BendingType element) {
 		List<BendingSpecializationType> toRemove = new LinkedList<BendingSpecializationType>();
@@ -223,21 +228,25 @@ public class BendingPlayer {
 		for(BendingSpecializationType spe : toRemove) {
 			this.removeSpecialization(spe);
 		}
+		//clear abilities will save for us
 		this.clearAbilities();
 	}
 	public void clearSpecialization() {
 		specializations.clear();
+		Bending.database.save(player);
 	}
 
 	public void clearAbilities() {
 		slotAbilities = new HashMap<Integer, Abilities>();
 		itemAbilities = new HashMap<Material, Abilities>();
+		Bending.database.save(player);
 	}
 
 	public void removeBender() {
 		clearAbilities();
 		specializations.clear();
 		bendings.clear();
+		Bending.database.save(player);
 	}
 
 	public Abilities getAbility() {
@@ -267,33 +276,38 @@ public class BendingPlayer {
 
 	public void setAbility(int slot, Abilities ability) {
 		slotAbilities.put(slot, ability);
+		Bending.database.save(player);
 	}
 
 	public void setAbility(Material item, Abilities ability) {
 		itemAbilities.put(item, ability);
+		Bending.database.save(player);
 	}
 
 	public void removeSelectedAbility() {
-		Player player = this.getPlayer();
-		if (player == null)
+		Player p = this.getPlayer();
+		if (p == null)
 			return;
-		if (!player.isOnline() || player.isDead())
+		if (!p.isOnline() || p.isDead())
 			return;
 		if (bendToItem) {
-			Material item = player.getItemInHand().getType();
+			Material item = p.getItemInHand().getType();
 			removeAbility(item);
 		} else {
-			int slot = player.getInventory().getHeldItemSlot();
+			int slot = p.getInventory().getHeldItemSlot();
 			removeAbility(slot);
 		}
+		Bending.database.save(player);
 	}
 
 	public void removeAbility(int slot) {
 		setAbility(slot, null);
+		Bending.database.save(player);
 	}
 
 	public void removeAbility(Material item) {
 		setAbility(item, null);
+		Bending.database.save(player);
 	}
 
 	public Player getPlayer() {
@@ -324,6 +338,7 @@ public class BendingPlayer {
 
 	public void setLanguage(String language) {
 		this.language = language;
+		Bending.database.save(player);
 	}
 
 	public String getLanguage() {
@@ -332,6 +347,7 @@ public class BendingPlayer {
 
 	public void setBendToItem(boolean value) {
 		bendToItem = value;
+		Bending.database.save(player);
 	}
 
 	public boolean getBendToItem() {
