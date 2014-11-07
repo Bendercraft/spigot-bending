@@ -43,8 +43,7 @@ public class FlatFileDB implements IBendingDB {
 				players.put(id, new BendingPlayer(datas.get(id)));
 			} else {
 				//New player !
-				players.put(id, new BendingPlayer(id));
-				this.save(id);
+				this.set(id, new BendingPlayer(id));
 			}
 		}
 		return players.get(id);

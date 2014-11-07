@@ -11,12 +11,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigManager {
-
 	public static boolean enabled = true;
 	public static boolean bendToItem = false;
 	public static boolean colors = true;
 	public static boolean compatibility = false;
-	public static String database = "flat";
+	public static String database = "flat"; // "flat", "mongodb"
 
 	public static String chat = "<name>: <message>";
 
