@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.db;
+package net.avatarrealms.minecraft.bending.db.impl;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,8 +10,10 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
+import net.avatarrealms.minecraft.bending.db.IBendingDB;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,8 +31,10 @@ public class FlatFileDB implements IBendingDB {
 	
 	private File dataFolder;
 	
-	public FlatFileDB(File file) {
-		dataFolder = file;
+
+	@Override
+	public void init(Bending plugin) {
+		dataFolder = plugin.getDataFolder();
 		load();
 	}
 
@@ -107,9 +111,24 @@ public class FlatFileDB implements IBendingDB {
 		}
 	}
 	
+	@Override
+	public Map<UUID, BendingPlayerData> dump() {
+		return datas;
+	}
+	
 	private void load() {
 		if(datas == null) {
 			reload();
 		}
 	}
+
+	@Override
+	public void clear() {
+		players.clear();
+		datas.clear();
+		if(bendingPlayersFile != null) {
+			bendingPlayersFile.delete();
+		}
+	}
+
 }

@@ -11,9 +11,10 @@ import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
 import net.avatarrealms.minecraft.bending.controller.TempBackup;
-import net.avatarrealms.minecraft.bending.db.FlatFileDB;
+import net.avatarrealms.minecraft.bending.db.DBUtils;
 import net.avatarrealms.minecraft.bending.db.IBendingDB;
-import net.avatarrealms.minecraft.bending.db.MongoDB;
+import net.avatarrealms.minecraft.bending.db.impl.FlatFileDB;
+import net.avatarrealms.minecraft.bending.db.impl.MongoDB;
 import net.avatarrealms.minecraft.bending.listeners.BendingBlockListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingEntityListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingPlayerListener;
@@ -59,15 +60,12 @@ public class Bending extends JavaPlugin {
 		configManager.load(new File(getDataFolder(), "config.yml"));
 		language.load(new File(getDataFolder(), "language.yml"));
 		backup = new TempBackup(getDataFolder());
-		//TODO rework this awful statement
-		if(ConfigManager.database.equals("flat")) {
-			database = new FlatFileDB(getDataFolder());
-		} else if(ConfigManager.database.equals("mongodb")) {
-			database = new MongoDB();
-		} else {
-			//Fatal error
+		database = DBUtils.choose(ConfigManager.database);
+		//Fatal error
+		if(database == null) {
 			throw new RuntimeException("Invalid database : "+ConfigManager.database);
 		}
+		database.init(this);
 		tBackup = new TempBackup(getDataFolder());
 		BendingPlayer.initializeCooldowns();
 

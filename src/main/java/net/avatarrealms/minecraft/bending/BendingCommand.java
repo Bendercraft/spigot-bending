@@ -12,9 +12,12 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
+import net.avatarrealms.minecraft.bending.db.DBUtils;
+import net.avatarrealms.minecraft.bending.db.IBendingDB;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.Metrics;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -58,6 +61,8 @@ public class BendingCommand {
 	private final String[] slotAliases = { "slot", "slo", "sl", "s" };
 
 	private final String[] metricsAlias = { "metrics" };
+	
+	private final String[] dbAlias = { "db" };
 
 	private File dataFolder;
 	private Server server;
@@ -232,6 +237,8 @@ public class BendingCommand {
 				version(player, args);
 			} else if (Arrays.asList(metricsAlias).contains(arg)) {
 				metrics(player, args);
+			} else if (Arrays.asList(dbAlias).contains(arg)) {
+				db(player, args);
 			} else if (Arrays.asList(saveAliases).contains(arg)) {
 				save(player);
 			} else if (Arrays.asList(getbackAliases).contains(arg)) {
@@ -258,6 +265,46 @@ public class BendingCommand {
 		} else {
 			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
 		}
+	}
+	
+	private void db(Player player, String[] args) {
+		if (player.hasPermission("bending.admin")) {
+			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
+			return;
+		}
+		
+		if(args.length >= 2) {
+			String routingKey = args[1];
+			
+			if(routingKey.equals("convert")) {
+				if(args.length == 4) {
+					IBendingDB src = DBUtils.choose(args[2]);
+					IBendingDB dest = DBUtils.choose(args[3]);
+					if(src != null) {
+						if(dest != null) {
+							src.init(Bending.plugin);
+							dest.init(Bending.plugin);
+							DBUtils.convert(src, dest);
+							sendMessage(player, "Success !");
+							return;
+						} else {
+							sendMessage(player, "Unknown DB implmentation : "+args[3]);
+						}
+					} else {
+						sendMessage(player, "Unknown DB implmentation : "+args[2]);
+					}
+				} else {
+					sendMessage(player, "Invalid args number");
+				}
+			} else {
+				sendMessage(player, "Invalid routing key : "+routingKey);
+			}
+			
+		} else {
+			sendMessage(player, "Invalid args number");
+		}
+		sendMessage(player, "Must be used /db convert <flat|mongodb> <flat|mongodb>");
+		sendMessage(player, "Where the first one is the source, and the second destination");
 	}
 
 	private void version(Player player, String[] args) {

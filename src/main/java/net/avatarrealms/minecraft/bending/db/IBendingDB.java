@@ -1,10 +1,26 @@
 package net.avatarrealms.minecraft.bending.db;
 
+import java.util.Map;
 import java.util.UUID;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 
 public interface IBendingDB {
+	public void init(Bending plugin);
+	
+	/**
+	 * DUmp everything this DB knows
+	 * @return
+	 */
+	public Map<UUID, BendingPlayerData> dump();
+	
+	/**
+	 * Clear a DB
+	 */
+	public void clear();
+	
 	/**
 	 * Retrieve or create a BendingPlayer using UUID as unique id
 	 * @param id

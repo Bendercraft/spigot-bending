@@ -1,4 +1,4 @@
-package net.avatarrealms.minecraft.bending.db;
+package net.avatarrealms.minecraft.bending.db.impl;
 
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -14,14 +15,17 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
+import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
+import net.avatarrealms.minecraft.bending.db.IBendingDB;
 
 public class MongoDB implements IBendingDB {
 	private static long MAX_NO_REFRESH = 1000; //ms
@@ -33,14 +37,29 @@ public class MongoDB implements IBendingDB {
 	private DB db;
 	private DBCollection table;
 
-	public MongoDB() {
+	@Override
+	public void init(Bending plugin) {
 		try {
-			mongoClient = new MongoClient( "localhost" , 27017 );
+			mongoClient = new MongoClient("localhost" , 27017);
 			db = mongoClient.getDB("minecraft");
 			table = db.getCollection("benders");
 		} catch (UnknownHostException e) {
-			
+			Bending.log.log(Level.SEVERE, "COuld not initialize MongoDB", e);
 		}
+	}
+	
+	@Override
+	public Map<UUID, BendingPlayerData> dump() {
+		Map<UUID, BendingPlayerData> result = new HashMap<UUID, BendingPlayerData>();
+		
+		DBCursor cursor = table.find();
+		while(cursor.hasNext()) {
+			DBObject obj = cursor.next();
+			BendingPlayerData data = unmarshal(obj);
+			result.put(data.getPlayer(), data);
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -55,7 +74,7 @@ public class MongoDB implements IBendingDB {
 			}
 		}
 		
-		DBObject obj = new BasicDBObject("player", id);
+		DBObject obj = new BasicDBObject("player", id.toString());
 		DBObject result = table.findOne(obj);
 		if(result != null) {
 			players.put(id, new BendingPlayer(unmarshal(result)));
@@ -74,7 +93,7 @@ public class MongoDB implements IBendingDB {
 	public void remove(UUID playerID) {
 		timestamps.remove(playerID);
 		players.remove(playerID);
-		DBObject obj = new BasicDBObject("player", playerID);
+		DBObject obj = new BasicDBObject("player", playerID.toString());
 		table.remove(obj);
 	}
 
@@ -105,7 +124,7 @@ public class MongoDB implements IBendingDB {
 	public static DBObject marshal(BendingPlayerData data) {
 		DBObject result = new BasicDBObject();
 		
-		result.put("player", data.getPlayer());
+		result.put("player", data.getPlayer().toString());
 		result.put("language", data.getLanguage());
 		result.put("lastTime", data.getLastTime());
 		
@@ -117,19 +136,25 @@ public class MongoDB implements IBendingDB {
 		
 		BasicDBObject items = new BasicDBObject();
 		for(Entry<Material, Abilities> entry : data.getItemAbilities().entrySet()) {
-			items.put(entry.getKey().name(), entry.getValue().name());
+			if(entry.getKey() != null && entry.getValue() != null) {
+				items.put(entry.getKey().name(), entry.getValue().name());
+			}
 		}
 		result.put("items", items);
 		
 		BasicDBObject slots = new BasicDBObject();
 		for(Entry<Integer, Abilities> entry : data.getSlotAbilities().entrySet()) {
-			slots.put("m"+entry.getKey().toString(), entry.getValue().name());
+			if(entry.getKey() != null && entry.getValue() != null) {
+				slots.put("m"+entry.getKey().toString(), entry.getValue().name());
+			}
 		}
 		result.put("slots", slots);
 		
 		BasicDBList specializations = new BasicDBList();
 		for(BendingSpecializationType spe : data.getSpecialization()) {
-			bendings.add(spe.name());
+			if(spe != null) {
+				specializations.add(spe.name());
+			}
 		}
 		result.put("specializations", specializations);
 		
@@ -139,7 +164,7 @@ public class MongoDB implements IBendingDB {
 	public static BendingPlayerData unmarshal(DBObject obj) {
 		BendingPlayerData result = new BendingPlayerData();
 		
-		result.setPlayer((UUID) obj.get("player"));
+		result.setPlayer(UUID.fromString((String) obj.get("player")));
 		result.setLanguage((String) obj.get("language"));
 		result.setLastTime((Long) obj.get("lastTime"));
 		
@@ -173,4 +198,12 @@ public class MongoDB implements IBendingDB {
 		
 		return result;
 	}
+
+	@Override
+	public void clear() {
+		timestamps.clear();
+		players.clear();
+		table.drop();
+	}
+
 }
