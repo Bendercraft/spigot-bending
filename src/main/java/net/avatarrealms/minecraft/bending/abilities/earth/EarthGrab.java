@@ -82,7 +82,6 @@ public class EarthGrab implements IAbility {
 				double z = (int) target.getLocation().getZ();
 
 				x = (x < 0) ? x - 0.5 : x + 0.5;
-
 				z = (z < 0) ? z - 0.5 : z + 0.5;
 
 				origin = new Location(entity.getLocation().getWorld(), x, y, z,

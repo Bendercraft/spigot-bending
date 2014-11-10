@@ -83,7 +83,6 @@ public class Bending extends JavaPlugin {
 				+ " has been loaded.");
 
 		registerCommands();
-
 	}
 	
 	@Override

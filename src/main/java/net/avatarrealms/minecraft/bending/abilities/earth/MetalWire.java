@@ -23,8 +23,6 @@ public class MetalWire {
 	
 	private final static long timeNoFall = 2200;
 
-	// Will have to replace Fish by FishHook when available
-
 	public static void pull(Player player, Fish hook) {
 		List<Player> toRemove = new LinkedList<Player>();
 		for (Player p : instances.keySet()) {
