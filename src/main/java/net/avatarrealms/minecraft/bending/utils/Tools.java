@@ -1,9 +1,6 @@
 package net.avatarrealms.minecraft.bending.utils;
 
-import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
-import net.avatarrealms.minecraft.bending.controller.TempBackup;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,16 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 public class Tools {
-	public static BendingPlayers config;
-	public static TempBackup tBackup;
-	
 	public static final long timeinterval = ConfigManager.globalCooldown;
-	//public static ConcurrentHashMap<Player, Player> tempFlyers = new ConcurrentHashMap<Player, Player>();
-
-	public Tools(BendingPlayers config2, TempBackup tb) {
-		config = config2;
-		tBackup = tb;
-	}
 	
 	public static double getDistanceFromLine(Vector line, Location pointonline,
 			Location point) {

@@ -8,11 +8,13 @@ import java.util.logging.Logger;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
-import net.avatarrealms.minecraft.bending.controller.BendingPlayers;
-import net.avatarrealms.minecraft.bending.controller.BendingPlayersSaver;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
 import net.avatarrealms.minecraft.bending.controller.TempBackup;
+import net.avatarrealms.minecraft.bending.db.DBUtils;
+import net.avatarrealms.minecraft.bending.db.IBendingDB;
+import net.avatarrealms.minecraft.bending.db.impl.FlatFileDB;
+import net.avatarrealms.minecraft.bending.db.impl.MongoDB;
 import net.avatarrealms.minecraft.bending.listeners.BendingBlockListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingEntityListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingPlayerListener;
@@ -39,13 +41,13 @@ public class Bending extends JavaPlugin {
 	public final BendingPlayerListener bpListener = new BendingPlayerListener(this);
 	public final BendingBlockListener blListener = new BendingBlockListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
-	private final BendingPlayersSaver saver = new BendingPlayersSaver();
 
 	static Map<String, String> commands = new HashMap<String, String>();
 	
 	public static ConfigManager configManager = new ConfigManager();
 	public static Language language = new Language();
-	public BendingPlayers config;
+	public static TempBackup backup;
+	public static IBendingDB database;
 	public TempBackup tBackup;
 	public Tools tools;
 	
@@ -57,12 +59,17 @@ public class Bending extends JavaPlugin {
 		saveDefaultConfig();
 		configManager.load(new File(getDataFolder(), "config.yml"));
 		language.load(new File(getDataFolder(), "language.yml"));
-
-		config = new BendingPlayers(getDataFolder());
+		backup = new TempBackup(getDataFolder());
+		database = DBUtils.choose(ConfigManager.database);
+		//Fatal error
+		if(database == null) {
+			throw new RuntimeException("Invalid database : "+ConfigManager.database);
+		}
+		database.init(this);
 		tBackup = new TempBackup(getDataFolder());
 		BendingPlayer.initializeCooldowns();
 
-		tools = new Tools(config,tBackup);
+		tools = new Tools();
 		
 		ghostManager = new GhostManager(this);
 
@@ -75,8 +82,6 @@ public class Bending extends JavaPlugin {
 
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin,
 				revertChecker, 0, 200);
-		getServer().getScheduler().runTaskTimerAsynchronously(plugin, saver, 0,
-				20 * 60 * 3);
 
 		PluginTools.printHooks();
 		PluginTools.verbose("Bending v" + this.getDescription().getVersion()
@@ -88,7 +93,6 @@ public class Bending extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		PluginTools.stopAllBending();
-		BendingPlayersSaver.save();
 		ghostManager.close();
 		AstralProjection.saveLocations();
 		getServer().getScheduler().cancelTasks(plugin);

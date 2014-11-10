@@ -48,7 +48,7 @@ public class RevertChecker implements Runnable {
 		@Override
 		public ArrayList<Chunk> call() throws Exception {
 			ArrayList<Chunk> chunks = new ArrayList<Chunk>();
-			Collection<? extends Player> players = server.getOnlinePlayers();
+			Player[] players = server.getOnlinePlayers();
 
 			for (Player player : players) {
 				Chunk chunk = player.getLocation().getChunk();
