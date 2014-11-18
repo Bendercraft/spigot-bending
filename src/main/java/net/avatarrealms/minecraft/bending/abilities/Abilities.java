@@ -39,8 +39,7 @@ public enum Abilities {
 		@Override
 		public String getDescription () {
 			return "Air Shield is one of the most powerful defensive techniques in existence. "
-					+ "To use, simply sneak (default: shift). "
-					+ "This will create a whirlwind of air around the user, "
+					+ "To use, simply sneak (default: shift). " + "This will create a whirlwind of air around the user, "
 					+ "with a small pocket of safe space in the center. "
 					+ "This wind will deflect all projectiles and will prevent any creature from "
 					+ "entering it for as long as its maintained. ";
@@ -50,22 +49,18 @@ public enum Abilities {
 
 		@Override
 		public String getDescription () {
-			return "To use, simply left-click in a direction. "
-					+ "A gust of wind will originate as far as it can in that direction"
+			return "To use, simply left-click in a direction. " + "A gust of wind will originate as far as it can in that direction"
 					+ " and flow towards you, sucking anything in its path harmlessly with it."
 					+ " Skilled benders can use this technique to pull items from precarious locations. "
-					+ "Additionally, tapping sneak will change the origin of your next "
-					+ "AirSuction to your targeted location.";
+					+ "Additionally, tapping sneak will change the origin of your next " + "AirSuction to your targeted location.";
 		}
 	},
 	AirSwipe(BendingType.Air, true) {
 
 		@Override
 		public String getDescription () {
-			return "To use, simply left-click in a direction. "
-					+ "An arc of air will flow from you towards that direction, "
-					+ "cutting and pushing back anything in its path. "
-					+ "Its damage is minimal, but it still sends the message. "
+			return "To use, simply left-click in a direction. " + "An arc of air will flow from you towards that direction, "
+					+ "cutting and pushing back anything in its path. " + "Its damage is minimal, but it still sends the message. "
 					+ "This ability will extinguish fires, cool lava, and cut things like grass, "
 					+ "mushrooms and flowers. Additionally, you can charge it by holding sneak. "
 					+ "Charging before attacking will increase damage and knockback, up to a maximum.";
@@ -115,16 +110,14 @@ public enum Abilities {
 
 		@Override
 		public String getDescription () {
-			return "To use, simply sneak (default: shift). "
-					+ "This will create a swirling vortex at the targeted location. "
+			return "To use, simply sneak (default: shift). " + "This will create a swirling vortex at the targeted location. "
 					+ "Any creature or object caught in the vortex will be launched up "
 					+ "and out in some random direction. If another player gets caught "
 					+ "in the vortex, the launching effect is minimal. Tornado can "
 					+ "also be used to transport the user. If the user gets caught in his/her "
 					+ "own tornado, his movements are much more manageable. Provided the user doesn't "
 					+ "fall out of the vortex, it will take him to a maximum height and move him in "
-					+ "the general direction he's looking. Skilled airbenders can scale anything "
-					+ "with this ability.";
+					+ "the general direction he's looking. Skilled airbenders can scale anything " + "with this ability.";
 		}
 	},
 	Suffocate(BendingSpecializationType.Suffocate, true) {
@@ -211,8 +204,7 @@ public enum Abilities {
 					+ "although it is incredibly difficult to do so. "
 					+ "Additionally, press sneak with this ability to affect an area around your targetted location - "
 					+ "all earth that can be moved downwards will be moved downwards. "
-					+ "This ability is especially risky or deadly in caves, depending on the "
-					+ "earthbender's goal and technique.";
+					+ "This ability is especially risky or deadly in caves, depending on the " + "earthbender's goal and technique.";
 		}
 	},
 	Tremorsense(BendingType.Earth, true) {
@@ -276,8 +268,7 @@ public enum Abilities {
 
 		@Override
 		public String getDescription () {
-			return "While this ability is selected, the firebender becomes impervious "
-					+ "to fire damage and cannot be ignited. "
+			return "While this ability is selected, the firebender becomes impervious " + "to fire damage and cannot be ignited. "
 					+ "If the user left-clicks with this ability, the targeted area will be "
 					+ "extinguished, although it will leave any creature burning engulfed in flames. "
 					+ "This ability can also cool lava. If this ability is used while targetting ice or snow, it"
@@ -333,16 +324,14 @@ public enum Abilities {
 					+ "doing additional damage and knocking them back slightly. "
 					+ "If the blast hits terrain, it will ignite the nearby area. "
 					+ "Additionally, if you hold sneak, you will charge up the fireblast. "
-					+ "If you release it when it's charged, it will instead launch a powerful "
-					+ "fireball that explodes on contact.";
+					+ "If you release it when it's charged, it will instead launch a powerful " + "fireball that explodes on contact.";
 		}
 	},
 	FireBurst(BendingType.Fire, true) {
 
 		@Override
 		public String getDescription () {
-			return "FireBurst is a very powerful firebending ability. "
-					+ "To use, press and hold sneak to charge your burst. "
+			return "FireBurst is a very powerful firebending ability. " + "To use, press and hold sneak to charge your burst. "
 					+ "Once charged, you can either release sneak to launch a cone-shaped burst "
 					+ "of flames in front of you, or click to release the burst in a sphere around you. ";
 		}
@@ -407,8 +396,7 @@ public enum Abilities {
 					+ "If you sneak (default: shift), anything around where you are looking at will instantly melt. "
 					+ "Since this is a more favorable state for these things, they will never re-freeze unless they "
 					+ "would otherwise by nature or some other bending ability. Additionally, if you tap sneak while "
-					+ "targetting water with FreezeMelt, it will evaporate water around that block that is above "
-					+ "sea level. ";
+					+ "targetting water with FreezeMelt, it will evaporate water around that block that is above " + "sea level. ";
 		}
 	},
 	HealingWaters(BendingType.Water, true) {
@@ -445,8 +433,7 @@ public enum Abilities {
 					+ "you can then click in a direction and a large wave will be launched in that direction. "
 					+ "If you sneak again while the wave is en route, the wave will freeze the next target it hits. "
 					+ "If, instead, you click to select a source block, you can hold sneak to form a wall of water at "
-					+ "your cursor location. Click to shift between a water wall and an ice wall. "
-					+ "Release sneak to dissipate it.";
+					+ "your cursor location. Click to shift between a water wall and an ice wall. " + "Release sneak to dissipate it.";
 		}
 	},
 	WaterSpout(BendingType.Water, false) {
@@ -522,8 +509,7 @@ public enum Abilities {
 
 		@Override
 		public String getDescription () {
-			return " The drainbending skill allows the water bender using it to take water"
-					+ " from plants and even from the air.";
+			return " The drainbending skill allows the water bender using it to take water" + " from plants and even from the air.";
 		}
 	},
 
@@ -536,8 +522,7 @@ public enum Abilities {
 
 		@Override
 		public String getDescription () {
-			return "To use this ability, simply click. " + "You will jump quite high. "
-					+ "This ability has a short cooldown.";
+			return "To use this ability, simply click. " + "You will jump quite high. " + "This ability has a short cooldown.";
 		}
 	},
 	RapidPunch(BendingType.ChiBlocker, false) {
