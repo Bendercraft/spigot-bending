@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
@@ -23,108 +22,98 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+
 public class HealingWaters implements IAbility {
 
 	private static final double range = ConfigManager.healingWatersRadius;
-	//private static final long interval = ConfigManager.healingWatersInterval;
 	private static Map<Player, HealingWaters> instances = new HashMap<Player, HealingWaters>();
-
 	private Player healer;
 	private BendingPlayer bPlayer;
 	private long time = 0;
 	private IAbility parent;
 	private LivingEntity target;
-	
-	public HealingWaters(Player player) {
+
+	public HealingWaters (final Player player) {
 		if (instances.containsKey(player)) {
 			return;
 		}
-		
-		if (!inWater(player) && !(isWaterPotion(player.getItemInHand()))){
+		if (!inWater(player) && !(isWaterPotion(player.getItemInHand()))) {
 			return;
 		}
-		
 		this.healer = player;
-		this.bPlayer = BendingPlayer.getBendingPlayer(healer);
+		this.bPlayer = BendingPlayer.getBendingPlayer(this.healer);
 		this.time = System.currentTimeMillis();
-		
 		LivingEntity temp = EntityTools.getTargettedEntity(player, range);
 		if (temp == null) {
-			temp = healer;
+			temp = this.healer;
 		}
-		
-		target = temp;
+		this.target = temp;
 		instances.put(player, this);
 	}
-	
-	public static void progressAll() {
-		LinkedList<Player> toRemove = new LinkedList<Player>();
+
+	public static void progressAll () {
+		final LinkedList<Player> toRemove = new LinkedList<Player>();
 		boolean keep;
-		for (Player p : instances.keySet()) {
+		for (final Player p : instances.keySet()) {
 			keep = instances.get(p).progress();
 			if (!keep) {
 				toRemove.add(p);
 			}
 		}
-		for (Player p : toRemove) {
+		for (final Player p : toRemove) {
 			instances.remove(p);
 		}
 	}
-	
-	public boolean progress() {
-		if (!healer.isOnline() || healer.isDead()) {
+
+	public boolean progress () {
+		if (!this.healer.isOnline() || this.healer.isDead()) {
 			return false;
 		}
-		
-		if (!healer.isSneaking()) {
+		if (!this.healer.isSneaking()) {
 			return false;
 		}
-		
-		if (bPlayer.getAbility() != Abilities.HealingWaters) {
+		if (this.bPlayer.getAbility() != Abilities.HealingWaters) {
 			return false;
 		}
-		
-		LivingEntity entity = EntityTools.getTargettedEntity(healer, range);
+		LivingEntity entity = EntityTools.getTargettedEntity(this.healer, range);
 		if (entity == null) {
-			entity = healer;
+			entity = this.healer;
 		}
-		
-		if (ProtectionManager.isRegionProtectedFromBending(healer, Abilities.HealingWaters, entity.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.healer, Abilities.HealingWaters,
+				entity.getLocation())) {
 			return false;
 		}
-		
-		if (entity.getEntityId() != target.getEntityId()) {
-			time = System.currentTimeMillis();
+		if (entity.getEntityId() != this.target.getEntityId()) {
+			this.time = System.currentTimeMillis();
 		}
-		target = entity;	
-		
-		if (isWaterPotion(healer.getItemInHand())) {
-			giveHPToEntity(target);
+		this.target = entity;
+		if (isWaterPotion(this.healer.getItemInHand())) {
+			giveHPToEntity(this.target);
 		}
-		else if (inWater(healer)){
-			if (!inWater(target)) {
+		else if (inWater(this.healer)) {
+			if (!inWater(this.target)) {
 				return true;
 			}
-			giveHPToEntity(target);
+			giveHPToEntity(this.target);
 		}
 		else {
 			return true;
 		}
-		long now = System.currentTimeMillis();
-		if (now - time > 1000) {
-			target.setFireTicks(0);
-			if (now - time > 3500) {
-				for (PotionEffect pe : target.getActivePotionEffects()) {
+		final long now = System.currentTimeMillis();
+		if ((now - this.time) > 1000) {
+			this.target.setFireTicks(0);
+			if ((now - this.time) > 3500) {
+				for (final PotionEffect pe : this.target.getActivePotionEffects()) {
 					if (isNegativePotionEffect(pe.getType())) {
-						target.removePotionEffect(pe.getType());
+						this.target.removePotionEffect(pe.getType());
 					}
 				}
 			}
-		}		
+		}
 		return true;
 	}
-	
-	public static boolean isNegativePotionEffect(PotionEffectType peType) {
+
+	public static boolean isNegativePotionEffect (final PotionEffectType peType) {
 		if (peType.equals(PotionEffectType.BLINDNESS)) {
 			return true;
 		}
@@ -145,41 +134,41 @@ public class HealingWaters implements IAbility {
 		}
 		if (peType.equals(PotionEffectType.WITHER)) {
 			return true;
-		}		
+		}
 		return false;
 	}
-	
-	private static boolean isWaterPotion(ItemStack item) {
-		if (item.getType() == Material.POTION && item.getDurability() == 0) {
+
+	private static boolean isWaterPotion (final ItemStack item) {
+		if ((item.getType() == Material.POTION) && (item.getDurability() == 0)) {
 			return true;
 		}
 		return false;
 	}
 
-	private static void giveHPToEntity(LivingEntity le) {
-		if (!le.isDead() && le.getHealth() < le.getMaxHealth()) {
+	private static void giveHPToEntity (final LivingEntity le) {
+		if (!le.isDead() && (le.getHealth() < le.getMaxHealth())) {
 			applyHealingToEntity(le);
 		}
 	}
 
-	private static boolean inWater(Entity entity) {
-		Block block = entity.getLocation().getBlock();
+	private static boolean inWater (final Entity entity) {
+		final Block block = entity.getLocation().getBlock();
 		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block)) {
 			return true;
-		}			
+		}
 		return false;
 	}
-	
-	private static void applyHealingToEntity(LivingEntity le) {
+
+	private static void applyHealingToEntity (final LivingEntity le) {
 		le.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 70, 1));
 	}
-	
-	public static void removeAll() {
+
+	public static void removeAll () {
 		instances.clear();
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public IAbility getParent () {
+		return this.parent;
 	}
 }
