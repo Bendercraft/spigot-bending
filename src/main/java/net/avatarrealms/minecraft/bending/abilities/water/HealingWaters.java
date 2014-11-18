@@ -145,8 +145,13 @@ public class HealingWaters implements IAbility {
 		return false;
 	}
 
-	private static void giveHPToEntity (final LivingEntity le) {
-		if (!le.isDead() && (le.getHealth() < le.getMaxHealth())) {
+	private static void giveHPToEntity (LivingEntity le) {
+		if (!le.isDead()) {
+			return;
+		}
+		final double current = le.getHealth();
+		final double max = le.getMaxHealth();
+		if (current < max) {
 			applyHealingToEntity(le);
 		}
 	}
