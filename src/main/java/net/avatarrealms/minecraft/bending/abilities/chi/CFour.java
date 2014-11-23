@@ -155,7 +155,9 @@ public class CFour {
 			return false;
 		}
 		
-		bomb.getDrops().clear();
+		if(bomb.getDrops() != null) {
+			bomb.getDrops().clear();
+		}
 		return true;
 	}
 	
