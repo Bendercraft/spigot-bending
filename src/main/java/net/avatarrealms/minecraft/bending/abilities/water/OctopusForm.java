@@ -224,7 +224,9 @@ public class OctopusForm implements IAbility {
 					sourcelocation.add(vector);
 					Block newblock = sourcelocation.getBlock();
 					if (!newblock.equals(sourceblock)) {
-						source.revertBlock();
+						if(source != null) {
+							source.revertBlock();
+						}
 						source = null;
 						if (!BlockTools.isSolid(newblock)) {
 							source = new TempBlock(newblock, Material.WATER,
