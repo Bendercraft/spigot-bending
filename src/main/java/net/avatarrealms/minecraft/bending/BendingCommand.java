@@ -268,7 +268,7 @@ public class BendingCommand {
 	}
 
 	private void db (final Player player, final String[] args) {
-		if (player.hasPermission("bending.admin")) {
+		if (!player.hasPermission("bending.admin")) {
 			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
 			return;
 		}
