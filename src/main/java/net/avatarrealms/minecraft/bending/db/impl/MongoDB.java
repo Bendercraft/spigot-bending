@@ -1,6 +1,7 @@
 package net.avatarrealms.minecraft.bending.db.impl;
 
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
@@ -76,7 +78,7 @@ public class MongoDB implements IBendingDB {
 		}
 		
 		DBObject obj = new BasicDBObject();
-		obj.put(ID, new ObjectId(id.toString()));
+		obj.put(ID, fromUUID(id));
 		DBObject result = table.findOne(obj);
 		if(result != null) {
 			players.put(id, new BendingPlayer(unmarshal(result)));
@@ -95,7 +97,7 @@ public class MongoDB implements IBendingDB {
 		timestamps.remove(id);
 		players.remove(id);
 		DBObject obj = new BasicDBObject();
-		obj.put(ID, new ObjectId(id.toString()));
+		obj.put(ID, fromUUID(id));
 		DBObject result = table.findOne(obj);
 		if(result != null) {
 			table.remove(result);
@@ -130,7 +132,7 @@ public class MongoDB implements IBendingDB {
 	private static DBObject marshal(BendingPlayerData data) {
 		DBObject result = new BasicDBObject();
 		
-		result.put(ID, new ObjectId(data.getPlayer().toString()));
+		result.put(ID, fromUUID(data.getPlayer()));
 		
 		result.put("player", data.getPlayer().toString());
 		result.put("language", data.getLanguage());
@@ -205,6 +207,20 @@ public class MongoDB implements IBendingDB {
 		result.setSpecialization(specializations);
 		
 		return result;
+	}
+	
+	private static ObjectId fromUUID(UUID uuid) {
+		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+	    bb.putLong(uuid.getMostSignificantBits());
+	    bb.putLong(uuid.getLeastSignificantBits());
+	    
+	    byte[] result = new byte[12];
+	    
+	    for(int i=0 ; i < 12 ; i++) {
+	    	result[i] = bb.get(i);
+	    }
+	    
+	    return new ObjectId(result);
 	}
 
 	@Override
