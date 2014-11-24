@@ -324,7 +324,6 @@ public class Torrent implements IAbility {
 				if (freeze || layer < 1)
 					layer++;
 			if (launchblocks.size() == 1) {
-				remove();
 				returnWater(location);
 				return false;
 			}
@@ -340,7 +339,6 @@ public class Torrent implements IAbility {
 			if (freeze) {
 				freeze();
 			} else if (launchblocks.size() == 1) {
-				remove();
 				returnWater(realblock.getLocation());
 				return false;
 			}
@@ -537,7 +535,6 @@ public class Torrent implements IAbility {
 	}
 
 	private void affect(LivingEntity entity, Vector direction) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (entity.getEntityId() == player.getEntityId()) {
 			return;
 		}
