@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.UUID;
 
+import org.bson.types.ObjectId;
 import org.bukkit.Material;
 
 import com.mongodb.BasicDBList;
@@ -18,7 +19,6 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
@@ -29,6 +29,7 @@ import net.avatarrealms.minecraft.bending.db.IBendingDB;
 
 public class MongoDB implements IBendingDB {
 	private static long MAX_NO_REFRESH = 1000; //ms
+	private static String ID = "_id";
 	
 	private Map<UUID, Long> timestamps = new HashMap<UUID, Long>();
 	private Map<UUID, BendingPlayer> players = new HashMap<UUID, BendingPlayer>();
@@ -44,7 +45,7 @@ public class MongoDB implements IBendingDB {
 			db = mongoClient.getDB("minecraft");
 			table = db.getCollection("benders");
 		} catch (UnknownHostException e) {
-			Bending.log.log(Level.SEVERE, "COuld not initialize MongoDB", e);
+			Bending.log.log(Level.SEVERE, "Could not initialize MongoDB", e);
 		}
 	}
 	
@@ -74,7 +75,8 @@ public class MongoDB implements IBendingDB {
 			}
 		}
 		
-		DBObject obj = new BasicDBObject("player", id.toString());
+		DBObject obj = new BasicDBObject();
+		obj.put(ID, new ObjectId(id.toString()));
 		DBObject result = table.findOne(obj);
 		if(result != null) {
 			players.put(id, new BendingPlayer(unmarshal(result)));
@@ -85,16 +87,19 @@ public class MongoDB implements IBendingDB {
 		}
 		timestamps.put(id, System.currentTimeMillis());
 		
-		// TODO Auto-generated method stub
 		return players.get(id);
 	}
 
 	@Override
-	public void remove(UUID playerID) {
-		timestamps.remove(playerID);
-		players.remove(playerID);
-		DBObject obj = new BasicDBObject("player", playerID.toString());
-		table.remove(obj);
+	public void remove(UUID id) {
+		timestamps.remove(id);
+		players.remove(id);
+		DBObject obj = new BasicDBObject();
+		obj.put(ID, new ObjectId(id.toString()));
+		DBObject result = table.findOne(obj);
+		if(result != null) {
+			table.remove(result);
+		}
 	}
 
 	@Override
@@ -110,7 +115,8 @@ public class MongoDB implements IBendingDB {
 	public void save() {
 		List<DBObject> objs = new LinkedList<DBObject>();
 		for(BendingPlayer bp : players.values()) {
-			objs.add(marshal(bp.serialize()));
+			DBObject obj = marshal(bp.serialize());
+			objs.add(obj);
 		}
 		table.drop();
 		table.insert(objs);
@@ -121,8 +127,10 @@ public class MongoDB implements IBendingDB {
 		this.set(id, players.get(id));
 	}
 
-	public static DBObject marshal(BendingPlayerData data) {
+	private static DBObject marshal(BendingPlayerData data) {
 		DBObject result = new BasicDBObject();
+		
+		result.put(ID, new ObjectId(data.getPlayer().toString()));
 		
 		result.put("player", data.getPlayer().toString());
 		result.put("language", data.getLanguage());
@@ -161,7 +169,7 @@ public class MongoDB implements IBendingDB {
 		return result;
 	}
 	
-	public static BendingPlayerData unmarshal(DBObject obj) {
+	private static BendingPlayerData unmarshal(DBObject obj) {
 		BendingPlayerData result = new BendingPlayerData();
 		
 		result.setPlayer(UUID.fromString((String) obj.get("player")));
