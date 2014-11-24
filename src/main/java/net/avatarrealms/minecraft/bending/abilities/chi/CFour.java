@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -315,17 +313,18 @@ public class CFour {
 		instances.clear();
 	}
 	
-	@Nullable
 	public static CFour isTarget(Player targ) {
-		for (Player p : instances.keySet()) {
-			if (instances.get(p).target.equals(targ)) {
-				return instances.get(p);
+		if(targ == null) {
+			return null;
+		}
+		for (CFour c4 : instances.values()) {
+			if(c4.target != null && c4.target.equals(targ)) {
+				return c4;
 			}
 		}
 		return null;
 	}
 	
-	@Nullable
 	public ItemStack getHeadBomb(){
 		return headBomb;
 	}
