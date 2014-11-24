@@ -12,7 +12,7 @@ import net.avatarrealms.minecraft.bending.db.impl.MongoDB;
 public class DBUtils {
 	public static IBendingDB choose(String key) {
 		//TODO rework this awful statement
-		if(key.equals("flat")) {
+		if(key.equals("flatfile")) {
 			return new FlatFileDB();
 		} else if(key.equals("mongodb")) {
 			return new MongoDB();

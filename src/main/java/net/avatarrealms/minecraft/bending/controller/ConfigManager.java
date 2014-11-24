@@ -15,7 +15,7 @@ public class ConfigManager {
 	public static boolean bendToItem = false;
 	public static boolean colors = true;
 	public static boolean compatibility = false;
-	public static String database = "flat"; // "flat", "mongodb"
+	public static String database = "flatfile"; // "flatfile", "mongodb"
 
 	public static String chat = "<name>: <message>";
 
