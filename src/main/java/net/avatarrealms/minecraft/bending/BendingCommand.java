@@ -305,7 +305,7 @@ public class BendingCommand {
 		else {
 			sendMessage(player, "Invalid args number");
 		}
-		sendMessage(player, "Must be used /db convert <flat|mongodb> <flat|mongodb>");
+		sendMessage(player, "Must be used /db convert <flatfile|mongodb> <flatfile|mongodb>");
 		sendMessage(player, "Where the first one is the source, and the second destination");
 	}
 
