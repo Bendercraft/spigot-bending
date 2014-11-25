@@ -65,16 +65,14 @@ import net.avatarrealms.minecraft.bending.abilities.water.Wave;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class PluginTools {
 	
-	public static boolean respectFactions = false;
+	
 	private static final Map<String, ChatColor> colors;	
 	static {
 		Map<String, ChatColor> tmpMap = new HashMap<String, ChatColor>();
@@ -279,28 +277,6 @@ public class PluginTools {
 	public static boolean isLanguageSupported(String language) {
 		return (Bending.language.getSupportedLanguages().contains(language
 				.toLowerCase()));
-	}
-	
-	public static void printHooks() {
-		Plugin wgp = Bukkit.getPluginManager().getPlugin("WorldGuard");
-		if (wgp != null) {
-			verbose("Recognized WorldGuard...");
-			if (ProtectionManager.respectsWorldGuard()) {
-				verbose("Bending is set to respect WorldGuard's build flags.");
-			} else {
-				verbose("But Bending is set to ignore WorldGuard's flags.");
-			}
-		}
-
-		Plugin fcp = Bukkit.getPluginManager().getPlugin("Factions");
-		if (fcp != null) {
-			verbose("Recognized Factions...");
-			if (respectFactions) {
-				verbose("Bending is set to respect Factions' claimed lands.");
-			} else {
-				verbose("But Bending is set to ignore Factions' claimed lands.");
-			}
-		}
 	}
 	
 	public static <T> void writeToLog(T something) {

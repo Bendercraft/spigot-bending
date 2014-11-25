@@ -7,9 +7,12 @@ import java.util.Set;
 
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.trait.Trait;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -20,13 +23,15 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 
 public class ProtectionManager {
-	
 	private static Set<Abilities> allowedEverywhereAbilities = new HashSet<Abilities>();
 	static { 
 		allowedEverywhereAbilities.add(Abilities.HealingWaters);
 	}
 
-	public static boolean respectWorldGuard = false;	
+	public static boolean respectWorldGuard = false;
+	public static boolean respectFactions = false;
+	public static boolean respectCitizens = true;
+	
 	private static WorldGuardPlugin worldguard = null;
 	private static WGCustomFlagsPlugin wgCustomFlags = null;
 	private static PluginManager pm;
@@ -41,20 +46,23 @@ public class ProtectionManager {
 	private static StateFlag BENDING_SPE;
 	private static StateFlag BENDING_ENERGY;
 	
-	static {
-		pm = Bending.plugin.getServer().getPluginManager();
-		Plugin plugin = pm.getPlugin("WorldGuard");
-		if (plugin != null && plugin instanceof WorldGuardPlugin) {
-			worldguard = (WorldGuardPlugin) plugin;
-		}
-		
-		plugin = pm.getPlugin("WGCustomFlags");
-		if (plugin != null && plugin instanceof WGCustomFlagsPlugin) {
-			wgCustomFlags = (WGCustomFlagsPlugin) plugin;
-		}
-		
-		if (worldguard!= null && wgCustomFlags != null) {
-			respectWorldGuard = true;
+	public static void init() {
+		//WorldGuard
+		if(respectWorldGuard) {
+			pm = Bending.plugin.getServer().getPluginManager();
+			Plugin plugin = pm.getPlugin("WorldGuard");
+			if (plugin != null && plugin instanceof WorldGuardPlugin) {
+				worldguard = (WorldGuardPlugin) plugin;
+			}
+			
+			plugin = pm.getPlugin("WGCustomFlags");
+			if (plugin != null && plugin instanceof WGCustomFlagsPlugin) {
+				wgCustomFlags = (WGCustomFlagsPlugin) plugin;
+			}
+			
+			if (worldguard == null || wgCustomFlags == null) {
+				throw new RuntimeException("WorldGuard is setted to be respected, but not loaded");
+			}
 		}
 		
 		if (respectWorldGuard) {
@@ -79,10 +87,38 @@ public class ProtectionManager {
 			wgCustomFlags.addCustomFlag(BENDING_ENERGY);
 		}
 		
+		Plugin fcp = Bukkit.getPluginManager().getPlugin("Factions");
+		if (fcp != null) {
+			PluginTools.verbose("Recognized Factions...");
+			if (respectFactions) {
+				PluginTools.verbose("Bending is set to respect Factions' claimed lands.");
+			} else {
+				PluginTools.verbose("But Bending is set to ignore Factions' claimed lands.");
+			}
+		}
+		
+		Plugin citizens = Bukkit.getPluginManager().getPlugin("Citizens");
+		if (citizens != null) {
+			PluginTools.verbose("Recognized Citizens...");
+			if (respectCitizens) {
+				PluginTools.verbose("Bending is set to respect Citizens traits.");
+			} else {
+				PluginTools.verbose("But Bending is set to ignore Citizens traits.");
+			}
+		}
 	}
 	
-	public static boolean respectsWorldGuard() {
-		return respectWorldGuard;
+	public static boolean isEntityProtectedByCitizens(Entity entity) {
+		if(respectCitizens) {
+			if(CitizensAPI.getNPCRegistry().isNPC(entity)) {
+				for(Trait trait : CitizensAPI.getNPCRegistry().getNPC(entity).getTraits()) {
+					if(trait.getName().equals("unbendable")) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	public static boolean isRegionProtectedFromExplosion(Player player,

@@ -18,6 +18,7 @@ import net.avatarrealms.minecraft.bending.listeners.BendingEntityListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingPlayerListener;
 import net.avatarrealms.minecraft.bending.utils.GhostManager;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Bukkit;
@@ -27,9 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 public class Bending extends JavaPlugin {
-
 	public static long time_step = 1; // in ms
 	public static Logger log = Logger.getLogger("Bending");
 	public static Bending plugin;
@@ -69,7 +68,7 @@ public class Bending extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(blListener, this);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, manager, 0, 1);
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin, revertChecker, 0, 200);
-		PluginTools.printHooks();
+		ProtectionManager.init();
 		PluginTools.verbose("Bending v" + this.getDescription().getVersion() + " has been loaded.");
 		registerCommands();
 	}

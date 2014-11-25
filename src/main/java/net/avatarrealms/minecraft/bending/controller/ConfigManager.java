@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
+
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -396,6 +399,11 @@ public class ConfigManager {
 		astralProjectionCooldown = config.getInt("Properties.Spirit.AstralProjection.Cooldown");
 
 		database = config.getString("Database");
+		
+		//Respect plugins
+		ProtectionManager.respectWorldGuard = config.getBoolean("respectWorldGuard");
+		ProtectionManager.respectFactions = config.getBoolean("respectFactions");
+		ProtectionManager.respectCitizens = config.getBoolean("respectCitizens");
 		
 		// Chat:
 		enabled = config.getBoolean("Chat.Enabled");
