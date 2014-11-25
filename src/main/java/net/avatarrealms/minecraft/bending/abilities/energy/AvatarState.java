@@ -14,26 +14,28 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class AvatarState{
+
+public class AvatarState {
 
 	public static Map<Player, AvatarState> instances = new HashMap<Player, AvatarState>();
 	private static List<Player> toRemove = new ArrayList<Player>();
 
-	private static final double factor = 5;
+	private static final double factor = 4.5;
 
 	private Player player;
 
-	public AvatarState(Player player) {
+	public AvatarState (Player player) {
 		this.player = player;
 		if (instances.containsKey(player)) {
 			instances.remove(player);
-		} else {
+		}
+		else {
 			new Flight(player);
 			instances.put(player, this);
 		}
 	}
-	
-	public static void progressAll() {
+
+	public static void progressAll () {
 		for (Player player : instances.keySet()) {
 			instances.get(player).progress();
 		}
@@ -43,45 +45,43 @@ public class AvatarState{
 		toRemove.clear();
 	}
 
-	public boolean progress() {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AvatarState, player.getLocation())) {
+	public boolean progress () {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AvatarState, this.player
+				.getLocation())) {
 			return false;
 		}
-		if (!EntityTools.canBend(player, Abilities.AvatarState)) {
-			toRemove.add(player);
+		if (!EntityTools.canBend(this.player, Abilities.AvatarState)) {
+			toRemove.add(this.player);
 			return false;
 		}
 		addPotionEffects();
 		return true;
 	}
 
-	private void addPotionEffects() {
+	private void addPotionEffects () {
 		int duration = 70;
-		player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,
-				duration, 3));
-		player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED,
-				duration, 2));
-		player.addPotionEffect(new PotionEffect(
-				PotionEffectType.DAMAGE_RESISTANCE, duration, 2));
-		player.addPotionEffect(new PotionEffect(
-				PotionEffectType.FIRE_RESISTANCE, duration, 2));
+		this.player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, duration, 2));
+		this.player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, duration, 2));
+		this.player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, duration, 2));
+		this.player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, duration, 0));
 	}
 
-	public static boolean isAvatarState(Player player) {
-		if (instances.containsKey(player))
+	public static boolean isAvatarState (Player player) {
+		if (instances.containsKey(player)) {
 			return true;
+		}
 		return false;
 	}
 
-	public static double getValue(double value) {
+	public static double getValue (double value) {
 		return factor * value;
 	}
 
-	public static int getValue(int value) {
-		return (int) factor * value;
+	public static int getValue (int value) {
+		return (int)factor * value;
 	}
 
-	public static ArrayList<Player> getPlayers() {
+	public static ArrayList<Player> getPlayers () {
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (Player player : instances.keySet()) {
 			players.add(player);
