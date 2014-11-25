@@ -392,6 +392,9 @@ public class EntityTools {
 	}
 	
 	public static void damageEntity(Player player, Entity entity, double damage) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		if (entity instanceof LivingEntity) {
 			if (AvatarState.isAvatarState(player)) {
 				damage = AvatarState.getValue(damage);

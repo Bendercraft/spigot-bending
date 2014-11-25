@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
 import org.bukkit.Location;
@@ -157,6 +158,9 @@ public class TorrentBurst implements IAbility {
 					continue;
 				}
 				for (Entity entity : indexlist) {
+					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+						continue;
+					}
 					if (!affectedentities.contains(entity)) {
 						if (entity.getLocation().distance(location) <= 2) {
 							affectedentities.add(entity);
@@ -184,6 +188,9 @@ public class TorrentBurst implements IAbility {
 	}
 
 	private void affect(Entity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		Vector direction = Tools.getDirection(origin, entity.getLocation());
 		direction.setY(0);
 		direction.normalize();

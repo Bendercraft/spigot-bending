@@ -69,6 +69,9 @@ public class IceSpike implements IAbility {
 			Entity closestentity = null;
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
 					player.getLocation(), range)) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
 				if (Tools.getDistanceFromLine(player.getLocation()
 						.getDirection(), player.getLocation(), entity
 						.getLocation()) <= 2
@@ -249,6 +252,9 @@ public class IceSpike implements IAbility {
 	}
 
 	private void affect(LivingEntity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		entity.setVelocity(thrown);
 		entity.damage(damage);

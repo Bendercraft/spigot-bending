@@ -159,6 +159,9 @@ public class FireBall implements IAbility {
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
+			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
 			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
 			}
@@ -173,6 +176,9 @@ public class FireBall implements IAbility {
 	
 	private void explode() {
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
+			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
 			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
 			}

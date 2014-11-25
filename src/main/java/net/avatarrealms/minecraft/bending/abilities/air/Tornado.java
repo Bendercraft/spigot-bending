@@ -103,6 +103,9 @@ public class Tornado implements IAbility {
 			origin.setY(origin.getY() - 1. / 10. * height);
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, height)) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
 				if (ProtectionManager.isRegionProtectedFromBending(player,
 						Abilities.AirBlast, entity.getLocation())) {
 					continue;

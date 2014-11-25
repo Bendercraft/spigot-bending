@@ -220,6 +220,9 @@ public class Combustion implements IAbility {
 		}
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius);
 		for(LivingEntity entity : entities) {
+			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
 			this.dealDamage(entity);
 			this.knockBack(entity);
 		}

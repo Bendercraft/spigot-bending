@@ -264,6 +264,9 @@ public class CFour {
 		
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius+1);
 		for(LivingEntity entity : entities) {
+			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
 			this.dealDamage(entity);
 			this.knockBack(entity);
 		}

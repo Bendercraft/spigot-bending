@@ -67,6 +67,9 @@ public class AirShield implements IAbility {
 		FireBlast.removeFireBlastsAroundPoint(origin, radius);
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, radius)) {
+			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
 			
 			if ((entity instanceof ExperienceOrb) || (entity instanceof FallingBlock)
 					|| (entity instanceof ItemFrame) || (entity instanceof Item)) {

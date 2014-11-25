@@ -9,6 +9,7 @@ import java.util.Random;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -67,6 +68,9 @@ public class SpikeField implements IAbility {
 			Entity target = null;
 			Block targetblock = null;
 			for (Entity entity : entities) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
 				if (entity.getEntityId() != p.getEntityId()) {
 					for (Block block : iceblocks) {
 						if (block.getX() == entity.getLocation().getBlockX()

@@ -209,6 +209,9 @@ public class FireBlast implements IAbility {
 	}
 
 	private boolean affect(LivingEntity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return false;
+		}
 		if (entity.getEntityId() != player.getEntityId()) {
 			if (AvatarState.isAvatarState(player)) {
 				entity.setVelocity(direction.clone().multiply(

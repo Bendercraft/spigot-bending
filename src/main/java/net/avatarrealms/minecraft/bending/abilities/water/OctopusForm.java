@@ -137,6 +137,9 @@ public class OctopusForm implements IAbility {
 	private void affect(Location location) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.5)) {
+			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
 			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
 			}

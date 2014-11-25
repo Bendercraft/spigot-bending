@@ -188,6 +188,10 @@ public class AirBlast implements IAbility {
 	}
 
 	private void affect(Entity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
+		
 		boolean isUser = entity.getEntityId() == player.getEntityId();
 		if (entity.getFireTicks() > 0) {
 			entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);

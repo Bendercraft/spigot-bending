@@ -73,6 +73,10 @@ public class EarthGrab implements IAbility {
 	public boolean grabEntity(Player player, Entity entity) {
 		if (entity != null) {
 			if (entity instanceof LivingEntity) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					return false;
+				}
+				
 				target = (LivingEntity) entity;
 				time = System.currentTimeMillis();
 				toKeep = true;

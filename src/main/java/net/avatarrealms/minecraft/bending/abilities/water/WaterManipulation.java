@@ -180,7 +180,7 @@ public class WaterManipulation implements IAbility {
 	private static Location getTargetLocation(Player player) {
 		Entity target = EntityTools.getTargettedEntity(player, range);
 		Location location;
-		if (target == null) {
+		if (target == null || ProtectionManager.isEntityProtectedByCitizens(target)) {
 			location = EntityTools.getTargetedLocation(player, range,
 					BlockTools.transparentEarthbending);
 		} else {
@@ -337,6 +337,9 @@ public class WaterManipulation implements IAbility {
 				if (!displacing) {
 					for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 							FireBlast.affectingradius)) {
+						if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+							continue;
+						}
 						if (entity.getEntityId() != player.getEntityId()) {
 							Location location = player.getEyeLocation();
 					 		Vector vector = location.getDirection();

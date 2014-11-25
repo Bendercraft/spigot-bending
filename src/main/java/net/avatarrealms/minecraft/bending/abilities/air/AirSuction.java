@@ -141,6 +141,9 @@ public class AirSuction implements IAbility {
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 				affectingradius)) {
+			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
 			if (entity.getFireTicks() > 0) {
 				entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
 				entity.setFireTicks(0);

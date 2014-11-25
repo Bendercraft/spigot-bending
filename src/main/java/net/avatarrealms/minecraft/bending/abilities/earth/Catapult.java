@@ -11,6 +11,7 @@ import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -148,6 +149,9 @@ public class Catapult implements IAbility {
 			if (location.distance(origin) < .5) {
 				boolean remove = false;
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, 2)) {
+					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+						continue;
+					}
 					if (entity instanceof Player) {
 						Player target = (Player) entity;
 						boolean equal = target.getEntityId() == player.getEntityId();

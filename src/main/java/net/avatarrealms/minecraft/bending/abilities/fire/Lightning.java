@@ -168,6 +168,9 @@ public class Lightning implements IAbility {
 	}
 
 	public void dealDamage(Entity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		if (strike == null) {
 			return;
 		}

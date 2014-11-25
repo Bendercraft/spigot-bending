@@ -291,7 +291,7 @@ public class Torrent implements IAbility {
 		Location targetloc = EntityTools.getTargetBlock(player, range,
 				BlockTools.getTransparentEarthbending()).getLocation();
 
-		if (target != null) {
+		if (target != null && !ProtectionManager.isEntityProtectedByCitizens(target)) {
 			targetloc = target.getLocation();
 		}
 
@@ -369,6 +369,9 @@ public class Torrent implements IAbility {
 			} else {
 				newblocks.add(block);
 				for (LivingEntity entity : entities) {
+					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+						continue;
+					}
 					if (entity.getWorld() != block.getBlock().getWorld()) {
 						continue;
 					}
@@ -421,6 +424,9 @@ public class Torrent implements IAbility {
 					blocks.add(new TempBlock(block, Material.WATER, full));
 					doneblocks.add(block);
 					for (LivingEntity entity : entities) {
+						if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+							continue;
+						}
 						if (entity.getWorld() != blockloc.getWorld()) {
 							continue;
 						}
@@ -496,6 +502,9 @@ public class Torrent implements IAbility {
 	}
 
 	private void deflect(LivingEntity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		if (entity.getEntityId() == player.getEntityId()) {
 			return;
 		}
@@ -535,6 +544,9 @@ public class Torrent implements IAbility {
 	}
 
 	private void affect(LivingEntity entity, Vector direction) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		if (entity.getEntityId() == player.getEntityId()) {
 			return;
 		}

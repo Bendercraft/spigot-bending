@@ -76,6 +76,9 @@ public class HealingWaters implements IAbility {
 			return false;
 		}
 		LivingEntity entity = EntityTools.getTargettedEntity(this.healer, range);
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return false;
+		}
 		if (entity == null) {
 			entity = this.healer;
 		}

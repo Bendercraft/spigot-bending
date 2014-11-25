@@ -31,7 +31,6 @@ public class AirBurst implements IAbility {
 	private long starttime;
 	private long chargetime = 1750;
 	private boolean charged = false;
-	private List<Entity> affectedentities = new LinkedList<Entity>();
 	
 	private IAbility parent;
 
@@ -48,14 +47,6 @@ public class AirBurst implements IAbility {
 			chargetime = 0;
 		this.player = player;
 		instances.put(player, this);
-	}
-
-	public void addAffectedEntity(Entity entity) {
-		affectedentities.add(entity);
-	}
-
-	public boolean isAffectedEntity(Entity entity) {
-		return affectedentities.contains(entity);
 	}
 
 	private boolean progress() {

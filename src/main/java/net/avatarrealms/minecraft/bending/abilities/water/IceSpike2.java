@@ -295,6 +295,9 @@ public class IceSpike2 implements IAbility {
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 					affectingradius)) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
 				if (entity.getEntityId() != player.getEntityId()) {
 					affect(entity);
 					progressing = false;
@@ -316,6 +319,9 @@ public class IceSpike2 implements IAbility {
 	}
 
 	private void affect(LivingEntity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		int mod = (int) PluginTools.waterbendingNightAugment(defaultmod,
 				player.getWorld());

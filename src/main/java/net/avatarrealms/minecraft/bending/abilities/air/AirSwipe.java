@@ -261,6 +261,9 @@ public class AirSwipe implements IAbility {
 				PluginTools.removeSpouts(location, player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						affectingradius)) {
+					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+						continue;
+					}
 					if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirSwipe,
 							entity.getLocation())) {
 						continue;

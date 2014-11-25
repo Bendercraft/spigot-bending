@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -25,6 +26,9 @@ public class Enflamed implements IAbility {
 		this.parent = parent;
 		if (entity.getEntityId() == source.getEntityId())
 			return;
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		instances.put(entity, source);
 	}
 

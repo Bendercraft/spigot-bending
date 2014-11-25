@@ -321,6 +321,9 @@ public class EarthBlast implements IAbility {
 				}
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						FireBlast.affectingradius)) {
+					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+						continue;
+					}
 					if (ProtectionManager.isRegionProtectedFromBending(player,
 							Abilities.EarthBlast, entity.getLocation())) {
 						continue;

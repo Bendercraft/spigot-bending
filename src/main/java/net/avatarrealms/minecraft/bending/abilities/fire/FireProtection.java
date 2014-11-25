@@ -99,6 +99,9 @@ public class FireProtection implements IAbility {
 
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 					discradius)) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
 				if (ProtectionManager.isRegionProtectedFromBending(player,
 						Abilities.FireShield, entity.getLocation())) {
 					continue;

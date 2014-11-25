@@ -24,17 +24,10 @@ public class IceSwipe implements IAbility{
 	private static Map<Player, IceSwipe> instances = new HashMap<Player, IceSwipe>();
 	
 	private static int range = ConfigManager.iceSwipeRange;
-	private static int damage = ConfigManager.iceSwipeDamage;
-	
 	private Map<Block, Location> iceblocks;
-	private List<Block> blocksAround;
-	
 	private IAbility parent;
 	private Player player;
 	private BendingPlayer bPlayer;
-	//private long time;
-	
-	private Location origin; // Could be useless
 	
 	private boolean started;
 	private boolean ready;
@@ -55,9 +48,6 @@ public class IceSwipe implements IAbility{
 		iceblocks = new HashMap<Block, Location>();
 		started = false;
 		this.parent = parent;
-		//time = System.currentTimeMillis();
-		origin = sourceblock.getLocation();
-		
 	}
 	
 	public static void prepare(Player player) {

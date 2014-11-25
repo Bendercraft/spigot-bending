@@ -168,6 +168,9 @@ public class WallOfFire implements IAbility {
 		}
 
 		for (LivingEntity entity : entities) {
+			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
 			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.WallOfFire,
 					entity.getLocation())) {
 				continue;
@@ -182,6 +185,9 @@ public class WallOfFire implements IAbility {
 	}
 
 	private void affect(LivingEntity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
 		entity.setFireTicks(50);
 		entity.setVelocity(new Vector(0, 0, 0));
 		EntityTools.damageEntity(player, entity, damage);

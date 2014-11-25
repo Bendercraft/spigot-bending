@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
+import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -260,6 +261,10 @@ public class Ripple implements IAbility {
 	}
 
 	private void affect(Entity entity) {
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return;
+		}
+		
 		if (entity instanceof LivingEntity) {
 			EntityTools.damageEntity(player, entity, damage);
 		}

@@ -166,7 +166,7 @@ public class Wave implements IAbility {
 			factor = AvatarState.getValue(factor);
 		}			
 		Entity target = EntityTools.getTargettedEntity(player, range);
-		if (target == null) {
+		if (target == null || ProtectionManager.isEntityProtectedByCitizens(target)) {
 			targetdestination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
 		} else {
 			targetdestination = ((LivingEntity) target).getEyeLocation();
@@ -310,7 +310,9 @@ public class Wave implements IAbility {
 
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
 						2 * radius)) {
-
+					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+						continue;
+					}
 					boolean knockback = false;
 	
 					List<Block> temp = new LinkedList<Block>(wave.keySet());

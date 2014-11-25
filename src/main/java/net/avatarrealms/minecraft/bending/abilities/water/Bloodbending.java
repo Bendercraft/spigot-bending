@@ -52,6 +52,9 @@ public class Bloodbending implements IAbility {
 			range = AvatarState.getValue(range);
 			for (LivingEntity entity : EntityTools
 					.getLivingEntitiesAroundPoint(player.getLocation(), range)) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
 				if (entity instanceof Player) {
 					if (ProtectionManager.isRegionProtectedFromBending(player,
 							Abilities.Bloodbending, entity.getLocation())
@@ -70,6 +73,9 @@ public class Bloodbending implements IAbility {
 				return;
 			}
 			Entity target = EntityTools.getTargettedEntity(player, range);
+			if(ProtectionManager.isEntityProtectedByCitizens(target)) {
+				return;
+			}
 			if (target == null) {
 				return;
 			}		
@@ -131,6 +137,9 @@ public class Bloodbending implements IAbility {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
 			for (LivingEntity entity : EntityTools
 					.getLivingEntitiesAroundPoint(player.getLocation(), range)) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
 				if (ProtectionManager.isRegionProtectedFromBending(player,
 						Abilities.Bloodbending, entity.getLocation())) {
 					continue;
