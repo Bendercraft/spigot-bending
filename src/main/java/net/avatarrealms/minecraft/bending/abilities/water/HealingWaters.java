@@ -79,8 +79,9 @@ public class HealingWaters implements IAbility {
 		if (entity == null) {
 			entity = this.healer;
 		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.healer, Abilities.HealingWaters,
-				entity.getLocation())) {
+		if (ProtectionManager
+				.isRegionProtectedFromBending(this.healer, Abilities.HealingWaters, entity
+						.getLocation())) {
 			return false;
 		}
 		if (entity.getEntityId() != this.target.getEntityId()) {

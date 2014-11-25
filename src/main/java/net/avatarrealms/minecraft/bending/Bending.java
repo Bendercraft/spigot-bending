@@ -60,24 +60,24 @@ public class Bending extends JavaPlugin {
 			throw new RuntimeException("Invalid database : " + ConfigManager.database);
 		}
 		database.init(this);
-		tBackup = new TempBackup(getDataFolder());
+		this.tBackup = new TempBackup(getDataFolder());
 		BendingPlayer.initializeCooldowns();
-		tools = new Tools();
-		ghostManager = new GhostManager(this);
-		getServer().getPluginManager().registerEvents(listener, this);
-		getServer().getPluginManager().registerEvents(bpListener, this);
-		getServer().getPluginManager().registerEvents(blListener, this);
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, manager, 0, 1);
-		getServer().getScheduler().runTaskTimerAsynchronously(plugin, revertChecker, 0, 200);
+		this.tools = new Tools();
+		this.ghostManager = new GhostManager(this);
+		getServer().getPluginManager().registerEvents(this.listener, this);
+		getServer().getPluginManager().registerEvents(this.bpListener, this);
+		getServer().getPluginManager().registerEvents(this.blListener, this);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
+		getServer().getScheduler().runTaskTimerAsynchronously(plugin, this.revertChecker, 0, 200);
 		PluginTools.printHooks();
-		PluginTools.verbose("Bending v" + this.getDescription().getVersion() + " has been loaded.");
+		PluginTools.verbose("Bending v" + getDescription().getVersion() + " has been loaded.");
 		registerCommands();
 	}
 
 	@Override
 	public void onDisable () {
 		PluginTools.stopAllBending();
-		ghostManager.close();
+		this.ghostManager.close();
 		AstralProjection.saveLocations();
 		getServer().getScheduler().cancelTasks(plugin);
 	}
@@ -102,6 +102,7 @@ public class Bending extends JavaPlugin {
 		commands.put("command.bindmode", "bindmode [item/slot]");
 	}
 
+	@Override
 	public boolean onCommand (CommandSender sender, Command cmd, String label, String[] args) {
 		// Will have to change that to allow the console sender
 		Player player = null;
