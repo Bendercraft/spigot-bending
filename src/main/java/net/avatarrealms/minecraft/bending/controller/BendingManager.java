@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
@@ -76,7 +77,6 @@ import net.avatarrealms.minecraft.bending.utils.Metrics;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -123,10 +123,7 @@ public class BendingManager implements Runnable {
 			Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("global", "step")), String.valueOf(Bending.time_step));
 		} catch (Exception e) {
 			PluginTools.stopAllBending();
-			PluginTools.writeToLog("Bending broke!");
-			PluginTools.writeToLog(ExceptionUtils.getStackTrace(e));
-			PluginTools.verbose("Bending just broke! It seems to have saved itself. The cause was reported in bending.log, and is repeated here for your convenience:");
-			e.printStackTrace();
+			plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
 		}
 
 	}

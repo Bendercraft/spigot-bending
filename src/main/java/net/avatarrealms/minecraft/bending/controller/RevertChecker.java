@@ -6,13 +6,11 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Information;
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
-import net.avatarrealms.minecraft.bending.utils.PluginTools;
-
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -105,8 +103,7 @@ public class RevertChecker implements Runnable {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				PluginTools.writeToLog(ExceptionUtils.getStackTrace(e));
+				plugin.getLogger().log(Level.SEVERE, "Exception in revert checker", e);
 			}
 		}
 	}

@@ -1,9 +1,6 @@
 package net.avatarrealms.minecraft.bending.utils;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -277,25 +274,6 @@ public class PluginTools {
 	public static boolean isLanguageSupported(String language) {
 		return (Bending.language.getSupportedLanguages().contains(language
 				.toLowerCase()));
-	}
-	
-	public static <T> void writeToLog(T something) {
-		StringBuilder builder = new StringBuilder();
-		Date now = new Date();
-		builder.append("["+now.toString()+"] ");
-		if (something != null) {
-			builder.append(something.toString());
-		}
-		try {
-			FileWriter fstream = new FileWriter("bending.log", true);
-			BufferedWriter out = new BufferedWriter(fstream);
-			out.write(builder.toString());
-			out.newLine();
-			out.close();
-		} catch (Exception e) {
-			System.err.println("Error: " + e.getMessage());
-		}
-
 	}
 	
 	public static double firebendingDayAugment(double value, World world) {

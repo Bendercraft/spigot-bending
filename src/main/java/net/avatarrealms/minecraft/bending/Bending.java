@@ -30,7 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Bending extends JavaPlugin {
 	public static long time_step = 1; // in ms
-	public static Logger log = Logger.getLogger("Bending");
+	public static Logger log = null;
 	public static Bending plugin;
 	public final BendingManager manager = new BendingManager(this);
 	public final BendingEntityListener listener = new BendingEntityListener(this);
@@ -49,6 +49,7 @@ public class Bending extends JavaPlugin {
 	@Override
 	public void onEnable () {
 		plugin = this;
+		log = plugin.getLogger();
 		saveDefaultConfig();
 		configManager.load(new File(getDataFolder(), "config.yml"));
 		language.load(new File(getDataFolder(), "language.yml"));
