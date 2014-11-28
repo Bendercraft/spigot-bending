@@ -31,7 +31,7 @@ import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.db.IBendingDB;
 
 public class MongoDB implements IBendingDB {
-	private static long MAX_NO_REFRESH = 1000; //ms
+	private static long MAX_NO_REFRESH = 10000; //ms
 	private static String ID = "_id";
 	
 	private Map<UUID, Long> timestamps = new HashMap<UUID, Long>();
