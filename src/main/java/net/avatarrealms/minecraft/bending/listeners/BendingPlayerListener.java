@@ -12,6 +12,7 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.TempBlock;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
+import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBurst;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBurstCone;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBurstSphere;
@@ -77,6 +78,7 @@ import net.avatarrealms.minecraft.bending.abilities.water.IceSpike2;
 import net.avatarrealms.minecraft.bending.abilities.water.Melt;
 import net.avatarrealms.minecraft.bending.abilities.water.OctopusForm;
 import net.avatarrealms.minecraft.bending.abilities.water.Torrent;
+import net.avatarrealms.minecraft.bending.abilities.water.WaterBubble;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterPassive;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
@@ -372,6 +374,16 @@ public class BendingPlayerListener implements Listener{
 			
 			if (ability == Abilities.HighJump) {
 				new HighJump(player, null);
+				return;
+			}
+			
+			if (ability == Abilities.AirBubble) {
+				new AirBubble(player, null);
+				return;
+			}
+			
+			if (ability == Abilities.WaterBubble) {
+				new WaterBubble(player, null);
 				return;
 			}
 

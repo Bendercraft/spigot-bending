@@ -17,7 +17,6 @@ import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -123,13 +122,6 @@ public class AirBubble implements IAbility {
 	}
 
 	public static void progressAll() {
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			if ((EntityTools.getBendingAbility(player) == Abilities.AirBubble ||
-					EntityTools.getBendingAbility(player) == Abilities.WaterBubble)
-					&& !instances.containsKey(player.getEntityId())) {
-				new AirBubble(player, null);
-			}
-		}
 		List<AirBubble> toRemove = new LinkedList<AirBubble>();
 		for (AirBubble bubble : instances.values()) {
 			boolean keep = bubble.progress();

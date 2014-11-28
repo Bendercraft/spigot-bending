@@ -1,5 +1,5 @@
 package net.avatarrealms.minecraft.bending.abilities.water;
-/*
+
 import net.avatarrealms.minecraft.bending.abilities.IAbility;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
 
@@ -18,4 +18,4 @@ public class WaterBubble implements IAbility {
 		return parent;
 	}
 
-}*/
+}
