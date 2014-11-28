@@ -40,10 +40,8 @@ public class AirBubble implements IAbility {
 	private IAbility parent;
 
 	public AirBubble(Player player, IAbility parent) {
-		// If already present, cancel previous bubble
+		// If already present just leave it as it is
 		if (instances.containsKey(player.getEntityId())) {
-			AirBubble bubble = instances.get(player.getEntityId());
-			bubble.removeBubble();
 			return;
 		}
 
