@@ -29,12 +29,14 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.db.IBendingDB;
+import net.avatarrealms.minecraft.bending.db.impl.mongo.UpdatePlayerTaskAsync;
 
 public class MongoDB implements IBendingDB {
 	private static long MAX_NO_REFRESH = 10000; //ms
-	private static String ID = "_id";
+	public static String ID = "_id";
 	
 	private Map<UUID, Long> timestamps = new HashMap<UUID, Long>();
+	private Map<UUID, UpdatePlayerTaskAsync> pendingUpdates = new HashMap<UUID, UpdatePlayerTaskAsync>();
 	private Map<UUID, BendingPlayer> players = new HashMap<UUID, BendingPlayer>();
 	
 	private MongoClient mongoClient;
@@ -55,6 +57,10 @@ public class MongoDB implements IBendingDB {
 		}
 	}
 	
+	public void finishUpdateTask(UUID id) {
+		pendingUpdates.remove(id);
+	}
+	
 	@Override
 	public Map<UUID, BendingPlayerData> dump() {
 		Map<UUID, BendingPlayerData> result = new HashMap<UUID, BendingPlayerData>();
@@ -71,13 +77,17 @@ public class MongoDB implements IBendingDB {
 
 	@Override
 	public BendingPlayer get(UUID id) {
-		if(timestamps.containsKey(id)) {
+		if(timestamps.containsKey(id) && players.containsKey(id)) {
 			if(System.currentTimeMillis() - timestamps.get(id) < MAX_NO_REFRESH) {
-				if(players.containsKey(id)) {
-					return players.get(id);
-				} else {
-					//Ok wierd here, we have a timestamp but no reference
+				return players.get(id);
+			} else {
+				//Launch an update task async (because connection to mongodb can take a while)
+				//Do not launch it if one is already pending
+				if(!pendingUpdates.containsKey(id)) {
+					UpdatePlayerTaskAsync run = new UpdatePlayerTaskAsync(plugin, this, id);
+					plugin.getServer().getScheduler().runTaskAsynchronously(plugin, run);
 				}
+				return players.get(id);
 			}
 		}
 		
@@ -175,7 +185,7 @@ public class MongoDB implements IBendingDB {
 		return result;
 	}
 	
-	private static BendingPlayerData unmarshal(DBObject obj) {
+	public static BendingPlayerData unmarshal(DBObject obj) {
 		BendingPlayerData result = new BendingPlayerData();
 		
 		result.setPlayer(UUID.fromString((String) obj.get("player")));
@@ -213,17 +223,14 @@ public class MongoDB implements IBendingDB {
 		return result;
 	}
 	
-	private static ObjectId fromUUID(UUID uuid) {
+	public static ObjectId fromUUID(UUID uuid) {
 		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
 	    bb.putLong(uuid.getMostSignificantBits());
 	    bb.putLong(uuid.getLeastSignificantBits());
-	    
 	    byte[] result = new byte[12];
-	    
 	    for(int i=0 ; i < 12 ; i++) {
 	    	result[i] = bb.get(i);
 	    }
-	    
 	    return new ObjectId(result);
 	}
 
@@ -232,6 +239,10 @@ public class MongoDB implements IBendingDB {
 		timestamps.clear();
 		players.clear();
 		table.drop();
+	}
+
+	public DBCollection getTable() {
+		return table;
 	}
 
 }

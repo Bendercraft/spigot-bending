@@ -104,6 +104,7 @@ public class AirBubble implements IAbility {
 					}
 				}
 			}
+			this.lastLocation = player.getLocation();
 		}
 	}
 
