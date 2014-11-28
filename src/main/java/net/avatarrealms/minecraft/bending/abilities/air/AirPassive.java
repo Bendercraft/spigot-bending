@@ -9,7 +9,6 @@ import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
 import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class AirPassive implements IPassiveAbility {
@@ -34,12 +33,10 @@ public class AirPassive implements IPassiveAbility {
 	}
 
 	public static void handlePassive(Server server) {
-		for (World world : server.getWorlds()) {
-			for (Player player : world.getPlayers()) {
-				if (EntityTools.isBender(player, BendingType.Air)) {
-					player.setExhaustion(getFoodExhaustionLevel(player,
-							player.getExhaustion()));
-				}
+		for (Player player : server.getOnlinePlayers()) {
+			if (EntityTools.isBender(player, BendingType.Air)) {
+				player.setExhaustion(getFoodExhaustionLevel(player,
+						player.getExhaustion()));
 			}
 		}
 	}
