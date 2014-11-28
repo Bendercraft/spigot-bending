@@ -20,6 +20,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.WriteConcern;
 
 import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
@@ -39,9 +40,12 @@ public class MongoDB implements IBendingDB {
 	private MongoClient mongoClient;
 	private DB db;
 	private DBCollection table;
+	
+	private Bending plugin;
 
 	@Override
 	public void init(Bending plugin) {
+		this.plugin = plugin;
 		try {
 			mongoClient = new MongoClient("localhost" , 27017);
 			db = mongoClient.getDB("minecraft");
@@ -100,7 +104,7 @@ public class MongoDB implements IBendingDB {
 		obj.put(ID, fromUUID(id));
 		DBObject result = table.findOne(obj);
 		if(result != null) {
-			table.remove(result);
+			table.remove(result, WriteConcern.ACKNOWLEDGED);
 		}
 	}
 
@@ -108,7 +112,7 @@ public class MongoDB implements IBendingDB {
 	public void set(UUID playerID, BendingPlayer player) {
 		this.remove(playerID);
 		DBObject obj = marshal(player.serialize());
-		table.insert(obj);
+		table.update(new BasicDBObject(ID, fromUUID(player.getPlayerID())), obj, true, false, WriteConcern.ACKNOWLEDGED);
 		timestamps.put(playerID, System.currentTimeMillis());
 		players.put(playerID, player);
 	}
