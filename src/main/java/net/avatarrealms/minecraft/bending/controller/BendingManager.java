@@ -13,7 +13,6 @@ import net.avatarrealms.minecraft.bending.abilities.TempPotionEffect;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBlast;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBubble;
 import net.avatarrealms.minecraft.bending.abilities.air.AirBurst;
-import net.avatarrealms.minecraft.bending.abilities.air.AirPassive;
 import net.avatarrealms.minecraft.bending.abilities.air.AirScooter;
 import net.avatarrealms.minecraft.bending.abilities.air.AirShield;
 import net.avatarrealms.minecraft.bending.abilities.air.AirSpout;
@@ -66,7 +65,6 @@ import net.avatarrealms.minecraft.bending.abilities.water.Plantbending;
 import net.avatarrealms.minecraft.bending.abilities.water.Torrent;
 import net.avatarrealms.minecraft.bending.abilities.water.TorrentBurst;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterManipulation;
-import net.avatarrealms.minecraft.bending.abilities.water.WaterPassive;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterReturn;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterSpout;
 import net.avatarrealms.minecraft.bending.abilities.water.WaterWall;
@@ -132,10 +130,6 @@ public class BendingManager implements Runnable {
 		long current = System.currentTimeMillis();
 		
 		long temp = System.currentTimeMillis();
-		AirPassive.handlePassive(plugin.getServer());
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "passive")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
 		AirBubble.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("air", "bubbles")), String.valueOf(System.currentTimeMillis() - temp));
 		
@@ -369,7 +363,7 @@ public class BendingManager implements Runnable {
 		
 		temp = System.currentTimeMillis();
 		Wave.progressAll();
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "save")), String.valueOf(System.currentTimeMillis() - temp));
+		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "wave")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();
 		IceSpike.progressAll();
@@ -391,10 +385,6 @@ public class BendingManager implements Runnable {
 		temp = System.currentTimeMillis();
 		HealingWaters.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "heal")), String.valueOf(System.currentTimeMillis() - temp));
-		
-		temp = System.currentTimeMillis();
-		WaterPassive.handlePassive(plugin.getServer());
-		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("water", "passive")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();
 		FastSwimming.progressAll();

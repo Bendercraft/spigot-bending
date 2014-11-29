@@ -386,6 +386,11 @@ public class BendingPlayerListener implements Listener{
 				new WaterBubble(player, null);
 				return;
 			}
+			
+			if (ability == Abilities.Tremorsense && player.isSneaking()) {
+				new Tremorsense(player, false, null);
+				return;
+			}
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Air")) {

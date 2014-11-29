@@ -85,6 +85,7 @@ public class MongoDB implements IBendingDB {
 				//Do not launch it if one is already pending
 				if(!pendingUpdates.containsKey(id)) {
 					UpdatePlayerTaskAsync run = new UpdatePlayerTaskAsync(plugin, this, id);
+					pendingUpdates.put(id, run);
 					plugin.getServer().getScheduler().runTaskAsynchronously(plugin, run);
 				}
 				return players.get(id);

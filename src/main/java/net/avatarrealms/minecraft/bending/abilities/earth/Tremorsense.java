@@ -13,7 +13,6 @@ import net.avatarrealms.minecraft.bending.utils.BlockTools;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -97,7 +96,7 @@ public class Tremorsense implements IAbility {
 
 		if (!BendingPlayer.getBendingPlayer(player).isTremorsensing()) {
 			if (block != null)
-				revert();
+				remove();
 			return;
 		}
 
@@ -108,48 +107,54 @@ public class Tremorsense implements IAbility {
 			instances.put(player, this);
 		} else if (BlockTools.isEarthbendable(player, Abilities.Tremorsense,
 				standblock) && !block.equals(standblock)) {
-			revert();
+			remove();
 			block = standblock;
 			player.sendBlockChange(block.getLocation(), Material.GLOWSTONE, (byte) 1);
 			instances.put(player, this);
 		} else if (block == null) {
 			return;
 		} else if (player.getWorld() != block.getWorld()) {
-			revert();
+			remove();
 		} else if (!BlockTools.isEarthbendable(player, Abilities.Tremorsense,
 				standblock)) {
-			revert();
+			remove();
 		}
 	}
 
-	private void revert() {
+	private void remove() {
 		if (block != null) {
 			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());
 			instances.remove(player);
 		}
 	}
+	
+	private boolean progress() {
+		if (!EntityTools.hasAbility(player, Abilities.Tremorsense)
+						|| !EntityTools.canBend(player, Abilities.Tremorsense) || player
+						.getLocation().getBlock().getLightLevel() > lightthreshold) {
+			return false;
+		}
+		this.set();
+		return true;
+	}
 
 	public static void progressAll() {
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			if (instances.containsKey(player)
-					&& (!EntityTools.hasAbility(player, Abilities.Tremorsense)
-							|| !EntityTools.canBend(player, Abilities.Tremorsense) || player
-							.getLocation().getBlock().getLightLevel() > lightthreshold)) {
-				instances.get(player).revert();
-			} else if (instances.containsKey(player)) {
-				instances.get(player).set();
-			} else if (EntityTools.hasAbility(player, Abilities.Tremorsense)
-					&& EntityTools.canBend(player, Abilities.Tremorsense)
-					&& player.getLocation().getBlock().getLightLevel() < lightthreshold) {
-				new Tremorsense(player, false, null);
+		List<Tremorsense> toRemove = new LinkedList<Tremorsense>();
+		for(Tremorsense sense : instances.values()) {
+			boolean keep = sense.progress();
+			if(!keep) {
+				toRemove.add(sense);
 			}
+		}
+		for(Tremorsense sense : toRemove) {
+			sense.remove();
 		}
 	}
 
 	public static void removeAll() {
-		List<Player> temp = new LinkedList<Player>(instances.keySet());
-		for (Player player : temp) {
-			instances.get(player).revert();
+		List<Tremorsense> toRemove = new LinkedList<Tremorsense>(instances.values());
+		for(Tremorsense sense : toRemove) {
+			sense.remove();
 		}
 
 	}
