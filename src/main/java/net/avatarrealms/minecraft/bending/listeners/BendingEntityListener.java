@@ -181,7 +181,7 @@ public class BendingEntityListener implements Listener {
 			
 			if(event.getCause().equals(DamageCause.ENTITY_ATTACK)) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) source);
-				if(bPlayer.getAbility().equals(Abilities.FireBlade)) {
+				if(bPlayer.getAbility() != null && bPlayer.getAbility().equals(Abilities.FireBlade)) {
 					//20ticks per seconds
 					entity.setFireTicks(20*3);
 				}
