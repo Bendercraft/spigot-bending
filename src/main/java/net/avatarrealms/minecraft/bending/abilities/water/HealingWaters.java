@@ -76,11 +76,11 @@ public class HealingWaters implements IAbility {
 			return false;
 		}
 		LivingEntity entity = EntityTools.getTargettedEntity(this.healer, range);
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
-			return false;
-		}
 		if (entity == null) {
 			entity = this.healer;
+		}
+		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			return false;
 		}
 		if (ProtectionManager
 				.isRegionProtectedFromBending(this.healer, Abilities.HealingWaters, entity
@@ -93,14 +93,12 @@ public class HealingWaters implements IAbility {
 		this.target = entity;
 		if (isWaterPotion(this.healer.getItemInHand())) {
 			giveHPToEntity(this.target);
-		}
-		else if (inWater(this.healer)) {
+		} else if (inWater(this.healer)) {
 			if (!inWater(this.target)) {
 				return true;
 			}
 			giveHPToEntity(this.target);
-		}
-		else {
+		} else {
 			return true;
 		}
 		final long now = System.currentTimeMillis();
