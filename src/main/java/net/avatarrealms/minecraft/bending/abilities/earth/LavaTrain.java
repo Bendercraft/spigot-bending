@@ -91,7 +91,7 @@ public class LavaTrain implements IAbility {
 		if (ProtectionManager.isRegionProtectedFromBending(bPlayer.getPlayer(), Abilities.LavaTrain, current)) {
 			return false;
 		}
-		if(this.direction.getX() == 0 && this.direction.getY() == 0) {
+		if(this.direction.getX() == 0 && this.direction.getZ() == 0) {
 			if(!reached) {
 				this.affectBlocks(current, reachWidth);
 				reached = true;
