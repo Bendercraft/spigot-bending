@@ -800,9 +800,7 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDamage(EntityDamageEvent event) {
-
 		if (event.getEntity() instanceof Player) {
-			
 			Player player = (Player) event.getEntity();
 			Abilities ability = EntityTools.getBendingAbility(player);
 			

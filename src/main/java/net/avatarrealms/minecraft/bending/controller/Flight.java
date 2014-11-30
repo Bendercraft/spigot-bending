@@ -130,10 +130,10 @@ public class Flight {
 	}
 
 	public static void removeAll() {
-		for (Player player : instances.keySet()) {
-			Flight flight = instances.get(player);
-			if (flight.source != null)
+		for (Flight flight : instances.values()) {
+			if (flight.source != null) {
 				flight.revert();
+			}
 		}
 		instances.clear();
 	}

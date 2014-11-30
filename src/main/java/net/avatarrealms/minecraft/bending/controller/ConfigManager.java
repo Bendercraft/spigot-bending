@@ -294,7 +294,6 @@ public class ConfigManager {
 	public static long wallOfFireCooldown;
 	
 	//FireBlade
-	public static int fireBladeFireAspectLevel;
 	public static int fireBladeSharpnessLevel;
 	public static int fireBladeStrengthLevel;
 	public static int fireBladeCooldown;
@@ -696,7 +695,6 @@ public class ConfigManager {
 		
 		//FireBlade
 		fireBladeSharpnessLevel = config.getInt("Properties.Fire.FireBlade.sharpness-level");
-		fireBladeFireAspectLevel = config.getInt("Properties.Fire.FireBlade.fireaspect-level");
 		fireBladeDuration = config.getInt("Properties.Fire.FireBlade.Duration");
 		fireBladeStrengthLevel = config.getInt("Properties.Fire.FireBlade.strength-level");
 		fireBladeCooldown = config.getInt("Properties.Fire.FireBlade.Cooldown");

@@ -178,6 +178,14 @@ public class BendingEntityListener implements Listener {
 			if (AstralProjection.isAstralProjecting((Player) source)) {
 				event.setCancelled(true);
 			}
+			
+			if(event.getCause().equals(DamageCause.ENTITY_ATTACK)) {
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) source);
+				if(bPlayer.getAbility().equals(Abilities.FireBlade)) {
+					//20ticks per seconds
+					entity.setFireTicks(20*3);
+				}
+			}
 		}
 	}
 

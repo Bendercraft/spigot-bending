@@ -23,8 +23,6 @@ public class FireBlade {
 	private static String LORE_NAME = "FireBlade";
 	private static final Enchantment sharp = Enchantment.DAMAGE_ALL;
 	private static int sharpnessLevel = ConfigManager.fireBladeSharpnessLevel;
-	private static final Enchantment fire = Enchantment.FIRE_ASPECT;
-	private static int fireAspectLevel = ConfigManager.fireBladeFireAspectLevel;
 	private static final Enchantment dura = Enchantment.DURABILITY;
 	private static final int duraLevel = 3;
 	//private static int strengthLevel = ConfigManager.fireBladeStrengthLevel;
@@ -150,9 +148,6 @@ public class FireBlade {
 		ItemStack fireB = new ItemStack(Material.GOLD_SWORD);
 		if (sharpnessLevel > 0) {
 			fireB.addEnchantment(sharp, sharpnessLevel);
-		}
-		if (fireAspectLevel > 0) {
-			fireB.addEnchantment(fire, fireAspectLevel);
 		}
 		if (duraLevel > 0) {
 			fireB.addEnchantment(dura, duraLevel);

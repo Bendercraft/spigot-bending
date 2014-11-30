@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -209,11 +207,10 @@ public class LavaTrain implements IAbility {
 		return parent;
 	}
 	
-	@Nullable
 	public static LavaTrain getLavaTrain(Block b) {
-		for (LavaTrain inst : instances.values()){
-			if (inst.affecteds.contains(b)) {
-				return inst;
+		for (LavaTrain train : instances.values()){
+			if (train.affecteds.contains(b)) {
+				return train;
 			}
 		}	
 		return null;
