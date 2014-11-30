@@ -55,21 +55,17 @@ public class PoisonnedDart {
 		ItemStack is = player.getItemInHand();
 		if (is.getType() == Material.MILK_BUCKET) {
 			effect = null;
-			player.getInventory().remove(is);
-			player.getInventory().addItem(new ItemStack(Material.BUCKET));
-		}
-		else if (is.getType() == Material.POTION) {
+			is.setType(Material.BUCKET);
+			is.setAmount(1);
+		} else if (is.getType() == Material.POTION) {
 			effect = EntityTools.fromItemStack(is);
-			player.getInventory().remove(is);	
-			player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
-		}
-		else if (is.getType() == Material.EYE_OF_ENDER) {
+			is.setType(Material.GLASS_BOTTLE);
+			is.setAmount(1);
+		} else if (is.getType() == Material.EYE_OF_ENDER) {
 			effect = new PotionEffect(PotionEffectType.BLINDNESS,20*10,1);
-		}
-		else if (is.getType() == Material.MUSHROOM_SOUP) {
+		} else if (is.getType() == Material.MUSHROOM_SOUP) {
 			effect = new PotionEffect(PotionEffectType.CONFUSION,20*12,1);
-		}
-		else {
+		} else {
 			effect = new PotionEffect(PotionEffectType.POISON, 20*1, 0);
 		}
 		this.player = player;
