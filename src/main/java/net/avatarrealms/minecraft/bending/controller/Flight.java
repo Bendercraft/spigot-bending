@@ -63,6 +63,7 @@ public class Flight {
 	}
 
 	private void remove() {
+		revert();
 		instances.remove(player);
 	}
 
