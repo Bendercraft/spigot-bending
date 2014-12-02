@@ -33,11 +33,9 @@ public class Flight {
 	}
 
 	public Flight(Player player, Player source) {
-
 		if (instances.containsKey(player)) {
 			Flight flight = instances.get(player);
 			flight.refresh(source);
-			instances.put(player, flight);
 			return;
 		}
 
