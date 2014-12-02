@@ -35,6 +35,7 @@ public class Tornado implements IAbility {
 	private static double NPCpushfactor = ConfigManager.tornadoMobPush;
 	private static double PCpushfactor = ConfigManager.tornadoPlayerPush;
 	private static double speedfactor = 1;
+	private static double MAX_AFFECTEDS = 5000;//ms
 
 	private double height = 2;
 	private double radius = height / maxheight * maxradius;
@@ -219,7 +220,14 @@ public class Tornado implements IAbility {
 	}
 	
 	public static boolean isAffected(LivingEntity entity) {
-		return affecteds.containsKey(entity.getUniqueId());
+		if(affecteds.containsKey(entity.getUniqueId())) {
+			if(System.currentTimeMillis() - affecteds.get(entity.getUniqueId()) > MAX_AFFECTEDS) {
+				affecteds.remove(entity.getUniqueId());
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	public static boolean preventFall(LivingEntity entity) {
@@ -259,6 +267,7 @@ public class Tornado implements IAbility {
 
 	public static void removeAll() {
 		instances.clear();
+		affecteds.clear();
 	}
 	
 	@Override
