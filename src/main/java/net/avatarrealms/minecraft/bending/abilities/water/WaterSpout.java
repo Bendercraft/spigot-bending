@@ -94,7 +94,7 @@ public class WaterSpout implements IAbility {
 		}
 		for (Block block : toRemoveBlock) {
 			affectedblocks.remove(block);
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 		}
 	}
 
@@ -118,7 +118,7 @@ public class WaterSpout implements IAbility {
 
 				block = location.clone().add(0, i, 0).getBlock();
 				if (!TempBlock.isTempBlock(block)) {
-					new TempBlock(block, Material.WATER, full);
+					new TempBlock(block, Material.WATER, full, player, WaterSpout.class);
 				}
 				if (!affectedblocks.contains(block)) {
 					affectedblocks.add(block);
@@ -158,7 +158,7 @@ public class WaterSpout implements IAbility {
 						|| affectedblocks.contains(block)) {
 
 					if (!TempBlock.isTempBlock(block)) {
-						new TempBlock(block, Material.WATER, full);
+						new TempBlock(block, Material.WATER, full, player, WaterSpout.class);
 					}
 					if (!affectedblocks.contains(block)) {
 						affectedblocks.add(block);
@@ -215,7 +215,7 @@ public class WaterSpout implements IAbility {
 					if (!TempBlock.isTempBlock(blocki)) {
 						revertBaseBlock(player);
 						instances.get(player).baseblock = new TempBlock(blocki,
-								Material.WATER, full);
+								Material.WATER, full, player, WaterSpout.class);
 					}
 					spout.base = blocki;
 					if (i > height)
@@ -245,7 +245,7 @@ public class WaterSpout implements IAbility {
 	public static void removeAll() {
 		instances.clear();
 		for (Block block : affectedblocks) {
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 		}
 		affectedblocks.clear();
 	}

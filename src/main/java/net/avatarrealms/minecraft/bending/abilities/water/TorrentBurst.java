@@ -150,7 +150,7 @@ public class TorrentBurst implements IAbility {
 				if (BlockTools.isTransparentToEarthbending(player,
 						Abilities.Torrent, block)) {
 					TempBlock tempBlock = new TempBlock(block, Material.WATER,
-							full);
+							full, player, TorrentBurst.class);
 					blocks.add(tempBlock);
 					torrentblocks.add(block);
 				} else {

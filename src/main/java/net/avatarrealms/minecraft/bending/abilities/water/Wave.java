@@ -109,7 +109,7 @@ public class Wave implements IAbility {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if(Drainbending.canBeSource(block)) {
-				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0, player, Wave.class);
 				sourceblock = block;
 				focusBlock();
 				//Range and max radius is halfed for Drainbending
@@ -385,7 +385,7 @@ public class Wave implements IAbility {
 
 	private void finalRemoveWater(Block block) {
 		if (wave.containsKey(block)) {
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 			wave.remove(block);
 		}
 	}
@@ -395,7 +395,7 @@ public class Wave implements IAbility {
 				block.getLocation()))
 			return;
 		if (!TempBlock.isTempBlock(block)) {
-			new TempBlock(block, Material.WATER, full);
+			new TempBlock(block, Material.WATER, full, player, Wave.class);
 			// new TempBlock(block, Material.ICE, (byte) 0);
 			wave.put(block, block);
 		}
@@ -403,7 +403,7 @@ public class Wave implements IAbility {
 
 	private void clearWave() {
 		for (Block block : wave.keySet()) {
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 		}
 		wave.clear();
 	}
@@ -477,7 +477,7 @@ public class Wave implements IAbility {
 			if (block.getType() == Material.AIR
 					|| block.getType() == Material.SNOW) {
 				// block.setType(Material.ICE);
-				new TempBlock(block, Material.ICE, (byte) 0);
+				new TempBlock(block, Material.ICE, (byte) 0, player, Wave.class);
 				frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
@@ -486,7 +486,7 @@ public class Wave implements IAbility {
 			if (BlockTools.isPlant(block) && block.getType() != Material.LEAVES) {
 				block.breakNaturally();
 				// block.setType(Material.ICE);
-				new TempBlock(block, Material.ICE, (byte) 0);
+				new TempBlock(block, Material.ICE, (byte) 0, player, Wave.class);
 				frozenblocks.put(block, block);
 			}
 		}
@@ -494,7 +494,7 @@ public class Wave implements IAbility {
 
 	private void thaw() {
 		for (Block block : frozenblocks.keySet()) {
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 		}
 		frozenblocks.clear();
 	}
@@ -502,7 +502,7 @@ public class Wave implements IAbility {
 	public static void thaw(Block block) {
 		for (Wave wave : instances.values()) {
 			if (wave.frozenblocks.containsKey(block)) {
-				TempBlock.revertBlock(block, Material.AIR);
+				TempBlock.revertBlock(block);
 				wave.frozenblocks.remove(block);
 			}
 		}

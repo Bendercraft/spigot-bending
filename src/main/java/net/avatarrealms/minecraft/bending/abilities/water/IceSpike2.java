@@ -202,7 +202,7 @@ public class IceSpike2 implements IAbility {
 			sourceblock.setType(Material.AIR);
 		}
 
-		source = new TempBlock(sourceblock, Material.ICE, data);
+		source = new TempBlock(sourceblock, Material.ICE, data, player, IceSpike2.class);
 	}
 
 	public static void progressAll() {
@@ -310,7 +310,7 @@ public class IceSpike2 implements IAbility {
 			}
 
 			sourceblock = block;
-			source = new TempBlock(sourceblock, Material.ICE, data);
+			source = new TempBlock(sourceblock, Material.ICE, data, player, IceSpike2.class);
 
 		} else if (prepared) {
 			Tools.playFocusWaterEffect(sourceblock);

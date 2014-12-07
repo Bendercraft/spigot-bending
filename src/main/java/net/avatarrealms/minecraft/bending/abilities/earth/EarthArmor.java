@@ -140,15 +140,13 @@ public class EarthArmor implements IAbility {
 		}
 
 		if (!newheadblock.equals(headblock)) {
-			new TempBlock(newheadblock, headtype, headdata);
-			if (TempBlock.isTempBlock(headblock))
-				TempBlock.revertBlock(headblock, Material.AIR);
+			new TempBlock(newheadblock, headtype, headdata, player, EarthArmor.class);
+			TempBlock.revertBlock(headblock);
 		}
 
 		if (!newlegsblock.equals(legsblock)) {
-			new TempBlock(newlegsblock, legstype, legsdata);
-			if (TempBlock.isTempBlock(legsblock))
-				TempBlock.revertBlock(legsblock, Material.AIR);
+			new TempBlock(newlegsblock, legstype, legsdata, player, EarthArmor.class);
+			TempBlock.revertBlock(legsblock);
 		}
 
 		headblock = newheadblock;
@@ -159,10 +157,8 @@ public class EarthArmor implements IAbility {
 
 	private void cancel() {
 		if (ConfigManager.reverseearthbending) {
-			if (TempBlock.isTempBlock(headblock))
-				TempBlock.revertBlock(headblock, Material.AIR);
-			if (TempBlock.isTempBlock(legsblock))
-				TempBlock.revertBlock(legsblock, Material.AIR);
+			TempBlock.revertBlock(headblock);
+			TempBlock.revertBlock(legsblock);
 		} else {
 			headblock.breakNaturally();
 			legsblock.breakNaturally();
@@ -178,13 +174,8 @@ public class EarthArmor implements IAbility {
 	}
 
 	private void formArmor() {
-		if (TempBlock.isTempBlock(headblock)) {
-			TempBlock.revertBlock(headblock, Material.AIR);
-		}
-			
-		if (TempBlock.isTempBlock(legsblock)) {
-			TempBlock.revertBlock(legsblock, Material.AIR);
-		}
+		TempBlock.revertBlock(headblock);
+		TempBlock.revertBlock(legsblock);
 
 		oldarmor = player.getInventory().getArmorContents();
 		if (BlockTools.isIronBendable(player, legstype)) {

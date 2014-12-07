@@ -160,9 +160,8 @@ public class BendingBlockListener implements Listener{
 			event.setCancelled(true);
 		} else if (BlockTools.bendedBlocks.containsKey(block)) {
 			BlockTools.removeRevertIndex(block);
-		} else if (TempBlock.isTempBlock(block)) {
-			TempBlock.revertBlock(block, Material.AIR);
 		}
+		TempBlock.revertBlock(block);
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

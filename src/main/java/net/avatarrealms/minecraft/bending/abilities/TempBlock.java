@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.utils.BlockTools;
+import net.coreprotect.CoreProtectAPI;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 
 public class TempBlock {
 	private static Map<Block, TempBlock> instances = new HashMap<Block, TempBlock>();
@@ -21,10 +24,16 @@ public class TempBlock {
 	private byte newdata;
 	private BlockState state;
 
-	public TempBlock(Block block, Material newtype, byte newdata) {
+	//For logging purpose
+	private Player source;
+	private Class<?> clazz;
+
+	public TempBlock(Block block, Material newtype, byte newdata, Player source, Class<?> clazz) {
 		this.block = block;
 		this.newdata = newdata;
 		this.newtype = newtype;
+		this.source = source;
+		this.clazz = clazz;
 		if (instances.containsKey(block)) {
 			TempBlock temp = instances.get(block);
 			if (newtype != temp.newtype) {
@@ -43,37 +52,32 @@ public class TempBlock {
 			block.setData(newdata);
 			instances.put(block, this);
 		}
-		if (state.getType() == Material.FIRE)
+		if (state.getType() == Material.FIRE) {
 			state.setType(Material.AIR);
+		}
+		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
+			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
+			cp.logPlacement(source.getName()+":"+clazz.getSimpleName(), block.getLocation(), block.getType().getId(), block.getData());
+		}
 	}
 
 	public void revertBlock() {
 		state.update(true);
 		instances.remove(block);
+		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
+			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
+			cp.logRemoval(source.getName()+":"+clazz.getCanonicalName(), block.getLocation(), block.getType().getId(), block.getData());
+		}
 	}
 	
 	public BlockState getState() {
 		return state;
 	}
 
-	public static void revertBlock(Block block, Material defaulttype) {
+	public static void revertBlock(Block block) {
 		if (instances.containsKey(block)) {
 			instances.get(block).revertBlock();
-		} else {
-			if ((defaulttype == Material.WATER
-					|| defaulttype == Material.STATIONARY_WATER || defaulttype == Material.AIR)
-					&& BlockTools.adjacentToThreeOrMoreSources(block)) {
-				block.setType(Material.WATER);
-				block.setData((byte) 0x0);
-			} else {
-				block.setType(defaulttype);
-			}
 		}
-		// block.setType(defaulttype);
-	}
-
-	public static void removeBlock(Block block) {
-		instances.remove(block);
 	}
 
 	public static boolean isTempBlock(Block block) {
@@ -91,9 +95,7 @@ public class TempBlock {
 	}
 
 	public static TempBlock get(Block block) {
-		if (isTempBlock(block))
-			return instances.get(block);
-		return null;
+		return instances.get(block);
 	}
 
 	public Location getLocation() {
@@ -105,12 +107,9 @@ public class TempBlock {
 	}
 
 	public static void removeAll() {
-		List<Block> toRevert = new LinkedList<Block>();
-		for (Block block : instances.keySet()) {
-			toRevert.add(block);
-		}
-		for (Block block : toRevert) {
-			revertBlock(block, Material.AIR);
+		List<TempBlock> toRevert = new LinkedList<TempBlock>(instances.values());
+		for (TempBlock block : toRevert) {
+			 block.revertBlock();
 		}
 	}
 

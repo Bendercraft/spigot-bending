@@ -143,7 +143,7 @@ public class WaterWall implements IAbility {
 		frozen = true;
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				new TempBlock(block, Material.ICE, (byte) 0);
+				new TempBlock(block, Material.ICE, (byte) 0, player, WaterWall.class);
 			}
 		}
 	}
@@ -152,7 +152,7 @@ public class WaterWall implements IAbility {
 		frozen = false;
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				new TempBlock(block, Material.WATER, full);
+				new TempBlock(block, Material.WATER, full, player, WaterWall.class);
 			}
 		}
 	}
@@ -176,7 +176,7 @@ public class WaterWall implements IAbility {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if(Drainbending.canBeSource(block)) {
-				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0, player, WaterWall.class);
 				sourceblock = block;
 				focusBlock();
 				//Radius is thirded for Drainbending
@@ -391,9 +391,9 @@ public class WaterWall implements IAbility {
 
 	private void addWallBlock(Block block) {
 		if (frozen) {
-			new TempBlock(block, Material.ICE, (byte) 0);
+			new TempBlock(block, Material.ICE, (byte) 0, player, WaterWall.class);
 		} else {
-			new TempBlock(block, Material.WATER, full);
+			new TempBlock(block, Material.WATER, full, player, WaterWall.class);
 		}
 	}
 
@@ -414,7 +414,7 @@ public class WaterWall implements IAbility {
 		if (block != null) {
 			if (affectedblocks.containsKey(block)) {
 				if (!BlockTools.adjacentToThreeOrMoreSources(block)) {
-					TempBlock.revertBlock(block, Material.AIR);
+					TempBlock.revertBlock(block);
 				}
 				affectedblocks.remove(block);
 			}
@@ -423,12 +423,12 @@ public class WaterWall implements IAbility {
 
 	private static void finalRemoveWater(Block block) {
 		if (affectedblocks.containsKey(block)) {
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 			affectedblocks.remove(block);
 		}
 
 		if (wallblocks.containsKey(block)) {
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 			wallblocks.remove(block);
 		}
 	}
@@ -440,7 +440,7 @@ public class WaterWall implements IAbility {
 			return;
 
 		if (!TempBlock.isTempBlock(block)) {
-			new TempBlock(block, Material.WATER, full);
+			new TempBlock(block, Material.WATER, full, player, WaterWall.class);
 			// new TempBlock(block, Material.ICE, (byte) 0);
 			affectedblocks.put(block, block);
 		}
@@ -514,13 +514,13 @@ public class WaterWall implements IAbility {
 	public static void removeAll() {
 		List<Block> toRemoveAffected = new LinkedList<Block>(affectedblocks.values());
 		for (Block block : toRemoveAffected) {
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 			affectedblocks.remove(block);
 			wallblocks.remove(block);
 		}
 		List<Block> toRemoveWall = new LinkedList<Block>(wallblocks.keySet());
 		for (Block block : toRemoveWall) {
-			TempBlock.revertBlock(block, Material.AIR);
+			TempBlock.revertBlock(block);
 			affectedblocks.remove(block);
 			wallblocks.remove(block);
 		}
