@@ -48,6 +48,7 @@ public class AvatarState {
 	public boolean progress () {
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AvatarState, this.player
 				.getLocation())) {
+			toRemove.add(this.player);
 			return false;
 		}
 		if (!EntityTools.canBend(this.player, Abilities.AvatarState)) {
