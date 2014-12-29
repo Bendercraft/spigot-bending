@@ -60,7 +60,7 @@ public class DataLocation {
 	}
 	
 	public static DataLocation fromLocation(Location loc) {
-		if (loc == null) {
+		if (loc == null || loc.getWorld() == null) {
 			return null;
 		}
 		DataLocation location = new DataLocation();
