@@ -25,9 +25,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+
 public class EarthArmor implements IAbility {
+
 	private static Map<Player, EarthArmor> instances = new HashMap<Player, EarthArmor>();
-	
+
 	private static long duration = ConfigManager.earthArmorDuration;
 	private static int strength = ConfigManager.earthArmorStrength;
 	private static long cooldown = ConfigManager.earthArmorCooldown;
@@ -47,38 +49,38 @@ public class EarthArmor implements IAbility {
 
 	private static long interval = 2000;
 
-	public EarthArmor(Player player, IAbility parent) {
+	public EarthArmor (Player player, IAbility parent) {
 		this.parent = parent;
 		if (instances.containsKey(player)) {
 			return;
 		}
 
-		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
-				Abilities.EarthArmor))
+		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(Abilities.EarthArmor)) {
 			return;
+		}
 
 		this.player = player;
-		
-		headblock = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending());
-		if (BlockTools.getEarthbendableBlocksLength(player, headblock, new Vector(0,
-				-1, 0), 2) >= 2) {
-			legsblock = headblock.getRelative(BlockFace.DOWN);
-			headtype = headblock.getType();
-			legstype = legsblock.getType();
-			headdata = headblock.getData();
-			legsdata = legsblock.getData();
-			headblocklocation = headblock.getLocation();
-			legsblocklocation = legsblock.getLocation();
+
+		this.headblock = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending());
+		if (BlockTools.getEarthbendableBlocksLength(player, this.headblock, new Vector(0, -1, 0), 2) >= 2) {
+			this.legsblock = this.headblock.getRelative(BlockFace.DOWN);
+			this.headtype = this.headblock.getType();
+			this.legstype = this.legsblock.getType();
+			this.headdata = this.headblock.getData();
+			this.legsdata = this.legsblock.getData();
+			this.headblocklocation = this.headblock.getLocation();
+			this.legsblocklocation = this.legsblock.getLocation();
 			Block oldheadblock, oldlegsblock;
-			oldheadblock = headblock;
-			oldlegsblock = legsblock;
+			oldheadblock = this.headblock;
+			oldlegsblock = this.legsblock;
 			if (!moveBlocks()) {
 				return;
-			}	
+			}
 			if (ConfigManager.reverseearthbending) {
 				BlockTools.addTempAirBlock(oldheadblock);
 				BlockTools.addTempAirBlock(oldlegsblock);
-			} else {
+			}
+			else {
 				BlockTools.removeBlock(oldheadblock);
 				BlockTools.removeBlock(oldlegsblock);
 			}
@@ -86,188 +88,187 @@ public class EarthArmor implements IAbility {
 		}
 	}
 
-	private boolean moveBlocks() {
-		if (player.getWorld() != headblock.getWorld()) {
+	private boolean moveBlocks () {
+		if (this.player.getWorld() != this.headblock.getWorld()) {
 			cancel();
 			return false;
 		}
 
-		Location headlocation = player.getEyeLocation();
-		Location legslocation = player.getLocation();
-		Vector headdirection = headlocation.toVector()
-				.subtract(headblocklocation.toVector()).normalize()
-				.multiply(.5);
-		Vector legsdirection = legslocation.toVector()
-				.subtract(legsblocklocation.toVector()).normalize()
-				.multiply(.5);
+		Location headlocation = this.player.getEyeLocation();
+		Location legslocation = this.player.getLocation();
+		Vector headdirection = headlocation.toVector().subtract(this.headblocklocation.toVector())
+				.normalize().multiply(.5);
+		Vector legsdirection = legslocation.toVector().subtract(this.legsblocklocation.toVector())
+				.normalize().multiply(.5);
 
-		Block newheadblock = headblock;
-		Block newlegsblock = legsblock;
+		Block newheadblock = this.headblock;
+		Block newlegsblock = this.legsblock;
 
-		if (!headlocation.getBlock().equals(headblock)) {
-			headblocklocation = headblocklocation.clone().add(headdirection);
-			newheadblock = headblocklocation.getBlock();
+		if (!headlocation.getBlock().equals(this.headblock)) {
+			this.headblocklocation = this.headblocklocation.clone().add(headdirection);
+			newheadblock = this.headblocklocation.getBlock();
 		}
-		if (!legslocation.getBlock().equals(legsblock)) {
-			legsblocklocation = legsblocklocation.clone().add(legsdirection);
-			newlegsblock = legsblocklocation.getBlock();
+		if (!legslocation.getBlock().equals(this.legsblock)) {
+			this.legsblocklocation = this.legsblocklocation.clone().add(legsdirection);
+			newlegsblock = this.legsblocklocation.getBlock();
 		}
 
-		if (BlockTools.isTransparentToEarthbending(player, newheadblock)
-				&& !newheadblock.isLiquid()) {
+		if (BlockTools.isTransparentToEarthbending(this.player, newheadblock) && !newheadblock.isLiquid()) {
 			BlockTools.breakBlock(newheadblock);
-		} else if (!BlockTools.isEarthbendable(player, Abilities.EarthArmor, newheadblock)
-				&& !newheadblock.isLiquid()
-				&& newheadblock.getType() != Material.AIR) {
+		}
+		else if (!BlockTools.isEarthbendable(this.player, Abilities.EarthArmor, newheadblock)
+				&& !newheadblock.isLiquid() && (newheadblock.getType() != Material.AIR)) {
 			cancel();
 			return false;
 		}
 
-		if (BlockTools.isTransparentToEarthbending(player, newlegsblock)
-				&& !newlegsblock.isLiquid()) {
+		if (BlockTools.isTransparentToEarthbending(this.player, newlegsblock) && !newlegsblock.isLiquid()) {
 			BlockTools.breakBlock(newlegsblock);
-		} else if (!BlockTools.isEarthbendable(player, Abilities.EarthArmor, newlegsblock)
-				&& !newlegsblock.isLiquid()
-				&& newlegsblock.getType() != Material.AIR) {
+		}
+		else if (!BlockTools.isEarthbendable(this.player, Abilities.EarthArmor, newlegsblock)
+				&& !newlegsblock.isLiquid() && (newlegsblock.getType() != Material.AIR)) {
 			cancel();
 			return false;
 		}
 
-		if (headblock.getLocation().distance(player.getEyeLocation()) > range
-				|| legsblock.getLocation().distance(player.getLocation()) > range) {
+		if ((this.headblock.getLocation().distance(this.player.getEyeLocation()) > range)
+				|| (this.legsblock.getLocation().distance(this.player.getLocation()) > range)) {
 			cancel();
 			return false;
 		}
 
-		if (!newheadblock.equals(headblock)) {
-			new TempBlock(newheadblock, headtype, headdata, player, EarthArmor.class);
-			TempBlock.revertBlock(headblock);
+		if (!newheadblock.equals(this.headblock)) {
+			new TempBlock(newheadblock, this.headtype, this.headdata, this.player, EarthArmor.class);
+			TempBlock.revertBlock(this.headblock);
 		}
 
-		if (!newlegsblock.equals(legsblock)) {
-			new TempBlock(newlegsblock, legstype, legsdata, player, EarthArmor.class);
-			TempBlock.revertBlock(legsblock);
+		if (!newlegsblock.equals(this.legsblock)) {
+			new TempBlock(newlegsblock, this.legstype, this.legsdata, this.player, EarthArmor.class);
+			TempBlock.revertBlock(this.legsblock);
 		}
 
-		headblock = newheadblock;
-		legsblock = newlegsblock;
+		this.headblock = newheadblock;
+		this.legsblock = newlegsblock;
 
 		return true;
 	}
 
-	private void cancel() {
+	private void cancel () {
 		if (ConfigManager.reverseearthbending) {
-			TempBlock.revertBlock(headblock);
-			TempBlock.revertBlock(legsblock);
-		} else {
-			headblock.breakNaturally();
-			legsblock.breakNaturally();
+			TempBlock.revertBlock(this.headblock);
+			TempBlock.revertBlock(this.legsblock);
+		}
+		else {
+			this.headblock.breakNaturally();
+			this.legsblock.breakNaturally();
 		}
 	}
 
-	private boolean inPosition() {
-		if (headblock.equals(player.getEyeLocation().getBlock())
-				&& legsblock.equals(player.getLocation().getBlock())) {
+	private boolean inPosition () {
+		if (this.headblock.equals(this.player.getEyeLocation().getBlock())
+				&& this.legsblock.equals(this.player.getLocation().getBlock())) {
 			return true;
 		}
 		return false;
 	}
 
-	private void formArmor() {
-		TempBlock.revertBlock(headblock);
-		TempBlock.revertBlock(legsblock);
-
-		oldarmor = player.getInventory().getArmorContents();
-		if (BlockTools.isIronBendable(player, legstype)) {
+	private void formArmor () {
+		TempBlock.revertBlock(this.headblock);
+		TempBlock.revertBlock(this.legsblock);
+		short cptIroned = 0;
+		this.oldarmor = this.player.getInventory().getArmorContents();
+		if (BlockTools.isIronBendable(this.player, this.legstype)) {
 			ItemStack is = new ItemStack(Material.IRON_BOOTS, 1);
-			//is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-			armors.add(is);
+			this.armors.add(is);
 			is = new ItemStack(Material.IRON_LEGGINGS, 1);
-			//is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-			armors.add(is);
+			this.armors.add(is);
+			cptIroned++;
 		}
 		else {
-			armors.add(new ItemStack(Material.LEATHER_BOOTS, 1));
-			armors.add(new ItemStack(Material.LEATHER_LEGGINGS, 1));
+			this.armors.add(new ItemStack(Material.LEATHER_BOOTS, 1));
+			this.armors.add(new ItemStack(Material.LEATHER_LEGGINGS, 1));
 		}
-		
-		if (BlockTools.isIronBendable(player, headtype)) {
+
+		if (BlockTools.isIronBendable(this.player, this.headtype)) {
 			ItemStack is = new ItemStack(Material.IRON_CHESTPLATE, 1);
-			//is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-			armors.add(is);
+			this.armors.add(is);
 			is = new ItemStack(Material.IRON_HELMET, 1);
-			//is.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
-			armors.add(is);
+			this.armors.add(is);
+			cptIroned++;
 		}
 		else {
-			armors.add(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
-			armors.add(new ItemStack(Material.LEATHER_HELMET, 1));
-		}			
-				
-		ItemStack[] ar = armors.toArray(new ItemStack[armors.size()]);
-		player.getInventory().setArmorContents(ar);
-		PotionEffect resistance = new PotionEffect(
-				PotionEffectType.DAMAGE_RESISTANCE, (int) duration / 50,
-				strength - 1);
-		new TempPotionEffect(player, resistance);
-		formed = true;
-		starttime = System.currentTimeMillis();
-	}
-	
-	private void remove() {
-		instances.remove(player);
+			this.armors.add(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
+			this.armors.add(new ItemStack(Material.LEATHER_HELMET, 1));
+		}
+
+		if (cptIroned == 0) {
+			PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int)duration / 50, strength - 1);
+			new TempPotionEffect(this.player, resistance);
+			PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, (int)duration / 50, 0);
+			new TempPotionEffect(this.player, slowness);
+		}
+		ItemStack[] ar = this.armors.toArray(new ItemStack[this.armors.size()]);
+		this.player.getInventory().setArmorContents(ar);
+
+		this.formed = true;
+		this.starttime = System.currentTimeMillis();
 	}
 
-	private boolean progress() {
-		if (player.isDead() || !player.isOnline()) {
+	private void remove () {
+		instances.remove(this.player);
+	}
+
+	private boolean progress () {
+		if (this.player.isDead() || !this.player.isOnline()) {
 			cancel();
 			removeEffect();
 			return false;
 		}
 
-		if (formed) {
-			if (System.currentTimeMillis() > starttime + duration
-					&& !complete) {
-				complete = true;
+		if (this.formed) {
+			if ((System.currentTimeMillis() > (this.starttime + duration)) && !this.complete) {
+				this.complete = true;
 				removeEffect();
 				return true;
 			}
-			if (System.currentTimeMillis() > starttime + cooldown) {
+			if (System.currentTimeMillis() > (this.starttime + cooldown)) {
 				return false;
 			}
-		} else if (System.currentTimeMillis() > time + interval) {
+		}
+		else if (System.currentTimeMillis() > (this.time + interval)) {
 			if (inPosition()) {
 				formArmor();
-			} else {
+			}
+			else {
 				return moveBlocks();
 			}
 		}
 		return true;
 	}
-	
-	public static void progressAll() {
+
+	public static void progressAll () {
 		List<EarthArmor> toRemove = new LinkedList<EarthArmor>();
-		for(EarthArmor armor : instances.values()) {
+		for (EarthArmor armor : instances.values()) {
 			boolean keep = armor.progress();
-			if(!keep) {
+			if (!keep) {
 				toRemove.add(armor);
 			}
 		}
-		for(EarthArmor armor : toRemove) {
+		for (EarthArmor armor : toRemove) {
 			armor.remove();
 		}
 	}
-	
-	public static boolean hasEarthArmor(Player player) {
+
+	public static boolean hasEarthArmor (Player player) {
 		return instances.containsKey(player);
 	}
-	
-	public static EarthArmor getEarthArmor(Player pl) {
+
+	public static EarthArmor getEarthArmor (Player pl) {
 		return instances.get(pl);
 	}
-	
-	public boolean isArmor(ItemStack is) {
-		for (ItemStack part : armors) {
+
+	public boolean isArmor (ItemStack is) {
+		for (ItemStack part : this.armors) {
 			if (part.getType().equals(is.getType())) {
 				return true;
 			}
@@ -275,17 +276,18 @@ public class EarthArmor implements IAbility {
 		return false;
 	}
 
-	private void removeEffect() {
-		player.getInventory().setArmorContents(oldarmor);
+	private void removeEffect () {
+		this.player.getInventory().setArmorContents(this.oldarmor);
 	}
 
-	public static void removeEffect(Player player) {
-		if (!instances.containsKey(player))
+	public static void removeEffect (Player player) {
+		if (!instances.containsKey(player)) {
 			return;
+		}
 		instances.get(player).removeEffect();
 	}
 
-	public static void removeAll() {
+	public static void removeAll () {
 		for (EarthArmor eartharmor : instances.values()) {
 			eartharmor.cancel();
 			eartharmor.removeEffect();
@@ -293,17 +295,18 @@ public class EarthArmor implements IAbility {
 		instances.clear();
 	}
 
-	public static boolean canRemoveArmor(Player player) {
+	public static boolean canRemoveArmor (Player player) {
 		if (instances.containsKey(player)) {
 			EarthArmor eartharmor = instances.get(player);
-			if (System.currentTimeMillis() < eartharmor.starttime + duration)
+			if (System.currentTimeMillis() < (eartharmor.starttime + duration)) {
 				return false;
+			}
 		}
 		return true;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public IAbility getParent () {
+		return this.parent;
 	}
 }
