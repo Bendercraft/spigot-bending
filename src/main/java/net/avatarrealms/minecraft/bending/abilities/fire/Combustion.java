@@ -234,10 +234,7 @@ public class Combustion implements IAbility {
 			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
 			cp.logRemoval(player.getName(), block.getLocation(), block.getType().getId(), block.getData());
 		}
-		double rand = Math.random();
-		if(rand < 0.5) {
-			block.getDrops().clear();
-		}
+		block.getDrops().clear();
 		block.breakNaturally();
 	}
 
