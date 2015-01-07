@@ -5,10 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatarrealms.minecraft.bending.utils.BlockTools;
-import net.coreprotect.CoreProtectAPI;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -55,19 +51,23 @@ public class TempBlock {
 		if (state.getType() == Material.FIRE) {
 			state.setType(Material.AIR);
 		}
+		/*
 		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
 			cp.logPlacement(source.getName()+":"+clazz.getSimpleName(), block.getLocation(), block.getType().getId(), block.getData());
 		}
+		*/
 	}
 
 	public void revertBlock() {
 		state.update(true);
 		instances.remove(block);
+		/*
 		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
 			cp.logRemoval(source.getName()+":"+clazz.getCanonicalName(), block.getLocation(), block.getType().getId(), block.getData());
 		}
+		*/
 	}
 	
 	public BlockState getState() {
