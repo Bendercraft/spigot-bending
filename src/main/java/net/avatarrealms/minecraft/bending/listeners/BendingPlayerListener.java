@@ -1040,7 +1040,7 @@ public class BendingPlayerListener implements Listener{
 	
 		EntityDamageEvent ede = event.getEntity().getLastDamageCause();
 		
-		if (ede.getCause() != null && ede.getCause() == DamageCause.LAVA) {
+		if (ede != null && ede.getCause() != null && ede.getCause() == DamageCause.LAVA) {
 			Player player = event.getEntity();
 			Location loc = player.getLocation();
 			LavaTrain lT = LavaTrain.getLavaTrain(loc.getBlock());
