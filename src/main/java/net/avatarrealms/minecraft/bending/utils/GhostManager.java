@@ -127,7 +127,10 @@ public class GhostManager {
 			}
 			
 			if (!toRemove.isEmpty()) {
-				GhostManager.ghostTeam.removePlayer(toRemove.pollFirst());
+				Player p = toRemove.pollFirst();
+				if(p != null && GhostManager.ghostTeam.hasPlayer(p)) {
+					GhostManager.ghostTeam.removePlayer(p);
+				}
 			}	
 		}
 		
