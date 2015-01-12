@@ -28,7 +28,7 @@ public class ProtectionManager {
 		allowedEverywhereAbilities.add(Abilities.HealingWaters);
 	}
 
-	public static boolean respectWorldGuard = false;
+	public static boolean respectWorldGuard = true;
 	public static boolean respectFactions = false;
 	public static boolean respectCitizens = true;
 
