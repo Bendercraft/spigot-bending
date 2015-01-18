@@ -96,6 +96,18 @@
 		</dependency>
 		<dependency>
 			<groupId>net.minecraft</groupId>
+			<artifactId>factions</artifactId>
+			<version>2.5.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
+			<artifactId>massivecore</artifactId>
+			<version>7.3.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minecraft</groupId>
 			<artifactId>worldedit</artifactId>
 			<version>5.6.3</version>
 			<scope>provided</scope>

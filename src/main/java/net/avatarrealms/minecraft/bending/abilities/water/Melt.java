@@ -45,19 +45,21 @@ public class Melt implements IAbility {
 		}
 		boolean evaporate = false;
 		Location location = EntityTools.getTargetedLocation(player, range);
+		/*
 		if (BlockTools.isWater(EntityTools.getTargetBlock(player, range))
 				&& !(player.getEyeLocation().getBlockY() <= 62)) {
 			evaporate = true;
 			radius = (int) PluginTools.waterbendingNightAugment(
 					defaultevaporateradius, player.getWorld());
 		}
+		*/
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-			if (evaporate) {
-				if (block.getY() > seaLevel)
-					evaporate(player, block);
-			} else {
+			//if (evaporate) {
+			//	if (block.getY() > seaLevel)
+			//		evaporate(player, block);
+			//} else {
 				melt(player, block);
-			}
+			//}
 		}
 
 		bPlayer.cooldown(Abilities.PhaseChange);

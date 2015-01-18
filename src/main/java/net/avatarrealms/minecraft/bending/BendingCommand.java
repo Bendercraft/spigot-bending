@@ -1060,6 +1060,18 @@ public class BendingCommand {
 	private void display (final Player player, final String[] args) {
 		if (args.length > 2) {
 			printDisplayUsage(player);
+			return;
+		}
+		for (final BendingType type : this.bPlayer.getBendingTypes()) {
+			final ChatColor color = PluginTools.getColor(ConfigManager.getColor(type.name()));
+			String msg = "You're a " + type.name();
+			if (type != BendingType.ChiBlocker) {
+				msg += " bender.";
+			}
+			sendMessage(player, color + msg);
+		}
+		for (final BendingSpecializationType spe : this.bPlayer.getSpecializations()) {
+			sendMessage(player, "You have specialization " + spe.name() + " for element " + spe.getElement().name());
 		}
 		if (args.length == 1) {
 			if (player == null) {
@@ -1068,17 +1080,6 @@ public class BendingCommand {
 			}
 			boolean none = true;
 			final boolean item = this.bPlayer.getBendToItem();
-			for (final BendingType type : this.bPlayer.getBendingTypes()) {
-				final ChatColor color = PluginTools.getColor(ConfigManager.getColor(type.name()));
-				String msg = "You're a " + type.name();
-				if (type != BendingType.ChiBlocker) {
-					msg += " bender.";
-				}
-				sendMessage(player, color + msg);
-			}
-			for (final BendingSpecializationType spe : this.bPlayer.getSpecializations()) {
-				sendMessage(player, "You have specialization " + spe.name() + " for element " + spe.getElement().name());
-			}
 			if (!item) {
 				for (int i = 0 ; i <= 8 ; i++) {
 					// Abilities a = config.getAbility(player, i);
@@ -1088,25 +1089,20 @@ public class BendingCommand {
 						ChatColor color = ChatColor.WHITE;
 						if (Abilities.isAirbending(a)) {
 							color = PluginTools.getColor(ConfigManager.getColor("Air"));
-						}
-						else if (Abilities.isChiBlocking(a)) {
+						} else if (Abilities.isChiBlocking(a)) {
 							color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-						}
-						else if (Abilities.isEarthbending(a)) {
+						} else if (Abilities.isEarthbending(a)) {
 							color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-						}
-						else if (Abilities.isFirebending(a)) {
+						} else if (Abilities.isFirebending(a)) {
 							color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-						}
-						else if (Abilities.isWaterbending(a)) {
+						} else if (Abilities.isWaterbending(a)) {
 							color = PluginTools.getColor(ConfigManager.getColor("Water"));
 						}
 						final String ability = a.name();
 						sendMessage(player, PluginTools.getMessage(player, "General.slot") + " " + (i + 1) + ": " + color + ability);
 					}
 				}
-			}
-			else {
+			} else {
 				for (final Material mat : Material.values()) {
 					// Abilities a = config.getAbility(player, mat);
 					final Abilities a = this.bPlayer.getAbility(mat);
@@ -1144,32 +1140,28 @@ public class BendingCommand {
 			if (Arrays.asList(this.airbendingAliases).contains(choice)) {
 				abilitylist = Abilities.getAirbendingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("Air"));
-			}
-			else if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
+			} else if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
 				abilitylist = Abilities.getWaterbendingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("Water"));
-			}
-			else if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
+			} else if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
 				abilitylist = Abilities.getEarthbendingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-			}
-			else if (Arrays.asList(this.firebendingAliases).contains(choice)) {
+			} else if (Arrays.asList(this.firebendingAliases).contains(choice)) {
 				abilitylist = Abilities.getFirebendingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-			}
-			else if (Arrays.asList(this.chiblockingAliases).contains(choice)) {
+			} else if (Arrays.asList(this.chiblockingAliases).contains(choice)) {
 				abilitylist = Abilities.getChiBlockingAbilities();
 				color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+			} else {
+				sendMessage(player, ChatColor.RED + "Element "+choice+" is unknown.");
 			}
 			if (abilitylist != null) {
-				for (final Abilities ability : abilitylist) {
+				for(Abilities ability : abilitylist) {
 					if (EntityTools.canBend(player, ability)) {
 						sendMessage(player, color + ability.name());
 					}
 				}
-				return;
-			}
-			else {
+			} else {
 				printDisplayUsage(player);
 			}
 		}

@@ -29,7 +29,7 @@ public class ProtectionManager {
 	}
 
 	public static boolean respectWorldGuard = true;
-	public static boolean respectFactions = false;
+	public static boolean respectFactions = true;
 	public static boolean respectCitizens = true;
 
 	private static WorldGuardPlugin worldguard = null;
@@ -208,11 +208,8 @@ public class ProtectionManager {
 		return false;
 	}
 
-	public static boolean isRegionProtectedFromBendingPassives (Player player, Location loc) {
-		if (!respectWorldGuard) {
-			return false;
-		}
-		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
+	public static boolean isRegionProtectedFromBendingPassives(Player player, Location loc) {
+		if (respectWorldGuard && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
 				.allows(BENDING_PASSIVES, worldguard.wrapPlayer(player))) {
 			return true;
 		}
