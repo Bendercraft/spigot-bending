@@ -289,7 +289,7 @@ public class WaterSpout implements IAbility {
 		if (BlockTools.isWaterBased(loc.getBlock())){
 			return true;
 		}
-		while (loc.getBlock().getType() == Material.AIR) {
+		while (loc.getBlock().getType() == Material.AIR && loc.getBlockY() > 0) {
 			loc = loc.add(0, -1, 0);
 			if (BlockTools.isWaterBased(loc.getBlock())) {
 				return true;
