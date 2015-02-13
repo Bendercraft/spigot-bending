@@ -105,6 +105,10 @@ public class Suffocate implements IAbility {
 			return false;
 		}
 		
+		if(target.getLocation().getWorld() != player.getLocation().getWorld()) {
+			return false;
+		}
+		
 		if (target.getLocation().distance(player.getLocation()) > 2*distance) {
 			return false;
 		}
