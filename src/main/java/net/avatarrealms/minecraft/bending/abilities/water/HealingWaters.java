@@ -148,7 +148,7 @@ public class HealingWaters implements IAbility {
 	}
 
 	private static void giveHPToEntity (LivingEntity le) {
-		if (!le.isDead()) {
+		if (le.isDead()) {
 			return;
 		}
 		final double current = le.getHealth();
