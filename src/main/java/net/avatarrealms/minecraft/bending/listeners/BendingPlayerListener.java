@@ -316,7 +316,7 @@ public class BendingPlayerListener implements Listener{
 			ChatColor color = ChatColor.WHITE;
 
 			if (ConfigManager.colors) {
-				if (player.hasPermission("bending.avatar")) {
+				if (player.hasPermission("bending.admin.avatarstate")) {
 					color = PluginTools.getColor(ConfigManager
 							.getColor("Avatar"));
 				} else if (EntityTools.isBender(player, BendingType.Air)) {
@@ -340,7 +340,6 @@ public class BendingPlayerListener implements Listener{
 			format = format.replace("<name>", color + player.getDisplayName()
 					+ ChatColor.RESET);
 			event.setFormat(format);
-
 		}
 	}
 	
