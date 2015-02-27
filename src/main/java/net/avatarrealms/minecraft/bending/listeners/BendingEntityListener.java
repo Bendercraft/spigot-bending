@@ -119,14 +119,6 @@ public class BendingEntityListener implements Listener {
 			return;
 		}
 
-		if ((source instanceof Player) && (entity instanceof Monster) && (event.getCause() == DamageCause.CUSTOM)) {
-			event.setDamage(event.getDamage() * 2.5);
-		}
-
-		if ((entity instanceof Player) && (source instanceof Monster)) {
-			event.setDamage((event.getDamage() * 2) / 3);
-		}
-
 		boolean dodged = false;
 
 		if ((source instanceof Player) && (entity instanceof Player)) {

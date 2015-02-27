@@ -10,6 +10,7 @@ import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -22,22 +23,27 @@ public class Paralyze implements IAbility {
 	private static final long duration = ConfigManager.paralyzeDuration;
 	private IAbility parent;
 
-	public Paralyze(Player sourceplayer, Entity targetentity, IAbility parent) {
+	public Paralyze(Player sourcePlayer, Entity targetEntity, IAbility parent) {
 		this.parent = parent;
-		if (targetentity != null && sourceplayer != null) {
-			if (EntityTools.isBender(sourceplayer, BendingType.ChiBlocker)
-				&& EntityTools.getBendingAbility(sourceplayer) == Abilities.Paralyze
-				&& EntityTools.canBend(sourceplayer, Abilities.Paralyze)) {
-			if (cooldowns.containsKey(targetentity)) {
-				if (System.currentTimeMillis() < cooldowns.get(targetentity)
+		if (targetEntity != null && sourcePlayer != null) {
+			if (EntityTools.isBender(sourcePlayer, BendingType.ChiBlocker)
+				&& EntityTools.getBendingAbility(sourcePlayer) == Abilities.Paralyze
+				&& EntityTools.canBend(sourcePlayer, Abilities.Paralyze)) {
+			if (cooldowns.containsKey(targetEntity)) {
+				if (System.currentTimeMillis() < cooldowns.get(targetEntity)
 						+ cooldown) {
 					return;
 				} else {
-					cooldowns.remove(targetentity);
+					cooldowns.remove(targetEntity);
 				}
 			}
-			paralyze(targetentity);
-			cooldowns.put(targetentity, System.currentTimeMillis());
+			Location sourcLoc = sourcePlayer.getLocation();
+			Location targLoc = targetEntity.getLocation();
+			if (sourcLoc.getWorld() != targLoc.getWorld() || sourcLoc.distance(targLoc) > 2.5) {
+				return;
+			}
+			paralyze(targetEntity);
+			cooldowns.put(targetEntity, System.currentTimeMillis());
 			}
 		}	
 	}
