@@ -1,8 +1,8 @@
+Database: 'flatfile'
 Chat:
   Enabled: true
   Colors: true
   Compatibility: true
-  Database: 'flatfile'
   Format: '<name>: <message>'
   Prefix:
     Air: '[Airbender] '

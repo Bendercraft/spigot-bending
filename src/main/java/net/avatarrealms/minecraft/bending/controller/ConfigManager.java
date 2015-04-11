@@ -408,7 +408,7 @@ public class ConfigManager {
 		avatarstateDuration = config.getInt("Properties.Spirit.AvatarState.Duration");
 		avatarstateCooldown = config.getInt("Properties.Spirit.AvatarState.Cooldown");
 
-		database = config.getString("Database");
+		database = config.getString("Database", "flatfile");
 
 		// Respect plugins
 		ProtectionManager.respectWorldGuard = config.getBoolean("respectWorldGuard");
