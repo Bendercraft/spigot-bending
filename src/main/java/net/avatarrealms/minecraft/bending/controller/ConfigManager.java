@@ -68,8 +68,8 @@ public class ConfigManager {
 	}
 	// Avatar
 	// Avatar State
-	public static int avatarstateDuration;
-	public static int avatarstateCooldown;
+	public static long avatarstateDuration;
+	public static long avatarstateCooldown;
 
 	// Air
 	// AirBlast
@@ -405,8 +405,8 @@ public class ConfigManager {
 		}
 
 		astralProjectionCooldown = config.getInt("Properties.Spirit.AstralProjection.Cooldown");
-		avatarstateDuration = config.getInt("Properties.Spirit.AvatarState.Duration");
-		avatarstateCooldown = config.getInt("Properties.Spirit.AvatarState.Cooldown");
+		avatarstateDuration = config.getLong("Properties.Spirit.AvatarState.Duration");
+		avatarstateCooldown = config.getLong("Properties.Spirit.AvatarState.Cooldown");
 
 		database = config.getString("Database", "flatfile");
 

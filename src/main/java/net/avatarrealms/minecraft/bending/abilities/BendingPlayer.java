@@ -124,6 +124,7 @@ public class BendingPlayer {
 						break;
 					case AvatarState:
 						cd = ConfigManager.avatarstateCooldown;
+						System.out.println(cd);
 						break;
 					default:
 						cd = 0;
@@ -139,9 +140,6 @@ public class BendingPlayer {
 	}
 
 	public boolean isOnCooldown (Abilities ability) {
-		if (ability == Abilities.AvatarState) {
-			return false;
-		}
 
 		if (isOnGlobalCooldown()) {
 			return true;

@@ -24,7 +24,7 @@ public class AvatarState {
 
 	private static final double factor = 4.5;
 
-	private static final int duration = ConfigManager.avatarstateDuration;
+	private static final long duration = ConfigManager.avatarstateDuration;
 
 	private Player player;
 	private BendingPlayer bPlayer;
@@ -35,7 +35,6 @@ public class AvatarState {
 			instances.remove(player);
 		}
 		else {
-
 			this.bPlayer = BendingPlayer.getBendingPlayer(player);
 			if (this.bPlayer.isOnCooldown(Abilities.AvatarState)) {
 				return;
