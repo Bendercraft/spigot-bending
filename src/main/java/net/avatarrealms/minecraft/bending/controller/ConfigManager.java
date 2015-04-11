@@ -13,12 +13,15 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+
 public class ConfigManager {
+
 	public static boolean enabled = true;
 	public static boolean bendToItem = false;
 	public static boolean colors = true;
 	public static boolean compatibility = false;
-	public static String database = "flatfile"; // "flatfile", "mongodb"
+	public static String database = "flatfile"; // "flatfile",
+												// "mongodb"
 
 	public static String chat = "<name>: <message>";
 
@@ -41,7 +44,7 @@ public class ConfigManager {
 	public static long revertchecktime;
 
 	public static boolean useTagAPI;
-	
+
 	public static int astralProjectionCooldown;
 
 	private static List<String> defaultearthbendable = new LinkedList<String>();
@@ -63,15 +66,19 @@ public class ConfigManager {
 		defaultearthbendable.add("GLOWING_REDSTONE_ORE");
 		defaultearthbendable.add("MYCEL");
 	}
-	
+	// Avatar
+	// Avatar State
+	public static int avatarstateDuration;
+	public static int avatarstateCooldown;
+
 	// Air
 	// AirBlast
 	public static double airBlastSpeed;
 	public static double airBlastRange;
 	public static double airBlastRadius;
 	public static double airBlastPush;
-	
-	//AirBurst
+
+	// AirBurst
 
 	// AirBubble
 	public static int airBubbleRadius;
@@ -109,15 +116,15 @@ public class ConfigManager {
 	public static double tornadoRange;
 	public static double tornadoMobPush;
 	public static double tornadoPlayerPush;
-	
+
 	// Air Manipulation
 	public static int airManipulationDamage;
 	public static int airManipulationRange;
-	
+
 	// Suffocate
 	public static int suffocateDistance;
 	public static int suffocateBaseDamage;
-	
+
 	// ChiBlocker
 	// HighJump
 	public static double jumpHeight;
@@ -132,36 +139,36 @@ public class ConfigManager {
 	public static int rapidPunchDistance;
 	public static long rapidPunchCooldown;
 	public static int rapidPunchPunches;
-	
-	//Smoke Bomb
+
+	// Smoke Bomb
 	public static int smokeRadius;
 	public static int smokeDuration;    // time in secs
 	public static int smokeBombCooldown; // time in ms
-	
-	//Poisonned dart
+
+	// Poisonned dart
 	public static int dartRange;
 	public static int dartDamage;
 	public static int poisonLevel;
 	public static int poisonnedDartCooldown;
-	
-	//Dash
+
+	// Dash
 	public static int dashCooldown;
-	public static double dashLength; // Not really accurate as it's used with the setVelocity()
+	public static double dashLength; // Not really accurate as it's
+										// used with the setVelocity()
 	public static double dashHeight;
-	
-	//PlasticBomb
+
+	// PlasticBomb
 	public static int plasticCooldown;
 	public static double plasticRadius;
 	public static int plasticDamage;
-	
 
 	// Earth
 	// Catapult
 	public static int catapultLength;
 	public static double catapultSpeed;
 	public static double catapultPush;
-	
-	//ShockWave
+
+	// ShockWave
 
 	// Collapse
 	public static int collapseRange;
@@ -215,11 +222,11 @@ public class ConfigManager {
 	public static int tremorsenseMaxDepth;
 	public static int tremorsenseRadius;
 	public static byte tremorsenseLightThreshold;
-	
-	//MetalBending
-	
-	//EarthMelt
-	
+
+	// MetalBending
+
+	// EarthMelt
+
 	public static long lavaTrainDuration;
 	public static int lavaTrainRange;
 	public static int lavaTrainWidth;
@@ -227,12 +234,11 @@ public class ConfigManager {
 	public static double lavaTrainRandomChance;
 	public static int lavaTrainReachWidth;
 
-	//LavaBlast
+	// LavaBlast
 	public static int lavaBlastDamage;
 	public static int lavaBlastRange;
 	public static int lavaBlastChargeTime; // time in millisecs.
-	
-	
+
 	// Fire
 	// ArcOfFire
 	public static int arcOfFireArc;
@@ -254,10 +260,10 @@ public class ConfigManager {
 	public static int fireBlastDamage;
 	public static long fireBlastCooldown;
 	public static boolean fireBlastDissipate;
-	
-	//FireBurst
-	
-	//FireShield
+
+	// FireBurst
+
+	// FireShield
 
 	// FireJet
 	public static double fireJetSpeed;
@@ -292,20 +298,20 @@ public class ConfigManager {
 	public static int wallOfFireDamage;
 	public static long wallOfFireInterval;
 	public static long wallOfFireCooldown;
-	
-	//FireBlade
+
+	// FireBlade
 	public static int fireBladeSharpnessLevel;
 	public static int fireBladeStrengthLevel;
 	public static int fireBladeCooldown;
 	public static int fireBladeDuration;
-	
-	//Combustion
+
+	// Combustion
 	public static double combustionRadius;
 	public static double combustionExplosionRadius;
 	public static double combustionInnerRadius;
 	public static int combustionDamage;
 	public static int combustionRange;
-	public static int combustionChargeTime; //time in millisecs
+	public static int combustionChargeTime; // time in millisecs
 	public static int combustionCooldown;
 
 	// Day
@@ -344,7 +350,7 @@ public class ConfigManager {
 	public static int icespikeAreaDamage;
 	public static int icespikeAreaRadius;
 	public static double icespikeAreaThrowingMult;
-	
+
 	// WaterBubble
 	public static double waterBubbleRadius;
 
@@ -366,15 +372,15 @@ public class ConfigManager {
 	public static double waveRadius;
 	public static double waveHorizontalPush;
 	public static double waveVerticalPush;
-	
-	//Torrent
+
+	// Torrent
 	public static int torrentDamage;
 	public static int torrentDeflectDamage;
-	
-	//OctopusForm
+
+	// OctopusForm
 	public static int octopusFormDamage;
-	
-	//IceSwipe
+
+	// IceSwipe
 	public static int iceSwipeDamage;
 	public static int iceSwipeRange;
 	public static double iceSwipeSpeed;
@@ -384,26 +390,31 @@ public class ConfigManager {
 	// Night
 	public static double nightFactor;
 
-	public void load(File file) {
+	public void load (File file) {
 		FileConfiguration config = new YamlConfiguration();
 		try {
-			if (file.exists())
+			if (file.exists()) {
 				config.load(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
+			}
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
 		astralProjectionCooldown = config.getInt("Properties.Spirit.AstralProjection.Cooldown");
+		avatarstateDuration = config.getInt("Properties.Spirit.AvatarState.Duration");
+		avatarstateCooldown = config.getInt("Properties.Spirit.AvatarState.Cooldown");
 
 		database = config.getString("Database");
-		
-		//Respect plugins
+
+		// Respect plugins
 		ProtectionManager.respectWorldGuard = config.getBoolean("respectWorldGuard");
 		ProtectionManager.respectFactions = config.getBoolean("respectFactions");
 		ProtectionManager.respectCitizens = config.getBoolean("respectCitizens");
-		
+
 		// Chat:
 		enabled = config.getBoolean("Chat.Enabled");
 		colors = config.getBoolean("Chat.Colors");
@@ -430,22 +441,16 @@ public class ConfigManager {
 
 		// Option
 		earthbendable = defaultearthbendable;
-		if (config.contains("Bending.Option.EarthBendable")){
+		if (config.contains("Bending.Option.EarthBendable")) {
 			earthbendable = config.getStringList("Bending.Option.EarthBendable");
-		}		
+		}
 
 		// EarthBendable
-		useWeapon
-				.put("Air", config.getBoolean(
-						"Bending.Option.Bend-With-Weapon.Air"));
-		useWeapon.put("Earth", config.getBoolean(
-				"Bending.Option.Bend-With-Weapon.Earth"));
-		useWeapon.put("Fire", config.getBoolean(
-				"Bending.Option.Bend-With-Weapon.Fire"));
-		useWeapon.put("Water", config.getBoolean(
-				"Bending.Option.Bend-With-Weapon.Water"));
-		useWeapon.put("ChiBlocker", config.getBoolean(
-				"Bending.Option.Bend-With-Weapon.ChiBlocker"));
+		useWeapon.put("Air", config.getBoolean("Bending.Option.Bend-With-Weapon.Air"));
+		useWeapon.put("Earth", config.getBoolean("Bending.Option.Bend-With-Weapon.Earth"));
+		useWeapon.put("Fire", config.getBoolean("Bending.Option.Bend-With-Weapon.Fire"));
+		useWeapon.put("Water", config.getBoolean("Bending.Option.Bend-With-Weapon.Water"));
+		useWeapon.put("ChiBlocker", config.getBoolean("Bending.Option.Bend-With-Weapon.ChiBlocker"));
 
 		bendToItem = config.getBoolean("Bending.Option.Bend-To-Item");
 		useTagAPI = config.getBoolean("Bending.Option.Use-TagAPI");
@@ -477,24 +482,24 @@ public class ConfigManager {
 		rapidPunchDistance = config.getInt("Properties.ChiBlocker.RapidPunch.Distance");
 		rapidPunchCooldown = config.getLong("Properties.ChiBlocker.RapidPunch.Cooldown");
 		rapidPunchPunches = config.getInt("Properties.ChiBlocker.RapidPunch.Punches");
-		
-		//Poisonned Dart
+
+		// Poisonned Dart
 		dartRange = config.getInt("Properties.ChiBlocker.PoisonnedDart.Range");
 		dartDamage = config.getInt("Properties.ChiBlocker.PoisonnedDart.Damage");
 		poisonLevel = config.getInt("Properties.ChiBlocker.PoisonnedDart.poison-level");
 		poisonnedDartCooldown = config.getInt("Properties.ChiBlocker.PoisonnedDart.Cooldown");
-		
-		//Smoke bomb
+
+		// Smoke bomb
 		smokeRadius = config.getInt("Properties.ChiBlocker.SmokeBomb.Radius");
 		smokeDuration = config.getInt("Properties.ChiBlocker.SmokeBomb.Duration");
 		smokeBombCooldown = config.getInt("Properties.ChiBlocker.SmokeBomb.Cooldown");
-		
-		//Dash
+
+		// Dash
 		dashCooldown = config.getInt("Properties.ChiBlocker.Dash.Cooldown");
 		dashLength = config.getDouble("Properties.ChiBlocker.Dash.Length");
 		dashHeight = config.getDouble("Properties.ChiBlocker.Dash.Height");
-		
-		//Plastic bomb
+
+		// Plastic bomb
 		plasticCooldown = config.getInt("Properties.ChiBlocker.PlasticBomb.Cooldown");
 		plasticRadius = config.getDouble("Properties.ChiBlocker.PlasticBomb.Radius");
 		plasticDamage = config.getInt("Properties.ChiBlocker.PlasticBomb.Damage");
@@ -505,15 +510,15 @@ public class ConfigManager {
 		airBlastRange = config.getDouble("Properties.Air.AirBlast.Range");
 		airBlastRadius = config.getDouble("Properties.Air.AirBlast.Affecting-Radius");
 		airBlastPush = config.getDouble("Properties.Air.AirBlast.Push-Factor");
-		
-		//AirBurst
+
+		// AirBurst
 
 		// AirBubble
 		airBubbleRadius = config.getInt("Properties.Air.AirBubble.Radius");
 		waterBubbleRadius = airBubbleRadius;
 
 		// AirPassive
-		airPassiveFactor = (float) config.getDouble("Properties.Air.Passive.Factor");
+		airPassiveFactor = (float)config.getDouble("Properties.Air.Passive.Factor");
 
 		// AirShield
 		airShieldRadius = config.getDouble("Properties.Air.AirShield.Radius");
@@ -545,12 +550,12 @@ public class ConfigManager {
 
 		// Air Spout
 		airSpoutHeight = config.getDouble("Properties.Air.AirSpout.Height");
-		
-		//Air Manipulation
+
+		// Air Manipulation
 		airManipulationDamage = config.getInt("Properties.Air.AirManipulation.Damage");
 		airManipulationRange = config.getInt("Properties.Air.AirManipulation.Range");
-		
-		//Suffocate
+
+		// Suffocate
 		suffocateBaseDamage = config.getInt("Properties.Air.Suffocate.Damage");
 		suffocateDistance = config.getInt("Properties.Air.Suffocate.Distance");
 		// Earth
@@ -558,8 +563,8 @@ public class ConfigManager {
 		catapultLength = config.getInt("Properties.Earth.Catapult.Length");
 		catapultSpeed = config.getDouble("Properties.Earth.Catapult.Speed");
 		catapultPush = config.getDouble("Properties.Earth.Catapult.Push");
-		
-		//ShockWave
+
+		// ShockWave
 
 		// CompactColumn
 		compactColumnRange = config.getDouble("Properties.Earth.CompactColumn.Range");
@@ -573,9 +578,9 @@ public class ConfigManager {
 		earthBlastSpeed = config.getDouble("Properties.Earth.EarthBlast.Speed");
 		earthBlastRevert = config.getBoolean("Properties.Earth.EarthBlast.Revert");
 		earthBlastPush = config.getDouble("Properties.Earth.EarthBlast.Push");
-		
-		//IronBlast
-		ironBlastDamage = config.getInt("Properties.Earth.IronBlast.Damage");				
+
+		// IronBlast
+		ironBlastDamage = config.getInt("Properties.Earth.IronBlast.Damage");
 
 		// EarthColumn
 		earthColumnHeight = config.getInt("Properties.Earth.EarthColumn.Height");
@@ -609,31 +614,30 @@ public class ConfigManager {
 		tremorsenseCooldown = config.getLong("Properties.Earth.Tremorsense.Cooldown");
 		tremorsenseMaxDepth = config.getInt("Properties.Earth.Tremorsense.Max-Depth");
 		tremorsenseRadius = config.getInt("Properties.Earth.Tremorsense.Radius");
-		tremorsenseLightThreshold = (byte) config.getInt("Properties.Earth.Tremorsense.Light-Threshold");
+		tremorsenseLightThreshold = (byte)config.getInt("Properties.Earth.Tremorsense.Light-Threshold");
 
 		// EarthArmor
-		earthArmorDuration = config.getLong(
-				"Properties.Earth.EarthArmor.Duration");
+		earthArmorDuration = config.getLong("Properties.Earth.EarthArmor.Duration");
 		earthArmorStrength = config.getInt("Properties.Earth.EarthArmor.Strength");
 		earthArmorCooldown = config.getLong("Properties.Earth.EarthArmor.Cooldown");
-		
-		//Iron Armor
-		
-		//MetalBending
-		
-		//LavaTrain
+
+		// Iron Armor
+
+		// MetalBending
+
+		// LavaTrain
 		lavaTrainDuration = config.getLong("Properties.Earth.LavaTrain.Duration");
 		lavaTrainRange = config.getInt("Properties.Earth.LavaTrain.Range");
 		lavaTrainWidth = config.getInt("Properties.Earth.LavaTrain.Train-Width");
 		lavaTrainRandomWidth = config.getInt("Properties.Earth.LavaTrain.Random-Width");
 		lavaTrainRandomChance = config.getDouble("Properties.Earth.LavaTrain.Random-Chance");
 		lavaTrainReachWidth = config.getInt("Properties.Earth.LavaTrain.Reach-Width");
-		
-		//LavaBlast
+
+		// LavaBlast
 		lavaBlastRange = config.getInt("Properties.Earth.LavaBlast.Range");
 		lavaBlastChargeTime = config.getInt("Properties.Earth.LavaBlast.ChargeTime");
 		lavaBlastDamage = config.getInt("Properties.Earth.LavaBlast.Damage");
-		
+
 		// Fire
 		// FireBlast
 		fireBlastRange = config.getDouble("Properties.Fire.FireBlast.Range");
@@ -643,11 +647,11 @@ public class ConfigManager {
 		fireBlastCooldown = config.getLong("Properties.Fire.FireBlast.Cooldown");
 		fireBlastDamage = config.getInt("Properties.Fire.FireBlast.Damage");
 		fireBlastDissipate = config.getBoolean("Properties.Fire.FireBlast.Dissipates");
-		
-		//FireBurst
-		
-		//FireShield
-		
+
+		// FireBurst
+
+		// FireShield
+
 		// ArcOfFire
 		arcOfFireArc = config.getInt("Properties.Fire.ArcOfFire.Arc");
 		arcOfFireRange = config.getInt("Properties.Fire.ArcOfFire.Range");
@@ -692,14 +696,14 @@ public class ConfigManager {
 		lightningDamage = config.getInt("Properties.Fire.Lightning.Damage");
 		lightningRange = config.getInt("Properties.Fire.Lightning.Range");
 		lightningMissChance = config.getDouble("Properties.Fire.Lightning.Miss-Chance");
-		
-		//FireBlade
+
+		// FireBlade
 		fireBladeSharpnessLevel = config.getInt("Properties.Fire.FireBlade.sharpness-level");
 		fireBladeDuration = config.getInt("Properties.Fire.FireBlade.Duration");
 		fireBladeStrengthLevel = config.getInt("Properties.Fire.FireBlade.strength-level");
 		fireBladeCooldown = config.getInt("Properties.Fire.FireBlade.Cooldown");
-		
-		//Combustion
+
+		// Combustion
 		combustionDamage = config.getInt("Properties.Fire.Combustion.Damage");
 		combustionRange = config.getInt("Properties.Fire.Combustion.Range");
 		combustionRadius = config.getDouble("Properties.Fire.Combustion.Radius");
@@ -717,8 +721,8 @@ public class ConfigManager {
 		bloodbendingRange = config.getInt("Properties.Water.Bloodbending.Range");
 		bloodbendingMaxDuration = config.getInt("Properties.Water.Bloodbending.Max-Duration");
 		bloodbendingCooldown = config.getInt("Properties.Water.Bloodbending.Cooldown");
-		
-		//WaterBubble
+
+		// WaterBubble
 
 		// FreezeMelt
 		freezeMeltRange = config.getInt("Properties.Water.FreezeMelt.Range");
@@ -763,15 +767,15 @@ public class ConfigManager {
 		icespikeAreaDamage = config.getInt("Properties.Water.IceSpike.AreaDamage");
 		icespikeAreaRadius = config.getInt("Properties.Water.IceSpike.AreaRadius");
 		icespikeAreaThrowingMult = config.getDouble("Properties.Water.IceSpike.AreaThrowingMult");
-		
-		//Torrent
+
+		// Torrent
 		torrentDamage = config.getInt("Properties.Water.Torrent.Damage");
 		torrentDeflectDamage = config.getInt("Properties.Water.Torrent.DeflectDamage");
 
-		//OctopusForm
+		// OctopusForm
 		octopusFormDamage = config.getInt("Properties.Water.OctopusForm.Damage");
-		
-		//IceSwipe
+
+		// IceSwipe
 		iceSwipeDamage = config.getInt("Properties.Water.IceSwipe.Damage");
 		iceSwipeRange = config.getInt("Properties.Water.IceSwipe.Range");
 		iceSwipeSpeed = config.getDouble("Properties.Water.IceSwipe.Speed");
@@ -781,11 +785,11 @@ public class ConfigManager {
 		nightFactor = config.getDouble("Properties.Water.Night-Power-Factor");
 	}
 
-	public static String getColor(String element) {
+	public static String getColor (String element) {
 		return color.get(element);
 	}
 
-	public static String getPrefix(String element) {
+	public static String getPrefix (String element) {
 		return prefixes.get(element);
 	}
 

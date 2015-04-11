@@ -10,34 +10,35 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+
 public class HighJump implements IAbility {
 
 	private double jumpheight = ConfigManager.jumpHeight;
 	private IAbility parent;
 
-	public HighJump(Player p, IAbility parent) {
+	public HighJump (Player p, IAbility parent) {
 		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 
-		if (bPlayer.isOnCooldown(Abilities.HighJump))
+		if (bPlayer.isOnCooldown(Abilities.HighJump)) {
 			return;
+		}
 		jump(p);
 		bPlayer.cooldown(Abilities.HighJump);
 	}
 
-	private void jump(Player p) {
-		if (!BlockTools.isSolid(p.getLocation().getBlock()
-				.getRelative(BlockFace.DOWN)))
+	private void jump (Player p) {
+		if (!BlockTools.isSolid(p.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
 			return;
+		}
 		Vector vec = p.getVelocity();
-		vec.setY(jumpheight);
+		vec.setY(this.jumpheight);
 		p.setVelocity(vec);
-		// cooldowns.put(p.getName(), System.currentTimeMillis());	
 		return;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public IAbility getParent () {
+		return this.parent;
 	}
 }

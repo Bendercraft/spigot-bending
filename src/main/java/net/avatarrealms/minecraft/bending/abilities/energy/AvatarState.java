@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
+import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
+import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.Flight;
 import net.avatarrealms.minecraft.bending.utils.EntityTools;
 import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
@@ -22,22 +24,37 @@ public class AvatarState {
 
 	private static final double factor = 4.5;
 
+	private static final int duration = ConfigManager.avatarstateDuration;
+
 	private Player player;
+	private BendingPlayer bPlayer;
+	private long startedTime;
 
 	public AvatarState (Player player) {
-		this.player = player;
 		if (instances.containsKey(player)) {
 			instances.remove(player);
 		}
 		else {
+
+			this.bPlayer = BendingPlayer.getBendingPlayer(player);
+			if (this.bPlayer.isOnCooldown(Abilities.AvatarState)) {
+				return;
+			}
 			new Flight(player);
 			instances.put(player, this);
+			this.player = player;
+			this.startedTime = System.currentTimeMillis();
 		}
 	}
 
 	public static void progressAll () {
 		for (Player player : instances.keySet()) {
-			instances.get(player).progress();
+			AvatarState as = instances.get(player);
+			boolean keep = as.progress();
+			if (!keep) {
+				as.bPlayer.cooldown(Abilities.AvatarState);
+				toRemove.add(player);
+			}
 		}
 		for (Player pl : toRemove) {
 			instances.remove(pl);
@@ -46,13 +63,14 @@ public class AvatarState {
 	}
 
 	public boolean progress () {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AvatarState, this.player
-				.getLocation())) {
-			toRemove.add(this.player);
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AvatarState, this.player.getLocation())) {
 			return false;
 		}
 		if (!EntityTools.canBend(this.player, Abilities.AvatarState)) {
-			toRemove.add(this.player);
+			return false;
+		}
+		long now = System.currentTimeMillis();
+		if ((now - this.startedTime) > duration) {
 			return false;
 		}
 		addPotionEffects();

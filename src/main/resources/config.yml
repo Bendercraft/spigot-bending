@@ -46,6 +46,9 @@ Properties:
   Spirit:
     AstralProjection:
       Cooldown: 2000
+    AvatarState:
+      Duration: 300000
+      Cooldown: 1200000
   ChiBlocker:
     ChiBlock-Duration: 3000
     Dodge-Chance: 10.0
