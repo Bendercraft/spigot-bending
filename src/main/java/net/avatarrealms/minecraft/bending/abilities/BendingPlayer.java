@@ -113,9 +113,6 @@ public class BendingPlayer {
 					case FireBlade:
 						cd = ConfigManager.fireBladeCooldown;
 						break;
-					case AstralProjection:
-						cd = ConfigManager.astralProjectionCooldown;
-						break;
 					case Bloodbending:
 						cd = ConfigManager.bloodbendingCooldown;
 						break;

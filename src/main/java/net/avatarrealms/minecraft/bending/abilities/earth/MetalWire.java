@@ -1,6 +1,7 @@
 package net.avatarrealms.minecraft.bending.abilities.earth;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class MetalWire {
 	public static void launchHook(Player player, Fish hook) {
 		//Would prefer it more accurate
 		instances.put(player, hook);
-		Block b = player.getTargetBlock(null, 30);
+		Block b = player.getTargetBlock(new HashSet<Material>(), 30);
 		if (b != null) {
 			hook.setVelocity(Tools.getVectorForPoints(hook.getLocation(),
 					b.getLocation()));

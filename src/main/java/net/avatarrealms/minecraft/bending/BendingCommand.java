@@ -48,8 +48,6 @@ public class BendingCommand {
 	private final String[] chiblockingAliases = {"chi", "c", "chiblock", "chiblocker", "chiblocking"};
 	private final String[] saveAliases = {"save"};
 	private final String[] getbackAliases = {"getback"};
-	private final String[] joinAliases = {"joinghost", "jghost"};
-	private final String[] leaveAliases = {"leaveghost", "lghost"};
 	private final String[] itemAliases = {"item", "ite", "it", "i"};
 	private final String[] slotAliases = {"slot", "slo", "sl", "s"};
 	private final String[] metricsAlias = {"metrics"};
@@ -242,12 +240,6 @@ public class BendingCommand {
 			}
 			else if (Arrays.asList(this.getbackAliases).contains(arg)) {
 				getback(player);
-			}
-			else if (Arrays.asList(this.joinAliases).contains(arg)) {
-				Bending.plugin.ghostManager.addGhost(player);
-			}
-			else if (Arrays.asList(this.leaveAliases).contains(arg)) {
-				Bending.plugin.ghostManager.removeGhost(player);
 			}
 			else {
 				printHelpDialogue(player);
@@ -1804,21 +1796,6 @@ public class BendingCommand {
 		}
 		if (ability == Abilities.AvatarState) {
 			if (!hasPermission(player, "bending.admin.avatarstate")) {
-				return;
-			}
-			color = ChatColor.DARK_PURPLE;
-			if (!item) {
-				BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
-				sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
-			}
-			else {
-				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
-				sendMessage(player, color + ability.name() + white + " bound to " + mat.name().replaceAll("_", " "));
-			}
-			return;
-		}
-		if (ability == Abilities.AstralProjection) {
-			if (!hasPermission(player, "bending.admin.AstralProjection")) {
 				return;
 			}
 			color = ChatColor.DARK_PURPLE;

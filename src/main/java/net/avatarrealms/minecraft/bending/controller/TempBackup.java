@@ -1,27 +1,28 @@
 package net.avatarrealms.minecraft.bending.controller;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.Gson;
 
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 
 public class TempBackup {
 	public static final String FILE_NAME = "tempBackup.json";
+	
+	private static Gson mapper = new Gson();
 
 	private Map<UUID, BendingPlayerData> backupPlayers;
 
@@ -48,6 +49,7 @@ public class TempBackup {
 		return;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void reload() {
 		backupPlayers = new HashMap<UUID, BendingPlayerData>();
 
@@ -61,16 +63,13 @@ public class TempBackup {
 				content.write("{}");
 				content.close();
 			}
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(backupFile);
-			Iterator<Entry<String, JsonNode>> it = root.fields();
-			while (it.hasNext()) {
-				Entry<String, JsonNode> entry = it.next();
-				BendingPlayerData data = mapper.readValue(entry.getValue()
-						.traverse(), BendingPlayerData.class);
-				UUID uuid = UUID.fromString(entry.getKey());
-				backupPlayers.put(uuid, data);
+			FileReader reader = new FileReader(backupFile);
+			List<String> lines = IOUtils.readLines(reader);
+			
+			if(lines.isEmpty()) {
+				return;
 			}
+			backupPlayers = mapper.fromJson(lines.get(0), backupPlayers.getClass());
 		} catch (Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
 					"Could not load config from " + backupFile, e);
@@ -91,9 +90,10 @@ public class TempBackup {
 			if (!backupFile.exists()) {
 				backupFile.createNewFile();
 			}
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.enable(SerializationFeature.INDENT_OUTPUT);
-			mapper.writeValue(backupFile, backupPlayers);
+			String json = mapper.toJson(backupPlayers);
+			FileWriter writer = new FileWriter(backupFile);
+			writer.write(json);
+			writer.close();
 		} catch (Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
 					"Could not save config to " + backupFile, e);

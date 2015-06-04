@@ -1,11 +1,11 @@
 package net.avatarrealms.minecraft.bending.db.impl;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,17 +15,17 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayerData;
 import net.avatarrealms.minecraft.bending.db.IBendingDB;
 
+import org.apache.commons.io.IOUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 public class FlatFileDB implements IBendingDB {
 	private Map<UUID, BendingPlayer> players = new HashMap<UUID, BendingPlayer>();
 	
 	private static String FILE_NAME = "benders.json";
 	
-	private ObjectMapper mapper = new ObjectMapper();
+	private Gson mapper = new Gson();
 	private File bendingPlayersFile = null;
 	private Map<UUID, BendingPlayerData> datas;
 	
@@ -70,7 +70,10 @@ public class FlatFileDB implements IBendingDB {
 	@Override
 	public void save() {
 		try {
-			mapper.writeValue(bendingPlayersFile, datas);
+			String json = mapper.toJson(datas);
+			FileWriter writer = new FileWriter(bendingPlayersFile);
+			writer.write(json);
+			writer.close();
 		} catch (Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
 					"Could not save db to " + bendingPlayersFile, e);
@@ -83,6 +86,7 @@ public class FlatFileDB implements IBendingDB {
 		this.save();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void reload() {
 		datas = new HashMap<UUID, BendingPlayerData>();
 		
@@ -97,14 +101,13 @@ public class FlatFileDB implements IBendingDB {
 				content.close();
 			}
 			
-			JsonNode root = mapper.readTree(bendingPlayersFile);
-			Iterator<Entry<String, JsonNode>> it = root.fields();
-			while(it.hasNext()) {
-				Entry<String, JsonNode> entry = it.next();
-				BendingPlayerData data = mapper.readValue(entry.getValue().traverse(), BendingPlayerData.class);
-				UUID uuid = UUID.fromString(entry.getKey());
-				datas.put(uuid, data);
+			FileReader reader = new FileReader(bendingPlayersFile);
+			List<String> lines = IOUtils.readLines(reader);
+			
+			if(lines.isEmpty()) {
+				return;
 			}
+			datas = mapper.fromJson(lines.get(0), datas.getClass());
 		} catch(Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
 					"Could not load config from " + bendingPlayersFile, e);

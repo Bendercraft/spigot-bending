@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
-import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.controller.BendingManager;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
 import net.avatarrealms.minecraft.bending.controller.RevertChecker;
@@ -16,7 +15,6 @@ import net.avatarrealms.minecraft.bending.db.IBendingDB;
 import net.avatarrealms.minecraft.bending.listeners.BendingBlockListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingEntityListener;
 import net.avatarrealms.minecraft.bending.listeners.BendingPlayerListener;
-import net.avatarrealms.minecraft.bending.utils.GhostManager;
 import net.avatarrealms.minecraft.bending.utils.PluginTools;
 import net.avatarrealms.minecraft.bending.utils.ProtectionManager;
 import net.avatarrealms.minecraft.bending.utils.Tools;
@@ -44,7 +42,6 @@ public class Bending extends JavaPlugin {
 	public static IBendingDB database;
 	public TempBackup tBackup;
 	public Tools tools;
-	public GhostManager ghostManager;
 
 	@Override
 	public void onEnable () {
@@ -63,7 +60,6 @@ public class Bending extends JavaPlugin {
 		this.tBackup = new TempBackup(getDataFolder());
 		BendingPlayer.initializeCooldowns();
 		this.tools = new Tools();
-		this.ghostManager = new GhostManager(this);
 		getServer().getPluginManager().registerEvents(this.listener, this);
 		getServer().getPluginManager().registerEvents(this.bpListener, this);
 		getServer().getPluginManager().registerEvents(this.blListener, this);
@@ -77,8 +73,6 @@ public class Bending extends JavaPlugin {
 	@Override
 	public void onDisable () {
 		PluginTools.stopAllBending();
-		this.ghostManager.close();
-		AstralProjection.saveLocations();
 		getServer().getScheduler().cancelTasks(plugin);
 	}
 

@@ -589,14 +589,6 @@ public enum Abilities {
 					+ "abilities and last until you deactivate them or the Avatar State. Click again with the Avatar "
 					+ "State selected to deactivate it.";
 		}
-	},
-	AstralProjection(BendingType.Energy, true) {
-
-		@Override
-		public String getDescription () {
-			return "";
-		}
-
 	};
 
 	/*

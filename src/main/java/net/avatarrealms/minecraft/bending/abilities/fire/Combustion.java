@@ -232,7 +232,7 @@ public class Combustion implements IAbility {
 	private void removeBlock(Block block) {
 		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
-			cp.logRemoval(player.getName(), block.getLocation(), block.getType().getId(), block.getData());
+			cp.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getData());
 		}
 		block.getDrops().clear();
 		block.breakNaturally();

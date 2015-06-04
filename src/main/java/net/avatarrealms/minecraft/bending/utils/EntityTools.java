@@ -13,7 +13,6 @@ import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingSpecializationType;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
-import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.water.Bloodbending;
 import net.avatarrealms.minecraft.bending.controller.ConfigManager;
@@ -92,10 +91,6 @@ public class EntityTools {
 				&& player.hasPermission("bending.admin.AvatarState")) {
 			return true;
 		}
-		if (ability == Abilities.AstralProjection 
-				&& player.hasPermission("bending.admin.AstralProjection")){
-			return true;
-		}
 
 		if (Abilities.isAirbending(ability)
 				&& player.hasPermission("bending.air." + ability)) {
@@ -147,8 +142,7 @@ public class EntityTools {
 		
 		if ((isChiBlocked(player) 
 				|| Bloodbending.isBloodbended(player) 
-				|| isGrabed(player)
-				|| (AstralProjection.isAstralProjecting(player) && ability != Abilities.AstralProjection)))
+				|| isGrabed(player)))
 			return false;
 
 		if (Abilities.isAirbending(ability)

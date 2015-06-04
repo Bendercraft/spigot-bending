@@ -19,7 +19,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
 import net.avatarrealms.minecraft.bending.abilities.air.Suffocate;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
-import net.avatarrealms.minecraft.bending.abilities.chi.CFour;
+import net.avatarrealms.minecraft.bending.abilities.chi.C4;
 import net.avatarrealms.minecraft.bending.abilities.chi.PoisonnedDart;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
 import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
@@ -33,7 +33,6 @@ import net.avatarrealms.minecraft.bending.abilities.earth.EarthTunnel;
 import net.avatarrealms.minecraft.bending.abilities.earth.LavaTrain;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
-import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.fire.Combustion;
 import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireBlade;
@@ -197,9 +196,7 @@ public class PluginTools {
 		RapidPunch.removeAll();
 		SmokeBomb.removeAll();
 		PoisonnedDart.removeAll();
-		CFour.removeAll();
-		
-		AstralProjection.removeAll();
+		C4.removeAll();
 
 		// BendingManager.removeFlyers();
 		Flight.removeAll();

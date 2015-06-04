@@ -4,10 +4,9 @@ import net.avatarrealms.minecraft.bending.Bending;
 import net.avatarrealms.minecraft.bending.abilities.Abilities;
 import net.avatarrealms.minecraft.bending.abilities.BendingPlayer;
 import net.avatarrealms.minecraft.bending.abilities.BendingType;
-import net.avatarrealms.minecraft.bending.abilities.chi.CFour;
+import net.avatarrealms.minecraft.bending.abilities.chi.C4;
 import net.avatarrealms.minecraft.bending.abilities.chi.Paralyze;
 import net.avatarrealms.minecraft.bending.abilities.earth.EarthBlast;
-import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.fire.Enflamed;
 import net.avatarrealms.minecraft.bending.abilities.fire.FireStream;
 import net.avatarrealms.minecraft.bending.abilities.fire.Lightning;
@@ -24,10 +23,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -44,7 +41,6 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
@@ -67,17 +63,6 @@ public class BendingEntityListener implements Listener {
 		if (FireStream.isIgnited(block) && (entity instanceof LivingEntity)) {
 			// TODO parent is FireStream !
 			new Enflamed(entity, FireStream.getIgnited(block), null);
-		}
-	}
-
-	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPotionThrown (PotionSplashEvent e) {
-		ProjectileSource source = e.getEntity().getShooter();
-		if (source instanceof Player) {
-			Player p = (Player)source;
-			if (AstralProjection.isAstralProjecting(p)) {
-				e.setCancelled(true);
-			}
 		}
 	}
 
@@ -157,10 +142,6 @@ public class BendingEntityListener implements Listener {
 					&& !EntityTools.isWeapon(((Player)event.getDamager()).getItemInHand().getType())) {
 			}
 
-			if (AstralProjection.isAstralProjecting((Player)source)) {
-				event.setCancelled(true);
-			}
-
 			if (event.getCause().equals(DamageCause.ENTITY_ATTACK)) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player)source);
 				if ((bPlayer.getAbility() != null) && bPlayer.getAbility().equals(Abilities.FireBlade)) {
@@ -174,16 +155,6 @@ public class BendingEntityListener implements Listener {
 	@EventHandler (priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityExplode (EntityExplodeEvent event) {
 		Entity e = event.getEntity();
-		if (e instanceof Creeper) {
-			Creeper cr = (Creeper)e;
-			if (cr.getTarget() instanceof Player) {
-				Player p = (Player)cr.getTarget();
-				if (AstralProjection.isAstralProjecting(p)) {
-					cr.setHealth(0);
-					event.setCancelled(true);
-				}
-			}
-		}
 		for (Block block : event.blockList()) {
 			EarthBlast blast = EarthBlast.getBlastFromSource(block);
 
@@ -254,12 +225,6 @@ public class BendingEntityListener implements Listener {
 		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
-		if (entity instanceof Player) {
-			Player p = (Player)entity;
-			if (AstralProjection.isAstralProjecting(p)) {
-				event.setCancelled(true);
-			}
-		}
 	}
 
 	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -285,11 +250,6 @@ public class BendingEntityListener implements Listener {
 		}
 		if (entity instanceof Player) {
 			Player p = (Player)entity;
-			if (AstralProjection.isAstralProjecting(p)) {
-				event.setCancelled(true);
-				return;
-			}
-
 			if (pr instanceof Arrow) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 				if (bPlayer.isBender(BendingType.Fire)) {
@@ -317,7 +277,7 @@ public class BendingEntityListener implements Listener {
 				if ((ability == Abilities.PlasticBomb) && EntityTools.canBend(player, ability)) {
 					for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(arrow.getLocation(), 1.7)) {
 						if (entity instanceof Player) {
-							new CFour(player, (Player)entity);
+							new C4(player, (Player)entity);
 							return;
 						}
 					}
@@ -343,7 +303,7 @@ public class BendingEntityListener implements Listener {
 						return;
 					}
 
-					new CFour(player, block, hitBlock.getFace(block));
+					new C4(player, block, hitBlock.getFace(block));
 				}
 			}
 		}

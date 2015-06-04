@@ -21,7 +21,7 @@ import net.avatarrealms.minecraft.bending.abilities.air.AirSwipe;
 import net.avatarrealms.minecraft.bending.abilities.air.Speed;
 import net.avatarrealms.minecraft.bending.abilities.air.Suffocate;
 import net.avatarrealms.minecraft.bending.abilities.air.Tornado;
-import net.avatarrealms.minecraft.bending.abilities.chi.CFour;
+import net.avatarrealms.minecraft.bending.abilities.chi.C4;
 import net.avatarrealms.minecraft.bending.abilities.chi.PoisonnedDart;
 import net.avatarrealms.minecraft.bending.abilities.chi.RapidPunch;
 import net.avatarrealms.minecraft.bending.abilities.chi.SmokeBomb;
@@ -38,7 +38,6 @@ import net.avatarrealms.minecraft.bending.abilities.earth.MetalBending;
 import net.avatarrealms.minecraft.bending.abilities.earth.Ripple;
 import net.avatarrealms.minecraft.bending.abilities.earth.Shockwave;
 import net.avatarrealms.minecraft.bending.abilities.earth.Tremorsense;
-import net.avatarrealms.minecraft.bending.abilities.energy.AstralProjection;
 import net.avatarrealms.minecraft.bending.abilities.energy.AvatarState;
 import net.avatarrealms.minecraft.bending.abilities.fire.Combustion;
 import net.avatarrealms.minecraft.bending.abilities.fire.Cook;
@@ -112,7 +111,6 @@ public class BendingManager implements Runnable {
 			// manageMessages();
 			TempPotionEffect.progressAll();
 			AvatarState.progressAll();
-			AstralProjection.progressAll();
 			// handleFlying();
 			Flight.handle();
 			handleDayNight();
@@ -332,7 +330,7 @@ public class BendingManager implements Runnable {
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("chi", "smoke")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();
-		CFour.progressAll();
+		C4.progressAll();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("chi", "C4")), String.valueOf(System.currentTimeMillis() - temp));
 		
 		temp = System.currentTimeMillis();
