@@ -1,7 +1,7 @@
 name: Bending
-main: net.avatarrealms.minecraft.bending.Bending
+main: net.avatar.realms.spigot.bending.Bending
 version: 5.0.1
-softdepend: [WorldGuard,WorldEdit,CoreProtect,WGCustomFlags,Citizens]
+softdepend: [WorldGuard,WorldEdit,CoreProtect,WGCustomFlags,Citizens,Factions]
 commands:
     bending:
         description: Chooses the many features of Bending.
