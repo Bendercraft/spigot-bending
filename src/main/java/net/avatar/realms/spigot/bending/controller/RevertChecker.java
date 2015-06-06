@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
@@ -19,11 +18,11 @@ import org.bukkit.entity.Player;
 
 public class RevertChecker implements Runnable {
 
-	static ConcurrentHashMap<Block, Block> revertQueue = new ConcurrentHashMap<Block, Block>();
-	static ConcurrentHashMap<Integer, Integer> airRevertQueue = new ConcurrentHashMap<Integer, Integer>();
+	static Map<Block, Block> revertQueue = new HashMap<Block, Block>();
+	static Map<Integer, Integer> airRevertQueue = new HashMap<Integer, Integer>();
 	private Future<ArrayList<Chunk>> returnFuture;
 
-	static ConcurrentHashMap<Chunk, Chunk> chunks = new ConcurrentHashMap<Chunk, Chunk>();
+	static Map<Chunk, Chunk> chunks = new HashMap<Chunk, Chunk>();
 
 	private Bending plugin;
 

@@ -2,8 +2,11 @@ package net.avatar.realms.spigot.bending.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -144,8 +147,8 @@ public class BlockTools {
 		ironBendables.add(Material.CAULDRON);
 	}
 	
-	public static ConcurrentHashMap<Block, Information> bendedBlocks = new ConcurrentHashMap<Block, Information>();
-	public static ConcurrentHashMap<Integer, Information> tempAir = new ConcurrentHashMap<Integer, Information>();
+	public static Map<Block, Information> bendedBlocks = new HashMap<Block, Information>();
+	public static Map<Integer, Information> tempAir = new HashMap<Integer, Information>();
 	
 	public static Set<Material> getTransparentEarthbending() {
 		Set<Material> set = new HashSet<Material>();
@@ -775,11 +778,12 @@ public class BlockTools {
 	}
 
 	public static void removeAllEarthbendedBlocks() {
-		for (Block block : bendedBlocks.keySet()) {
+		List<Block> copy = new LinkedList<Block>(bendedBlocks.keySet());
+		for (Block block : copy) {
 			revertBlock(block);
 		}
-
-		for (Integer i : tempAir.keySet()) {
+		List<Integer> otherCopy = new LinkedList<Integer>(tempAir.keySet());
+		for (Integer i : otherCopy) {
 			revertAirBlock(i, true);
 		}
 	}

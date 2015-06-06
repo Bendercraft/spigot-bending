@@ -3,8 +3,8 @@ package net.avatar.realms.spigot.bending.db.impl;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -15,7 +15,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayerData;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.gson.Gson;
@@ -70,9 +70,10 @@ public class FlatFileDB implements IBendingDB {
 	@Override
 	public void save() {
 		try {
-			String json = mapper.toJson(datas);
-			FileWriter writer = new FileWriter(bendingPlayersFile);
-			writer.write(json);
+			FileWriter writer = new FileWriter(bendingPlayersFile, false);
+			BendingPlayerDatas temp = new BendingPlayerDatas();
+			temp.setDatas(datas);
+			mapper.toJson(temp, writer);
 			writer.close();
 		} catch (Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
@@ -86,7 +87,6 @@ public class FlatFileDB implements IBendingDB {
 		this.save();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void reload() {
 		datas = new HashMap<UUID, BendingPlayerData>();
 		
@@ -102,15 +102,23 @@ public class FlatFileDB implements IBendingDB {
 			}
 			
 			FileReader reader = new FileReader(bendingPlayersFile);
-			List<String> lines = IOUtils.readLines(reader);
-			
-			if(lines.isEmpty()) {
-				return;
-			}
-			datas = mapper.fromJson(lines.get(0), datas.getClass());
+			BendingPlayerDatas temp = mapper.fromJson(reader, BendingPlayerDatas.class);
+			datas.putAll(temp.getDatas());
+			reader.close();
 		} catch(Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
 					"Could not load config from " + bendingPlayersFile, e);
+			try {
+				File save = new File(dataFolder, FILE_NAME+".save.0");
+				int i = 1;
+				while(save.exists()) {
+					save = new File(dataFolder, FILE_NAME+".save."+i);
+					i++;
+				}
+				FileUtils.moveFile(bendingPlayersFile, save);
+			} catch (IOException e1) {
+				
+			}
 		}
 	}
 	
@@ -132,6 +140,18 @@ public class FlatFileDB implements IBendingDB {
 		if(bendingPlayersFile != null) {
 			bendingPlayersFile.delete();
 		}
+	}
+	
+	private class BendingPlayerDatas {
+		private Map<UUID, BendingPlayerData> datas;
+
+		public Map<UUID, BendingPlayerData> getDatas() {
+			return datas;
+		}
+
+		public void setDatas(Map<UUID, BendingPlayerData> datas) {
+			this.datas = datas;
+		} 
 	}
 
 }

@@ -27,6 +27,13 @@ public class LearningCommand {
 		if(sender instanceof Player) {
 			this.bPlayer = BendingPlayer.getBendingPlayer((Player) sender);
 		}
+		
+		String[] adjusted = new String[args.length-1];
+		for(int i=1 ; i < args.length ; i++) {
+			adjusted[i-1] = args[i];
+		}
+		args = adjusted;
+		
 		if(args.length < 1) {
 			this.usage();
 			return;

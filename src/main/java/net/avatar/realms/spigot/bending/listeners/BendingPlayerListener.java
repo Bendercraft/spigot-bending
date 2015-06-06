@@ -92,7 +92,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
@@ -229,15 +228,6 @@ public class BendingPlayerListener implements Listener{
 			return;
 		}
 		
-		Block b = event.getClickedBlock();
-		if (!event.isCancelled() 
-				&& (b.getType()!= Material.WOOD_DOOR)
-				&& (b.getType()!= Material.WOOD_PLATE)
-				&& (b.getType()!= Material.GOLD_PLATE)) {
-			event.setCancelled(true);;
-			return;
-		}
-
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 			
@@ -904,12 +894,14 @@ public class BendingPlayerListener implements Listener{
 				player.setVelocity(new Vector(0, 0, 0));
 			// return;
 		}
+		/*
 		if (Dash.isDashing(player)) {
 			Vector dir = event.getTo().subtract(event.getFrom()).toVector();
 			Dash d = Dash.getDash(player);
 			d.setDirection(dir);
 			d.dash();
 		}
+		*/
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

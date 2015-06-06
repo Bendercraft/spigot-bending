@@ -30,7 +30,7 @@ public class PoisonnedDart {
 	private static int damage = ConfigManager.dartDamage;
 	private static int range = ConfigManager.dartRange;
 	
-	private static final ParticleEffect VISUAL = ParticleEffect.HAPPY_VILLAGER;
+	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
 	
 	private Player player;
 	private Location origin;
@@ -150,7 +150,7 @@ public class PoisonnedDart {
 		return true;
 	}
 	private void advanceLocation() {
-		VISUAL.display(location, 0,0,0, 1,1);
+		VISUAL.display(0, 0, 0, 1, 1, location, 20);
 		location = location.add(direction.clone().multiply(1.5));
 	}
 	

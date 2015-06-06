@@ -35,7 +35,7 @@ public class C4 {
 	
 	private static double radius = ConfigManager.plasticRadius;
 	private static int maxDamage = ConfigManager.plasticDamage;
-	private static final ParticleEffect EXPLODE = ParticleEffect.HUGE_EXPLOSION;
+	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
 	
 	private static final int fuseInterval = 1500;
 	
@@ -171,7 +171,7 @@ public class C4 {
 		}
 		
 		location.getWorld().playSound(location, Sound.EXPLODE, 10, 1);
-		EXPLODE.display(location, 0, 0, 0, 1, 1);
+		EXPLODE.display(0, 0, 0, 1, 1, location, 20);
 		
 		if (bomb != null && previousType != null) {
 			bomb.setType(previousType);

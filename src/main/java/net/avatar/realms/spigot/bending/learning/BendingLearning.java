@@ -101,14 +101,15 @@ public class BendingLearning {
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void load() throws IOException {
 		File folder = Bending.plugin.getDataFolder();
 		File permissionsFile = new File(folder, "permissions.json");
 		
 		if(permissionsFile.exists() && permissionsFile.isFile()) {
 			FileReader reader = new FileReader(permissionsFile);
-			permissions = mapper.fromJson(reader, permissions.getClass());
+			LearningPermissions tmp = mapper.fromJson(reader, LearningPermissions.class);
+			permissions = new HashMap<UUID, List<String>>();
+			permissions.putAll(tmp.getPermissions());
 			reader.close();
 		}
 	}
@@ -122,7 +123,9 @@ public class BendingLearning {
 			permissionsFile.createNewFile();
 		}
 		FileWriter writer = new FileWriter(permissionsFile);
-		mapper.toJson(permissions, writer);
+		LearningPermissions tmp = new LearningPermissions();
+		tmp.setPermissions(permissions);
+		mapper.toJson(tmp, writer);
 		writer.close();
 	}
 	
@@ -164,6 +167,18 @@ public class BendingLearning {
 		case HealingWaters:
 		case WaterSpout: return true;
 		default: return false;
+		}
+	}
+	
+	private class LearningPermissions {
+		private HashMap<UUID, List<String>> permissions = new HashMap<UUID, List<String>>();
+
+		public HashMap<UUID, List<String>> getPermissions() {
+			return permissions;
+		}
+
+		public void setPermissions(HashMap<UUID, List<String>> permissions) {
+			this.permissions = permissions;
 		}
 	}
 }

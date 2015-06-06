@@ -238,13 +238,13 @@ public class BendingManager implements Runnable {
 			// Tools.removeEarthbendedBlockByIndex(block);
 			// if (Tools.revertBlock(block))
 			BlockTools.revertBlock(block);
-			RevertChecker.revertQueue.remove(block);
 		}
+		RevertChecker.revertQueue.clear();
 
 		for (int i : RevertChecker.airRevertQueue.keySet()) {
 			BlockTools.revertAirBlock(i);
-			RevertChecker.airRevertQueue.remove(i);
 		}
+		RevertChecker.airRevertQueue.clear();
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("earth", "revert")), String.valueOf(System.currentTimeMillis() - temp));
 		Metrics.ROOT.put(new LinkedList<String>(Arrays.asList("earth", "total")), String.valueOf(System.currentTimeMillis() - current));
 	}

@@ -39,7 +39,7 @@ public class Combustion implements IAbility {
 	private static double innerradius = ConfigManager.combustionInnerRadius;
 	
 	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
-	private static final ParticleEffect EXPLODE = ParticleEffect.HUGE_EXPLOSION;
+	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
 
 	private double range = ConfigManager.combustionRange;
 	private int maxdamage = ConfigManager.combustionDamage;
@@ -156,7 +156,7 @@ public class Combustion implements IAbility {
 			block.getWorld().playEffect(block.getLocation(),
 					Effect.SMOKE, 0, 1);
 		}
-		CRIT.display(location, 0, 0, 0, 1, 3);
+		CRIT.display(0, 0, 0, 1, 1, location, 20);
 		if(progressed % 5 == 0) {
 			location.getWorld().playSound(location, Sound.SHOOT_ARROW, 5, 1);
 		}
@@ -213,7 +213,7 @@ public class Combustion implements IAbility {
 			}
 		}
 		location.getWorld().playSound(location, Sound.EXPLODE, 10, 1);
-		EXPLODE.display(location, 0, 0, 0, 1, 1);
+		EXPLODE.display(0, 0, 0, 1, 1, location, 20);
 		double radius = explosionradius;
 		if (obsidian) {
 			radius = explosionradius/2.0;

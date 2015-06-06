@@ -14,7 +14,6 @@ import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -155,7 +154,7 @@ public class AirSpout implements IAbility {
 						location.getX(), block.getY() + i, location.getZ());
 
 				//location.getWorld().playEffect(effectloc2, Effect.SMOKE, (int) directions[index], (int) height + 5);
-				VISUAL.display(effectloc2, 0, 0, 0, 1, 1);
+				VISUAL.display(0, 0, 0, 1, 1, effectloc2, 20);
 			}
 		}
 	}

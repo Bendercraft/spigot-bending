@@ -29,8 +29,9 @@ public class Dash implements IAbility {
 		if (!bPlayer.isOnCooldown(Abilities.Dash)) {
 			instances.put(player, this);
 			bPlayer.cooldown(Abilities.Dash);
+			this.direction = player.getLocation().getDirection().normalize();
+			this.dash();
 		}
-
 	}
 
 	public static boolean isDashing(Player player) {

@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -49,7 +47,6 @@ public class TempBackup {
 		return;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void reload() {
 		backupPlayers = new HashMap<UUID, BendingPlayerData>();
 
@@ -64,12 +61,14 @@ public class TempBackup {
 				content.close();
 			}
 			FileReader reader = new FileReader(backupFile);
-			List<String> lines = IOUtils.readLines(reader);
-			
-			if(lines.isEmpty()) {
+			Backups tmp = mapper.fromJson(reader, Backups.class);
+			if(tmp == null || tmp.getBackupPlayers() == null) {
+				Logger.getLogger(JavaPlugin.class.getName()).log(Level.WARNING,
+						"No config data found in " + backupFile);
 				return;
 			}
-			backupPlayers = mapper.fromJson(lines.get(0), backupPlayers.getClass());
+			backupPlayers.putAll(tmp.getBackupPlayers());
+			reader.close();
 		} catch (Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
 					"Could not load config from " + backupFile, e);
@@ -90,9 +89,10 @@ public class TempBackup {
 			if (!backupFile.exists()) {
 				backupFile.createNewFile();
 			}
-			String json = mapper.toJson(backupPlayers);
 			FileWriter writer = new FileWriter(backupFile);
-			writer.write(json);
+			Backups tmp = new Backups();
+			tmp.setBackupPlayers(backupPlayers);
+			mapper.toJson(tmp, writer);
 			writer.close();
 		} catch (Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
@@ -110,5 +110,16 @@ public class TempBackup {
 		backupPlayers.remove(pl.getUniqueId());
 		this.save();
 	}
+	
+	private class Backups {
+		private Map<UUID, BendingPlayerData> backupPlayers;
 
+		public Map<UUID, BendingPlayerData> getBackupPlayers() {
+			return backupPlayers;
+		}
+
+		public void setBackupPlayers(Map<UUID, BendingPlayerData> backupPlayers) {
+			this.backupPlayers = backupPlayers;
+		}
+	}
 }

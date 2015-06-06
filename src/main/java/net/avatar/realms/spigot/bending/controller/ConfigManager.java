@@ -153,8 +153,7 @@ public class ConfigManager {
 
 	// Dash
 	public static int dashCooldown;
-	public static double dashLength; // Not really accurate as it's
-										// used with the setVelocity()
+	public static double dashLength;
 	public static double dashHeight;
 
 	// PlasticBomb
