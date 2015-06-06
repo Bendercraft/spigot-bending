@@ -13,18 +13,21 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Fish;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import com.google.common.collect.Sets;
+
 public class MetalWire {
 
-	private static Map<Player, Fish> instances = new HashMap<Player, Fish>();
+	private static Map<Player, FishHook> instances = new HashMap<Player, FishHook>();
 	private static Map<Player, Long> noFall = new HashMap<Player, Long>();
 	
 	private final static long timeNoFall = 2200;
 
-	public static void pull(Player player, Fish hook) {
+	public static void pull(Player player, FishHook hook) {
 		List<Player> toRemove = new LinkedList<Player>();
 		for (Player p : instances.keySet()) {
 			if (instances.get(p).isDead() || !instances.get(p).isValid()) {
@@ -60,17 +63,17 @@ public class MetalWire {
 		}
 	}
 
-	public static void launchHook(Player player, Fish hook) {
+	public static void launchHook(Player player, FishHook hook) {
 		//Would prefer it more accurate
 		instances.put(player, hook);
-		Block b = player.getTargetBlock(new HashSet<Material>(), 30);
+		Block b = player.getTargetBlock(Sets.newHashSet(Material.AIR), 30);
 		if (b != null) {
 			hook.setVelocity(Tools.getVectorForPoints(hook.getLocation(),
 					b.getLocation()));
 		}
 	}
 	
-	public static boolean hookHangsOn(Fish hook) {
+	public static boolean hookHangsOn(FishHook hook) {
 		for (Block block : BlockTools.getBlocksAroundPoint(hook.getLocation(),1.5)) {
 			if (!BlockTools.isFluid(block)) {
 				return true;
