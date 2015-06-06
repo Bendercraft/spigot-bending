@@ -2,9 +2,11 @@ package net.avatar.realms.spigot.bending.controller;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import net.avatar.realms.spigot.bending.Bending;
@@ -234,14 +236,16 @@ public class BendingManager implements Runnable {
 		
 
 		temp = System.currentTimeMillis();
-		for (Block block : RevertChecker.revertQueue.keySet()) {
+		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());
+		for (Block block : copy) {
 			// Tools.removeEarthbendedBlockByIndex(block);
 			// if (Tools.revertBlock(block))
 			BlockTools.revertBlock(block);
 		}
 		RevertChecker.revertQueue.clear();
 
-		for (int i : RevertChecker.airRevertQueue.keySet()) {
+		Set<Integer> otherCopy = new HashSet<Integer>(RevertChecker.airRevertQueue.keySet());
+		for (int i : otherCopy) {
 			BlockTools.revertAirBlock(i);
 		}
 		RevertChecker.airRevertQueue.clear();
