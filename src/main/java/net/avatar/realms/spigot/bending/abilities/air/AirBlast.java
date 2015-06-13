@@ -2,9 +2,11 @@ package net.avatar.realms.spigot.bending.abilities.air;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
@@ -260,8 +262,8 @@ public class AirBlast implements IAbility {
 		for(AirBlast blast : toRemove) {
 			blast.remove();
 		}
-			
-		for (Player player : origins.keySet()) {
+		Set<Player> copy = new HashSet<Player>(origins.keySet());
+		for (Player player : copy) {
 			playOriginEffect(player);
 		}
 	}
