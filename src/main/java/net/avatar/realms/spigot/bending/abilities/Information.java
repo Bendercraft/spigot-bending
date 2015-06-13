@@ -66,6 +66,7 @@ public class Information {
 		return data;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static Information fromBlock(Block block) {
 		if (block == null) {
 			return null;

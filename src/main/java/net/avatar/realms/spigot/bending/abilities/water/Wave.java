@@ -8,7 +8,6 @@ import java.util.Map;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.abilities.Information;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
@@ -109,7 +108,7 @@ public class Wave implements IAbility {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if(Drainbending.canBeSource(block)) {
-				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0, player, Wave.class);
+				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 				sourceblock = block;
 				focusBlock();
 				//Range and max radius is halfed for Drainbending
@@ -395,7 +394,7 @@ public class Wave implements IAbility {
 				block.getLocation()))
 			return;
 		if (!TempBlock.isTempBlock(block)) {
-			new TempBlock(block, Material.WATER, full, player, Wave.class);
+			new TempBlock(block, Material.WATER, full);
 			// new TempBlock(block, Material.ICE, (byte) 0);
 			wave.put(block, block);
 		}
@@ -477,7 +476,7 @@ public class Wave implements IAbility {
 			if (block.getType() == Material.AIR
 					|| block.getType() == Material.SNOW) {
 				// block.setType(Material.ICE);
-				new TempBlock(block, Material.ICE, (byte) 0, player, Wave.class);
+				new TempBlock(block, Material.ICE, (byte) 0);
 				frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
@@ -486,7 +485,7 @@ public class Wave implements IAbility {
 			if (BlockTools.isPlant(block) && block.getType() != Material.LEAVES) {
 				block.breakNaturally();
 				// block.setType(Material.ICE);
-				new TempBlock(block, Material.ICE, (byte) 0, player, Wave.class);
+				new TempBlock(block, Material.ICE, (byte) 0);
 				frozenblocks.put(block, block);
 			}
 		}

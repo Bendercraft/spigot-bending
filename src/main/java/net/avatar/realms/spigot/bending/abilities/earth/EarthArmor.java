@@ -49,6 +49,7 @@ public class EarthArmor implements IAbility {
 
 	private static long interval = 2000;
 
+	@SuppressWarnings("deprecation")
 	public EarthArmor (Player player, IAbility parent) {
 		this.parent = parent;
 		if (instances.containsKey(player)) {
@@ -138,12 +139,12 @@ public class EarthArmor implements IAbility {
 		}
 
 		if (!newheadblock.equals(this.headblock)) {
-			new TempBlock(newheadblock, this.headtype, this.headdata, this.player, EarthArmor.class);
+			new TempBlock(newheadblock, this.headtype, this.headdata);
 			TempBlock.revertBlock(this.headblock);
 		}
 
 		if (!newlegsblock.equals(this.legsblock)) {
-			new TempBlock(newlegsblock, this.legstype, this.legsdata, this.player, EarthArmor.class);
+			new TempBlock(newlegsblock, this.legstype, this.legsdata);
 			TempBlock.revertBlock(this.legsblock);
 		}
 

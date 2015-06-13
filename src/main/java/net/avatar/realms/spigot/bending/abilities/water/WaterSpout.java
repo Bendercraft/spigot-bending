@@ -118,7 +118,7 @@ public class WaterSpout implements IAbility {
 
 				block = location.clone().add(0, i, 0).getBlock();
 				if (!TempBlock.isTempBlock(block)) {
-					new TempBlock(block, Material.WATER, full, player, WaterSpout.class);
+					new TempBlock(block, Material.WATER, full);
 				}
 				if (!affectedblocks.contains(block)) {
 					affectedblocks.add(block);
@@ -158,7 +158,7 @@ public class WaterSpout implements IAbility {
 						|| affectedblocks.contains(block)) {
 
 					if (!TempBlock.isTempBlock(block)) {
-						new TempBlock(block, Material.WATER, full, player, WaterSpout.class);
+						new TempBlock(block, Material.WATER, full);
 					}
 					if (!affectedblocks.contains(block)) {
 						affectedblocks.add(block);
@@ -214,8 +214,7 @@ public class WaterSpout implements IAbility {
 						|| blocki.getType() == Material.SNOW_BLOCK) {
 					if (!TempBlock.isTempBlock(blocki)) {
 						revertBaseBlock(player);
-						instances.get(player).baseblock = new TempBlock(blocki,
-								Material.WATER, full, player, WaterSpout.class);
+						instances.get(player).baseblock = new TempBlock(blocki, Material.WATER, full);
 					}
 					spout.base = blocki;
 					if (i > height)

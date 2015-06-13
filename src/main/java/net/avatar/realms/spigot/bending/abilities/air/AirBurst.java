@@ -14,7 +14,6 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 /**

@@ -90,6 +90,7 @@ public class Tremorsense implements IAbility {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	private void set() {
 		Block standblock = player.getLocation().getBlock()
 				.getRelative(BlockFace.DOWN);
@@ -121,6 +122,7 @@ public class Tremorsense implements IAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void remove() {
 		if (block != null) {
 			player.sendBlockChange(block.getLocation(), block.getType(), block.getData());

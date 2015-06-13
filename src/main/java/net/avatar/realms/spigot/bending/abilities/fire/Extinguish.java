@@ -25,6 +25,7 @@ public class Extinguish implements IAbility {
 	
 	private IAbility parent;
 
+	@SuppressWarnings("deprecation")
 	public Extinguish(Player player, IAbility parent) {
 		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);

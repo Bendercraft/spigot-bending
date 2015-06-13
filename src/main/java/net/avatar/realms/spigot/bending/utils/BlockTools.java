@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.Information;
@@ -324,7 +322,6 @@ public class BlockTools {
 	}
 	
 	public static boolean isWaterbendable(Block block, Player player) {
-		byte full = 0x0;
 		if (TempBlock.isTempBlock(block)) {
 			return false;
 		}
@@ -340,6 +337,7 @@ public class BlockTools {
 		return false;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static boolean adjacentToThreeOrMoreSources(Block block) {
 		if (TempBlock.isTempBlock(block)) {
 			return false;
@@ -567,6 +565,7 @@ public class BlockTools {
 		return false;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void moveEarthBlock(Block source, Block target) {
 		byte full = 0x0;
 		Information info;
@@ -620,6 +619,7 @@ public class BlockTools {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static Block getWaterSourceBlock(Player player, double range,
 			boolean plantbending) {
 		Location location = player.getEyeLocation();
@@ -671,6 +671,7 @@ public class BlockTools {
 		revertAirBlock(i, false);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void revertAirBlock(int i, boolean force) {
 		if (!tempAir.containsKey(i))
 			return;
@@ -693,6 +694,7 @@ public class BlockTools {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean revertBlock(Block block) {
 		byte full = 0x0;
 		if (bendedBlocks.containsKey(block)) {
@@ -753,6 +755,7 @@ public class BlockTools {
 		block.breakNaturally(new ItemStack(Material.AIR));
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void removeBlock(Block block) {
 		if (adjacentToThreeOrMoreSources(block)) {
 			block.setType(Material.WATER);
@@ -788,6 +791,7 @@ public class BlockTools {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static Collection<ItemStack> getDrops(Block block, Material type,
 			byte data, ItemStack breakitem) {
 		BlockState tempstate = block.getState();

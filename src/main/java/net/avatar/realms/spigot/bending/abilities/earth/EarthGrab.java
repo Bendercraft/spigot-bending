@@ -170,7 +170,7 @@ public class EarthGrab implements IAbility {
 						}
 						Material t = loc.getBlock().getType();
 						for (int i = 0; i < h; i++) {
-							affectedBlocks.add(new TempBlock(loc.add(0,1,0).getBlock(), t, full, player, EarthGrab.class));
+							affectedBlocks.add(new TempBlock(loc.add(0,1,0).getBlock(), t, full));
 						}
 					}
 

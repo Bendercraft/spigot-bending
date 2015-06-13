@@ -185,6 +185,7 @@ public class AirSwipe implements IAbility {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	private boolean advanceSwipe() {
 		affectedentities.clear();
 		

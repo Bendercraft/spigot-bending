@@ -31,6 +31,7 @@ public class HeatMelt implements IAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void heat(Block block) {
 		if (block.getType() == Material.OBSIDIAN) {
 			block.setType(Material.LAVA);

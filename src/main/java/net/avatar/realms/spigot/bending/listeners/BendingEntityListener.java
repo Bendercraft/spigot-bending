@@ -154,7 +154,6 @@ public class BendingEntityListener implements Listener {
 
 	@EventHandler (priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityExplode (EntityExplodeEvent event) {
-		Entity e = event.getEntity();
 		for (Block block : event.blockList()) {
 			EarthBlast blast = EarthBlast.getBlastFromSource(block);
 

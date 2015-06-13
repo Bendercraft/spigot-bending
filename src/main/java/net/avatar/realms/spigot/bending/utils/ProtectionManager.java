@@ -16,6 +16,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import com.mewin.WGCustomFlags.WGCustomFlagsPlugin;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
@@ -127,17 +130,16 @@ public class ProtectionManager {
 		if (isRegionProtectedFromBending(player, ability, loc)) {
 			return true;
 		}
-
-		PluginManager pm = Bukkit.getPluginManager();
-		Plugin wgp = pm.getPlugin("WorldGuard");
-		if ((wgp != null) && respectWorldGuard) {
-			WorldGuardPlugin wg = (WorldGuardPlugin)wgp;
+		
+		if ((worldguard != null) && respectWorldGuard) {
+			LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 			for (Location location : new Location[] {loc, player.getLocation()}) {
 				if (!player.isOnline()) {
 					return true;
 				}
-				if (!wg.getGlobalRegionManager().get(location.getWorld()).getApplicableRegions(location)
-						.allows(DefaultFlag.OTHER_EXPLOSION)) {
+				RegionContainer container = worldguard.getRegionContainer();
+				RegionQuery query = container.createQuery();
+				if (!query.testState(location, localPlayer, DefaultFlag.OTHER_EXPLOSION)) {
 					return true;
 				}
 			}
@@ -157,51 +159,46 @@ public class ProtectionManager {
 		if (isAllowedEverywhereAbility(ability)) {
 			return false;
 		}
-
-		if (!worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-				.allows(BENDING, worldguard.wrapPlayer(player))) {
+		LocalPlayer localPlayer = worldguard.wrapPlayer(player);
+		RegionContainer container = worldguard.getRegionContainer();
+		RegionQuery query = container.createQuery();
+		
+		if (!query.testState(loc, localPlayer, BENDING)) {
 			return true;
 		}
 
 		if (ability.isSpecialization()
-				&& !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-						.allows(BENDING_SPE, worldguard.wrapPlayer(player))) {
+				&& !query.testState(loc, localPlayer, BENDING_SPE)) {
 			return true;
 		}
 
 		if ((ability == Abilities.AvatarState)
-				&& !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-						.allows(BENDING_ENERGY, worldguard.wrapPlayer(player))) {
+				&& !query.testState(loc, localPlayer, BENDING_ENERGY)) {
 			return true;
 		}
 
 		if (Abilities.isAirbending(ability)
-				&& !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-						.allows(BENDING_AIR, worldguard.wrapPlayer(player))) {
+				&& !query.testState(loc, localPlayer, BENDING_AIR)) {
 			return true;
 		}
 
 		if (Abilities.isChiBlocking(ability)
-				&& !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-						.allows(BENDING_CHI, worldguard.wrapPlayer(player))) {
+				&& !query.testState(loc, localPlayer, BENDING_CHI)) {
 			return true;
 		}
 
 		if (Abilities.isEarthbending(ability)
-				&& !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-						.allows(BENDING_EARTH, worldguard.wrapPlayer(player))) {
+				&& !query.testState(loc, localPlayer, BENDING_EARTH)) {
 			return true;
 		}
 
 		if (Abilities.isFirebending(ability)
-				&& !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-						.allows(BENDING_FIRE, worldguard.wrapPlayer(player))) {
+				&& !query.testState(loc, localPlayer, BENDING_FIRE)) {
 			return true;
 		}
 
 		if (Abilities.isWaterbending(ability)
-				&& !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-						.allows(BENDING_WATER, worldguard.wrapPlayer(player))) {
+				&& !query.testState(loc, localPlayer, BENDING_WATER)) {
 			return true;
 		}
 
@@ -209,9 +206,11 @@ public class ProtectionManager {
 	}
 
 	public static boolean isRegionProtectedFromBendingPassives(Player player, Location loc) {
-		if (respectWorldGuard && !worldguard.getRegionManager(loc.getWorld()).getApplicableRegions(loc)
-				.allows(BENDING_PASSIVES, worldguard.wrapPlayer(player))) {
-			return true;
+		if (respectWorldGuard && worldguard != null) {
+			LocalPlayer localPlayer = worldguard.wrapPlayer(player);
+			RegionContainer container = worldguard.getRegionContainer();
+			RegionQuery query = container.createQuery();
+			return !query.testState(loc, localPlayer, BENDING_PASSIVES);
 		}
 		return false;
 	}

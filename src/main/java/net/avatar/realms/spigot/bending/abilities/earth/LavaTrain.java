@@ -148,7 +148,7 @@ public class LavaTrain implements IAbility {
 				if(BlockTools.isEarthbendable(bPlayer.getPlayer(),Abilities.LavaTrain, potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
 					//Do not let block behind bender to be bend, this whill be stupid
 					if(!safe.contains(potentialsBlock)) {
-						new TempBlock(potentialsBlock, Material.LAVA, full, player, LavaTrain.class);
+						new TempBlock(potentialsBlock, Material.LAVA, full);
 						affecteds.add(potentialsBlock);
 					}
 				}

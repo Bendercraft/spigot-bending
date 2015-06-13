@@ -56,6 +56,7 @@ public class MetalBending {
 		instances.put(player, this);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void use(Player pl, Block bl) {
 		// Don't really like it, magic value
 		if (EntityTools.isBender(pl, BendingType.Earth)

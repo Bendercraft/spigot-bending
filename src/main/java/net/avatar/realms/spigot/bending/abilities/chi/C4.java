@@ -188,6 +188,7 @@ public class C4 {
 		instances.remove(player);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void generateCFour(Block block, BlockFace face) {
 		bomb = block;
 		byte facing = 0x1;
@@ -207,6 +208,7 @@ public class C4 {
 		location.getWorld().playSound(location, Sound.STEP_GRAVEL, 10, 1);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void generateHeadBomb() {
 		headBomb = new ItemStack(397, 1, (short) 3);
 		SkullMeta meta = (SkullMeta) headBomb.getItemMeta();
@@ -297,6 +299,7 @@ public class C4 {
 		entity.setVelocity(v);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void removeBlock(Block block) {
 		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();

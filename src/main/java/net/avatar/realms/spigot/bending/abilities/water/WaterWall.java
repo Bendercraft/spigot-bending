@@ -61,6 +61,7 @@ public class WaterWall implements IAbility {
 
 	private TempBlock drainedBlock;
 
+	@SuppressWarnings("deprecation")
 	public WaterWall(Player player, IAbility parent) {
 		this.parent = parent;
 		this.player = player;
@@ -143,7 +144,7 @@ public class WaterWall implements IAbility {
 		frozen = true;
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				new TempBlock(block, Material.ICE, (byte) 0, player, WaterWall.class);
+				new TempBlock(block, Material.ICE, (byte) 0);
 			}
 		}
 	}
@@ -152,7 +153,7 @@ public class WaterWall implements IAbility {
 		frozen = false;
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				new TempBlock(block, Material.WATER, full, player, WaterWall.class);
+				new TempBlock(block, Material.WATER, full);
 			}
 		}
 	}
@@ -176,7 +177,7 @@ public class WaterWall implements IAbility {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if(Drainbending.canBeSource(block)) {
-				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0, player, WaterWall.class);
+				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 				sourceblock = block;
 				focusBlock();
 				//Radius is thirded for Drainbending
@@ -391,9 +392,9 @@ public class WaterWall implements IAbility {
 
 	private void addWallBlock(Block block) {
 		if (frozen) {
-			new TempBlock(block, Material.ICE, (byte) 0, player, WaterWall.class);
+			new TempBlock(block, Material.ICE, (byte) 0);
 		} else {
-			new TempBlock(block, Material.WATER, full, player, WaterWall.class);
+			new TempBlock(block, Material.WATER, full);
 		}
 	}
 
@@ -440,7 +441,7 @@ public class WaterWall implements IAbility {
 			return;
 
 		if (!TempBlock.isTempBlock(block)) {
-			new TempBlock(block, Material.WATER, full, player, WaterWall.class);
+			new TempBlock(block, Material.WATER, full);
 			// new TempBlock(block, Material.ICE, (byte) 0);
 			affectedblocks.put(block, block);
 		}
@@ -465,6 +466,7 @@ public class WaterWall implements IAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void form(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 

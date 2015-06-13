@@ -229,6 +229,7 @@ public class Combustion implements IAbility {
 	}
 	
 	
+	@SuppressWarnings("deprecation")
 	private void removeBlock(Block block) {
 		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();

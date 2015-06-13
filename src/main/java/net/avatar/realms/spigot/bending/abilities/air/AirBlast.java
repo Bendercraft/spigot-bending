@@ -130,6 +130,7 @@ public class AirBlast implements IAbility {
 		origins.put(player, location);
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
 			return false;

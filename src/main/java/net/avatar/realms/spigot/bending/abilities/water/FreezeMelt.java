@@ -40,6 +40,7 @@ public class FreezeMelt implements IAbility {
 				this.parent = parent;
 				this.player = player;
 				
+				@SuppressWarnings("deprecation")
 				byte data = block.getData();
 				block.setType(Material.ICE);
 				frozenblocks.put(block, data);
@@ -93,12 +94,14 @@ public class FreezeMelt implements IAbility {
 	}
 
 	private void freeze(Block block) {
+		@SuppressWarnings("deprecation")
 		byte data = block.getData();
 		block.setType(Material.ICE);
 		frozenblocks.put(block, data);
 	}
 
 
+	@SuppressWarnings("deprecation")
 	private boolean thaw(Block block) {
 		if (frozenblocks.containsKey(block)) {
 			byte data = frozenblocks.get(block);
@@ -155,6 +158,7 @@ public class FreezeMelt implements IAbility {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void thawAll() {
 		List<Block> toRemove = new LinkedList<Block>();
 		for (Entry<Block, Byte> entry : frozenblocks.entrySet()) {

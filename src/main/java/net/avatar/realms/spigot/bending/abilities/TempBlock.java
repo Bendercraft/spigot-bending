@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
 
 public class TempBlock {
 	private static Map<Block, TempBlock> instances = new HashMap<Block, TempBlock>();
@@ -20,16 +19,11 @@ public class TempBlock {
 	private byte newdata;
 	private BlockState state;
 
-	//For logging purpose
-	private Player source;
-	private Class<?> clazz;
-
-	public TempBlock(Block block, Material newtype, byte newdata, Player source, Class<?> clazz) {
+	@SuppressWarnings("deprecation")
+	public TempBlock(Block block, Material newtype, byte newdata) {
 		this.block = block;
 		this.newdata = newdata;
 		this.newtype = newtype;
-		this.source = source;
-		this.clazz = clazz;
 		if (instances.containsKey(block)) {
 			TempBlock temp = instances.get(block);
 			if (newtype != temp.newtype) {
@@ -51,23 +45,11 @@ public class TempBlock {
 		if (state.getType() == Material.FIRE) {
 			state.setType(Material.AIR);
 		}
-		/*
-		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
-			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
-			cp.logPlacement(source.getName()+":"+clazz.getSimpleName(), block.getLocation(), block.getType().getId(), block.getData());
-		}
-		*/
 	}
 
 	public void revertBlock() {
 		state.update(true);
 		instances.remove(block);
-		/*
-		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
-			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
-			cp.logRemoval(source.getName()+":"+clazz.getCanonicalName(), block.getLocation(), block.getType().getId(), block.getData());
-		}
-		*/
 	}
 	
 	public BlockState getState() {
@@ -117,6 +99,7 @@ public class TempBlock {
 		setType(material, newdata);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setType(Material material, byte data) {
 		newtype = material;
 		newdata = data;

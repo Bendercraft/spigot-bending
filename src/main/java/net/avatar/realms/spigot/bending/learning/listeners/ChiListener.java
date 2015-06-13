@@ -30,11 +30,6 @@ public class ChiListener implements Listener {
 	private Map<UUID, Double> sprintDistanceTraveledDash = new HashMap<UUID, Double>();
 	private Map<UUID, Location> sprintLastLocationDash = new HashMap<UUID, Location>();
 	private static final int distanceNeededDash = 1000;
-	
-	private Map<UUID, Integer> arrowsThrowns = new HashMap<UUID, Integer>();
-	private Map<UUID, Integer> potionsUsed = new HashMap<UUID, Integer>();
-	private static final int arrowsNeeded = 500;
-	private static final int potionsNeeded = 100;
 
 	public ChiListener(BendingLearning plugin) {
 		this.plugin = plugin;

@@ -25,6 +25,7 @@ public class Plantbending implements IAbility {
 	private int id;
 	private IAbility parent;
 
+	@SuppressWarnings("deprecation")
 	public Plantbending(Block block, IAbility parent) {
 		this.parent = parent;
 		if (regrowtime != 0) {
@@ -48,6 +49,7 @@ public class Plantbending implements IAbility {
 		instances.remove(id);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void clear() {
 		if (block.getType() == Material.AIR) {
 			block.setType(type);

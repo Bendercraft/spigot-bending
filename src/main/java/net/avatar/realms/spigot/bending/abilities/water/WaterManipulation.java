@@ -112,7 +112,7 @@ public class WaterManipulation implements IAbility {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if(Drainbending.canBeSource(block)) {
-				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0, player, WaterManipulation.class);
+				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 				sourceblock = block;
 				focusBlock();
 				bPlayer.cooldown(Abilities.Drainbending);
@@ -372,7 +372,7 @@ public class WaterManipulation implements IAbility {
 					trail2 = trail;
 					trail2.setType(Material.WATER, (byte) 2);
 				}
-				trail = new TempBlock(sourceblock, Material.WATER, (byte) 1, player, WaterManipulation.class);
+				trail = new TempBlock(sourceblock, Material.WATER, (byte) 1);
 				sourceblock = block;
 
 				if (location.distance(targetdestination) <= 1
@@ -436,6 +436,7 @@ public class WaterManipulation implements IAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void addWater(Block block) {
 		if (!affectedblocks.containsKey(block)) {
 			affectedblocks.put(block, block);
@@ -448,6 +449,7 @@ public class WaterManipulation implements IAbility {
 		block.setData(full);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void moveWater(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 

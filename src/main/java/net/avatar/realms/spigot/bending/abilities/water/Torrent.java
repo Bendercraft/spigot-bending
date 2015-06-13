@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -96,7 +95,7 @@ public class Torrent implements IAbility {
 		for (Block block : ice) {
 			if (BlockTools.isTransparentToEarthbending(player, block)
 					&& block.getType() != Material.ICE) {
-				TempBlock tblock = new TempBlock(block, Material.ICE, (byte) 0, player, Torrent.class);
+				TempBlock tblock = new TempBlock(block, Material.ICE, (byte) 0);
 				frozenblocks.put(tblock, player);
 			}
 		}
@@ -140,7 +139,7 @@ public class Torrent implements IAbility {
 							.adjacentToThreeOrMoreSources(sourceblock)) {
 						sourceblock.setType(Material.AIR);
 					}
-					source = new TempBlock(sourceblock, Material.WATER, full, player, Torrent.class);
+					source = new TempBlock(sourceblock, Material.WATER, full);
 					location = sourceblock.getLocation();
 				} else {
 					Tools.playFocusWaterEffect(sourceblock);
@@ -197,7 +196,7 @@ public class Torrent implements IAbility {
 							return false;
 						}
 						source = new TempBlock(location.getBlock(),
-								Material.WATER, full, player, Torrent.class);
+								Material.WATER, full);
 					}
 				}
 			}
@@ -271,7 +270,7 @@ public class Torrent implements IAbility {
 					if (BlockTools.isTransparentToEarthbending(player, block)
 							&& !block.isLiquid()) {
 						launchblocks.add(new TempBlock(block, Material.WATER,
-								full, player, Torrent.class));
+								full));
 						doneblocks.add(block);
 					} else if (!BlockTools.isTransparentToEarthbending(player,
 							block)) {
@@ -348,7 +347,7 @@ public class Torrent implements IAbility {
 				return true;
 			}
 			if (b.getLocation().distance(targetloc) > 1) {
-				newblocks.add(new TempBlock(b, Material.WATER, full, player, Torrent.class));
+				newblocks.add(new TempBlock(b, Material.WATER, full));
 			} else {
 				if (layer < maxlayer) {
 					if (layer == 0)
@@ -421,7 +420,7 @@ public class Torrent implements IAbility {
 							Abilities.Torrent, blockloc)) {
 				if (BlockTools.isTransparentToEarthbending(player, block)
 						&& !block.isLiquid()) {
-					blocks.add(new TempBlock(block, Material.WATER, full, player, Torrent.class));
+					blocks.add(new TempBlock(block, Material.WATER, full));
 					doneblocks.add(block);
 					for (LivingEntity entity : entities) {
 						if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
@@ -471,6 +470,7 @@ public class Torrent implements IAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void create(Player player) {
 		if (instances.containsKey(player)) {
 			return;

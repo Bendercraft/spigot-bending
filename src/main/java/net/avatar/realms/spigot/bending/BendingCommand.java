@@ -16,15 +16,12 @@ import net.avatar.realms.spigot.bending.db.DBUtils;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
 import net.avatar.realms.spigot.bending.learning.LearningCommand;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.Metrics;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
-
-import com.sun.webkit.plugin.Plugin;
 
 
 public class BendingCommand {
@@ -53,7 +50,6 @@ public class BendingCommand {
 	private final String[] getbackAliases = {"getback"};
 	private final String[] itemAliases = {"item", "ite", "it", "i"};
 	private final String[] slotAliases = {"slot", "slo", "sl", "s"};
-	private final String[] metricsAlias = {"metrics"};
 	private final String[] dbAlias = {"db"};
 	private final String[] learningAlias = {"learning", "l"};
 	private final File dataFolder;
@@ -233,9 +229,6 @@ public class BendingCommand {
 			else if (Arrays.asList(this.versionAliases).contains(arg)) {
 				version(player, args);
 			}
-			else if (Arrays.asList(this.metricsAlias).contains(arg)) {
-				metrics(player, args);
-			}
 			else if (Arrays.asList(this.dbAlias).contains(arg)) {
 				db(player, args);
 			}
@@ -254,15 +247,6 @@ public class BendingCommand {
 		}
 		else {
 			printHelpDialogue(player);
-		}
-	}
-
-	private void metrics (final Player player, final String[] args) {
-		if (player.hasPermission("bending.admin")) {
-			sendMessage(player, Metrics.ROOT.toMinecraftString("", 0));
-		}
-		else {
-			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
 		}
 	}
 
@@ -1490,7 +1474,7 @@ public class BendingCommand {
 				final String playername = args[3];
 				final Player targetplayer = getOnlinePlayer(playername);
 				if (targetplayer == null) {
-					// TODO unknown player
+					player.sendMessage("Player "+playername+" is unknown.");
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
@@ -1524,7 +1508,7 @@ public class BendingCommand {
 				final String playername = args[3];
 				final Player targetplayer = getOnlinePlayer(playername);
 				if (targetplayer == null) {
-					// TODO unknown player
+					player.sendMessage("Player "+playername+" is unknown.");
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
@@ -1554,7 +1538,7 @@ public class BendingCommand {
 				final String playername = args[3];
 				final Player targetplayer = getOnlinePlayer(playername);
 				if (targetplayer == null) {
-					// TODO unknown player
+					player.sendMessage("Player "+playername+" is unknown.");
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
@@ -1579,7 +1563,7 @@ public class BendingCommand {
 				final String playername = args[2];
 				final Player targetplayer = getOnlinePlayer(playername);
 				if (targetplayer == null) {
-					// TODO unknown player
+					player.sendMessage("Player "+playername+" is unknown.");
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);

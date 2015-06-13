@@ -130,6 +130,7 @@ public class IceSpike2 implements IAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static void waterBottle(Player player) {
 		if (WaterReturn.hasWaterBottle(player)) {
 			Location eyeloc = player.getEyeLocation();
@@ -202,7 +203,7 @@ public class IceSpike2 implements IAbility {
 			sourceblock.setType(Material.AIR);
 		}
 
-		source = new TempBlock(sourceblock, Material.ICE, data, player, IceSpike2.class);
+		source = new TempBlock(sourceblock, Material.ICE, data);
 	}
 
 	public static void progressAll() {
@@ -310,7 +311,7 @@ public class IceSpike2 implements IAbility {
 			}
 
 			sourceblock = block;
-			source = new TempBlock(sourceblock, Material.ICE, data, player, IceSpike2.class);
+			source = new TempBlock(sourceblock, Material.ICE, data);
 
 		} else if (prepared) {
 			Tools.playFocusWaterEffect(sourceblock);

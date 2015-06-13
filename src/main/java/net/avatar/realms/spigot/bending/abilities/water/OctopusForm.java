@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
@@ -83,6 +82,7 @@ public class OctopusForm implements IAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void form(Player player) {
 		if (instances.containsKey(player)) {
 			instances.get(player).form();
@@ -115,7 +115,7 @@ public class OctopusForm implements IAbility {
 		} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 			sourceblock.setType(Material.AIR);
 		}
-		source = new TempBlock(sourceblock, Material.WATER, full, player, OctopusForm.class);
+		source = new TempBlock(sourceblock, Material.WATER, full);
 	}
 
 	private void attack() {
@@ -135,7 +135,6 @@ public class OctopusForm implements IAbility {
 	}
 
 	private void affect(Location location) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.5)) {
 			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
@@ -203,7 +202,7 @@ public class OctopusForm implements IAbility {
 					Block newblock = sourceblock.getRelative(BlockFace.UP);
 					sourcelocation = newblock.getLocation();
 					if (!BlockTools.isSolid(newblock)) {
-						source = new TempBlock(newblock, Material.WATER, full, player, OctopusForm.class);
+						source = new TempBlock(newblock, Material.WATER, full);
 						sourceblock = newblock;
 					} else {
 						returnWater();
@@ -215,7 +214,7 @@ public class OctopusForm implements IAbility {
 					Block newblock = sourceblock.getRelative(BlockFace.DOWN);
 					sourcelocation = newblock.getLocation();
 					if (!BlockTools.isSolid(newblock)) {
-						source = new TempBlock(newblock, Material.WATER, full, player, OctopusForm.class);
+						source = new TempBlock(newblock, Material.WATER, full);
 						sourceblock = newblock;
 					} else {
 						returnWater();
@@ -233,7 +232,7 @@ public class OctopusForm implements IAbility {
 						source = null;
 						if (!BlockTools.isSolid(newblock)) {
 							source = new TempBlock(newblock, Material.WATER,
-									full, player, OctopusForm.class);
+									full);
 							sourceblock = newblock;
 						}
 					}
@@ -389,7 +388,7 @@ public class OctopusForm implements IAbility {
 		} else if (BlockTools.isWaterbendable(block, player)
 				|| block.getType() == Material.FIRE
 				|| block.getType() == Material.AIR) {
-			newblocks.add(new TempBlock(block, Material.WATER, full, player, OctopusForm.class));
+			newblocks.add(new TempBlock(block, Material.WATER, full));
 		}
 	}
 
