@@ -1,5 +1,6 @@
 .classpath
 .gitignore
+.gitignore~
 .project
 dependency-reduced-pom.xml
 .settings
@@ -8,3 +9,4 @@ dependency-reduced-pom.xml
 /save
 /lib/
 /libs/
+build.xml
