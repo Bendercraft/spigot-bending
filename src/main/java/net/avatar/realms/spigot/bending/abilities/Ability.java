@@ -2,6 +2,8 @@ package net.avatar.realms.spigot.bending.abilities;
 
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+
 /**
  * 
  * Represent the base class for bending abilities
@@ -15,6 +17,8 @@ public abstract class Ability {
 	protected Player player;
 	
 	protected long startedTime;
+	
+	protected boolean canContinue;
 
 	/**
 	 * Construct the bases of a new ability instance
@@ -25,7 +29,9 @@ public abstract class Ability {
 		startedTime = System.currentTimeMillis();	
 		this.parent = parent;
 		this.player = player;
-		this.bender = BendingPlayer.getBendingPlayer(player);	
+		this.bender = BendingPlayer.getBendingPlayer(player);
+		
+		canContinue = canBeInitialized();
 	}
 	
 	/**
@@ -33,7 +39,7 @@ public abstract class Ability {
 	 * @return <code>true</code> if we should create a new version of the ability
 	 *  <code>false</code> otherwise
 	 */
-	public boolean click() {
+	public boolean swing() {
 		return false;
 	}
 	
@@ -60,7 +66,13 @@ public abstract class Ability {
 	 * @return <code>false</code> if the ability must be stopped
 	 * <code>true</code> if the ability can continue 
 	 */
-	public abstract boolean progress();
+	public boolean progress() {
+		if (!player.isOnline() || player.isDead()) {
+			return false;
+		}
+		
+		return true;
+	}
 	
 	/**
 	 * What should the ability do when it's over.
@@ -68,6 +80,8 @@ public abstract class Ability {
 	public void stop() {
 		
 	}
+	
+	public abstract void remove();
 	
 	protected int getMaxMillis() {
 		return 10000;
@@ -82,5 +96,24 @@ public abstract class Ability {
 	public Ability getParent() {
 		return parent;
 	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+	
+	public boolean canBeInitialized() {
+		if (bender.isOnCooldown(this.getAbilityType())) {
+			return false;
+		}
+		
+		if (ProtectionManager.isRegionProtectedFromBending(player, this.getAbilityType(), player.getLocation())) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public abstract Abilities getAbilityType();
+	
 
 }

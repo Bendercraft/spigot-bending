@@ -121,7 +121,6 @@ public class BendingPlayer {
 						break;
 					case AvatarState:
 						cd = ConfigManager.avatarstateCooldown;
-						System.out.println(cd);
 						break;
 					default:
 						cd = 0;

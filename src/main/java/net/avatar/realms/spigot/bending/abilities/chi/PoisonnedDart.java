@@ -1,18 +1,5 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ParticleEffect;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,33 +11,45 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class PoisonnedDart {
+import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.ParticleEffect;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-	private static Map<Player, PoisonnedDart> instances = new HashMap<Player, PoisonnedDart>();
+public class PoisonnedDart extends Ability{
+	
 	private static int damage = ConfigManager.dartDamage;
 	private static int range = ConfigManager.dartRange;
 	
 	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
 	
-	private Player player;
 	private Location origin;
 	private Location location;
 	private Vector direction;
 	private PotionEffect effect;
+	private boolean started;
 	
 	public PoisonnedDart(Player player) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer.isOnCooldown(Abilities.PoisonnedDart)) {
-			return;
-		}
+		super(player, null);
 		
-		if (instances.containsKey(player)) {
+		if (!canContinue) {
 			return;
 		}
+		started = false;
+		AbilityManager.getManager().addInstance(this);
+	}
+	
+	@Override
+	public boolean swing() {
 		
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PoisonnedDart, player.getLocation())) {
-			return;
+		if (started || !canContinue) {
+			return true;
 		}
+		started = true;
 		
 		ItemStack is = player.getItemInHand();
 		if (is.getType() == Material.MILK_BUCKET) {
@@ -68,33 +67,20 @@ public class PoisonnedDart {
 		} else {
 			effect = new PotionEffect(PotionEffectType.POISON, 20*1, 0);
 		}
-		this.player = player;
+
 		origin = player.getEyeLocation();
 		location = origin.clone();
 		direction = origin.getDirection().normalize();
 		
 		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
 		
-		instances.put(player, this);
+		bender.cooldown(Abilities.PoisonnedDart);
 		
-		bPlayer.cooldown(Abilities.PoisonnedDart);
+		return false;
 	}
-	public static void progressAll() {
-		List<Player> toRemove = new LinkedList<Player>();
-		for (Player p : instances.keySet()) {
-			boolean keep = instances.get(p).progress();
-			if (!keep) {
-				toRemove.add(p);
-			}
-		}
-		
-		for (Player p : toRemove) {
-			instances.remove(p);
-		}
-	}
-	
+
 	public boolean progress() {
-		if (!player.isOnline() || player.isDead()) {
+		if (!super.progress()) {
 			return false;
 		}
 		
@@ -154,8 +140,27 @@ public class PoisonnedDart {
 		location = location.add(direction.clone().multiply(1.5));
 	}
 	
-	public static void removeAll() {
-		instances.clear();
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if (AbilityManager.getManager().getPoisonnedDarts().containsKey(player)) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.PoisonnedDart;
+	}
+	
+	@Override
+	public void remove() {
+		AbilityManager.getManager().getPoisonnedDarts().remove(player);		
 	}
 	
 }

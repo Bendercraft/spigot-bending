@@ -1,0 +1,7 @@
+[22:51:31] [Server thread/INFO]: Starting minecraft server version 1.8.7
+[22:51:31] [Server thread/INFO]: Loading properties
+[22:51:31] [Server thread/WARN]: server.properties does not exist
+[22:51:31] [Server thread/INFO]: Generating new properties file
+[22:51:31] [Server thread/WARN]: Failed to load eula.txt
+[22:51:31] [Server thread/INFO]: You need to agree to the EULA in order to run the server. Go to eula.txt for more info.
+[22:51:31] [Server thread/INFO]: Stopping server

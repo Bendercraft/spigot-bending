@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
@@ -103,6 +104,8 @@ public class BendingManager implements Runnable {
 			Bending.time_step = System.currentTimeMillis() - time;
 			time = System.currentTimeMillis();
 			
+			AbilityManager.getManager().progressAllAbilities();
+			
 			manageAirbending();
 			manageEarthbending();
 			manageFirebending();
@@ -192,7 +195,6 @@ public class BendingManager implements Runnable {
 		RapidPunch.progressAll();
 		SmokeBomb.progressAll();
 		C4.progressAll();
-		PoisonnedDart.progressAll();
 	}
 
 	private void manageWaterbending() {
