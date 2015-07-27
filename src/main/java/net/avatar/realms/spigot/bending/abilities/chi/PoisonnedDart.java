@@ -55,6 +55,11 @@ public class PoisonnedDart extends Ability{
 		if (started || !canContinue) {
 			return true;
 		}
+		
+		origin = player.getEyeLocation();
+		location = origin.clone();
+		direction = origin.getDirection().normalize();
+		
 		started = true;
 		
 		ItemStack is = player.getItemInHand();
@@ -86,35 +91,23 @@ public class PoisonnedDart extends Ability{
 				is.setAmount(1);
 				break;
 			case SKULL_ITEM:
-				// Need to detect if Wither Skull
+				byte data = is.getData().getData();
+				// If this is a wither skull
+				if (data == 1) {
+					effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 15, 1));
+					if (is.getAmount() == 1) {
+						is.setType(Material.AIR);
+					}
+					else {
+						is.setAmount(is.getAmount() - 1);
+					}
+				}
 				break;
 			default : 
 				effects.add(new PotionEffect(PotionEffectType.POISON, 20*1, 0));
 				break;
 		}
-		
-		
-//		if (is.getType() == Material.MILK_BUCKET) {
-//			effect = null;
-//			is.setType(Material.BUCKET);
-//			is.setAmount(1);
-//		} else if (is.getType() == Material.POTION) {
-//			effe
-//			effect = EntityTools.fromItemStack(is);
-//			is.setType(Material.GLASS_BOTTLE);
-//			is.setAmount(1);
-//		} else if (is.getType() == Material.EYE_OF_ENDER) {
-//			effect = new PotionEffect(PotionEffectType.BLINDNESS,20*10,1);
-//		} else if (is.getType() == Material.MUSHROOM_SOUP) {
-//			effect = new PotionEffect(PotionEffectType.CONFUSION,20*12,1);
-//		} else {
-//			effect = new PotionEffect(PotionEffectType.POISON, 20*1, 0);
-//		}
 
-		origin = player.getEyeLocation();
-		location = origin.clone();
-		direction = origin.getDirection().normalize();
-		
 		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
 		
 		bender.cooldown(Abilities.PoisonnedDart);
@@ -123,6 +116,11 @@ public class PoisonnedDart extends Ability{
 	}
 
 	public boolean progress() {
+		
+		if (!started) {
+			return true;
+		}
+		
 		if (!super.progress()) {
 			return false;
 		}
