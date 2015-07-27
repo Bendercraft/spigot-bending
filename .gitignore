@@ -4,9 +4,12 @@
 .project
 dependency-reduced-pom.xml
 .settings
+build.xml
 /target
-/bin
-/save
+/bin/
+/save/
 /lib/
 /libs/
-build.xml
+/.externalToolBuilders/
+
+
