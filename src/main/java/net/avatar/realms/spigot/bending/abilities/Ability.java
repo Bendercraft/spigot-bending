@@ -10,7 +10,11 @@ public abstract class Ability {
 	protected Player player;
 	
 	protected long startedTime;
-	
+	/**
+	 * Construct the bases of a new ability instance
+	 * @param player The player that launches this ability
+	 * @param parent The ability that generates this ability. null if none
+	 */
 	public Ability(Player player, Ability parent) {
 		startedTime = System.currentTimeMillis();	
 		this.parent = parent;
@@ -20,23 +24,29 @@ public abstract class Ability {
 	
 	/**
 	 * What should the ability do when the player click
+	 * @return <code>true</code> if we should create a new version of the ability
+	 *  <code>false</code> otherwise
 	 */
-	public void click() {
-		
+	public boolean click() {
+		return false;
 	}
 	
 	/**
 	 * What should the ability do when the player jump. Not used for the moment.
+	 * @return <code>true</code> if we should create a new version of the ability
+	 *  <code>false</code> otherwise
 	 */
-	public void jump() {
-		
+	public boolean jump() {
+		return false;
 	}
 	
 	/**
 	 * What should the ability do when the player sneaks.
+	 * @return <code>true</code> if we should create a new version of the ability
+	 *  <code>false</code> otherwise
 	 */
-	public void sneak() {
-		
+	public boolean sneak() {
+		return false;
 	}
 	
 	/**
