@@ -2,6 +2,11 @@ package net.avatar.realms.spigot.bending.abilities;
 
 import org.bukkit.entity.Player;
 
+/**
+ * 
+ * Represent the base class for bending abilities
+ *
+ */
 public abstract class Ability {
 	
 	private Ability parent;
@@ -10,6 +15,7 @@ public abstract class Ability {
 	protected Player player;
 	
 	protected long startedTime;
+
 	/**
 	 * Construct the bases of a new ability instance
 	 * @param player The player that launches this ability
@@ -51,14 +57,15 @@ public abstract class Ability {
 	
 	/**
 	 * The logic that the ability must follow over the time.
-	 * @return false if 
+	 * @return <code>false</code> if the ability must be stopped
+	 * <code>true</code> if the ability can continue 
 	 */
 	public abstract boolean progress();
 	
 	/**
 	 * What should the ability do when it's over.
 	 */
-	public void remove() {
+	public void stop() {
 		
 	}
 	
