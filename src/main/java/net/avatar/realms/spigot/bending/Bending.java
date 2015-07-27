@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
@@ -54,6 +55,11 @@ public class Bending extends JavaPlugin {
 		plugin = this;
 		log = plugin.getLogger();
 		saveDefaultConfig();
+		
+		//Learning
+		learning = new BendingLearning();
+		learning.onEnable();
+				
 		configManager.load(new File(getDataFolder(), "config.yml"));
 		language.load(new File(getDataFolder(), "language.yml"));
 		backup = new TempBackup(getDataFolder());
@@ -66,22 +72,20 @@ public class Bending extends JavaPlugin {
 		this.tBackup = new TempBackup(getDataFolder());
 		BendingPlayer.initializeCooldowns();
 		this.tools = new Tools();
+		
 		getServer().getPluginManager().registerEvents(this.listener, this);
 		getServer().getPluginManager().registerEvents(this.bpListener, this);
 		getServer().getPluginManager().registerEvents(this.blListener, this);
+		
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin, this.revertChecker, 0, 200);
+		
 		ProtectionManager.init();
 		PluginTools.verbose("Bending v" + getDescription().getVersion() + " has been loaded.");
 		registerCommands();
 		
-		
-		//Learning
-		learning = new BendingLearning();
-		learning.onEnable();
-		
 		//Citizens
-		if ((getServer().getPluginManager().getPlugin("Citizens") != null) || getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
+		if ((getServer().getPluginManager().getPlugin("Citizens") != null) && getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
 			 CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(UnbendableTrait.class).withName("unbendable"));
 	    }
 	}
@@ -89,6 +93,7 @@ public class Bending extends JavaPlugin {
 	@Override
 	public void onDisable () {
 		PluginTools.stopAllBending();
+		AbilityManager.getManager().stopAllAbilities();
 		getServer().getScheduler().cancelTasks(plugin);
 		
 		learning.onDisable();

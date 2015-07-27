@@ -34,10 +34,11 @@ public class ProtectionManager {
 	public static boolean respectWorldGuard = true;
 	public static boolean respectFactions = true;
 	public static boolean respectCitizens = true;
+	
+	private static PluginManager pm;
 
 	private static WorldGuardPlugin worldguard = null;
 	private static WGCustomFlagsPlugin wgCustomFlags = null;
-	private static PluginManager pm;
 
 	private static StateFlag BENDING;
 	private static StateFlag BENDING_AIR;
@@ -54,31 +55,32 @@ public class ProtectionManager {
 		if (respectWorldGuard) {
 			pm = Bending.plugin.getServer().getPluginManager();
 			Plugin plugin = pm.getPlugin("WorldGuard");
-			if ((plugin != null) && (plugin instanceof WorldGuardPlugin)) {
-				worldguard = (WorldGuardPlugin)plugin;
+			if ((plugin != null) && (plugin.isEnabled())) {
+				worldguard = (WorldGuardPlugin) plugin;
 			}
 
 			plugin = pm.getPlugin("WGCustomFlags");
-			if ((plugin != null) && (plugin instanceof WGCustomFlagsPlugin)) {
-				wgCustomFlags = (WGCustomFlagsPlugin)plugin;
+			if ((plugin != null) && (plugin.isEnabled())) {
+				wgCustomFlags = (WGCustomFlagsPlugin) plugin;
 			}
 
 			if ((worldguard == null) || (wgCustomFlags == null)) {
-				throw new RuntimeException("WorldGuard is setted to be respected, but not loaded");
+				respectWorldGuard = false;
 			}
 		}
 
 		if (respectWorldGuard) {
-			BENDING = new StateFlag("bending", true);
-			BENDING_AIR = new StateFlag("bending-air", true);
-			BENDING_CHI = new StateFlag("bending-chi", true);
-			BENDING_EARTH = new StateFlag("bending-earth", true);
-			BENDING_FIRE = new StateFlag("bending-fire", true);
-			BENDING_WATER = new StateFlag("bending-water", true);
-			BENDING_PASSIVES = new StateFlag("bending-passives", true);
-			BENDING_SPE = new StateFlag("bending-spe", true);
-			BENDING_ENERGY = new StateFlag("bending-energy", true);
-
+			BENDING = 			new StateFlag("bending", true);
+			BENDING_AIR = 		new StateFlag("bending-air", true);
+			BENDING_CHI = 		new StateFlag("bending-chi", true);
+			BENDING_EARTH = 	new StateFlag("bending-earth", true);
+			BENDING_FIRE = 		new StateFlag("bending-fire", true);
+			BENDING_WATER = 	new StateFlag("bending-water", true);
+			BENDING_PASSIVES = 	new StateFlag("bending-passives", true);
+			BENDING_SPE = 		new StateFlag("bending-spe", true);
+			BENDING_ENERGY = 	new StateFlag("bending-energy", true);
+			
+			
 			wgCustomFlags.addCustomFlag(BENDING);
 			wgCustomFlags.addCustomFlag(BENDING_PASSIVES);
 			wgCustomFlags.addCustomFlag(BENDING_AIR);
@@ -89,6 +91,8 @@ public class ProtectionManager {
 			wgCustomFlags.addCustomFlag(BENDING_SPE);
 			wgCustomFlags.addCustomFlag(BENDING_ENERGY);
 		}
+		
+		
 
 		Plugin fcp = Bukkit.getPluginManager().getPlugin("Factions");
 		if (fcp != null) {

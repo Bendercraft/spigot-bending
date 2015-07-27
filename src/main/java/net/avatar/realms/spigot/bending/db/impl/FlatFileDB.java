@@ -103,7 +103,13 @@ public class FlatFileDB implements IBendingDB {
 			
 			FileReader reader = new FileReader(bendingPlayersFile);
 			BendingPlayerDatas temp = mapper.fromJson(reader, BendingPlayerDatas.class);
-			datas.putAll(temp.getDatas());
+			if (temp != null){
+				datas.putAll(temp.getDatas());
+			}
+			else {
+				Bending.plugin.getLogger().warning("Bending Player Data was NULL !");
+			}
+			
 			reader.close();
 		} catch(Exception e) {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE,
