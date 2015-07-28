@@ -3,15 +3,12 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Skull;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -79,7 +76,7 @@ public class PoisonnedDart extends Ability{
 			case EYE_OF_ENDER:
 				effects.add(new PotionEffect(PotionEffectType.BLINDNESS,20*10,1));
 				if (is.getAmount() == 1) {
-					is.setType(Material.AIR);
+					player.getInventory().remove(is);
 				}
 				else {
 					is.setAmount(is.getAmount() - 1);
@@ -96,7 +93,7 @@ public class PoisonnedDart extends Ability{
 				if (data == 1) {
 					effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 15, 1));
 					if (is.getAmount() == 1) {
-						is.setType(Material.AIR);
+						player.getInventory().remove(is);
 					}
 					else {
 						is.setAmount(is.getAmount() - 1);
@@ -162,7 +159,6 @@ public class PoisonnedDart extends Ability{
 			}
 			else {
 				for (PotionEffect effect : effects) {
-					Bukkit.getLogger().info(effect.getType().getName());
 					entity.addPotionEffect(effect);	
 				}
 			}

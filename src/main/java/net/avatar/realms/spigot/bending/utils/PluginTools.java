@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
