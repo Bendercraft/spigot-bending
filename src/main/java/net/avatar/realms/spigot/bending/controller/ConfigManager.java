@@ -146,10 +146,10 @@ public class ConfigManager {
 	public static int smokeBombCooldown; // time in ms
 
 	// Poisonned dart
-	public static int dartRange;
-	public static int dartDamage;
-	public static int poisonLevel;
-	public static int poisonnedDartCooldown;
+//	public static int dartRange;
+//	public static int dartDamage;
+//	public static int poisonLevel;
+//	public static int poisonnedDartCooldown;
 
 	// Dash
 	public static int dashCooldown;
@@ -483,10 +483,10 @@ public class ConfigManager {
 		rapidPunchPunches = config.getInt("Properties.ChiBlocker.RapidPunch.Punches");
 
 		// Poisonned Dart
-		dartRange = config.getInt("Properties.ChiBlocker.PoisonnedDart.Range");
-		dartDamage = config.getInt("Properties.ChiBlocker.PoisonnedDart.Damage");
-		poisonLevel = config.getInt("Properties.ChiBlocker.PoisonnedDart.poison-level");
-		poisonnedDartCooldown = config.getInt("Properties.ChiBlocker.PoisonnedDart.Cooldown");
+//		dartRange = config.getInt("Properties.ChiBlocker.PoisonnedDart.Range");
+//		dartDamage = config.getInt("Properties.ChiBlocker.PoisonnedDart.Damage");
+//		poisonLevel = config.getInt("Properties.ChiBlocker.PoisonnedDart.poison-level");
+//		poisonnedDartCooldown = config.getInt("Properties.ChiBlocker.PoisonnedDart.Cooldown");
 
 		// Smoke bomb
 		smokeRadius = config.getInt("Properties.ChiBlocker.SmokeBomb.Radius");
@@ -782,6 +782,46 @@ public class ConfigManager {
 		iceSwipeCooldown = config.getLong("Properties.Water.IceSwipe.Cooldown");
 		// Night
 		nightFactor = config.getDouble("Properties.Water.Night-Power-Factor");
+	}
+	
+	public String getStringAttribute(String path, String defaultValue) {
+		return "";
+	}
+	
+	public String getStringAttribute(String path) {
+		return getStringAttribute(path, "none");
+	}
+	
+	public int getIntAttribute (String path, int defaultValue) {
+		return 0;
+	}
+	
+	public int getIntAttribute (String path) {
+		return getIntAttribute(path, 0);
+	}
+	
+	public long getLongAttribute (String path, long defaultValue) {
+		return 0;
+	}
+	
+	public long getLongAttribute (String path) {
+		return getLongAttribute(path, 0);
+	}
+	
+	public int getBooleanAttribute (String path, boolean defaultValue) {
+		return 0;
+	}
+	
+	public int getBooleanAttribute (String path) {
+		return getBooleanAttribute(path, false);
+	}
+	
+	public int getDoubleAttribute (String path, double defaultValue) {
+		return 0;
+	}
+	
+	public int getDoubleAttribute (String path) {
+		return getDoubleAttribute(path, 0.0);
 	}
 
 	public static String getColor (String element) {

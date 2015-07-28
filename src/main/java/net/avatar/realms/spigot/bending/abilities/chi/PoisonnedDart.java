@@ -14,10 +14,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
@@ -32,8 +32,9 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  */
 public class PoisonnedDart extends Ability{
 	
-	private static int damage = ConfigManager.dartDamage;
-	private static int range = ConfigManager.dartRange;
+	private static final int DAMAGE = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Damage");
+	private static final int RANGE = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Range");
+	private static final int COOLDOWN = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Cooldown");
 	
 	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
 	
@@ -114,7 +115,7 @@ public class PoisonnedDart extends Ability{
 
 		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
 		
-		bender.cooldown(Abilities.PoisonnedDart);
+		bender.cooldown(Abilities.PoisonnedDart, COOLDOWN);
 		
 		return false;
 	}
@@ -132,7 +133,7 @@ public class PoisonnedDart extends Ability{
 		if (!player.getWorld().equals(location.getWorld())) {
 			return false;
 		}
-		if (location.distance(origin) > range) {
+		if (location.distance(origin) > RANGE) {
 			return false;
 		}
 		
@@ -170,7 +171,7 @@ public class PoisonnedDart extends Ability{
 				}
 			}
 			if (!health && effects != null) {
-				EntityTools.damageEntity(player, entity, damage);
+				EntityTools.damageEntity(player, entity, DAMAGE);
 			}
 			cptEnt++;
 			break;

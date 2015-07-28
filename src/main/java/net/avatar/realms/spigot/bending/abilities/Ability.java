@@ -11,6 +11,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  */
 public abstract class Ability {
 	
+	protected static final String configPrefix = "Properties.";
+	
 	private Ability parent;
 	
 	protected BendingPlayer bender;
@@ -115,15 +117,15 @@ public abstract class Ability {
 	 * AirBurst can generate an AirFallBurst that generates multiple AirBlast </pre>
 	 * @return The ability that generated this ability
 	 */
-	public Ability getParent() {
+	public final Ability getParent() {
 		return parent;
 	}
 	
-	public Player getPlayer() {
+	public final Player getPlayer() {
 		return player;
 	}
 	
-	public BendingPlayer getBender() {
+	public final BendingPlayer getBender() {
 		return bender;
 	}
 	
@@ -141,5 +143,4 @@ public abstract class Ability {
 	
 	public abstract Abilities getAbilityType();
 	
-
 }

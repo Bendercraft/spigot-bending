@@ -50,7 +50,7 @@ Properties:
     AvatarState:
       Duration: 300000
       Cooldown: 1200000
-  ChiBlocker:
+  Chi:
     ChiBlock-Duration: 3000
     Dodge-Chance: 10.0
     Punch-Damage: 7.0
@@ -73,7 +73,6 @@ Properties:
     PoisonnedDart:
       Range: 16
       Damage: 2
-      poison-level: 1
       Cooldown: 1500
     Dash:
       Cooldown: 6000

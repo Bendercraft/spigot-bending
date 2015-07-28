@@ -41,7 +41,7 @@ public class Bending extends JavaPlugin {
 	public final BendingBlockListener blListener = new BendingBlockListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
 	static Map<String, String> commands = new HashMap<String, String>();
-	public static ConfigManager configManager = new ConfigManager();
+	public static final ConfigManager configuration = new ConfigManager();
 	public static Language language;
 	public static TempBackup backup;
 	public static IBendingDB database;
@@ -61,8 +61,7 @@ public class Bending extends JavaPlugin {
 		//Learning
 		learning = new BendingLearning();
 		learning.onEnable();
-				
-		configManager.load(new File(getDataFolder(), "config.yml"));
+		configuration.load(new File(getDataFolder(), "config.yml"));
 		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));
 		backup = new TempBackup(getDataFolder());

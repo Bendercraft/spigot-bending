@@ -100,9 +100,6 @@ public class BendingPlayer {
 					case SmokeBomb:
 						cd = ConfigManager.smokeBombCooldown;
 						break;
-					case PoisonnedDart:
-						cd = ConfigManager.poisonnedDartCooldown;
-						break;
 					case Dash:
 						cd = ConfigManager.dashCooldown;
 						break;
@@ -138,8 +135,8 @@ public class BendingPlayer {
 		}
 
 		if (this.cooldowns.containsKey(ability)) {
-			double time = System.currentTimeMillis() - this.cooldowns.get(ability);
-			return (time <= abilityCooldowns.get(ability));
+			long time = System.currentTimeMillis();
+			return (time <= this.cooldowns.get(ability));
 
 		}
 		else {
@@ -162,7 +159,18 @@ public class BendingPlayer {
 	public void cooldown (Abilities ability) {
 		long time = System.currentTimeMillis();
 		if (ability != null) {
-			this.cooldowns.put(ability, time);
+			this.cooldowns.put(ability, time + abilityCooldowns.get(ability));
+		}
+		this.lastTime = time;
+		if (ability != null) {
+			Bending.callEvent(new AbilityCooldownEvent(this, ability));
+		}
+	}
+	
+	public void cooldown (Abilities ability, long cooldownTime) {
+		long time = System.currentTimeMillis();
+		if (ability != null) {
+			this.cooldowns.put(ability, time + cooldownTime);
 		}
 		this.lastTime = time;
 		if (ability != null) {

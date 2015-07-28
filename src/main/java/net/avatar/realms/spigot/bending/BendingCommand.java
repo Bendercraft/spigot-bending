@@ -908,7 +908,7 @@ public class BendingCommand {
 		if (!hasPermission(player, "bending.admin.reload")) {
 			return;
 		}
-		Bending.configManager.load(new File(this.dataFolder, "config.yml"));
+		Bending.configuration.load(new File(this.dataFolder, "config.yml"));
 		Bending.language.load(new File(this.dataFolder, "language.yml"));
 		PluginTools.stopAllBending();
 		sendMessage(player, ChatColor.AQUA + "Bending " + Messages.getString("general.reload_success"));
