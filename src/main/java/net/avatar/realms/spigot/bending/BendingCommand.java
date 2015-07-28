@@ -806,8 +806,9 @@ public class BendingCommand {
 					element = "Chiblocker";
 				}
 				if (EntityTools.hasPermission(player, ability)) {
+					String msg = Messages.getMessages().getAbilityDescription(ability);
 					sendMessage(player, ("                                                " + cc + ability.name()));
-					PluginTools.sendMessage(player, cc, element + "." + ability.name());
+					player.sendMessage(cc + msg);
 					return;
 				}
 				else {

@@ -59,11 +59,11 @@ public class Language {
 			this.supportedlanguages = this.config.getStringList("SupportedLanguages");
 		}
 		this.config.set("SupportedLanguages", this.supportedlanguages);
-		Set<String> indexList = new HashSet<String>();
-		for (Abilities a : Abilities.values()) {
-			indexList.add(a.name());
-			this.defaultdescriptions.put(a.name(), a.getDescription());
-		}
+//		Set<String> indexList = new HashSet<String>();
+//		for (Abilities a : Abilities.values()) {
+//			indexList.add(a.name());
+//			this.defaultdescriptions.put(a.name(), a.getDescription());
+//		}
 		this.defaultdescriptions.put("AirChoose", on_air_choose);
 		this.defaultdescriptions.put("ChiChoose", on_chi_choose);
 		this.defaultdescriptions.put("EarthChoose", on_earth_choose);
@@ -71,29 +71,6 @@ public class Language {
 		this.defaultdescriptions.put("WaterChoose", on_water_choose);
 		for (String language : this.supportedlanguages) {
 			HashMap<String, String> langdescriptions = new HashMap<String, String>();
-			for (String index : indexList) {
-				String element;
-				if (Abilities.isAirbending(Abilities.getAbility(index))) {
-					element = "Air";
-				}
-				else if (Abilities.isWaterbending(Abilities.getAbility(index))) {
-					element = "Water";
-				}
-				else if (Abilities.isFirebending(Abilities.getAbility(index))) {
-					element = "Fire";
-				}
-				else if (Abilities.isEarthbending(Abilities.getAbility(index))) {
-					element = "Earth";
-				}
-				else if (Abilities.isChiBlocking(Abilities.getAbility(index))) {
-					element = "Chiblocker";
-				}
-				else {
-					element = "Other";
-				}
-				String key = language + "." + element + "." + index;
-				langdescriptions.put(key, this.config.getString(key, this.defaultdescriptions.get(index)));
-			}
 
 			langdescriptions.put(language + ".Air.AirChoose", this.config.getString(language
 					+ ".Air.AirChoose", this.defaultdescriptions.get("AirChoose")));
