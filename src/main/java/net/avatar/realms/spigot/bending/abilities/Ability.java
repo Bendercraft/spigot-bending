@@ -62,12 +62,30 @@ public abstract class Ability {
 	}
 	
 	/**
+	 * What should the ability do when the player falls.
+	 * @return <code>true</code> if we should create a new version of the ability
+	 *  <code>false</code> otherwise
+	 */
+	public boolean fall() {
+		return false;
+	}
+	
+	/**
 	 * The logic that the ability must follow over the time.
 	 * @return <code>false</code> if the ability must be stopped
 	 * <code>true</code> if the ability can continue 
 	 */
 	public boolean progress() {
 		if (!player.isOnline() || player.isDead()) {
+			return false;
+		}
+		
+		if (ProtectionManager.isRegionProtectedFromBending(player, this.getAbilityType(), player.getLocation())) {
+			return false;
+		}
+		
+		long now = System.currentTimeMillis();
+		if (getMaxMillis() > 0 && now > startedTime + getMaxMillis()) {
 			return false;
 		}
 		
@@ -83,6 +101,10 @@ public abstract class Ability {
 	
 	public abstract void remove();
 	
+	/**
+	 * @return <pre>Max time in millisecond the ability can keep running.
+	 * 0 if unlimited </pre>
+	 */
 	protected int getMaxMillis() {
 		return 10000;
 	}
@@ -99,6 +121,10 @@ public abstract class Ability {
 	
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public BendingPlayer getBender() {
+		return bender;
 	}
 	
 	public boolean canBeInitialized() {

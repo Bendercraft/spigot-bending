@@ -16,6 +16,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+/**
+ * 
+ * This ability will be modified : 
+ * When you hit an entity, you deal some damage to it.
+ * The more you hit, the more you deal damage. (But the more big the cooldown will be)
+ *
+ */
 public class RapidPunch implements IAbility {
 	private static int damage = ConfigManager.rapidPunchDamage;
 	private int distance = ConfigManager.rapidPunchDistance;

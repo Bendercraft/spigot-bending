@@ -15,6 +15,13 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+/**
+ * 
+ * This ability will be modified :
+ * When you hit an entity, you deal a small amount of damage to it and it gets slown.
+ * The more you hit it, the more it get slown.
+ *
+ */
 public class Paralyze implements IAbility {
 	private static Map<Entity, Long> entities = new HashMap<Entity, Long>();
 	private static Map<Entity, Long> cooldowns = new HashMap<Entity, Long>();

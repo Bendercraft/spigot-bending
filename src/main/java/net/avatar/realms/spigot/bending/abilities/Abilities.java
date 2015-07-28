@@ -87,6 +87,7 @@ public enum Abilities {
 	Paralyze(BendingType.ChiBlocker, false),
 	SmokeBomb(BendingType.ChiBlocker, false),
 	Dash(BendingType.ChiBlocker, true),
+	PowerfulHit(BendingType.ChiBlocker, false),
 	PoisonnedDart(BendingSpecializationType.Inventor, false),
 	PlasticBomb(BendingSpecializationType.Inventor, true),
 
