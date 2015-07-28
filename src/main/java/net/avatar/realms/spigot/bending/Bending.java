@@ -42,7 +42,7 @@ public class Bending extends JavaPlugin {
 	private final RevertChecker revertChecker = new RevertChecker(this);
 	static Map<String, String> commands = new HashMap<String, String>();
 	public static ConfigManager configManager = new ConfigManager();
-	public static Language language = new Language();
+	public static Language language;
 	public static TempBackup backup;
 	public static IBendingDB database;
 	public TempBackup tBackup;
@@ -56,11 +56,14 @@ public class Bending extends JavaPlugin {
 		log = plugin.getLogger();
 		saveDefaultConfig();
 		
+		Messages.loadMessages();
+		
 		//Learning
 		learning = new BendingLearning();
 		learning.onEnable();
 				
 		configManager.load(new File(getDataFolder(), "config.yml"));
+		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));
 		backup = new TempBackup(getDataFolder());
 		database = DBUtils.choose(ConfigManager.database);

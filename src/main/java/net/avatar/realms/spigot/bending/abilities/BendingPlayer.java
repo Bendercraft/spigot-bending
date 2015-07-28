@@ -10,7 +10,6 @@ import java.util.UUID;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
-import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,7 +22,6 @@ public class BendingPlayer {
 	private static long globalCooldown = 250;
 
 	private UUID player;
-	private String language;
 
 	private Map<Integer, Abilities> slotAbilities = new HashMap<Integer, Abilities>();
 	private Map<Material, Abilities> itemAbilities = new HashMap<Material, Abilities>();
@@ -44,7 +42,6 @@ public class BendingPlayer {
 
 	public BendingPlayer (UUID id) {
 		this.player = id;
-		this.language = PluginTools.getDefaultLanguage();
 		this.lastTime = System.currentTimeMillis();
 	}
 
@@ -52,7 +49,6 @@ public class BendingPlayer {
 		this.player = data.getPlayer();
 
 		this.bendings = data.getBendings();
-		this.language = data.getLanguage();
 		this.bendToItem = data.isBendToItem();
 		this.itemAbilities = data.getItemAbilities();
 		this.slotAbilities = data.getSlotAbilities();
@@ -345,15 +341,6 @@ public class BendingPlayer {
 
 	}
 
-	public void setLanguage (String language) {
-		this.language = language;
-		Bending.database.save(this.player);
-	}
-
-	public String getLanguage () {
-		return this.language;
-	}
-
 	public void setBendToItem (boolean value) {
 		this.bendToItem = value;
 		Bending.database.save(this.player);
@@ -394,8 +381,6 @@ public class BendingPlayer {
 		string += ", ";
 		string += "Bendings=" + this.bendings;
 		string += ", ";
-		string += "Language=" + this.language;
-		string += ", ";
 		if (ConfigManager.bendToItem) {
 			string += "Binds=" + this.itemAbilities;
 		}
@@ -415,7 +400,6 @@ public class BendingPlayer {
 		result.setBendings(this.bendings);
 		result.setBendToItem(this.bendToItem);
 		result.setItemAbilities(this.itemAbilities);
-		result.setLanguage(this.language);
 		result.setLastTime(this.lastTime);
 		result.setSpecialization(this.specializations);
 		result.setPlayer(this.player);

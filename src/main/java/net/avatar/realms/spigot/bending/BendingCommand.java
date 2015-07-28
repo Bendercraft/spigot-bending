@@ -56,116 +56,6 @@ public class BendingCommand {
 	private final Server server;
 	private boolean verbose = true;
 	private BendingPlayer bPlayer;
-	static final String usage = "Usage";
-	static final String the_server = "The server";
-	static final String who_usage = "Displays a list of users online, along with their bending types.";
-	static final String who_not_on_server = "is not on the server.";
-	static final String who_player_usage = "Displays which bending types that player has.";
-	static final String choose_usage = "Choose your <element> (Options: air, water, earth, fire, chiblocker).";
-	static final String choose_player_usage = "Choose <element> for <player>.";
-	static final String no_perms_air = "You do not have permission to be an airbender.";
-	static final String no_perms_fire = "You do not have permission to be a firebender.";
-	static final String no_perms_earth = "You do not have permission to be an earthbender.";
-	static final String no_perms_water = "You do not have permission to be a waterbender.";
-	static final String no_perms_chi = "You do not have permission to be a chiblocker.";
-	static final String other_no_perms_air = "They do not have permission to be an airbender.";
-	static final String other_no_perms_fire = "They do not have permission to be a firebender.";
-	static final String other_no_perms_earth = "They do not have permission to be an earthbender.";
-	static final String other_no_perms_water = "They do not have permission to be a waterbender.";
-	static final String other_no_perms_chi = "They do not have permission to be a chiblocker.";
-	static final String choosen_air = "You are now an airbender!";
-	static final String choosen_fire = "You are now a firebender!";
-	static final String choosen_earth = "You are now an earthbender!";
-	static final String choosen_water = "You are now a waterbender!";
-	static final String choosen_chi = "You are now a chiblocker!";
-	static final String you_changed = "You have changed";
-	static final String changed_you = "has changed your bending.";
-	static final String import_usage = "Imports data from your benders.json file to your MySQL database.";
-	static final String import_noSQL = "MySQL needs to be enabled to import bendingPlayers";
-	static final String import_success = "Imported BendingPlayers to MySQL.";
-	static final String no_execute_perms = "You do not have permission to execute that command.";
-	static final String no_bind_perms = "You do not have permissions to bind";
-	static final String no_use_perms = "You do not have permissions to use";
-	static final String reload_usage = "Reloads Bending configuration, languages and players. Also restarts all bending.";
-	static final String reload_success = "was reloaded.";
-	static final String display_usage = "Displays all the abilities you have bound.";
-	static final String display_element_usage = "Displays all available abilites for <element>";
-	static final String slot = "Slot";
-	static final String display_no_abilities = "You have no abilities bound.";
-	static final String toggle_usage = "Toggles your bending on or off. Passives will still work.";
-	static final String toggle_off = "You toggled your bending. You now can't use bending until you use that command again.";
-	static final String toggle_on = "You toggled your bending back. You can now use them freely again!";
-	static final String admin_toggle_off = "has toggled your bending. You now can't use bending until you use /bending toggle.";
-	static final String admin_toggle_on = "has toggled your bending back. You can now use them freely again!";
-	static final String admin_toggle = "You have toggled the bending of: ";
-	static final String not_from_console = "This command cannot be used from the console.";
-	static final String permaremove_message = "Permanently removes the bending of <player1> (optionally accepts a list of players) until someone with permissions chooses their bending.";
-	static final String you_permaremove = "You have permanently removed the bending of: ";
-	static final String permaremove_you = "has removed your bending permanently.";
-	static final String remove_usage = "Removes all of <player>'s bending.";
-	static final String remove_you = "has removed your bending.";
-	static final String you_remove = "You have removed the bending of: ";
-	static final String add_self = "Add <element>, allowing you to use it along with what you already can do.";
-	static final String add_other = "Adds <element> to <player>.";
-	static final String clear_all = "Clears all abilities you have bound.";
-	static final String clear_slot = "Clears the ability bound to <slot#>";
-	static final String clear_item = "Clears the ability bound to <item>";
-	static final String cleared_message = "Your abilities have been cleared.";
-	static final String slot_item_cleared = "has been cleared.";
-	static final String bind_slot = "This binds <ability> to the item you are holding.";
-	static final String bind_to_slot = "This binds <ability> to <slot#>.";
-	static final String bind_item = "This binds <ability> to your current item.";
-	static final String bind_to_item = "This binds <ability> to <item>.";
-	static final String bind_mode_usage = "Displays your current bind mode, whether you bind abilities to slots or items.";
-	static final String bind_mode_change_usage = "Changes your bind mode, allowing you to bind to items instead of slots, or vice versa.";
-	static final String bind_mode_change = "You have changed your binding mode to bind to: ";
-	static final String your_bind_mode = "You're currently binding to: ";
-	static final String server_bind_mode = "The server default of bindmode is: ";
-	static final String version_usage = "Displays information about the version and author of Bending.";
-	static final String not_air = "You are not an airbender.";
-	static final String not_earth = "You are not an earthbender.";
-	static final String not_fire = "You are not a firebender.";
-	static final String not_water = "You are not a waterbender.";
-	static final String not_chi = "You are not a chiblocker.";
-	static final String bound_to = "bound to";
-	static final String bound_to_slot = "bound to slot";
-	static final String help_list = "Use /bending help to see a list of commands.";
-	static final String command_list = "Use /bending help <command> to see how to use that command.";
-	static final String ability_list = "Use /bending help <ability> to get help with that ability.";
-	static final String player = "player";
-	static final String element = "element";
-	static final String language_success = "You have successfully changed your language.";
-	static final String language_not_supported = "That language is not supported.";
-	static final String your_language = "Your language: ";
-	static final String default_language = "Default (server) language: ";
-	static final String supported_languages = "Supported languages: ";
-	static final String language_usage = "Displays your language, the default language, and the supported languages.";
-	static final String language_change_usage = "Changes your language to <language>. It must be a supported language.";
-	static final String you_already_air = "You are already an airbender.";
-	static final String you_already_earth = "You are already an earthbender.";
-	static final String you_already_fire = "You are already a firebender.";
-	static final String you_already_water = "You are already a waterbender.";
-	static final String you_already_chi = "You are already a chiblocker.";
-	static final String they_already_air = "is already an airbender.";
-	static final String they_already_earth = "is already an earthbender.";
-	static final String they_already_fire = "is already a firebender.";
-	static final String they_already_water = "is already a waterbender.";
-	static final String they_already_chi = "is already a chiblocker.";
-	static final String add_air = "You are now also an airbender!";
-	static final String add_earth = "You are now also an earthbender!";
-	static final String add_fire = "You are now also a firebender!";
-	static final String add_water = "You are now also a waterbender!";
-	static final String add_chi = "You are now also a chiblocker!";
-	static final String add_you_air = "has made you also an airbender!";
-	static final String add_you_earth = "has made you also an earthbender!";
-	static final String add_you_fire = "has made you also a firebender!";
-	static final String add_you_water = "has made you also a waterbender!";
-	static final String add_you_chi = "has made you also a chiblocker!";
-	static final String you_add_air = "is now also an airbender!";
-	static final String you_add_earth = "is now also an earthbender!";
-	static final String you_add_fire = "is now also a firebender!";
-	static final String you_add_water = "is now also a waterbender!";
-	static final String you_add_chi = "is now also a chiblocker!";
 
 	public BendingCommand (final Player player, String[] args, final File dataFolder, final Server server) {
 		this.dataFolder = dataFolder;
@@ -220,9 +110,9 @@ public class BendingCommand {
 			else if (Arrays.asList(this.whoAliases).contains(arg)) {
 				who(player, args);
 			}
-			else if (Arrays.asList(this.languageAliases).contains(arg)) {
-				language(player, args);
-			}
+//			else if (Arrays.asList(this.languageAliases).contains(arg)) {
+//				language(player, args);
+//			}
 			else if (Arrays.asList(this.bindModeAliases).contains(arg)) {
 				bindMode(player, args);
 			}
@@ -298,7 +188,7 @@ public class BendingCommand {
 			return;
 		}
 		sendMessage(player, "Bending v" + Bending.plugin.getDescription().getVersion());
-		sendMessage(player, "Author: orion304; updated by : Koudja, Nokorikatsu");
+		sendMessage(player, "Author: orion304; updated by : Koudja, Noko");
 	}
 
 	private void printVersionUsage (final Player player) {
@@ -327,7 +217,7 @@ public class BendingCommand {
 				else {
 					mode = "slot";
 				}
-				sendMessage(player, PluginTools.getMessage(player, "General.server_bind_mode") + "" + mode);
+				sendMessage(player, Messages.getString("general.server_bind_mode") + "" + mode);
 			}
 			else {
 				this.bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -338,7 +228,7 @@ public class BendingCommand {
 				else {
 					mode = "slot";
 				}
-				sendMessage(player, PluginTools.getMessage(player, "General.your_bind_mode") + "" + mode);
+				sendMessage(player, Messages.getString("general.your_bind_mode") + "" + mode);
 			}
 			return;
 		}
@@ -351,11 +241,11 @@ public class BendingCommand {
 			final String choice = args[1];
 			if (Arrays.asList(this.slotAliases).contains(choice)) {
 				this.bPlayer.setBendToItem(false);
-				sendMessage(player, PluginTools.getMessage(player, "General.bind_mode_change") + "slot");
+				sendMessage(player, Messages.getString("general.bind_mode_change") + "slot");
 			}
 			else if (Arrays.asList(this.itemAliases).contains(choice)) {
 				this.bPlayer.setBendToItem(true);
-				sendMessage(player, PluginTools.getMessage(player, "General.bind_mode_change") + "item");
+				sendMessage(player, Messages.getString("general.bind_mode_change") + "item");
 			}
 			else {
 				printBindModeUsage(player);
@@ -375,32 +265,32 @@ public class BendingCommand {
 		}
 	}
 
-	private void language (final Player player, final String[] args) {
-		if (!hasHelpPermission(player, "bending.command.language")) {
-			sendNoCommandPermissionMessage(player, "language");
-			return;
-		}
-		if (args.length > 2) {
-			printLanguageUsage(player);
-			return;
-		}
-		else if (args.length == 2) {
-			final String language = args[1];
-			if (PluginTools.isLanguageSupported(language)) {
-				BendingPlayer.getBendingPlayer(player).setLanguage(language);
-				PluginTools.sendMessage(player, "General.language_success");
-			}
-			else {
-				PluginTools.sendMessage(player, "General.language_not_supported");
-			}
-		}
-		else {
-			sendMessage(player, PluginTools.getMessage(player, "General.your_language") + " " + PluginTools.getLanguage(player));
-			sendMessage(player, PluginTools.getMessage(player, "General.default_language") + " " + PluginTools.getDefaultLanguage());
-			sendMessage(player,
-					PluginTools.getMessage(player, "General.supported_languages") + " " + PluginTools.getSupportedLanguages());
-		}
-	}
+//	private void language (final Player player, final String[] args) {
+//		if (!hasHelpPermission(player, "bending.command.language")) {
+//			sendNoCommandPermissionMessage(player, "language");
+//			return;
+//		}
+//		if (args.length > 2) {
+//			printLanguageUsage(player);
+//			return;
+//		}
+//		else if (args.length == 2) {
+//			final String language = args[1];
+//			if (PluginTools.isLanguageSupported(language)) {
+//				//BendingPlayer.getBendingPlayer(player).setLanguage(language);
+//				PluginTools.sendMessage(player, "General.language_success");
+//			}
+//			else {
+//				PluginTools.sendMessage(player, "General.language_not_supported");
+//			}
+//		}
+//		else {
+//			sendMessage(player, PluginTools.getMessage(player, "General.your_language") + " " + PluginTools.getLanguage(player));
+//			sendMessage(player, PluginTools.getMessage(player, "General.default_language") + " " + PluginTools.getDefaultLanguage());
+//			sendMessage(player,
+//					PluginTools.getMessage(player, "General.supported_languages") + " " + PluginTools.getSupportedLanguages());
+//		}
+//	}
 
 	private void printLanguageUsage (final Player player) {
 		if (!hasHelpPermission(player, "bending.command.language")) {
@@ -457,11 +347,11 @@ public class BendingCommand {
 		} else if (args.length == 2) {
 			final Player p = getOnlinePlayer(args[1]);
 			if (p == null) {
-				sendMessage(player, args[1] + " " + PluginTools.getMessage(player, "General.who_not_on_server"));
+				sendMessage(player, args[1] + " " + Messages.getString("general.who_not_on_server"));
 			}
 			else if (player != null) {
 				if (!player.canSee(p)) {
-					sendMessage(player, args[1] + " " + PluginTools.getMessage(player, "General.who_not_on_server"));
+					sendMessage(player, args[1] + " " + Messages.getString("general.who_not_on_server"));
 				}
 				else {
 					sendMessage(player, p.getDisplayName());
@@ -577,8 +467,8 @@ public class BendingCommand {
 
 	private void printUsageMessage (final Player player, final String command, final String key) {
 		final ChatColor color = ChatColor.AQUA;
-		final String usage = PluginTools.getMessage(player, "General.usage");
-		final String description = PluginTools.getMessage(player, key);
+		final String usage = Messages.getString("general.usage");
+		final String description = Messages.getString(key);
 		sendMessage(player, color + usage + ": " + command);
 		sendMessage(player, color + "-" + description);
 	}
@@ -624,46 +514,46 @@ public class BendingCommand {
 			final String choice = args[1].toLowerCase();
 			if (Arrays.asList(this.airbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.air")) {
-					PluginTools.sendMessage(player, "General.no_perms_air");
+					sendMessage(player, Messages.getString("general.no_perms_air"));
 					return;
 				}
-				PluginTools.sendMessage(player, "General.choosen_air");
+				Messages.sendMessage(player, "general.choosen_air");
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Air);
 				return;
 			}
 			if (Arrays.asList(this.firebendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.fire")) {
-					PluginTools.sendMessage(player, "General.no_perms_fire");
+					Messages.sendMessage(player, "general.no_perms_fire");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.choosen_fire");
+				Messages.sendMessage(player, "general.choosen_fire");
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Fire);
 				return;
 			}
 			if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.earth")) {
-					PluginTools.sendMessage(player, "General.no_perms_earth");
+					Messages.sendMessage(player, "General.no_perms_earth");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.choosen_earth");
+				Messages.sendMessage(player, "general.choosen_earth");
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Earth);
 				return;
 			}
 			if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.water")) {
-					PluginTools.sendMessage(player, "General.no_perms_water");
+					Messages.sendMessage(player, "general.no_perms_water");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.choosen_water");
+				Messages.sendMessage(player, "general.choosen_water");
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Water);
 				return;
 			}
 			if (Arrays.asList(this.chiblockingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.chiblocking")) {
-					PluginTools.sendMessage(player, "General.no_perms_chiblocking");
+					Messages.sendMessage(player, "general.no_perms_chiblocking");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.choosen_chi");
+				Messages.sendMessage(player, "general.choosen_chi");
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.ChiBlocker);
 				return;
 			}
@@ -679,56 +569,56 @@ public class BendingCommand {
 				printChooseUsage(player);
 				return;
 			}
-			String senderName = PluginTools.getMessage(targetplayer, "General.the_server");
+			String senderName = Messages.getString("general.the_server");
 			if (player != null) {
 				senderName = player.getName();
 			}
 			final String choice = args[2].toLowerCase();
 			if (Arrays.asList(this.airbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.air")) {
-					PluginTools.sendMessage(player, "General.other_no_perms_air");
+					Messages.sendMessage(player, "general.other_no_perms_air");
 					return;
 				}
-				sendMessage(player, PluginTools.getMessage(player, "General.you_changed") + " " + targetplayer.getName()
+				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName()
 						+ "'s bending.");
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.changed_you"));
-				PluginTools.sendMessage(targetplayer, "General.choosen_air");
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
+				Messages.sendMessage(targetplayer, "general.choosen_air");
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.Air);
 				return;
 			}
 			if (Arrays.asList(this.firebendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.fire")) {
-					PluginTools.sendMessage(player, "General.other_no_perms_fire");
+					Messages.sendMessage(player, "general.other_no_perms_fire");
 					return;
 				}
-				sendMessage(player, PluginTools.getMessage(player, "General.you_changed") + " " + targetplayer.getName()
+				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName()
 						+ "'s bending.");
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.changed_you"));
-				PluginTools.sendMessage(targetplayer, "General.choosen_fire");
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
+				Messages.sendMessage(targetplayer, "general.choosen_fire");
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.Fire);
 				return;
 			}
 			if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.earth")) {
-					PluginTools.sendMessage(player, "General.other_no_perms_earth");
+					Messages.sendMessage(player, "general.other_no_perms_earth");
 					return;
 				}
-				sendMessage(player, PluginTools.getMessage(player, "General.you_changed") + " " + targetplayer.getName()
+				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName()
 						+ "'s bending.");
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.changed_you"));
-				PluginTools.sendMessage(targetplayer, "General.choosen_earth");
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
+				Messages.sendMessage(targetplayer, "general.choosen_earth");
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.Earth);
 				return;
 			}
 			if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.water")) {
-					PluginTools.sendMessage(player, "General.other_no_perms_water");
+					Messages.sendMessage(player, "general.other_no_perms_water");
 					return;
 				}
-				sendMessage(player, PluginTools.getMessage(player, "General.you_changed") + " " + targetplayer.getName()
+				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName()
 						+ "'s bending.");
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.changed_you"));
-				PluginTools.sendMessage(targetplayer, "General.choosen_water");
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
+				Messages.sendMessage(targetplayer, "general.choosen_water");
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.Water);
 				return;
 			}
@@ -737,10 +627,10 @@ public class BendingCommand {
 					sendMessage(player, "General.other_no_perms_chi");
 					return;
 				}
-				sendMessage(player, PluginTools.getMessage(player, "General.you_changed") + " " + targetplayer.getName()
+				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName()
 						+ "'s bending.");
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.changed_you"));
-				PluginTools.sendMessage(targetplayer, "General.choosen_chi");
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
+				Messages.sendMessage(targetplayer, "general.choosen_chi");
 				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.ChiBlocker);
 				return;
 			}
@@ -769,7 +659,7 @@ public class BendingCommand {
 	}
 
 	private void printNoPermissions (final Player player) {
-		sendMessage(player, ChatColor.RED + PluginTools.getMessage(player, "General.no_execute_perms"));
+		sendMessage(player, ChatColor.RED + Messages.getString("general.no_execute_perms"));
 	}
 
 	private void help (final Player player, final String[] args) {
@@ -784,35 +674,29 @@ public class BendingCommand {
 			final Abilities ability = Abilities.getAbility(args[1]);
 			if (Abilities.getAbility(args[1]) != null) {
 				ChatColor cc = ChatColor.GOLD;
-				String element = "Other";
 				if (Abilities.isAirbending(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color.get("Air"));
-					element = "Air";
 				}
 				else if (Abilities.isFirebending(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color.get("Fire"));
-					element = "Fire";
 				}
 				else if (Abilities.isEarthbending(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color.get("Earth"));
-					element = "Earth";
 				}
 				else if (Abilities.isWaterbending(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color.get("Water"));
-					element = "Water";
 				}
 				else if (Abilities.isChiBlocking(Abilities.getAbility(args[1]))) {
 					cc = PluginTools.getColor(ConfigManager.color.get("ChiBlocker"));
-					element = "Chiblocker";
 				}
 				if (EntityTools.hasPermission(player, ability)) {
-					String msg = Messages.getMessages().getAbilityDescription(ability);
+					String msg = Messages.getAbilityDescription(ability);
 					sendMessage(player, ("                                                " + cc + ability.name()));
 					player.sendMessage(cc + msg);
 					return;
 				}
 				else {
-					sendMessage(player, PluginTools.getMessage(player, "General.no_bind_perms") + " " + cc + ability + ChatColor.WHITE
+					sendMessage(player, Messages.getString("general.no_bind_perms") + " " + cc + ability + ChatColor.WHITE
 							+ ".");
 				}
 			}
@@ -1027,7 +911,7 @@ public class BendingCommand {
 		Bending.configManager.load(new File(this.dataFolder, "config.yml"));
 		Bending.language.load(new File(this.dataFolder, "language.yml"));
 		PluginTools.stopAllBending();
-		sendMessage(player, ChatColor.AQUA + "Bending " + PluginTools.getMessage(player, "General.reload_success"));
+		sendMessage(player, ChatColor.AQUA + "Bending " + Messages.getString("general.reload_success"));
 	}
 
 	private void printDisplayUsage (final Player player) {
@@ -1083,7 +967,7 @@ public class BendingCommand {
 							color = PluginTools.getColor(ConfigManager.getColor("Water"));
 						}
 						final String ability = a.name();
-						sendMessage(player, PluginTools.getMessage(player, "General.slot") + " " + (i + 1) + ": " + color + ability);
+						sendMessage(player, Messages.getString("general.slot") + " " + (i + 1) + ": " + color + ability);
 					}
 				}
 			} else {
@@ -1114,7 +998,7 @@ public class BendingCommand {
 				}
 			}
 			if (none) {
-				PluginTools.sendMessage(player, "General.display_no_abilities");
+				sendMessage(player, Messages.getString("general.display_no_abilities"));
 			}
 		}
 		if (args.length == 2) {
@@ -1187,11 +1071,11 @@ public class BendingCommand {
 			}
 			if (!EntityTools.toggledBending.contains(player)) {
 				EntityTools.toggledBending.add(player);
-				PluginTools.sendMessage(player, ChatColor.AQUA, "General.toggle_off");
+				Messages.sendMessage(player, "general.toggle_off", ChatColor.AQUA);
 			}
 			else {
 				EntityTools.toggledBending.remove(player);
-				PluginTools.sendMessage(player, ChatColor.AQUA, "General.toggle_on");
+				Messages.sendMessage(player, "general.toggle_on", ChatColor.AQUA);
 			}
 		}
 		else {
@@ -1202,28 +1086,28 @@ public class BendingCommand {
 			for (int i = 1 ; i < args.length ; i++) {
 				final String name = args[i];
 				final Player targetplayer = getOnlinePlayer(name);
-				String senderName = PluginTools.getMessage(targetplayer, "General.the_server");
+				String senderName = Messages.getString("general.the_server");
 				if (player != null) {
 					senderName = player.getName();
 				}
 				if (targetplayer != null) {
 					if (!EntityTools.toggledBending.contains(targetplayer)) {
 						EntityTools.toggledBending.add(targetplayer);
-						sendMessage(targetplayer, senderName + " " + "General.admin_toggle_off");
+						sendMessage(targetplayer, senderName + " " + "general.admin_toggle_off");
 					}
 					else {
 						EntityTools.toggledBending.remove(targetplayer);
-						sendMessage(targetplayer, senderName + " " + "General.admin_toggle_on");
+						sendMessage(targetplayer, senderName + " " + "general.admin_toggle_on");
 					}
 					playerlist = playerlist + " " + targetplayer.getName();
 				}
 			}
-			sendMessage(player, PluginTools.getMessage(player, "General.admin_toggle") + " " + playerlist);
+			sendMessage(player, Messages.getString("general.admin_toggle") + " " + playerlist);
 		}
 	}
 
 	private void printNotFromConsole () {
-		PluginTools.sendMessage(null, "General.not_from_console");
+		Messages.sendMessage(null, "General.not_from_console");
 	}
 
 	private void printRemoveUsage (final Player player) {
@@ -1242,17 +1126,17 @@ public class BendingCommand {
 		for (int i = 1 ; i < args.length ; i++) {
 			final String playername = args[i];
 			final Player targetplayer = getOnlinePlayer(playername);
-			String senderName = PluginTools.getMessage(targetplayer, "General.the_server");
+			String senderName = Messages.getString("general.the_server");
 			if (player != null) {
 				senderName = player.getName();
 			}
 			if (targetplayer != null) {
 				BendingPlayer.getBendingPlayer(targetplayer).removeBender();
-				targetplayer.sendMessage(senderName + " " + PluginTools.getMessage(targetplayer, "General.remove_you"));
+				targetplayer.sendMessage(senderName + " " + Messages.getString("general.remove_you"));
 				playerlist = playerlist + targetplayer.getName() + " ";
 			}
 		}
-		sendMessage(player, PluginTools.getMessage(player, "General.you_remove") + " " + playerlist);
+		sendMessage(player, Messages.getString("general.you_remove") + " " + playerlist);
 	}
 
 	private void printAddUsage (final Player player) {
@@ -1290,66 +1174,66 @@ public class BendingCommand {
 			final String choice = args[1].toLowerCase();
 			if (Arrays.asList(this.airbendingAliases).contains(choice)) {
 				if (EntityTools.isBender(player, BendingType.Air)) {
-					PluginTools.sendMessage(player, "General.you_already_air");
+					Messages.sendMessage(player, "general.you_already_air");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.air")) {
-					PluginTools.sendMessage(player, "General.no_perms_air");
+					Messages.sendMessage(player, "general.no_perms_air");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.add_air");
+				Messages.sendMessage(player, "general.add_air");
 				BendingPlayer.getBendingPlayer(player).addBender(BendingType.Air);
 				return;
 			}
 			if (Arrays.asList(this.firebendingAliases).contains(choice)) {
 				if (EntityTools.isBender(player, BendingType.Fire)) {
-					PluginTools.sendMessage(player, "General.you_already_fire");
+					Messages.sendMessage(player, "general.you_already_fire");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.fire")) {
-					PluginTools.sendMessage(player, "General.no_perms_fire");
+					Messages.sendMessage(player, "general.no_perms_fire");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.add_fire");
+				Messages.sendMessage(player, "general.add_fire");
 				BendingPlayer.getBendingPlayer(player).addBender(BendingType.Fire);
 				return;
 			}
 			if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
 				if (EntityTools.isBender(player, BendingType.Earth)) {
-					PluginTools.sendMessage(player, "General.you_already_earth");
+					Messages.sendMessage(player, "general.you_already_earth");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.earth")) {
-					PluginTools.sendMessage(player, "General.no_perms_earth");
+					Messages.sendMessage(player, "general.no_perms_earth");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.add_earth");
+				Messages.sendMessage(player, "general.add_earth");
 				BendingPlayer.getBendingPlayer(player).addBender(BendingType.Earth);
 				return;
 			}
 			if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
 				if (EntityTools.isBender(player, BendingType.Water)) {
-					PluginTools.sendMessage(player, "General.you_already_water");
+					Messages.sendMessage(player, "general.you_already_water");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.water")) {
-					PluginTools.sendMessage(player, "General.no_perms_water");
+					Messages.sendMessage(player, "general.no_perms_water");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.add_water");
+				Messages.sendMessage(player, "general.add_water");
 				BendingPlayer.getBendingPlayer(player).addBender(BendingType.Water);
 				return;
 			}
 			if (Arrays.asList(this.chiblockingAliases).contains(choice)) {
 				if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
-					PluginTools.sendMessage(player, "General.you_already_chi");
+					Messages.sendMessage(player, "general.you_already_chi");
 					return;
 				}
 				if (!hasHelpPermission(player, "bending.chiblocking")) {
-					PluginTools.sendMessage(player, "General.no_perms_chi");
+					Messages.sendMessage(player, "general.no_perms_chi");
 					return;
 				}
-				PluginTools.sendMessage(player, "General.add_chi");
+				Messages.sendMessage(player, "general.add_chi");
 				BendingPlayer.getBendingPlayer(player).addBender(BendingType.ChiBlocker);
 				return;
 			}
@@ -1362,77 +1246,77 @@ public class BendingCommand {
 				printAddUsage(player);
 				return;
 			}
-			String senderName = PluginTools.getMessage(targetplayer, "General.the_server");
+			String senderName = Messages.getString("general.the_server");
 			if (player != null) {
 				senderName = player.getName();
 			}
 			final String choice = args[2].toLowerCase();
 			if (Arrays.asList(this.airbendingAliases).contains(choice)) {
 				if (EntityTools.isBender(targetplayer, BendingType.Air)) {
-					sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.they_already_air"));
+					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_air"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.air")) {
-					PluginTools.sendMessage(player, "General.no_perms_air");
+					Messages.sendMessage(player, "general.no_perms_air");
 					return;
 				}
-				sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.you_add_air"));
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.add_you_air"));
+				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_air"));
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_air"));
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.Air);
 				return;
 			}
 			if (Arrays.asList(this.firebendingAliases).contains(choice)) {
 				if (EntityTools.isBender(targetplayer, BendingType.Fire)) {
-					sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.they_already_fire"));
+					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_fire"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.fire")) {
-					PluginTools.sendMessage(player, "General.no_perms_fire");
+					Messages.sendMessage(player, "general.no_perms_fire");
 					return;
 				}
-				sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.you_add_fire"));
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.add_you_fire"));
+				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_fire"));
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_fire"));
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.Fire);
 				return;
 			}
 			if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
 				if (EntityTools.isBender(targetplayer, BendingType.Earth)) {
-					sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.they_already_earth"));
+					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_earth"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.earth")) {
-					PluginTools.sendMessage(player, "General.no_perms_earth");
+					Messages.sendMessage(player, "general.no_perms_earth");
 					return;
 				}
-				sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.you_add_earth"));
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.add_you_earth"));
+				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_earth"));
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_earth"));
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.Earth);
 				return;
 			}
 			if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
 				if (EntityTools.isBender(targetplayer, BendingType.Water)) {
-					sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.they_already_water"));
+					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_water"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.water")) {
-					PluginTools.sendMessage(player, "General.no_perms_water");
+					Messages.sendMessage(player, "general.no_perms_water");
 				}
-				sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.you_add_water"));
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.add_you_water"));
+				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_water"));
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_water"));
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.Water);
 				return;
 			}
 			if (Arrays.asList(this.chiblockingAliases).contains(choice)) {
 				if (EntityTools.isBender(targetplayer, BendingType.ChiBlocker)) {
-					sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.they_already_chi"));
+					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_chi"));
 					return;
 				}
 				if (!hasHelpPermission(targetplayer, "bending.chiblocking")) {
-					PluginTools.sendMessage(player, "General.no_perms_chi");
+					Messages.sendMessage(player, "general.no_perms_chi");
 					return;
 				}
-				sendMessage(player, targetplayer.getName() + " " + PluginTools.getMessage(player, "General.you_add_chi"));
-				sendMessage(targetplayer, senderName + " " + PluginTools.getMessage(targetplayer, "General.add_you_chi"));
+				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_chi"));
+				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_chi"));
 				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.ChiBlocker);
 				return;
 			}
@@ -1467,7 +1351,7 @@ public class BendingCommand {
 			final String choice = args[2].toLowerCase();
 			final BendingSpecializationType spe = BendingSpecializationType.getType(choice);
 			if (spe == null) {
-				PluginTools.sendMessage(player, "General.bad_specialization");
+				Messages.sendMessage(player, "general.bad_specialization");
 				return;
 			}
 			BendingPlayer bPlayer = null;
@@ -1488,7 +1372,7 @@ public class BendingCommand {
 				return;
 			}
 			if (!bPlayer.isBender(spe.getElement())) {
-				PluginTools.sendMessage(player, "General.bad_specialization_element");
+				Messages.sendMessage(player, "general.bad_specialization_element");
 				return;
 			}
 			bPlayer.setSpecialization(spe);
@@ -1501,7 +1385,7 @@ public class BendingCommand {
 			final String choice = args[2].toLowerCase();
 			final BendingSpecializationType spe = BendingSpecializationType.getType(choice);
 			if (spe == null) {
-				PluginTools.sendMessage(player, "General.bad_specialization");
+				Messages.sendMessage(player, "general.bad_specialization");
 				return;
 			}
 			BendingPlayer bPlayer = null;
@@ -1531,7 +1415,7 @@ public class BendingCommand {
 			final String choice = args[2].toLowerCase();
 			final BendingSpecializationType spe = BendingSpecializationType.getType(choice);
 			if (spe == null) {
-				PluginTools.sendMessage(player, "General.bad_specialization");
+				Messages.sendMessage(player, "general.bad_specialization");
 				return;
 			}
 			BendingPlayer bPlayer = null;
@@ -1552,7 +1436,7 @@ public class BendingCommand {
 				return;
 			}
 			if (!bPlayer.isBender(spe.getElement())) {
-				PluginTools.sendMessage(player, "General.bad_specialization_element");
+				Messages.sendMessage(player, "general.bad_specialization_element");
 				return;
 			}
 			bPlayer.addSpecialization(spe);
@@ -1601,7 +1485,7 @@ public class BendingCommand {
 		}
 		if (args.length == 1) {
 			BendingPlayer.getBendingPlayer(player).clearAbilities();
-			PluginTools.sendMessage(player, "General.cleared_message");
+			Messages.sendMessage(player, "General.cleared_message");
 		}
 		else if (args.length == 2) {
 			try {
@@ -1610,8 +1494,8 @@ public class BendingCommand {
 					BendingPlayer.getBendingPlayer(player).removeAbility(slot - 1);
 					sendMessage(
 							player,
-							PluginTools.getMessage(player, "General.slot") + " " + args[1] + " "
-									+ PluginTools.getMessage(player, "General.slot_item_cleared"));
+							Messages.getString("general.slot") + " " + args[1] + " "
+									+ Messages.getString("general.slot_item_cleared"));
 					return;
 				}
 				printClearUsage(player);
@@ -1621,7 +1505,7 @@ public class BendingCommand {
 				final Material mat = Material.matchMaterial(args[1]);
 				if (mat != null) {
 					BendingPlayer.getBendingPlayer(player).removeAbility(Material.matchMaterial(args[1]));
-					sendMessage(player, "Item " + args[1] + " " + PluginTools.getMessage(player, "General.slot_item_cleared"));
+					sendMessage(player, "Item " + args[1] + " " + Messages.getString("general.slot_item_cleared"));
 					return;
 				}
 				else {
@@ -1700,7 +1584,7 @@ public class BendingCommand {
 			if (!EntityTools.isBender(player, BendingType.Water)) {
 				ChatColor color2 = ChatColor.WHITE;
 				color2 = PluginTools.getColor(ConfigManager.getColor("Water"));
-				PluginTools.sendMessage(player, color2, "General.not_water");
+				Messages.sendMessage(player, "General.not_water", color2);
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("Water"));
@@ -1718,7 +1602,7 @@ public class BendingCommand {
 			if (!EntityTools.isBender(player, BendingType.Air)) {
 				ChatColor color2 = ChatColor.WHITE;
 				color2 = PluginTools.getColor(ConfigManager.getColor("Air"));
-				PluginTools.sendMessage(player, color2, "General.not_air");
+				Messages.sendMessage(player, "General.not_air", color2);
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("Air"));
@@ -1736,7 +1620,7 @@ public class BendingCommand {
 			if (!EntityTools.isBender(player, BendingType.Earth)) {
 				ChatColor color2 = ChatColor.WHITE;
 				color2 = PluginTools.getColor(ConfigManager.getColor("Earth"));
-				PluginTools.sendMessage(player, color2, "General.not_earth");
+				Messages.sendMessage(player, "General.not_earth", color2);
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("Earth"));
@@ -1754,7 +1638,7 @@ public class BendingCommand {
 			if (!EntityTools.isBender(player, BendingType.ChiBlocker)) {
 				ChatColor color2 = ChatColor.WHITE;
 				color2 = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-				PluginTools.sendMessage(player, color2, "General.not_chi");
+				Messages.sendMessage(player, "General.not_chi", color2);
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
@@ -1772,7 +1656,7 @@ public class BendingCommand {
 			if (!EntityTools.isBender(player, BendingType.Fire)) {
 				ChatColor color2 = ChatColor.WHITE;
 				color2 = PluginTools.getColor(ConfigManager.getColor("Fire"));
-				PluginTools.sendMessage(player, color2, "General.not_fire");
+				Messages.sendMessage(player, "General.not_fire", color2);
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("Fire"));
@@ -1868,18 +1752,18 @@ public class BendingCommand {
 	}
 
 	private void printHelpDialogue (final Player player) {
-		PluginTools.sendMessage(player, ChatColor.RED, "General.help_list");
-		PluginTools.sendMessage(player, ChatColor.RED, "General.command_list");
-		PluginTools.sendMessage(player, ChatColor.RED, "General.ability_list");
+		Messages.sendMessage(player,  "General.help_list", ChatColor.RED);
+		Messages.sendMessage(player, "General.command_list", ChatColor.RED);
+		Messages.sendMessage(player, "General.ability_list", ChatColor.RED);
 	}
 
 	private void sendNoCommandPermissionMessage (final Player player, final String command) {
-		sendMessage(player, PluginTools.getMessage(player, "General.no_use_perms") + " /bending " + command + ".");
+		sendMessage(player, Messages.getString("general.no_use_perms") + " /bending " + command + ".");
 	}
 
 	private void printCommands (final Player player) {
 		sendMessage(player, "Bending aliases: bending bend b mtla tla");
-		String slot = PluginTools.getMessage(player, "General.slot") + "#";
+		String slot = Messages.getString("general.slot") + "#";
 		if (player != null) {
 			if (this.bPlayer.getBendToItem()) {
 				slot = "item";

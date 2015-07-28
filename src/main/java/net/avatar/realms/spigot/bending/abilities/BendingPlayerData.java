@@ -10,7 +10,6 @@ public class BendingPlayerData {
 	private UUID player;
 	private List<BendingType> bendings;
 	private List<BendingSpecializationType> specialization;
-	private String language;
 	private boolean bendToItem;
 	private Map<Integer, Abilities> slotAbilities;
 	private Map<Material, Abilities> itemAbilities;
@@ -28,12 +27,6 @@ public class BendingPlayerData {
 	}
 	public void setBendings(List<BendingType> bending) {
 		this.bendings = bending;
-	}
-	public String getLanguage() {
-		return language;
-	}
-	public void setLanguage(String language) {
-		this.language = language;
 	}
 	public boolean isBendToItem() {
 		return bendToItem;
