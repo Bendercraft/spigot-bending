@@ -61,6 +61,8 @@ public class Bending extends JavaPlugin {
 		//Learning
 		learning = new BendingLearning();
 		learning.onEnable();
+		
+		
 		configuration.load(new File(getDataFolder(), "config.yml"));
 		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));

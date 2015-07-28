@@ -79,9 +79,6 @@ public class BendingPlayer {
 					case AirSwipe:
 						cd = ConfigManager.airSwipeCooldown;
 						break;
-					case HighJump:
-						cd = ConfigManager.highJumpCooldown;
-						break;
 					case RapidPunch:
 						cd = ConfigManager.rapidPunchCooldown;
 						break;

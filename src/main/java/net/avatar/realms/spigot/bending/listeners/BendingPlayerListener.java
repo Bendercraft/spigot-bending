@@ -45,6 +45,7 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.AbilityFactory;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
@@ -350,7 +351,8 @@ public class BendingPlayerListener implements Listener{
 			}
 			
 			if (ability == Abilities.HighJump) {
-				new HighJump(player, null);
+				Ability ab = AbilityFactory.buildAbility(ability, player);
+				ab.swing();
 				return;
 			}
 			

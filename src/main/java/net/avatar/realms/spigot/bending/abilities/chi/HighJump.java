@@ -1,44 +1,49 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.Tools;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 
-public class HighJump implements IAbility {
+public class HighJump extends Ability {
 
-	private double jumpheight = ConfigManager.jumpHeight;
-	private IAbility parent;
+	private static final int JUMP_HEIGHT = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.HighJump.Height", 5);
+	private static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.HighJump.Cooldown", 5);
 
-	public HighJump (Player p, IAbility parent) {
-		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
-
-		if (bPlayer.isOnCooldown(Abilities.HighJump)) {
-			return;
+	public HighJump (Player p) {
+		super(p, null);	
+		System.out.println("Construct");
+	}
+	
+	public boolean swing() {
+		if (makeJump()) {
+			bender.cooldown(Abilities.HighJump, COOLDOWN);
 		}
-		jump(p);
-		bPlayer.cooldown(Abilities.HighJump);
+		System.out.println("Swinged");
+		return true;
 	}
 
-	private void jump (Player p) {
-		if (!BlockTools.isSolid(p.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
-			return;
+	private boolean makeJump () {
+		if (!BlockTools.isSolid(player.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
+			return false;
 		}
-		Vector vec = p.getVelocity();
-		vec.setY(this.jumpheight);
-		p.setVelocity(vec);
-		return;
+		Vector vec = Tools.getVectorForPoints(player.getLocation(), player.getLocation().add(player.getVelocity()).add(0,JUMP_HEIGHT, 0));
+		player.setVelocity(vec);
+		return true;
 	}
 
 	@Override
-	public IAbility getParent () {
-		return this.parent;
+	public void remove() {
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.HighJump;
 	}
 }

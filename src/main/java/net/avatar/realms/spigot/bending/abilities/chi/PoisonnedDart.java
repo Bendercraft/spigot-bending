@@ -34,7 +34,7 @@ public class PoisonnedDart extends Ability{
 	
 	private static final int DAMAGE = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Damage");
 	private static final int RANGE = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Range");
-	private static final int COOLDOWN = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Cooldown");
+	private static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.PoisonnedDart.Cooldown");
 	
 	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
 	

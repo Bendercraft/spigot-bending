@@ -239,32 +239,6 @@ public class PluginTools {
 		return Bending.language.getDefaultLanguage();
 	}
 
-//	public static void sendMessage(Player player, String key) {
-//		sendMessage(player, ChatColor.WHITE, key);
-//	}
-
-//	public static void sendMessage(Player player, ChatColor color, String key) {
-//		String message = getMessage(player, key);
-//		if (player == null) {
-//			verbose(color + message);
-//		} else {
-//			player.sendMessage(color + message);
-//		}
-//	}
-
-//	public static String getMessage(Player player, String key) {
-//		String language = getLanguage(player);
-//		String message = Bending.language.getMessage(language, key);
-//		return message;
-//	}
-
-//	public static String getLanguage(Player player) {
-//		String language = getDefaultLanguage();
-//		if (player != null)
-//			language = BendingPlayer.getBendingPlayer(player).getLanguage();
-//		return language;
-//	}
-
 	public static boolean isLanguageSupported(String language) {
 		return (Bending.language.getSupportedLanguages().contains(language
 				.toLowerCase()));

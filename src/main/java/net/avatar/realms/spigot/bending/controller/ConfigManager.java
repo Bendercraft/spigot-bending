@@ -127,8 +127,8 @@ public class ConfigManager {
 
 	// ChiBlocker
 	// HighJump
-	public static double jumpHeight;
-	public static long highJumpCooldown;
+//	public static double jumpHeight;
+//	public static long highJumpCooldown;
 
 	// Paralyze
 	public static long paralyzeCooldown;
@@ -144,12 +144,6 @@ public class ConfigManager {
 	public static int smokeRadius;
 	public static int smokeDuration;    // time in secs
 	public static int smokeBombCooldown; // time in ms
-
-	// Poisonned dart
-//	public static int dartRange;
-//	public static int dartDamage;
-//	public static int poisonLevel;
-//	public static int poisonnedDartCooldown;
 
 	// Dash
 	public static int dashCooldown;
@@ -468,10 +462,6 @@ public class ConfigManager {
 
 		globalCooldown = config.getLong("Properties.GlobalCooldown");
 
-		// HighJump
-		jumpHeight = config.getDouble("Properties.ChiBlocker.HighJump.Height");
-		highJumpCooldown = config.getLong("Properties.ChiBlocker.HighJump.Cooldown");
-
 		// Paralyze
 		paralyzeCooldown = config.getLong("Properties.ChiBlocker.Paralyze.Cooldown");
 		paralyzeDuration = config.getLong("Properties.ChiBlocker.Paralyze.Duration");
@@ -481,12 +471,6 @@ public class ConfigManager {
 		rapidPunchDistance = config.getInt("Properties.ChiBlocker.RapidPunch.Distance");
 		rapidPunchCooldown = config.getLong("Properties.ChiBlocker.RapidPunch.Cooldown");
 		rapidPunchPunches = config.getInt("Properties.ChiBlocker.RapidPunch.Punches");
-
-		// Poisonned Dart
-//		dartRange = config.getInt("Properties.ChiBlocker.PoisonnedDart.Range");
-//		dartDamage = config.getInt("Properties.ChiBlocker.PoisonnedDart.Damage");
-//		poisonLevel = config.getInt("Properties.ChiBlocker.PoisonnedDart.poison-level");
-//		poisonnedDartCooldown = config.getInt("Properties.ChiBlocker.PoisonnedDart.Cooldown");
 
 		// Smoke bomb
 		smokeRadius = config.getInt("Properties.ChiBlocker.SmokeBomb.Radius");
