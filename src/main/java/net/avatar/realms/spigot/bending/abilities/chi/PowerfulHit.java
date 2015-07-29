@@ -20,6 +20,8 @@ public class PowerfulHit extends Ability{
 	@Override
 	public boolean swing() {
 		// TODO Auto-generated method stub
+		
+		//Vector v = loc1.toVector().subtract(loc2.toVector())
 		return super.swing();
 	}
 
@@ -39,13 +41,18 @@ public class PowerfulHit extends Ability{
 
 	@Override
 	public void remove() {
-		// TODO Auto-generated method stub
 		
+		super.remove();
 	}
 
 	@Override
 	public Abilities getAbilityType() {
 		return Abilities.PowerfulHit;
+	}
+
+	@Override
+	public Object getIdentifier() {
+		return player;
 	}
 
 }

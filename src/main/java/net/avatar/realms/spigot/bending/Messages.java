@@ -40,8 +40,6 @@ public class Messages {
 			input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
 		}
 		
-		Bending.plugin.getLogger().warning(languageFile.toString());
-		Bending.plugin.getLogger().warning(input.toString());
 		try {
 			lines.load(input);
 		} catch (IOException e) {
@@ -49,8 +47,6 @@ public class Messages {
 			// Should never happen, hope so
 		}
 		
-		Bending.plugin.getLogger().severe("End of loading messages ! ");
-		Bending.plugin.getLogger().severe(""+lines.toString());
 	}
 	
 	public static String getAbilityDescription(Abilities ability) {

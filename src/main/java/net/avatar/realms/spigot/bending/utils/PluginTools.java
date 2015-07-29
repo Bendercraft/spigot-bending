@@ -192,7 +192,6 @@ public class PluginTools {
 		Combustion.removeAll();
 
 		RapidPunch.removeAll();
-		SmokeBomb.removeAll();
 		C4.removeAll();
 
 		// BendingManager.removeFlyers();

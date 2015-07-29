@@ -5,15 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.entity.Player;
-
-import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
 
 public class AbilityManager {
 	
 	private static AbilityManager manager =  null;
 
-	private Map<Player, PoisonnedDart> poisonnedDarts;
+	private Map<Abilities, Map<Object, Ability>> abilities;
 	
 	public static AbilityManager getManager() {
 		if (manager == null) {
@@ -23,48 +20,52 @@ public class AbilityManager {
 	}
 	
 	private AbilityManager() {
-		poisonnedDarts = new HashMap<Player, PoisonnedDart>();
+		abilities = new HashMap<Abilities, Map<Object, Ability>>();
 	}
 	
 	public void progressAllAbilities() {
-		List<Ability> abilities = new LinkedList<Ability>();
-		
-		compileAbilities(abilities);
-		
-		for (Ability ability : abilities) {
-			boolean canKeep = ability.progress();
-			if (!canKeep) {
-				ability.stop();
-				ability.remove();
+		List<Ability> toRemove = new LinkedList<Ability>();
+		for (Abilities key : abilities.keySet()) {
+			for (Ability ability : abilities.get(key).values()) {
+				boolean canKeep = ability.progress();
+				if (!canKeep) {
+					toRemove.add(ability);
+				}
 			}
+		}
+		
+		for (Ability ability : toRemove) {
+			ability.stop();
+			ability.remove();
 		}
 	}
 	
 	public void stopAllAbilities() {
-		List<Ability> abilities = new LinkedList<Ability>();
-		
-		compileAbilities(abilities);
-		
-		for (Ability ability : abilities) {
-			ability.stop();
+		for (Map<Object, Ability> instances : abilities.values()) {
+			for (Ability ability : instances.values()) {
+				ability.stop();
+			}
 		}
 		
 		clearAllAbilities();
 	}
 	
 	private void clearAllAbilities() {
-		poisonnedDarts.clear();
+		for (Map<Object, Ability> instances : abilities.values()) {
+			instances.clear();
+		}
 	}
 	
-	private void compileAbilities(List<Ability> abilities) {
-		abilities.addAll(poisonnedDarts.values());
+	public void addInstance(Ability instance) {
+		Map<Object, Ability> map = abilities.get(instance.getAbilityType());
+		if (map == null) {
+			map = new HashMap<Object, Ability>();
+			abilities.put(instance.getAbilityType(), map);
+		}
+		map.put(instance.getIdentifier(), instance);
 	}
 	
-	public void addInstance(PoisonnedDart instance) {
-		poisonnedDarts.put(instance.getPlayer(), instance);
-	}
-
-	public Map<Player, PoisonnedDart> getPoisonnedDarts() {
-		return poisonnedDarts;
+	public Map<Object, Ability> getInstances(Abilities type) {
+		return abilities.get(type);
 	}
 }

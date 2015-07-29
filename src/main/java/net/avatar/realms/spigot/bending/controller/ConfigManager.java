@@ -126,9 +126,6 @@ public class ConfigManager {
 	public static int suffocateBaseDamage;
 
 	// ChiBlocker
-	// HighJump
-//	public static double jumpHeight;
-//	public static long highJumpCooldown;
 
 	// Paralyze
 	public static long paralyzeCooldown;
@@ -141,9 +138,9 @@ public class ConfigManager {
 	public static int rapidPunchPunches;
 
 	// Smoke Bomb
-	public static int smokeRadius;
-	public static int smokeDuration;    // time in secs
-	public static int smokeBombCooldown; // time in ms
+//	public static int smokeRadius;
+//	public static int smokeDuration;    // time in secs
+//	public static int smokeBombCooldown; // time in ms
 
 	// Dash
 	public static int dashCooldown;
@@ -472,10 +469,10 @@ public class ConfigManager {
 		rapidPunchCooldown = config.getLong("Properties.ChiBlocker.RapidPunch.Cooldown");
 		rapidPunchPunches = config.getInt("Properties.ChiBlocker.RapidPunch.Punches");
 
-		// Smoke bomb
-		smokeRadius = config.getInt("Properties.ChiBlocker.SmokeBomb.Radius");
-		smokeDuration = config.getInt("Properties.ChiBlocker.SmokeBomb.Duration");
-		smokeBombCooldown = config.getInt("Properties.ChiBlocker.SmokeBomb.Cooldown");
+//		// Smoke bomb
+//		smokeRadius = config.getInt("Properties.ChiBlocker.SmokeBomb.Radius");
+//		smokeDuration = config.getInt("Properties.ChiBlocker.SmokeBomb.Duration");
+//		smokeBombCooldown = config.getInt("Properties.ChiBlocker.SmokeBomb.Cooldown");
 
 		// Dash
 		dashCooldown = config.getInt("Properties.ChiBlocker.Dash.Cooldown");

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -562,17 +563,28 @@ public class BendingPlayerListener implements Listener{
 					new Paralyze(player, t, null);
 					return;
 				}
-
-				if (ability == Abilities.SmokeBomb) {
-					new SmokeBomb(player, null);
-					return;
-				}
 				
-				if (ability == Abilities.PoisonnedDart) {
-					if (!AbilityManager.getManager().getPoisonnedDarts().containsKey(player)) {
-						Ability ab = new PoisonnedDart(player);
+				if (ability == Abilities.PoisonnedDart || ability == Abilities.SmokeBomb) {
+					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
+					
+					if (abilities == null || abilities.isEmpty()) {
+						Ability ab = AbilityFactory.buildAbility(ability, player);
 						ab.swing();
-					}			
+						return;
+					}
+					
+					boolean shouldCreateNew = false;
+					for (Ability a : abilities.values()) {
+						if (a.getPlayer().equals(player)) {
+							if (a.swing()) {
+								shouldCreateNew = true;
+							}
+						}
+					}
+					if (shouldCreateNew) {
+						Ability ab = AbilityFactory.buildAbility(ability, player);
+						ab.swing();
+					}
 					return;
 				}
 			}

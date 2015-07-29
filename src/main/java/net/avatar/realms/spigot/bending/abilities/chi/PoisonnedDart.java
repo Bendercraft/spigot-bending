@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,10 +15,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
@@ -32,9 +33,9 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  */
 public class PoisonnedDart extends Ability{
 	
-	private static final int DAMAGE = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Damage");
-	private static final int RANGE = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Range");
-	private static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.PoisonnedDart.Cooldown");
+	private static final int DAMAGE = 1; //Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Damage");
+	private static final int RANGE = 20; //Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Range");
+	private static final long COOLDOWN = 500; //Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.PoisonnedDart.Cooldown");
 	
 	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
 	
@@ -42,22 +43,20 @@ public class PoisonnedDart extends Ability{
 	private Location location;
 	private Vector direction;
 	private List<PotionEffect> effects;
-	private boolean started;
 	
 	public PoisonnedDart(Player player) {
 		super(player, null);
 		
-		if (!canContinue) {
+		if (state.equals(AbilityState.CannotStart)) {
 			return;
 		}
-		started = false;
 		AbilityManager.getManager().addInstance(this);
 	}
 	
 	@Override
 	public boolean swing() {
 		
-		if (started || !canContinue) {
+		if (state.equals(AbilityState.CannotStart) || state.equals(AbilityState.Started)) {
 			return true;
 		}
 		
@@ -65,10 +64,11 @@ public class PoisonnedDart extends Ability{
 		location = origin.clone();
 		direction = origin.getDirection().normalize();
 		
-		started = true;
+		setState(AbilityState.Started);
 		
 		ItemStack is = player.getItemInHand();
 		effects = new LinkedList<PotionEffect>();
+		System.out.println(is.toString());
 		switch (is.getType()) {
 			case MILK_BUCKET:
 				effects = null;
@@ -78,13 +78,13 @@ public class PoisonnedDart extends Ability{
 			case POTION:
 				Potion potion = Potion.fromItemStack(is);
 				effects.addAll(potion.getEffects());
-				is.setType(Material.GLASS_BOTTLE);
-				is.setAmount(1);
+				player.getInventory().removeItem(is);
+				player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
 				break;
 			case EYE_OF_ENDER:
 				effects.add(new PotionEffect(PotionEffectType.BLINDNESS,20*10,1));
 				if (is.getAmount() == 1) {
-					player.getInventory().remove(is);
+					player.getInventory().removeItem(is);
 				}
 				else {
 					is.setAmount(is.getAmount() - 1);
@@ -101,7 +101,7 @@ public class PoisonnedDart extends Ability{
 				if (data == 1) {
 					effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 15, 1));
 					if (is.getAmount() == 1) {
-						player.getInventory().remove(is);
+						player.getInventory().removeItem(is);
 					}
 					else {
 						is.setAmount(is.getAmount() - 1);
@@ -120,14 +120,21 @@ public class PoisonnedDart extends Ability{
 		return false;
 	}
 
-	public boolean progress() {
+	public boolean progress() {	
+		if (!super.progress()) {
+			return false;
+		}
 		
-		if (!started) {
+		if (state.isBefore(AbilityState.Started)) {
 			return true;
 		}
 		
-		if (!super.progress()) {
-			return false;
+		if (state == AbilityState.Started) {
+			setState(AbilityState.Progressing);
+		}
+		
+		if (state != AbilityState.Progressing){
+			return true;
 		}
 		
 		if (!player.getWorld().equals(location.getWorld())) {
@@ -187,15 +194,24 @@ public class PoisonnedDart extends Ability{
 		if (effects == null) {
 			return false;
 		}
+		LinkedList<PotionEffect> healthEffects = new LinkedList<PotionEffect>();
 		for (PotionEffect effect : effects) {
 			if (effect.getType().equals(PotionEffectType.HEAL)
 					|| effect.getType().equals(PotionEffectType.HEALTH_BOOST)
 					|| effect.getType().equals(PotionEffectType.REGENERATION)) {
-				return true;
+				healthEffects.add(effect);
 			}
-		}		
+		}
+//		
+//		effects.removeAll(healthEffects);
+//		for (PotionEffect ef : healthEffects) {
+//			System.out.println(ef.getDuration());
+//			PotionEffect newP = new PotionEffect(ef.getType(), (int) (ef.getDuration() * 1.5), ef.getAmplifier());
+//			System.out.println(newP.getDuration());
+//			effects.add(newP);
+//		}
 		
-		return false;
+		return !healthEffects.isEmpty();
 	}
 	private void advanceLocation() {
 		VISUAL.display(0, 0, 0, 1, 1, location, 20);
@@ -207,8 +223,12 @@ public class PoisonnedDart extends Ability{
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
-		if (AbilityManager.getManager().getPoisonnedDarts().containsKey(player)) {
+		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.PoisonnedDart);
+		if (instances == null || instances.isEmpty()) {
+			return true;
+		}
+			
+		if (instances.containsKey(player)) {
 			return false;
 		}
 		
@@ -222,7 +242,13 @@ public class PoisonnedDart extends Ability{
 	
 	@Override
 	public void remove() {
-		AbilityManager.getManager().getPoisonnedDarts().remove(player);		
+		AbilityManager.getManager().getInstances(Abilities.PoisonnedDart).remove(player);
+		super.remove();
+	}
+
+	@Override
+	public Object getIdentifier() {
+		return player;
 	}
 	
 }

@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
@@ -18,14 +19,15 @@ public class HighJump extends Ability {
 
 	public HighJump (Player p) {
 		super(p, null);	
-		System.out.println("Construct");
 	}
 	
 	public boolean swing() {
+		if (state == AbilityState.CannotStart) {
+			return true;
+		}
 		if (makeJump()) {
 			bender.cooldown(Abilities.HighJump, COOLDOWN);
 		}
-		System.out.println("Swinged");
 		return true;
 	}
 
@@ -39,11 +41,12 @@ public class HighJump extends Ability {
 	}
 
 	@Override
-	public void remove() {
+	public Abilities getAbilityType() {
+		return Abilities.HighJump;
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.HighJump;
+	public Object getIdentifier() {
+		return player;
 	}
 }

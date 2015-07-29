@@ -1,16 +1,15 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -21,56 +20,74 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class SmokeBomb implements IAbility {
-	public static int radius = ConfigManager.smokeRadius;
-	public static int duration = ConfigManager.smokeDuration;
-
-	private static List<SmokeBomb> instances = new ArrayList<SmokeBomb>();
+public class SmokeBomb extends Ability {
+	
+	public static final int RADIUS = 5; //Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Radius");
+	public static final int DURATION = 10; //Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Duration");
+	public static final long COOLDOWN = 500; //Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Cooldown");
+	
+	private static Integer ID = Integer.MIN_VALUE;
 
 	private static PotionEffect blindnessBomber = new PotionEffect(
 			PotionEffectType.BLINDNESS, 20, 2);
 
-	private Player player;
 	private PotionEffect blindnessTarget;
 	private List<LivingEntity> targets;
 	private Location origin;
 	private int ticksRemaining;
 	private List<Location> locs;
-	private IAbility parent;
+	
+	private Integer id;
 
-	public SmokeBomb(Player player, IAbility parent) {
-		this.parent = parent;
-		this.player = player;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		this.origin = player.getLocation();
+	public SmokeBomb(Player player) {
+		super(player, null);
 		
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.SmokeBomb,
-				origin)) {
+		if (state.equals(AbilityState.CannotStart)) {
 			return;
 		}
+		
+		this.origin = player.getLocation();
+		id = ID++;
+		
+		this.ticksRemaining = DURATION * 20;
+		locs = new ArrayList<Location>();
+		targets = new ArrayList<LivingEntity>();
 
-		if (!bPlayer.isOnCooldown(Abilities.SmokeBomb)) {
-			
-			this.ticksRemaining = duration * 20;
-			locs = new ArrayList<Location>();
-			targets = new ArrayList<LivingEntity>();
-			instances.add(this);
-
-			List<Block> blocks = BlockTools
-					.getBlocksAroundPoint(origin, radius);
-			for (Block block : blocks) {
-				locs.add(block.getLocation());
-			}
-			
-			origin.getWorld().playSound(origin, Sound.FIREWORK_BLAST, 10, 1);
-			player.addPotionEffect(blindnessBomber);
-			bPlayer.cooldown(Abilities.SmokeBomb);
+		List<Block> blocks = BlockTools.getBlocksAroundPoint(origin, RADIUS);
+		for (Block block : blocks) {
+			locs.add(block.getLocation());
+		}		
+	}
+	
+	@Override
+	public boolean swing() {
+		if (state == AbilityState.CannotStart || state == AbilityState.Started) {
+			return true;
 		}
+		
+		setState(AbilityState.Started);
+		
+		origin.getWorld().playSound(origin, Sound.FIREWORK_BLAST, 10, 1);
+		player.addPotionEffect(blindnessBomber);
+		
+		bender.cooldown(Abilities.SmokeBomb, COOLDOWN);
+		AbilityManager.getManager().addInstance(this);
+		
+		if (state == AbilityState.Started) {
+			setState(AbilityState.Progressing);
+		}
+		return false;
 	}
 
-	public void progress() {
+	@Override
+	public boolean progress() {
+		
+		Bending.plugin.getLogger().info("Before : " + state);
+		if (state != AbilityState.Progressing) {
+			return false;
+		}
 		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(
-				origin, radius);
+				origin, RADIUS);
 
 		blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS,
 				ticksRemaining, 2);
@@ -109,29 +126,29 @@ public class SmokeBomb implements IAbility {
 		}
 
 		ticksRemaining--;
-	}
-
-	public static void progressAll() {
-		List<SmokeBomb> toRemove = new LinkedList<SmokeBomb>();
-		for (SmokeBomb bomb : instances) {
-			bomb.progress();
-			if (bomb.ticksRemaining <= 0) {
-				toRemove.add(bomb);
-			}
+		Bending.plugin.getLogger().info("Ticks : " + ticksRemaining);
+		if (ticksRemaining <= 0) {
+			setState(AbilityState.Ended);
+			return false;
 		}
-		
-		for (SmokeBomb toRem : toRemove) {
-			instances.remove(toRem);
+		else {
+			return true;
 		}
-		toRemove.clear();
-	}
-
-	public static void removeAll() {
-		instances.clear();
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public void remove() {
+		AbilityManager.getManager().getInstances(Abilities.SmokeBomb).remove(id);
+		super.remove();
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.SmokeBomb;
+	}
+
+	@Override
+	public Object getIdentifier() {
+		return id;
 	}
 }

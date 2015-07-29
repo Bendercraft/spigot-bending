@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.abilities;
 
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 /**
@@ -20,8 +21,7 @@ public abstract class Ability {
 	
 	protected long startedTime;
 	
-	protected boolean canContinue;
-
+	protected AbilityState state = AbilityState.None;
 	/**
 	 * Construct the bases of a new ability instance
 	 * @param player The player that launches this ability
@@ -33,7 +33,12 @@ public abstract class Ability {
 		this.player = player;
 		this.bender = BendingPlayer.getBendingPlayer(player);
 		
-		canContinue = canBeInitialized();
+		if (canBeInitialized()) {
+			setState(AbilityState.CanStart);
+		}
+		else {
+			setState(AbilityState.CannotStart);
+		}
 	}
 	
 	/**
@@ -101,14 +106,16 @@ public abstract class Ability {
 		
 	}
 	
-	public abstract void remove();
+	public void remove() {
+		setState(AbilityState.Removed);
+	}
 	
 	/**
 	 * @return <pre>Max time in millisecond the ability can keep running.
 	 * 0 if unlimited </pre>
 	 */
 	protected int getMaxMillis() {
-		return 10000;
+		return 25000;
 	}
 	
 	/**
@@ -141,6 +148,13 @@ public abstract class Ability {
 		return true;
 	}
 	
+	protected final void setState(AbilityState newState) {
+		Bending.plugin.getLogger().info(newState.name());
+		this.state = newState;
+	}
+	
 	public abstract Abilities getAbilityType();
+	
+	public abstract Object getIdentifier();
 	
 }
