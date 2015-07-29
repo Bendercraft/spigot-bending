@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
@@ -52,6 +53,7 @@ public class BendingCommand {
 	private final String[] slotAliases = {"slot", "slo", "sl", "s"};
 	private final String[] dbAlias = {"db"};
 	private final String[] learningAlias = {"learning", "l"};
+	private final String[] cooldownsAlias = {"cooldown", "cd"};
 	private final File dataFolder;
 	private final Server server;
 	private boolean verbose = true;
@@ -131,12 +133,43 @@ public class BendingCommand {
 			else if (Arrays.asList(this.learningAlias).contains(arg)) {
 				learning(player, args);
 			}
+			else if (Arrays.asList(this.cooldownsAlias).contains(arg)){
+				cooldowns(player);
+			}
 			else {
 				printHelpDialogue(player);
 			}
 		}
 		else {
 			printHelpDialogue(player);
+		}
+	}
+
+	private void cooldowns(Player player) {
+		if (player == null) {
+			return;
+		}
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		if (bender == null) {
+			Bending.plugin.getLogger().warning("Cooldowns command was not able to find beding player for " + player.getName());
+			return;
+		}
+		
+		Map<Abilities, Long> cooldowns = bender.getCooldowns();
+		player.sendMessage("-Cooldows :");
+		if (cooldowns == null || cooldowns.isEmpty()) {
+			player.sendMessage("--- None");
+		}
+		else {
+			for (Abilities ab : cooldowns.keySet()) {
+				ChatColor col = ChatColor.WHITE;
+				int min = (int) ((cooldowns.get(ab)/1000)/60);
+				int sec = (int) (((double)((cooldowns.get(ab)/1000.0)/60.0)-min)*60);
+				if (!ab.isEnergyAbility()) {
+					col = PluginTools.getColor(ConfigManager.getColor(ab.getElement().name()));
+				}
+				player.sendMessage(col + "--- " + ab.name() + " ~ " + min + ":" + sec);
+			}	
 		}
 	}
 
@@ -950,7 +983,6 @@ public class BendingCommand {
 			final boolean item = this.bPlayer.getBendToItem();
 			if (!item) {
 				for (int i = 0 ; i <= 8 ; i++) {
-					// Abilities a = config.getAbility(player, i);
 					final Abilities a = this.bPlayer.getAbility(i);
 					if (a != null) {
 						none = false;

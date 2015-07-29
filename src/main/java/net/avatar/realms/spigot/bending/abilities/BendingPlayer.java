@@ -106,9 +106,6 @@ public class BendingPlayer {
 					case PlasticBomb:
 						cd = ConfigManager.plasticCooldown;
 						break;
-					case AvatarState:
-						cd = ConfigManager.avatarstateCooldown;
-						break;
 					default:
 						cd = 0;
 						break;
@@ -170,6 +167,22 @@ public class BendingPlayer {
 		if (ability != null) {
 			Bending.callEvent(new AbilityCooldownEvent(this, ability));
 		}
+	}
+	
+	public Map<Abilities, Long> getCooldowns() {
+		Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
+		long now = System.currentTimeMillis();
+		for (Abilities ab : this.cooldowns.keySet()) {
+			long remain = this.cooldowns.get(ab) - now;
+			if (remain <= 0) {
+				this.cooldowns.remove(ab);
+			}
+			else {
+				cooldowns.put(ab, remain);
+			}
+		}
+		
+		return cooldowns;
 	}
 
 	public UUID getPlayerID () {

@@ -231,4 +231,18 @@ public enum Abilities {
 	public boolean isShiftAbility () {
 		return this.shift;
 	}
+	
+	public static boolean isEnergyAbility (Abilities ab) {
+		if (ab.getElement().equals(BendingType.Energy)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isEnergyAbility() {
+		if (getElement().equals(BendingType.Energy)) {
+			return true;
+		}
+		return false;
+	}
 }

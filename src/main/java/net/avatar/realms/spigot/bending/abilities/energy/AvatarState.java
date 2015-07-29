@@ -1,78 +1,69 @@
 package net.avatar.realms.spigot.bending.abilities.energy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.controller.Flight;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 
-public class AvatarState {
+public class AvatarState extends Ability{
 
-	public static Map<Player, AvatarState> instances = new HashMap<Player, AvatarState>();
-	private static List<Player> toRemove = new ArrayList<Player>();
-
-	private static final double factor = 4.5;
-
-	private static final long duration = ConfigManager.avatarstateDuration;
-
-	private Player player;
-	private BendingPlayer bPlayer;
-	private long startedTime;
+	private static final double FACTOR = Bending.plugin.configuration.getLongAttribute(configPrefix + "Energy.AvatarState.Factor");
+	private static final long MAX_DURATION = Bending.plugin.configuration.getLongAttribute(configPrefix + "Energy.AvatarState.Max-Duration");
+	private static final int COOLDOWN_FACTOR = Bending.plugin.configuration.getIntAttribute(configPrefix + "Energy.AvatarState.Cooldown-Factor");
+	
+	private long realDuration;
 
 	public AvatarState (Player player) {
-		if (instances.containsKey(player)) {
-			instances.remove(player);
+		super(player, null);
+	}
+	
+	@Override
+	public boolean swing() {
+		
+		if (state == AbilityState.CannotStart) {
+			return true;
 		}
-		else {
-			this.bPlayer = BendingPlayer.getBendingPlayer(player);
-			if (this.bPlayer.isOnCooldown(Abilities.AvatarState)) {
-				return;
-			}
+		
+		if (state == AbilityState.Progressing) {
+			setState(AbilityState.Ended);
+			return false;
+		}
+		
+		if (state == AbilityState.CanStart) {
+			AbilityManager.getManager().addInstance(this);
+			setState(AbilityState.Progressing);
 			new Flight(player);
-			instances.put(player, this);
-			this.player = player;
-			this.startedTime = System.currentTimeMillis();
 		}
+
+		return false;
 	}
 
-	public static void progressAll () {
-		for (Player player : instances.keySet()) {
-			AvatarState as = instances.get(player);
-			boolean keep = as.progress();
-			if (!keep) {
-				as.bPlayer.cooldown(Abilities.AvatarState);
-				toRemove.add(player);
-			}
-		}
-		for (Player pl : toRemove) {
-			instances.remove(pl);
-		}
-		toRemove.clear();
-	}
-
+	@Override
 	public boolean progress () {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AvatarState, this.player.getLocation())) {
+		
+		if (!super.progress()) {
 			return false;
 		}
-		if (!EntityTools.canBend(this.player, Abilities.AvatarState)) {
+		
+		if (state == AbilityState.Ended) {
 			return false;
 		}
-		long now = System.currentTimeMillis();
-		if ((now - this.startedTime) > duration) {
-			return false;
+		
+		if (state == AbilityState.Progressing) {
+			addPotionEffects();
 		}
-		addPotionEffects();
+		
 		return true;
 	}
 
@@ -85,6 +76,12 @@ public class AvatarState {
 	}
 
 	public static boolean isAvatarState (Player player) {
+		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
+		
+		if (instances == null || instances.isEmpty()) {
+			return false;
+		}
+		
 		if (instances.containsKey(player)) {
 			return true;
 		}
@@ -92,18 +89,47 @@ public class AvatarState {
 	}
 
 	public static double getValue (double value) {
-		return factor * value;
+		return FACTOR * value;
 	}
 
 	public static int getValue (int value) {
-		return (int)factor * value;
+		return (int)FACTOR * value;
 	}
-
-	public static ArrayList<Player> getPlayers () {
-		ArrayList<Player> players = new ArrayList<Player>();
-		for (Player player : instances.keySet()) {
-			players.add(player);
+	
+	public static List<Player> getPlayers() {
+		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
+		LinkedList<Player> players = new LinkedList<Player>();
+		if (instances == null || instances.isEmpty()) {
+			return players;
+		}
+		
+		for (Object obj : instances.keySet()) {
+			players.add((Player) obj);
 		}
 		return players;
+	}
+	
+	@Override
+	public void remove() {
+		long now = System.currentTimeMillis();
+		realDuration = now - startedTime;
+		bender.cooldown(Abilities.AvatarState, realDuration * COOLDOWN_FACTOR);
+		AbilityManager.getManager().getInstances(Abilities.AvatarState).remove(player);
+		super.remove();
+	}
+
+	@Override
+	protected long getMaxMillis() {
+		return MAX_DURATION;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.AvatarState;
+	}
+
+	@Override
+	public Object getIdentifier() {
+		return player;
 	}
 }

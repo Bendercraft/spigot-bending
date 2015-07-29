@@ -51,7 +51,6 @@ public class PoisonnedDart extends Ability{
 		if (state.equals(AbilityState.CannotStart)) {
 			return;
 		}
-		AbilityManager.getManager().addInstance(this);
 	}
 	
 	@Override
@@ -66,6 +65,8 @@ public class PoisonnedDart extends Ability{
 		direction = origin.getDirection().normalize();
 		
 		setState(AbilityState.Started);
+		
+		AbilityManager.getManager().addInstance(this);
 		
 		ItemStack is = player.getItemInHand();
 		effects = new LinkedList<PotionEffect>();
@@ -115,7 +116,6 @@ public class PoisonnedDart extends Ability{
 		}
 
 		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
-		
 		bender.cooldown(Abilities.PoisonnedDart, COOLDOWN);
 		
 		return false;
@@ -224,6 +224,11 @@ public class PoisonnedDart extends Ability{
 		if (!super.canBeInitialized()) {
 			return false;
 		}
+		
+		if (EntityTools.isWeapon(player.getItemInHand().getType())) {
+			return false;
+		}
+		
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.PoisonnedDart);
 		if (instances == null || instances.isEmpty()) {
 			return true;

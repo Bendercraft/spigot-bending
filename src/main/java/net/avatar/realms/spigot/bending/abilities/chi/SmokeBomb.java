@@ -148,4 +148,16 @@ public class SmokeBomb extends Ability {
 	public Object getIdentifier() {
 		return id;
 	}
+
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if (EntityTools.isWeapon(player.getItemInHand().getType())) {
+			return false;
+		}
+		return true;
+	}
 }

@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 /**
@@ -87,6 +88,10 @@ public abstract class Ability {
 			return false;
 		}
 		
+		if (!EntityTools.canBend(this.player, getAbilityType())) {
+			return false;
+		}
+		
 		if (ProtectionManager.isRegionProtectedFromBending(player, this.getAbilityType(), player.getLocation())) {
 			return false;
 		}
@@ -114,7 +119,7 @@ public abstract class Ability {
 	 * @return <pre>Max time in millisecond the ability can keep running.
 	 * 0 if unlimited </pre>
 	 */
-	protected int getMaxMillis() {
+	protected long getMaxMillis() {
 		return 25000;
 	}
 	

@@ -44,9 +44,7 @@ Bending:
     - GLOWING_REDSTONE_ORE
     - MYCEL
 Properties:
-  Spirit:
-    AstralProjection:
-      Cooldown: 2000
+  Energy:
     AvatarState:
       Duration: 300000
       Cooldown: 1200000

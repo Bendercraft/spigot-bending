@@ -45,8 +45,6 @@ public class ConfigManager {
 
 	public static boolean useTagAPI;
 
-	public static int astralProjectionCooldown;
-
 	private static List<String> defaultearthbendable = new LinkedList<String>();
 	static {
 		defaultearthbendable.add("STONE");
@@ -68,8 +66,8 @@ public class ConfigManager {
 	}
 	// Avatar
 	// Avatar State
-	public static long avatarstateDuration;
-	public static long avatarstateCooldown;
+//	public static long avatarstateDuration;
+//	public static long avatarstateCooldown;
 
 	// Air
 	// AirBlast
@@ -136,11 +134,6 @@ public class ConfigManager {
 	public static int rapidPunchDistance;
 	public static long rapidPunchCooldown;
 	public static int rapidPunchPunches;
-
-	// Smoke Bomb
-//	public static int smokeRadius;
-//	public static int smokeDuration;    // time in secs
-//	public static int smokeBombCooldown; // time in ms
 
 	// Dash
 	public static int dashCooldown;
@@ -394,9 +387,8 @@ public class ConfigManager {
 			e.printStackTrace();
 		}
 
-		astralProjectionCooldown = config.getInt("Properties.Spirit.AstralProjection.Cooldown");
-		avatarstateDuration = config.getLong("Properties.Spirit.AvatarState.Duration");
-		avatarstateCooldown = config.getLong("Properties.Spirit.AvatarState.Cooldown");
+//		avatarstateDuration = config.getLong("Properties.Spirit.AvatarState.Duration");
+//		avatarstateCooldown = config.getLong("Properties.Spirit.AvatarState.Cooldown");
 
 		database = config.getString("Database", "flatfile");
 
@@ -468,11 +460,6 @@ public class ConfigManager {
 		rapidPunchDistance = config.getInt("Properties.ChiBlocker.RapidPunch.Distance");
 		rapidPunchCooldown = config.getLong("Properties.ChiBlocker.RapidPunch.Cooldown");
 		rapidPunchPunches = config.getInt("Properties.ChiBlocker.RapidPunch.Punches");
-
-//		// Smoke bomb
-//		smokeRadius = config.getInt("Properties.ChiBlocker.SmokeBomb.Radius");
-//		smokeDuration = config.getInt("Properties.ChiBlocker.SmokeBomb.Duration");
-//		smokeBombCooldown = config.getInt("Properties.ChiBlocker.SmokeBomb.Cooldown");
 
 		// Dash
 		dashCooldown = config.getInt("Properties.ChiBlocker.Dash.Cooldown");

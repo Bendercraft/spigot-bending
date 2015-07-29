@@ -38,7 +38,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.Ripple;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
-import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
@@ -111,7 +110,6 @@ public class BendingManager implements Runnable {
 			manageChiBlocking();
 			// manageMessages();
 			TempPotionEffect.progressAll();
-			AvatarState.progressAll();
 			// handleFlying();
 			Flight.handle();
 			handleDayNight();

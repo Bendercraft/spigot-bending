@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
  * 
@@ -41,7 +42,7 @@ public class PowerfulHit extends Ability{
 	}
 
 	@Override
-	protected int getMaxMillis() {
+	protected long getMaxMillis() {
 		return 1;
 	}
 
@@ -59,6 +60,19 @@ public class PowerfulHit extends Ability{
 	@Override
 	public Object getIdentifier() {
 		return player;
+	}
+
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if (EntityTools.isWeapon(player.getItemInHand().getType())) {
+			return false;
+		}
+		
+		return true;
 	}
 
 }

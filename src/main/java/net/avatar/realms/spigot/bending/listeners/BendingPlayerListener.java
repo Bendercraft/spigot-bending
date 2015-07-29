@@ -346,8 +346,28 @@ public class BendingPlayerListener implements Listener{
 		}
 			
 		if (EntityTools.canBend(player, ability)) {
-			if (ability == Abilities.AvatarState) {
-				new AvatarState(player);
+			
+			if (ability == Abilities.PoisonnedDart || ability == Abilities.SmokeBomb || ability == Abilities.AvatarState) {
+				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
+				
+				if (abilities == null || abilities.isEmpty()) {
+					Ability ab = AbilityFactory.buildAbility(ability, player);
+					ab.swing();
+					return;
+				}
+				
+				boolean shouldCreateNew = false;
+				for (Ability a : abilities.values()) {
+					if (a.getPlayer().equals(player)) {
+						if (a.swing()) {
+							shouldCreateNew = true;
+						}
+					}
+				}
+				if (shouldCreateNew) {
+					Ability ab = AbilityFactory.buildAbility(ability, player);
+					ab.swing();
+				}
 				return;
 			}
 			
@@ -562,31 +582,7 @@ public class BendingPlayerListener implements Listener{
 							ConfigManager.rapidPunchDistance);
 					new Paralyze(player, t, null);
 					return;
-				}
-				
-				if (ability == Abilities.PoisonnedDart || ability == Abilities.SmokeBomb) {
-					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
-					
-					if (abilities == null || abilities.isEmpty()) {
-						Ability ab = AbilityFactory.buildAbility(ability, player);
-						ab.swing();
-						return;
-					}
-					
-					boolean shouldCreateNew = false;
-					for (Ability a : abilities.values()) {
-						if (a.getPlayer().equals(player)) {
-							if (a.swing()) {
-								shouldCreateNew = true;
-							}
-						}
-					}
-					if (shouldCreateNew) {
-						Ability ab = AbilityFactory.buildAbility(ability, player);
-						ab.swing();
-					}
-					return;
-				}
+				}				
 			}
 		}
 	}
