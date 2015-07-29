@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -18,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 //import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+@BendingAbility(name="Fire Blade", element=BendingType.Fire)
 public class FireBlade {
 	private static Map<Player, FireBlade> instances = new HashMap<Player, FireBlade>();
 	private static String LORE_NAME = "FireBlade";

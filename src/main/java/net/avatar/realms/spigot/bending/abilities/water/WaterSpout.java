@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
@@ -24,6 +26,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
+@BendingAbility(name="Water Spout", element=BendingType.Water)
 public class WaterSpout implements IAbility {
 	public static int SPEED = ConfigManager.waterSpoutRotationSpeed;
 	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();

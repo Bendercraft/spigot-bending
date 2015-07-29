@@ -1,5 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.water.Melt;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
@@ -12,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+@BendingAbility(name="Heat Control", element=BendingType.Fire)
 public class HeatMelt implements IAbility {
 	private static final int range = ConfigManager.heatMeltRange;
 	private static final int radius = ConfigManager.heatMeltRadius;

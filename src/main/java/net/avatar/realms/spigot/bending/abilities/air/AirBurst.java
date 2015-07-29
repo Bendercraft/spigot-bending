@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -23,6 +25,8 @@ import org.bukkit.entity.Player;
  * @author Koudja
  *
  */
+
+@BendingAbility(name="Air Burst", element=BendingType.Air)
 public class AirBurst implements IAbility {
 	private static Map<Player, AirBurst> instances = new HashMap<Player, AirBurst>();
 

@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.air;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +10,9 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.controller.Flight;
@@ -24,6 +28,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Tornado", element=BendingType.Air, specialization=BendingSpecializationType.Tornado)
 public class Tornado implements IAbility {
 	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 	private static Map<UUID, Long> affecteds = new HashMap<UUID, Long>();

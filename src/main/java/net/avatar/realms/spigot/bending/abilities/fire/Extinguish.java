@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
@@ -17,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+@BendingAbility(name="Extinguish", element=BendingType.Fire)
 public class Extinguish implements IAbility {
 
 	private static double defaultrange = ConfigManager.extinguishRange;

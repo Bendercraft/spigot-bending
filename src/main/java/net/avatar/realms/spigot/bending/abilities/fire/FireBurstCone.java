@@ -3,7 +3,9 @@ package net.avatar.realms.spigot.bending.abilities.fire;
 import java.util.List;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
@@ -12,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Fire Burst", element=BendingType.Fire)
 public class FireBurstCone implements IAbility {
 	private int damage = 3;
 	private double deltheta = 10;

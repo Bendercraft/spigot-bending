@@ -4,6 +4,9 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
@@ -11,10 +14,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-
+@BendingAbility(name="High Jump", element=BendingType.ChiBlocker)
 public class HighJump extends Ability {
 
-	private static final int JUMP_HEIGHT = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.HighJump.Height", 5);
+	@ConfigurationParameter("Height")
+	private static final int JUMP_HEIGHT = 7;
+	@ConfigurationParameter("Cooldown")
 	private static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.HighJump.Cooldown", 5);
 
 	public HighJump (Player p) {

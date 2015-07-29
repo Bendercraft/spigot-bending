@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -19,6 +21,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Shockwave", element=BendingType.Earth)
 public class Ripple implements IAbility {
 	private static Map<Integer, Ripple> instances = new HashMap<Integer, Ripple>();
 	private static Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();

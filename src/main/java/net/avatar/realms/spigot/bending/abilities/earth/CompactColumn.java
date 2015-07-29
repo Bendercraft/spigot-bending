@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -16,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Collapse", element=BendingType.Earth)
 public class CompactColumn implements IAbility {
 	private static Map<Integer, CompactColumn> instances = new HashMap<Integer, CompactColumn>();
 	//TODO This map never receive any elements, strange

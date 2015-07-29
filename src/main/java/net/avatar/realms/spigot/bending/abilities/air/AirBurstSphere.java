@@ -4,17 +4,21 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 
-public class AirBurstSphere implements IAbility  {
+//TODO : Parent = AirBurst
+
+@BendingAbility(name="Air Burst", element=BendingType.Air)
+public class AirBurstSphere extends Ability  {
 	private static double pushfactor = 1.5;
 	private static double deltheta = 10;
 	private static double delphi = 10;
 	
-	private IAbility parent;
-	
-	public AirBurstSphere(Player player, IAbility parent) {
-		this.parent = parent;
+	public AirBurstSphere(Player player, Ability parent) {
+		super(player, parent);
 		if(!AirBurst.isAirBursting(player)) {
 			return;
 		}
@@ -43,7 +47,12 @@ public class AirBurstSphere implements IAbility  {
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Abilities getAbilityType() {
+		return Abilities.AirBurst;
+	}
+
+	@Override
+	public Object getIdentifier() {
+		return getParent().getIdentifier();
 	}
 }

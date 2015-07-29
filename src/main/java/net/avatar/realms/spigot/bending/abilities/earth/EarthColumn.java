@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -18,6 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Raise Earth", element=BendingType.Earth)
 public class EarthColumn implements IAbility {
 	private static Map<Integer, EarthColumn> instances = new HashMap<Integer, EarthColumn>();
 	public static final int standardheight = ConfigManager.earthColumnHeight;

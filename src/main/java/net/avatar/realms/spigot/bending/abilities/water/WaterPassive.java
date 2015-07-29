@@ -1,5 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IPassiveAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
@@ -9,6 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Water Passive", element=BendingType.Water)
 public class WaterPassive implements IPassiveAbility{
 	public static Vector handle(Player player, Vector velocity) {
 		Vector vec = velocity.clone();

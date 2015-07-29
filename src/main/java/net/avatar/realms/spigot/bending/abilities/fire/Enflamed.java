@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -12,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+@BendingAbility(name="Enflamed", element=BendingType.Fire)
 public class Enflamed implements IAbility {
 	private static Map<Entity, Player> instances = new HashMap<Entity, Player>();
 	private static Map<Entity, Long> times = new HashMap<Entity, Long>();

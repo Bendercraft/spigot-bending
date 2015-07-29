@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -26,6 +28,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Torrent", element=BendingType.Water)
 public class Torrent implements IAbility {
 	private static Map<Player, Torrent> instances = new HashMap<Player, Torrent>();
 	private static Map<TempBlock, Player> frozenblocks = new HashMap<TempBlock, Player>();

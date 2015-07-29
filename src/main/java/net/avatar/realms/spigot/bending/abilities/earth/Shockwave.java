@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -15,6 +17,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+@BendingAbility(name="Shockwave", element=BendingType.Earth)
 public class Shockwave implements IAbility {
 	private static Map<Player, Shockwave> instances = new HashMap<Player, Shockwave>();
 

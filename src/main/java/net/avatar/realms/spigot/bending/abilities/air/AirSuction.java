@@ -7,7 +7,9 @@ import java.util.Map;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
@@ -24,6 +26,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Air Suction", element=BendingType.Air)
 public class AirSuction implements IAbility {
 
 	private static Map<Integer, AirSuction> instances = new HashMap<Integer, AirSuction>();
@@ -31,7 +34,6 @@ public class AirSuction implements IAbility {
 	static final long soonesttime = Tools.timeinterval;
 
 	private static int ID = Integer.MIN_VALUE;
-	private static final int maxticks = AirBlast.maxticks;
 	static final double maxspeed = AirBlast.maxspeed;
 
 	private static double speed = ConfigManager.airSuctionSpeed;
@@ -45,7 +47,6 @@ public class AirSuction implements IAbility {
 	private Vector direction;
 	private Player player;
 	private int id;
-	private int ticks = 0;
 	private IAbility parent;
 	private boolean otherorigin = false;
 
@@ -127,11 +128,10 @@ public class AirSuction implements IAbility {
 		}
 		speedfactor = speed * (Bending.time_step / 1000.);
 
-		ticks++;
 
-		if (ticks > maxticks) {
-			return false;
-		}
+//		if (ticks > maxticks) {
+//			return false;
+//		}
 
 
 		if ((location.distance(origin) > range)

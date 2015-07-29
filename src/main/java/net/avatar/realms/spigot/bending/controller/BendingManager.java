@@ -12,7 +12,6 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
@@ -122,7 +121,6 @@ public class BendingManager implements Runnable {
 
 	private void manageAirbending() {
 		AirBubble.progressAll();
-		AirBlast.progressAll();
 		AirShield.progressAll();
 		AirSuction.progressAll();
 		AirSwipe.progressAll();

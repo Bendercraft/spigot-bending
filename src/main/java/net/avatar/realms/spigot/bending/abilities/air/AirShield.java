@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Set;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
@@ -25,7 +27,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-
+@BendingAbility(name="Air Shield", element=BendingType.Air)
 public class AirShield implements IAbility {
 
 	private static Map<Integer, AirShield> instances = new HashMap<Integer, AirShield>();

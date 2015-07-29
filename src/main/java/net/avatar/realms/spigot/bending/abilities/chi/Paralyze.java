@@ -1,9 +1,11 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -22,6 +24,7 @@ import org.bukkit.entity.Player;
  * The more you hit it, the more it get slown.
  *
  */
+@BendingAbility(name="Vital Point", element=BendingType.ChiBlocker)
 public class Paralyze implements IAbility {
 	private static Map<Entity, Long> entities = new HashMap<Entity, Long>();
 	private static Map<Entity, Long> cooldowns = new HashMap<Entity, Long>();

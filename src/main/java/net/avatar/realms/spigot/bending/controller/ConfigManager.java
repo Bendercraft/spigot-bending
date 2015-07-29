@@ -67,10 +67,10 @@ public class ConfigManager {
 
 	// Air
 	// AirBlast
-	public static double airBlastSpeed;
-	public static double airBlastRange;
-	public static double airBlastRadius;
-	public static double airBlastPush;
+//	public static double airBlastSpeed;
+//	public static double airBlastRange;
+//	public static double airBlastRadius;
+//	public static double airBlastPush;
 
 	// AirBurst
 
@@ -456,10 +456,10 @@ public class ConfigManager {
 
 		// Air
 		// AirBlast
-		airBlastSpeed = config.getDouble("Properties.Air.AirBlast.Speed");
-		airBlastRange = config.getDouble("Properties.Air.AirBlast.Range");
-		airBlastRadius = config.getDouble("Properties.Air.AirBlast.Affecting-Radius");
-		airBlastPush = config.getDouble("Properties.Air.AirBlast.Push-Factor");
+//		airBlastSpeed = config.getDouble("Properties.Air.AirBlast.Speed");
+//		airBlastRange = config.getDouble("Properties.Air.AirBlast.Range");
+//		airBlastRadius = config.getDouble("Properties.Air.AirBlast.Affecting-Radius");
+//		airBlastPush = config.getDouble("Properties.Air.AirBlast.Push-Factor");
 
 		// AirBurst
 

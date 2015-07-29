@@ -1,20 +1,21 @@
 package net.avatar.realms.spigot.bending.abilities;
 
 public enum BendingSpecializationType {
-
-	Tornado(BendingType.Air), 
-	Suffocate(BendingType.Air), 
+	None 		(BendingType.None),
 	
-	Bloodbend(BendingType.Water), 
-	DrainBend(BendingType.Water), 
+	Tornado		(BendingType.Air), 
+	Suffocate	(BendingType.Air), 
 	
-	Lightning(BendingType.Fire), 
-	Combustion(BendingType.Fire), 
+	Bloodbend	(BendingType.Water), 
+	DrainBend	(BendingType.Water), 
 	
-	Metalbend(BendingType.Earth), 
-	Lavabend(BendingType.Earth),
+	Lightning	(BendingType.Fire), 
+	Combustion	(BendingType.Fire), 
 	
-	Inventor(BendingType.ChiBlocker);
+	Metalbend	(BendingType.Earth), 
+	Lavabend	(BendingType.Earth),
+	
+	Inventor	(BendingType.ChiBlocker);
 	
 	
 

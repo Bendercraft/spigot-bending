@@ -46,12 +46,10 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
-import net.avatar.realms.spigot.bending.abilities.AbilityFactory;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
@@ -344,11 +342,14 @@ public class BendingPlayerListener implements Listener{
 			
 		if (EntityTools.canBend(player, ability)) {
 			
-			if (ability == Abilities.PoisonnedDart || ability == Abilities.SmokeBomb || ability == Abilities.AvatarState) {
+			if (ability == Abilities.PoisonnedDart || 
+					ability == Abilities.SmokeBomb || 
+					ability == Abilities.AvatarState || 
+					ability == Abilities.AirBlast) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 				
 				if (abilities == null || abilities.isEmpty()) {
-					Ability ab = AbilityFactory.buildAbility(ability, player);
+					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.swing();
 					return;
 				}
@@ -362,14 +363,14 @@ public class BendingPlayerListener implements Listener{
 					}
 				}
 				if (shouldCreateNew) {
-					Ability ab = AbilityFactory.buildAbility(ability, player);
+					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.swing();
 				}
 				return;
 			}
 			
 			if (ability == Abilities.HighJump) {
-				Ability ab = AbilityFactory.buildAbility(ability, player);
+				Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 				ab.swing();
 				return;
 			}
@@ -391,11 +392,6 @@ public class BendingPlayerListener implements Listener{
 
 			if (!EntityTools.isWeapon(player.getItemInHand().getType())
 					|| ConfigManager.useWeapon.get("Air")) {
-
-				if (ability == Abilities.AirBlast) {
-					new AirBlast(player, null);
-					return;
-				}
 
 				if (ability == Abilities.AirSuction) {
 					new AirSuction(player, null);
@@ -630,10 +626,6 @@ public class BendingPlayerListener implements Listener{
 				if (ability == Abilities.AirSuction) {
 					AirSuction.setOrigin(player);
 				}
-				
-				if (ability == Abilities.AirBlast) {
-					AirBlast.setOrigin(player);
-				}
 
 				if (ability == Abilities.AirBurst) {
 					new AirBurst(player, null);
@@ -756,12 +748,12 @@ public class BendingPlayerListener implements Listener{
 				C4.activate(player);
 			}
 
-			if (ability == Abilities.Dash) {
+			if (ability == Abilities.Dash || ability == Abilities.AirBlast) {
 				
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 				
 				if (abilities == null || abilities.isEmpty()) {
-					Ability ab = AbilityFactory.buildAbility(ability, player);
+					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.sneak();
 					return;
 				}
@@ -775,7 +767,7 @@ public class BendingPlayerListener implements Listener{
 					}
 				}
 				if (shouldCreateNew) {
-					Ability ab = AbilityFactory.buildAbility(ability, player);
+					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.sneak();
 				}
 				return;

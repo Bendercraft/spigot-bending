@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -12,6 +14,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
+@BendingAbility(name="Plant Bending", element=BendingType.Water)
 public class Plantbending implements IAbility {
 	private static final long regrowtime = ConfigManager.plantbendingRegrowTime;
 	private static Map<Integer, Plantbending> instances = new HashMap<Integer, Plantbending>();

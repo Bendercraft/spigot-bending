@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IPassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -16,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+@BendingAbility(name="Earth Passive", element=BendingType.Earth)
 public class EarthPassive implements IPassiveAbility {
 	private static Map<Block, Long> sandblocks = new HashMap<Block, Long>();
 	private static Map<Block, Material> sandidentities = new HashMap<Block, Material>();

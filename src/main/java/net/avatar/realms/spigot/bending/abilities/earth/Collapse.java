@@ -11,12 +11,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
+@BendingAbility(name="Collapse", element=BendingType.Earth)
 public class Collapse implements IAbility {
 	private static final int range = ConfigManager.collapseRange;
 	private static final double defaultradius = ConfigManager.collapseRadius;

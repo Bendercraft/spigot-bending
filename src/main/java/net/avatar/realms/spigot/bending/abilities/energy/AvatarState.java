@@ -9,13 +9,15 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.Flight;
 
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-
+@BendingAbility(name="Avatar State", element=BendingType.Energy)
 public class AvatarState extends Ability{
 
 	private static final double FACTOR = Bending.plugin.configuration.getLongAttribute(configPrefix + "Energy.AvatarState.Factor");

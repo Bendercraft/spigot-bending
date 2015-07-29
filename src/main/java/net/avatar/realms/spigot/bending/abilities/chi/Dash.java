@@ -10,7 +10,11 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 
+@BendingAbility(name="Dash", element=BendingType.ChiBlocker)
 public class Dash extends Ability {
 
 	private static final double LENGTH = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Length");

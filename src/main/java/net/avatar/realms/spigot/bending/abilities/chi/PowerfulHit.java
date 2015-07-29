@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
@@ -13,6 +15,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * You must be sneaking when clicking to activate this technique.
  *
  */
+@BendingAbility(name="Powerful Hit", element=BendingType.ChiBlocker)
 public class PowerfulHit extends Ability{
 	
 	public static final long DAMAGE = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Damage");

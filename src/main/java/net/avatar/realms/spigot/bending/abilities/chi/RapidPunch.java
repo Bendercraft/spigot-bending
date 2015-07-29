@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -23,6 +25,7 @@ import org.bukkit.entity.Player;
  * The more you hit, the more you deal damage. (But the more big the cooldown will be)
  *
  */
+@BendingAbility(name="Rapid Punch", element=BendingType.ChiBlocker)
 public class RapidPunch implements IAbility {
 	private static int damage = ConfigManager.rapidPunchDamage;
 	private int distance = ConfigManager.rapidPunchDistance;

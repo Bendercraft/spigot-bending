@@ -1,12 +1,15 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 import org.bukkit.entity.Player;
 
+@BendingAbility(name="Shockwave", element=BendingType.Earth)
 public class ShockwaveFall implements IAbility {
 	private static final double threshold = 9;
 

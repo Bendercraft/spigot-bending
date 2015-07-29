@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
@@ -15,6 +16,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Dolphin", element=BendingType.Water)
 public class FastSwimming implements IPassiveAbility {
 
 	private static double factor = ConfigManager.fastSwimmingFactor;

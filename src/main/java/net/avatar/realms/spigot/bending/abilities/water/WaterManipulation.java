@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
@@ -30,6 +32,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Water Manipulation", element=BendingType.Water)
 public class WaterManipulation implements IAbility {
 	private static Map<Integer, WaterManipulation> instances = new HashMap<Integer, WaterManipulation>();
 	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();

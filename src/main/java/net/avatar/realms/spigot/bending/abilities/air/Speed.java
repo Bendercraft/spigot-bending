@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
@@ -18,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+@BendingAbility(name="Air Blast", element=BendingType.None)
 public class Speed implements IPassiveAbility {
 
 	private static Map<Integer, Speed> instances = new HashMap<Integer, Speed>();

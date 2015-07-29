@@ -1,10 +1,13 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Shockwave", element=BendingType.Earth)
 public class ShockwaveCone implements IAbility {
 	private static final double angle = Math.toRadians(40);
 

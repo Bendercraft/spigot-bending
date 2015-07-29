@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.water.Plantbending;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
@@ -22,6 +24,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Blaze", element=BendingType.Fire)
 public class FireStream implements IAbility {
 	private static Map<Integer, FireStream> instances = new HashMap<Integer, FireStream>();
 	private static Map<Block, Player> ignitedblocks = new HashMap<Block, Player>();

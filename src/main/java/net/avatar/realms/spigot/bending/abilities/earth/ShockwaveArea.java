@@ -1,10 +1,13 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+@BendingAbility(name="Shockwave", element=BendingType.Earth)
 public class ShockwaveArea implements IAbility {
 	private IAbility parent;
 

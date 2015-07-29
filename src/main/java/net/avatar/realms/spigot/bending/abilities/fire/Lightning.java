@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
@@ -23,6 +26,7 @@ import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+@BendingAbility(name="Lightning", element=BendingType.Fire, specialization=BendingSpecializationType.Lightning)
 public class Lightning implements IAbility {
 	private static Map<Player, Lightning> instances = new HashMap<Player, Lightning>();
 	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();

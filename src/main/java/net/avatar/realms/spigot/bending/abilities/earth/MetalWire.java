@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
@@ -18,6 +21,7 @@ import org.bukkit.util.Vector;
 
 import com.google.common.collect.Sets;
 
+@BendingAbility(name="Metal Wire", element=BendingType.Earth, specialization=BendingSpecializationType.Metalbend)
 public class MetalWire {
 
 	private static Map<Player, FishHook> instances = new HashMap<Player, FishHook>();

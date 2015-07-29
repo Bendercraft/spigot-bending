@@ -1,20 +1,17 @@
 package net.avatar.realms.spigot.bending.abilities.air;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -29,77 +26,46 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-
-public class AirBlast implements IAbility {
-	private static Map<Integer, AirBlast> instances = new HashMap<Integer, AirBlast>();
-	private static Map<Player, Location> origins = new HashMap<Player, Location>();
-
+@BendingAbility(name="Air Blast", element=BendingType.Air)
+public class AirBlast extends Ability {
 	private static int ID = Integer.MIN_VALUE;
-	static final int maxticks = 10000;
 
-	public static double speed = ConfigManager.airBlastSpeed;
-	public static double defaultrange = ConfigManager.airBlastRange;
-	public static double affectingradius = ConfigManager.airBlastRadius;
-	public static double defaultpushfactor = ConfigManager.airBlastPush;
-	private static double originselectrange = 10;
+	public static double speed = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Speed");
+	public static double defaultrange = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Range");
+	public static double affectingradius = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Radius");
+	public static double defaultpushfactor = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Push-Factor");
+	private static double originselectrange = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Origin-Range");
 	static final double maxspeed = 1. / defaultpushfactor;
-	// public static long interval = 2000;
 	public static byte full = 0x0;
 
 	private Location location;
 	private Location origin;
 	private Vector direction;
-	private Player player;
 	private int id;
 	private double speedfactor;
 	private double range = defaultrange;
 	private double pushfactor = defaultpushfactor;
-	private int ticks = 0;
 	private boolean otherorigin = false;
 
 	private List<Block> affectedlevers = new ArrayList<Block>();
-	private IAbility parent;
 
-	public AirBlast(Player player, IAbility parent) {
-		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (bPlayer.isOnCooldown(Abilities.AirBlast))
+	public AirBlast(Player player) {
+		super (player, null);
+		
+		if (state.isBefore(AbilityState.CanStart)) {
 			return;
+		}
 
 		if (player.getEyeLocation().getBlock().isLiquid()) {
 			return;
 		}
-		
-		this.player = player;
-		if (origins.containsKey(player)) {
-			origin = origins.get(player);
-			origins.remove(player);
-			otherorigin = true;
-			Entity entity = EntityTools.getTargettedEntity(player, range);
-			if (entity != null) {
-				direction = Tools.getDirection(origin, entity.getLocation())
-						.normalize();
-			} else {
-				direction = Tools.getDirection(origin,
-						EntityTools.getTargetedLocation(player, range)).normalize();
-			}
-		} else {
-			origin = player.getEyeLocation();
-			direction = origin.getDirection().normalize();
-		}
-		location = origin.clone();
-		id = ID;
-		instances.put(id, this);
-		bPlayer.cooldown(Abilities.AirBlast);
-		if (ID == Integer.MAX_VALUE)
-			ID = Integer.MIN_VALUE;
-		ID++;
+
+		id = ID++;
 	}
 
 	public AirBlast(Location location, Vector direction, Player player,
-			double factorpush, IAbility parent) {
-		this.parent = parent;
+			double factorpush, Ability parent) {
+		super(player, parent);
 		if (location.getBlock().isLiquid()) {
 			return;
 		}
@@ -110,44 +76,99 @@ public class AirBlast implements IAbility {
 		this.location = location.clone();
 		id = ID;
 		pushfactor *= factorpush;
-		instances.put(id, this);
+		AbilityManager.getManager().addInstance(this);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
 	}
 
-	public static void setOrigin(Player player) {
+	public void setOtherOrigin(Player player) {
 		Location location = EntityTools.getTargetedLocation(player,
 				originselectrange, BlockTools.nonOpaque);
 		if (location.getBlock().isLiquid()
-				|| BlockTools.isSolid(location.getBlock()))
+				|| BlockTools.isSolid(location.getBlock())) {
+			setState(AbilityState.CannotStart);
 			return;
+		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirBlast,
-				location))
+		if (location == null || ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirBlast, location))
+		{
+			setState(AbilityState.CannotStart);
 			return;
+		}
+		
+		origin = location;
+		System.out.println(origin.getBlock().getType());
+		setState(AbilityState.Started);
+		otherorigin = true;
+	}
+	
+	@Override
+	public boolean swing() {
+		switch (state) {
+			case None :
+			case CannotStart:
+				return true;
+			case CanStart:
+				origin = player.getEyeLocation();
+				AbilityManager.getManager().addInstance(this);
+				setState(AbilityState.Started);
+			case Started:
+				Entity entity = EntityTools.getTargettedEntity(player, range);
+				if (entity != null) {
+					direction = Tools.getDirection(origin, entity.getLocation()).normalize();
+				} else {
+					direction = Tools.getDirection(origin, EntityTools.getTargetedLocation(player, range)).normalize();
+				}
+				location = origin.clone();
+				bender.cooldown(Abilities.AirBlast);
+				setState(AbilityState.Progressing);
+				return false;
+			default:
+				return true;
+		}
+	}
 
-		origins.put(player, location);
+	@Override
+	public boolean sneak() {
+		switch (state) {
+			case None:
+			case CannotStart:
+				return true;
+			case CanStart:
+				setOtherOrigin(player);
+				AbilityManager.getManager().addInstance(this);
+				return false;
+			case Started:
+				setState(AbilityState.CannotStart);
+				remove();
+				return true;
+			default : 
+				return true;
+		}
 	}
 
 	@SuppressWarnings("deprecation")
 	public boolean progress() {
-		if (player.isDead() || !player.isOnline()) {
+		if (!super.progress()) {
 			return false;
 		}
-
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirBlast,
-				location)) {
+		
+		if (state.isBefore(AbilityState.CanStart)) {
+			return false;
+		}
+		
+		if (state == AbilityState.Started) {
+			origin.getWorld().playEffect(origin, Effect.SMOKE, 4,
+					(int) originselectrange);
+			return true;
+		}
+		
+		if (state != AbilityState.Progressing) {
 			return false;
 		}
 
 		speedfactor = speed * (Bending.time_step / 1000.);
-
-		ticks++;
-
-		if (ticks > maxticks) {
-			return false;
-		}
 
 		Block block = location.getBlock();
 		for (Block testblock : BlockTools.getBlocksAroundPoint(location,
@@ -248,57 +269,48 @@ public class AirBlast implements IAbility {
 		}			
 	}
 	
-	private void remove() {
-		instances.remove(id);
+	@Override
+	public void remove() {
+		AbilityManager.getManager().getInstances(Abilities.AirBlast).remove(this);
+		super.remove();
 	}
 
-	public static void progressAll() {
-		List<AirBlast> toRemove = new LinkedList<AirBlast>();
-		for(AirBlast blast : instances.values()) {
-			if (!blast.progress()) {
-				toRemove.add(blast);
-			}
-		}
-		
-		for(AirBlast blast : toRemove) {
-			blast.remove();
-		}
-		Set<Player> copy = new HashSet<Player>(origins.keySet());
-		for (Player player : copy) {
-			playOriginEffect(player);
-		}
-	}
+//	private static void playOriginEffect(Player player) {
+//		if (!origins.containsKey(player))
+//			return;
+//		Location origin = origins.get(player);
+//		if (!origin.getWorld().equals(player.getWorld())) {
+//			origins.remove(player);
+//			return;
+//		}
+//
+//		if (EntityTools.getBendingAbility(player) != Abilities.AirBlast
+//				|| !EntityTools.canBend(player, Abilities.AirBlast)) {
+//			origins.remove(player);
+//			return;
+//		}
+//
+//		if (origin.distance(player.getEyeLocation()) > originselectrange) {
+//			origins.remove(player);
+//			return;
+//		}
+//
+//		origin.getWorld().playEffect(origin, Effect.SMOKE, 4,
+//				(int) originselectrange);
+//	}
 
-	private static void playOriginEffect(Player player) {
-		if (!origins.containsKey(player))
-			return;
-		Location origin = origins.get(player);
-		if (!origin.getWorld().equals(player.getWorld())) {
-			origins.remove(player);
-			return;
-		}
-
-		if (EntityTools.getBendingAbility(player) != Abilities.AirBlast
-				|| !EntityTools.canBend(player, Abilities.AirBlast)) {
-			origins.remove(player);
-			return;
-		}
-
-		if (origin.distance(player.getEyeLocation()) > originselectrange) {
-			origins.remove(player);
-			return;
-		}
-
-		origin.getWorld().playEffect(origin, Effect.SMOKE, 4,
-				(int) originselectrange);
-	}
-
-	public static void removeAll() {
-		instances.clear();
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.AirBlast;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Object getIdentifier() {
+		return id;
+	}
+	
+	@Override
+	protected long getMaxMillis() {
+		return 25000;
 	}
 }
