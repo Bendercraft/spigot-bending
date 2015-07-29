@@ -13,8 +13,8 @@ import net.avatar.realms.spigot.bending.abilities.AbilityState;
 
 public class Dash extends Ability {
 
-	private static final double LENGTH = 1.9;//Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Length");
-	private static final double HEIGHT = 0.7;//Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Height");
+	private static final double LENGTH = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Length");
+	private static final double HEIGHT = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Height");
 	private static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Cooldown");
 	
 	private Vector direction;

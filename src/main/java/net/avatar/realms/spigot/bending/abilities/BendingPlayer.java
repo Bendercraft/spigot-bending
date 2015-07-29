@@ -94,9 +94,6 @@ public class BendingPlayer {
 					case IceSpike:
 						cd = ConfigManager.icespikeCooldown;
 						break;
-					case Dash:
-						cd = ConfigManager.dashCooldown;
-						break;
 					case FireBlade:
 						cd = ConfigManager.fireBladeCooldown;
 						break;

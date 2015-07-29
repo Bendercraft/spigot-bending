@@ -131,11 +131,6 @@ public class ConfigManager {
 	public static long rapidPunchCooldown;
 	public static int rapidPunchPunches;
 
-	// Dash
-	public static int dashCooldown;
-	public static double dashLength;
-	public static double dashHeight;
-
 	// PlasticBomb
 	public static int plasticCooldown;
 	public static double plasticRadius;
@@ -453,11 +448,6 @@ public class ConfigManager {
 		rapidPunchDistance = config.getInt("Properties.ChiBlocker.RapidPunch.Distance");
 		rapidPunchCooldown = config.getLong("Properties.ChiBlocker.RapidPunch.Cooldown");
 		rapidPunchPunches = config.getInt("Properties.ChiBlocker.RapidPunch.Punches");
-
-		// Dash
-		dashCooldown = config.getInt("Properties.ChiBlocker.Dash.Cooldown");
-		dashLength = config.getDouble("Properties.ChiBlocker.Dash.Length");
-		dashHeight = config.getDouble("Properties.ChiBlocker.Dash.Height");
 
 		// Plastic bomb
 		plasticCooldown = config.getInt("Properties.ChiBlocker.PlasticBomb.Cooldown");
