@@ -22,9 +22,9 @@ import org.bukkit.potion.PotionEffectType;
 
 public class SmokeBomb extends Ability {
 	
-	public static final int RADIUS = 5; //Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Radius");
-	public static final int DURATION = 10; //Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Duration");
-	public static final long COOLDOWN = 500; //Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Cooldown");
+	public static final int RADIUS = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Radius");
+	public static final int DURATION = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Duration");
+	public static final long COOLDOWN = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Cooldown");
 	
 	private static Integer ID = Integer.MIN_VALUE;
 
@@ -99,9 +99,6 @@ public class SmokeBomb extends Ability {
 				}
 				else {
 					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
-					if (targ instanceof Player) {
-						//Bending.plugin.ghostManager.addGhost((Player)targ);
-					}	
 				}	
 			}
 		}

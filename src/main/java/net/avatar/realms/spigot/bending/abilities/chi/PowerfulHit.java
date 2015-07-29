@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 
@@ -12,6 +13,11 @@ import net.avatar.realms.spigot.bending.abilities.Ability;
  *
  */
 public class PowerfulHit extends Ability{
+	
+	public static final long DAMAGE = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Damage");
+	public static final long KNOCKBACK = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Knockback");
+	public static final long RANGE = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Range");
+	public static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Cooldown");
 
 	public PowerfulHit(Player player) {
 		super(player, null);
