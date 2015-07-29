@@ -151,7 +151,7 @@ public class BendingCommand {
 		}
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (bender == null) {
-			Bending.plugin.getLogger().warning("Cooldowns command was not able to find beding player for " + player.getName());
+			Bending.plugin.getLogger().warning("Cooldowns command was not able to find bending player for " + player.getName());
 			return;
 		}
 		
@@ -941,7 +941,7 @@ public class BendingCommand {
 		if (!hasPermission(player, "bending.admin.reload")) {
 			return;
 		}
-		Bending.configuration.load(new File(this.dataFolder, "config.yml"));
+		Bending.plugin.configuration.load(new File(this.dataFolder, "config.yml"));
 		Bending.language.load(new File(this.dataFolder, "language.yml"));
 		PluginTools.stopAllBending();
 		sendMessage(player, ChatColor.AQUA + "Bending " + Messages.getString("general.reload_success"));

@@ -64,10 +64,6 @@ public class ConfigManager {
 		defaultearthbendable.add("GLOWING_REDSTONE_ORE");
 		defaultearthbendable.add("MYCEL");
 	}
-	// Avatar
-	// Avatar State
-//	public static long avatarstateDuration;
-//	public static long avatarstateCooldown;
 
 	// Air
 	// AirBlast
@@ -387,9 +383,6 @@ public class ConfigManager {
 			e.printStackTrace();
 		}
 
-//		avatarstateDuration = config.getLong("Properties.Spirit.AvatarState.Duration");
-//		avatarstateCooldown = config.getLong("Properties.Spirit.AvatarState.Cooldown");
-
 		database = config.getString("Database", "flatfile");
 
 		// Respect plugins
@@ -412,7 +405,7 @@ public class ConfigManager {
 		prefixes.put("ChiBlocker", config.getString("Chat.Prefix.ChiBlocker"));
 
 		// Color
-		color.put("Avatar", config.getString("Chat.Color.Avatar"));
+		color.put("Energy", config.getString("Chat.Color.Energy"));
 		color.put("Air", config.getString("Chat.Color.Air"));
 		color.put("Fire", config.getString("Chat.Color.Fire"));
 		color.put("Water", config.getString("Chat.Color.Water"));

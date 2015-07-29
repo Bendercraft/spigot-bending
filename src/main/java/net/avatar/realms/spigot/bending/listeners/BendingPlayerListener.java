@@ -67,11 +67,8 @@ import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
-import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
 import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
-import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
-import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
@@ -759,10 +756,29 @@ public class BendingPlayerListener implements Listener{
 				C4.activate(player);
 			}
 
-			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
-				if (ability == Abilities.Dash) {
-					new Dash(player, null);
+			if (ability == Abilities.Dash) {
+				
+				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
+				
+				if (abilities == null || abilities.isEmpty()) {
+					Ability ab = AbilityFactory.buildAbility(ability, player);
+					ab.sneak();
+					return;
 				}
+				
+				boolean shouldCreateNew = false;
+				for (Ability a : abilities.values()) {
+					if (a.getPlayer().equals(player)) {
+						if (a.sneak()) {
+							shouldCreateNew = true;
+						}
+					}
+				}
+				if (shouldCreateNew) {
+					Ability ab = AbilityFactory.buildAbility(ability, player);
+					ab.sneak();
+				}
+				return;
 			}
 		}
 	}
@@ -909,14 +925,12 @@ public class BendingPlayerListener implements Listener{
 				player.setVelocity(new Vector(0, 0, 0));
 			// return;
 		}
-		/*
+		
 		if (Dash.isDashing(player)) {
-			Vector dir = event.getTo().subtract(event.getFrom()).toVector();
+			Vector dir = event.getTo().clone().subtract(event.getFrom()).toVector();
 			Dash d = Dash.getDash(player);
 			d.setDirection(dir);
-			d.dash();
 		}
-		*/
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

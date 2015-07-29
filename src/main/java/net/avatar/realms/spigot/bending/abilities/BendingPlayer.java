@@ -172,14 +172,19 @@ public class BendingPlayer {
 	public Map<Abilities, Long> getCooldowns() {
 		Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
 		long now = System.currentTimeMillis();
+		List<Abilities> toRemove = new LinkedList<Abilities>();
 		for (Abilities ab : this.cooldowns.keySet()) {
 			long remain = this.cooldowns.get(ab) - now;
 			if (remain <= 0) {
-				this.cooldowns.remove(ab);
+				toRemove.add(ab);
 			}
 			else {
 				cooldowns.put(ab, remain);
 			}
+		}
+		
+		for (Abilities ab : toRemove) {
+			cooldowns.remove(ab);
 		}
 		
 		return cooldowns;

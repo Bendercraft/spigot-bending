@@ -41,7 +41,7 @@ public class Bending extends JavaPlugin {
 	public final BendingBlockListener blListener = new BendingBlockListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
 	static Map<String, String> commands = new HashMap<String, String>();
-	public static final ConfigManager configuration = new ConfigManager();
+	public final ConfigManager configuration = new ConfigManager();
 	public static Language language;
 	public static TempBackup backup;
 	public static IBendingDB database;
