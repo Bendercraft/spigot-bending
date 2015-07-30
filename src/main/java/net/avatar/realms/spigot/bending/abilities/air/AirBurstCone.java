@@ -8,7 +8,6 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 //TODO : Parent = AirBurst
 @BendingAbility(name="Air Burst", element=BendingType.Air)

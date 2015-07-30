@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;

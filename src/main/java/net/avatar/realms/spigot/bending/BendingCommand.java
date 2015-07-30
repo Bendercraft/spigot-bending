@@ -49,8 +49,6 @@ public class BendingCommand {
 	private final String[] chiblockingAliases = {"chi", "c", "chiblock", "chiblocker", "chiblocking"};
 	private final String[] saveAliases = {"save"};
 	private final String[] getbackAliases = {"getback"};
-	private final String[] itemAliases = {"item", "ite", "it", "i"};
-	private final String[] slotAliases = {"slot", "slo", "sl", "s"};
 	private final String[] dbAlias = {"db"};
 	private final String[] learningAlias = {"learning", "l"};
 	private final String[] cooldownsAlias = {"cooldown", "cd"};
@@ -115,9 +113,6 @@ public class BendingCommand {
 //			else if (Arrays.asList(this.languageAliases).contains(arg)) {
 //				language(player, args);
 //			}
-			else if (Arrays.asList(this.bindModeAliases).contains(arg)) {
-				bindMode(player, args);
-			}
 			else if (Arrays.asList(this.versionAliases).contains(arg)) {
 				version(player, args);
 			}
@@ -229,62 +224,6 @@ public class BendingCommand {
 			sendNoCommandPermissionMessage(player, "version");
 		}
 		printUsageMessage(player, "/bending version", "General.version_usage");
-	}
-
-	private void bindMode (final Player player, final String[] args) {
-		if (!hasHelpPermission(player, "bending.command.bindmode")) {
-			sendNoCommandPermissionMessage(player, "bindmode");
-			return;
-		}
-		boolean bindmode = ConfigManager.bendToItem;
-		String mode;
-		if (args.length > 2) {
-			printBindModeUsage(player);
-			return;
-		}
-		else if (args.length == 1) {
-			if (player == null) {
-				if (bindmode) {
-					mode = "item";
-				}
-				else {
-					mode = "slot";
-				}
-				sendMessage(player, Messages.getString("general.server_bind_mode") + "" + mode);
-			}
-			else {
-				this.bPlayer = BendingPlayer.getBendingPlayer(player);
-				bindmode = this.bPlayer.getBendToItem();
-				if (bindmode) {
-					mode = "item";
-				}
-				else {
-					mode = "slot";
-				}
-				sendMessage(player, Messages.getString("general.your_bind_mode") + "" + mode);
-			}
-			return;
-		}
-		else if (player == null) {
-			printNotFromConsole();
-			return;
-		}
-		else {
-			this.bPlayer = BendingPlayer.getBendingPlayer(player);
-			final String choice = args[1];
-			if (Arrays.asList(this.slotAliases).contains(choice)) {
-				this.bPlayer.setBendToItem(false);
-				sendMessage(player, Messages.getString("general.bind_mode_change") + "slot");
-			}
-			else if (Arrays.asList(this.itemAliases).contains(choice)) {
-				this.bPlayer.setBendToItem(true);
-				sendMessage(player, Messages.getString("general.bind_mode_change") + "item");
-			}
-			else {
-				printBindModeUsage(player);
-			}
-			return;
-		}
 	}
 
 	private void printBindModeUsage (final Player player) {
@@ -979,56 +918,30 @@ public class BendingCommand {
 				printNotFromConsole();
 				return;
 			}
+			
 			boolean none = true;
-			final boolean item = this.bPlayer.getBendToItem();
-			if (!item) {
-				for (int i = 0 ; i <= 8 ; i++) {
-					final Abilities a = this.bPlayer.getAbility(i);
-					if (a != null) {
-						none = false;
-						ChatColor color = ChatColor.WHITE;
-						if (Abilities.isAirbending(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("Air"));
-						} else if (Abilities.isChiBlocking(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-						} else if (Abilities.isEarthbending(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-						} else if (Abilities.isFirebending(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-						} else if (Abilities.isWaterbending(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("Water"));
-						}
-						final String ability = a.name();
-						sendMessage(player, Messages.getString("general.slot") + " " + (i + 1) + ": " + color + ability);
+			
+			for (int i = 0 ; i <= 8 ; i++) {
+				final Abilities a = this.bPlayer.getAbility(i);
+				if (a != null) {
+					none = false;
+					ChatColor color = ChatColor.WHITE;
+					if (Abilities.isAirbending(a)) {
+						color = PluginTools.getColor(ConfigManager.getColor("Air"));
+					} else if (Abilities.isChiBlocking(a)) {
+						color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+					} else if (Abilities.isEarthbending(a)) {
+						color = PluginTools.getColor(ConfigManager.getColor("Earth"));
+					} else if (Abilities.isFirebending(a)) {
+						color = PluginTools.getColor(ConfigManager.getColor("Fire"));
+					} else if (Abilities.isWaterbending(a)) {
+						color = PluginTools.getColor(ConfigManager.getColor("Water"));
 					}
-				}
-			} else {
-				for (final Material mat : Material.values()) {
-					// Abilities a = config.getAbility(player, mat);
-					final Abilities a = this.bPlayer.getAbility(mat);
-					if (a != null) {
-						none = false;
-						ChatColor color = ChatColor.WHITE;
-						if (Abilities.isAirbending(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("Air"));
-						}
-						else if (Abilities.isChiBlocking(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-						}
-						else if (Abilities.isEarthbending(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-						}
-						else if (Abilities.isFirebending(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-						}
-						else if (Abilities.isWaterbending(a)) {
-							color = PluginTools.getColor(ConfigManager.getColor("Water"));
-						}
-						final String ability = a.name();
-						sendMessage(player, mat.name().replaceAll("_", " ") + ": " + color + ability);
-					}
+					final String ability = a.name();
+					sendMessage(player, Messages.getString("general.slot") + " " + (i + 1) + ": " + color + ability);
 				}
 			}
+			
 			if (none) {
 				sendMessage(player, Messages.getString("general.display_no_abilities"));
 			}
@@ -1549,15 +1462,8 @@ public class BendingCommand {
 	}
 
 	private void printBindUsage (final Player player) {
-		final boolean item = this.bPlayer.getBendToItem();
-		if (!item) {
-			printUsageMessage(player, "/bending bind <ability>", "General.bind_slot");
-		}
-		else {
-			printUsageMessage(player, "/bending bind <ability>", "General.bind_item");
-		}
+		printUsageMessage(player, "/bending bind <ability>", "General.bind_slot");
 		printUsageMessage(player, "/bending bind <ability> <slot#>", "General.bind_to_slot");
-		printUsageMessage(player, "/bending bind <ability> <item>", "General.bind_to_item");
 	}
 
 	private void bind (final Player player, final String[] args) {
@@ -1578,7 +1484,7 @@ public class BendingCommand {
 			printBindUsage(player);
 			return;
 		}
-		final BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		
 		if (!EntityTools.hasPermission(player, ability)) {
 			printNoPermissions(player);
 			return;
@@ -1591,7 +1497,6 @@ public class BendingCommand {
 		}
 		int slot = player.getInventory().getHeldItemSlot();
 		Material mat = player.getInventory().getItemInHand().getType();
-		boolean item = bPlayer.getBendToItem();
 		if (args.length == 3) {
 			try {
 				slot = Integer.parseInt(args[2]);
@@ -1607,7 +1512,6 @@ public class BendingCommand {
 					printBindUsage(player);
 					return;
 				}
-				item = true;
 			}
 		}
 		ChatColor color = ChatColor.WHITE;
@@ -1620,14 +1524,10 @@ public class BendingCommand {
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("Water"));
-			if (!item) {
-				BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
-				sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
-			}
-			else {
-				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
-				sendMessage(player, color + ability.name() + white + " bound to " + mat.name().replaceAll("_", " "));
-			}
+			
+			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
+			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
+			
 			return;
 		}
 		if (Abilities.isAirbending(ability)) {
@@ -1638,14 +1538,10 @@ public class BendingCommand {
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("Air"));
-			if (!item) {
-				BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
-				sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
-			}
-			else {
-				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
-				sendMessage(player, color + ability.name() + white + " bound to " + mat.name().replaceAll("_", " "));
-			}
+			
+			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
+			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
+			
 			return;
 		}
 		if (Abilities.isEarthbending(ability)) {
@@ -1656,14 +1552,10 @@ public class BendingCommand {
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-			if (!item) {
-				BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
-				sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
-			}
-			else {
-				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
-				sendMessage(player, color + ability.name() + white + " bound to " + mat.name().replaceAll("_", " "));
-			}
+			
+			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
+			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
+			
 			return;
 		}
 		if (Abilities.isChiBlocking(ability)) {
@@ -1674,14 +1566,10 @@ public class BendingCommand {
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-			if (!item) {
-				BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
-				sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
-			}
-			else {
-				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
-				sendMessage(player, color + ability.name() + white + " bound to " + mat.name().replaceAll("_", " "));
-			}
+			
+			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
+			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
+			
 			return;
 		}
 		if (Abilities.isFirebending(ability)) {
@@ -1692,14 +1580,10 @@ public class BendingCommand {
 				return;
 			}
 			color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-			if (!item) {
-				BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
-				sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
-			}
-			else {
-				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
-				sendMessage(player, color + ability.name() + white + " bound to " + mat.name().replaceAll("_", " "));
-			}
+			
+			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
+			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
+		
 			return;
 		}
 		if (ability == Abilities.AvatarState) {
@@ -1707,14 +1591,10 @@ public class BendingCommand {
 				return;
 			}
 			color = ChatColor.DARK_PURPLE;
-			if (!item) {
-				BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
-				sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
-			}
-			else {
-				BendingPlayer.getBendingPlayer(player).setAbility(mat, ability);
-				sendMessage(player, color + ability.name() + white + " bound to " + mat.name().replaceAll("_", " "));
-			}
+			
+			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
+			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
+			
 			return;
 		}
 	}
@@ -1796,11 +1676,6 @@ public class BendingCommand {
 	private void printCommands (final Player player) {
 		sendMessage(player, "Bending aliases: bending bend b mtla tla");
 		String slot = Messages.getString("general.slot") + "#";
-		if (player != null) {
-			if (this.bPlayer.getBendToItem()) {
-				slot = "item";
-			}
-		}
 		if (hasHelpPermission(player, "bending.command.bind")) {
 			sendMessage(player, "/bending bind <ability> [" + slot + "]");
 		}

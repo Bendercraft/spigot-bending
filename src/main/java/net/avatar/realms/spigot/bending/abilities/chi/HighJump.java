@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
@@ -21,7 +20,7 @@ public class HighJump extends Ability {
 	private static final int JUMP_HEIGHT = 7;
 	
 	@ConfigurationParameter("Cooldown")
-	private static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.HighJump.Cooldown", 5);
+	private static final long COOLDOWN = 1500;
 
 	public HighJump (Player p) {
 		super(p, null);	

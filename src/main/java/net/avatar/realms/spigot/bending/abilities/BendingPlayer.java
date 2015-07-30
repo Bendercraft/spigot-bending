@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 
@@ -29,7 +28,7 @@ public class BendingPlayer {
 
 	private Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
 
-	private boolean bendToItem = ConfigManager.bendToItem;
+	//private boolean bendToItem = ConfigManager.bendToItem;
 
 	private long paralyzeTime = 0;
 	private long slowTime = 0;
@@ -47,7 +46,7 @@ public class BendingPlayer {
 		this.player = data.getPlayer();
 
 		this.bendings = data.getBendings();
-		this.bendToItem = data.isBendToItem();
+		//this.bendToItem = data.isBendToItem();
 		this.itemAbilities = data.getItemAbilities();
 		this.slotAbilities = data.getSlotAbilities();
 
@@ -212,14 +211,9 @@ public class BendingPlayer {
 		if (!player.isOnline() || player.isDead()) {
 			return null;
 		}
-		if (this.bendToItem) {
-			Material item = player.getItemInHand().getType();
-			return getAbility(item);
-		}
-		else {
-			int slot = player.getInventory().getHeldItemSlot();
-			return getAbility(slot);
-		}
+
+		int slot = player.getInventory().getHeldItemSlot();
+		return getAbility(slot);
 	}
 
 	public Abilities getAbility (int slot) {
@@ -248,14 +242,10 @@ public class BendingPlayer {
 		if (!p.isOnline() || p.isDead()) {
 			return;
 		}
-		if (this.bendToItem) {
-			Material item = p.getItemInHand().getType();
-			removeAbility(item);
-		}
-		else {
-			int slot = p.getInventory().getHeldItemSlot();
-			removeAbility(slot);
-		}
+
+		int slot = p.getInventory().getHeldItemSlot();
+		removeAbility(slot);
+		
 		Bending.database.save(this.player);
 	}
 
@@ -295,15 +285,6 @@ public class BendingPlayer {
 
 	}
 
-	public void setBendToItem (boolean value) {
-		this.bendToItem = value;
-		Bending.database.save(this.player);
-	}
-
-	public boolean getBendToItem () {
-		return this.bendToItem;
-	}
-
 	public boolean canBeParalyzed () {
 		return (System.currentTimeMillis() > this.paralyzeTime);
 	}
@@ -335,12 +316,7 @@ public class BendingPlayer {
 		string += ", ";
 		string += "Bendings=" + this.bendings;
 		string += ", ";
-		if (ConfigManager.bendToItem) {
-			string += "Binds=" + this.itemAbilities;
-		}
-		else {
-			string += "Binds=" + this.slotAbilities;
-		}
+		string += "Binds=" + this.slotAbilities;
 		string += "}";
 		return string;
 	}
@@ -352,7 +328,6 @@ public class BendingPlayer {
 	public BendingPlayerData serialize () {
 		BendingPlayerData result = new BendingPlayerData();
 		result.setBendings(this.bendings);
-		result.setBendToItem(this.bendToItem);
 		result.setItemAbilities(this.itemAbilities);
 		result.setLastTime(this.lastTime);
 		result.setSpecialization(this.specializations);
