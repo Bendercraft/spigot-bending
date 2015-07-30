@@ -39,19 +39,29 @@ public abstract class ConfigurationManager {
 						try {
 							if(f.getType().equals(int.class)) {
 								getLast(root, path).addProperty(getLastKey(path), f.getInt(null));
-							} else if(f.getType().equals(double.class)) {
+							} 
+							else if(f.getType().equals(double.class)) {
 								getLast(root, path).addProperty(getLastKey(path), f.getDouble(null));
-							} else if(f.getType().equals(short.class)) {
+							} 
+							else if(f.getType().equals(short.class)) {
 								getLast(root, path).addProperty(getLastKey(path), f.getShort(null));
-							} else if(f.getType().equals(long.class)) {
+							} 
+							else if(f.getType().equals(long.class)) {
 								getLast(root, path).addProperty(getLastKey(path), f.getLong(null));
-							} else if(f.getType().equals(float.class)) {
+							} 
+							else if(f.getType().equals(float.class)) {
 								getLast(root, path).addProperty(getLastKey(path), f.getFloat(null));
-							} else if(f.getType().equals(boolean.class)) {
+							} 
+							else if(f.getType().equals(boolean.class)) {
 								getLast(root, path).addProperty(getLastKey(path), f.getBoolean(null));
-							} else if(f.getType().equals(String.class)) {
+							} 
+							else if(f.getType().equals(String.class)) {
 								getLast(root, path).addProperty(getLastKey(path), (String)f.get(null));
-							} else {
+							} 
+							else if (f.getType().equals(String[].class)) {
+								getLast(root, path).add(getLastKey(path), gson.toJsonTree(f.get(null), String[].class));
+							}
+							else {
 								Bending.plugin.getLogger().warning("Config variable "+f.getName()+" found with annoted param "+path+" and in config file but is of unknown type "+f.getType());
 							}
 						} catch (IllegalAccessException e) {
@@ -98,19 +108,29 @@ public abstract class ConfigurationManager {
 							if(param != null) {
 								if(f.getType().equals(int.class)) {
 									f.setInt(null, param.getAsInt());
-								} else if(f.getType().equals(double.class)) {
+								} 
+								else if(f.getType().equals(double.class)) {
 									f.setDouble(null, param.getAsDouble());
-								} else if(f.getType().equals(short.class)) {
+								} 
+								else if(f.getType().equals(short.class)) {
 									f.setShort(null, param.getAsShort());
-								} else if(f.getType().equals(long.class)) {
+								} 
+								else if(f.getType().equals(long.class)) {
 									f.setLong(null, param.getAsLong());
-								} else if(f.getType().equals(float.class)) {
+								} 
+								else if(f.getType().equals(float.class)) {
 									f.set(null, param.getAsFloat());
-								} else if(f.getType().equals(boolean.class)) {
+								} 
+								else if(f.getType().equals(boolean.class)) {
 									f.setBoolean(null, param.getAsBoolean());
-								} else if(f.getType().equals(String.class)) {
-									
-								} else {
+								} 
+								else if(f.getType().equals(String.class)) {
+									f.set(null, param.getAsString());
+								} 
+								else if (f.getType().equals(String[].class)) {
+									f.set(null, gson.fromJson(param.getAsString(),String[].class));
+								}
+								else {
 									Bending.plugin.getLogger().warning("Config variable "+f.getName()+" found with annoted param '"+path+"' and in config file but is of unknown type "+f.getType());
 								}
 							} else {

@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -223,7 +223,7 @@ public class BlockTools {
 			
 		Material material = block.getType();
 
-		for (String s : ConfigManager.earthbendable) {
+		for (String s : Settings.getEarthBendablesBlocksNames()) {
 			if (material == Material.getMaterial(s)) {
 				return true;
 			}

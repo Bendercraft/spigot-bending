@@ -13,8 +13,8 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -87,7 +87,7 @@ public class EarthArmor implements IAbility {
 			if (!moveBlocks()) {
 				return;
 			}
-			if (ConfigManager.reverseearthbending) {
+			if (Settings.REVERSE_BENDING) {
 				BlockTools.addTempAirBlock(oldheadblock);
 				BlockTools.addTempAirBlock(oldlegsblock);
 			}
@@ -165,7 +165,7 @@ public class EarthArmor implements IAbility {
 	}
 
 	private void cancel () {
-		if (ConfigManager.reverseearthbending) {
+		if (Settings.REVERSE_BENDING) {
 			TempBlock.revertBlock(this.headblock);
 			TempBlock.revertBlock(this.legsblock);
 		}

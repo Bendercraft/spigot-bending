@@ -232,7 +232,7 @@ public class BendingManager implements Runnable {
 							&& player
 									.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(ConfigManager.getColor("Fire"));
+						color = PluginTools.getColor(Settings.getColorString("Fire"));
 						player.sendMessage(color
 								+ "You feel the strength of the rising sun empowering your firebending.");
 					}
@@ -246,7 +246,7 @@ public class BendingManager implements Runnable {
 							&& player
 									.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(ConfigManager.getColor("Fire"));
+						color = PluginTools.getColor(Settings.getColorString("Fire"));
 						player.sendMessage(color
 								+ "You feel the empowering of your firebending subside as the sun sets.");
 					}
@@ -260,7 +260,7 @@ public class BendingManager implements Runnable {
 							&& player
 									.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(ConfigManager.getColor("Water"));
+						color = PluginTools.getColor(Settings.getColorString("Water"));
 						player.sendMessage(color
 								+ "You feel the strength of the rising moon empowering your waterbending.");
 					}
@@ -274,7 +274,7 @@ public class BendingManager implements Runnable {
 							&& player
 									.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(ConfigManager.getColor("Water"));
+						color = PluginTools.getColor(Settings.getColorString("Water"));
 						player.sendMessage(color
 								+ "You feel the empowering of your waterbending subside as the moon sets.");
 					}

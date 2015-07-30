@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -36,13 +36,15 @@ public class EarthListener implements Listener {
 	private Map<UUID, Integer> compactAmountTunnel = new HashMap<UUID, Integer>();
 	private Map<UUID, Integer> dirtAmountTunnel = new HashMap<UUID, Integer>();
 	private static final Integer compactNeededTunnel = 250,
-			dirtDugNeededTunnel = 3500;
+							dirtDugNeededTunnel = 3500;
 
 	private Map<UUID, Integer> raiseAmountCatapult = new HashMap<UUID, Integer>();
 	private Map<UUID, Integer> jumpAmountCatapult = new HashMap<UUID, Integer>();
 	private static final Integer raiseNeededCatapult = 400,
-			jumpNeededCatapult = 250;
-
+							jumpNeededCatapult = 250;
+	
+	private static ChatColor color = PluginTools.getColor(Settings.getColorString("Earth"));
+	
 	public EarthListener(BendingLearning plugin) {
 		this.plugin = plugin;
 	}
@@ -62,7 +64,7 @@ public class EarthListener implements Listener {
 					raised++;
 					if (raised >= raiseNeededGrab) {
 						if(plugin.addPermission(p, Abilities.EarthGrab)) {
-							ChatColor color = PluginTools.getColor(ConfigManager.getColor("Earth"));
+							
 							String message = "By raising multiple earth, you somehow learned to do it on a human, grabing it and making him useless";
 							p.sendMessage(color+message);
 							message = "Congratulations, you have unlocked "+Abilities.EarthGrab.name();
@@ -92,7 +94,6 @@ public class EarthListener implements Listener {
 									raised += raiseNeededGrab / 8;
 									if (raised >= raiseNeededGrab) {
 										if(plugin.addPermission(p, Abilities.EarthGrab)) {
-											ChatColor color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 											String message = "You saw "+bPlayer.getPlayer().getName()+" grabing a human with his earthbending, you think you should be able to do the same";
 											p.sendMessage(color+message);
 											message = "Congratulations, you have unlocked "+Abilities.EarthGrab.name();
@@ -126,7 +127,6 @@ public class EarthListener implements Listener {
 				grabs++;
 				if (grabs >= grabNeededArmor) {
 					if(plugin.addPermission(p, Abilities.EarthArmor)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 						String message = "Your earth grab is now powerfull enough to control it and apply it to yourself without restraining your mouvement.";
 						p.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.EarthArmor.name();
@@ -157,7 +157,6 @@ public class EarthListener implements Listener {
 							&& dirtAmountTunnel.containsKey(id)
 							&& dirtAmountTunnel.get(id) >= dirtDugNeededTunnel) {
 						if(plugin.addPermission(p, Abilities.EarthTunnel)) {
-							ChatColor color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 							String message = "Your skill at digging tunnel is improving, and your bending has been enhanced";
 							p.sendMessage(color+message);
 							message = "Congratulations, you have unlocked "+Abilities.EarthTunnel.name();
@@ -194,7 +193,6 @@ public class EarthListener implements Listener {
 							&& compactAmountTunnel.containsKey(id)
 							&& compactAmountTunnel.get(id) >= compactNeededTunnel) {
 						if(plugin.addPermission(p, Abilities.EarthTunnel)) {
-							ChatColor color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 							String message = "Your skill at digging tunnel is improving, and your bending has been enhanced";
 							p.sendMessage(color+message);
 							message = "Congratulations, you have unlocked "+Abilities.EarthTunnel.name();
@@ -228,7 +226,6 @@ public class EarthListener implements Listener {
 						&& jumpAmountCatapult.containsKey(id)
 						&& jumpAmountCatapult.get(id) > jumpNeededCatapult) {
 					if(plugin.addPermission(p, Abilities.Catapult)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 						String message = "By raising earth and jumping at the same time, you now know how to bend a human catapult";
 						p.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.Catapult.name();
@@ -265,7 +262,6 @@ public class EarthListener implements Listener {
 							&& raiseAmountCatapult.containsKey(id)
 							&& raiseAmountCatapult.get(id) >= raiseNeededCatapult) {
 						if(plugin.addPermission(p, Abilities.Catapult)) {
-							ChatColor color = PluginTools.getColor(ConfigManager.getColor("Earth"));
 							String message = "By raising earth and jumping at the same time, you now know how to bend a human catapult";
 							p.sendMessage(color+message);
 							message = "Congratulations, you have unlocked "+Abilities.Catapult.name();

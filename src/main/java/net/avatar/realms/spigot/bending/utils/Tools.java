@@ -1,6 +1,6 @@
 package net.avatar.realms.spigot.bending.utils;
 
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -11,7 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 public class Tools {
-	public static final long timeinterval = ConfigManager.globalCooldown;
+	public static final long timeinterval = Settings.GLOBAL_COOLDOWN;
 	
 	public static double getDistanceFromLine(Vector line, Location pointonline,
 			Location point) {

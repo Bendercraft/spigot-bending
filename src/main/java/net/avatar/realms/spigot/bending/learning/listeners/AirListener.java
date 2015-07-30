@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -35,6 +35,8 @@ public class AirListener implements Listener {
 	
 	private Map<UUID, Integer> airSuctionJump = new HashMap<UUID, Integer>();
 	private Map<UUID, Integer> airBurst = new HashMap<UUID, Integer>();
+	
+	private static ChatColor color =PluginTools.getColor(Settings.getColorString("Air"));
 
 	public AirListener(BendingLearning plugin) {
 		this.plugin = plugin;
@@ -48,7 +50,6 @@ public class AirListener implements Listener {
 			if(bPlayer != null) {
 				if(bPlayer.isBender(BendingType.Air) && !bPlayer.isBender(BendingType.ChiBlocker)) {
 					if(plugin.addPermission(bPlayer.getPlayer(), Abilities.AirBubble)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Air"));
 						String message = "After running out of air, you realise that you could use your AirBending to grap air before sinking";
 						bPlayer.getPlayer().sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.AirBubble.name();
@@ -78,7 +79,6 @@ public class AirListener implements Listener {
 							}
 							if(distance >= 1000) {
 								if(plugin.addPermission(pl, Abilities.AirScooter)) {
-									ChatColor color = PluginTools.getColor(ConfigManager.getColor("Air"));
 									String message = "After spending that much energy running arround, you think you will be able to speed up by using your airbending";
 									pl.sendMessage(color+message);
 									message = "Congratulations, you have unlocked "+Abilities.AirScooter.name();
@@ -113,7 +113,6 @@ public class AirListener implements Listener {
 					
 					if(jumped >= 50) {
 						if(plugin.addPermission(player, Abilities.AirSuction)) {
-							ChatColor color = PluginTools.getColor(ConfigManager.getColor("Air"));
 							String message = "Without realising it, you band air more and more efficiently, and you are now able to catch people from far away.";
 							player.sendMessage(color+message);
 							message = "Congratulations, you have unlocked "+Abilities.AirSuction.name();
@@ -141,7 +140,6 @@ public class AirListener implements Listener {
 				blasted = blasted + 1;
 				if(blasted >= 100) {
 					if(plugin.addPermission(player, Abilities.AirBurst)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Air"));
 						String message = "Your skill at airblast is improving, and you feel now able to burst it 3 in one";
 						player.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.AirBurst.name();
@@ -169,7 +167,6 @@ public class AirListener implements Listener {
 						if(trainee.isBender(BendingType.Air) && !trainee.isBender(BendingType.ChiBlocker)) {
 							if(p.hasLineOfSight(bPlayer.getPlayer())) {
 								if(plugin.addPermission(p, Abilities.AirShield)) {
-									ChatColor color = PluginTools.getColor(ConfigManager.getColor("Air"));
 									String message = "After seeing "+bPlayer.getPlayer().getName()+" doing an air shield, you are able to copy it for yourself.";
 									p.sendMessage(color+message);
 									message = "Congratulations, you have unlocked "+Abilities.AirShield.name();

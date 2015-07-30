@@ -264,10 +264,10 @@ public class AbilityManager {
 			Bending.plugin.getLogger().severe("Trying to register ability : "+ability+" but name is null or empty ! Aborting this registration...");
 			return;
 		}
-		if(annotation.specialization() != null) {
+		if(annotation.specialization() != BendingSpecializationType.None) {
 			_register(annotation.name(), ability, annotation.specialization().getElement(), annotation.specialization());
 		} else {
-			if(annotation.element() == null) {
+			if(annotation.element() == BendingType.None) {
 				Bending.plugin.getLogger().severe("Trying to register ability : "+ability+" but element&specilization are not set ! Aborting this registration...");
 				return;
 			}

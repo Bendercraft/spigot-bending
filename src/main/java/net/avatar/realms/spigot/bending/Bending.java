@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.controller.RevertChecker;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.controller.TempBackup;
 import net.avatar.realms.spigot.bending.db.DBUtils;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
@@ -40,7 +40,6 @@ public class Bending extends JavaPlugin {
 	public final BendingBlockListener blListener = new BendingBlockListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
 	static Map<String, String> commands = new HashMap<String, String>();
-	public final ConfigManager configuration = new ConfigManager();
 	public static Language language;
 	public static TempBackup backup;
 	public static IBendingDB database;
@@ -61,17 +60,17 @@ public class Bending extends JavaPlugin {
 		learning = new BendingLearning();
 		learning.onEnable();
 		
+		Settings.applyConfiguration(getDataFolder());
 		AbilityManager.getManager().registerAllAbilities();
 		AbilityManager.getManager().applyConfiguration(getDataFolder());
 		
-		configuration.load(new File(getDataFolder(), "config.yml"));
 		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));
 		backup = new TempBackup(getDataFolder());
-		database = DBUtils.choose(ConfigManager.database);
+		database = DBUtils.choose(Settings.DATABASE);
 		// Fatal error
 		if (database == null) {
-			throw new RuntimeException("Invalid database : " + ConfigManager.database);
+			throw new RuntimeException("Invalid database : " + Settings.DATABASE);
 		}
 		database.init(this);
 		this.tBackup = new TempBackup(getDataFolder());

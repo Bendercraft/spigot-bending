@@ -16,7 +16,6 @@ import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -66,7 +65,6 @@ public class EntityTools {
 	}
 	
 	public static boolean hasAbility(Player player, Abilities ability) {
-		// return config.hasAbility(player, ability);
 		return canBend(player, ability);
 	}
 	
@@ -213,7 +211,7 @@ public class EntityTools {
 			return true;
 		if (blockedChis.containsKey(player)) {
 			long time = System.currentTimeMillis();
-			if (time > blockedChis.get(player) + ConfigManager.chiblockduration
+			if (time > (blockedChis.get(player) + Paralyze.CHIBLOCK_DURATION)
 					|| AvatarState.isAvatarState(player)) {
 				blockedChis.remove(player);
 				return false;

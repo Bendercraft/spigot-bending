@@ -15,7 +15,7 @@ import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -114,9 +114,7 @@ public class BendingEntityListener implements Listener {
 					&& EntityTools.isBender(sourceplayer, BendingType.ChiBlocker)
 					&& (event.getCause() == DamageCause.ENTITY_ATTACK)
 					&& (event.getDamage() == 1)
-					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= RapidPunch.RANGE)
-					&& (!EntityTools.isWeapon(sourceplayer.getItemInHand().getType()) || ConfigManager.useWeapon
-							.get("ChiBlocker"))) {
+					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= RapidPunch.RANGE)) {
 				EntityTools.blockChi(targetplayer, System.currentTimeMillis());
 			}
 		}
@@ -127,7 +125,7 @@ public class BendingEntityListener implements Listener {
 					&& EntityTools.canBendPassive((Player)event.getEntity(), BendingType.ChiBlocker)) {
 				double rand = Math.random();
 
-				if ((rand <= (ConfigManager.dodgechance / 100.)) && !Paralyze.isParalyzed(event.getEntity())) {
+				if ((rand <= (Settings.CHI_DODGE_CHANCE / 100.)) && !Paralyze.isParalyzed(event.getEntity())) {
 					event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.SMOKE, 1);
 					dodged = true;
 					event.setCancelled(true);

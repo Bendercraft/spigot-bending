@@ -6,7 +6,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
@@ -180,7 +180,7 @@ public class LearningCommand {
 		}
 		if(!target.isBender(type)) {
 			target.addBender(type);
-			ChatColor color = PluginTools.getColor(ConfigManager.getColor(type.name()));
+			ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
 			String message = "Congratulations, you can now bend "+type.name();
 			target.getPlayer().sendMessage(color+message);
 			for(Abilities ability : Abilities.values()) {
@@ -228,7 +228,7 @@ public class LearningCommand {
 		}
 		if(target.isBender(ability.getElement())) {
 			if(this.plugin.addPermission(target.getPlayer(), ability)) {
-				ChatColor color = PluginTools.getColor(ConfigManager.getColor(ability.getElement().name()));
+				ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
 				String message = "You can now use "+ability.name();
 				target.getPlayer().sendMessage(color+message);
 				sender.sendMessage(ChatColor.GREEN+"Player "+target.getPlayer().getName()+" has received "+ability.name()+".");
@@ -275,7 +275,7 @@ public class LearningCommand {
 						}
 						if(canLearn) {
 							target.setSpecialization(spe);
-							ChatColor color = PluginTools.getColor(ConfigManager.getColor(spe.getElement().name()));
+							ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
 							String message = "Congratulations, you can now use "+spe.name();
 							target.getPlayer().sendMessage(color+message);
 							for(Abilities ability : Abilities.values()) {
@@ -289,7 +289,7 @@ public class LearningCommand {
 					}
 				} else if (type != null) {
 					target.addBender(type);
-					ChatColor color = PluginTools.getColor(ConfigManager.getColor(type.name()));
+					ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
 					String message = "Congratulations, you can now bend "+type.name()+" as well as "+BendingType.ChiBlocker.name();
 					target.getPlayer().sendMessage(color+message);
 					for(Abilities ability : Abilities.values()) {
@@ -317,7 +317,7 @@ public class LearningCommand {
 					}
 					if(canLearn) {
 						target.setSpecialization(spe);
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor(spe.getElement().name()));
+						ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
 						String message = "Congratulations, you can now use "+spe.name();
 						target.getPlayer().sendMessage(color+message);
 						for(Abilities ability : Abilities.values()) {

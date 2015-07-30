@@ -34,6 +34,10 @@ public class Paralyze implements IAbility {
 	
 	@ConfigurationParameter("Duration")
 	private static long DURATION = 2500;
+	
+	@ConfigurationParameter("Chiblock-Duration")
+	public static long CHIBLOCK_DURATION = 2500;
+	
 	private IAbility parent;
 
 	public Paralyze(Player sourcePlayer, Entity targetEntity, IAbility parent) {

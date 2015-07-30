@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -30,6 +30,8 @@ public class WaterListener implements Listener {
 	
 	private Map<UUID, Integer> surge = new HashMap<UUID, Integer>();
 
+	private static ChatColor color = PluginTools.getColor(Settings.getColorString("Water"));
+	
 	public WaterListener(BendingLearning plugin) {
 		this.plugin = plugin;
 		
@@ -49,7 +51,6 @@ public class WaterListener implements Listener {
 						if(trainee.isBender(BendingType.Water) && !trainee.isBender(BendingType.ChiBlocker)) {
 							if(p.hasLineOfSight(bPlayer.getPlayer())) {
 								if(plugin.addPermission(p, Abilities.Torrent)) {
-									ChatColor color = PluginTools.getColor(ConfigManager.getColor("Water"));
 									String message = "You saw "+bPlayer.getPlayer().getName()+" bending a continuous torrent of water, and you copied it's mouvement";
 									p.sendMessage(color+message);
 									message = "Congratulations, you have unlocked "+Abilities.Torrent.name();
@@ -71,7 +72,6 @@ public class WaterListener implements Listener {
 			if(bPlayer != null) {
 				if(bPlayer.isBender(BendingType.Water) && !bPlayer.isBender(BendingType.ChiBlocker)) {
 					if(plugin.addPermission(p, Abilities.WaterBubble)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Water"));
 						String message = "Your suffocation made your realize that you can bend water arround you to prevent your own death";
 						p.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.WaterBubble.name();
@@ -95,7 +95,6 @@ public class WaterListener implements Listener {
 				blasted = blasted + 1;
 				if(blasted >= 250) {
 					if(plugin.addPermission(p, Abilities.Surge)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Water"));
 						String message = "Your water manipulation has improved enough for you to concentrate multiple water source at the same time";
 						p.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.Surge.name();
@@ -118,7 +117,6 @@ public class WaterListener implements Listener {
 				Player p = bPlayer.getPlayer();
 				if(EntityTools.hasAbility(p, Abilities.PhaseChange)) {
 					if(plugin.addPermission(p, Abilities.IceSpike)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Water"));
 						String message = "Turning water into water also made you realize that you can bend directly ice";
 						p.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.IceSpike.name();
@@ -155,7 +153,6 @@ public class WaterListener implements Listener {
 					
 					if(success > 25) {
 						if(plugin.addPermission(p, Abilities.OctopusForm)) {
-							ChatColor color = PluginTools.getColor(ConfigManager.getColor("Water"));
 							String message = "By launching so much water manipulation, you think you are able to manage both defense and attack by combining a water wall on yourself, and multiple water manipulation at the same time";
 							p.sendMessage(color+message);
 							message = "Congratulations, you have unlocked "+Abilities.OctopusForm.name();

@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -36,6 +36,8 @@ public class FireListener implements Listener {
 	
 	private Map<UUID, Integer> wallOfFire = new HashMap<UUID, Integer>();
 
+	private static ChatColor color = PluginTools.getColor(Settings.getColorString("Fire"));
+	
 	public FireListener(BendingLearning plugin) {
 		this.plugin = plugin;
 		
@@ -71,7 +73,6 @@ public class FireListener implements Listener {
 						
 						if(damaged >= 50) {
 							if(plugin.addPermission(p, Abilities.FireBlade)) {
-								ChatColor color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 								String message = "Your combat experience allowed you to create a sword from your fire bending";
 								p.sendMessage(color+message);
 								message = "Congratulations, you have unlocked "+Abilities.FireBlade.name();
@@ -112,7 +113,6 @@ public class FireListener implements Listener {
 				
 				if(success > 20) {
 					if(plugin.addPermission(p, Abilities.FireBurst)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 						String message = "Your skill at fire blasting has improved enough for you to burst 3 in one";
 						p.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.FireBurst.name();
@@ -143,7 +143,6 @@ public class FireListener implements Listener {
 						if(trainee.isBender(BendingType.Fire) && !trainee.isBender(BendingType.ChiBlocker)) {
 							if(p.hasLineOfSight(bPlayer.getPlayer())) {
 								if(plugin.addPermission(p, Abilities.FireShield)) {
-									ChatColor color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 									String message = "After seeing "+bPlayer.getPlayer().getName()+" doing a fire shield, you are able to copy it for yourself.";
 									p.sendMessage(color+message);
 									message = "Congratulations, you have unlocked "+Abilities.FireShield.name();
@@ -171,7 +170,6 @@ public class FireListener implements Listener {
 				
 				if(done > 100) {
 					if(plugin.addPermission(p, Abilities.WallOfFire)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 						String message = "By doing so much fire shield, you wonder if you could turn this ability into an offensive one";
 						p.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.WallOfFire.name();
@@ -194,7 +192,6 @@ public class FireListener implements Listener {
 				if(bPlayer.isBender(BendingType.Fire) && !bPlayer.isBender(BendingType.ChiBlocker)) {
 					Player p = event.getPlayer();
 					if(plugin.addPermission(p, Abilities.Illumination)) {
-						ChatColor color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 						String message = "As you tried to light up, you realize that your firebending can already sustain that task";
 						p.sendMessage(color+message);
 						message = "Congratulations, you have unlocked "+Abilities.Illumination.name();
@@ -216,7 +213,6 @@ public class FireListener implements Listener {
 					if(EntityTools.hasAbility(p, Abilities.FireBurst)) {
 						if(EntityTools.hasAbility(p, Abilities.WallOfFire)) {
 							if(plugin.addPermission(p, Abilities.FireJet)) {
-								ChatColor color = PluginTools.getColor(ConfigManager.getColor("Fire"));
 								String message = "An idea came up to you, by combining a fire burst and a wall of fire, you think you will be able to fly temporary into the air";
 								p.sendMessage(color+message);
 								message = "Congratulations, you have unlocked "+Abilities.FireJet.name();

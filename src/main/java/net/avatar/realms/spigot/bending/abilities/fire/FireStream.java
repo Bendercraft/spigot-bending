@@ -11,7 +11,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.water.Plantbending;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -41,7 +40,8 @@ public class FireStream implements IAbility {
 	private static double SPEED = 15;
 	private static long interval = (long) (1000. / SPEED);
 
-	private static long dissipateAfter = ConfigManager.dissipateAfter;
+	@ConfigurationParameter("Dissipate-Time")
+	private static long dissipateAfter = 1200;
 
 	private Player player;
 	private Location origin;

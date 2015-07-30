@@ -117,8 +117,8 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.controller.Flight;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
@@ -135,48 +135,24 @@ public class BendingPlayerListener implements Listener{
 		Player player = event.getPlayer();
 		BendingPlayer.getBendingPlayer(player);	  
 		 
-		String append = "";
-		if ((player.hasPermission("bending.avatar")) && ConfigManager.enabled) {
-			append = ConfigManager.getPrefix("Avatar");
-		} else if ((EntityTools.isBender(player, BendingType.Air))
-				&& (ConfigManager.enabled)) {
-			append = ConfigManager.getPrefix("Air");
-		} else if ((EntityTools.isBender(player, BendingType.Earth))
-				&& (ConfigManager.enabled)) {
-			append = ConfigManager.getPrefix("Earth");
-		} else if ((EntityTools.isBender(player, BendingType.Fire))
-				&& (ConfigManager.enabled)) {
-			append = ConfigManager.getPrefix("Fire");
-		} else if ((EntityTools.isBender(player, BendingType.Water))
-				&& (ConfigManager.enabled)) {
-			append = ConfigManager.getPrefix("Water");
-		} else if ((EntityTools.isBender(player, BendingType.ChiBlocker))
-				&& (ConfigManager.enabled)) {
-			append = ConfigManager.getPrefix("ChiBlocker");
-		}
-
-		if (!(ConfigManager.compatibility) && (ConfigManager.enabled)) {
-			player.setDisplayName(append + player.getName());
+		if (!(Settings.CHAT_COMPATIBILITY) && (Settings.CHAT_ENABLED)) {
+			player.setDisplayName(player.getName());
 		}	
 
-		if ((ConfigManager.compatibility) && (ConfigManager.enabled)) {
+		if ((Settings.CHAT_COMPATIBILITY) && (Settings.CHAT_ENABLED)) {
 			ChatColor color = ChatColor.WHITE;
-			if (ConfigManager.colors) {
+			if (Settings.CHAT_COLORED) {
 				if (player.hasPermission("bending.avatar")) {
-					color = PluginTools.getColor(ConfigManager.getColor("Avatar"));
-				} else if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
-					color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-				} else if (EntityTools.isBender(player, BendingType.Earth)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-				} else if (EntityTools.isBender(player, BendingType.Fire)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-				} else if (EntityTools.isBender(player, BendingType.Water)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Water"));
-				} else if (EntityTools.isBender(player, BendingType.Air)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Air"));
+					color = PluginTools.getColor(Settings.getColorString("Energy"));
+				} else {
+					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+					List<BendingType> els = bender.getBendingTypes();
+					if (els != null && els.isEmpty()) {
+						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
+					}
 				}
 			}
-			player.setDisplayName("<" + color + append + player.getName()
+			player.setDisplayName("<" + color + player.getName()
 					+ ChatColor.WHITE + ">");
 		}
 
@@ -289,34 +265,25 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
-		if (!(ConfigManager.enabled))
+		if (!(Settings.CHAT_ENABLED))
 			return;
-		if (!(ConfigManager.compatibility)) {
+		if (!(Settings.CHAT_COMPATIBILITY)) {
 
 			Player player = event.getPlayer();
 			ChatColor color = ChatColor.WHITE;
 
-			if (ConfigManager.colors) {
+			if (Settings.CHAT_COLORED) {
 				if (player.hasPermission("bending.admin.avatarstate")) {
-					color = PluginTools.getColor(ConfigManager
-							.getColor("Avatar"));
-				} else if (EntityTools.isBender(player, BendingType.Air)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Air"));
-				} else if (EntityTools.isBender(player, BendingType.Earth)) {
-					color = PluginTools.getColor(ConfigManager
-							.getColor("Earth"));
-				} else if (EntityTools.isBender(player, BendingType.Fire)) {
-					color = PluginTools
-							.getColor(ConfigManager.getColor("Fire"));
-				} else if (EntityTools.isBender(player, BendingType.Water)) {
-					color = PluginTools.getColor(ConfigManager
-							.getColor("Water"));
-				} else if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
-					color = PluginTools.getColor(ConfigManager
-							.getColor("ChiBlocker"));
+					color = PluginTools.getColor(Settings.getColorString("Energy"));
+				} else {
+					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+					List<BendingType> els = bender.getBendingTypes();
+					if (els != null && els.isEmpty()) {
+						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
+					}
 				}
 			}
-			String format = ConfigManager.chat;
+			String format = Settings.CHAT_FORMAT;
 			format = format.replace("<message>", "%2$s");
 			format = format.replace("<name>", color + player.getDisplayName()
 					+ ChatColor.RESET);
@@ -390,177 +357,160 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-			if (!EntityTools.isWeapon(player.getItemInHand().getType())
-					|| ConfigManager.useWeapon.get("Air")) {
-
-				if (ability == Abilities.AirSuction) {
-					new AirSuction(player, null);
-					return;
-				}
-
-				if (ability == Abilities.AirSwipe) {
-					new AirSwipe(player, null);
-					return;
-				}
-
-				if (ability == Abilities.AirScooter) {
-					new AirScooter(player, null);
-					return;
-				}
-
-				if (ability == Abilities.AirSpout) {
-					new AirSpout(player, null);
-					return;
-				}
-
-				if (ability == Abilities.AirBurst) {
-					new AirBurstCone(player, null);
-					return;
-				}
+			if (ability == Abilities.AirSuction) {
+				new AirSuction(player, null);
+				return;
 			}
 
-			 if (!EntityTools.isWeapon(player.getItemInHand().getType())
-					|| ConfigManager.useWeapon.get("Earth")) {
-
-				if (ability == Abilities.Catapult) {
-					new Catapult(player, null);
-					return;
-				}
-
-				if (ability == Abilities.RaiseEarth) {
-					new EarthColumn(player, null);
-					return;
-				}
-
-				if (ability == Abilities.Collapse) {
-					new CompactColumn(player, null);
-					return;
-				}
-
-				if (ability == Abilities.EarthGrab) {
-					new EarthGrab(player, false, null);
-					return;
-				}
-
-				if (ability == Abilities.EarthBlast) {
-					EarthBlast.throwEarth(player);
-					return;
-				}
-
-				if (ability == Abilities.Tremorsense) {
-					new Tremorsense(player, null);
-					return;
-				}
-
-				if (ability == Abilities.EarthArmor) {
-					new EarthArmor(player, null);
-					return;
-				}
-
-				if (ability == Abilities.Shockwave) {
-					new ShockwaveCone(player, null);
-					return;
-				}
-				
-				if (ability == Abilities.LavaTrain && player.isSneaking()) {
-					new LavaTrain(player, null);
-					return;
-				}
-
+			if (ability == Abilities.AirSwipe) {
+				new AirSwipe(player, null);
+				return;
 			}
 
-			 if (!EntityTools.isWeapon(player.getItemInHand().getType())
-					|| ConfigManager.useWeapon.get("Fire")) {
-
-				if (ability == Abilities.FireBlast) {
-					new FireBlast(player, null);
-					return;
-				}
-
-				if (ability == Abilities.HeatControl) {
-					new Extinguish(player, null);
-					return;
-				}
-
-				if (ability == Abilities.Blaze) {
-					new ArcOfFire(player, null);
-					return;
-				}
-
-				if (ability == Abilities.FireJet) {
-					new FireJet(player, null);
-					return;
-				}
-
-				if (ability == Abilities.Illumination) {
-					new Illumination(player, null);
-					return;
-				}
-
-				if (ability == Abilities.WallOfFire) {
-					new WallOfFire(player, null);
-					return;
-				}
-
-				if (ability == Abilities.FireBurst) {
-					new FireBurstCone(player, null);
-					return;
-				}
-
-				if (ability == Abilities.FireShield) {
-					new FireProtection(player, null);
-					return;
-				}
-				
-				if (ability == Abilities.FireBlade) {
-					new FireBlade(player);
-					return;
-				}
+			if (ability == Abilities.AirScooter) {
+				new AirScooter(player, null);
+				return;
 			}
 
-			 if (!EntityTools.isWeapon(player.getItemInHand().getType())
-					|| ConfigManager.useWeapon.get("Water")) {
+			if (ability == Abilities.AirSpout) {
+				new AirSpout(player, null);
+				return;
+			}
 
-				if (ability == Abilities.WaterManipulation) {
-					WaterManipulation.moveWater(player);
-					return;
-				}
+			if (ability == Abilities.AirBurst) {
+				new AirBurstCone(player, null);
+				return;
+			}
+		
 
-				if (ability == Abilities.IceSpike) {
-					IceSpike2.activate(player);
-					return;
-				}
+			if (ability == Abilities.Catapult) {
+				new Catapult(player, null);
+				return;
+			}
 
-				if (ability == Abilities.PhaseChange) {
-					new FreezeMelt(player, null);
-					return;
-				}
+			if (ability == Abilities.RaiseEarth) {
+				new EarthColumn(player, null);
+				return;
+			}
 
-				if (ability == Abilities.Surge) {
-					new WaterWall(player, null);
-					return;
-				}
+			if (ability == Abilities.Collapse) {
+				new CompactColumn(player, null);
+				return;
+			}
 
-				if (ability == Abilities.OctopusForm) {
-					new OctopusForm(player, null);
-					return;
-				}
+			if (ability == Abilities.EarthGrab) {
+				new EarthGrab(player, false, null);
+				return;
+			}
 
-				if (ability == Abilities.Torrent) {
-					new Torrent(player, null);
-					return;
-				}
+			if (ability == Abilities.EarthBlast) {
+				EarthBlast.throwEarth(player);
+				return;
+			}
 
-				if (ability == Abilities.WaterSpout) {
-					new WaterSpout(player, null);
-					return;
-				}
+			if (ability == Abilities.Tremorsense) {
+				new Tremorsense(player, null);
+				return;
+			}
 
-				if (ability == Abilities.Bloodbending) {
-					Bloodbending.launch(player);
-					return;
-				}
+			if (ability == Abilities.EarthArmor) {
+				new EarthArmor(player, null);
+				return;
+			}
 
+			if (ability == Abilities.Shockwave) {
+				new ShockwaveCone(player, null);
+				return;
+			}
+			
+			if (ability == Abilities.LavaTrain && player.isSneaking()) {
+				new LavaTrain(player, null);
+				return;
+			}
+
+			if (ability == Abilities.FireBlast) {
+				new FireBlast(player, null);
+				return;
+			}
+
+			if (ability == Abilities.HeatControl) {
+				new Extinguish(player, null);
+				return;
+			}
+
+			if (ability == Abilities.Blaze) {
+				new ArcOfFire(player, null);
+				return;
+			}
+
+			if (ability == Abilities.FireJet) {
+				new FireJet(player, null);
+				return;
+			}
+
+			if (ability == Abilities.Illumination) {
+				new Illumination(player, null);
+				return;
+			}
+
+			if (ability == Abilities.WallOfFire) {
+				new WallOfFire(player, null);
+				return;
+			}
+
+			if (ability == Abilities.FireBurst) {
+				new FireBurstCone(player, null);
+				return;
+			}
+
+			if (ability == Abilities.FireShield) {
+				new FireProtection(player, null);
+				return;
+			}
+			
+			if (ability == Abilities.FireBlade) {
+				new FireBlade(player);
+				return;
+			}
+
+			if (ability == Abilities.WaterManipulation) {
+				WaterManipulation.moveWater(player);
+				return;
+			}
+
+			if (ability == Abilities.IceSpike) {
+				IceSpike2.activate(player);
+				return;
+			}
+
+			if (ability == Abilities.PhaseChange) {
+				new FreezeMelt(player, null);
+				return;
+			}
+
+			if (ability == Abilities.Surge) {
+				new WaterWall(player, null);
+				return;
+			}
+
+			if (ability == Abilities.OctopusForm) {
+				new OctopusForm(player, null);
+				return;
+			}
+
+			if (ability == Abilities.Torrent) {
+				new Torrent(player, null);
+				return;
+			}
+
+			if (ability == Abilities.WaterSpout) {
+				new WaterSpout(player, null);
+				return;
+			}
+
+			if (ability == Abilities.Bloodbending) {
+				Bloodbending.launch(player);
+				return;
 			}
 
 			 if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
@@ -600,12 +550,11 @@ public class BendingPlayerListener implements Listener{
 		}
 			
 		if (player.isSneaking() && EntityTools.canBend(player, ability)) {
-			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
-					|| ConfigManager.useWeapon.get("Air")) {
-				if (ability == Abilities.AirBurst) {
-					new AirBurstSphere(player, null);
-				}
+
+			if (ability == Abilities.AirBurst) {
+				new AirBurstSphere(player, null);
 			}
+			
 			if (ability == Abilities.Shockwave) {
 				new ShockwaveArea(player, null);
 			}
@@ -620,25 +569,21 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-			if (!(EntityTools.isWeapon(player.getItemInHand().getType()))
-					|| ConfigManager.useWeapon.get("Air")) {
+			if (ability == Abilities.AirSuction) {
+				AirSuction.setOrigin(player);
+			}
 
-				if (ability == Abilities.AirSuction) {
-					AirSuction.setOrigin(player);
-				}
+			if (ability == Abilities.AirBurst) {
+				new AirBurst(player, null);
+			}
 
-				if (ability == Abilities.AirBurst) {
-					new AirBurst(player, null);
-				}
-
-				if (ability == Abilities.AirSwipe) {
-					AirSwipe.charge(player);
-				}
-				
-				if (ability == Abilities.Suffocate) {
-					new Suffocate(player, null);
-					return;
-				}
+			if (ability == Abilities.AirSwipe) {
+				AirSwipe.charge(player);
+			}
+			
+			if (ability == Abilities.Suffocate) {
+				new Suffocate(player, null);
+				return;
 			}
 
 			if (ability == Abilities.Tornado) {
@@ -849,7 +794,7 @@ public class BendingPlayerListener implements Listener{
 						&& EntityTools.isBender(player, BendingType.ChiBlocker)) {
 					if (EntityTools.canBendPassive(player,
 							BendingType.ChiBlocker)) {
-						event.setDamage((int) ((double) event.getDamage() * (ConfigManager.falldamagereduction / 100.)));
+						event.setDamage((int) ((double) event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
 						if (event.getEntity().getFallDistance() < 10) {
 							event.setCancelled(true);
 						}

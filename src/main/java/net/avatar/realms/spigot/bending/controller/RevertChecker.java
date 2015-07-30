@@ -26,7 +26,7 @@ public class RevertChecker implements Runnable {
 
 	private Bending plugin;
 
-	private static final boolean safeRevert = ConfigManager.safeRevert;
+	private static final boolean safeRevert = Settings.SAFE_REVERSE;
 
 	private long time;
 
@@ -58,7 +58,7 @@ public class RevertChecker implements Runnable {
 	public void run() {
 		time = System.currentTimeMillis();
 
-		if (ConfigManager.reverseearthbending) {
+		if (Settings.REVERSE_BENDING) {
 			try {
 				returnFuture = plugin
 						.getServer()
@@ -76,7 +76,7 @@ public class RevertChecker implements Runnable {
 					}				
 					boolean remove = true;
 					Information info = earth.get(block);
-					if (time < info.getTime() + ConfigManager.revertchecktime
+					if (time < info.getTime() + Settings.REVERSE_TIME
 							|| (chunks.contains(block.getChunk()) && safeRevert)) {
 						remove = false;
 					}
@@ -94,7 +94,7 @@ public class RevertChecker implements Runnable {
 					boolean remove = true;
 					Information info = air.get(i);
 					Block block = info.getBlock();
-					if (time < info.getTime() + ConfigManager.revertchecktime
+					if (time < info.getTime() + Settings.REVERSE_TIME
 							|| (chunks.contains(block.getChunk()) && safeRevert)) {
 						remove = false;
 					}

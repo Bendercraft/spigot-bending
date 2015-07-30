@@ -12,7 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayerData;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.db.DBUtils;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
 import net.avatar.realms.spigot.bending.learning.LearningCommand;
@@ -161,7 +161,7 @@ public class BendingCommand {
 				int min = (int) ((cooldowns.get(ab)/1000)/60);
 				int sec = (int) (((double)((cooldowns.get(ab)/1000.0)/60.0)-min)*60);
 				if (!ab.isEnergyAbility()) {
-					col = PluginTools.getColor(ConfigManager.getColor(ab.getElement().name()));
+					col = PluginTools.getColor(Settings.getColorString(ab.getElement().name()));
 				}
 				player.sendMessage(col + "--- " + ab.name() + " ~ " + min + ":" + sec);
 			}	
@@ -298,22 +298,15 @@ public class BendingCommand {
 						continue;
 					}
 				}
+				
 				ChatColor color = ChatColor.WHITE;
-				if (EntityTools.isBender(p, BendingType.Air)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Air"));
+				
+				BendingPlayer bender = BendingPlayer.getBendingPlayer(p);
+				if (bender.getBendingTypes() != null && !bender.getBendingTypes().isEmpty()) {
+					BendingType el = bender.getBendingTypes().get(0);
+					color = PluginTools.getColor(Settings.getColorString(el.name()));
 				}
-				if (EntityTools.isBender(p, BendingType.Water)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Water"));
-				}
-				if (EntityTools.isBender(p, BendingType.Fire)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-				}
-				if (EntityTools.isBender(p, BendingType.Earth)) {
-					color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-				}
-				if (EntityTools.isBender(p, BendingType.ChiBlocker)) {
-					color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-				}
+				
 				sendMessage(player, color + p.getName());
 			}
 		} else if (args.length == 2) {
@@ -332,7 +325,7 @@ public class BendingCommand {
 					}
 					else {
 						if (EntityTools.isBender(p, BendingType.Air)) {
-							String elementMessage = PluginTools.getColor(ConfigManager.getColor("Air")) + "- Airbending";
+							String elementMessage = PluginTools.getColor(Settings.getColorString("Air")) + "- Airbending";
 							for(BendingSpecializationType spe : bPlayer.getSpecializations()) {
 								if(spe.getElement() == BendingType.Air) {
 									elementMessage = elementMessage + " ("+spe.name()+")";
@@ -342,12 +335,12 @@ public class BendingCommand {
 							for (final Abilities ability : Abilities.getAirbendingAbilities()) {
 								if (EntityTools.hasPermission(p, ability)) {
 									sendMessage(player,
-											PluginTools.getColor(ConfigManager.getColor("Air")) + "   -- " + ability.name());
+											PluginTools.getColor(Settings.getColorString("Air")) + "   -- " + ability.name());
 								}
 							}
 						}
 						if (EntityTools.isBender(p, BendingType.Water)) {
-							String elementMessage = PluginTools.getColor(ConfigManager.getColor("Water")) + "- Waterbending";
+							String elementMessage = PluginTools.getColor(Settings.getColorString("Water")) + "- Waterbending";
 							for(BendingSpecializationType spe : bPlayer.getSpecializations()) {
 								if(spe.getElement() == BendingType.Water) {
 									elementMessage = elementMessage + " ("+spe.name()+")";
@@ -357,12 +350,12 @@ public class BendingCommand {
 							for (final Abilities ability : Abilities.getWaterbendingAbilities()) {
 								if (EntityTools.hasPermission(p, ability)) {
 									sendMessage(player,
-											PluginTools.getColor(ConfigManager.getColor("Water")) + "   -- " + ability.name());
+											PluginTools.getColor(Settings.getColorString("Water")) + "   -- " + ability.name());
 								}
 							}
 						}
 						if (EntityTools.isBender(p, BendingType.Fire)) {
-							String elementMessage = PluginTools.getColor(ConfigManager.getColor("Fire")) + "- Firebending";
+							String elementMessage = PluginTools.getColor(Settings.getColorString("Fire")) + "- Firebending";
 							for(BendingSpecializationType spe : bPlayer.getSpecializations()) {
 								if(spe.getElement() == BendingType.Fire) {
 									elementMessage = elementMessage + " ("+spe.name()+")";
@@ -372,12 +365,12 @@ public class BendingCommand {
 							for (final Abilities ability : Abilities.getFirebendingAbilities()) {
 								if (EntityTools.hasPermission(p, ability)) {
 									sendMessage(player,
-											PluginTools.getColor(ConfigManager.getColor("Fire")) + "   -- " + ability.name());
+											PluginTools.getColor(Settings.getColorString("Fire")) + "   -- " + ability.name());
 								}
 							}
 						}
 						if (EntityTools.isBender(p, BendingType.Earth)) {
-							String elementMessage = PluginTools.getColor(ConfigManager.getColor("Earth")) + "- Earthbending";
+							String elementMessage = PluginTools.getColor(Settings.getColorString("Earth")) + "- Earthbending";
 							for(BendingSpecializationType spe : bPlayer.getSpecializations()) {
 								if(spe.getElement() == BendingType.Earth) {
 									elementMessage = elementMessage + " ("+spe.name()+")";
@@ -387,12 +380,12 @@ public class BendingCommand {
 							for (final Abilities ability : Abilities.getEarthbendingAbilities()) {
 								if (EntityTools.hasPermission(p, ability)) {
 									sendMessage(player,
-											PluginTools.getColor(ConfigManager.getColor("Earth")) + "   -- " + ability.name());
+											PluginTools.getColor(Settings.getColorString("Earth")) + "   -- " + ability.name());
 								}
 							}
 						}
 						if (EntityTools.isBender(p, BendingType.ChiBlocker)) {
-							String elementMessage = PluginTools.getColor(ConfigManager.getColor("ChiBlocker")) + "- Chiblocking";
+							String elementMessage = PluginTools.getColor(Settings.getColorString("ChiBlocker")) + "- Chiblocking";
 							for(BendingSpecializationType spe : bPlayer.getSpecializations()) {
 								if(spe.getElement() == BendingType.ChiBlocker) {
 									elementMessage = elementMessage + " ("+spe.name()+")";
@@ -401,7 +394,7 @@ public class BendingCommand {
 							sendMessage(player, elementMessage);
 							for (final Abilities ability : Abilities.getChiBlockingAbilities()) {
 								if (EntityTools.hasPermission(p, ability)) {
-									sendMessage(player, PluginTools.getColor(ConfigManager.getColor("ChiBlocker")) + "   -- "
+									sendMessage(player, PluginTools.getColor(Settings.getColorString("ChiBlocker")) + "   -- "
 											+ ability.name());
 								}
 							}
@@ -414,21 +407,9 @@ public class BendingCommand {
 					sendMessage(player, "-No bending");
 				}
 				else {
-					if (EntityTools.isBender(p, BendingType.Air)) {
-						sendMessage(player, PluginTools.getColor(ConfigManager.getColor("Air")) + "-Airbending");
-					}
-					if (EntityTools.isBender(p, BendingType.Water)) {
-						sendMessage(player, PluginTools.getColor(ConfigManager.getColor("Water")) + "-Waterbending");
-					}
-					if (EntityTools.isBender(p, BendingType.Fire)) {
-						sendMessage(player, PluginTools.getColor(ConfigManager.getColor("Fire")) + "-Firebending");
-					}
-					if (EntityTools.isBender(p, BendingType.Earth)) {
-						sendMessage(player, PluginTools.getColor(ConfigManager.getColor("Earth")) + "-Earthbending");
-					}
-					if (EntityTools.isBender(p, BendingType.ChiBlocker)) {
-						sendMessage(player, PluginTools.getColor(ConfigManager.getColor("ChiBlocker")) + "-Chiblocking");
-					}
+					BendingPlayer bender = BendingPlayer.getBendingPlayer(p);
+					ChatColor color = PluginTools.getColor(Settings.getColorString(bender.getBendingTypes().get(0).name()));
+					sendMessage(player, color + bender.getBendingTypes().get(0).name());
 				}
 			}
 		}
@@ -644,23 +625,9 @@ public class BendingCommand {
 		if (args.length > 1) {
 			helpCommand(player, args);
 			final Abilities ability = Abilities.getAbility(args[1]);
-			if (Abilities.getAbility(args[1]) != null) {
+			if (ability != null) {
 				ChatColor cc = ChatColor.GOLD;
-				if (Abilities.isAirbending(Abilities.getAbility(args[1]))) {
-					cc = PluginTools.getColor(ConfigManager.color.get("Air"));
-				}
-				else if (Abilities.isFirebending(Abilities.getAbility(args[1]))) {
-					cc = PluginTools.getColor(ConfigManager.color.get("Fire"));
-				}
-				else if (Abilities.isEarthbending(Abilities.getAbility(args[1]))) {
-					cc = PluginTools.getColor(ConfigManager.color.get("Earth"));
-				}
-				else if (Abilities.isWaterbending(Abilities.getAbility(args[1]))) {
-					cc = PluginTools.getColor(ConfigManager.color.get("Water"));
-				}
-				else if (Abilities.isChiBlocking(Abilities.getAbility(args[1]))) {
-					cc = PluginTools.getColor(ConfigManager.color.get("ChiBlocker"));
-				}
+				cc = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
 				if (EntityTools.hasPermission(player, ability)) {
 					String msg = Messages.getAbilityDescription(ability);
 					sendMessage(player, ("                                                " + cc + ability.name()));
@@ -880,7 +847,6 @@ public class BendingCommand {
 		if (!hasPermission(player, "bending.admin.reload")) {
 			return;
 		}
-		Bending.plugin.configuration.load(new File(this.dataFolder, "config.yml"));
 		Bending.language.load(new File(this.dataFolder, "language.yml"));
 		PluginTools.stopAllBending();
 		sendMessage(player, ChatColor.AQUA + "Bending " + Messages.getString("general.reload_success"));
@@ -903,7 +869,7 @@ public class BendingCommand {
 			return;
 		}
 		for (final BendingType type : this.bPlayer.getBendingTypes()) {
-			final ChatColor color = PluginTools.getColor(ConfigManager.getColor(type.name()));
+			final ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
 			String msg = "You're a " + type.name();
 			if (type != BendingType.ChiBlocker) {
 				msg += " bender.";
@@ -926,17 +892,7 @@ public class BendingCommand {
 				if (a != null) {
 					none = false;
 					ChatColor color = ChatColor.WHITE;
-					if (Abilities.isAirbending(a)) {
-						color = PluginTools.getColor(ConfigManager.getColor("Air"));
-					} else if (Abilities.isChiBlocking(a)) {
-						color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-					} else if (Abilities.isEarthbending(a)) {
-						color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-					} else if (Abilities.isFirebending(a)) {
-						color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-					} else if (Abilities.isWaterbending(a)) {
-						color = PluginTools.getColor(ConfigManager.getColor("Water"));
-					}
+					color = PluginTools.getColor(Settings.getColorString(a.getElement().name()));
 					final String ability = a.name();
 					sendMessage(player, Messages.getString("general.slot") + " " + (i + 1) + ": " + color + ability);
 				}
@@ -952,20 +908,25 @@ public class BendingCommand {
 			ChatColor color = ChatColor.WHITE;
 			if (Arrays.asList(this.airbendingAliases).contains(choice)) {
 				abilitylist = Abilities.getAirbendingAbilities();
-				color = PluginTools.getColor(ConfigManager.getColor("Air"));
-			} else if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
+				color = PluginTools.getColor(Settings.getColorString("Air"));
+			} 
+			else if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
 				abilitylist = Abilities.getWaterbendingAbilities();
-				color = PluginTools.getColor(ConfigManager.getColor("Water"));
-			} else if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
+				color = PluginTools.getColor(Settings.getColorString("Water"));
+			} 
+			else if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
 				abilitylist = Abilities.getEarthbendingAbilities();
-				color = PluginTools.getColor(ConfigManager.getColor("Earth"));
-			} else if (Arrays.asList(this.firebendingAliases).contains(choice)) {
+				color = PluginTools.getColor(Settings.getColorString("Earth"));
+			} 
+			else if (Arrays.asList(this.firebendingAliases).contains(choice)) {
 				abilitylist = Abilities.getFirebendingAbilities();
-				color = PluginTools.getColor(ConfigManager.getColor("Fire"));
-			} else if (Arrays.asList(this.chiblockingAliases).contains(choice)) {
+				color = PluginTools.getColor(Settings.getColorString("Fire"));
+			} 
+			else if (Arrays.asList(this.chiblockingAliases).contains(choice)) {
 				abilitylist = Abilities.getChiBlockingAbilities();
-				color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
-			} else {
+				color = PluginTools.getColor(Settings.getColorString("ChiBlocker"));
+			} 
+			else {
 				sendMessage(player, ChatColor.RED + "Element "+choice+" is unknown.");
 			}
 			if (abilitylist != null) {
@@ -1283,7 +1244,7 @@ public class BendingCommand {
 		// If no args, just list
 		if (args.length == 1) {
 			for (final BendingSpecializationType spe : BendingSpecializationType.values()) {
-				final ChatColor color = PluginTools.getColor(ConfigManager.getColor(spe.getElement().name()));
+				final ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
 				sendMessage(player, color + spe.name());
 			}
 			return;
@@ -1519,11 +1480,11 @@ public class BendingCommand {
 		if (Abilities.isWaterbending(ability)) {
 			if (!EntityTools.isBender(player, BendingType.Water)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = PluginTools.getColor(ConfigManager.getColor("Water"));
+				color2 = PluginTools.getColor(Settings.getColorString("Water"));
 				Messages.sendMessage(player, "General.not_water", color2);
 				return;
 			}
-			color = PluginTools.getColor(ConfigManager.getColor("Water"));
+			color = PluginTools.getColor(Settings.getColorString("Water"));
 			
 			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
 			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
@@ -1533,11 +1494,11 @@ public class BendingCommand {
 		if (Abilities.isAirbending(ability)) {
 			if (!EntityTools.isBender(player, BendingType.Air)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = PluginTools.getColor(ConfigManager.getColor("Air"));
+				color2 = PluginTools.getColor(Settings.getColorString("Air"));
 				Messages.sendMessage(player, "General.not_air", color2);
 				return;
 			}
-			color = PluginTools.getColor(ConfigManager.getColor("Air"));
+			color = PluginTools.getColor(Settings.getColorString("Air"));
 			
 			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
 			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
@@ -1547,11 +1508,11 @@ public class BendingCommand {
 		if (Abilities.isEarthbending(ability)) {
 			if (!EntityTools.isBender(player, BendingType.Earth)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = PluginTools.getColor(ConfigManager.getColor("Earth"));
+				color2 = PluginTools.getColor(Settings.getColorString("Earth"));
 				Messages.sendMessage(player, "General.not_earth", color2);
 				return;
 			}
-			color = PluginTools.getColor(ConfigManager.getColor("Earth"));
+			color = PluginTools.getColor(Settings.getColorString("Earth"));
 			
 			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
 			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
@@ -1561,11 +1522,11 @@ public class BendingCommand {
 		if (Abilities.isChiBlocking(ability)) {
 			if (!EntityTools.isBender(player, BendingType.ChiBlocker)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+				color2 = PluginTools.getColor(Settings.getColorString("ChiBlocker"));
 				Messages.sendMessage(player, "General.not_chi", color2);
 				return;
 			}
-			color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+			color = PluginTools.getColor(Settings.getColorString("ChiBlocker"));
 			
 			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
 			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));
@@ -1575,11 +1536,11 @@ public class BendingCommand {
 		if (Abilities.isFirebending(ability)) {
 			if (!EntityTools.isBender(player, BendingType.Fire)) {
 				ChatColor color2 = ChatColor.WHITE;
-				color2 = PluginTools.getColor(ConfigManager.getColor("Fire"));
+				color2 = PluginTools.getColor(Settings.getColorString("Fire"));
 				Messages.sendMessage(player, "General.not_fire", color2);
 				return;
 			}
-			color = PluginTools.getColor(ConfigManager.getColor("Fire"));
+			color = PluginTools.getColor(Settings.getColorString("Fire"));
 			
 			BendingPlayer.getBendingPlayer(player).setAbility(slot, ability);
 			sendMessage(player, color + ability.name() + white + " bound to slot " + (slot + 1));

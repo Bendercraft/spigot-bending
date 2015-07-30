@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -31,6 +31,7 @@ public class ChiListener implements Listener {
 	private Map<UUID, Location> sprintLastLocationDash = new HashMap<UUID, Location>();
 	private static final int distanceNeededDash = 1000;
 
+	private static ChatColor color = PluginTools.getColor(Settings.getColorString("ChiBlocker"));
 	public ChiListener(BendingLearning plugin) {
 		this.plugin = plugin;
 		
@@ -55,7 +56,7 @@ public class ChiListener implements Listener {
 							}
 							if(distance >= distanceNeededDash) {
 								if(plugin.addPermission(pl, Abilities.Dash)) {
-									ChatColor color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
+									
 									String message = "Wooo !";
 									pl.sendMessage(color+message);
 									message = "Congratulations, you have unlocked "+Abilities.Dash.name();
@@ -95,7 +96,6 @@ public class ChiListener implements Listener {
 						if(trainee.isBender(BendingType.ChiBlocker)) {
 							if(p.hasLineOfSight(bPlayer.getPlayer())) {
 								if(plugin.addPermission(p, Abilities.SmokeBomb)) {
-									ChatColor color = PluginTools.getColor(ConfigManager.getColor("ChiBlocker"));
 									String message = "By analizing and another smoke bomb from "+bPlayer.getPlayer().getName()+" you think you can reproduce it";
 									p.sendMessage(color+message);
 									message = "Congratulations, you have unlocked "+Abilities.SmokeBomb.name();
