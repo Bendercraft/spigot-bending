@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -33,21 +33,45 @@ import org.bukkit.util.Vector;
 public class EarthBlast implements IAbility {
 	private static Map<Integer, EarthBlast> instances = new HashMap<Integer, EarthBlast>();
 
-	private static boolean hitself = ConfigManager.earthBlastHitSelf;
-	private static double preparerange = ConfigManager.earthBlastPrepareRange;
-	private static double range = ConfigManager.earthBlastRange;
-	private static int earthDamage = ConfigManager.earthBlastDamage;
-	private static final int sandDamage = 5;
-	private static int speDamage = ConfigManager.ironBlastDamage;
+	@ConfigurationParameter("Hit-Self")
+	private static boolean HITSELF = false;
+	
+	@ConfigurationParameter("Select-Range")
+	private static double SELECT_RANGE = 11;
+	
+	@ConfigurationParameter("Range")
+	private static double RANGE = 20;
+	
+	@ConfigurationParameter("Earth-Damage")
+	private static int EARTH_DAMAGE = 7;
+	
+	@ConfigurationParameter("Sand-Damage")
+	private static int SANG_DAMAGE = 5;
+	
+	@ConfigurationParameter("Iron-Damage")
+	private static int IRON_DAMAGE = 9;
+	
+	@ConfigurationParameter("Speed")
+	private static double SPEED = 35;
+	
+	@ConfigurationParameter("Push-Factor")
+	private static double PUSHFACTOR = 0.3;
+	
+	@ConfigurationParameter("Revert")
+	private static boolean REVERT = true;
+	
+	@ConfigurationParameter("Revert")
+	private static long COOLDOWN = 1000;
+	
 	private int damage;
-	private static double speed = ConfigManager.earthBlastSpeed;
+	
 	private static final double deflectrange = 3;
 
-	private static boolean revert = ConfigManager.earthBlastRevert;
-	private static double pushfactor = ConfigManager.earthBlastPush;
+	
+	
 	// private static double speed = 1.5;
 
-	private static long interval = (long) (1000. / speed);
+	private static long interval = (long) (1000. / SPEED);
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -78,7 +102,7 @@ public class EarthBlast implements IAbility {
 	}
 
 	public boolean prepare() {
-		Block block = BlockTools.getEarthSourceBlock(player, Abilities.EarthBlast, preparerange);
+		Block block = BlockTools.getEarthSourceBlock(player, Abilities.EarthBlast, SELECT_RANGE);
 		cancelPrevious(block);	
 		block(player);
 		if (block != null) {
@@ -90,10 +114,10 @@ public class EarthBlast implements IAbility {
 	}
 
 	private static Location getTargetLocation(Player player) {
-		Entity target = EntityTools.getTargettedEntity(player, range);
+		Entity target = EntityTools.getTargettedEntity(player, RANGE);
 		Location location;
 		if (target == null) {
-			location = EntityTools.getTargetedLocation(player, range);
+			location = EntityTools.getTargetedLocation(player, RANGE);
 		} else {
 			// targetting = true;
 			location = ((LivingEntity) target).getEyeLocation();
@@ -127,10 +151,10 @@ public class EarthBlast implements IAbility {
 			EarthPassive.revertSand(sourceblock);
 		}		
 		sourcetype = sourceblock.getType();
-		damage = earthDamage;
+		damage = EARTH_DAMAGE;
 		if (sourcetype == Material.SAND) {
 			sourceblock.setType(Material.SANDSTONE);
-			damage = sandDamage;
+			damage = SANG_DAMAGE;
 		} else if (sourcetype == Material.STONE) {
 			sourceblock.setType(Material.COBBLESTONE);
 		} else {
@@ -142,11 +166,11 @@ public class EarthBlast implements IAbility {
 				else {
 					sourceblock.setType(Material.IRON_BLOCK);
 				}
-				damage = speDamage;
+				damage = IRON_DAMAGE;
 			}
 			else if (EntityTools.canBend(player, Abilities.LavaTrain)
 					&& sourceblock.getType() == Material.OBSIDIAN) {
-				damage = speDamage;
+				damage = IRON_DAMAGE;
 				sourceblock.setType(Material.BEDROCK);
 			}
 			else {
@@ -171,15 +195,15 @@ public class EarthBlast implements IAbility {
 		}	
 
 		if (BlockTools.bendedBlocks.containsKey(sourceblock)) {
-			if (!revert) {
+			if (!REVERT) {
 				BlockTools.removeRevertIndex(sourceblock);
 			// Tools.removeEarthbendedBlockIndex(sourceblock);
 			}				
 		}
-		LivingEntity target = EntityTools.getTargettedEntity(player, range);
+		LivingEntity target = EntityTools.getTargettedEntity(player, RANGE);
 		// Tools.verbose(target);
 		if (target == null) {
-			destination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
+			destination = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
 			firstdestination = sourceblock.getLocation().clone();
 			firstdestination.setY(destination.getY());
 		} else {
@@ -187,7 +211,7 @@ public class EarthBlast implements IAbility {
 			firstdestination = sourceblock.getLocation().clone();
 			firstdestination.setY(destination.getY());
 			destination = Tools.getPointOnLine(firstdestination,
-					destination, range);
+					destination, RANGE);
 		}
 
 		if (destination.distance(location) <= 1) {
@@ -248,7 +272,7 @@ public class EarthBlast implements IAbility {
 					cancel();
 					return false;
 				}
-				if (sourceblock.getLocation().distance(player.getLocation()) > preparerange) {
+				if (sourceblock.getLocation().distance(player.getLocation()) > SELECT_RANGE) {
 					cancel();
 					return false;
 				}
@@ -332,10 +356,10 @@ public class EarthBlast implements IAbility {
 						continue;
 					}
 						
-					if ((entity.getEntityId() != player.getEntityId() || hitself)) {
+					if ((entity.getEntityId() != player.getEntityId() || HITSELF)) {
 						Location location = player.getEyeLocation();
 				 		Vector vector = location.getDirection();
-				 		entity.setVelocity(vector.normalize().multiply(pushfactor));
+				 		entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
 				 		EntityTools.damageEntity(player, entity, damage);
 						progressing = false;
 					}
@@ -346,7 +370,7 @@ public class EarthBlast implements IAbility {
 					return false;
 				}
 
-				if (revert) {
+				if (REVERT) {
 					// Tools.addTempEarthBlock(sourceblock, block);
 					sourceblock.setType(sourcetype);
 					BlockTools.moveEarthBlock(sourceblock, block);
@@ -385,7 +409,7 @@ public class EarthBlast implements IAbility {
 	 */
 	private void breakBlock() {
 		sourceblock.setType(sourcetype);
-		if (revert) {
+		if (REVERT) {
 			BlockTools.addTempAirBlock(sourceblock);
 		} else {
 			sourceblock.breakNaturally();
@@ -409,7 +433,7 @@ public class EarthBlast implements IAbility {
 			}
 
 			if (cooldown) {
-				bPlayer.cooldown(Abilities.EarthBlast);
+				bPlayer.cooldown(Abilities.EarthBlast, COOLDOWN);
 			}
 		}
 
@@ -455,7 +479,7 @@ public class EarthBlast implements IAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = blast.location;
-			if (mloc.distance(location) <= range
+			if (mloc.distance(location) <= RANGE
 					&& Tools.getDistanceFromLine(vector, location,
 							blast.location) < deflectrange
 					&& mloc.distance(location.clone().add(vector)) < mloc
@@ -469,7 +493,7 @@ public class EarthBlast implements IAbility {
 
 	private void redirect(Player player, Location targetlocation) {
 		if (progressing) {
-			if (location.distance(player.getLocation()) <= range) {
+			if (location.distance(player.getLocation()) <= RANGE) {
 				settingup = false;
 				destination = targetlocation;
 			}
@@ -499,7 +523,7 @@ public class EarthBlast implements IAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = blast.location;
-			if (mloc.distance(location) <= range
+			if (mloc.distance(location) <= RANGE
 					&& Tools.getDistanceFromLine(vector, location,
 							blast.location) < deflectrange
 					&& mloc.distance(location.clone().add(vector)) < mloc

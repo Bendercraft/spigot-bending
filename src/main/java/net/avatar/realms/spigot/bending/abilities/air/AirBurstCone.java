@@ -8,13 +8,11 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 //TODO : Parent = AirBurst
 @BendingAbility(name="Air Burst", element=BendingType.Air)
 public class AirBurstCone extends Ability  {
-	private static double pushfactor = 1.5;
-	private static double deltheta = 10;
-	private static double delphi = 10;
 	
 	public AirBurstCone(Player player, Ability parent) {
 		super(player, parent);
@@ -30,8 +28,8 @@ public class AirBurstCone extends Ability  {
 		double angle = Math.toRadians(30);
 		double x, y, z;
 		double r = 1;
-		for (double theta = 0; theta <= 180; theta += deltheta) {
-			double dphi = delphi / Math.sin(Math.toRadians(theta));
+		for (double theta = 0; theta <= 180; theta += AirBurst.DELTHETA) {
+			double dphi = AirBurst.DELPHI / Math.sin(Math.toRadians(theta));
 			for (double phi = 0; phi < 360; phi += dphi) {
 				double rphi = Math.toRadians(phi);
 				double rtheta = Math.toRadians(theta);
@@ -43,7 +41,7 @@ public class AirBurstCone extends Ability  {
 					// Tools.verbose(direction.angle(vector));
 					// Tools.verbose(direction);
 					new AirBlast(location, direction.normalize(), player,
-							pushfactor, this);
+							AirBurst.PUSHFACTOR, this);
 				}
 			}
 		}

@@ -12,7 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -30,13 +30,23 @@ import org.bukkit.potion.PotionEffectType;
 @BendingAbility(name="Earth Grab", element=BendingType.Earth)
 public class EarthGrab implements IAbility {
 
-	private static double range = ConfigManager.earthGrabRange;
 	private static Map<Integer, EarthGrab> instances = new HashMap<Integer, EarthGrab>();
-	private static Integer ID = Integer.MIN_VALUE;
-	private static int benderTargettedDuration = 100; // 5 secs
-	private static int otherTargettedDuration = 6000; // 5 minutes
+	
+	@ConfigurationParameter("Range")
+	private static double range = 15;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 15000;
+	
+	@ConfigurationParameter("Other-Duration")
+	public static int OTHER_DURATION = 300;
+	
+	@ConfigurationParameter("Self-Duration")
+	private static int SELF_DURATION = 5;
+
 	private static final byte full = 0x0;
 
+	private static Integer ID = Integer.MIN_VALUE;
 	private int id;
 	private boolean self;
 	private BendingPlayer bPlayer;
@@ -151,9 +161,9 @@ public class EarthGrab implements IAbility {
 					
 					int duration;
 					if (self) {
-						duration = benderTargettedDuration;
+						duration = SELF_DURATION * 20;
 					} else {
-						duration = otherTargettedDuration;
+						duration = OTHER_DURATION * 20;
 					}
 					PotionEffect slowness = new PotionEffect(
 							PotionEffectType.SLOW, duration, 150); // The entity
@@ -181,7 +191,7 @@ public class EarthGrab implements IAbility {
 							&& target.getEntityId() != bender.getEntityId()) {
 						EntityTools.grab((Player) target, time);
 					}
-					bPlayer.cooldown(Abilities.EarthGrab);
+					bPlayer.cooldown(Abilities.EarthGrab, COOLDOWN);
 				}
 			}
 		}
@@ -208,7 +218,7 @@ public class EarthGrab implements IAbility {
 		}
 		if (bender.getEntityId() == target.getEntityId()) {
 			if (System.currentTimeMillis() > time
-					+ ((benderTargettedDuration / 20) * 1000)) {
+					+ (SELF_DURATION * 1000)) {
 				return false;
 			}
 		}

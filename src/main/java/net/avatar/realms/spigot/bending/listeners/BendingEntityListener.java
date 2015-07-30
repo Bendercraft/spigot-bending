@@ -6,6 +6,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
+import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
@@ -113,7 +114,7 @@ public class BendingEntityListener implements Listener {
 					&& EntityTools.isBender(sourceplayer, BendingType.ChiBlocker)
 					&& (event.getCause() == DamageCause.ENTITY_ATTACK)
 					&& (event.getDamage() == 1)
-					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= ConfigManager.rapidPunchDistance)
+					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= RapidPunch.RANGE)
 					&& (!EntityTools.isWeapon(sourceplayer.getItemInHand().getType()) || ConfigManager.useWeapon
 							.get("ChiBlocker"))) {
 				EntityTools.blockChi(targetplayer, System.currentTimeMillis());

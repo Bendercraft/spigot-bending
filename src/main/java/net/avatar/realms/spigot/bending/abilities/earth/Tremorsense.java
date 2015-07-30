@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -24,9 +24,18 @@ import org.bukkit.entity.Player;
 @BendingAbility(name="Tremor Sense", element=BendingType.Earth)
 public class Tremorsense implements IAbility {
 	private static Map<Player, Tremorsense> instances = new HashMap<Player, Tremorsense>();
-	private static final int maxdepth = ConfigManager.tremorsenseMaxDepth;
-	private static final int radius = ConfigManager.tremorsenseRadius;
-	private static final byte lightthreshold = ConfigManager.tremorsenseLightThreshold;
+	
+	@ConfigurationParameter("Max-Depth")
+	private static int DEPTH = 10;
+	
+	@ConfigurationParameter("Radius")
+	private static int RADIUS = 5;
+	
+	@ConfigurationParameter("Light-Threshold")
+	private static byte LIGHT_THRESHOLD = 7;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1000;
 
 	private Player player;
 	private Block block;
@@ -42,7 +51,7 @@ public class Tremorsense implements IAbility {
 		if (BlockTools.isEarthbendable(player, Abilities.Tremorsense, player
 				.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
 			this.player = player;
-			bPlayer.cooldown(Abilities.Tremorsense);
+			bPlayer.cooldown(Abilities.Tremorsense, COOLDOWN);
 			activate();
 		}
 	}
@@ -56,12 +65,12 @@ public class Tremorsense implements IAbility {
 	private void activate() {
 		Block block = player.getLocation().getBlock()
 				.getRelative(BlockFace.DOWN);
-		for (int i = -radius; i <= radius; i++) {
-			for (int j = -radius; j <= radius; j++) {
+		for (int i = -RADIUS; i <= RADIUS; i++) {
+			for (int j = -RADIUS; j <= RADIUS; j++) {
 				boolean earth = false;
 				boolean foundair = false;
 				Block smokeblock = null;
-				for (int k = 0; k <= maxdepth; k++) {
+				for (int k = 0; k <= DEPTH; k++) {
 					Block blocki = block.getRelative(BlockFace.EAST, i)
 							.getRelative(BlockFace.NORTH, j)
 							.getRelative(BlockFace.DOWN, k);
@@ -86,7 +95,7 @@ public class Tremorsense implements IAbility {
 				if (foundair) {
 					smokeblock.getWorld().playEffect(
 							smokeblock.getRelative(BlockFace.UP).getLocation(),
-							Effect.SMOKE, 4, radius);
+							Effect.SMOKE, 4, RADIUS);
 				}
 			}
 		}
@@ -136,7 +145,7 @@ public class Tremorsense implements IAbility {
 	private boolean progress() {
 		if (!EntityTools.hasAbility(player, Abilities.Tremorsense)
 						|| !EntityTools.canBend(player, Abilities.Tremorsense) || player
-						.getLocation().getBlock().getLightLevel() > lightthreshold) {
+						.getLocation().getBlock().getLightLevel() > LIGHT_THRESHOLD) {
 			return false;
 		}
 		this.set();

@@ -10,7 +10,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 import org.bukkit.Location;
@@ -26,12 +25,11 @@ public class CompactColumn implements IAbility {
 
 	private static int ID = Integer.MIN_VALUE;
 
-	private static double range = ConfigManager.compactColumnRange;
-	private static int height = EarthColumn.standardheight;
-	private static double speed = ConfigManager.compactColumnSpeed;
+	private static int depth = Collapse.DEPTH;
+	
 	private static final Vector direction = new Vector(0, -1, 0);
 
-	private static long interval = (long) (1000. / speed);
+	private static long interval = (long) (1000. / Collapse.SPEED);
 
 	private Location origin;
 	private Location location;
@@ -50,7 +48,7 @@ public class CompactColumn implements IAbility {
 		if (bPlayer.isOnCooldown(Abilities.Collapse))
 			return;
 
-		block = BlockTools.getEarthSourceBlock(player, Abilities.Collapse, range);
+		block = BlockTools.getEarthSourceBlock(player, Abilities.Collapse, Collapse.RANGE);
 		if (block == null) {
 			return;
 		}
@@ -59,7 +57,7 @@ public class CompactColumn implements IAbility {
 		location = origin.clone();
 		this.player = player;
 		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
-				.clone().multiply(-1), height);
+				.clone().multiply(-1), depth);
 
 		loadAffectedBlocks();
 
@@ -67,7 +65,7 @@ public class CompactColumn implements IAbility {
 			if (canInstantiate()) {
 				id = ID;
 				instances.put(id, this);
-				bPlayer.cooldown(Abilities.Collapse);
+				bPlayer.cooldown(Abilities.Collapse, Collapse.COOLDOWN);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}
@@ -87,7 +85,7 @@ public class CompactColumn implements IAbility {
 		// Tools.verbose(origin);
 		location = origin.clone();
 		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
-				.clone().multiply(-1), height);
+				.clone().multiply(-1), depth);
 
 		loadAffectedBlocks();
 

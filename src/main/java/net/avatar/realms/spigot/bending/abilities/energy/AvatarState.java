@@ -4,13 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 
 import org.bukkit.entity.Player;
@@ -20,9 +20,14 @@ import org.bukkit.potion.PotionEffectType;
 @BendingAbility(name="Avatar State", element=BendingType.Energy)
 public class AvatarState extends Ability{
 
-	private static final double FACTOR = Bending.plugin.configuration.getLongAttribute(configPrefix + "Energy.AvatarState.Factor");
-	private static final long MAX_DURATION = Bending.plugin.configuration.getLongAttribute(configPrefix + "Energy.AvatarState.Max-Duration");
-	private static final int COOLDOWN_FACTOR = Bending.plugin.configuration.getIntAttribute(configPrefix + "Energy.AvatarState.Cooldown-Factor");
+	@ConfigurationParameter("Factor")
+	private static double FACTOR = 4.5;
+	
+	@ConfigurationParameter("Max-Duration")
+	private static long MAX_DURATION = 300000;
+	
+	@ConfigurationParameter("Cooldown-Factor")
+	private static int COOLDOWN_FACTOR = 4;
 	
 	private long realDuration;
 

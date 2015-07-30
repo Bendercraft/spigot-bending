@@ -6,7 +6,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -20,12 +20,20 @@ import org.bukkit.util.Vector;
 @BendingAbility(name="Raise Earth", element=BendingType.Earth)
 public class EarthWall implements IAbility {
 
-	private static final int range = ConfigManager.earthWallRange;
-	private static final int defaultheight = ConfigManager.earthWallHeight;
-	private static final int defaulthalfwidth = ConfigManager.earthWallWidth / 2;
+	@ConfigurationParameter("Range")
+	private static int RANGE = 15;
+	
+	@ConfigurationParameter("Height")
+	private static int HEIGHT = 6;
+	
+	@ConfigurationParameter("Width")
+	private static int WIDTH = 6;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1500;
 
-	private int height = defaultheight;
-	private int halfwidth = defaulthalfwidth;
+	private int height = HEIGHT;
+	private int halfwidth = WIDTH / 2;
 	
 	private IAbility parent;
 
@@ -51,10 +59,10 @@ public class EarthWall implements IAbility {
 		Vector orth = new Vector(ox, oy, oz);
 		orth = orth.normalize();
 
-		Block sblock = BlockTools.getEarthSourceBlock(player, Abilities.RaiseEarth, range);
+		Block sblock = BlockTools.getEarthSourceBlock(player, Abilities.RaiseEarth, RANGE);
 		Location origin;
 		if (sblock == null) {
-			origin = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
+			origin = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
 		} else {
 			origin = sblock.getLocation();
 		}
@@ -96,7 +104,7 @@ public class EarthWall implements IAbility {
 			}
 		}
 		if (cooldown) {
-			bPlayer.cooldown(Abilities.RaiseEarth);
+			bPlayer.cooldown(Abilities.RaiseEarth, COOLDOWN);
 		}
 	}
 

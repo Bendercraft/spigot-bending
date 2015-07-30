@@ -4,6 +4,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -11,7 +12,9 @@ import org.bukkit.entity.Player;
 
 @BendingAbility(name="Shockwave", element=BendingType.Earth)
 public class ShockwaveFall implements IAbility {
-	private static final double threshold = 9;
+	
+	@ConfigurationParameter("Fall-Threshold")
+	private static double THRESHOLD = 9;
 
 	private IAbility parent;
 
@@ -20,7 +23,7 @@ public class ShockwaveFall implements IAbility {
 		
 		if (!EntityTools.canBend(player, Abilities.Shockwave)
 				|| EntityTools.getBendingAbility(player) != Abilities.Shockwave
-				|| player.getFallDistance() < threshold
+				|| player.getFallDistance() < THRESHOLD
 				|| !BlockTools.isEarthbendable(player,
 						player.getLocation().add(0, -1, 0).getBlock())) {
 			return;

@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 
 import org.bukkit.Bukkit;
@@ -17,9 +18,6 @@ import org.bukkit.entity.Player;
 
 
 public class BendingPlayer {
-
-	private static Map<Abilities, Long> abilityCooldowns = new HashMap<Abilities, Long>();
-	private static long globalCooldown = 250;
 
 	private UUID player;
 
@@ -62,58 +60,8 @@ public class BendingPlayer {
 		return Bending.database.get(player.getUniqueId());
 	}
 
-	public static void initializeCooldowns () {
-		if (abilityCooldowns.isEmpty()) {
-			for (Abilities ability : Abilities.values()) {
-				long cd = 0;
-				switch (ability) {
-					case WaterManipulation:
-						cd = 1000;
-						break;
-					case EarthBlast:
-						cd = 1000;
-						break;
-					case EarthGrab:
-						cd = ConfigManager.earthGrabCooldown;
-						break;
-					case AirSwipe:
-						cd = ConfigManager.airSwipeCooldown;
-						break;
-					case RapidPunch:
-						cd = ConfigManager.rapidPunchCooldown;
-						break;
-					case Tremorsense:
-						cd = ConfigManager.tremorsenseCooldown;
-						break;
-					case FireBlast:
-						cd = ConfigManager.fireBlastCooldown;
-						break;
-					case FireJet:
-						cd = ConfigManager.fireJetCooldown;
-						break;
-					case IceSpike:
-						cd = ConfigManager.icespikeCooldown;
-						break;
-					case FireBlade:
-						cd = ConfigManager.fireBladeCooldown;
-						break;
-					case Bloodbending:
-						cd = ConfigManager.bloodbendingCooldown;
-						break;
-					case PlasticBomb:
-						cd = ConfigManager.plasticCooldown;
-						break;
-					default:
-						cd = 0;
-						break;
-				}
-				abilityCooldowns.put(ability, cd);
-			}
-		}
-	}
-
 	public boolean isOnGlobalCooldown () {
-		return (System.currentTimeMillis() <= (this.lastTime + globalCooldown));
+		return (System.currentTimeMillis() <= (this.lastTime + Settings.GLOBAL_COOLDOWN));
 	}
 
 	public boolean isOnCooldown (Abilities ability) {
@@ -141,18 +89,7 @@ public class BendingPlayer {
 	}
 
 	public void cooldown () {
-		cooldown(null);
-	}
-
-	public void cooldown (Abilities ability) {
-		long time = System.currentTimeMillis();
-		if (ability != null) {
-			this.cooldowns.put(ability, time + abilityCooldowns.get(ability));
-		}
-		this.lastTime = time;
-		if (ability != null) {
-			Bending.callEvent(new AbilityCooldownEvent(this, ability));
-		}
+		cooldown(null, 0);
 	}
 	
 	public void cooldown (Abilities ability, long cooldownTime) {

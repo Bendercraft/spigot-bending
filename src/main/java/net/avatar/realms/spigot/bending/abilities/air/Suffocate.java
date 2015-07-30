@@ -21,6 +21,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -29,9 +30,19 @@ public class Suffocate implements IAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	private static String LORE_NAME = "Suffocation";
 	//private int distance = ConfigManager.suffocateDistance;
-	private static int distance = 10;
+	
+	@ConfigurationParameter("Range")
+	private static int RANGE = 10;
+	
+	@ConfigurationParameter("Damage")
 	private static int baseDamage = 1;
+	
+	@ConfigurationParameter("Speed")
 	public static double speed = 1;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 2000;
+	
 	private static long interval = (long) (1000. / speed);
 	
 	private IAbility parent;
@@ -55,7 +66,7 @@ public class Suffocate implements IAbility {
 			return;
 		}
 		
-		Entity target = EntityTools.getTargettedEntity(player, distance);
+		Entity target = EntityTools.getTargettedEntity(player, RANGE);
 		
 		if(!(target instanceof Player)) {
 			return;
@@ -82,7 +93,7 @@ public class Suffocate implements IAbility {
 		temp.setItemMeta(meta);
 		
 		this.target.getInventory().setHelmet(temp);
-		bPlayer.cooldown(Abilities.Suffocate);
+		bPlayer.cooldown(Abilities.Suffocate, COOLDOWN);
 		instances.put(player, this);
 	}
 	
@@ -113,7 +124,7 @@ public class Suffocate implements IAbility {
 			return false;
 		}
 		
-		if (target.getLocation().distance(player.getLocation()) > 2*distance) {
+		if (target.getLocation().distance(player.getLocation()) > 2*RANGE) {
 			return false;
 		}
 		

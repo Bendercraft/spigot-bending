@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -26,7 +26,12 @@ public class AirSpout implements IAbility {
 
 	private static Map<Player, AirSpout> instances = new HashMap<Player, AirSpout>();
 
-	private static final double height = ConfigManager.airSpoutHeight;
+	@ConfigurationParameter("Height")
+	private static double HEIGHT = 20.0;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 250;
+	
 	private static final long interval = 100;
 	
 	private static final ParticleEffect VISUAL = ParticleEffect.ENCHANTMENT_TABLE;
@@ -51,7 +56,7 @@ public class AirSpout implements IAbility {
 		time = System.currentTimeMillis();
 		new Flight(player);
 		instances.put(player, this);
-		bPlayer.cooldown(Abilities.AirSpout);
+		bPlayer.cooldown(Abilities.AirSpout, COOLDOWN);
 		boolean keep = spout();
 		if(!keep) {
 			this.remove();
@@ -91,7 +96,7 @@ public class AirSpout implements IAbility {
 		Block block = getGround();
 		if (block != null) {
 			double dy = player.getLocation().getY() - block.getY();
-			if (dy > height) {
+			if (dy > HEIGHT) {
 				removeFlight();
 			} else {
 				allowFlight();
@@ -119,7 +124,7 @@ public class AirSpout implements IAbility {
 
 	private Block getGround() {
 		Block standingblock = player.getLocation().getBlock();
-		for (int i = 0; i <= height + 5; i++) {
+		for (int i = 0; i <= HEIGHT + 5; i++) {
 			Block block = standingblock.getRelative(BlockFace.DOWN, i);
 			if (BlockTools.isSolid(block) || block.isLiquid()) {
 				return block;
@@ -139,8 +144,8 @@ public class AirSpout implements IAbility {
 					location.getY(), playerloc.getZ());
 
 			double dy = playerloc.getY() - block.getY();
-			if (dy > height)
-				dy = height;
+			if (dy > HEIGHT)
+				dy = HEIGHT;
 			Integer[] directions = { 0, 1, 2, 3, 5, 6, 7, 8 };
 			int index = angle;
 
@@ -175,7 +180,7 @@ public class AirSpout implements IAbility {
 
 				double distance = Math.sqrt(dx * dx + dz * dz);
 
-				if (distance <= radius && dy > 0 && dy < height)
+				if (distance <= radius && dy > 0 && dy < HEIGHT)
 					toRemove.add(instances.get(player));
 			}
 		}

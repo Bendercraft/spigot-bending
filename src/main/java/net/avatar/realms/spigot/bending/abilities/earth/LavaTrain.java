@@ -18,7 +18,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -30,12 +30,29 @@ public class LavaTrain implements IAbility {
 	//public static double speed = ConfigManager.lavaTrainSpeed;
 	public static double speed = 5;
 	private static long interval = (long) (1000. / speed);
-	public static int range = ConfigManager.lavaTrainRange;
-	public static int trainWidth = ConfigManager.lavaTrainWidth;
-	public static int randomWidth = ConfigManager.lavaTrainRandomWidth;
-	public static double randomChance = ConfigManager.lavaTrainRandomChance;
-	public static int reachWidth = ConfigManager.lavaTrainReachWidth;
-	public static long keepAlive = ConfigManager.lavaTrainDuration; //ms
+	
+	@ConfigurationParameter("Range")
+	public static int RANGE = 7;
+	
+	@ConfigurationParameter("Train-Width")
+	public static int TRAIN_WIDTH = 1;
+	
+	@ConfigurationParameter("Random-Width")
+	public static int RANDOM_WIDTH = 2;
+	
+	@ConfigurationParameter("Random-Chance")
+	public static double RANDOM_CHANCE = 0.25;
+	
+	@ConfigurationParameter("Reach-Width")
+	public static int REACH_WIDTH = 3;
+	
+	@ConfigurationParameter("Max-Duration")
+	public static long DURATION = 20000; //ms
+	
+	@ConfigurationParameter("Cooldown-Factor")
+	public static int COOLDOWN_FACTOR = 2;
+	
+	
 	private static final byte full = 0x0;
 	
 	private IAbility parent;
@@ -74,12 +91,12 @@ public class LavaTrain implements IAbility {
 		this.direction = player.getEyeLocation().getDirection().clone();
 		this.direction.setY(0);
 		this.direction = this.direction.normalize();
-		origin = player.getLocation().clone().add(direction.clone().multiply(trainWidth+1+randomWidth));
+		origin = player.getLocation().clone().add(direction.clone().multiply(TRAIN_WIDTH+1+RANDOM_WIDTH));
 		origin.setY(origin.getY()-1);
 		current = origin.clone();
 		
 		time = System.currentTimeMillis();
-		bPlayer.cooldown(Abilities.LavaTrain);
+		bPlayer.cooldown(Abilities.LavaTrain, DURATION * COOLDOWN_FACTOR); //TODO : Real duration * COOLDOWN_FACTOR
 		instances.put(player, this);
 	}
 	
@@ -96,28 +113,28 @@ public class LavaTrain implements IAbility {
 		}
 		if(this.direction.getX() == 0 && this.direction.getZ() == 0) {
 			if(!reached) {
-				this.affectBlocks(current, reachWidth);
+				this.affectBlocks(current, REACH_WIDTH);
 				reached = true;
 			} else {
-				if (System.currentTimeMillis() - time > keepAlive) {
+				if (System.currentTimeMillis() - time > DURATION) {
 					return false;
 				}
 				return true;
 			}
 		}
 		if (System.currentTimeMillis() - time >= interval) {
-			if(origin.distance(current) >= range) {
+			if(origin.distance(current) >= RANGE) {
 				if(!reached) {
-					this.affectBlocks(current, reachWidth);
+					this.affectBlocks(current, REACH_WIDTH);
 					reached = true;
 				} else {
-					if (System.currentTimeMillis() - time > keepAlive) {
+					if (System.currentTimeMillis() - time > DURATION) {
 						return false;
 					}
 					return true;
 				}
 			} else {
-				this.affectBlocks(current, trainWidth);
+				this.affectBlocks(current, TRAIN_WIDTH);
 			}
 			
 			if(affecteds.isEmpty()) {
@@ -140,9 +157,9 @@ public class LavaTrain implements IAbility {
 			tmp.setY(current.getY()+i);
 			List<Block> potentialsBlocks = BlockTools.getBlocksOnPlane(tmp, width);
 			//Add small random in generation
-			List<Block> potentialsAddsBlocks = BlockTools.getBlocksOnPlane(tmp, width+randomWidth);
+			List<Block> potentialsAddsBlocks = BlockTools.getBlocksOnPlane(tmp, width+RANDOM_WIDTH);
 			for(Block potentialsBlock : potentialsAddsBlocks) {
-				if(Math.random() < randomChance) {
+				if(Math.random() < RANDOM_CHANCE) {
 					potentialsBlocks.add(potentialsBlock);
 				}
 			}

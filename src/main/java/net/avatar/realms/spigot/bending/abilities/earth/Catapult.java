@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -25,9 +25,17 @@ import org.bukkit.util.Vector;
 public class Catapult implements IAbility {
 	private static Map<Integer, Catapult> instances = new HashMap<Integer, Catapult>();
 
-	private static int length = ConfigManager.catapultLength;
-	private static double speed = ConfigManager.catapultSpeed;
-	private static double push = ConfigManager.catapultPush;
+	@ConfigurationParameter("Length")
+	private static int length = 6;
+	
+	@ConfigurationParameter("Speed")
+	private static double speed = 10.0;
+
+	@ConfigurationParameter("Push")
+	private static double push = 4.0;
+	
+	@ConfigurationParameter("Catapult")
+	public static long COOLDOWN = 5000;
 
 	private static long interval = (long) (1000. / speed);
 	// private static long interval = 1500;
@@ -80,7 +88,7 @@ public class Catapult implements IAbility {
 			starttime = System.currentTimeMillis();
 			moving = true;
 			instances.put(player.getEntityId(), this);
-			bPlayer.cooldown(Abilities.Catapult);
+			bPlayer.cooldown(Abilities.Catapult, COOLDOWN);
 		}
 
 	}

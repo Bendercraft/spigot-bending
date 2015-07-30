@@ -77,7 +77,6 @@ public class Bending extends JavaPlugin {
 		}
 		database.init(this);
 		this.tBackup = new TempBackup(getDataFolder());
-		BendingPlayer.initializeCooldowns();
 		this.tools = new Tools();
 		
 		getServer().getPluginManager().registerEvents(this.listener, this);

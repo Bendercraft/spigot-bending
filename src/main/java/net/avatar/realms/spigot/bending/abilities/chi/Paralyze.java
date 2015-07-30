@@ -9,7 +9,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 import org.bukkit.Location;
@@ -29,8 +29,11 @@ public class Paralyze implements IAbility {
 	private static Map<Entity, Long> entities = new HashMap<Entity, Long>();
 	private static Map<Entity, Long> cooldowns = new HashMap<Entity, Long>();
 
-	private static final long cooldown = ConfigManager.paralyzeCooldown;
-	private static final long duration = ConfigManager.paralyzeDuration;
+	@ConfigurationParameter("Cooldown")
+	private static long COOLDOWN = 10000;
+	
+	@ConfigurationParameter("Duration")
+	private static long DURATION = 2500;
 	private IAbility parent;
 
 	public Paralyze(Player sourcePlayer, Entity targetEntity, IAbility parent) {
@@ -41,7 +44,7 @@ public class Paralyze implements IAbility {
 				&& EntityTools.canBend(sourcePlayer, Abilities.Paralyze)) {
 			if (cooldowns.containsKey(targetEntity)) {
 				if (System.currentTimeMillis() < cooldowns.get(targetEntity)
-						+ cooldown) {
+						+ COOLDOWN) {
 					return;
 				} else {
 					cooldowns.remove(targetEntity);
@@ -75,7 +78,7 @@ public class Paralyze implements IAbility {
 			}
 		}
 		if (entities.containsKey(entity)) {
-			if (System.currentTimeMillis() < entities.get(entity) + duration) {
+			if (System.currentTimeMillis() < entities.get(entity) + DURATION) {
 				return true;
 			}
 			entities.remove(entity);

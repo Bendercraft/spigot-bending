@@ -12,6 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -30,12 +31,25 @@ import org.bukkit.util.Vector;
 public class AirBlast extends Ability {
 	private static int ID = Integer.MIN_VALUE;
 
-	public static double speed = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Speed");
-	public static double defaultrange = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Range");
-	public static double affectingradius = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Radius");
-	public static double defaultpushfactor = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Push-Factor");
-	private static double originselectrange = Bending.plugin.configuration.getDoubleAttribute(configPrefix + "Air.AirBlast.Origin-Range");
-	static final double maxspeed = 1. / defaultpushfactor;
+	@ConfigurationParameter("Speed")
+	public static double SPEED = 25.0;
+	
+	@ConfigurationParameter("Range")
+	public static double DEFAULT_RANGE = 20;
+	
+	@ConfigurationParameter("Radius")
+	public static double AFFECT_RADIUS = 2.0;
+	
+	@ConfigurationParameter("Push-Factor")
+	public static double PUSH_FACTOR = 3.0;
+	
+	@ConfigurationParameter("Origin-Range")
+	private static double SELECT_RANGE = 10;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 500;
+	
+	static final double maxspeed = 1. / PUSH_FACTOR;
 	public static byte full = 0x0;
 
 	private Location location;
@@ -43,9 +57,9 @@ public class AirBlast extends Ability {
 	private Vector direction;
 	private int id;
 	private double speedfactor;
-	private double range = defaultrange;
-	private double pushfactor = defaultpushfactor;
-	private boolean otherorigin = false;
+	private double range = DEFAULT_RANGE;
+	private double pushfactor = PUSH_FACTOR;
+	private boolean otherOrigin = false;
 
 	private List<Block> affectedlevers = new ArrayList<Block>();
 
@@ -84,7 +98,7 @@ public class AirBlast extends Ability {
 
 	public void setOtherOrigin(Player player) {
 		Location location = EntityTools.getTargetedLocation(player,
-				originselectrange, BlockTools.nonOpaque);
+				SELECT_RANGE, BlockTools.nonOpaque);
 		if (location.getBlock().isLiquid()
 				|| BlockTools.isSolid(location.getBlock())) {
 			setState(AbilityState.CannotStart);
@@ -100,7 +114,7 @@ public class AirBlast extends Ability {
 		origin = location;
 		System.out.println(origin.getBlock().getType());
 		setState(AbilityState.Started);
-		otherorigin = true;
+		otherOrigin = true;
 	}
 	
 	@Override
@@ -121,7 +135,7 @@ public class AirBlast extends Ability {
 					direction = Tools.getDirection(origin, EntityTools.getTargetedLocation(player, range)).normalize();
 				}
 				location = origin.clone();
-				bender.cooldown(Abilities.AirBlast);
+				bender.cooldown(Abilities.AirBlast, COOLDOWN);
 				setState(AbilityState.Progressing);
 				return false;
 			default:
@@ -160,7 +174,7 @@ public class AirBlast extends Ability {
 		
 		if (state == AbilityState.Started) {
 			origin.getWorld().playEffect(origin, Effect.SMOKE, 4,
-					(int) originselectrange);
+					(int) SELECT_RANGE);
 			return true;
 		}
 		
@@ -168,11 +182,11 @@ public class AirBlast extends Ability {
 			return false;
 		}
 
-		speedfactor = speed * (Bending.time_step / 1000.);
+		speedfactor = SPEED * (Bending.time_step / 1000.);
 
 		Block block = location.getBlock();
 		for (Block testblock : BlockTools.getBlocksAroundPoint(location,
-				affectingradius)) {
+				AFFECT_RADIUS)) {
 			if (testblock.getType() == Material.FIRE) {
 				testblock.setType(Material.AIR);
 				testblock.getWorld().playEffect(testblock.getLocation(),
@@ -197,8 +211,8 @@ public class AirBlast extends Ability {
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
-				affectingradius)) {
-			if ((entity.getEntityId() != player.getEntityId() || otherorigin)) {
+				AFFECT_RADIUS)) {
+			if ((entity.getEntityId() != player.getEntityId() || otherOrigin)) {
 				affect(entity);
 			}		
 		}	

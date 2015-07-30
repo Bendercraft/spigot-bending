@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 import org.bukkit.entity.Entity;
@@ -27,9 +27,18 @@ import org.bukkit.entity.Player;
  */
 @BendingAbility(name="Rapid Punch", element=BendingType.ChiBlocker)
 public class RapidPunch implements IAbility {
-	private static int damage = ConfigManager.rapidPunchDamage;
-	private int distance = ConfigManager.rapidPunchDistance;
-	private static int punches = ConfigManager.rapidPunchPunches;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 7;
+	
+	@ConfigurationParameter("Range")
+	public static int RANGE = 4;
+	
+	@ConfigurationParameter("Punches")
+	private static int punches = 4;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 3000;
 	
 	private static Map<Player, RapidPunch> instances = new HashMap<Player, RapidPunch>();
 	private int numpunches;
@@ -48,7 +57,7 @@ public class RapidPunch implements IAbility {
 				.isOnCooldown(Abilities.RapidPunch))
 			return;
 
-		Entity t = EntityTools.getTargettedEntity(p, distance);
+		Entity t = EntityTools.getTargettedEntity(p, RANGE);
 
 		if (t == null)
 			return;
@@ -57,7 +66,7 @@ public class RapidPunch implements IAbility {
 		numpunches = 0;
 		player = p;
 		instances.put(p, this);
-		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.RapidPunch);
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.RapidPunch, COOLDOWN);
 	}
 
 	public boolean progress() {
@@ -67,7 +76,7 @@ public class RapidPunch implements IAbility {
 					
 		if (target != null && target instanceof LivingEntity) {
 			LivingEntity lt = (LivingEntity) target;
-			EntityTools.damageEntity(player, target, damage);
+			EntityTools.damageEntity(player, target, DAMAGE);
 			if (target instanceof Player)
 				EntityTools.blockChi((Player) target, System.currentTimeMillis());
 			lt.setNoDamageTicks(0);

@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -26,8 +27,11 @@ public class Ripple implements IAbility {
 	private static Map<Integer, Ripple> instances = new HashMap<Integer, Ripple>();
 	private static Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
 
-	static final double radius = 15;
-	private static final int damage = 5;
+	@ConfigurationParameter("Radius")
+	static double RADIUS = 15;
+	
+	@ConfigurationParameter("Damage")
+	private final int DAMAGE = 5;
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -201,7 +205,7 @@ public class Ripple implements IAbility {
 		Location location = origin.clone();
 		locations.add(location);
 
-		while (location.distance(origin) < radius) {
+		while (location.distance(origin) < RADIUS) {
 			location = location.clone().add(direction);
 			for (int i : new int[] { 1, 2, 3, 0, -1 }) {
 				Location loc;
@@ -269,7 +273,7 @@ public class Ripple implements IAbility {
 		}
 		
 		if (entity instanceof LivingEntity) {
-			EntityTools.damageEntity(player, entity, damage);
+			EntityTools.damageEntity(player, entity, DAMAGE);
 		}
 
 		Vector vector = direction.clone();

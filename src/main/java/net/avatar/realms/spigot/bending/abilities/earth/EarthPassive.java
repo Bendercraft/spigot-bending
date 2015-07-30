@@ -9,7 +9,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IPassiveAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -22,7 +22,9 @@ import org.bukkit.entity.Player;
 public class EarthPassive implements IPassiveAbility {
 	private static Map<Block, Long> sandblocks = new HashMap<Block, Long>();
 	private static Map<Block, Material> sandidentities = new HashMap<Block, Material>();
-	private static final long duration = ConfigManager.earthPassive;
+	
+	@ConfigurationParameter("Time-Before-Reverse")
+	private static long DURATION = 3000;
 
 	public static boolean softenLanding(Player player) {
 		Block block = player.getLocation().getBlock()
@@ -87,7 +89,7 @@ public class EarthPassive implements IPassiveAbility {
 	public static void revertSands() {
 		List<Block> temp = new LinkedList<Block>(sandblocks.keySet());
 		for (Block block : temp) {
-			if (System.currentTimeMillis() >= sandblocks.get(block) + duration) {
+			if (System.currentTimeMillis() >= sandblocks.get(block) + DURATION) {
 				revertSand(block);
 			}
 		}

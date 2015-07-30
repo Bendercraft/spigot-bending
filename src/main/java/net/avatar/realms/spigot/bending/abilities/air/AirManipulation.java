@@ -17,8 +17,7 @@ public class AirManipulation extends Ability{
 
 	@Override
 	public Abilities getAbilityType() {
-		// TODO Auto-generated method stub
-		return null;
+		return Abilities.AirManipulation;
 	}
 
 	@Override

@@ -13,9 +13,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 
 @BendingAbility(name="Air Burst", element=BendingType.Air)
 public class AirBurstSphere extends Ability  {
-	private static double pushfactor = 1.5;
-	private static double deltheta = 10;
-	private static double delphi = 10;
 	
 	public AirBurstSphere(Player player, Ability parent) {
 		super(player, parent);
@@ -30,8 +27,8 @@ public class AirBurstSphere extends Ability  {
 		Location location = player.getEyeLocation();
 		double x, y, z;
 		double r = 1;
-		for (double theta = 0; theta <= 180; theta += deltheta) {
-			double dphi = delphi / Math.sin(Math.toRadians(theta));
+		for (double theta = 0; theta <= 180; theta += AirBurst.DELTHETA) {
+			double dphi = AirBurst.DELPHI / Math.sin(Math.toRadians(theta));
 			for (double phi = 0; phi < 360; phi += dphi) {
 				double rphi = Math.toRadians(phi);
 				double rtheta = Math.toRadians(theta);
@@ -40,7 +37,7 @@ public class AirBurstSphere extends Ability  {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				new AirBlast(location, direction.normalize(), player,
-						pushfactor, this);
+						AirBurst.PUSHFACTOR, this);
 			}
 		}
 		burst.remove();

@@ -8,7 +8,7 @@ import java.util.Map;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
@@ -22,13 +22,20 @@ import org.bukkit.util.Vector;
 public class EarthTunnel implements IAbility {
 	private static Map<Player, EarthTunnel> instances = new HashMap<Player, EarthTunnel>();
 
-	private static final double maxradius = ConfigManager.earthTunnelMaxRadius;
-	private static final double range = ConfigManager.earthTunnelRange;
-	private static final double radiusinc = ConfigManager.earthTunnelRadius;
+	@ConfigurationParameter("Max-Radius")
+	private static double RADIUS = 1.0;
+	
+	@ConfigurationParameter("Range")
+	private static double range = 9.0;
+	
+	@ConfigurationParameter("Radius")
+	private static double radiusinc = 0.25;
 
-	private static boolean revert = ConfigManager.earthTunnelRevert;
+	@ConfigurationParameter("Revert")
+	private static boolean REVERT = true;
 
-	private static final long interval = ConfigManager.earthTunnelInterval;
+	@ConfigurationParameter("Interval")
+	private static long INTERVAL = 30;
 
 	private Player player;
 	private Block block;
@@ -63,7 +70,7 @@ public class EarthTunnel implements IAbility {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
-		if (System.currentTimeMillis() - time >= interval) {
+		if (System.currentTimeMillis() - time >= INTERVAL) {
 			time = System.currentTimeMillis();
 			// Tools.verbose("progressing");
 			if (Math.abs(Math.toDegrees(player.getEyeLocation().getDirection()
@@ -78,7 +85,7 @@ public class EarthTunnel implements IAbility {
 					}
 					if (angle >= 360) {
 						angle = 0;
-						if (radius >= maxradius) {
+						if (radius >= RADIUS) {
 							radius = radiusinc;
 							if (depth >= range) {
 								return false;
@@ -99,7 +106,7 @@ public class EarthTunnel implements IAbility {
 							.add(vec).getBlock();
 				}
 
-				if (revert) {
+				if (REVERT) {
 					BlockTools.addTempAirBlock(block);
 				} else {
 					block.breakNaturally();

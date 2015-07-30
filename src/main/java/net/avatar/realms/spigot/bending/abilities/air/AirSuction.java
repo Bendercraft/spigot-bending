@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -36,11 +36,23 @@ public class AirSuction implements IAbility {
 	private static int ID = Integer.MIN_VALUE;
 	static final double maxspeed = AirBlast.maxspeed;
 
-	private static double speed = ConfigManager.airSuctionSpeed;
-	private static double range = ConfigManager.airSuctionRange;
-	private static double affectingradius = ConfigManager.airSuctionRadius;
-	private static double pushfactor = ConfigManager.airSuctionPush;
-	private static double originselectrange = 10;
+	@ConfigurationParameter("Speed")
+	private static double speed = 25.0;
+	
+	@ConfigurationParameter("Range")
+	private static double range = 20;
+	
+	@ConfigurationParameter("Affecting-Radius")
+	private static double affectingradius = 2.0;
+	
+	@ConfigurationParameter("Push-Factor")
+	private static double pushfactor = 2.5;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 250;
+	
+	@ConfigurationParameter("Origin-Range")
+	private static double SELECT_RANGE = 10;
 
 	private Location location;
 	private Location origin;
@@ -85,7 +97,7 @@ public class AirSuction implements IAbility {
 
 		id = ID;
 		instances.put(id, this);
-		bPlayer.cooldown(Abilities.AirSuction);
+		bPlayer.cooldown(Abilities.AirSuction, COOLDOWN);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
@@ -106,7 +118,7 @@ public class AirSuction implements IAbility {
 
 	public static void setOrigin(Player player) {
 		Location location = EntityTools.getTargetedLocation(player,
-				originselectrange, BlockTools.nonOpaque);
+				SELECT_RANGE, BlockTools.nonOpaque);
 		if (location.getBlock().isLiquid()
 				|| BlockTools.isSolid(location.getBlock()))
 			return;
@@ -204,7 +216,7 @@ public class AirSuction implements IAbility {
 	}
 
 	private void advanceLocation() {
-		location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) AirBlast.defaultrange);
+		location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
 		location = location.add(direction.clone().multiply(speedfactor));
 	}
 
@@ -246,12 +258,12 @@ public class AirSuction implements IAbility {
 			return false;
 		}
 
-		if (origin.distance(player.getEyeLocation()) > originselectrange) {
+		if (origin.distance(player.getEyeLocation()) > SELECT_RANGE) {
 			return false;
 		}
 
 		origin.getWorld().playEffect(origin, Effect.SMOKE, 4,
-				(int) originselectrange);
+				(int) SELECT_RANGE);
 		return true;
 	}
 

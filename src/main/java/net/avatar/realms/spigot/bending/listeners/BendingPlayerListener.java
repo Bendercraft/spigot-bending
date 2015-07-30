@@ -572,7 +572,7 @@ public class BendingPlayerListener implements Listener{
 
 				if (ability == Abilities.Paralyze) {
 					Entity t = EntityTools.getTargettedEntity(player,
-							ConfigManager.rapidPunchDistance);
+							RapidPunch.RANGE);
 					new Paralyze(player, t, null);
 					return;
 				}				

@@ -10,6 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
@@ -21,10 +22,11 @@ import org.bukkit.entity.Player;
 public class Shockwave implements IAbility {
 	private static Map<Player, Shockwave> instances = new HashMap<Player, Shockwave>();
 
-	private static final long defaultchargetime = 2500;
+	@ConfigurationParameter("Charge-Time")
+	private static long CHARGE_TIME = 2500;
 	private Player player;
 	private long starttime;
-	private long chargetime = defaultchargetime;
+	private long chargetime = CHARGE_TIME;
 	private boolean charged = false;
 	private IAbility parent;
 

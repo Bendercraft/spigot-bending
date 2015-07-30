@@ -8,26 +8,25 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 //TODO : Parent = AirBurst
 @BendingAbility(name="Air Burst", element=BendingType.Air)
 public class AirFallBurst extends Ability  {
-	private static double threshold = 10;
-	private static double pushfactor = 1.5;
-	private static double deltheta = 10;
-	private static double delphi = 10;
 	
+	@ConfigurationParameter("Fall-Threshold")
+	private static double THRESHOLD = 10;
 	
 	public AirFallBurst(Player player, Ability parent) {
 		super(player, parent);
-		if(player.getFallDistance() < threshold) {
+		if(player.getFallDistance() < THRESHOLD) {
 			return;
 		}
 		Location location = player.getLocation();
 		double x, y, z;
 		double r = 1;
-		for (double theta = 75; theta < 105; theta += deltheta) {
-			double dphi = delphi / Math.sin(Math.toRadians(theta));
+		for (double theta = 75; theta < 105; theta += AirBurst.DELTHETA) {
+			double dphi = AirBurst.DELTHETA / Math.sin(Math.toRadians(theta));
 			for (double phi = 0; phi < 360; phi += dphi) {
 				double rphi = Math.toRadians(phi);
 				double rtheta = Math.toRadians(theta);
@@ -36,7 +35,7 @@ public class AirFallBurst extends Ability  {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				new AirBlast(location, direction.normalize(), player,
-						pushfactor, this);
+						AirBurst.PUSHFACTOR, this);
 			}
 		}
 	}

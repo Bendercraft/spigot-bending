@@ -10,6 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -25,9 +26,14 @@ import org.bukkit.potion.PotionEffectType;
 @BendingAbility(name="Smoke Bomb", element=BendingType.ChiBlocker)
 public class SmokeBomb extends Ability {
 	
-	public static final int RADIUS = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Radius");
-	public static final int DURATION = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Duration");
-	public static final long COOLDOWN = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.SmokeBomb.Cooldown");
+	@ConfigurationParameter("Radius")
+	public static int RADIUS = 5;
+	
+	@ConfigurationParameter("Duration")
+	public static int DURATION = 10;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 6000;
 	
 	private static Integer ID = Integer.MIN_VALUE;
 

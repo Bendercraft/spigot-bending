@@ -5,30 +5,30 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 @BendingAbility(name="Dash", element=BendingType.ChiBlocker)
 public class Dash extends Ability {
 
-	private static final double LENGTH = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Length");
-	private static final double HEIGHT = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Height");
-	private static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.Dash.Cooldown");
+	@ConfigurationParameter("Length")
+	private static double LENGTH = 1.9;
+	
+	@ConfigurationParameter("Height")
+	private static double HEIGHT = 0.7;
+	
+	@ConfigurationParameter("Cooldown")
+	private static long COOLDOWN = 6000;
 	
 	private Vector direction;
 
 	public Dash(Player player) {
 		super(player, null);
-		
-		if (state == AbilityState.CanStart) {
-			
-		}
 	}
 	
 	@Override

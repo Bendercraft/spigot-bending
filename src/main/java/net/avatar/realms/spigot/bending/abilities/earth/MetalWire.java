@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
@@ -27,7 +28,8 @@ public class MetalWire {
 	private static Map<Player, FishHook> instances = new HashMap<Player, FishHook>();
 	private static Map<Player, Long> noFall = new HashMap<Player, Long>();
 	
-	private final static long timeNoFall = 2200;
+	@ConfigurationParameter("Time-No-Fall")
+	private static long TIME_NO_FALL = 2200;
 
 	public static void pull(Player player, FishHook hook) {
 		List<Player> toRemove = new LinkedList<Player>();
@@ -88,7 +90,7 @@ public class MetalWire {
 		boolean r = false;
 		List<Player> toRemove = new LinkedList<Player>();
 		for (Player p : noFall.keySet()) {
-			if (System.currentTimeMillis() > noFall.get(p) + timeNoFall) {
+			if (System.currentTimeMillis() > noFall.get(p) + TIME_NO_FALL) {
 				toRemove.add(p);
 			} 
 			else {

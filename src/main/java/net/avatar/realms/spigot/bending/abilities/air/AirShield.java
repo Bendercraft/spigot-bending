@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -32,8 +32,14 @@ public class AirShield implements IAbility {
 
 	private static Map<Integer, AirShield> instances = new HashMap<Integer, AirShield>();
 
-	private static double maxradius = ConfigManager.airShieldRadius;
-	private static int numberOfStreams = (int)(.75 * (double)maxradius);
+	@ConfigurationParameter("Max-Radius")
+	private static double MAX_RADIUS = 5.0;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 3000;
+	
+	
+	private static int numberOfStreams = (int)(.75 * (double)MAX_RADIUS);
 
 	private double radius = 2;
 
@@ -51,8 +57,8 @@ public class AirShield implements IAbility {
 		}
 		this.player = player;
 		int angle = 0;
-		int di = (int)((maxradius * 2) / numberOfStreams);
-		for (int i = -(int)maxradius + di ; i < (int)maxradius ; i += di) {
+		int di = (int)((MAX_RADIUS * 2) / numberOfStreams);
+		for (int i = -(int)MAX_RADIUS + di ; i < (int)MAX_RADIUS ; i += di) {
 			this.angles.put(i, angle);
 			angle += 90;
 			if (angle == 360) {
@@ -61,7 +67,7 @@ public class AirShield implements IAbility {
 		}
 
 		instances.put(player.getEntityId(), this);
-		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.AirShield);
+		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.AirShield, COOLDOWN);
 	}
 
 	private void rotateShield () {
@@ -110,7 +116,7 @@ public class AirShield implements IAbility {
 					velocity.setZ(vz);
 				}
 
-				velocity.multiply(this.radius / maxradius);
+				velocity.multiply(this.radius / MAX_RADIUS);
 				entity.setVelocity(velocity);
 				entity.setFallDistance(0);
 			}
@@ -122,7 +128,7 @@ public class AirShield implements IAbility {
 			double angle = (double)this.angles.get(i);
 			angle = Math.toRadians(angle);
 
-			double factor = this.radius / maxradius;
+			double factor = this.radius / MAX_RADIUS;
 
 			y = origin.getY() + (factor * (double)i);
 
@@ -134,18 +140,18 @@ public class AirShield implements IAbility {
 
 			Location effect = new Location(origin.getWorld(), x, y, z);
 			if (!ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AirShield, effect)) {
-				origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int)AirBlast.defaultrange);
+				origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int)AirBlast.DEFAULT_RANGE);
 			}
 
 			this.angles.put(i, this.angles.get(i) + (int)(10 * this.speedfactor));
 		}
 
-		if (this.radius < maxradius) {
+		if (this.radius < MAX_RADIUS) {
 			this.radius += .3;
 		}
 
-		if (this.radius > maxradius) {
-			this.radius = maxradius;
+		if (this.radius > MAX_RADIUS) {
+			this.radius = MAX_RADIUS;
 		}
 
 	}

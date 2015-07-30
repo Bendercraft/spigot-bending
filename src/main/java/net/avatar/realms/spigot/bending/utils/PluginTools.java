@@ -58,6 +58,7 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
 import net.avatar.realms.spigot.bending.controller.Flight;
+import net.avatar.realms.spigot.bending.controller.Settings;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -244,28 +245,28 @@ public class PluginTools {
 	
 	public static double firebendingDayAugment(double value, World world) {
 		if (Tools.isDay(world)) {
-			return ConfigManager.dayFactor * value;
+			return Settings.DAY_FACTOR * value;
 		}
 		return value;
 	}
 
 	public static double getFirebendingDayAugment(World world) {
 		if (Tools.isDay(world)) {
-			return ConfigManager.dayFactor;
+			return Settings.DAY_FACTOR;
 		}		
 		return 1;
 	}
 
 	public static double waterbendingNightAugment(double value, World world) {
 		if (Tools.isNight(world)) {
-			return ConfigManager.nightFactor * value;
+			return Settings.NIGHT_FACTOR * value;
 		}
 		return value;
 	}
 
 	public static double getWaterbendingNightAugment(World world) {
 		if (Tools.isNight(world))
-			return ConfigManager.nightFactor;
+			return Settings.NIGHT_FACTOR;
 		return 1;
 	}
 	

@@ -2,11 +2,11 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
@@ -18,10 +18,17 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 @BendingAbility(name="Powerful Hit", element=BendingType.ChiBlocker)
 public class PowerfulHit extends Ability{
 	
-	public static final long DAMAGE = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Damage");
-	public static final long KNOCKBACK = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Knockback");
-	public static final long RANGE = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Range");
-	public static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix +"Chi.PowerfulHit.Cooldown");
+	@ConfigurationParameter("Damage")
+	public static long DAMAGE = 5;
+	
+	@ConfigurationParameter("Knockback")
+	public static long KNOCKBACK = 1;
+	
+	@ConfigurationParameter("Range")
+	public static long RANGE = 4;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 5000;
 
 	public PowerfulHit(Player player) {
 		super(player, null);

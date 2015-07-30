@@ -10,8 +10,9 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -29,8 +30,8 @@ public class AirBubble implements IAbility {
 
 	private static Map<Integer, AirBubble> instances = new HashMap<Integer, AirBubble>();
 
-	private static double defaultAirRadius = ConfigManager.airBubbleRadius;
-	private static double defaultWaterRadius = ConfigManager.waterBubbleRadius;
+	@ConfigurationParameter("Radius")
+	private static double DEFAULT_RADIUS = 4;
 
 	private Player player;
 	private double radius;
@@ -60,18 +61,18 @@ public class AirBubble implements IAbility {
 		// modified
 		if (!BlockTools.locationEquals(lastLocation,location)) {
 			if (EntityTools.isBender(player, BendingType.Water)) {
-				radius = defaultWaterRadius;
+				radius = WaterBubble.DEFAULT_RADIUS;
 				if (Tools.isNight(player.getWorld())) {
 					radius = PluginTools.waterbendingNightAugment(
-							defaultWaterRadius, player.getWorld());
+							WaterBubble.DEFAULT_RADIUS, player.getWorld());
 				}
 			} else {
-				radius = defaultAirRadius;
+				radius = DEFAULT_RADIUS;
 			}
 
-			if (defaultAirRadius > radius
+			if (DEFAULT_RADIUS > radius
 					&& EntityTools.isBender(player, BendingType.Air)) {
-				radius = defaultAirRadius;
+				radius = DEFAULT_RADIUS;
 				// In case he has both element
 			}
 

@@ -9,6 +9,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -22,7 +23,8 @@ import org.bukkit.inventory.ItemStack;
 @BendingAbility(name="Metalbending", element=BendingType.Earth, specialization=BendingSpecializationType.Metalbend)
 public class MetalBending {
 
-	private static final long meltTime = 2000;
+	@ConfigurationParameter("Melt-Time")
+	private static long MELT_TIME = 2000;
 	private static Map<Player, MetalBending> instances = new HashMap<Player, MetalBending>();
 
 	private static Map<Material, Integer> metals = new HashMap<Material, Integer>();
@@ -132,7 +134,7 @@ public class MetalBending {
 			return false;
 		}
 
-		if (System.currentTimeMillis() > time + meltTime) {
+		if (System.currentTimeMillis() > time + MELT_TIME) {
 			melt();
 			time = System.currentTimeMillis();
 		}

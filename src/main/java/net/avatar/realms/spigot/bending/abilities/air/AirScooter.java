@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -29,9 +29,11 @@ import org.bukkit.util.Vector;
 public class AirScooter implements IAbility {
 	private static Map<Player, AirScooter> instances = new HashMap<Player, AirScooter>();
 
-	private static final double speed = ConfigManager.airScooterSpeed;
-	private static final long interval = 100;
-	private static final double scooterradius = 1;
+	@ConfigurationParameter("Speed")
+	private static double SPEED = 0.675;
+	
+	private static final long INTERVAL = 100;
+	private static final double SCOOTER_RADIUS = 1;
 
 	private Player player;
 	private Block floorblock;
@@ -88,10 +90,10 @@ public class AirScooter implements IAbility {
 
 		Vector velocity = player.getEyeLocation().getDirection().clone();
 		velocity.setY(0);
-		velocity = velocity.clone().normalize().multiply(speed);
-		if (System.currentTimeMillis() > time + interval) {
+		velocity = velocity.clone().normalize().multiply(SPEED);
+		if (System.currentTimeMillis() > time + INTERVAL) {
 			time = System.currentTimeMillis();
-			if (player.getVelocity().length() < speed * .5) {
+			if (player.getVelocity().length() < SPEED * .5) {
 				return false;
 			}
 			spinScooter();
@@ -119,13 +121,13 @@ public class AirScooter implements IAbility {
 
 	private void spinScooter() {
 		Location origin = player.getLocation().clone();
-		origin.add(0, -scooterradius, 0);
+		origin.add(0, -SCOOTER_RADIUS, 0);
 		for (int i = 0; i < 5; i++) {
-			double x = Math.cos(Math.toRadians(angles.get(i))) * scooterradius;
-			double y = ((double) i) / 2 * scooterradius - scooterradius;
-			double z = Math.sin(Math.toRadians(angles.get(i))) * scooterradius;
+			double x = Math.cos(Math.toRadians(angles.get(i))) * SCOOTER_RADIUS;
+			double y = ((double) i) / 2 * SCOOTER_RADIUS - SCOOTER_RADIUS;
+			double z = Math.sin(Math.toRadians(angles.get(i))) * SCOOTER_RADIUS;
 			player.getWorld().playEffect(origin.clone().add(x, y, z),
-					Effect.SMOKE, 4, (int) AirBlast.defaultrange);
+					Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
 		}
 		for (int i = 0; i < 5; i++) {
 			angles.set(i, angles.get(i) + 10);

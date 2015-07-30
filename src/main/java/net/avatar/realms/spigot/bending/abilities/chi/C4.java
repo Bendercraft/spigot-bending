@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
@@ -37,11 +37,19 @@ import org.bukkit.util.Vector;
 public class C4 {
 	private static Map<Player,C4> instances = new HashMap<Player, C4>();
 	
-	private static double radius = ConfigManager.plasticRadius;
-	private static int maxDamage = ConfigManager.plasticDamage;
+	@ConfigurationParameter("Radius")
+	private static double RADIUS = 2.35;
+	
+	@ConfigurationParameter("Damage")
+	private static int MAX_DAMAGE = 4;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 20000;
+	
 	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
 	
-	private static final int fuseInterval = 1500;
+	@ConfigurationParameter("Fuse-Interval")
+	private static int INTERVAL = 1500;
 	
 	private Player player;
 	private Player target = null;
@@ -164,7 +172,7 @@ public class C4 {
 	}
 	
 	public void activate() {
-		if (System.currentTimeMillis() <= fuseTime + fuseInterval) {
+		if (System.currentTimeMillis() <= fuseTime + INTERVAL) {
 			return;
 		}
 		if (!hasDetonator(player)) {
@@ -187,7 +195,7 @@ public class C4 {
 		explode();
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer != null) {
-			bPlayer.cooldown(Abilities.PlasticBomb);
+			bPlayer.cooldown(Abilities.PlasticBomb, COOLDOWN);
 		}
 		instances.remove(player);
 	}
@@ -227,11 +235,11 @@ public class C4 {
 		boolean obsidian = false;
 		
 		List<Block> affecteds = new LinkedList<Block>();
-		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, RADIUS)) {
 			if (block.getType() == Material.OBSIDIAN) {
 				obsidian = true;
 			}
-			if (!obsidian || (obsidian && location.distance(block.getLocation()) < radius/2.0)) {
+			if (!obsidian || (obsidian && location.distance(block.getLocation()) < RADIUS/2.0)) {
 				if (!ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb,
 						block.getLocation()) 
 						&& !ProtectionManager.isRegionProtectedFromExplosion(player, Abilities.PlasticBomb, block.getLocation())) {
@@ -268,7 +276,7 @@ public class C4 {
 			}
 		}
 		
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius+1);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, RADIUS+1);
 		for(LivingEntity entity : entities) {
 			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
@@ -280,16 +288,16 @@ public class C4 {
 	
 	public void dealDamage(Entity entity) {
 		double distance = entity.getLocation().distance(location);
-		if (distance > radius){
+		if (distance > RADIUS){
 			return;
 		}	
 
-		EntityTools.damageEntity(player, entity, maxDamage);
+		EntityTools.damageEntity(player, entity, MAX_DAMAGE);
 	}
 	
 	private void knockBack(Entity entity) {
 		double distance = entity.getLocation().distance(location);
-		if (distance > radius){
+		if (distance > RADIUS){
 			return;
 		}	
 		double dx = entity.getLocation().getX() - location.getX();

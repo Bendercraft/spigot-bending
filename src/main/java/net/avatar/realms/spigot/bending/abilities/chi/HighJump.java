@@ -19,6 +19,7 @@ public class HighJump extends Ability {
 
 	@ConfigurationParameter("Height")
 	private static final int JUMP_HEIGHT = 7;
+	
 	@ConfigurationParameter("Cooldown")
 	private static final long COOLDOWN = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.HighJump.Cooldown", 5);
 

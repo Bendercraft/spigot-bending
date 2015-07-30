@@ -17,7 +17,7 @@ public class ShockwaveArea implements IAbility {
 		if (Shockwave.isShockwaving(player)) {
 			Shockwave wave = Shockwave.getShockwave(player);
 			if (wave.isCharged()) {
-				double dtheta = 360. / (2 * Math.PI * Ripple.radius) - 1;
+				double dtheta = 360. / (2 * Math.PI * Ripple.RADIUS) - 1;
 				for (double theta = 0; theta < 360; theta += dtheta) {
 					double rtheta = Math.toRadians(theta);
 					Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));

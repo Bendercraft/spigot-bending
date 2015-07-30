@@ -19,7 +19,7 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -57,15 +57,32 @@ public class AirSwipe implements IAbility {
 		breakables.add(Material.VINE);
 	};
 
-	private static int defaultdamage = ConfigManager.airSwipeDamage;
-	private static double affectingradius = ConfigManager.airSwipeRadius;
-	private static double defaultpushfactor = ConfigManager.airSwipePush;
-	private static double range = ConfigManager.airSwipeRange;
-	private static int arc = ConfigManager.airSwipeArc;
+	@ConfigurationParameter("Base-Damage")
+	private static int DAMAGE = 5;
+	
+	@ConfigurationParameter("Affecting-Radius")
+	private static double AFFECTING_RADIUS = 2.0;
+	
+	@ConfigurationParameter("Push-Factor")
+	private static double PUSHFACTOR = 1.0;
+	
+	@ConfigurationParameter("Range")
+	private static double RANGE = 16.0;
+	
+	@ConfigurationParameter("Arc")
+	private static int ARC = 20;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1500;
+	
+	@ConfigurationParameter("Speed")
+	private static double SPEED = 25;
+	
+	@ConfigurationParameter("Max-Charge-Time")
+	private static long MAX_CHARGE_TIME = 3000;
+	
 	private static int stepsize = 4;
-	private static double speed = ConfigManager.airSwipeSpeed;
 	private static byte full = AirBlast.full;
-	private static long maxchargetime = 3000;
 	private static double maxfactor = 3;
 
 	private double speedfactor;
@@ -74,8 +91,8 @@ public class AirSwipe implements IAbility {
 	private Player player;
 	private boolean charging = false;
 	private long time;
-	private int damage = defaultdamage;
-	private double pushfactor = defaultpushfactor;
+	private int damage = DAMAGE;
+	private double pushfactor = PUSHFACTOR;
 	private int id;
 	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
 	private List<Entity> affectedentities = new ArrayList<Entity>();
@@ -107,7 +124,7 @@ public class AirSwipe implements IAbility {
 
 		instances.put(id, this);
 
-		bPlayer.cooldown(Abilities.AirSwipe);
+		bPlayer.cooldown(Abilities.AirSwipe, COOLDOWN);
 
 		if (!charging)
 			launch();
@@ -117,7 +134,7 @@ public class AirSwipe implements IAbility {
 
 	private void launch() {
 		origin = player.getEyeLocation();
-		for (int i = -arc; i <= arc; i += stepsize) {
+		for (int i = -ARC; i <= ARC; i += stepsize) {
 			double angle = Math.toRadians((double) i);
 			Vector direction = player.getEyeLocation().getDirection().clone();
 
@@ -148,7 +165,7 @@ public class AirSwipe implements IAbility {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
-		speedfactor = speed * (Bending.time_step / 1000.);
+		speedfactor = SPEED * (Bending.time_step / 1000.);
 		if (!charging) {
 			if (elements.isEmpty()) {
 				return false;
@@ -162,12 +179,12 @@ public class AirSwipe implements IAbility {
 
 			if (!player.isSneaking()) {
 				double factor = 1;
-				if (System.currentTimeMillis() >= time + maxchargetime) {
+				if (System.currentTimeMillis() >= time + MAX_CHARGE_TIME) {
 					factor = maxfactor;
 				} else {
 					factor = maxfactor
 							* (double) (System.currentTimeMillis() - time)
-							/ (double) maxchargetime;
+							/ (double) MAX_CHARGE_TIME;
 				}
 				charging = false;				
 				launch();
@@ -177,7 +194,7 @@ public class AirSwipe implements IAbility {
 				damage *= factor;
 				pushfactor *= factor;
 				return true;
-			} else if (System.currentTimeMillis() >= time + maxchargetime) {
+			} else if (System.currentTimeMillis() >= time + MAX_CHARGE_TIME) {
 				player.getWorld().playEffect(
 						player.getEyeLocation(),
 						Effect.SMOKE,
@@ -202,7 +219,7 @@ public class AirSwipe implements IAbility {
 				//For each elements, we calculate the next one and check afterwards if it is still in range
 				Location newlocation = location.clone().add(
 						direction.clone().multiply(speedfactor));
-				if (newlocation.distance(origin) <= range
+				if (newlocation.distance(origin) <= RANGE
 						&& !ProtectionManager.isRegionProtectedFromBending(player,
 								Abilities.AirSwipe, newlocation)) {
 					//If new location is still valid, we add it
@@ -235,7 +252,7 @@ public class AirSwipe implements IAbility {
 
 			Block block = location.getBlock();
 			for (Block testblock : BlockTools.getBlocksAroundPoint(location,
-					affectingradius)) {
+					AFFECTING_RADIUS)) {
 				if (testblock.getType() == Material.FIRE) {
 					testblock.setType(Material.AIR);
 				}
@@ -259,12 +276,12 @@ public class AirSwipe implements IAbility {
 				}
 			} else {
 				location.getWorld().playEffect(location, Effect.SMOKE,
-						4, (int) AirBlast.defaultrange);
+						4, (int) AirBlast.DEFAULT_RANGE);
 			
 				//Check affected people
 				PluginTools.removeSpouts(location, player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
-						affectingradius)) {
+						AFFECTING_RADIUS)) {
 					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}

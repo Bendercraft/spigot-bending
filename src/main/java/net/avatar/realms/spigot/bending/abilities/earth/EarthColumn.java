@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 import org.bukkit.Location;
@@ -23,18 +23,27 @@ import org.bukkit.util.Vector;
 @BendingAbility(name="Raise Earth", element=BendingType.Earth)
 public class EarthColumn implements IAbility {
 	private static Map<Integer, EarthColumn> instances = new HashMap<Integer, EarthColumn>();
-	public static final int standardheight = ConfigManager.earthColumnHeight;
+	
+	@ConfigurationParameter("Height")
+	public static int HEIGHT = 6;
+	
+	@ConfigurationParameter("Cooldown")
+	private static long COOLDOWN = 1000;
 
-	private static Map<Block, Block> alreadydoneblocks = new HashMap<Block, Block>();
-	private static Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
-
-	private static int ID = Integer.MIN_VALUE;
-
-	private static double range = 20;
-	private static double speed = 8;
+	@ConfigurationParameter("Range")
+	private static double RANGE = 20;
+	
+	@ConfigurationParameter("Speed")
+	private static double SPEED = 8;
+	
 	private static final Vector direction = new Vector(0, 1, 0);
 
-	private static long interval = (long) (1000. / speed);
+	private static long interval = (long) (1000. / SPEED);
+	
+	private static int ID = Integer.MIN_VALUE;
+	
+	private static Map<Block, Block> alreadydoneblocks = new HashMap<Block, Block>();
+	private static Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 
 	private Location origin;
 	private Location location;
@@ -43,7 +52,7 @@ public class EarthColumn implements IAbility {
 	private Player player;
 	private int id;
 	private long time;
-	private int height = standardheight;
+	private int height = HEIGHT;
 	private List<Block> affectedBlocks = new ArrayList<Block>();
 	private EarthGrab earthGrab = null;
 	private IAbility parent;
@@ -57,7 +66,7 @@ public class EarthColumn implements IAbility {
 		}
 			
 		try {
-			block = BlockTools.getEarthSourceBlock(player, Abilities.RaiseEarth, range);
+			block = BlockTools.getEarthSourceBlock(player, Abilities.RaiseEarth, RANGE);
 			if (block == null)
 				return;
 			origin = block.getLocation();
@@ -76,7 +85,7 @@ public class EarthColumn implements IAbility {
 			if (canInstantiate()) {
 				id = ID;
 				instances.put(id, this);
-				bPlayer.cooldown(Abilities.RaiseEarth);
+				bPlayer.cooldown(Abilities.RaiseEarth, COOLDOWN);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}

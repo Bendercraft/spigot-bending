@@ -11,6 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
@@ -29,10 +30,25 @@ import org.bukkit.entity.Player;
 @BendingAbility(name="Air Burst", element=BendingType.Air)
 public class AirBurst implements IAbility {
 	private static Map<Player, AirBurst> instances = new HashMap<Player, AirBurst>();
+	
+	@ConfigurationParameter("Charge-Time")
+	public static long DEFAULT_CHARGETIME = 1750;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 2000;
+	
+	@ConfigurationParameter("Push-Factor")
+	public static double PUSHFACTOR = 1.5;
+	
+	@ConfigurationParameter("Del-Theta")
+	public static double DELTHETA = 10;
+	
+	@ConfigurationParameter("Del-Phi")
+	public static double DELPHI = 10;
 
 	private Player player;
 	private long starttime;
-	private long chargetime = 1750;
+	private long chargetime = DEFAULT_CHARGETIME;
 	private boolean charged = false;
 	
 	private IAbility parent;
@@ -46,8 +62,10 @@ public class AirBurst implements IAbility {
 		if (instances.containsKey(player))
 			return;
 		starttime = System.currentTimeMillis();
-		if (AvatarState.isAvatarState(player))
+		if (AvatarState.isAvatarState(player)) {
 			chargetime = 0;
+		}
+			
 		this.player = player;
 		instances.put(player, this);
 	}

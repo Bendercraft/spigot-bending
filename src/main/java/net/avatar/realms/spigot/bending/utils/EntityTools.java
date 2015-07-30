@@ -13,6 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
@@ -239,7 +240,7 @@ public class EntityTools {
 
 		if (grabedPlayers.containsKey(player)) {
 			long time = System.currentTimeMillis();
-			if (time > grabedPlayers.get(player) + ConfigManager.earthGrabDuration
+			if (time > grabedPlayers.get(player) + (EarthGrab.OTHER_DURATION * 1000)
 					|| AvatarState.isAvatarState(player)) {
 				grabedPlayers.remove(player);
 				return false;

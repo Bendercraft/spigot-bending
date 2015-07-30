@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-@BendingAbility(name="Air Blast", element=BendingType.None)
+@BendingAbility(name="Speed", element=BendingType.None)
 public class Speed implements IPassiveAbility {
 
 	private static Map<Integer, Speed> instances = new HashMap<Integer, Speed>();

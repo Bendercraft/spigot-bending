@@ -7,6 +7,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -16,7 +17,12 @@ import org.bukkit.entity.Player;
 
 @BendingAbility(name="Earth Shield", element=BendingType.Earth)
 public class EarthShield implements IAbility {
-	private static int range = 7;
+	
+	@ConfigurationParameter("Range")
+	private static int RANGE = 7;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 3000;
 
 	private IAbility parent;
 
@@ -29,7 +35,7 @@ public class EarthShield implements IAbility {
 				Abilities.EarthArmor))
 			return;
 
-		base = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending());
+		base = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
 		
 		ArrayList<Block> blocks = new ArrayList<Block>();
 		Location location = base.getLocation();
@@ -47,7 +53,7 @@ public class EarthShield implements IAbility {
 			testloc2 = loc2.clone().add(
 					factor2 * Math.cos(Math.toRadians(angle)), 1,
 					factor2 * Math.sin(Math.toRadians(angle)));
-			for (int y = 0; y < EarthColumn.standardheight - height1; y++) {
+			for (int y = 0; y < EarthColumn.HEIGHT - height1; y++) {
 				testloc = testloc.clone().add(0, -1, 0);
 				if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
 					if (!blocks.contains(testloc.getBlock())) {
@@ -57,7 +63,7 @@ public class EarthShield implements IAbility {
 					break;
 				}
 			}
-			for (int y = 0; y < EarthColumn.standardheight - height2; y++) {
+			for (int y = 0; y < EarthColumn.HEIGHT - height2; y++) {
 				testloc2 = testloc2.clone().add(0, -1, 0);
 				if (BlockTools.isEarthbendable(player, testloc2.getBlock())) {
 					if (!blocks.contains(testloc2.getBlock())) {
@@ -70,7 +76,7 @@ public class EarthShield implements IAbility {
 		}
 
 		if (!blocks.isEmpty()) {
-			bPlayer.cooldown(Abilities.EarthArmor);
+			bPlayer.cooldown(Abilities.EarthArmor, COOLDOWN);
 		}
 	}
 

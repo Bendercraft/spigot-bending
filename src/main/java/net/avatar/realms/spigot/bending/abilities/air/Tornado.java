@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -32,18 +32,35 @@ import org.bukkit.util.Vector;
 public class Tornado implements IAbility {
 	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 	private static Map<UUID, Long> affecteds = new HashMap<UUID, Long>();
-	private static int fallImmunity = 5000;
-	private static double maxradius = ConfigManager.tornadoRadius;
-	private static double maxheight = ConfigManager.tornadoHeight;
-	private static double range = ConfigManager.tornadoRange;
-	private static int numberOfStreams = (int) (.3 * (double) maxheight);
-	private static double NPCpushfactor = ConfigManager.tornadoMobPush;
-	private static double PCpushfactor = ConfigManager.tornadoPlayerPush;
+	
+	@ConfigurationParameter("Fall-Imunity")
+	private static long FALL_IMMUNITY = 5000;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 5000;
+	
+	@ConfigurationParameter("Radius")
+	private static double RADIUS = 10;
+	
+	@ConfigurationParameter("Height")
+	private static double HEIGHT = 25;
+	
+	@ConfigurationParameter("Range")
+	private static double RANGE = 25;
+	
+	@ConfigurationParameter("Mob-Push-Factor")
+	private static double NPC_PUSH = 1.0;
+	
+	@ConfigurationParameter("Player-Push-Factor")
+	private static double PC_PUSH = 1.0;
+	
+	private static int numberOfStreams = (int) (.3 * (double) HEIGHT);
+	
 	private static double speedfactor = 1;
 	private static double MAX_AFFECTEDS = 5000;//ms
 
 	private double height = 2;
-	private double radius = height / maxheight * maxradius;
+	private double radius = height / HEIGHT * RADIUS;
 
 	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
 	private Location origin;
@@ -60,11 +77,11 @@ public class Tornado implements IAbility {
 			return;
 		}
 		
-		origin = EntityTools.getTargetBlock(player, range).getLocation();
+		origin = EntityTools.getTargetBlock(player, RANGE).getLocation();
 		origin.setY(origin.getY() - 1. / 10. * height);
 
 		int angle = 0;
-		for (int i = 0; i <= maxheight; i += (int) maxheight / numberOfStreams) {
+		for (int i = 0; i <= HEIGHT; i += (int) HEIGHT / numberOfStreams) {
 			angles.put(i, angle);
 			angle += 90;
 			if (angle == 360)
@@ -100,10 +117,10 @@ public class Tornado implements IAbility {
 	}
 
 	private void rotateTornado() {
-		origin = EntityTools.getTargetBlock(player, range).getLocation();
+		origin = EntityTools.getTargetBlock(player, RANGE).getLocation();
 
-		double timefactor = height / maxheight;
-		radius = timefactor * maxradius;
+		double timefactor = height / HEIGHT;
+		radius = timefactor * RADIUS;
 
 		if (origin.getBlock().getType() != Material.AIR) {
 			origin.setY(origin.getY() - 1. / 10. * height);
@@ -127,7 +144,7 @@ public class Tornado implements IAbility {
 							* factor) {
 						double x, z, vx, vz, mag;
 						double angle = 100;
-						double vy = NPCpushfactor;
+						double vy = NPC_PUSH;
 						angle = Math.toRadians(angle);
 
 						x = entity.getLocation().getX() - origin.getX();
@@ -145,7 +162,7 @@ public class Tornado implements IAbility {
 							} else if (dy >= height * .85) {
 								vy = 6.0 * (.95 - dy / height);
 							} else {
-								vy = PCpushfactor;
+								vy = PC_PUSH;
 							}
 						}
 
@@ -207,19 +224,19 @@ public class Tornado implements IAbility {
 				if (!ProtectionManager.isRegionProtectedFromBending(player,
 						Abilities.AirBlast, effect))
 					origin.getWorld().playEffect(effect, Effect.SMOKE, 4,
-							(int) AirBlast.defaultrange);
+							(int) AirBlast.DEFAULT_RANGE);
 
 				toAdd.put(i, angles.get(i) + 25 * (int) speedfactor);
 			}
 			angles.putAll(toAdd);
 		}
 
-		if (height < maxheight) {
+		if (height < HEIGHT) {
 			height += 1;
 		}
 
-		if (height > maxheight) {
-			height = maxheight;
+		if (height > HEIGHT) {
+			height = HEIGHT;
 		}
 
 	}
@@ -241,7 +258,7 @@ public class Tornado implements IAbility {
 			long diff = System.currentTimeMillis() - old;
 			
 			affecteds.remove(entity.getUniqueId());
-			if(diff < fallImmunity) {
+			if(diff < FALL_IMMUNITY) {
 				return true;
 			}
 		}

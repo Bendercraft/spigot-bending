@@ -14,6 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -32,10 +33,17 @@ public class EarthArmor implements IAbility {
 
 	private static Map<Player, EarthArmor> instances = new HashMap<Player, EarthArmor>();
 
-	private static long duration = ConfigManager.earthArmorDuration;
-	private static int strength = ConfigManager.earthArmorStrength;
-	private static long cooldown = ConfigManager.earthArmorCooldown;
-	private static int range = 7;
+	@ConfigurationParameter("Duration")
+	private static long DURATION = 60000;
+	
+	@ConfigurationParameter("Strength")
+	private static int STRENGTH = 2;
+	
+	@ConfigurationParameter("Cooldown")
+	private static long COOLDOWN = 60000;
+	
+	@ConfigurationParameter("Range")
+	private static int RANGE = 7;
 
 	private Player player;
 	private Block headblock, legsblock;
@@ -64,7 +72,7 @@ public class EarthArmor implements IAbility {
 
 		this.player = player;
 
-		this.headblock = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending());
+		this.headblock = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
 		if (BlockTools.getEarthbendableBlocksLength(player, this.headblock, new Vector(0, -1, 0), 2) >= 2) {
 			this.legsblock = this.headblock.getRelative(BlockFace.DOWN);
 			this.headtype = this.headblock.getType();
@@ -134,8 +142,8 @@ public class EarthArmor implements IAbility {
 			return false;
 		}
 
-		if ((this.headblock.getLocation().distance(this.player.getEyeLocation()) > range)
-				|| (this.legsblock.getLocation().distance(this.player.getLocation()) > range)) {
+		if ((this.headblock.getLocation().distance(this.player.getEyeLocation()) > RANGE)
+				|| (this.legsblock.getLocation().distance(this.player.getLocation()) > RANGE)) {
 			cancel();
 			return false;
 		}
@@ -205,9 +213,9 @@ public class EarthArmor implements IAbility {
 		}
 
 		if (cptIroned == 0) {
-			PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int)duration / 50, strength - 1);
+			PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int)DURATION / 50, STRENGTH - 1);
 			new TempPotionEffect(this.player, resistance);
-			PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, (int)duration / 50, 0);
+			PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, (int)DURATION / 50, 0);
 			new TempPotionEffect(this.player, slowness);
 		}
 		ItemStack[] ar = this.armors.toArray(new ItemStack[this.armors.size()]);
@@ -229,12 +237,12 @@ public class EarthArmor implements IAbility {
 		}
 
 		if (this.formed) {
-			if ((System.currentTimeMillis() > (this.starttime + duration)) && !this.complete) {
+			if ((System.currentTimeMillis() > (this.starttime + DURATION)) && !this.complete) {
 				this.complete = true;
 				removeEffect();
 				return true;
 			}
-			if (System.currentTimeMillis() > (this.starttime + cooldown)) {
+			if (System.currentTimeMillis() > (this.starttime + COOLDOWN)) {
 				return false;
 			}
 		}
@@ -301,7 +309,7 @@ public class EarthArmor implements IAbility {
 	public static boolean canRemoveArmor (Player player) {
 		if (instances.containsKey(player)) {
 			EarthArmor eartharmor = instances.get(player);
-			if (System.currentTimeMillis() < (eartharmor.starttime + duration)) {
+			if (System.currentTimeMillis() < (eartharmor.starttime + DURATION)) {
 				return false;
 			}
 		}
