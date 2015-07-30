@@ -85,11 +85,6 @@ public class BendingManager implements Runnable {
 	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
 
-	public static final String defaultsunrisemessage = "You feel the strength of the rising sun empowering your firebending.";
-	public static final String defaultsunsetmessage = "You feel the empowering of your firebending subside as the sun sets.";
-	public static final String defaultmoonrisemessage = "You feel the strength of the rising moon empowering your waterbending.";
-	public static final String defaultmoonsetmessage = "You feel the empowering of your waterbending subside as the moon sets.";
-	
 	public BendingManager(Bending bending) {
 		plugin = bending;
 		time = System.currentTimeMillis();
@@ -107,9 +102,7 @@ public class BendingManager implements Runnable {
 			manageFirebending();
 			manageWaterbending();
 			manageChiBlocking();
-			// manageMessages();
 			TempPotionEffect.progressAll();
-			// handleFlying();
 			Flight.handle();
 			handleDayNight();
 		} catch (Exception e) {
@@ -147,12 +140,8 @@ public class BendingManager implements Runnable {
 		LavaTrain.progressAll();
 		MetalBending.progressAll();
 		
-
-		
 		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());
 		for (Block block : copy) {
-			// Tools.removeEarthbendedBlockByIndex(block);
-			// if (Tools.revertBlock(block))
 			BlockTools.revertBlock(block);
 		}
 		RevertChecker.revertQueue.clear();
