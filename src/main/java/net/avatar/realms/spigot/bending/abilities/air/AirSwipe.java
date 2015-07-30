@@ -238,7 +238,7 @@ public class AirSwipe implements IAbility {
 			Location location = entry.getValue();
 			PluginTools.removeSpouts(location, player);
 
-			double radius = FireBlast.affectingradius;
+			double radius = FireBlast.AFFECTING_RADIUS;
 			Player source = player;
 			if (EarthBlast.annihilateBlasts(location, radius, source)
 					|| WaterManipulation.annihilateBlasts(location,

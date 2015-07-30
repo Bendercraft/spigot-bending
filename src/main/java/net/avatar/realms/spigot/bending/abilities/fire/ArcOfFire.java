@@ -6,18 +6,24 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Blaze", element=BendingType.Fire)
+@BendingAbility(name="Blaze Arc", element=BendingType.Fire)
 public class ArcOfFire implements IAbility {
 
-	private static int defaultarc = ConfigManager.arcOfFireArc;
-	private static int defaultrange = ConfigManager.arcOfFireRange;
+	@ConfigurationParameter("Arc")
+	private static int defaultarc = 20;
+	
+	@ConfigurationParameter("Range")
+	private static int defaultrange = 20;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1000;
 	private static int stepsize = 2;
 	
 	private IAbility parent;
@@ -54,7 +60,7 @@ public class ArcOfFire implements IAbility {
 
 			new FireStream(location, direction, player, range, this);
 		}
-		bPlayer.cooldown(Abilities.Blaze);
+		bPlayer.cooldown(Abilities.Blaze, COOLDOWN);
 	}
 
 	@Override

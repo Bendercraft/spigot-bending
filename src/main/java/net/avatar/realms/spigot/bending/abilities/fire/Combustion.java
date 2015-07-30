@@ -12,7 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
@@ -37,16 +37,30 @@ public class Combustion implements IAbility {
 	private static Map<Player, Combustion> instances = new HashMap<Player, Combustion>();
 
 	private static long interval = 25;
-	private static double radius = ConfigManager.combustionRadius;
-	private static long chargeTime = ConfigManager.combustionChargeTime;
-	private static double explosionradius = ConfigManager.combustionExplosionRadius;
-	private static double innerradius = ConfigManager.combustionInnerRadius;
+	
+	@ConfigurationParameter("Radius")
+	private static double radius = 2;
+	
+	@ConfigurationParameter("Charge-Time")
+	private static long chargeTime = 2000;
+	
+	@ConfigurationParameter("Explosion-Radius")
+	private static double explosionradius = 3.0;
+	
+	@ConfigurationParameter("Inner-Radius")
+	private static double innerradius = 3.0;
+
+	@ConfigurationParameter("Range")
+	private static double RANGE = 20;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 7;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 2000;
 	
 	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
 	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
-
-	private double range = ConfigManager.combustionRange;
-	private int maxdamage = ConfigManager.combustionDamage;
 	
 	private Player player;
 	private Location origin;
@@ -57,13 +71,16 @@ public class Combustion implements IAbility {
 	private IAbility parent;
 	private boolean charged = false;
 	private int progressed = 0;
+	
+	private double range = RANGE;
+	private double damage = DAMAGE;
 
 	public Combustion(Player player, IAbility parent) {
 		this.parent = parent;
 		this.player = player;
 		time = System.currentTimeMillis();
 		if (AvatarState.isAvatarState(player)) {
-			maxdamage = AvatarState.getValue(maxdamage);
+			damage = AvatarState.getValue(damage);
 		}
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		
@@ -72,7 +89,7 @@ public class Combustion implements IAbility {
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			instances.put(player, this);
 		}
-		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Combustion);
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Combustion, COOLDOWN);
 	}
 
 	private boolean progress() {
@@ -129,12 +146,12 @@ public class Combustion implements IAbility {
 			return;
 		}	
 		if (distance < innerradius) {
-			EntityTools.damageEntity(player, entity, maxdamage);
+			EntityTools.damageEntity(player, entity, damage);
 			return;
 		}
-		double slope = -(maxdamage * .5) / (explosionradius - innerradius);
+		double slope = -(damage * .5) / (explosionradius - innerradius);
 
-		double damage = slope * (distance - innerradius) + maxdamage;
+		double damage = slope * (distance - innerradius) + this.damage;
 		EntityTools.damageEntity(player, entity, (int) damage);
 	}
 	

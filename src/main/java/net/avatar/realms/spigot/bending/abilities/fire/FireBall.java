@@ -10,7 +10,8 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -32,9 +33,19 @@ public class FireBall implements IAbility {
 
 	private static Map<Integer, FireBall> instances = new HashMap<Integer, FireBall>();
 
-	private static long defaultchargetime = 2000;
+	@ConfigurationParameter("Charge-Time")
+	private static long CHARGE_TIME = 2000;
+	
+	@ConfigurationParameter("Radius")
+	private static double RADIUS = 1.5;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 30000;
+	
+	@ConfigurationParameter("Speed")
+	public static double SPEED = 0.3;
+	
 	private static long interval = 25;
-	private static double radius = 1.5;
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -49,7 +60,7 @@ public class FireBall implements IAbility {
 	private Vector direction;
 	private long starttime;
 	private long time;
-	private long chargetime = defaultchargetime;
+	private long chargetime = CHARGE_TIME;
 	private boolean charged = false;
 	private boolean launched = false;
 	private TNTPrimed explosion = null;
@@ -61,7 +72,7 @@ public class FireBall implements IAbility {
 		time = System.currentTimeMillis();
 		starttime = time;
 		if (Tools.isDay(player.getWorld())) {
-			chargetime = (long) (chargetime / ConfigManager.dayFactor);
+			chargetime = (long) (chargetime / Settings.DAY_FACTOR);
 		}
 		if (AvatarState.isAvatarState(player)) {
 			chargetime = 0;
@@ -97,7 +108,7 @@ public class FireBall implements IAbility {
 			launched = true;
 			location = player.getEyeLocation();
 			origin = location.clone();
-			direction = location.getDirection().normalize().multiply(radius);
+			direction = location.getDirection().normalize().multiply(RADIUS);
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
@@ -156,12 +167,12 @@ public class FireBall implements IAbility {
 	}
 
 	private boolean fireball() {
-		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, RADIUS)) {
 			block.getWorld().playEffect(block.getLocation(),
 					Effect.MOBSPAWNER_FLAMES, 0, 20);
 		}
 
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * RADIUS)) {
 			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
 			}
@@ -178,7 +189,7 @@ public class FireBall implements IAbility {
 	}
 	
 	private void explode() {
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * RADIUS)) {
 			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
 			}
@@ -203,10 +214,10 @@ public class FireBall implements IAbility {
 
 	private void ignite(Location location) {
 		for (Block block : BlockTools.getBlocksAroundPoint(location,
-				FireBlast.affectingradius)) {
+				FireBlast.AFFECTING_RADIUS)) {
 			if (FireStream.isIgnitable(player, block)) {
 				block.setType(Material.FIRE);
-				if (FireBlast.dissipate) {
+				if (FireBlast.DISSIPATES) {
 					FireStream.addIgnitedBlock(block, player, System.currentTimeMillis());
 				}
 			}

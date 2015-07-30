@@ -12,6 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -28,11 +29,16 @@ import org.bukkit.util.Vector;
 @BendingAbility(name="Fire Shield", element=BendingType.Fire)
 public class FireProtection implements IAbility {
 	private static Map<Player, FireProtection> instances = new HashMap<Player, FireProtection>();
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1000;
+	
+	@ConfigurationParameter("Duration")
+	private static long DURATION = 1000;
 
 	private static long interval = 100;
 	private static double radius = 3;
 	private static double discradius = 1.5;
-	private static long duration = 1000;
 	private static boolean ignite = true;
 
 	private Player player;
@@ -54,7 +60,7 @@ public class FireProtection implements IAbility {
 			time = System.currentTimeMillis();
 			starttime = time;
 			instances.put(player, this);
-			bPlayer.cooldown(Abilities.FireShield);
+			bPlayer.cooldown(Abilities.FireShield, COOLDOWN);
 		}
 	}
 
@@ -67,7 +73,7 @@ public class FireProtection implements IAbility {
 			return false;
 		}
 
-		if (System.currentTimeMillis() > starttime + duration) {
+		if (System.currentTimeMillis() > starttime + DURATION) {
 			return false;
 		}
 

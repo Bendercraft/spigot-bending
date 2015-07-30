@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -27,7 +27,12 @@ public class Illumination implements IAbility {
 	private static Map<Player, Illumination> instances = new HashMap<Player, Illumination>();
 	private static Map<Block, Player> blocks = new HashMap<Block, Player>();
 
-	private static final int range = ConfigManager.illuminationRange;
+	
+	@ConfigurationParameter("Range")
+	private static final int RANGE = 5;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 0;
 
 	private Player player;
 	private Block block;
@@ -48,7 +53,7 @@ public class Illumination implements IAbility {
 			this.player = player;
 			set();
 			instances.put(player, this);
-			bPlayer.cooldown(Abilities.Illumination);
+			bPlayer.cooldown(Abilities.Illumination, COOLDOWN);
 		}
 	}
 
@@ -80,7 +85,7 @@ public class Illumination implements IAbility {
 		} else if (player.getWorld() != block.getWorld()) {
 			revert();
 		} else if (player.getLocation().distance(block.getLocation()) > 
-		PluginTools.firebendingDayAugment(range, player.getWorld())) {
+		PluginTools.firebendingDayAugment(RANGE, player.getWorld())) {
 			revert();
 		}
 	}

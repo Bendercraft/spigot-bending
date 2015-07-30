@@ -6,16 +6,21 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Blaze", element=BendingType.Fire)
+@BendingAbility(name="Blaze Ring", element=BendingType.Fire)
 public class RingOfFire implements IAbility {
 
-	static final int defaultrange = ConfigManager.ringOfFireRange;
+	@ConfigurationParameter("Range")
+	private static int RANGE = 7;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 2000;
+	
 	private IAbility parent;
 
 	public RingOfFire(Player player, IAbility parent) {
@@ -42,14 +47,14 @@ public class RingOfFire implements IAbility {
 			direction.setX(vx);
 			direction.setZ(vz);
 
-			int range = defaultrange;
+			int range = RANGE;
 			if (AvatarState.isAvatarState(player))
 				range = AvatarState.getValue(range);
 
 			new FireStream(location, direction, player, range, this);
 		}
 
-		bPlayer.cooldown(Abilities.Blaze);
+		bPlayer.cooldown(Abilities.Blaze, COOLDOWN);
 	}
 
 	public static String getDescription() {

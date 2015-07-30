@@ -16,10 +16,12 @@ import org.bukkit.util.Vector;
 
 @BendingAbility(name="Fire Burst", element=BendingType.Fire)
 public class FireBurstCone implements IAbility {
-	private int damage = 3;
-	private double deltheta = 10;
-	private double delphi = 10;
+	
 	private IAbility parent;
+	
+	private int damage = FireBurst.DAMAGE;
+	private double deltheta = FireBurst.DELTHETA;
+	private double delphi = FireBurst.DELPHI;
 
 	public FireBurstCone(Player player, IAbility parent) {
 		this.parent = parent;

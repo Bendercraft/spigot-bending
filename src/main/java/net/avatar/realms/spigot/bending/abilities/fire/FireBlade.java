@@ -9,7 +9,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 import org.bukkit.Material;
@@ -24,16 +24,25 @@ import org.bukkit.potion.PotionEffectType;
 public class FireBlade {
 	private static Map<Player, FireBlade> instances = new HashMap<Player, FireBlade>();
 	private static String LORE_NAME = "FireBlade";
-	private static final Enchantment sharp = Enchantment.DAMAGE_ALL;
-	private static int sharpnessLevel = ConfigManager.fireBladeSharpnessLevel;
-	private static final Enchantment dura = Enchantment.DURABILITY;
-	private static final int duraLevel = 3;
-	//private static int strengthLevel = ConfigManager.fireBladeStrengthLevel;
-	private static int duration = ConfigManager.fireBladeDuration;
-	private static final Enchantment knockback = Enchantment.KNOCKBACK;
+	
+	private static final Enchantment SHARP = Enchantment.DAMAGE_ALL;
+	private static final Enchantment DURA = Enchantment.DURABILITY;
+	private static final Enchantment KNOCKBACK = Enchantment.KNOCKBACK;
+		
+	@ConfigurationParameter("Sharpness-Level")
+	private static int SHARPNESS_LEVEL = 1;
+	
+	@ConfigurationParameter("Durability-Level")
+	private static int DURABILITY_LEVEL = 3;
+	
+	@ConfigurationParameter("Duration")
+	private static int DURATION = 40000;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 40000;
+
 	
 	private ItemStack blade;
-	//private static PotionEffect strengthEffect;
 	
 	private long time;
 	private Player player;
@@ -51,7 +60,7 @@ public class FireBlade {
 		
 		giveFireBlade();
 		instances.put(player, this);
-		bP.cooldown(Abilities.FireBlade);
+		bP.cooldown(Abilities.FireBlade, COOLDOWN);
 	}
 	
 	
@@ -81,7 +90,7 @@ public class FireBlade {
 			return false;
 		}
 		
-		if (System.currentTimeMillis() > time + (1000*duration)) {
+		if (System.currentTimeMillis() > time + (DURATION)) {
 			return false;
 		}
 		
@@ -149,13 +158,13 @@ public class FireBlade {
 	
 	public void giveFireBlade() {
 		ItemStack fireB = new ItemStack(Material.GOLD_SWORD);
-		if (sharpnessLevel > 0) {
-			fireB.addEnchantment(sharp, sharpnessLevel);
+		if (SHARPNESS_LEVEL > 0) {
+			fireB.addEnchantment(SHARP, SHARPNESS_LEVEL);
 		}
-		if (duraLevel > 0) {
-			fireB.addEnchantment(dura, duraLevel);
+		if (DURABILITY_LEVEL > 0) {
+			fireB.addEnchantment(DURA, DURABILITY_LEVEL);
 		}
-		fireB.addEnchantment(knockback, 1);
+		fireB.addEnchantment(KNOCKBACK, 1);
 		List<String> lore = new LinkedList<String>();
 		lore.add(LORE_NAME);
 		ItemMeta meta = fireB.getItemMeta();

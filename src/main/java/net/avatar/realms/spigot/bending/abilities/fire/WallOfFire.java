@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -31,15 +31,29 @@ public class WallOfFire implements IAbility {
 	private static Map<Player, WallOfFire> instances = new HashMap<Player, WallOfFire>();
 
 	private static double maxangle = 50;
-	private static int range = ConfigManager.wallOfFireRange;
 	private static long interval = 250;
-	private static long cooldown = ConfigManager.wallOfFireCooldown;
-	private static long damageinterval = ConfigManager.wallOfFireInterval;
+	
+	@ConfigurationParameter("Range")
+	private static int RANGE = 4;
+	
+	@ConfigurationParameter("Cooldown")
+	private static long COOLDOWN = 7500;
+	
+	@ConfigurationParameter("Interval")
+	private static long DAMAGE_INTERVAL = 500;
 
-	private int height = ConfigManager.wallOfFireHeight;
-	private int width = ConfigManager.wallOfFireWidth;
-	private long duration = ConfigManager.wallOfFireDuration;
-	private int damage = ConfigManager.wallOfFireDamage;
+	@ConfigurationParameter("Height")
+	private static int HEIGHT = 4;
+	
+	@ConfigurationParameter("Width")
+	private static int WIDTH = 4;
+	
+	@ConfigurationParameter("Duration")
+	private static long DURATION = 5000;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 9;
+	
 	private Player player;
 	private Location origin;
 	private long time, starttime;
@@ -47,6 +61,11 @@ public class WallOfFire implements IAbility {
 	private int damagetick = 0, intervaltick = 0;
 	private List<Block> blocks = new LinkedList<Block>();
 	private IAbility parent;
+	
+	private int damage;
+	private int width;
+	private int height;
+	private long duration;
 
 	public WallOfFire(Player player, IAbility parent) {
 		this.parent = parent;
@@ -60,18 +79,18 @@ public class WallOfFire implements IAbility {
 
 		this.player = player;
 
-		origin = EntityTools.getTargetedLocation(player, range);
+		origin = EntityTools.getTargetedLocation(player, RANGE);
 
 		World world = player.getWorld();
 
 		if (Tools.isDay(player.getWorld())) {
-			width = (int) PluginTools.firebendingDayAugment((double) width,
+			width = (int) PluginTools.firebendingDayAugment((double) WIDTH,
 					world);
-			height = (int) PluginTools.firebendingDayAugment((double) height,
+			height = (int) PluginTools.firebendingDayAugment((double) HEIGHT,
 					world);
 			duration = (long) PluginTools.firebendingDayAugment(
-					(double) duration, world);
-			damage = (int) PluginTools.firebendingDayAugment((double) damage,
+					(double) DURATION, world);
+			damage = (int) PluginTools.firebendingDayAugment((double) DAMAGE,
 					world);
 		}
 
@@ -100,7 +119,7 @@ public class WallOfFire implements IAbility {
 	private boolean progress() {
 		time = System.currentTimeMillis();
 
-		if (time - starttime > cooldown) {
+		if (time - starttime > COOLDOWN) {
 			return false;
 		}
 
@@ -117,7 +136,7 @@ public class WallOfFire implements IAbility {
 			display();
 		}
 
-		if (time - starttime > damagetick * damageinterval) {
+		if (time - starttime > damagetick * DAMAGE_INTERVAL) {
 			damagetick++;
 			damage();
 		}
@@ -161,8 +180,9 @@ public class WallOfFire implements IAbility {
 
 	private void damage() {
 		double radius = height;
-		if (radius < width)
+		if (radius < width) {
 			radius = width;
+		}
 		radius = radius + 1;
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(
 				origin, radius);

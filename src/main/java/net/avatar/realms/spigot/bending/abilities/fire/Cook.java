@@ -10,6 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 import org.bukkit.Effect;
@@ -22,7 +23,9 @@ public class Cook implements IAbility {
 
 	private static Map<Player, Cook> instances = new HashMap<Player, Cook>();
 
-	private static final long cooktime = 2000;
+
+	@ConfigurationParameter("Cook-Time")
+	private static long COOK_TIME = 2000;
 	private static final Material[] cookables = {Material.RAW_BEEF,
 			Material.RAW_CHICKEN, 
 			Material.RAW_FISH,
@@ -65,7 +68,7 @@ public class Cook implements IAbility {
 			return false;
 		}
 
-		if (System.currentTimeMillis() > time + cooktime) {
+		if (System.currentTimeMillis() > time + COOK_TIME) {
 			cook();
 			time = System.currentTimeMillis();
 		}

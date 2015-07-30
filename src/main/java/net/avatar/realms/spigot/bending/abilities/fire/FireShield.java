@@ -44,7 +44,7 @@ public class FireShield implements IAbility {
 
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			time = System.currentTimeMillis();
-			BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.FireShield);
+			BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.FireShield, FireProtection.COOLDOWN);
 			instances.put(player, this);
 		}
 	}

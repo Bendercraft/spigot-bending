@@ -12,7 +12,8 @@ import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -31,14 +32,25 @@ public class Lightning implements IAbility {
 	private static Map<Player, Lightning> instances = new HashMap<Player, Lightning>();
 	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();
 	
-	public static int defaultdistance = ConfigManager.lightningRange;
-	private static long defaultwarmup = ConfigManager.lightningWarmup;
-	private static double misschance = ConfigManager.lightningMissChance;
+	@ConfigurationParameter("Range")
+	public static int RANGE = 50;
+	
+	@ConfigurationParameter("Charge-Time")
+	private static long WARMUP = 4000;
+	
+	@ConfigurationParameter("Miss-Chance")
+	private static double MISS_CHANCE = 5.0;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 10;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 0;
+	
 	private static double threshold = 0.1;
 	private static double blockdistance = 4;
-	private static int maxdamage = ConfigManager.lightningDamage;
 
-	private int damage = maxdamage;
+	private int damage = DAMAGE;
 	private double strikeradius = 4;
 
 	private Player player;
@@ -79,7 +91,7 @@ public class Lightning implements IAbility {
 	}
 
 	private Location getTargetLocation() {
-		int distance = (int) PluginTools.firebendingDayAugment(defaultdistance,
+		int distance = (int) PluginTools.firebendingDayAugment(RANGE,
 				player.getWorld());
 
 		Location targetlocation;
@@ -98,19 +110,19 @@ public class Lightning implements IAbility {
 					} else {
 						targetlocation = target.getLocation();
 						if (target.getVelocity().length() < threshold) {
-							misschance = 0;
+							MISS_CHANCE = 0;
 						}
 					}
 				} else {
 					targetlocation = target.getLocation();
 					if (target.getVelocity().length() < threshold) {
-						misschance = 0;
+						MISS_CHANCE = 0;
 					}
 				}
 				
 			}
 		} else {
-			misschance = 0;
+			MISS_CHANCE = 0;
 		}
 
 		if (targetlocation.getBlock().getType() == Material.AIR)
@@ -118,8 +130,8 @@ public class Lightning implements IAbility {
 		if (targetlocation.getBlock().getType() == Material.AIR)
 			targetlocation.add(0, -1, 0);
 
-		if (misschance != 0 && !AvatarState.isAvatarState(player)) {
-			double A = Math.random() * Math.PI * misschance * misschance;
+		if (MISS_CHANCE != 0 && !AvatarState.isAvatarState(player)) {
+			double A = Math.random() * Math.PI * MISS_CHANCE * MISS_CHANCE;
 			double theta = Math.random() * Math.PI * 2;
 			double r = Math.sqrt(A) / Math.PI;
 			double x = r * Math.cos(theta);
@@ -144,9 +156,9 @@ public class Lightning implements IAbility {
 			return false;
 		}
 
-		int distance = (int) PluginTools.firebendingDayAugment(defaultdistance,
+		int distance = (int) PluginTools.firebendingDayAugment(RANGE,
 				player.getWorld());
-		long warmup = (int) ((double) defaultwarmup / ConfigManager.dayFactor);
+		long warmup = (int) ((double) WARMUP / Settings.DAY_FACTOR);
 		if (AvatarState.isAvatarState(player))
 			warmup = 0;
 		if (System.currentTimeMillis() > starttime + warmup)

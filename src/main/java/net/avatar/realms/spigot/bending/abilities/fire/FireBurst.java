@@ -11,7 +11,8 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
@@ -22,10 +23,22 @@ import org.bukkit.entity.Player;
 @BendingAbility(name="Fire Burst", element=BendingType.Fire)
 public class FireBurst implements IAbility {
 	private static Map<Player, FireBurst> instances = new HashMap<Player, FireBurst>();
+	
+	@ConfigurationParameter("Charge-Time")
+	private static long CHARGE_TIME = 2500;
+	
+	@ConfigurationParameter("Damage")
+	  		static int DAMAGE = 3;
+	
+	@ConfigurationParameter("Del-Theta")
+			static double DELTHETA = 10;
+	
+	@ConfigurationParameter("Del-Phi")
+			static double DELPHI = 10;
 
 	private Player player;
 	private long starttime;
-	private long chargetime = 2500;
+	private long chargetime = CHARGE_TIME;
 	private boolean charged = false;
 	private IAbility parent;
 
@@ -38,7 +51,7 @@ public class FireBurst implements IAbility {
 			return;
 		starttime = System.currentTimeMillis();
 		if (Tools.isDay(player.getWorld())) {
-			chargetime /= ConfigManager.dayFactor;
+			chargetime /= Settings.DAY_FACTOR;
 		}
 		if (AvatarState.isAvatarState(player))
 			chargetime = 0;

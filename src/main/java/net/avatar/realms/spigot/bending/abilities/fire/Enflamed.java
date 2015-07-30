@@ -19,7 +19,7 @@ public class Enflamed implements IAbility {
 	private static Map<Entity, Player> instances = new HashMap<Entity, Player>();
 	private static Map<Entity, Long> times = new HashMap<Entity, Long>();
 
-	private static final int damage = 1;
+	private static final int DAMAGE = 1;
 	private static final int max = 90;
 	private static final long buffer = 30;
 	
@@ -60,7 +60,7 @@ public class Enflamed implements IAbility {
 			}
 			LivingEntity Lentity = (LivingEntity) entity;
 			Player source = instances.get(entity);
-			Lentity.damage(damage, source);
+			Lentity.damage(DAMAGE, source);
 			if (entity.getFireTicks() > max)
 				entity.setFireTicks(max);
 		}

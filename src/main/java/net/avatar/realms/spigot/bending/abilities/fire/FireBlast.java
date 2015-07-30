@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Plantbending;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -42,11 +42,30 @@ public class FireBlast implements IAbility {
 	private static int ID = Integer.MIN_VALUE;
 	static final int maxticks = 10000;
 
-	private static double speed = ConfigManager.fireBlastSpeed;
-	public static double affectingradius = 2;
-	private static double pushfactor = ConfigManager.fireBlastPush;
-	private static boolean canPowerFurnace = true;
-	static boolean dissipate = ConfigManager.fireBlastDissipate;
+	@ConfigurationParameter("Speed")
+	private static double SPEED = 15;
+	
+	@ConfigurationParameter("Radius")
+	public static double AFFECTING_RADIUS = 2;
+	
+	@ConfigurationParameter("Push")
+	private static double PUSH_FACTOR = 0.3;
+	
+	@ConfigurationParameter("Can-Power-Furnace")
+	private static boolean POWER_FURNACE = true;
+	
+	@ConfigurationParameter("Dissipates")
+	static boolean DISSIPATES = false;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 6;
+	
+	@ConfigurationParameter("Range")
+	private static int RANGE = 25;
+	
+	@ConfigurationParameter("Cooldown")
+	private static long COOLDOWN = 1000;
+	
 	public static byte full = 0x0;
 
 	private Location location;
@@ -57,8 +76,8 @@ public class FireBlast implements IAbility {
 	private int id;
 	private double speedfactor;
 	private int ticks = 0;
-	private int damage = ConfigManager.fireBlastDamage;
-	double range = ConfigManager.fireBlastRange;
+	private int damage = DAMAGE;
+	double range = RANGE;
 	private IAbility parent;
 
 	public FireBlast(Player player, IAbility parent) {
@@ -80,7 +99,7 @@ public class FireBlast implements IAbility {
 		location = location.add(direction.clone());
 		id = ID;
 		instances.put(id, this);
-		bPlayer.cooldown(Abilities.FireBlast);
+		bPlayer.cooldown(Abilities.FireBlast, COOLDOWN);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
@@ -115,7 +134,7 @@ public class FireBlast implements IAbility {
 			return false;
 		}
 
-		speedfactor = speed * (Bending.time_step / 1000.);
+		speedfactor = SPEED * (Bending.time_step / 1000.);
 
 		ticks++;
 
@@ -126,7 +145,7 @@ public class FireBlast implements IAbility {
 		Block block = location.getBlock();
 		if (BlockTools.isSolid(block) || block.isLiquid()) {
 			if ((block.getType() == Material.FURNACE || block.getType() == Material.BURNING_FURNACE)
-					&& canPowerFurnace) {
+					&& POWER_FURNACE) {
 				BlockState state = block.getState();
 				Furnace furnace = (Furnace) state;
 				FurnaceInventory inv = furnace.getInventory();
@@ -153,7 +172,7 @@ public class FireBlast implements IAbility {
 
 		PluginTools.removeSpouts(location, player);
 
-		double radius = FireBlast.affectingradius;
+		double radius = FireBlast.AFFECTING_RADIUS;
 		Player source = player;
 		if (EarthBlast.annihilateBlasts(location, radius, source)
 				|| WaterManipulation.annihilateBlasts(location, radius, source)
@@ -163,7 +182,7 @@ public class FireBlast implements IAbility {
 		}
 
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
-				location, affectingradius)) {
+				location, AFFECTING_RADIUS)) {
 			boolean result = affect(entity);
 			// If result is true, do not return here ! we need to iterate fully !
 			if (result == false) {
@@ -181,12 +200,12 @@ public class FireBlast implements IAbility {
 
 	private void ignite(Location location) {
 		for (Block block : BlockTools.getBlocksAroundPoint(location,
-				affectingradius)) {
+				AFFECTING_RADIUS)) {
 			if (FireStream.isIgnitable(player, block) && !safe.contains(block)) {
 				if (BlockTools.isPlant(block))
 					new Plantbending(block, this);
 				block.setType(Material.FIRE);
-				if (dissipate) {
+				if (DISSIPATES) {
 					FireStream.addIgnitedBlock(block, player,
 							System.currentTimeMillis());
 				}
@@ -218,9 +237,9 @@ public class FireBlast implements IAbility {
 		if (entity.getEntityId() != player.getEntityId()) {
 			if (AvatarState.isAvatarState(player)) {
 				entity.setVelocity(direction.clone().multiply(
-						AvatarState.getValue(pushfactor)));
+						AvatarState.getValue(PUSH_FACTOR)));
 			} else {
-				entity.setVelocity(direction.clone().multiply(pushfactor));
+				entity.setVelocity(direction.clone().multiply(PUSH_FACTOR));
 			}
 			entity.setFireTicks(50);
 			EntityTools.damageEntity(player, entity, PluginTools.firebendingDayAugment((double) damage,

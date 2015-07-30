@@ -321,7 +321,7 @@ public class EarthBlast implements IAbility {
 					location = location.clone().add(direction);
 
 					PluginTools.removeSpouts(location, player);
-					double radius = FireBlast.affectingradius;
+					double radius = FireBlast.AFFECTING_RADIUS;
 					Player source = player;
 					if (EarthBlast.shouldAnnihilateBlasts(location, radius, source, false)
 							|| WaterManipulation.annihilateBlasts(location,
@@ -347,7 +347,7 @@ public class EarthBlast implements IAbility {
 					}
 				}
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
-						FireBlast.affectingradius)) {
+						FireBlast.AFFECTING_RADIUS)) {
 					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}

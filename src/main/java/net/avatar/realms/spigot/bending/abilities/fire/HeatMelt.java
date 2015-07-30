@@ -4,7 +4,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.water.Melt;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -14,18 +14,23 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-@BendingAbility(name="Heat Control", element=BendingType.Fire)
+@BendingAbility(name="Heat Melt", element=BendingType.Fire)
 public class HeatMelt implements IAbility {
-	private static final int range = ConfigManager.heatMeltRange;
-	private static final int radius = ConfigManager.heatMeltRadius;
+	
+	@ConfigurationParameter("Range")
+	private static final int RANGE = 15;
+	
+	@ConfigurationParameter("Radius")
+	private static final int RADIUS = 5;
+	
 	private IAbility parent;
 
 	public HeatMelt(Player player, IAbility parent) {
 		this.parent = parent;
 		Location location = EntityTools.getTargetedLocation(player,
-				(int) PluginTools.firebendingDayAugment(range, player.getWorld()));
+				(int) PluginTools.firebendingDayAugment(RANGE, player.getWorld()));
 		for (Block block : BlockTools.getBlocksAroundPoint(location,
-				(int) PluginTools.firebendingDayAugment(radius, player.getWorld()))) {
+				(int) PluginTools.firebendingDayAugment(RADIUS, player.getWorld()))) {
 			if (BlockTools.isMeltable(block)) {
 				Melt.melt(player, block);
 			} else if (isHeatable(block)) {

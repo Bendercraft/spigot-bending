@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -25,13 +25,20 @@ import org.bukkit.util.Vector;
 @BendingAbility(name="Fire Jet", element=BendingType.Fire)
 public class FireJet implements IAbility {
 	private static Map<Player, FireJet> instances = new HashMap<Player, FireJet>();
-	private static final double defaultfactor = ConfigManager.fireJetSpeed;
-	private static final long defaultduration = ConfigManager.fireJetDuration;
+	
+	@ConfigurationParameter("Speed")
+	private static double FACTOR = 0.7;
+	
+	@ConfigurationParameter("Duration")
+	private static long DURATION = 1500;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 6000;
 
 	private Player player;
 	private long time;
-	private long duration = defaultduration;
-	private double factor = defaultfactor;
+	private long duration = DURATION;
+	private double factor = FACTOR;
 	private IAbility parent;
 
 	public FireJet(Player player, IAbility parent) {
@@ -46,7 +53,7 @@ public class FireJet implements IAbility {
 		if (bPlayer.isOnCooldown(Abilities.FireJet))
 			return;
 
-		factor = PluginTools.firebendingDayAugment(defaultfactor, player.getWorld());
+		factor = PluginTools.firebendingDayAugment(FACTOR, player.getWorld());
 		Block block = player.getLocation().getBlock();
 		if (FireStream.isIgnitable(player, block)
 				|| block.getType() == Material.AIR
@@ -61,7 +68,7 @@ public class FireJet implements IAbility {
 			time = System.currentTimeMillis();
 			// timers.put(player, time);
 			instances.put(player, this);
-			bPlayer.cooldown(Abilities.FireJet);
+			bPlayer.cooldown(Abilities.FireJet, COOLDOWN);
 		}
 
 	}

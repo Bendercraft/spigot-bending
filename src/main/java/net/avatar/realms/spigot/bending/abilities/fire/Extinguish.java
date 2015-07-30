@@ -7,7 +7,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -21,8 +21,15 @@ import org.bukkit.entity.Player;
 @BendingAbility(name="Extinguish", element=BendingType.Fire)
 public class Extinguish implements IAbility {
 
-	private static double defaultrange = ConfigManager.extinguishRange;
-	private static double defaultradius = ConfigManager.extinguishRadius;
+
+	@ConfigurationParameter("Range")
+	private static double RANGE = 20;
+	
+	@ConfigurationParameter("Radius")
+	private static double RADIUS = 7;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1000;
 	private static byte full = AirBlast.full;
 	
 	private IAbility parent;
@@ -35,13 +42,13 @@ public class Extinguish implements IAbility {
 		if (bPlayer.isOnCooldown(Abilities.HeatControl))
 			return;
 
-		double range = PluginTools.firebendingDayAugment(defaultrange,
+		double range = PluginTools.firebendingDayAugment(RANGE,
 				player.getWorld());
 		if (BlockTools.isMeltable(EntityTools.getTargetBlock(player, range))) {
 			new HeatMelt(player, this);
 			return;
 		}
-		double radius = PluginTools.firebendingDayAugment(defaultradius,
+		double radius = PluginTools.firebendingDayAugment(RADIUS,
 				player.getWorld());
 		for (Block block : BlockTools.getBlocksAroundPoint(
 				EntityTools.getTargetBlock(player, range).getLocation(), radius)) {
@@ -71,7 +78,7 @@ public class Extinguish implements IAbility {
 			}
 		}
 
-		bPlayer.cooldown(Abilities.HeatControl);
+		bPlayer.cooldown(Abilities.HeatControl, COOLDOWN);
 	}
 
 	public static boolean canBurn(Player player) {
