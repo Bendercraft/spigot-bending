@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayerData;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -47,8 +45,6 @@ public class BendingCommand {
 	private final String[] firebendingAliases = {"fire", "f", "firebender", "firebending", "firebend", "feu"};
 	private final String[] waterbendingAliases = {"water", "w", "waterbender", "waterbending", "waterbend", "eau"};
 	private final String[] chiblockingAliases = {"chi", "c", "chiblock", "chiblocker", "chiblocking"};
-	private final String[] saveAliases = {"save"};
-	private final String[] getbackAliases = {"getback"};
 	private final String[] dbAlias = {"db"};
 	private final String[] learningAlias = {"learning", "l"};
 	private final String[] cooldownsAlias = {"cooldown", "cd"};
@@ -118,12 +114,6 @@ public class BendingCommand {
 			}
 			else if (Arrays.asList(this.dbAlias).contains(arg)) {
 				db(player, args);
-			}
-			else if (Arrays.asList(this.saveAliases).contains(arg)) {
-				save(player);
-			}
-			else if (Arrays.asList(this.getbackAliases).contains(arg)) {
-				getback(player);
 			}
 			else if (Arrays.asList(this.learningAlias).contains(arg)) {
 				learning(player, args);
@@ -1560,45 +1550,6 @@ public class BendingCommand {
 		}
 	}
 
-	private void save (final Player player) {
-		if (player == null) {
-			return;
-		}
-		if (player.hasPermission("bending.command.save")) {
-			Bending.backup.setPlayer(player.getUniqueId(), BendingPlayer.getBendingPlayer(player));
-			player.sendMessage(ChatColor.GREEN + "Bending properly saved.");
-		}
-		else {
-			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
-		}
-	}
-
-	private void getback (final Player player) {
-		if (player == null) {
-			return;
-		}
-		if (player.hasPermission("bending.command.getback")) {
-			final BendingPlayer bPl = BendingPlayer.getBendingPlayer(player);
-			final BendingPlayerData plData = Bending.backup.get(player.getUniqueId());
-			bPl.removeBender();
-			for (final BendingType data : plData.getBendings()) {
-				Bending.log.info("Adding " + data.toString());
-				bPl.addBender(data);
-			}
-			for (final BendingSpecializationType spe : plData.getSpecialization()) {
-				Bending.log.info("Adding " + spe.toString());
-				bPl.addSpecialization(spe);
-			}
-			for (final Entry<Integer, Abilities> data : plData.getSlotAbilities().entrySet()) {
-				bPl.setAbility(data.getKey(), data.getValue());
-			}
-			player.sendMessage(ChatColor.GREEN + "Bending properly set back");
-		}
-		else {
-			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
-		}
-	}
-	
 	private void learning(final Player player, final String[] args) {
 		new LearningCommand(Bending.plugin.learning, player, args);
 	}

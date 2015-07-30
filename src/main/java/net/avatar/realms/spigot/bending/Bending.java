@@ -10,7 +10,6 @@ import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
 import net.avatar.realms.spigot.bending.controller.RevertChecker;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.controller.TempBackup;
 import net.avatar.realms.spigot.bending.db.DBUtils;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
@@ -41,9 +40,7 @@ public class Bending extends JavaPlugin {
 	private final RevertChecker revertChecker = new RevertChecker(this);
 	static Map<String, String> commands = new HashMap<String, String>();
 	public static Language language;
-	public static TempBackup backup;
 	public static IBendingDB database;
-	public TempBackup tBackup;
 	public Tools tools;
 	
 	public BendingLearning learning;
@@ -66,14 +63,12 @@ public class Bending extends JavaPlugin {
 		
 		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));
-		backup = new TempBackup(getDataFolder());
 		database = DBUtils.choose(Settings.DATABASE);
 		// Fatal error
 		if (database == null) {
 			throw new RuntimeException("Invalid database : " + Settings.DATABASE);
 		}
 		database.init(this);
-		this.tBackup = new TempBackup(getDataFolder());
 		this.tools = new Tools();
 		
 		getServer().getPluginManager().registerEvents(this.listener, this);
