@@ -64,7 +64,6 @@ public class Bending extends JavaPlugin {
 		AbilityManager.getManager().registerAllAbilities();
 		AbilityManager.getManager().applyConfiguration(getDataFolder());
 		
-		
 		configuration.load(new File(getDataFolder(), "config.yml"));
 		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));
