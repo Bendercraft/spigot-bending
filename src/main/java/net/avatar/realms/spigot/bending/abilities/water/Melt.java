@@ -20,8 +20,10 @@ import org.bukkit.entity.Player;
 
 @BendingAbility(name="Phase Change", element=BendingType.Water)
 public class Melt implements IAbility {
-	private static final int defaultrange = FreezeMelt.defaultrange;
-	private static final int defaultradius = FreezeMelt.defaultradius;
+	
+	
+	private int range = FreezeMelt.RANGE;
+	private int radius = FreezeMelt.RADIUS;
 
 	private static final byte full = 0x0;
 	private IAbility parent;
@@ -33,9 +35,9 @@ public class Melt implements IAbility {
 		if (bPlayer.isOnCooldown(Abilities.PhaseChange))
 			return;
 
-		int range = (int) PluginTools.waterbendingNightAugment(defaultrange,
+		int range = (int) PluginTools.waterbendingNightAugment(this.range,
 				player.getWorld());
-		int radius = (int) PluginTools.waterbendingNightAugment(defaultradius,
+		int radius = (int) PluginTools.waterbendingNightAugment(this.radius,
 				player.getWorld());
 
 		if (AvatarState.isAvatarState(player)) {
@@ -47,7 +49,7 @@ public class Melt implements IAbility {
 			melt(player, block);
 		}
 
-		bPlayer.cooldown(Abilities.PhaseChange);
+		bPlayer.cooldown(Abilities.PhaseChange, FreezeMelt.COOLDOWN);
 	}
 
 	@SuppressWarnings("deprecation")

@@ -17,6 +17,7 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -43,16 +44,27 @@ public class WaterManipulation implements IAbility {
 	private static final byte full = 0x0;
 	// private static final byte half = 0x4;
 
-	static double range = ConfigManager.waterManipulationRange;
-	private static double pushfactor = ConfigManager.WaterManipulationPush;
-	private static int defaultdamage = ConfigManager.waterManipulationDamage;
-	private static double speed = ConfigManager.waterManipulationSpeed;
+	@ConfigurationParameter("Range")
+	static double RANGE = 25;
+	
+	@ConfigurationParameter("Push")
+	private static double PUSHFACTOR = 0.3;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 7;
+	
+	@ConfigurationParameter("Speed")
+	private static double SPEED = 35;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 500;
+	
 	private static final double deflectrange = 3;
 	// private static double speed = 1.5;
 
 	private static Set<Byte> water = new HashSet<Byte>();
 
-	private static long interval = (long) (1000. / speed);
+	private static long interval = (long) (1000. / SPEED);
 
 	Player player;
 	private int id;
@@ -69,7 +81,7 @@ public class WaterManipulation implements IAbility {
 	// private boolean targetting = false;
 	private final boolean displacing = false;
 	private long time;
-	private int damage = defaultdamage;
+	private int damage = DAMAGE;
 	private int displrange;
 	
 	private IAbility parent;
@@ -94,7 +106,7 @@ public class WaterManipulation implements IAbility {
 	}
 
 	private boolean prepare() {
-		Block block = BlockTools.getWaterSourceBlock(player, range,
+		Block block = BlockTools.getWaterSourceBlock(player, RANGE,
 				EntityTools.canPlantbend(player));
 		cancelPrevious();
 		block(player);
@@ -118,7 +130,7 @@ public class WaterManipulation implements IAbility {
 				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 				sourceblock = block;
 				focusBlock();
-				bPlayer.cooldown(Abilities.Drainbending);
+				bPlayer.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
 				return true;
 			}
 		}
@@ -169,7 +181,7 @@ public class WaterManipulation implements IAbility {
 			firstdestination = getToEyeLevel();
 			firstdirection = Tools.getDirection(sourceblock.getLocation(), firstdestination).normalize();
 			targetdestination = Tools.getPointOnLine(firstdestination,
-					targetdestination, range);
+					targetdestination, RANGE);
 			targetdirection = Tools.getDirection(firstdestination,
 					targetdestination).normalize();
 
@@ -177,14 +189,14 @@ public class WaterManipulation implements IAbility {
 				new Plantbending(sourceblock, this);
 			addWater(sourceblock);
 		}
-		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.WaterManipulation);
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.WaterManipulation, COOLDOWN);
 	}
 
 	private static Location getTargetLocation(Player player) {
-		Entity target = EntityTools.getTargettedEntity(player, range);
+		Entity target = EntityTools.getTargettedEntity(player, RANGE);
 		Location location;
 		if (target == null || ProtectionManager.isEntityProtectedByCitizens(target)) {
-			location = EntityTools.getTargetedLocation(player, range,
+			location = EntityTools.getTargetedLocation(player, RANGE,
 					BlockTools.transparentEarthbending);
 		} else {
 			// targetting = true;
@@ -216,7 +228,7 @@ public class WaterManipulation implements IAbility {
 
 	private void redirect(Player player, Location targetlocation) {
 		if (progressing && !settingup) {
-			if (location.distance(player.getLocation()) <= range)
+			if (location.distance(player.getLocation()) <= RANGE)
 				targetdirection = Tools.getDirection(location, targetlocation)
 						.normalize();
 			targetdestination = targetlocation;
@@ -256,7 +268,7 @@ public class WaterManipulation implements IAbility {
 			} else {
 				if (!progressing) {
 					sourceblock.getWorld().playEffect(location, Effect.SMOKE,
-							4, (int) range);
+							4, (int) RANGE);
 					return true;
 				}
 				
@@ -346,7 +358,7 @@ public class WaterManipulation implements IAbility {
 						if (entity.getEntityId() != player.getEntityId()) {
 							Location location = player.getEyeLocation();
 					 		Vector vector = location.getDirection();
-					 		entity.setVelocity(vector.normalize().multiply(pushfactor));
+					 		entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
 							if (AvatarState.isAvatarState(player)) {
 								damage = AvatarState.getValue(damage);
 							}
@@ -379,7 +391,7 @@ public class WaterManipulation implements IAbility {
 				sourceblock = block;
 
 				if (location.distance(targetdestination) <= 1
-						|| location.distance(firstdestination) > range) {
+						|| location.distance(firstdestination) > RANGE) {
 
 					falling = true;
 					progressing = false;
@@ -512,7 +524,7 @@ public class WaterManipulation implements IAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = manip.location;
-			if (mloc.distance(location) <= range
+			if (mloc.distance(location) <= RANGE
 					&& Tools.getDistanceFromLine(vector, location,
 							manip.location) < deflectrange
 					&& mloc.distance(location.clone().add(vector)) < mloc
@@ -543,7 +555,7 @@ public class WaterManipulation implements IAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = manip.location;
-			if (mloc.distance(location) <= range
+			if (mloc.distance(location) <= RANGE
 					&& Tools.getDistanceFromLine(vector, location,
 							manip.location) < deflectrange
 					&& mloc.distance(location.clone().add(vector)) < mloc

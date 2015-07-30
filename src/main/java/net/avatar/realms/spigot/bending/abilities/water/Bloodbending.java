@@ -15,7 +15,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -36,11 +36,20 @@ public class Bloodbending implements IAbility {
 
 	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
 
-	private static final double factor = ConfigManager.bloodbendingThrowFactor;
-	private static final int maxduration = ConfigManager.bloodbendingMaxDuration * 1000;
+	@ConfigurationParameter("Throw-Factor")
+	private static double FACTOR = 1.0;
+	
+	@ConfigurationParameter("Max-Duration")
+	private static int MAX_DURATION = 10000;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN =  6000;
+	
+	@ConfigurationParameter("Range")
+	public static int RANGE = 8;
 
 	private Player player;
-	private int range = ConfigManager.bloodbendingRange;
+	private int range = RANGE;
 	private IAbility parent;
 	private Long time;
 
@@ -119,7 +128,7 @@ public class Bloodbending implements IAbility {
 			dz = target.getZ() - location.getZ();
 			Vector vector = new Vector(dx, dy, dz);
 			vector.normalize();
-			entity.setVelocity(vector.multiply(factor));
+			entity.setVelocity(vector.multiply(FACTOR));
 		}
 		remove();
 	}
@@ -133,7 +142,7 @@ public class Bloodbending implements IAbility {
 			return false;
 		}
 		
-		if (System.currentTimeMillis() - time > maxduration) {
+		if (System.currentTimeMillis() - time > MAX_DURATION) {
 			return false;
 		}
 		
@@ -238,7 +247,7 @@ public class Bloodbending implements IAbility {
 	}
 
 	private void remove() {
-		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Bloodbending);
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Bloodbending, COOLDOWN);
 		instances.remove(player);
 	}
 

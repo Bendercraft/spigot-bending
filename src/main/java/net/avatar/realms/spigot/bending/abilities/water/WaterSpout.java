@@ -12,8 +12,9 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -28,11 +29,17 @@ import org.bukkit.potion.PotionEffectType;
 
 @BendingAbility(name="Water Spout", element=BendingType.Water)
 public class WaterSpout implements IAbility {
-	public static int SPEED = ConfigManager.waterSpoutRotationSpeed;
+	
+	@ConfigurationParameter("Rotation-Speed")
+	public static int SPEED = 4;
+	
+	@ConfigurationParameter("Height")
+	private static int HEIGHT = 18;
+	
 	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
 	private static List<Block> affectedblocks = new LinkedList<Block>();
 	private static List<Block> newaffectedblocks = new LinkedList<Block>();
-	private static final int defaultheight = ConfigManager.waterSpoutHeight;
+
 
 	private static final byte full = 0x0;
 	private int currentCardinalPoint = 0;
@@ -190,11 +197,11 @@ public class WaterSpout implements IAbility {
 
 	private static int spoutableWaterHeight(Location location, Player player) {
 		WaterSpout spout = instances.get(player);
-		int height = defaultheight;
+		int height = HEIGHT;
 		if (Tools.isNight(player.getWorld()))
 			height = (int) PluginTools.waterbendingNightAugment(
 					(double) height, player.getWorld());
-		int maxheight = (int) ((double) defaultheight * ConfigManager.nightFactor) + 5;
+		int maxheight = (int) ((double) HEIGHT * Settings.NIGHT_FACTOR) + 5;
 		Block blocki;
 		for (int i = 0; i < maxheight; i++) {
 			blocki = location.clone().add(0, -i, 0).getBlock();
@@ -269,7 +276,7 @@ public class WaterSpout implements IAbility {
 
 				double distance = Math.sqrt(dx * dx + dz * dz);
 
-				if (distance <= radius && dy > 0 && dy < defaultheight)
+				if (distance <= radius && dy > 0 && dy < HEIGHT)
 					toRemove.add(instances.get(player));
 			}
 		}

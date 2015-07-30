@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -27,7 +27,9 @@ import org.bukkit.potion.PotionEffectType;
 @BendingAbility(name="Healing Waters", element=BendingType.Water)
 public class HealingWaters implements IAbility {
 
-	private static final double range = ConfigManager.healingWatersRadius;
+	@ConfigurationParameter("Range")
+	private static double RANGE = 5.0;
+	
 	private static Map<Player, HealingWaters> instances = new HashMap<Player, HealingWaters>();
 	private Player healer;
 	private BendingPlayer bPlayer;
@@ -45,7 +47,7 @@ public class HealingWaters implements IAbility {
 		this.healer = player;
 		this.bPlayer = BendingPlayer.getBendingPlayer(this.healer);
 		this.time = System.currentTimeMillis();
-		LivingEntity temp = EntityTools.getTargettedEntity(player, range);
+		LivingEntity temp = EntityTools.getTargettedEntity(player, RANGE);
 		if (temp == null) {
 			temp = this.healer;
 		}
@@ -77,7 +79,7 @@ public class HealingWaters implements IAbility {
 		if (this.bPlayer.getAbility() != Abilities.HealingWaters) {
 			return false;
 		}
-		LivingEntity entity = EntityTools.getTargettedEntity(this.healer, range);
+		LivingEntity entity = EntityTools.getTargettedEntity(this.healer, RANGE);
 		if (entity == null) {
 			entity = this.healer;
 		}

@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -28,9 +28,19 @@ import org.bukkit.entity.Player;
 public class FreezeMelt implements IAbility {
 	private static Map<Player, FreezeMelt> instances = new HashMap<Player, FreezeMelt>();
 
-	public static final int defaultrange = ConfigManager.freezeMeltRange;
-	public static final int defaultradius = ConfigManager.freezeMeltRadius;
-	public static final int defaultDepth = ConfigManager.freezeMeltDepth;
+	@ConfigurationParameter("Range")
+	public static int RANGE = 20;
+	
+	@ConfigurationParameter("Radius")
+	public static int RADIUS = 3;
+	
+	@ConfigurationParameter("Depth")
+	public static int DEPTH = 1;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 500;
+	
+	
 	private IAbility parent;
 	private Player player;
 	private Map<Block, Byte> frozenblocks = new HashMap<Block, Byte>();
@@ -61,9 +71,9 @@ public class FreezeMelt implements IAbility {
 			return;
 		}
 
-		int range = (int) PluginTools.waterbendingNightAugment(defaultrange,
+		int range = (int) PluginTools.waterbendingNightAugment(RANGE,
 				player.getWorld());
-		int radius = (int) PluginTools.waterbendingNightAugment(defaultradius,
+		int radius = (int) PluginTools.waterbendingNightAugment(RADIUS,
 				player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
@@ -72,12 +82,12 @@ public class FreezeMelt implements IAbility {
 		Location location = EntityTools.getTargetedLocation(player, range);
 		int y = (int) location.getY();
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-			if (block.getLocation().getY() >= y - defaultDepth) {
+			if (block.getLocation().getY() >= y - DEPTH) {
 				new FreezeMelt(player, parent, block);
 			}
 		}
 
-		bPlayer.cooldown(Abilities.PhaseChange);
+		bPlayer.cooldown(Abilities.PhaseChange, COOLDOWN);
 	}
 
 	private static boolean isFreezable(Player player, Block block) {	
@@ -138,7 +148,7 @@ public class FreezeMelt implements IAbility {
 			if (EntityTools.hasAbility(getPlayer(), Abilities.PhaseChange)
 					&& EntityTools.canBend(getPlayer(), Abilities.PhaseChange)) {
 				double range = PluginTools.waterbendingNightAugment(
-						defaultrange, getPlayer().getWorld());
+						RANGE, getPlayer().getWorld());
 				if (AvatarState.isAvatarState(getPlayer())) {
 					range = AvatarState.getValue(range);
 				}

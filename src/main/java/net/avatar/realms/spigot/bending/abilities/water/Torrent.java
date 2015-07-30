@@ -12,7 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -38,8 +38,13 @@ public class Torrent implements IAbility {
 	private static int selectrange = 10;
 	private static double radius = 3;
 	static double range = 25;
-	private static int damage = ConfigManager.torrentDamage;
-	private static int deflectdamage = ConfigManager.torrentDeflectDamage;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 6;
+	
+	@ConfigurationParameter("Throw-Factor")
+	private static int DEFLECT_DAMAGE = 2;
+	
 	private static double factor = 1;
 	private static int maxlayer = 3;
 	private static double ylimit = 0.2;
@@ -538,9 +543,9 @@ public class Torrent implements IAbility {
 		entity.setFallDistance(0);
 
 		World world = player.getWorld();
-		int damagedealt = deflectdamage;
+		int damagedealt = DEFLECT_DAMAGE;
 		if (Tools.isNight(world)) {
-			damagedealt = (int) (PluginTools.getWaterbendingNightAugment(world) * (double) deflectdamage);
+			damagedealt = (int) (PluginTools.getWaterbendingNightAugment(world) * (double) DEFLECT_DAMAGE);
 		}
 		EntityTools.damageEntity(player, entity, damagedealt);
 
@@ -563,10 +568,10 @@ public class Torrent implements IAbility {
 
 		if (!hurtentities.contains(entity)) {
 			World world = player.getWorld();
-			int damagedealt = damage;
+			int damagedealt = DAMAGE;
 			if (Tools.isNight(world)) {
 				damagedealt = (int) (PluginTools
-						.getWaterbendingNightAugment(world) * (double) damage);
+						.getWaterbendingNightAugment(world) * (double) DAMAGE);
 			}
 
 			EntityTools.damageEntity(player, entity, damagedealt);

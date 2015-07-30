@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -26,7 +26,21 @@ public class IceSwipe implements IAbility{
 	
 	private static Map<Player, IceSwipe> instances = new HashMap<Player, IceSwipe>();
 	
-	private static int range = ConfigManager.iceSwipeRange;
+	@ConfigurationParameter("Range")
+	private static int RANGE = 25;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 4;
+	
+	@ConfigurationParameter("Speed")
+	private static double SPEED = 25;
+	
+	@ConfigurationParameter("Push-Factor")
+	private static double PUSH = 1.0;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 10000;
+	
 	private Map<Block, Location> iceblocks;
 	private IAbility parent;
 	private Player player;
@@ -59,27 +73,13 @@ public class IceSwipe implements IAbility{
 			instances.get(player).launchBlock();
 		}
 		else {
-			Block source = BlockTools.getWaterSourceBlock(player, range, 
+			Block source = BlockTools.getWaterSourceBlock(player, RANGE, 
 					EntityTools.canPlantbend(player));
 			
 			if (source != null && !ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSwipe, source.getLocation())) {
 				new IceSwipe(player, source, null);
 			}
 		}	
-	}
-	
-	public static void progressAll() {
-		List<Player> toRemove = new LinkedList<Player>();
-		for (Player pl : instances.keySet()) {
-			boolean keep = instances.get(pl).progress();
-			if (!keep) {
-				toRemove.add(pl);
-			}
-		}
-		
-		for (Player pl : toRemove) {
-			instances.remove(pl);
-		}
 	}
 	
 	public boolean progress() {
@@ -117,7 +117,7 @@ public class IceSwipe implements IAbility{
 	public void manageBlocks() {
 		List<Block> blocksToRemove = new LinkedList<Block>();
 		for (Block block : iceblocks.keySet()) {
-			if (block.getLocation().distance(player.getLocation()) > range) {
+			if (block.getLocation().distance(player.getLocation()) > RANGE) {
 				blocksToRemove.add(block);
 				continue;
 			}
@@ -152,10 +152,10 @@ public class IceSwipe implements IAbility{
 	}
 	
 	public void launchBlock() {
-		Block waterblock = BlockTools.getWaterSourceBlock(player, range,
+		Block waterblock = BlockTools.getWaterSourceBlock(player, RANGE,
 				EntityTools.canPlantbend(player));
 		if (waterblock != null && waterblock.getType() != Material.AIR) {
-			Location targetloc = EntityTools.getTargetBlock(player, range,
+			Location targetloc = EntityTools.getTargetBlock(player, RANGE,
 				BlockTools.getTransparentEarthbending()).getLocation();
 			
 			if (targetloc != null) {

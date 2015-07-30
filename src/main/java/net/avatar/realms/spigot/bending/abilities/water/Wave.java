@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -37,9 +37,19 @@ public class Wave implements IAbility {
 
 
 	private static final byte full = 0x0;
-	private static final double defaultmaxradius = ConfigManager.waveRadius;
-	private static final double defaultfactor = ConfigManager.waveHorizontalPush;
-	private static final double upfactor = ConfigManager.waveVerticalPush;
+	
+	@ConfigurationParameter("Radius")
+	private static final double RADIUS = 3;
+	
+	@ConfigurationParameter("Horizontal-Factor")
+	private static final double HOR_FACTOR = 1;
+	
+	@ConfigurationParameter("Vertical-Factor")
+	private static final double VERT_FACTOR = 0.2;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1500;
+	
 	private static final double maxfreezeradius = 7;
 
 	static double defaultrange = 20;
@@ -55,12 +65,12 @@ public class Wave implements IAbility {
 	private Map<Block, Block> frozenblocks = new HashMap<Block, Block>();
 	private double radius = 1;
 	private long time;
-	private double maxradius = defaultmaxradius;
+	private double maxradius = RADIUS;
 	private boolean freeze = false;
 	private boolean activatefreeze = false;
 	private Location frozenlocation;
 	double range = defaultrange;
-	private double factor = defaultfactor;
+	private double factor = HOR_FACTOR;
 	boolean canhitself = true;
 	private IAbility parent;
 
@@ -117,7 +127,7 @@ public class Wave implements IAbility {
 				//Range and max radius is halfed for Drainbending
 				range = range/2;
 				maxradius = maxradius/2;
-				bPlayer.cooldown(Abilities.Drainbending);
+				bPlayer.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
 				return true;
 			}
 		}
@@ -155,7 +165,7 @@ public class Wave implements IAbility {
 		if (bPlayer.isOnCooldown(Abilities.Surge))
 			return;
 
-		bPlayer.cooldown(Abilities.Surge);
+		bPlayer.cooldown(Abilities.Surge, COOLDOWN);
 		if (sourceblock == null) {
 			return;
 		}
@@ -337,7 +347,7 @@ public class Wave implements IAbility {
 					}
 					if (knockback) {
 						Vector dir = direction.clone();
-						dir.setY(dir.getY() * upfactor);
+						dir.setY(dir.getY() * VERT_FACTOR);
 						if (entity.getEntityId() == player.getEntityId()) {
 							dir.multiply(2.0/3.0);
 						}

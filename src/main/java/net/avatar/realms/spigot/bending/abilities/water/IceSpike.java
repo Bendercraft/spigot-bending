@@ -12,7 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
@@ -39,8 +39,18 @@ public class IceSpike implements IAbility {
 
 	private static int ID = Integer.MIN_VALUE;
 
-	private static double range = ConfigManager.icespikeRange;
-	private long cooldown = ConfigManager.icespikeCooldown;
+	@ConfigurationParameter("Range")
+	private static double RANGE = 20;
+	
+	@ConfigurationParameter("Cooldown")
+	private static long COOLDOWN = 2000;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 4;
+	
+	@ConfigurationParameter("Throw-Mult")
+	private static double THROW_MULT = 0.7;
+	
 	private static double speed = 25;
 	private static final Vector direction = new Vector(0, 1, 0);
 
@@ -51,11 +61,11 @@ public class IceSpike implements IAbility {
 	private Block block;
 	private Player player;
 	private int progress = 0;
-	private int damage = ConfigManager.icespikeDamage;
+	private int damage = DAMAGE;
 	int id;
 	private long time;
 	int height = 2;
-	private Vector thrown = new Vector(0, ConfigManager.icespikeThrowingMult, 0);
+	private Vector thrown = new Vector(0, THROW_MULT, 0);
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 	private List<LivingEntity> damaged = new ArrayList<LivingEntity>();
 	private IAbility parent;
@@ -63,15 +73,15 @@ public class IceSpike implements IAbility {
 	public IceSpike(Player player, IAbility parent) {
 		this.parent = parent;
 		if (cooldowns.containsKey(player))
-			if (cooldowns.get(player) + cooldown >= System.currentTimeMillis())
+			if (cooldowns.get(player) + COOLDOWN >= System.currentTimeMillis())
 				return;
 		try {
 			this.player = player;
 
-			double lowestdistance = range + 1;
+			double lowestdistance = RANGE + 1;
 			Entity closestentity = null;
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
-					player.getLocation(), range)) {
+					player.getLocation(), RANGE)) {
 				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 					continue;
 				}
@@ -94,7 +104,7 @@ public class IceSpike implements IAbility {
 				this.block = temptestingblock;
 				// }
 			} else {
-				this.block = EntityTools.getTargetBlock(player, range);
+				this.block = EntityTools.getTargetBlock(player, RANGE);
 			}
 			origin = block.getLocation();
 			location = origin.clone();
@@ -122,7 +132,6 @@ public class IceSpike implements IAbility {
 	public IceSpike(Player player, Location origin, int damage,
 			Vector throwing, long aoecooldown, IAbility parent) {
 		this.parent = parent;
-		this.cooldown = aoecooldown;
 		this.player = player;
 		this.origin = origin;
 		location = origin.clone();

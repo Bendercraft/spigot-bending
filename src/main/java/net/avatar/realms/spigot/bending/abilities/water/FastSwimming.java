@@ -9,7 +9,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -19,7 +19,8 @@ import org.bukkit.util.Vector;
 @BendingAbility(name="Dolphin", element=BendingType.Water)
 public class FastSwimming implements IPassiveAbility {
 
-	private static double factor = ConfigManager.fastSwimmingFactor;
+	@ConfigurationParameter("Speed-Factor")
+	private static double FACTOR = 0.7;
 	private static Map<Player, FastSwimming> instances = new HashMap<Player, FastSwimming>();
 	
 	private Player player;
@@ -77,6 +78,6 @@ public class FastSwimming implements IPassiveAbility {
 	
 	private void swimFast() {
 		Vector dir = player.getEyeLocation().getDirection().clone();
-		player.setVelocity(dir.normalize().multiply(factor));
+		player.setVelocity(dir.normalize().multiply(FACTOR));
 	}	
 }

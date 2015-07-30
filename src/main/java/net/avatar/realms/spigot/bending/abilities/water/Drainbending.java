@@ -7,10 +7,15 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @BendingAbility(name="Drain Bending", element=BendingType.Water, specialization=BendingSpecializationType.DrainBend)
 public class Drainbending {
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1500;
+	
 	public static boolean canDrainBend(Player player) {
 		return EntityTools.canBend(player, Abilities.Drainbending);
 	}

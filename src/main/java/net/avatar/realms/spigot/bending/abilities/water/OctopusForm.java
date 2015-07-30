@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -32,7 +32,9 @@ public class OctopusForm implements IAbility {
 	static final double radius = 3;
 	private static final byte full = 0x0;
 	private static long interval = 50;
-	private static int damage = ConfigManager.octopusFormDamage;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 2;
 
 	private Player player;
 	private Block sourceblock;
@@ -157,7 +159,7 @@ public class OctopusForm implements IAbility {
 			entity.setVelocity(Tools
 					.getDirection(player.getLocation(), location).normalize()
 					.multiply(1.75));
-			EntityTools.damageEntity(player, entity, damage);
+			EntityTools.damageEntity(player, entity, DAMAGE);
 		}
 	}
 

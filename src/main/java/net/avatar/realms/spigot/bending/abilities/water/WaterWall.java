@@ -15,7 +15,7 @@ import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
-import net.avatar.realms.spigot.bending.controller.ConfigManager;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -41,8 +41,13 @@ public class WaterWall implements IAbility {
 	private static final byte full = 0x0;
 	// private static final byte half = 0x4;
 
-	private static double range = ConfigManager.waterWallRange;
-	private static final double defaultradius = ConfigManager.waterWallRadius;
+	
+	@ConfigurationParameter("Range")
+	private static double RANGE = 5;
+	
+	@ConfigurationParameter("Radius")
+	private static double RADIUS = 2;
+	
 	// private static double speed = 1.5;
 
 	Player player;
@@ -59,7 +64,7 @@ public class WaterWall implements IAbility {
 	private boolean forming = false;
 	private boolean frozen = false;
 	private long time;
-	private double radius = defaultradius;
+	private double radius = RADIUS;
 	private IAbility parent;
 
 	private TempBlock drainedBlock;
@@ -163,7 +168,7 @@ public class WaterWall implements IAbility {
 
 	public boolean prepare() {
 		cancelPrevious();
-		Block block = BlockTools.getWaterSourceBlock(player, range,
+		Block block = BlockTools.getWaterSourceBlock(player, RANGE,
 				EntityTools.canPlantbend(player));
 		if (block != null) {
 			sourceblock = block;
@@ -185,7 +190,7 @@ public class WaterWall implements IAbility {
 				focusBlock();
 				//Radius is thirded for Drainbending
 				radius = radius/3;
-				bPlayer.cooldown(Abilities.Drainbending);
+				bPlayer.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
 				return true;
 			}
 		}
@@ -217,7 +222,7 @@ public class WaterWall implements IAbility {
 
 	public void moveWater() {
 		if (sourceblock != null) {
-			targetdestination = EntityTools.getTargetedLocation(player, range, BlockTools.getTransparentEarthbending());
+			targetdestination = EntityTools.getTargetedLocation(player, RANGE, BlockTools.getTransparentEarthbending());
 			//targetdestination = Tools.getTargetBlock(player, range, Tools.getTransparentEarthbending()).getLocation();
 
 			if (targetdestination.distance(location) <= 1) {
@@ -293,7 +298,7 @@ public class WaterWall implements IAbility {
 
 			if (!progressing) {
 				sourceblock.getWorld().playEffect(location, Effect.SMOKE, 4,
-						(int) range);
+						(int) RANGE);
 				return true;
 			}
 
@@ -305,7 +310,7 @@ public class WaterWall implements IAbility {
 				transparentForSelection.add(Material.STATIONARY_WATER);
 				transparentForSelection.add(Material.SNOW);
 				transparentForSelection.add(Material.ICE);
-				Location loc = EntityTools.getTargetedLocation(player, (int) range,
+				Location loc = EntityTools.getTargetedLocation(player, (int) RANGE,
 						transparentForSelection);
 				location = loc.clone();
 				Vector dir = player.getEyeLocation().getDirection();
