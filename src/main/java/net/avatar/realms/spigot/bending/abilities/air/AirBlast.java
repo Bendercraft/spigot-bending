@@ -285,7 +285,7 @@ public class AirBlast extends Ability {
 	
 	@Override
 	public void remove() {
-		AbilityManager.getManager().getInstances(Abilities.AirBlast).remove(this);
+		AbilityManager.getManager().getInstances(Abilities.AirBlast).remove(id);
 		super.remove();
 	}
 

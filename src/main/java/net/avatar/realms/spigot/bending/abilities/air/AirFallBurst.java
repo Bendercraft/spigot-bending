@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 //TODO : Parent = AirBurst
-@BendingAbility(name="Air Burst", element=BendingType.Air)
+@BendingAbility(name="Air Burst Fall", element=BendingType.Air)
 public class AirFallBurst extends Ability  {
 	
 	@ConfigurationParameter("Fall-Threshold")

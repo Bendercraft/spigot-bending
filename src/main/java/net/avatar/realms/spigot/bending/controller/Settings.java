@@ -4,9 +4,9 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Settings {
 
@@ -98,7 +98,7 @@ public class Settings {
 		configDir.mkdirs();
 		File configFile = new File(configDir, "settings.json");
 		
-		Map<String, Field> fields = new HashMap<String, Field>();
+		Map<String, Field> fields = new TreeMap<String, Field>();
 			for(Field f : Settings.class.getDeclaredFields()) {
 				if (Modifier.isStatic(f.getModifiers())) {
 					ConfigurationParameter an = f.getAnnotation(ConfigurationParameter.class);

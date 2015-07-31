@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
@@ -34,7 +35,9 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Plastic Bomb", element=BendingType.ChiBlocker, specialization = BendingSpecializationType.Inventor)
-public class C4 {
+public class C4 extends Ability{
+	
+	private static int ID = Integer.MIN_VALUE;
 	private static Map<Player,C4> instances = new HashMap<Player, C4>();
 	
 	@ConfigurationParameter("Radius")
@@ -46,12 +49,14 @@ public class C4 {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 20000;
 	
-	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
-	
 	@ConfigurationParameter("Fuse-Interval")
 	private static int INTERVAL = 1500;
 	
-	private Player player;
+	@ConfigurationParameter("Max-Bombs-Amount")
+	private static int MAX_BOMBS = 2;
+	
+	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
+	
 	private Player target = null;
 	private Block bomb = null;;
 	private ItemStack headBomb = null;
@@ -59,24 +64,18 @@ public class C4 {
 	private Location location;
 	private Material previousType;
 	private long fuseTime = 0;
+	private int id;
 	
 	public C4 (Player player, Block block, BlockFace face){
+		super (player, null);
+		
 		if (player == null || block == null || face == null){
 			return;
 		}
 		if (instances.containsKey(player)) {
 			return;
 		}
-		if (!hasDetonator(player)){
-			return;
-		}
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer == null) {
-			return;
-		}
-		if (bPlayer.isOnCooldown(Abilities.PlasticBomb)) {
-			return;
-		}
+
 		Block temp = block.getRelative(face);
 		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb, temp.getLocation())){
 			return;
@@ -84,15 +83,30 @@ public class C4 {
 		if (!BlockTools.isFluid(temp) && !BlockTools.isPlant(temp)) {
 			return;
 		}
-		this.player = player;
 		this.location = temp.getLocation();
 		this.previousType = temp.getType();
 		this.fuseTime = System.currentTimeMillis();
 		this.generateCFour(temp, face);
+		id = ID++;
 		instances.put(player, this);
 	}
 	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if (!hasDetonator(player)) {
+			return false;
+		}
+		
+		return true;
+	}
+
 	public C4 (Player player, LivingEntity target) {
+		super (player, null);
+		
 		if (player == null || target == null) {
 			return;
 		}	
@@ -149,7 +163,7 @@ public class C4 {
 	}
 	
 	public boolean progress() {
-		if (!player.isOnline() || player.isDead()) {
+		if (!super.progress()) {
 			return false;
 		}
 		
@@ -382,6 +396,16 @@ public class C4 {
 	public void cancel() {
 		bomb.setType(previousType);
 		instances.remove(player);
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.PlasticBomb;
+	}
+
+	@Override
+	public Object getIdentifier() {
+		return id;
 	}
 
 }

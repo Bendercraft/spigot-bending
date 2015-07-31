@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 
 //TODO : Parent = AirBurst
 
-@BendingAbility(name="Air Burst", element=BendingType.Air)
+@BendingAbility(name="Air Burst Sphere", element=BendingType.Air)
 public class AirBurstSphere extends Ability  {
 	
 	public AirBurstSphere(Player player, Ability parent) {

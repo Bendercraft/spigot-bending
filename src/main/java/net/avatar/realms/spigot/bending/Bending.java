@@ -49,17 +49,16 @@ public class Bending extends JavaPlugin {
 	public void onEnable () {
 		plugin = this;
 		log = plugin.getLogger();
-		saveDefaultConfig();
+		
+		Settings.applyConfiguration(getDataFolder());
+		AbilityManager.getManager().registerAllAbilities();
+		AbilityManager.getManager().applyConfiguration(getDataFolder());
 		
 		Messages.loadMessages();
 		
 		//Learning
 		learning = new BendingLearning();
 		learning.onEnable();
-		
-		Settings.applyConfiguration(getDataFolder());
-		AbilityManager.getManager().registerAllAbilities();
-		AbilityManager.getManager().applyConfiguration(getDataFolder());
 		
 		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));

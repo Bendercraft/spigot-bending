@@ -13,8 +13,6 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  */
 public abstract class Ability {
 	
-	protected static final String configPrefix = "Properties.";
-	
 	private Ability parent;
 	
 	protected BendingPlayer bender;
@@ -29,12 +27,12 @@ public abstract class Ability {
 	 * @param parent The ability that generates this ability. null if none
 	 */
 	public Ability(Player player, Ability parent) {
-		startedTime = System.currentTimeMillis();	
-		this.parent = parent;
 		this.player = player;
 		this.bender = BendingPlayer.getBendingPlayer(player);
 		
 		if (canBeInitialized()) {
+			startedTime = System.currentTimeMillis();	
+			this.parent = parent;
 			setState(AbilityState.CanStart);
 		}
 		else {
@@ -142,6 +140,14 @@ public abstract class Ability {
 	}
 	
 	public boolean canBeInitialized() {
+		if (player == null) {
+			return false;
+		}
+		
+		if (bender == null) {
+			return false;
+		}
+		
 		if (bender.isOnCooldown(this.getAbilityType())) {
 			return false;
 		}

@@ -35,6 +35,9 @@ public class SmokeBomb extends Ability {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 6000;
 	
+	@ConfigurationParameter("Sound-Radius")
+	public static float SOUND_RADIUS = 20;
+	
 	private static Integer ID = Integer.MIN_VALUE;
 
 	private static PotionEffect blindnessBomber = new PotionEffect(
@@ -76,7 +79,7 @@ public class SmokeBomb extends Ability {
 		
 		setState(AbilityState.Started);
 		
-		origin.getWorld().playSound(origin, Sound.FIREWORK_BLAST, 10, 1);
+		origin.getWorld().playSound(origin, Sound.FIREWORK_BLAST,(SOUND_RADIUS/16.0f), 1.1f);
 		player.addPotionEffect(blindnessBomber);
 		
 		bender.cooldown(Abilities.SmokeBomb, COOLDOWN);

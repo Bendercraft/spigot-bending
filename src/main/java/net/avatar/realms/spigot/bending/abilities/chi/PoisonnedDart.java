@@ -40,13 +40,13 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 public class PoisonnedDart extends Ability{
 	
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 2;// = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Damage");
+	private static int DAMAGE = 2;
 	
 	@ConfigurationParameter("Range")
-	private static int RANGE = 20;// = Bending.plugin.configuration.getIntAttribute(configPrefix + "Chi.PoisonnedDart.Range");
+	private static int RANGE = 20;
 	
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 2000;// = Bending.plugin.configuration.getLongAttribute(configPrefix + "Chi.PoisonnedDart.Cooldown");
+	private static long COOLDOWN = 2000;
 	
 	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
 	

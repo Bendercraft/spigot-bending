@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
@@ -289,7 +290,7 @@ public class AbilityManager {
 		configDir.mkdirs();
 		File configFile = new File(configDir, "abilities_config.json");
 		
-		Map<String, Field> fields = new HashMap<String, Field>();
+		Map<String, Field> fields = new TreeMap<String, Field>();
 		for(RegisteredAbility ab : availableAbilities.values()) {
 			for(Field f : ab.getAbility().getDeclaredFields()) {
 				if (Modifier.isStatic(f.getModifiers())) {
@@ -302,6 +303,4 @@ public class AbilityManager {
 		}
 		ConfigurationManager.applyConfiguration(configFile, fields);
 	}
-
-	
 }

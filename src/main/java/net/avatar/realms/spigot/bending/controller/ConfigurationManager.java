@@ -35,7 +35,6 @@ public abstract class ConfigurationManager {
 					ConfigurationParameter a = f.getAnnotation(ConfigurationParameter.class);
 					if(a != null) {
 						f.setAccessible(true);
-						System.out.println(path);
 						try {
 							if(f.getType().equals(int.class)) {
 								getLast(root, path).addProperty(getLastKey(path), f.getInt(null));
