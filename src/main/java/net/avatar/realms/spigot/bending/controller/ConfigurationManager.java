@@ -127,7 +127,7 @@ public abstract class ConfigurationManager {
 									f.set(null, param.getAsString());
 								} 
 								else if (f.getType().equals(String[].class)) {
-									f.set(null, gson.fromJson(param.getAsString(),String[].class));
+									f.set(null, gson.fromJson(param ,String[].class));
 								}
 								else {
 									Bending.plugin.getLogger().warning("Config variable "+f.getName()+" found with annoted param '"+path+"' and in config file but is of unknown type "+f.getType());
