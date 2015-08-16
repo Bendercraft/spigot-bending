@@ -50,7 +50,7 @@ public abstract class Ability {
 	}
 	
 	/**
-	 * What should the ability do when the player jump. Not used for the moment.
+	 * What should the ability do when the player jump. Not used for the moment as no way to detect player jump.
 	 * @return <code>true</code> if we should create a new version of the ability
 	 *  <code>false</code> otherwise
 	 */
@@ -99,6 +99,10 @@ public abstract class Ability {
 			return false;
 		}
 		
+		if (state.equals(AbilityState.Ended)) {
+			return false;
+		}
+		
 		return true;
 	}
 	
@@ -109,6 +113,9 @@ public abstract class Ability {
 		
 	}
 	
+	/**
+	 * Remove the ability from all instances
+	 */
 	public void remove() {
 		setState(AbilityState.Removed);
 	}
@@ -163,6 +170,7 @@ public abstract class Ability {
 		Bending.plugin.getLogger().info(newState.name());
 		this.state = newState;
 	}
+	
 	
 	public abstract Abilities getAbilityType();
 	

@@ -279,6 +279,9 @@ public class BlockTools {
 	}
 	
 	public static boolean isWater(Block block) {
+		if (block ==  null) {
+			return false;
+		}
 		if (block.getType() == Material.WATER
 				|| block.getType() == Material.STATIONARY_WATER) {
 			return true;
@@ -298,6 +301,10 @@ public class BlockTools {
 	}
 	
 	public static boolean isFluid(Block block) {
+		if (block == null) {
+			return false;
+		}
+		
 		if (isWater(block) ||
 				isLava(block) ||
 				block.getType() == Material.AIR) {
@@ -307,6 +314,9 @@ public class BlockTools {
 	}
 	
 	public static boolean isLava(Block block) {
+		if (block ==  null){
+			return false;
+		}
 		if (block.getType() == Material.LAVA 
 				|| block.getType() == Material.STATIONARY_LAVA) {
 			return true;

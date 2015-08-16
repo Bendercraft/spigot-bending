@@ -33,6 +33,7 @@ public class Cook implements IAbility {
 			Material.POTATO_ITEM,
 			Material.POISONOUS_POTATO,
 			Material.STICK};
+			//TODO : Add rabbit and sheep
 
 	private Player player;
 	private ItemStack items;

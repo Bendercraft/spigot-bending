@@ -6,9 +6,10 @@ public enum AbilityState {
 	CannotStart	(1),
 	CanStart 	(2),
 	Started		(3),
-	Progressing	(4),
-	Ended		(5),
-	Removed		(6);
+	Preparing	(4),
+	Progressing	(5),
+	Ended		(6),
+	Removed		(7);
 	
 	private int step;
 	

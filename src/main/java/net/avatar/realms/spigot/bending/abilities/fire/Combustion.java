@@ -49,6 +49,9 @@ public class Combustion implements IAbility {
 	
 	@ConfigurationParameter("Inner-Radius")
 	private static double innerradius = 3.0;
+	
+	@ConfigurationParameter("Sound-Radius")
+	private static int SOUND_RADIUS = 35;
 
 	@ConfigurationParameter("Range")
 	private static double RANGE = 20;
@@ -233,7 +236,7 @@ public class Combustion implements IAbility {
 				}	
 			}
 		}
-		location.getWorld().playSound(location, Sound.EXPLODE, 10, 1);
+		location.getWorld().playSound(location, Sound.EXPLODE, SOUND_RADIUS/16.0f, 1);
 		EXPLODE.display(0, 0, 0, 1, 1, location, 20);
 		double radius = explosionradius;
 		if (obsidian) {

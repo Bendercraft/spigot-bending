@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -63,7 +62,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Speed;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
-import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
@@ -147,7 +145,7 @@ public class BendingPlayerListener implements Listener{
 				} else {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 					List<BendingType> els = bender.getBendingTypes();
-					if (els != null && els.isEmpty()) {
+					if (els != null && !els.isEmpty()) {
 						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
 					}
 				}
@@ -203,25 +201,23 @@ public class BendingPlayerListener implements Listener{
 			return;
 		}
 		
-		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-			
-			if (bPlayer.isBender(BendingType.ChiBlocker)) {
-				Abilities abi = bPlayer.getAbility();
-				if (abi == Abilities.PlasticBomb && EntityTools.canBend(player, abi)){
-					new C4(player, event.getClickedBlock(), event.getBlockFace());
-				}
-			}
-			bPlayer.cooldown();
-		}
+//		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+//			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+//			
+//			if (bPlayer.isBender(BendingType.ChiBlocker)) {
+//				Abilities abi = bPlayer.getAbility();
+//				if (abi == Abilities.PlasticBomb && EntityTools.canBend(player, abi)){
+//					new C4(player, event.getClickedBlock(), event.getBlockFace());
+//				}
+//			}
+//			bPlayer.cooldown();
+//		}
 		
 		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {
 			event.setCancelled(true);
 		}
 			
 		MetalBending.use(player, event.getClickedBlock());
-		// Cooldowns.forceCooldown(player);
-		
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -312,7 +308,8 @@ public class BendingPlayerListener implements Listener{
 			if (ability == Abilities.PoisonnedDart || 
 					ability == Abilities.SmokeBomb || 
 					ability == Abilities.AvatarState || 
-					ability == Abilities.AirBlast) {
+					ability == Abilities.AirBlast ||
+					ability == Abilities.PlasticBomb) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 				
 				if (abilities == null || abilities.isEmpty()) {
@@ -688,12 +685,8 @@ public class BendingPlayerListener implements Listener{
 			if (ability == Abilities.Combustion) {
 				new Combustion(player, null);
 			}
-			
-			if (ability == Abilities.PlasticBomb) {
-				C4.activate(player);
-			}
 
-			if (ability == Abilities.Dash || ability == Abilities.AirBlast) {
+			if (ability == Abilities.Dash || ability == Abilities.AirBlast || ability == Abilities.PlasticBomb) {
 				
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 				
@@ -968,16 +961,6 @@ public class BendingPlayerListener implements Listener{
 			event.getDrops().clear();
 			event.getDrops().addAll(newdrops);
 			EarthArmor.removeEffect(event.getEntity());
-		}
-		
-		C4 plastic = C4.isTarget(event.getEntity());
-		if (plastic != null) {
-			ItemStack is = plastic.getHeadBomb();
-			if (event.getDrops().contains(is)) {
-				event.getDrops().remove(is);
-				
-			}
-			// Should do the same with earth armor ?
 		}
 		
 		//Fireblade & Suffocate

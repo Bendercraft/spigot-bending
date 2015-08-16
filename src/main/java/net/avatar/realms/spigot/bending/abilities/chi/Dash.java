@@ -59,12 +59,7 @@ public class Dash extends Ability {
 	}
 	@Override
 	public boolean progress() {
-		System.out.println(player.getLocation().toString());
 		if (!super.progress()) {
-			return false;
-		}
-		
-		if (state == AbilityState.Ended) {
 			return false;
 		}
 		

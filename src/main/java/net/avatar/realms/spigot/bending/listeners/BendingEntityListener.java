@@ -21,7 +21,6 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -46,7 +45,6 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.util.BlockIterator;
 
 
 public class BendingEntityListener implements Listener {
@@ -62,7 +60,6 @@ public class BendingEntityListener implements Listener {
 		Entity entity = event.getEntity();
 		Block block = entity.getLocation().getBlock();
 		if (FireStream.isIgnited(block) && (entity instanceof LivingEntity)) {
-			// TODO parent is FireStream !
 			new Enflamed(entity, FireStream.getIgnited(block), null);
 		}
 	}
@@ -71,7 +68,6 @@ public class BendingEntityListener implements Listener {
 	public void onEntityDamageEvent (EntityDamageEvent event) {
 		Entity entity = event.getEntity();
 		if ((event.getCause() == DamageCause.FIRE) && FireStream.isIgnited(entity.getLocation().getBlock())) {
-			// TODO parent is FireStream
 			new Enflamed(entity, FireStream.getIgnited(entity.getLocation().getBlock()), null);
 		}
 		if (Enflamed.isEnflamed(entity) && (event.getCause() == DamageCause.FIRE_TICK)) {
@@ -273,35 +269,8 @@ public class BendingEntityListener implements Listener {
 				}
 				Abilities ability = bPlayer.getAbility();
 				if ((ability == Abilities.PlasticBomb) && EntityTools.canBend(player, ability)) {
-					for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(arrow.getLocation(), 1.7)) {
-						if (entity instanceof Player) {
-							new C4(player, (Player)entity);
-							return;
-						}
-					}
-					World world = arrow.getLocation().getWorld();
-					Block block = arrow.getLocation().getBlock();
-					BlockIterator bi = null;
-					Block hitBlock = null;
-					if (block.getType() == Material.AIR) {
-						bi = new BlockIterator(world, arrow.getLocation().toVector(), arrow.getVelocity().normalize(), 0, 1);
-						if (bi.hasNext()) {
-							hitBlock = bi.next();
-						}
-					}
-					else {
-						bi = new BlockIterator(world, arrow.getLocation().toVector(), arrow.getVelocity().multiply(-1)
-								.normalize(), 0, 1);
-						if (bi.hasNext()) {
-							hitBlock = block;
-							block = bi.next();
-						}
-					}
-					if (hitBlock == null) {
-						return;
-					}
-
-					new C4(player, block, hitBlock.getFace(block));
+					C4 bomb = new C4(player, arrow);
+					bomb.swing();
 				}
 			}
 		}

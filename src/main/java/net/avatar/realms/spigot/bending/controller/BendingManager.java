@@ -22,7 +22,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Speed;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
-import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
@@ -176,7 +175,6 @@ public class BendingManager implements Runnable {
 
 	private void manageChiBlocking() {
 		RapidPunch.progressAll();
-		C4.progressAll();
 	}
 
 	private void manageWaterbending() {

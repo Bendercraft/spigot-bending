@@ -138,6 +138,7 @@ public class AbilityManager {
 		switch (abilityType) {
 			case AvatarState : return new AvatarState(player); 
 			
+			case PlasticBomb : return new C4(player);
 			case PoisonnedDart : return new PoisonnedDart(player);
 			case HighJump : return new HighJump(player);
 			case SmokeBomb : return new SmokeBomb(player);
@@ -168,7 +169,7 @@ public class AbilityManager {
 		register(AvatarState.class);
 		
 		register(PoisonnedDart.class);
-//		register(C4.class);
+		register(C4.class);
 		register(Dash.class);
 		register(HighJump.class);
 //		register(Paralyze.class);

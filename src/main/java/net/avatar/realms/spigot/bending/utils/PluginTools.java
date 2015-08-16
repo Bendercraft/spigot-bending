@@ -17,7 +17,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Speed;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
-import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
@@ -63,7 +62,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class PluginTools {
-	
 	
 	private static final Map<String, ChatColor> colors;	
 	static {
@@ -189,8 +187,7 @@ public class PluginTools {
 		Combustion.removeAll();
 
 		RapidPunch.removeAll();
-		C4.removeAll();
-
+		
 		// BendingManager.removeFlyers();
 		Flight.removeAll();
 		WaterReturn.removeAll();
