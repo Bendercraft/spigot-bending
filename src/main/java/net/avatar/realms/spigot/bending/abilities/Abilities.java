@@ -14,7 +14,7 @@ public enum Abilities {
 	 * AIR Abilities
 	 */
 	AirBlast(BendingType.Air, true),
-	AirBubble(BendingType.Air, false),
+ AirBubble (BendingType.Air, true),
 	AirShield(BendingType.Air, true),
 	AirSuction(BendingType.Air, true),
 	AirSwipe(BendingType.Air, true),
@@ -231,14 +231,14 @@ public enum Abilities {
 	public boolean isShiftAbility () {
 		return this.shift;
 	}
-	
+
 	public static boolean isEnergyAbility (Abilities ab) {
 		if (ab.getElement().equals(BendingType.Energy)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public boolean isEnergyAbility() {
 		if (getElement().equals(BendingType.Energy)) {
 			return true;

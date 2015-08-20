@@ -5,9 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
@@ -55,11 +59,6 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.controller.Settings;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 public class PluginTools {
 	
@@ -138,7 +137,6 @@ public class PluginTools {
 	}
 	
 	public static void stopAllBending() {
-		AirBubble.removeAll();
 		AirShield.removeAll();
 		AirSuction.removeAll();
 		AirScooter.removeAll();
@@ -206,7 +204,7 @@ public class PluginTools {
 	}
 	
 	public static ChatColor getColor(String input) {
-		return (ChatColor) colors.get(input.toLowerCase().replace("&", ""));
+		return colors.get(input.toLowerCase().replace("&", ""));
 	}
 	
 	public static <T> void verbose(T something) {
@@ -220,7 +218,7 @@ public class PluginTools {
 		List<String> suplangs = Bending.language.getSupportedLanguages();
 		for (int i = 0; i < suplangs.size(); i++) {
 			String string = suplangs.get(i);
-			if (i != suplangs.size() - 1) {
+			if (i != (suplangs.size() - 1)) {
 				string = string + ", ";
 			}
 			languages = languages + string;
@@ -259,8 +257,9 @@ public class PluginTools {
 	}
 
 	public static double getWaterbendingNightAugment(World world) {
-		if (Tools.isNight(world))
+		if (Tools.isNight(world)) {
 			return Settings.NIGHT_FACTOR;
+		}
 		return 1;
 	}
 	

@@ -49,7 +49,6 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
@@ -110,7 +109,6 @@ import net.avatar.realms.spigot.bending.abilities.water.IceSpike2;
 import net.avatar.realms.spigot.bending.abilities.water.Melt;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
-import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
@@ -121,18 +119,18 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 public class BendingPlayerListener implements Listener{
-	
+
 	public Bending plugin;
 
 	public BendingPlayerListener(Bending bending) {
 		this.plugin = bending;
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 		BendingPlayer.getBendingPlayer(player);	  
-		 
+
 		if (!(Settings.CHAT_COMPATIBILITY) && (Settings.CHAT_ENABLED)) {
 			player.setDisplayName(player.getName());
 		}	
@@ -151,7 +149,7 @@ public class BendingPlayerListener implements Listener{
 				}
 			}
 			player.setDisplayName("<" + color + player.getName()
-					+ ChatColor.WHITE + ">");
+			+ ChatColor.WHITE + ">");
 		}
 
 		YamlConfiguration dc = new YamlConfiguration();
@@ -160,9 +158,9 @@ public class BendingPlayerListener implements Listener{
 		if (sv.exists()
 				&& (dc.contains("Armors." + player.getName() + ".Boots")
 						&& dc.contains("Armors." + player.getName()
-								+ ".Leggings")
+						+ ".Leggings")
 						&& dc.contains("Armors." + player.getName() + ".Chest") && dc
-							.contains("Armors." + player.getName() + ".Helm"))) {
+						.contains("Armors." + player.getName() + ".Helm"))) {
 			ItemStack boots = new ItemStack(Material.matchMaterial(dc
 					.getString("Armors." + player.getName() + ".Boots").split(
 							":")[0]));
@@ -190,24 +188,24 @@ public class BendingPlayerListener implements Listener{
 		} catch (IOException e) {
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();	
-		
+
 		if (Paralyze.isParalyzed(player) 
 				|| Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {
 			event.setCancelled(true);
 		}
-			
+
 		MetalBending.use(player, event.getClickedBlock());
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerInteractWithEntity(PlayerInteractEntityEvent e) {
 		Entity ent = e.getRightClicked();
@@ -218,7 +216,7 @@ public class BendingPlayerListener implements Listener{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerFish(PlayerFishEvent event) {
 		Player player = event.getPlayer();
@@ -236,7 +234,7 @@ public class BendingPlayerListener implements Listener{
 			MetalWire.pull(player, event.getHook());
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerChangeVelocity(PlayerVelocityEvent event) {
 		Player player = event.getPlayer();
@@ -246,7 +244,7 @@ public class BendingPlayerListener implements Listener{
 			event.setVelocity(WaterPassive.handle(player, event.getVelocity()));
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		if (!(Settings.CHAT_ENABLED)) {
@@ -271,11 +269,11 @@ public class BendingPlayerListener implements Listener{
 			String format = Settings.CHAT_FORMAT;
 			format = format.replace("<message>", "%2$s");
 			format = format.replace("<name>", color + player.getDisplayName()
-					+ ChatColor.RESET);
+			+ ChatColor.RESET);
 			event.setFormat(format);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSwing(PlayerAnimationEvent event) {
 
@@ -291,22 +289,22 @@ public class BendingPlayerListener implements Listener{
 		if (ability == null) {
 			return;
 		}
-			
+
 		if (EntityTools.canBend(player, ability)) {
-			
+
 			if ((ability == Abilities.PoisonnedDart) || 
 					(ability == Abilities.SmokeBomb) || 
 					(ability == Abilities.AvatarState) || 
 					(ability == Abilities.AirBlast) ||
 					(ability == Abilities.PlasticBomb)) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
-				
+
 				if ((abilities == null) || abilities.isEmpty()) {
 					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.swing();
 					return;
 				}
-				
+
 				boolean shouldCreateNew = false;
 				for (Ability a : abilities.values()) {
 					if (a.getPlayer().equals(player)) {
@@ -321,23 +319,13 @@ public class BendingPlayerListener implements Listener{
 				}
 				return;
 			}
-			
+
 			if (ability == Abilities.HighJump) {
 				Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 				ab.swing();
 				return;
 			}
-			
-			if (ability == Abilities.AirBubble) {
-				new AirBubble(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.WaterBubble) {
-				new WaterBubble(player, null);
-				return;
-			}
-			
+
 			if ((ability == Abilities.Tremorsense) && player.isSneaking()) {
 				new Tremorsense(player, false, null);
 				return;
@@ -367,7 +355,7 @@ public class BendingPlayerListener implements Listener{
 				new AirBurstCone(player, null);
 				return;
 			}
-		
+
 
 			if (ability == Abilities.Catapult) {
 				new Catapult(player, null);
@@ -408,7 +396,7 @@ public class BendingPlayerListener implements Listener{
 				new ShockwaveCone(player, null);
 				return;
 			}
-			
+
 			if ((ability == Abilities.LavaTrain) && player.isSneaking()) {
 				new LavaTrain(player, null);
 				return;
@@ -453,7 +441,7 @@ public class BendingPlayerListener implements Listener{
 				new FireProtection(player, null);
 				return;
 			}
-			
+
 			if (ability == Abilities.FireBlade) {
 				new FireBlade(player);
 				return;
@@ -499,7 +487,7 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-			 if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
+			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
 
 				if (ability == Abilities.RapidPunch) {
 					new RapidPunch(player, null);
@@ -534,174 +522,179 @@ public class BendingPlayerListener implements Listener{
 			}
 			return;
 		}
-			
-		if (player.isSneaking() && EntityTools.canBend(player, ability)) {
 
-			if (ability == Abilities.AirBurst) {
-				new AirBurstSphere(player, null);
-			}
-			
-			if (ability == Abilities.Shockwave) {
-				new ShockwaveArea(player, null);
-			}
-			if (ability == Abilities.FireBurst) {
-				new FireBurstSphere(player, null);
-			}
-		}
-		if (!player.isSneaking() && EntityTools.canBend(player, ability)) {
+		if (EntityTools.canBend(player, ability)) {
+			// If the player unsneaks
+			if (player.isSneaking()) {
+				if (ability == Abilities.AirBurst) {
+					new AirBurstSphere(player, null);
+				}
 
-			if (ability == Abilities.AirShield) {
-				new AirShield(player, null);
-				return;
+				if (ability == Abilities.Shockwave) {
+					new ShockwaveArea(player, null);
+				}
+
+				if (ability == Abilities.FireBurst) {
+					new FireBurstSphere(player, null);
+				}
 			}
 
-			if (ability == Abilities.AirSuction) {
-				AirSuction.setOrigin(player);
-			}
-
-			if (ability == Abilities.AirBurst) {
-				new AirBurst(player, null);
-			}
-
-			if (ability == Abilities.AirSwipe) {
-				AirSwipe.charge(player);
-			}
-			
-			if (ability == Abilities.Suffocate) {
-				new Suffocate(player, null);
-				return;
-			}
-
-			if (ability == Abilities.Tornado) {
-				new Tornado(player, null);
-			}
-
-			if (ability == Abilities.EarthBlast) {
-				new EarthBlast(player, null);
-				return;
-			}
-
-			if (ability == Abilities.EarthGrab) {
-				new EarthGrab(player, true, null);
-				return;
-			}
-
-			if (ability == Abilities.Shockwave) {
-				new Shockwave(player, null);
-			}
-
-			if (ability == Abilities.Tremorsense) {
-				BendingPlayer.getBendingPlayer(player).toggleTremorsense();
-			}
-
-			if (ability == Abilities.Collapse) {
-				new Collapse(player, null);
-			}
-
-			if (ability == Abilities.EarthArmor) {
-				new EarthShield(player, null);
-			}
-
-			if (ability == Abilities.WaterManipulation) {
-				new WaterManipulation(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.HealingWaters) {
-				new HealingWaters(player);
-			}
-
-			if (ability == Abilities.IceSpike) {
-				new IceSpike2(player, null);
-			}
-
-			if (ability == Abilities.EarthTunnel) {
-				new EarthTunnel(player, null);
-			}
-
-			if (ability == Abilities.RaiseEarth) {
-				new EarthWall(player, null);
-			}
-
-			if (ability == Abilities.Surge) {
-				WaterWall.form(player);
-			}
-
-			if (ability == Abilities.OctopusForm) {
-				OctopusForm.form(player);
-			}
-
-			if (ability == Abilities.Torrent) {
-				Torrent.create(player);
-			}
-
-			if (ability == Abilities.Bloodbending) {
-				new Bloodbending(player, null);
-			}
-
-			if (ability == Abilities.PhaseChange) {
-				new Melt(player, null);
-			}
-
-			if (ability == Abilities.Lightning) {
-				new Lightning(player, null);
-			}
-
-			if (ability == Abilities.Blaze) {
-				new RingOfFire(player, null);
-			}
-
-			if (ability == Abilities.FireBurst) {
-				new FireBurst(player, null);
-			}
-
-			if (ability == Abilities.FireBlast) {
-				new FireBall(player, null);
-			}
-
-			if (ability == Abilities.FireShield) {
-				new FireShield(player, null);
-			}
-
-			if (ability == Abilities.HeatControl) {
-				new Cook(player, null);
-			}
-			
-			if (ability == Abilities.MetalBending) {
-				MetalBending.metalMelt(player);
-			}
-			
-			if (ability == Abilities.Combustion) {
-				new Combustion(player, null);
-			}
-
-			if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast) || (ability == Abilities.PlasticBomb)) {
-				
-				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
-				
-				if ((abilities == null) || abilities.isEmpty()) {
-					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
-					ab.sneak();
+			if (!player.isSneaking()) {
+				// If the player sneaks
+				if (ability == Abilities.AirShield) {
+					new AirShield(player, null);
 					return;
 				}
-				
-				boolean shouldCreateNew = false;
-				for (Ability a : abilities.values()) {
-					if (a.getPlayer().equals(player)) {
-						if (a.sneak()) {
-							shouldCreateNew = true;
+
+				if (ability == Abilities.AirSuction) {
+					AirSuction.setOrigin(player);
+				}
+
+				if (ability == Abilities.AirBurst) {
+					new AirBurst(player, null);
+				}
+
+				if (ability == Abilities.AirSwipe) {
+					AirSwipe.charge(player);
+				}
+
+				if (ability == Abilities.Suffocate) {
+					new Suffocate(player, null);
+					return;
+				}
+
+				if (ability == Abilities.Tornado) {
+					new Tornado(player, null);
+				}
+
+				if (ability == Abilities.EarthBlast) {
+					new EarthBlast(player, null);
+					return;
+				}
+
+				if (ability == Abilities.EarthGrab) {
+					new EarthGrab(player, true, null);
+					return;
+				}
+
+				if (ability == Abilities.Shockwave) {
+					new Shockwave(player, null);
+				}
+
+				if (ability == Abilities.Tremorsense) {
+					BendingPlayer.getBendingPlayer(player).toggleTremorsense();
+				}
+
+				if (ability == Abilities.Collapse) {
+					new Collapse(player, null);
+				}
+
+				if (ability == Abilities.EarthArmor) {
+					new EarthShield(player, null);
+				}
+
+				if (ability == Abilities.WaterManipulation) {
+					new WaterManipulation(player, null);
+					return;
+				}
+
+				if (ability == Abilities.HealingWaters) {
+					new HealingWaters(player);
+				}
+
+				if (ability == Abilities.IceSpike) {
+					new IceSpike2(player, null);
+				}
+
+				if (ability == Abilities.EarthTunnel) {
+					new EarthTunnel(player, null);
+				}
+
+				if (ability == Abilities.RaiseEarth) {
+					new EarthWall(player, null);
+				}
+
+				if (ability == Abilities.Surge) {
+					WaterWall.form(player);
+				}
+
+				if (ability == Abilities.OctopusForm) {
+					OctopusForm.form(player);
+				}
+
+				if (ability == Abilities.Torrent) {
+					Torrent.create(player);
+				}
+
+				if (ability == Abilities.Bloodbending) {
+					new Bloodbending(player, null);
+				}
+
+				if (ability == Abilities.PhaseChange) {
+					new Melt(player, null);
+				}
+
+				if (ability == Abilities.Lightning) {
+					new Lightning(player, null);
+				}
+
+				if (ability == Abilities.Blaze) {
+					new RingOfFire(player, null);
+				}
+
+				if (ability == Abilities.FireBurst) {
+					new FireBurst(player, null);
+				}
+
+				if (ability == Abilities.FireBlast) {
+					new FireBall(player, null);
+				}
+
+				if (ability == Abilities.FireShield) {
+					new FireShield(player, null);
+				}
+
+				if (ability == Abilities.HeatControl) {
+					new Cook(player, null);
+				}
+
+				if (ability == Abilities.MetalBending) {
+					MetalBending.metalMelt(player);
+				}
+
+				if (ability == Abilities.Combustion) {
+					new Combustion(player, null);
+				}
+
+				if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast)
+						|| ((ability == Abilities.PlasticBomb) || (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble))) {
+
+					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
+
+					if ((abilities == null) || abilities.isEmpty()) {
+						Ability ab = AbilityManager.getManager().buildAbility(ability, player);
+						ab.sneak();
+						return;
+					}
+
+					boolean shouldCreateNew = false;
+					for (Ability a : abilities.values()) {
+						if (a.getPlayer().equals(player)) {
+							if (a.sneak()) {
+								shouldCreateNew = true;
+							}
 						}
 					}
+					if (shouldCreateNew) {
+						Ability ab = AbilityManager.getManager().buildAbility(ability, player);
+						ab.sneak();
+					}
+					return;
 				}
-				if (shouldCreateNew) {
-					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
-					ab.sneak();
-				}
-				return;
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSprint(PlayerToggleSprintEvent event) {
 		Player player = event.getPlayer();
@@ -718,20 +711,20 @@ public class BendingPlayerListener implements Listener{
 			new Speed(player);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			Abilities ability = EntityTools.getBendingAbility(player);
-			
+
 			if (event.getCause() == DamageCause.FALL) {
 				if (EntityTools.isBender(player, BendingType.Earth)) {
-		
+
 					if (ability == Abilities.Shockwave) {
 						new ShockwaveFall(player, null);
 					}
-					
+
 					if (EarthPassive.softenLanding(player)
 							&& EntityTools.canBendPassive(player, BendingType.Earth)) {
 						new Flight(player);
@@ -740,7 +733,7 @@ public class BendingPlayerListener implements Listener{
 						event.setDamage(0);
 						event.setCancelled(true);
 					}
-					
+
 					if (MetalWire.hasNoFallDamage(player)) {
 						player.setFallDistance(0);
 						event.setDamage(0);
@@ -782,7 +775,7 @@ public class BendingPlayerListener implements Listener{
 						}
 					}
 				}
-				
+
 				if(!event.isCancelled()) {
 					if(Tornado.preventFall(player)) {
 						event.setCancelled(true);
@@ -813,7 +806,7 @@ public class BendingPlayerListener implements Listener{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -841,19 +834,19 @@ public class BendingPlayerListener implements Listener{
 			distance1 = event.getFrom().distance(loc);
 			distance2 = event.getTo().distance(loc);
 			if (distance2 > distance1)
-			 {
+			{
 				player.setVelocity(new Vector(0, 0, 0));
-			// return;
+				// return;
 			}
 		}
-		
+
 		if (Dash.isDashing(player)) {
 			Vector dir = event.getTo().clone().subtract(event.getFrom()).toVector();
 			Dash d = Dash.getDash(player);
 			d.setDirection(dir);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerKick(PlayerKickEvent event) {
 		if(Bloodbending.isBloodbended(event.getPlayer())) {
@@ -865,7 +858,7 @@ public class BendingPlayerListener implements Listener{
 			event.setReason(null);
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerDropitem(PlayerDropItemEvent event) {
 		if(FireBlade.isFireBlade(event.getItemDrop().getItemStack())) {
@@ -875,23 +868,23 @@ public class BendingPlayerListener implements Listener{
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if ((event.getSlotType() == SlotType.ARMOR)
 				&& !EarthArmor.canRemoveArmor((Player) event.getWhoClicked())) {
 			event.setCancelled(true);
 		}
-		
+
 		if (FireBlade.isFireBlade(event.getCurrentItem())) {
 			event.setCancelled(true);
 		}
-		
+
 		if(Suffocate.isTempHelmet(event.getCurrentItem())) {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		if (EarthArmor.hasEarthArmor(event.getPlayer())) {
@@ -905,12 +898,12 @@ public class BendingPlayerListener implements Listener{
 		if(FireBlade.isFireBlading(event.getPlayer())) {
 			FireBlade.getFireBlading(event.getPlayer()).remove();
 		}
-		
+
 		if (EntityTools.speToggled(event.getPlayer())) {
 			EntityTools.speToggledBenders.remove(event.getPlayer());
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
 		Player p = event.getPlayer();
@@ -921,12 +914,12 @@ public class BendingPlayerListener implements Listener{
 			event.setCancelled(p.getGameMode() != GameMode.CREATIVE);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-	
+
 		EntityDamageEvent ede = event.getEntity().getLastDamageCause();
-		
+
 		if ((ede != null) && (ede.getCause() != null) && (ede.getCause() == DamageCause.LAVA)) {
 			Player player = event.getEntity();
 			Location loc = player.getLocation();
@@ -936,7 +929,7 @@ public class BendingPlayerListener implements Listener{
 						+ lT.getPlayer().getName() + "'s lava train");
 			}
 		}
-		
+
 		if (EarthArmor.hasEarthArmor(event.getEntity())) {
 			List<ItemStack> drops = event.getDrops();
 			List<ItemStack> newdrops = new ArrayList<ItemStack>();
@@ -953,7 +946,7 @@ public class BendingPlayerListener implements Listener{
 			event.getDrops().addAll(newdrops);
 			EarthArmor.removeEffect(event.getEntity());
 		}
-		
+
 		//Fireblade & Suffocate
 		List<ItemStack> toRemove = new LinkedList<ItemStack>();
 		for(ItemStack item : event.getDrops()) {

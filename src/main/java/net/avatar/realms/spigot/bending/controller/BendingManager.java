@@ -8,11 +8,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.WorldType;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
@@ -70,12 +75,6 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.WorldType;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-
 public class BendingManager implements Runnable {
 	public static List<Player> flyingplayers = new LinkedList<Player>();
 	public Bending plugin;
@@ -85,14 +84,15 @@ public class BendingManager implements Runnable {
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
 
 	public BendingManager(Bending bending) {
-		plugin = bending;
-		time = System.currentTimeMillis();
+		this.plugin = bending;
+		this.time = System.currentTimeMillis();
 	}
 
+	@Override
 	public void run() {
 		try {
-			Bending.time_step = System.currentTimeMillis() - time;
-			time = System.currentTimeMillis();
+			Bending.time_step = System.currentTimeMillis() - this.time;
+			this.time = System.currentTimeMillis();
 			
 			AbilityManager.getManager().progressAllAbilities();
 			
@@ -106,13 +106,12 @@ public class BendingManager implements Runnable {
 			handleDayNight();
 		} catch (Exception e) {
 			PluginTools.stopAllBending();
-			plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
+			this.plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
 		}
 
 	}
 
 	private void manageAirbending() {
-		AirBubble.progressAll();
 		AirShield.progressAll();
 		AirSuction.progressAll();
 		AirSwipe.progressAll();
@@ -197,22 +196,23 @@ public class BendingManager implements Runnable {
 	}
 
 	private void handleDayNight() {
-		for (World world : plugin.getServer().getWorlds())
-			if (world.getWorldType() == WorldType.NORMAL
-					&& !worlds.contains(world)) {
-				worlds.add(world);
-				nights.put(world, false);
-				days.put(world, false);
+		for (World world : this.plugin.getServer().getWorlds()) {
+			if ((world.getWorldType() == WorldType.NORMAL)
+					&& !this.worlds.contains(world)) {
+				this.worlds.add(world);
+				this.nights.put(world, false);
+				this.days.put(world, false);
 			}
+		}
 
 		List<World> removeWorlds = new LinkedList<World>();
-		for (World world : worlds) {
-			if (!plugin.getServer().getWorlds().contains(world)) {
+		for (World world : this.worlds) {
+			if (!this.plugin.getServer().getWorlds().contains(world)) {
 				removeWorlds.add(world);
 				continue;
 			}
-			boolean night = nights.get(world);
-			boolean day = days.get(world);
+			boolean night = this.nights.get(world);
+			boolean day = this.days.get(world);
 			if (Tools.isDay(world) && !day) {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Fire)
@@ -224,7 +224,7 @@ public class BendingManager implements Runnable {
 								+ "You feel the strength of the rising sun empowering your firebending.");
 					}
 				}
-				days.put(world, true);
+				this.days.put(world, true);
 			}
 
 			if (!Tools.isDay(world) && day) {
@@ -238,7 +238,7 @@ public class BendingManager implements Runnable {
 								+ "You feel the empowering of your firebending subside as the sun sets.");
 					}
 				}
-				days.put(world, false);
+				this.days.put(world, false);
 			}
 
 			if (Tools.isNight(world) && !night) {
@@ -252,7 +252,7 @@ public class BendingManager implements Runnable {
 								+ "You feel the strength of the rising moon empowering your waterbending.");
 					}
 				}
-				nights.put(world, true);
+				this.nights.put(world, true);
 			}
 
 			if (!Tools.isNight(world) && night) {
@@ -266,12 +266,12 @@ public class BendingManager implements Runnable {
 								+ "You feel the empowering of your waterbending subside as the moon sets.");
 					}
 				}
-				nights.put(world, false);
+				this.nights.put(world, false);
 			}
 		}
 
 		for (World world : removeWorlds) {
-			worlds.remove(world);
+			this.worlds.remove(world);
 		}
 	}
 
