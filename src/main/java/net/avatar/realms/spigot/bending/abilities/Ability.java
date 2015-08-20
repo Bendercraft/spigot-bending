@@ -117,6 +117,7 @@ public abstract class Ability {
 	 * Remove the ability from all instances
 	 */
 	public void remove() {
+		AbilityManager.getManager().getInstances(this.getAbilityType()).remove(this.getIdentifier());
 		setState(AbilityState.Removed);
 	}
 

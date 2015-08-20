@@ -248,12 +248,6 @@ public class PoisonnedDart extends Ability{
 	public Abilities getAbilityType() {
 		return Abilities.PoisonnedDart;
 	}
-	
-	@Override
-	public void remove() {
-		AbilityManager.getManager().getInstances(Abilities.PoisonnedDart).remove(this.player);
-		super.remove();
-	}
 
 	@Override
 	public Object getIdentifier() {

@@ -4,6 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
@@ -12,10 +16,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
-
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 @BendingAbility(name="Avatar State", element=BendingType.Energy)
 public class AvatarState extends Ability{
@@ -38,19 +38,19 @@ public class AvatarState extends Ability{
 	@Override
 	public boolean swing() {
 		
-		if (state == AbilityState.CannotStart) {
+		if (this.state == AbilityState.CannotStart) {
 			return true;
 		}
 		
-		if (state == AbilityState.Progressing) {
+		if (this.state == AbilityState.Progressing) {
 			setState(AbilityState.Ended);
 			return false;
 		}
 		
-		if (state == AbilityState.CanStart) {
+		if (this.state == AbilityState.CanStart) {
 			AbilityManager.getManager().addInstance(this);
 			setState(AbilityState.Progressing);
-			new Flight(player);
+			new Flight(this.player);
 		}
 
 		return false;
@@ -63,11 +63,11 @@ public class AvatarState extends Ability{
 			return false;
 		}
 		
-		if (state == AbilityState.Ended) {
+		if (this.state == AbilityState.Ended) {
 			return false;
 		}
 		
-		if (state == AbilityState.Progressing) {
+		if (this.state == AbilityState.Progressing) {
 			addPotionEffects();
 		}
 		
@@ -85,7 +85,7 @@ public class AvatarState extends Ability{
 	public static boolean isAvatarState (Player player) {
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
 		
-		if (instances == null || instances.isEmpty()) {
+		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
 		
@@ -106,7 +106,7 @@ public class AvatarState extends Ability{
 	public static List<Player> getPlayers() {
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
 		LinkedList<Player> players = new LinkedList<Player>();
-		if (instances == null || instances.isEmpty()) {
+		if ((instances == null) || instances.isEmpty()) {
 			return players;
 		}
 		
@@ -119,9 +119,8 @@ public class AvatarState extends Ability{
 	@Override
 	public void remove() {
 		long now = System.currentTimeMillis();
-		realDuration = now - startedTime;
-		bender.cooldown(Abilities.AvatarState, realDuration * COOLDOWN_FACTOR);
-		AbilityManager.getManager().getInstances(Abilities.AvatarState).remove(player);
+		this.realDuration = now - this.startedTime;
+		this.bender.cooldown(Abilities.AvatarState, this.realDuration * COOLDOWN_FACTOR);
 		super.remove();
 	}
 
@@ -137,6 +136,6 @@ public class AvatarState extends Ability{
 
 	@Override
 	public Object getIdentifier() {
-		return player;
+		return this.player;
 	}
 }

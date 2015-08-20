@@ -3,6 +3,15 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
@@ -13,15 +22,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 @BendingAbility(name="Smoke Bomb", element=BendingType.ChiBlocker)
 public class SmokeBomb extends Ability {
@@ -54,38 +54,38 @@ public class SmokeBomb extends Ability {
 	public SmokeBomb(Player player) {
 		super(player, null);
 		
-		if (state.equals(AbilityState.CannotStart)) {
+		if (this.state.equals(AbilityState.CannotStart)) {
 			return;
 		}
 		
 		this.origin = player.getLocation();
-		id = ID++;
+		this.id = ID++;
 		
 		this.ticksRemaining = DURATION * 20;
-		locs = new ArrayList<Location>();
-		targets = new ArrayList<LivingEntity>();
+		this.locs = new ArrayList<Location>();
+		this.targets = new ArrayList<LivingEntity>();
 
-		List<Block> blocks = BlockTools.getBlocksAroundPoint(origin, RADIUS);
+		List<Block> blocks = BlockTools.getBlocksAroundPoint(this.origin, RADIUS);
 		for (Block block : blocks) {
-			locs.add(block.getLocation());
+			this.locs.add(block.getLocation());
 		}		
 	}
 	
 	@Override
 	public boolean swing() {
-		if (state == AbilityState.CannotStart || state == AbilityState.Started) {
+		if ((this.state == AbilityState.CannotStart) || (this.state == AbilityState.Started)) {
 			return true;
 		}
 		
 		setState(AbilityState.Started);
 		
-		origin.getWorld().playSound(origin, Sound.FIREWORK_BLAST,(SOUND_RADIUS/16.0f), 1.1f);
-		player.addPotionEffect(blindnessBomber);
+		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST,(SOUND_RADIUS/16.0f), 1.1f);
+		this.player.addPotionEffect(blindnessBomber);
 		
-		bender.cooldown(Abilities.SmokeBomb, COOLDOWN);
+		this.bender.cooldown(Abilities.SmokeBomb, COOLDOWN);
 		AbilityManager.getManager().addInstance(this);
 		
-		if (state == AbilityState.Started) {
+		if (this.state == AbilityState.Started) {
 			setState(AbilityState.Progressing);
 		}
 		return false;
@@ -94,19 +94,19 @@ public class SmokeBomb extends Ability {
 	@Override
 	public boolean progress() {
 		
-		Bending.plugin.getLogger().info("Before : " + state);
-		if (state != AbilityState.Progressing) {
+		Bending.plugin.getLogger().info("Before : " + this.state);
+		if (this.state != AbilityState.Progressing) {
 			return false;
 		}
 		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(
-				origin, RADIUS);
+				this.origin, RADIUS);
 
-		blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS,
-				ticksRemaining, 2);
+		this.blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS,
+				this.ticksRemaining, 2);
 		
-		for (LivingEntity targ : targets) {
+		for (LivingEntity targ : this.targets) {
 			if (!newTargets.contains(targ)) {
-				if (targ.getEntityId() != player.getEntityId()) {
+				if (targ.getEntityId() != this.player.getEntityId()) {
 					targ.removePotionEffect(PotionEffectType.BLINDNESS);
 				}
 				else {
@@ -115,28 +115,28 @@ public class SmokeBomb extends Ability {
 			}
 		}
 		
-		targets.clear();
+		this.targets.clear();
 		
 		for (LivingEntity targ : newTargets) {
-			if (targ.getEntityId() != player.getEntityId()) {
-				targ.addPotionEffect(blindnessTarget);
+			if (targ.getEntityId() != this.player.getEntityId()) {
+				targ.addPotionEffect(this.blindnessTarget);
 			}
 			else {
-				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, ticksRemaining,1);
+				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining,1);
 				targ.addPotionEffect(invisibilityLauncher);
 			}
-			targets.add(targ);
+			this.targets.add(targ);
 		}
 		
-		if (ticksRemaining % 16 == 0) {
-			for (Location loc : locs) {
+		if ((this.ticksRemaining % 16) == 0) {
+			for (Location loc : this.locs) {
 				loc.getWorld().playEffect(loc, Effect.SMOKE, 1, 15);
 			}
 		}
 
-		ticksRemaining--;
-		Bending.plugin.getLogger().info("Ticks : " + ticksRemaining);
-		if (ticksRemaining <= 0) {
+		this.ticksRemaining--;
+		Bending.plugin.getLogger().info("Ticks : " + this.ticksRemaining);
+		if (this.ticksRemaining <= 0) {
 			setState(AbilityState.Ended);
 			return false;
 		}
@@ -146,19 +146,13 @@ public class SmokeBomb extends Ability {
 	}
 
 	@Override
-	public void remove() {
-		AbilityManager.getManager().getInstances(Abilities.SmokeBomb).remove(id);
-		super.remove();
-	}
-
-	@Override
 	public Abilities getAbilityType() {
 		return Abilities.SmokeBomb;
 	}
 
 	@Override
 	public Object getIdentifier() {
-		return id;
+		return this.id;
 	}
 
 	@Override
@@ -167,7 +161,7 @@ public class SmokeBomb extends Ability {
 			return false;
 		}
 		
-		if (EntityTools.isWeapon(player.getItemInHand().getType())) {
+		if (EntityTools.isWeapon(this.player.getItemInHand().getType())) {
 			return false;
 		}
 		return true;

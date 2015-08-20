@@ -57,19 +57,13 @@ public class PowerfulHit extends Ability{
 	}
 
 	@Override
-	public void remove() {
-		
-		super.remove();
-	}
-
-	@Override
 	public Abilities getAbilityType() {
 		return Abilities.PowerfulHit;
 	}
 
 	@Override
 	public Object getIdentifier() {
-		return player;
+		return this.player;
 	}
 
 	@Override
@@ -78,7 +72,7 @@ public class PowerfulHit extends Ability{
 			return false;
 		}
 		
-		if (EntityTools.isWeapon(player.getItemInHand().getType())) {
+		if (EntityTools.isWeapon(this.player.getItemInHand().getType())) {
 			return false;
 		}
 		

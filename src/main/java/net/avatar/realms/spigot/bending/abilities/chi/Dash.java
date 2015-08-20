@@ -33,11 +33,11 @@ public class Dash extends Ability {
 	
 	@Override
 	public boolean sneak() {
-		if (state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(AbilityState.CanStart)) {
 			return true;
 		}
 		
-		if (state == AbilityState.CanStart) {
+		if (this.state == AbilityState.CanStart) {
 			AbilityManager.getManager().addInstance(this);
 			setState(AbilityState.Started);
 		}
@@ -47,7 +47,7 @@ public class Dash extends Ability {
 
 	public static boolean isDashing(Player player) {
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.Dash);
-		if (instances == null || instances.isEmpty()) {
+		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
 		return instances.containsKey(player);
@@ -63,42 +63,41 @@ public class Dash extends Ability {
 			return false;
 		}
 		
-		if (state != AbilityState.Progressing) {
+		if (this.state != AbilityState.Progressing) {
 			return true;
 		}
-		System.out.println(player.getLocation().toString());
+		System.out.println(this.player.getLocation().toString());
 		dash();
 		return false;
 	}
 
 	public void dash() {
-		Vector dir = new Vector(direction.getX() * LENGTH, HEIGHT, direction.getZ() * LENGTH);
-		player.setVelocity(dir);
+		Vector dir = new Vector(this.direction.getX() * LENGTH, HEIGHT, this.direction.getZ() * LENGTH);
+		this.player.setVelocity(dir);
 		setState(AbilityState.Ended);
 	}
 
 	// This should be called in OnMoveEvent to set the direction dash the same as the player
 	public void setDirection(Vector d) {
-		if (state != AbilityState.Started) {
+		if (this.state != AbilityState.Started) {
 			return;
 		}
 		if (Double.isNaN(d.getX()) 
 				|| Double.isNaN(d.getY())
 				|| Double.isNaN(d.getZ())
-				|| ((d.getX() < 0.005 && d.getX() > -0.005)
-				&& (d.getZ() < 0.005 && d.getZ() > -0.005))) {
-			this.direction = player.getLocation().getDirection().clone().normalize();
+				|| (((d.getX() < 0.005) && (d.getX() > -0.005))
+				&& ((d.getZ() < 0.005) && (d.getZ() > -0.005)))) {
+			this.direction = this.player.getLocation().getDirection().clone().normalize();
 		} else {
 			this.direction = d.normalize();
 		}
-		System.out.println(player.getLocation().toString());
+		System.out.println(this.player.getLocation().toString());
 		setState(AbilityState.Progressing);
 	}
 	
 	@Override
 	public void remove() {
-		bender.cooldown(Abilities.Dash, COOLDOWN);
-		AbilityManager.getManager().getInstances(Abilities.Dash).remove(player);
+		this.bender.cooldown(Abilities.Dash, COOLDOWN);
 		super.remove();
 	}
 
@@ -109,7 +108,7 @@ public class Dash extends Ability {
 
 	@Override
 	public Object getIdentifier() {
-		return player;
+		return this.player;
 	}
 
 }

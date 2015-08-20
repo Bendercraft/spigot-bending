@@ -366,11 +366,6 @@ public class C4 extends Ability{
 		}
 	}
 
-	@Override
-	public void remove() {
-		AbilityManager.getManager().getInstances(Abilities.PlasticBomb).remove(this.id);
-	}
-
 	public static Object isCFour(Block block) {
 		if (block.getType() != Material.SKULL) {
 			return null;
