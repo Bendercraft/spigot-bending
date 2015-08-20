@@ -58,6 +58,9 @@ public class C4 extends Ability{
 	@ConfigurationParameter("Max-Range")
 	private static int MAX_RANGE = 3;
 
+	@ConfigurationParameter("Max-Duration")
+	private static long MAX_DURATION = 1000 * 60 * 10;
+
 	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
 
 	private int id;
@@ -395,6 +398,11 @@ public class C4 extends Ability{
 	@Override
 	public Object getIdentifier() {
 		return this.id;
+	}
+
+	@Override
+	protected long getMaxMillis () {
+		return MAX_DURATION;
 	}
 
 	public static C4 getCFour(Object id) {
