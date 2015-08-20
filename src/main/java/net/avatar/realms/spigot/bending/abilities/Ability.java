@@ -138,14 +138,31 @@ public abstract class Ability {
 		return this.parent;
 	}
 
+	/**
+	 * 
+	 * @return The player that launch this ability
+	 */
 	public final Player getPlayer() {
 		return this.player;
 	}
 
+	/**
+	 * 
+	 * @return The BendingPlayer(bender) that launch this ability
+	 */
 	public final BendingPlayer getBender() {
 		return this.bender;
 	}
 
+	/**
+	 * This method is used by the Ability Constructor to determine if the
+	 * ability can be launched or not The ability state will then be changed to
+	 * CanStart or CannotStart according to this result
+	 * 
+	 * @return <code>true</code> if the ability can be launched
+	 *         <code>false</code> if the ability cannot be launched
+	 * 
+	 */
 	public boolean canBeInitialized() {
 		if (this.player == null) {
 			return false;
