@@ -38,46 +38,46 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name="Poisonned Dart", element=BendingType.ChiBlocker, specialization = BendingSpecializationType.Inventor)
 public class PoisonnedDart extends Ability{
-	
+
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 2;
-	
+
 	@ConfigurationParameter("Range")
 	private static int RANGE = 20;
-	
+
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2000;
-	
+
 	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
-	
+
 	private Location origin;
 	private Location location;
 	private Vector direction;
 	private List<PotionEffect> effects;
-	
+
 	public PoisonnedDart(Player player) {
 		super(player, null);
-		
+
 		if (this.state.equals(AbilityState.CannotStart)) {
 			return;
 		}
 	}
-	
+
 	@Override
 	public boolean swing() {
-		
+
 		if (this.state.equals(AbilityState.CannotStart) || this.state.equals(AbilityState.Started)) {
 			return true;
 		}
-		
+
 		this.origin = this.player.getEyeLocation();
 		this.location = this.origin.clone();
 		this.direction = this.origin.getDirection().normalize();
-		
+
 		setState(AbilityState.Started);
-		
+
 		AbilityManager.getManager().addInstance(this);
-		
+
 		ItemStack is = this.player.getItemInHand();
 		this.effects = new LinkedList<PotionEffect>();
 		System.out.println(is.toString());
@@ -111,7 +111,7 @@ public class PoisonnedDart extends Ability{
 				byte data = is.getData().getData();
 				// If this is a wither skull
 				if (data == 1) {
-					this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 15, 1));
+					this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 60, 0));
 					if (is.getAmount() == 1) {
 						this.player.getInventory().removeItem(is);
 					}
@@ -127,7 +127,7 @@ public class PoisonnedDart extends Ability{
 
 		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
 		this.bender.cooldown(Abilities.PoisonnedDart, COOLDOWN);
-		
+
 		return false;
 	}
 
@@ -136,37 +136,37 @@ public class PoisonnedDart extends Ability{
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if (this.state.isBefore(AbilityState.Started)) {
 			return true;
 		}
-		
+
 		if (this.state == AbilityState.Started) {
 			setState(AbilityState.Progressing);
 		}
-		
+
 		if (this.state != AbilityState.Progressing){
 			return true;
 		}
-		
+
 		if (!this.player.getWorld().equals(this.location.getWorld())) {
 			return false;
 		}
 		if (this.location.distance(this.origin) > RANGE) {
 			return false;
 		}
-		
+
 		if (BlockTools.isSolid(this.location.getBlock())) {
 			return false;
 		}
-		
+
 		advanceLocation();
 		if (!affectAround()) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean affectAround() {
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.PoisonnedDart, this.location)) {
 			return false;
@@ -177,7 +177,7 @@ public class PoisonnedDart extends Ability{
 			if (entity.getEntityId() == this.player.getEntityId()) {
 				continue;
 			}
-			
+
 			if (this.effects == null) {
 				for (PotionEffect effect : entity.getActivePotionEffects()) {
 					entity.removePotionEffect(effect.getType());
@@ -201,7 +201,7 @@ public class PoisonnedDart extends Ability{
 		}
 		return true;
 	}
-	
+
 	private boolean areHealthEffects() {
 		if (this.effects == null) {
 			return false;
@@ -214,36 +214,36 @@ public class PoisonnedDart extends Ability{
 				healthEffects.add(effect);
 			}
 		}
-		
+
 		return !healthEffects.isEmpty();
 	}
 	private void advanceLocation() {
 		VISUAL.display(0, 0, 0, 1, 1, this.location, 20);
 		this.location = this.location.add(this.direction.clone().multiply(1.5));
 	}
-	
+
 	@Override
 	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		if (EntityTools.isWeapon(this.player.getItemInHand().getType())) {
 			return false;
 		}
-		
+
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.PoisonnedDart);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
-			
+
 		if (instances.containsKey(this.player)) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public Abilities getAbilityType() {
 		return Abilities.PoisonnedDart;
@@ -253,5 +253,5 @@ public class PoisonnedDart extends Ability{
 	public Object getIdentifier() {
 		return this.player;
 	}
-	
+
 }
