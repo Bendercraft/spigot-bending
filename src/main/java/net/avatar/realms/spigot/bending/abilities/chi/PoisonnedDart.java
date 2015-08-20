@@ -58,7 +58,7 @@ public class PoisonnedDart extends Ability{
 	public PoisonnedDart(Player player) {
 		super(player, null);
 		
-		if (state.equals(AbilityState.CannotStart)) {
+		if (this.state.equals(AbilityState.CannotStart)) {
 			return;
 		}
 	}
@@ -66,44 +66,44 @@ public class PoisonnedDart extends Ability{
 	@Override
 	public boolean swing() {
 		
-		if (state.equals(AbilityState.CannotStart) || state.equals(AbilityState.Started)) {
+		if (this.state.equals(AbilityState.CannotStart) || this.state.equals(AbilityState.Started)) {
 			return true;
 		}
 		
-		origin = player.getEyeLocation();
-		location = origin.clone();
-		direction = origin.getDirection().normalize();
+		this.origin = this.player.getEyeLocation();
+		this.location = this.origin.clone();
+		this.direction = this.origin.getDirection().normalize();
 		
 		setState(AbilityState.Started);
 		
 		AbilityManager.getManager().addInstance(this);
 		
-		ItemStack is = player.getItemInHand();
-		effects = new LinkedList<PotionEffect>();
+		ItemStack is = this.player.getItemInHand();
+		this.effects = new LinkedList<PotionEffect>();
 		System.out.println(is.toString());
 		switch (is.getType()) {
 			case MILK_BUCKET:
-				effects = null;
+				this.effects = null;
 				is.setType(Material.BUCKET);
 				is.setAmount(1);
 				break;
 			case POTION:
 				Potion potion = Potion.fromItemStack(is);
-				effects.addAll(potion.getEffects());
-				player.getInventory().removeItem(is);
-				player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
+				this.effects.addAll(potion.getEffects());
+				this.player.getInventory().removeItem(is);
+				this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
 				break;
 			case EYE_OF_ENDER:
-				effects.add(new PotionEffect(PotionEffectType.BLINDNESS,20*10,1));
+				this.effects.add(new PotionEffect(PotionEffectType.BLINDNESS,20*10,1));
 				if (is.getAmount() == 1) {
-					player.getInventory().removeItem(is);
+					this.player.getInventory().removeItem(is);
 				}
 				else {
 					is.setAmount(is.getAmount() - 1);
 				}
 				break;
 			case MUSHROOM_SOUP:
-				effects.add(new PotionEffect(PotionEffectType.CONFUSION,20*12,1));
+				this.effects.add(new PotionEffect(PotionEffectType.CONFUSION,20*12,1));
 				is.setType(Material.BOWL);
 				is.setAmount(1);
 				break;
@@ -111,9 +111,9 @@ public class PoisonnedDart extends Ability{
 				byte data = is.getData().getData();
 				// If this is a wither skull
 				if (data == 1) {
-					effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 15, 1));
+					this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 15, 1));
 					if (is.getAmount() == 1) {
-						player.getInventory().removeItem(is);
+						this.player.getInventory().removeItem(is);
 					}
 					else {
 						is.setAmount(is.getAmount() - 1);
@@ -121,41 +121,42 @@ public class PoisonnedDart extends Ability{
 				}
 				break;
 			default : 
-				effects.add(new PotionEffect(PotionEffectType.POISON, 20*1, 0));
+				this.effects.add(new PotionEffect(PotionEffectType.POISON, 20*1, 0));
 				break;
 		}
 
-		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
-		bender.cooldown(Abilities.PoisonnedDart, COOLDOWN);
+		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
+		this.bender.cooldown(Abilities.PoisonnedDart, COOLDOWN);
 		
 		return false;
 	}
 
+	@Override
 	public boolean progress() {	
 		if (!super.progress()) {
 			return false;
 		}
 		
-		if (state.isBefore(AbilityState.Started)) {
+		if (this.state.isBefore(AbilityState.Started)) {
 			return true;
 		}
 		
-		if (state == AbilityState.Started) {
+		if (this.state == AbilityState.Started) {
 			setState(AbilityState.Progressing);
 		}
 		
-		if (state != AbilityState.Progressing){
+		if (this.state != AbilityState.Progressing){
 			return true;
 		}
 		
-		if (!player.getWorld().equals(location.getWorld())) {
+		if (!this.player.getWorld().equals(this.location.getWorld())) {
 			return false;
 		}
-		if (location.distance(origin) > RANGE) {
+		if (this.location.distance(this.origin) > RANGE) {
 			return false;
 		}
 		
-		if (BlockTools.isSolid(location.getBlock())) {
+		if (BlockTools.isSolid(this.location.getBlock())) {
 			return false;
 		}
 		
@@ -167,29 +168,29 @@ public class PoisonnedDart extends Ability{
 	}
 	
 	private boolean affectAround() {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PoisonnedDart, location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.PoisonnedDart, this.location)) {
 			return false;
 		}		
 		int cptEnt = 0;
 		boolean health = areHealthEffects();
-		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.1)) {
-			if (entity.getEntityId() == player.getEntityId()) {
+		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, 2.1)) {
+			if (entity.getEntityId() == this.player.getEntityId()) {
 				continue;
 			}
 			
-			if (effects == null) {
+			if (this.effects == null) {
 				for (PotionEffect effect : entity.getActivePotionEffects()) {
 					entity.removePotionEffect(effect.getType());
 				}
 				entity.getActivePotionEffects().clear();
 			}
 			else {
-				for (PotionEffect effect : effects) {
+				for (PotionEffect effect : this.effects) {
 					entity.addPotionEffect(effect);	
 				}
 			}
-			if (!health && effects != null) {
-				EntityTools.damageEntity(player, entity, DAMAGE);
+			if (!health && (this.effects != null)) {
+				EntityTools.damageEntity(this.player, entity, DAMAGE);
 			}
 			cptEnt++;
 			break;
@@ -202,31 +203,23 @@ public class PoisonnedDart extends Ability{
 	}
 	
 	private boolean areHealthEffects() {
-		if (effects == null) {
+		if (this.effects == null) {
 			return false;
 		}
 		LinkedList<PotionEffect> healthEffects = new LinkedList<PotionEffect>();
-		for (PotionEffect effect : effects) {
+		for (PotionEffect effect : this.effects) {
 			if (effect.getType().equals(PotionEffectType.HEAL)
 					|| effect.getType().equals(PotionEffectType.HEALTH_BOOST)
 					|| effect.getType().equals(PotionEffectType.REGENERATION)) {
 				healthEffects.add(effect);
 			}
 		}
-//		
-//		effects.removeAll(healthEffects);
-//		for (PotionEffect ef : healthEffects) {
-//			System.out.println(ef.getDuration());
-//			PotionEffect newP = new PotionEffect(ef.getType(), (int) (ef.getDuration() * 1.5), ef.getAmplifier());
-//			System.out.println(newP.getDuration());
-//			effects.add(newP);
-//		}
 		
 		return !healthEffects.isEmpty();
 	}
 	private void advanceLocation() {
-		VISUAL.display(0, 0, 0, 1, 1, location, 20);
-		location = location.add(direction.clone().multiply(1.5));
+		VISUAL.display(0, 0, 0, 1, 1, this.location, 20);
+		this.location = this.location.add(this.direction.clone().multiply(1.5));
 	}
 	
 	@Override
@@ -235,16 +228,16 @@ public class PoisonnedDart extends Ability{
 			return false;
 		}
 		
-		if (EntityTools.isWeapon(player.getItemInHand().getType())) {
+		if (EntityTools.isWeapon(this.player.getItemInHand().getType())) {
 			return false;
 		}
 		
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.PoisonnedDart);
-		if (instances == null || instances.isEmpty()) {
+		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
 			
-		if (instances.containsKey(player)) {
+		if (instances.containsKey(this.player)) {
 			return false;
 		}
 		
@@ -258,13 +251,13 @@ public class PoisonnedDart extends Ability{
 	
 	@Override
 	public void remove() {
-		AbilityManager.getManager().getInstances(Abilities.PoisonnedDart).remove(player);
+		AbilityManager.getManager().getInstances(Abilities.PoisonnedDart).remove(this.player);
 		super.remove();
 	}
 
 	@Override
 	public Object getIdentifier() {
-		return player;
+		return this.player;
 	}
 	
 }

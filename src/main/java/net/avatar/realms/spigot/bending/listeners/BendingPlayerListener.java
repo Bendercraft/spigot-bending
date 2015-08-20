@@ -145,7 +145,7 @@ public class BendingPlayerListener implements Listener{
 				} else {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 					List<BendingType> els = bender.getBendingTypes();
-					if (els != null && !els.isEmpty()) {
+					if ((els != null) && !els.isEmpty()) {
 						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
 					}
 				}
@@ -201,18 +201,6 @@ public class BendingPlayerListener implements Listener{
 			return;
 		}
 		
-//		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-//			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-//			
-//			if (bPlayer.isBender(BendingType.ChiBlocker)) {
-//				Abilities abi = bPlayer.getAbility();
-//				if (abi == Abilities.PlasticBomb && EntityTools.canBend(player, abi)){
-//					new C4(player, event.getClickedBlock(), event.getBlockFace());
-//				}
-//			}
-//			bPlayer.cooldown();
-//		}
-		
 		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {
 			event.setCancelled(true);
 		}
@@ -243,7 +231,7 @@ public class BendingPlayerListener implements Listener{
 			return;
 		}
 
-		if (ability == Abilities.MetalBending
+		if ((ability == Abilities.MetalBending)
 				&& EntityTools.canBend(player, ability)) {
 			MetalWire.pull(player, event.getHook());
 		}
@@ -261,8 +249,9 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
-		if (!(Settings.CHAT_ENABLED))
+		if (!(Settings.CHAT_ENABLED)) {
 			return;
+		}
 		if (!(Settings.CHAT_COMPATIBILITY)) {
 
 			Player player = event.getPlayer();
@@ -274,7 +263,7 @@ public class BendingPlayerListener implements Listener{
 				} else {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 					List<BendingType> els = bender.getBendingTypes();
-					if (els != null && els.isEmpty()) {
+					if ((els != null) && els.isEmpty()) {
 						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
 					}
 				}
@@ -305,14 +294,14 @@ public class BendingPlayerListener implements Listener{
 			
 		if (EntityTools.canBend(player, ability)) {
 			
-			if (ability == Abilities.PoisonnedDart || 
-					ability == Abilities.SmokeBomb || 
-					ability == Abilities.AvatarState || 
-					ability == Abilities.AirBlast ||
-					ability == Abilities.PlasticBomb) {
+			if ((ability == Abilities.PoisonnedDart) || 
+					(ability == Abilities.SmokeBomb) || 
+					(ability == Abilities.AvatarState) || 
+					(ability == Abilities.AirBlast) ||
+					(ability == Abilities.PlasticBomb)) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 				
-				if (abilities == null || abilities.isEmpty()) {
+				if ((abilities == null) || abilities.isEmpty()) {
 					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.swing();
 					return;
@@ -349,7 +338,7 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 			
-			if (ability == Abilities.Tremorsense && player.isSneaking()) {
+			if ((ability == Abilities.Tremorsense) && player.isSneaking()) {
 				new Tremorsense(player, false, null);
 				return;
 			}
@@ -420,7 +409,7 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 			
-			if (ability == Abilities.LavaTrain && player.isSneaking()) {
+			if ((ability == Abilities.LavaTrain) && player.isSneaking()) {
 				new LavaTrain(player, null);
 				return;
 			}
@@ -538,7 +527,7 @@ public class BendingPlayerListener implements Listener{
 		AirScooter.check(player);
 
 		Abilities ability = EntityTools.getBendingAbility(player);
-		if (ability == null || !ability.isShiftAbility()) {
+		if ((ability == null) || !ability.isShiftAbility()) {
 			if (EntityTools.isBender(player,BendingType.Water)
 					&& EntityTools.canBendPassive(player, BendingType.Water)){
 				new FastSwimming(player);
@@ -686,11 +675,11 @@ public class BendingPlayerListener implements Listener{
 				new Combustion(player, null);
 			}
 
-			if (ability == Abilities.Dash || ability == Abilities.AirBlast || ability == Abilities.PlasticBomb) {
+			if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast) || (ability == Abilities.PlasticBomb)) {
 				
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 				
-				if (abilities == null || abilities.isEmpty()) {
+				if ((abilities == null) || abilities.isEmpty()) {
 					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.sneak();
 					return;
@@ -787,7 +776,7 @@ public class BendingPlayerListener implements Listener{
 						&& EntityTools.isBender(player, BendingType.ChiBlocker)) {
 					if (EntityTools.canBendPassive(player,
 							BendingType.ChiBlocker)) {
-						event.setDamage((int) ((double) event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
+						event.setDamage((int) (event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
 						if (event.getEntity().getFallDistance() < 10) {
 							event.setCancelled(true);
 						}
@@ -801,7 +790,7 @@ public class BendingPlayerListener implements Listener{
 				}
 			}
 
-			if (!event.isCancelled() && event.getCause() == DamageCause.FALL) {
+			if (!event.isCancelled() && (event.getCause() == DamageCause.FALL)) {
 				Player source = Flight.getLaunchedBy(player);
 				if (source != null) {
 					event.setCancelled(true);
@@ -811,13 +800,13 @@ public class BendingPlayerListener implements Listener{
 
 			if (EntityTools.canBendPassive(player, BendingType.Fire)
 					&& EntityTools.isBender(player, BendingType.Fire)
-					&& (event.getCause() == DamageCause.FIRE || event
-							.getCause() == DamageCause.FIRE_TICK)) {
+					&& ((event.getCause() == DamageCause.FIRE) || (event
+							.getCause() == DamageCause.FIRE_TICK))) {
 				event.setCancelled(!Extinguish.canBurn(player));
 			}
 
 			if (EntityTools.isBender(player, BendingType.Earth)
-					&& (event.getCause() == DamageCause.SUFFOCATION && TempBlock
+					&& ((event.getCause() == DamageCause.SUFFOCATION) && TempBlock
 							.isTempBlock(player.getEyeLocation().getBlock()))) {
 				event.setDamage(0);
 				event.setCancelled(true);
@@ -852,8 +841,10 @@ public class BendingPlayerListener implements Listener{
 			distance1 = event.getFrom().distance(loc);
 			distance2 = event.getTo().distance(loc);
 			if (distance2 > distance1)
+			 {
 				player.setVelocity(new Vector(0, 0, 0));
 			// return;
+			}
 		}
 		
 		if (Dash.isDashing(player)) {
@@ -887,7 +878,7 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (event.getSlotType() == SlotType.ARMOR
+		if ((event.getSlotType() == SlotType.ARMOR)
 				&& !EarthArmor.canRemoveArmor((Player) event.getWhoClicked())) {
 			event.setCancelled(true);
 		}
@@ -936,7 +927,7 @@ public class BendingPlayerListener implements Listener{
 	
 		EntityDamageEvent ede = event.getEntity().getLastDamageCause();
 		
-		if (ede != null && ede.getCause() != null && ede.getCause() == DamageCause.LAVA) {
+		if ((ede != null) && (ede.getCause() != null) && (ede.getCause() == DamageCause.LAVA)) {
 			Player player = event.getEntity();
 			Location loc = player.getLocation();
 			LavaTrain lT = LavaTrain.getLavaTrain(loc.getBlock());
