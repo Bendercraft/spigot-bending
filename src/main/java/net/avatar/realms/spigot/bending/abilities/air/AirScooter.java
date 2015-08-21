@@ -177,6 +177,11 @@ public class AirScooter extends Ability {
 		return this.player;
 	}
 
+	@Override
+	protected long getMaxMillis () {
+		return 1000 * 60 * 10;
+	}
+
 	public static boolean isOnScooter (Player player) {
 
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirScooter);
