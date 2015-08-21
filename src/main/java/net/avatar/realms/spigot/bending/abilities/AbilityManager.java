@@ -21,6 +21,7 @@ import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirManipulation;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
+import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
@@ -117,6 +118,8 @@ public class AbilityManager {
 				return new AirScooter(player);
 			case AirShield:
 				return new AirShield(player);
+			case AirSpout:
+				return new AirSpout(player);
 
 			case WaterBubble:
 				return new WaterBubble(player);
@@ -163,7 +166,7 @@ public class AbilityManager {
 		register(AirManipulation.class);
 		register(AirScooter.class);
 		register(AirShield.class);
-		//		register(AirSpout.class);
+		register(AirSpout.class);
 		//		register(AirSwipe.class);
 		register(Speed.class);
 		//		register(Suffocate.class);

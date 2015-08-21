@@ -287,8 +287,9 @@ public class BendingPlayerListener implements Listener{
 		if (EntityTools.canBend(player, ability)) {
 
 			if ((ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
-			        || (ability == Abilities.AirBlast) || (ability == Abilities.HighJump) ||
-					(ability == Abilities.PlasticBomb) || (ability == Abilities.AirScooter)) {
+					|| (ability == Abilities.AirBlast) || (ability == Abilities.HighJump) ||
+ (ability == Abilities.PlasticBomb)
+			        || (ability == Abilities.AirScooter) || (ability == Abilities.AirSpout)) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -320,11 +321,6 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.AirSwipe) {
 				new AirSwipe(player, null);
-				return;
-			}
-
-			if (ability == Abilities.AirSpout) {
-				new AirSpout(player, null);
 				return;
 			}
 

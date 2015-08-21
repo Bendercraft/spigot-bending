@@ -133,7 +133,6 @@ public class PluginTools {
 	
 	public static void stopAllBending() {
 		AirSuction.removeAll();
-		AirSpout.removeAll();
 		AirSwipe.removeAll();
 		Tornado.removeAll();
 		Suffocate.removeAll();

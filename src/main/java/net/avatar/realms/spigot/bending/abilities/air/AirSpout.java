@@ -1,8 +1,6 @@
 package net.avatar.realms.spigot.bending.abilities.air;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,84 +10,89 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
 @BendingAbility(name="Air Spout", element=BendingType.Air)
-public class AirSpout implements IAbility {
-
-	private static Map<Player, AirSpout> instances = new HashMap<Player, AirSpout>();
+public class AirSpout extends Ability {
 
 	@ConfigurationParameter("Height")
 	private static double HEIGHT = 20.0;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 250;
-	
+
 	private static final long interval = 100;
-	
+
 	private static final ParticleEffect VISUAL = ParticleEffect.ENCHANTMENT_TABLE;
 
-	private Player player;
-	private long time;
 	private int angle = 0;
-	private IAbility parent;
 
-	public AirSpout(Player player, IAbility parent) {
-		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+	private long time;
 
-		if (bPlayer.isOnCooldown(Abilities.AirSpout)) {
+	public AirSpout (Player player) {
+		super(player, null);
+
+		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
 
-		if (instances.containsKey(player)) {
-			instances.get(player).remove();
-			return;
-		}
-		this.player = player;
-		this.time = System.currentTimeMillis();
-		new Flight(player);
-		instances.put(player, this);
-		bPlayer.cooldown(Abilities.AirSpout, COOLDOWN);
-		boolean keep = spout();
-		if(!keep) {
-			this.remove();
-		}
+		this.time = this.startedTime;
 	}
 
-	public static void spoutAll() {
-		List<AirSpout> toRemove = new LinkedList<AirSpout>();
-		for (AirSpout spout : instances.values()) {
-			boolean keep = spout.spout();
-			if(!keep) {
-				toRemove.add(spout);
+	@Override
+	public boolean swing () {
+
+		if (this.state.isBefore(AbilityState.CanStart)) {
+			return true;
+		}
+
+		if (this.state == AbilityState.CanStart) {
+			setState(AbilityState.Progressing);
+			new Flight(this.player);
+			AbilityManager.getManager().addInstance(this);
+			return false;
+		}
+
+		if (this.state == AbilityState.Progressing) {
+			long now = System.currentTimeMillis();
+			if (now >= (this.startedTime + 200)) {
+				setState(AbilityState.Ended);
+				return false;
 			}
 		}
-		
-		for (AirSpout spout : toRemove) {
-			spout.remove();
-		}
+
+		return false;
 	}
 
 	public static List<Player> getPlayers() {
 		List<Player> players = new ArrayList<Player>();
-		players.addAll(instances.keySet());
+		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
+
+		if ((instances == null) || instances.isEmpty()) {
+			return players;
+		}
+
+		for (Object ob : instances.keySet()) {
+			players.add((Player) ob);
+		}
 		return players;
 	}
 
-	private boolean spout() {
-		if (!EntityTools.canBend(this.player, Abilities.AirSpout)
-				|| this.player.getEyeLocation().getBlock().isLiquid()
-				|| BlockTools.isSolid(this.player.getEyeLocation().getBlock())
-				|| this.player.isDead() || !this.player.isOnline()) {
+	@Override
+	public boolean progress () {
+		if (!super.progress()) {
+			return false;
+		}
+		if (this.player.getEyeLocation().getBlock().isLiquid()
+				|| BlockTools.isSolid(this.player.getEyeLocation().getBlock())) {
 			return false;
 		}
 		this.player.setFallDistance(0);
@@ -106,21 +109,18 @@ public class AirSpout implements IAbility {
 		} else {
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	private void allowFlight() {
 		this.player.setAllowFlight(true);
 		this.player.setFlying(true);
-		// flight speed too
 	}
 
 	private void removeFlight() {
 		this.player.setAllowFlight(false);
 		this.player.setFlying(false);
-		// player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE);
-		// flight speed too
 	}
 
 	private Block getGround() {
@@ -132,6 +132,12 @@ public class AirSpout implements IAbility {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void remove () {
+		this.bender.cooldown(Abilities.AirSpout, COOLDOWN);
+		super.remove();
 	}
 
 	private void rotateAirColumn(Block block) {
@@ -173,8 +179,14 @@ public class AirSpout implements IAbility {
 
 	public static void removeSpouts(Location loc0, double radius,
 			Player sourceplayer) {
-		List<AirSpout> toRemove = new LinkedList<AirSpout>();
-		for (Player player : instances.keySet()) {
+		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
+
+		if ((instances == null) || instances.isEmpty()) {
+			return;
+		}
+
+		for (Object o : instances.keySet()) {
+			Player player = (Player) o;
 			if (!player.equals(sourceplayer)) {
 				Location loc1 = player.getLocation().getBlock().getLocation();
 				loc0 = loc0.getBlock().getLocation();
@@ -185,34 +197,54 @@ public class AirSpout implements IAbility {
 				double distance = Math.sqrt((dx * dx) + (dz * dz));
 
 				if ((distance <= radius) && (dy > 0) && (dy < HEIGHT)) {
-					toRemove.add(instances.get(player));
+					instances.get(o).consume();
 				}
 			}
 		}
-		for(AirSpout spout : toRemove) {
-			spout.remove();
-		}
 	}
 
-	private void clear() {
-		removeFlight();
-	}
-	
-	private void remove() {
-		clear();
-		instances.remove(this.player);
-	}
+	public static boolean isSpouting (Player player) {
+		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
 
-	public static void removeAll() {
-		for (AirSpout spout : instances.values()) {
-			spout.clear();
+		if ((instances == null) || instances.isEmpty()) {
+			return false;
 		}
-		instances.clear();
+
+		return instances.containsKey(player);
 	}
 
 	@Override
-	public IAbility getParent() {
-		return this.parent;
+	protected long getMaxMillis () {
+		return 1000 * 60 * 20;
+	}
+
+	@Override
+	public boolean canBeInitialized () {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		if (isSpouting(this.player)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public void stop () {
+		removeFlight();
+	}
+
+
+	@Override
+	public Abilities getAbilityType () {
+		return Abilities.AirSpout;
+	}
+
+	@Override
+	public Object getIdentifier () {
+		return this.player;
 	}
 
 }
