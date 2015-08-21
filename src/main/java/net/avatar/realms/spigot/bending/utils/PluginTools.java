@@ -29,7 +29,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
-import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBall;
@@ -151,7 +150,6 @@ public class PluginTools {
 		EarthArmor.removeAll();
 		EarthTunnel.removeAll();
 		Shockwave.removeAll();
-		Tremorsense.removeAll();
 		LavaTrain.removeAll();
 
 		FreezeMelt.removeAll();

@@ -38,7 +38,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.Ripple;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
-import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
@@ -130,7 +129,6 @@ public class BendingManager implements Runnable {
 		EarthPassive.revertSands();
 		Shockwave.progressAll();
 		Ripple.progressAll();
-		Tremorsense.progressAll();
 		LavaTrain.progressAll();
 		MetalBending.progressAll();
 		

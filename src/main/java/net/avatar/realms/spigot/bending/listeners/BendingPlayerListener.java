@@ -80,7 +80,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveArea;
 import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveCone;
 import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveFall;
-import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.ArcOfFire;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
@@ -325,11 +324,6 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-			if ((ability == Abilities.Tremorsense) && player.isSneaking()) {
-				new Tremorsense(player, false, null);
-				return;
-			}
-
 			if (ability == Abilities.AirSuction) {
 				new AirSuction(player, null);
 				return;
@@ -377,11 +371,6 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.EarthBlast) {
 				EarthBlast.throwEarth(player);
-				return;
-			}
-
-			if (ability == Abilities.Tremorsense) {
-				new Tremorsense(player, null);
 				return;
 			}
 
