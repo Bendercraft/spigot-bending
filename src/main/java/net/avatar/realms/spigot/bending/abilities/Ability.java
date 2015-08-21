@@ -130,7 +130,7 @@ public abstract class Ability {
 	 * 0 if unlimited </pre>
 	 */
 	protected long getMaxMillis() {
-		return 25000;
+		return 60000;
 	}
 
 	/**
