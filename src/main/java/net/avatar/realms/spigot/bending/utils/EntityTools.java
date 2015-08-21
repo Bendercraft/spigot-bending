@@ -8,15 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
-import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,6 +19,15 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
+import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
+import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
+
 public class EntityTools {
 	
 	public static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
@@ -37,15 +37,17 @@ public class EntityTools {
 	
 	public static boolean isBender(Player player, BendingType type) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer == null)
+		if (bPlayer == null) {
 			return false;
+		}
 		return bPlayer.isBender(type);
 	}
 	
 	public static boolean isSpecialized(Player player, BendingSpecializationType specialization) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer == null)
+		if (bPlayer == null) {
 			return false;
+		}
 		return bPlayer.isSpecialized(specialization);
 	}
 	
@@ -59,13 +61,10 @@ public class EntityTools {
 	
 	public static List<BendingType> getBendingTypes(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer == null)
+		if (bPlayer == null) {
 			return null;
+		}
 		return bPlayer.getBendingTypes();
-	}
-	
-	public static boolean hasAbility(Player player, Abilities ability) {
-		return canBend(player, ability);
 	}
 	
 	public static Abilities getBendingAbility(Player player) {
@@ -83,7 +82,7 @@ public class EntityTools {
 	}
 	
 	public static boolean hasPermission(Player player, Abilities ability) {
-		if (ability == Abilities.AvatarState
+		if ((ability == Abilities.AvatarState)
 				&& player.hasPermission("bending.admin.AvatarState")) {
 			return true;
 		}
@@ -138,8 +137,9 @@ public class EntityTools {
 		
 		if ((isChiBlocked(player) 
 				|| Bloodbending.isBloodbended(player) 
-				|| isGrabed(player)))
+				|| isGrabed(player))) {
 			return false;
+		}
 
 		if (Abilities.isAirbending(ability)
 				&& !isBender(player, BendingType.Air)) {
@@ -180,8 +180,9 @@ public class EntityTools {
 	
 	public static boolean canBendPassive(Player player, BendingType type) {
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player))
-				&& !AvatarState.isAvatarState(player))
+				&& !AvatarState.isAvatarState(player)) {
 			return false;
+		}
 		if (!player.hasPermission("bending." + type + ".passive")) {
 			return false;
 		}	
@@ -207,11 +208,12 @@ public class EntityTools {
 	}
 	
 	public static boolean isChiBlocked(Player player) {
-		if (Paralyze.isParalyzed(player) && !AvatarState.isAvatarState(player))
+		if (Paralyze.isParalyzed(player) && !AvatarState.isAvatarState(player)) {
 			return true;
+		}
 		if (blockedChis.containsKey(player)) {
 			long time = System.currentTimeMillis();
-			if (time > (blockedChis.get(player) + Paralyze.CHIBLOCK_DURATION)
+			if ((time > (blockedChis.get(player) + Paralyze.CHIBLOCK_DURATION))
 					|| AvatarState.isAvatarState(player)) {
 				blockedChis.remove(player);
 				return false;
@@ -235,7 +237,7 @@ public class EntityTools {
 
 		if (grabedPlayers.containsKey(player)) {
 			long time = System.currentTimeMillis();
-			if (time > grabedPlayers.get(player) + (EarthGrab.OTHER_DURATION * 1000)
+			if ((time > (grabedPlayers.get(player) + (EarthGrab.OTHER_DURATION * 1000)))
 					|| AvatarState.isAvatarState(player)) {
 				grabedPlayers.remove(player);
 				return false;
@@ -285,8 +287,8 @@ public class EntityTools {
 		List<Entity> list = new LinkedList<Entity>();
 
 		for (Entity entity : entities) {
-			if (entity.getWorld() == location.getWorld() 
-					&& entity.getLocation().distance(location) < radius) {
+			if ((entity.getWorld() == location.getWorld()) 
+					&& (entity.getLocation().distance(location) < radius)) {
 				list.add(entity);
 			}
 		}
@@ -297,8 +299,8 @@ public class EntityTools {
 		List<LivingEntity> list = new LinkedList<LivingEntity>();
 		
 		for (LivingEntity le : location.getWorld().getLivingEntities()) {
-			if (le.getWorld() == location.getWorld()
-					&& le.getLocation().distance(location) < radius) {
+			if ((le.getWorld() == location.getWorld())
+					&& (le.getLocation().distance(location) < radius)) {
 				list.add(le);
 			}
 		}
@@ -365,15 +367,15 @@ public class EntityTools {
 			if (avoid.contains(entity)) {
 				continue;
 			}			
-			if (entity.getLocation().distance(origin) < longestr
-					&& Tools.getDistanceFromLine(direction, origin,
-							entity.getLocation()) < 2
-					&& entity.getEntityId() != player.getEntityId()
-					&& entity.getLocation().distance(
+			if ((entity.getLocation().distance(origin) < longestr)
+					&& (Tools.getDistanceFromLine(direction, origin,
+							entity.getLocation()) < 2)
+					&& (entity.getEntityId() != player.getEntityId())
+					&& (entity.getLocation().distance(
 							origin.clone().add(direction)) < entity
 							.getLocation().distance(
 									origin.clone().add(
-											direction.clone().multiply(-1)))) {
+											direction.clone().multiply(-1))))) {
 				target = entity;
 				longestr = entity.getLocation().distance(origin);
 			}

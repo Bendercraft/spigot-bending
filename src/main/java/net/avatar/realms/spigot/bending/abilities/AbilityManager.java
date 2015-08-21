@@ -19,13 +19,16 @@ import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirManipulation;
+import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
 import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
 import net.avatar.realms.spigot.bending.abilities.chi.PowerfulHit;
 import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
+import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
+import net.avatar.realms.spigot.bending.abilities.multi.Speed;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -107,9 +110,16 @@ public class AbilityManager {
 				return new AirBubble(player);
 			case AirBurst:
 				return new AirBurst(player);
+			case AirManipulation:
+				return new AirManipulation(player);
+			case AirScooter:
+				return new AirScooter(player);
 
 			case WaterBubble:
 				return new WaterBubble(player);
+
+			case Tremorsense:
+				return new Tremorsense(player);
 
 			default : return null;
 		}
@@ -148,12 +158,11 @@ public class AbilityManager {
 		register(AirBurstSphere.class);
 		register(AirFallBurst.class);
 		register(AirManipulation.class);
-		//		register(AirPassive.class);
-		//		register(AirScooter.class);
+		register(AirScooter.class);
 		//		register(AirShield.class);
 		//		register(AirSpout.class);
 		//		register(AirSwipe.class);
-		//		register(Speed.class);
+		register(Speed.class);
 		//		register(Suffocate.class);
 		//		register(Tornado.class);
 
@@ -175,7 +184,7 @@ public class AbilityManager {
 		//		register(ShockwaveArea.class);
 		//		register(ShockwaveCone.class);
 		//		register(ShockwaveFall.class);
-		//		register(Tremorsense.class);
+		register(Tremorsense.class);
 
 		//		register(ArcOfFire.class);
 		//		register(Combustion.class);

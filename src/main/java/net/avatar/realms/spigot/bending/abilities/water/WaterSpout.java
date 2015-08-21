@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
+
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
@@ -21,21 +27,15 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffectType;
-
 @BendingAbility(name="Water Spout", element=BendingType.Water)
 public class WaterSpout implements IAbility {
-	
+
 	@ConfigurationParameter("Rotation-Speed")
 	public static int SPEED = 4;
-	
+
 	@ConfigurationParameter("Height")
 	private static int HEIGHT = 18;
-	
+
 	private static Map<Player, WaterSpout> instances = new HashMap<Player, WaterSpout>();
 	private static List<Block> affectedblocks = new LinkedList<Block>();
 	private static List<Block> newaffectedblocks = new LinkedList<Block>();
@@ -51,8 +51,9 @@ public class WaterSpout implements IAbility {
 	public WaterSpout(Player player, IAbility parent) {
 		this.parent = parent;
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
-				Abilities.WaterSpout))
+				Abilities.WaterSpout)) {
 			return;
+		}
 
 		if (instances.containsKey(player)) {
 			instances.get(player).remove();
@@ -69,8 +70,8 @@ public class WaterSpout implements IAbility {
 	}
 
 	private void remove() {
-		revertBaseBlock(player);
-		instances.remove(player);
+		revertBaseBlock(this.player);
+		instances.remove(this.player);
 	}
 
 	public static void progressAll() {
@@ -82,8 +83,8 @@ public class WaterSpout implements IAbility {
 			WaterSpout spout = entry.getValue();
 			if (!player.isOnline() || player.isDead()) {
 				toRemoveSpout.add(spout);
-			} else if (EntityTools.hasAbility(player, Abilities.WaterSpout)
-					&& EntityTools.canBend(player, Abilities.WaterSpout)) {
+			}
+			else if (EntityTools.canBend(player, Abilities.WaterSpout)) {
 				boolean keep = spout.spout();
 				if (!keep) {
 					toRemoveSpout.add(spout);
@@ -109,19 +110,19 @@ public class WaterSpout implements IAbility {
 	}
 
 	private boolean spout() {
-		player.setFallDistance(0);
-		player.setSprinting(false);
+		this.player.setFallDistance(0);
+		this.player.setSprinting(false);
 
-		player.removePotionEffect(PotionEffectType.SPEED);
-		Location location = player.getLocation().clone().add(0, .2, 0);
+		this.player.removePotionEffect(PotionEffectType.SPEED);
+		Location location = this.player.getLocation().clone().add(0, .2, 0);
 		Block block = location.clone().getBlock();
-		int height = spoutableWaterHeight(location, player);
+		int height = spoutableWaterHeight(location, this.player);
 
 		// Tools.verbose(height + " " + WaterSpout.height + " "
 		// + affectedblocks.size());
 		if (height != -1) {
-			location = base.getLocation();
-			for (int i = 1, cardinalPoint = (int) (currentCardinalPoint / SPEED); i <= height; i++, cardinalPoint++) {
+			location = this.base.getLocation();
+			for (int i = 1, cardinalPoint = this.currentCardinalPoint / SPEED; i <= height; i++, cardinalPoint++) {
 				if (cardinalPoint == 8) {
 					cardinalPoint = 0;
 				}
@@ -136,32 +137,32 @@ public class WaterSpout implements IAbility {
 				newaffectedblocks.add(block);
 
 				switch (cardinalPoint) {
-				case 0:
-					block = location.clone().add(0, i, -1).getBlock();
-					break;
-				case 1:
-					block = location.clone().add(-1, i, -1).getBlock();
-					break;
-				case 2:
-					block = location.clone().add(-1, i, 0).getBlock();
-					break;
-				case 3:
-					block = location.clone().add(-1, i, 1).getBlock();
-					break;
-				case 4:
-					block = location.clone().add(0, i, 1).getBlock();
-					break;
-				case 5:
-					block = location.clone().add(1, i, 1).getBlock();
-					break;
-				case 6:
-					block = location.clone().add(1, i, 0).getBlock();
-					break;
-				case 7:
-					block = location.clone().add(1, i, -1).getBlock();
-					break;
-				default:
-					break;
+					case 0:
+						block = location.clone().add(0, i, -1).getBlock();
+						break;
+					case 1:
+						block = location.clone().add(-1, i, -1).getBlock();
+						break;
+					case 2:
+						block = location.clone().add(-1, i, 0).getBlock();
+						break;
+					case 3:
+						block = location.clone().add(-1, i, 1).getBlock();
+						break;
+					case 4:
+						block = location.clone().add(0, i, 1).getBlock();
+						break;
+					case 5:
+						block = location.clone().add(1, i, 1).getBlock();
+						break;
+					case 6:
+						block = location.clone().add(1, i, 0).getBlock();
+						break;
+					case 7:
+						block = location.clone().add(1, i, -1).getBlock();
+						break;
+					default:
+						break;
 				}
 
 				if (block.getType().equals(Material.AIR)
@@ -176,17 +177,17 @@ public class WaterSpout implements IAbility {
 					newaffectedblocks.add(block);
 				}
 			}
-			currentCardinalPoint++;
-			if (currentCardinalPoint == SPEED * 8) {
-				currentCardinalPoint = 0;
+			this.currentCardinalPoint++;
+			if (this.currentCardinalPoint == (SPEED * 8)) {
+				this.currentCardinalPoint = 0;
 			}
 
-			if (player.getLocation().getBlockY() > block.getY()) {
-				player.setFlying(false);
+			if (this.player.getLocation().getBlockY() > block.getY()) {
+				this.player.setFlying(false);
 			} else {
-				new Flight(player);
-				player.setAllowFlight(true);
-				player.setFlying(true);
+				new Flight(this.player);
+				this.player.setAllowFlight(true);
+				this.player.setFlying(true);
 			}
 
 		} else {
@@ -198,40 +199,44 @@ public class WaterSpout implements IAbility {
 	private static int spoutableWaterHeight(Location location, Player player) {
 		WaterSpout spout = instances.get(player);
 		int height = HEIGHT;
-		if (Tools.isNight(player.getWorld()))
+		if (Tools.isNight(player.getWorld())) {
 			height = (int) PluginTools.waterbendingNightAugment(
-					(double) height, player.getWorld());
-		int maxheight = (int) ((double) HEIGHT * Settings.NIGHT_FACTOR) + 5;
+					height, player.getWorld());
+		}
+		int maxheight = (int) (HEIGHT * Settings.NIGHT_FACTOR) + 5;
 		Block blocki;
 		for (int i = 0; i < maxheight; i++) {
 			blocki = location.clone().add(0, -i, 0).getBlock();
 			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.WaterSpout,
-					blocki.getLocation()))
+					blocki.getLocation())) {
 				return -1;
+			}
 			if (!affectedblocks.contains(blocki)) {
-				if (blocki.getType() == Material.WATER
-						|| blocki.getType() == Material.STATIONARY_WATER) {
+				if ((blocki.getType() == Material.WATER)
+						|| (blocki.getType() == Material.STATIONARY_WATER)) {
 					if (!TempBlock.isTempBlock(blocki)) {
 						revertBaseBlock(player);
 					}
 					spout.base = blocki;
-					if (i > height)
+					if (i > height) {
 						return height;
+					}
 					return i;
 				}
-				if (blocki.getType() == Material.ICE
-						|| blocki.getType() == Material.SNOW
-						|| blocki.getType() == Material.SNOW_BLOCK) {
+				if ((blocki.getType() == Material.ICE)
+						|| (blocki.getType() == Material.SNOW)
+						|| (blocki.getType() == Material.SNOW_BLOCK)) {
 					if (!TempBlock.isTempBlock(blocki)) {
 						revertBaseBlock(player);
 						instances.get(player).baseblock = new TempBlock(blocki, Material.WATER, full);
 					}
 					spout.base = blocki;
-					if (i > height)
+					if (i > height) {
 						return height;
+					}
 					return i;
 				}
-				if ((blocki.getType() != Material.AIR && (!BlockTools
+				if (((blocki.getType() != Material.AIR) && (!BlockTools
 						.isPlant(blocki) || !EntityTools.canPlantbend(player)))) {
 					revertBaseBlock(player);
 					return -1;
@@ -274,10 +279,11 @@ public class WaterSpout implements IAbility {
 				double dy = loc1.getY() - loc0.getY();
 				double dz = loc1.getZ() - loc0.getZ();
 
-				double distance = Math.sqrt(dx * dx + dz * dz);
+				double distance = Math.sqrt((dx * dx) + (dz * dz));
 
-				if (distance <= radius && dy > 0 && dy < HEIGHT)
+				if ((distance <= radius) && (dy > 0) && (dy < HEIGHT)) {
 					toRemove.add(instances.get(player));
+				}
 			}
 		}
 		for (WaterSpout spout : toRemove) {
@@ -298,7 +304,7 @@ public class WaterSpout implements IAbility {
 		if (BlockTools.isWaterBased(loc.getBlock())){
 			return true;
 		}
-		while (loc.getBlock().getType() == Material.AIR && loc.getBlockY() > 0) {
+		while ((loc.getBlock().getType() == Material.AIR) && (loc.getBlockY() > 0)) {
 			loc = loc.add(0, -1, 0);
 			if (BlockTools.isWaterBased(loc.getBlock())) {
 				return true;
@@ -309,6 +315,6 @@ public class WaterSpout implements IAbility {
 
 	@Override
 	public IAbility getParent() {
-		return parent;
+		return this.parent;
 	}
 }

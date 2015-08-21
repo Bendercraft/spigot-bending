@@ -52,7 +52,6 @@ import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
-import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
@@ -281,8 +280,6 @@ public class BendingPlayerListener implements Listener{
 			event.setCancelled(true);
 		}
 
-		AirScooter.check(player);
-
 		Abilities ability = EntityTools.getBendingAbility(player);
 		if (ability == null) {
 			return;
@@ -290,11 +287,9 @@ public class BendingPlayerListener implements Listener{
 
 		if (EntityTools.canBend(player, ability)) {
 
-			if ((ability == Abilities.PoisonnedDart) || 
-					(ability == Abilities.SmokeBomb) || 
-					(ability == Abilities.AvatarState) || 
-					(ability == Abilities.AirBlast) ||
-					(ability == Abilities.PlasticBomb)) {
+			if ((ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
+					|| (ability == Abilities.AirBlast) || 
+					(ability == Abilities.PlasticBomb) || (ability == Abilities.AirScooter)) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -331,11 +326,6 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.AirSwipe) {
 				new AirSwipe(player, null);
-				return;
-			}
-
-			if (ability == Abilities.AirScooter) {
-				new AirScooter(player, null);
 				return;
 			}
 
@@ -499,8 +489,6 @@ public class BendingPlayerListener implements Listener{
 			event.setCancelled(true);
 		}
 
-		AirScooter.check(player);
-
 		Abilities ability = EntityTools.getBendingAbility(player);
 		if ((ability == null) || !ability.isShiftAbility()) {
 			if (EntityTools.isBender(player,BendingType.Water)
@@ -650,7 +638,7 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast)
-						|| ((ability == Abilities.PlasticBomb)
+				        || ((ability == Abilities.PlasticBomb) || (ability == Abilities.AirScooter)
 								|| (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble) || (ability == Abilities.AirBurst))) {
 
 					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);

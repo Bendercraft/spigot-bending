@@ -3,12 +3,6 @@ package net.avatar.realms.spigot.bending.utils;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.controller.Settings;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.trait.Trait;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -23,6 +17,12 @@ import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+
+import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.controller.Settings;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.trait.Trait;
 
 
 public class ProtectionManager {
@@ -77,8 +77,8 @@ public class ProtectionManager {
 			BENDING_PASSIVES = 	new StateFlag("bending-passives", true);
 			BENDING_SPE = 		new StateFlag("bending-spe", true);
 			BENDING_ENERGY = 	new StateFlag("bending-energy", true);
-			
-			
+
+
 			wgCustomFlags.addCustomFlag(BENDING);
 			wgCustomFlags.addCustomFlag(BENDING_PASSIVES);
 			wgCustomFlags.addCustomFlag(BENDING_AIR);
@@ -89,8 +89,8 @@ public class ProtectionManager {
 			wgCustomFlags.addCustomFlag(BENDING_SPE);
 			wgCustomFlags.addCustomFlag(BENDING_ENERGY);
 		}
-		
-		
+
+
 
 		Plugin fcp = Bukkit.getPluginManager().getPlugin("Factions");
 		if (fcp != null) {
@@ -132,7 +132,7 @@ public class ProtectionManager {
 		if (isRegionProtectedFromBending(player, ability, loc)) {
 			return true;
 		}
-		
+
 		if ((worldguard != null) && Settings.RESPECT_WORLDGUARD) {
 			LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 			for (Location location : new Location[] {loc, player.getLocation()}) {
@@ -158,13 +158,17 @@ public class ProtectionManager {
 			return false;
 		}
 
+		if (player.isOp()) {
+			return false;
+		}
+
 		if (isAllowedEverywhereAbility(ability)) {
 			return false;
 		}
 		LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 		RegionContainer container = worldguard.getRegionContainer();
 		RegionQuery query = container.createQuery();
-		
+
 		if (!query.testState(loc, localPlayer, BENDING)) {
 			return true;
 		}
@@ -208,7 +212,7 @@ public class ProtectionManager {
 	}
 
 	public static boolean isRegionProtectedFromBendingPassives(Player player, Location loc) {
-		if (Settings.RESPECT_WORLDGUARD && worldguard != null) {
+		if (Settings.RESPECT_WORLDGUARD && (worldguard != null)) {
 			LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 			RegionContainer container = worldguard.getRegionContainer();
 			RegionQuery query = container.createQuery();

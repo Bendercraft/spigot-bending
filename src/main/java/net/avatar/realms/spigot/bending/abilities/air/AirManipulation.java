@@ -22,8 +22,7 @@ public class AirManipulation extends Ability{
 
 	@Override
 	public Object getIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.player;
 	}
 	//TODO : Redirectable airblast that makes damages
 }

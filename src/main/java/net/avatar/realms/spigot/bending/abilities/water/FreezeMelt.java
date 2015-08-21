@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
@@ -19,28 +24,23 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-
 @BendingAbility(name="Phase Change", element=BendingType.Water)
 public class FreezeMelt implements IAbility {
 	private static Map<Player, FreezeMelt> instances = new HashMap<Player, FreezeMelt>();
 
 	@ConfigurationParameter("Range")
 	public static int RANGE = 20;
-	
+
 	@ConfigurationParameter("Radius")
 	public static int RADIUS = 3;
-	
+
 	@ConfigurationParameter("Depth")
 	public static int DEPTH = 1;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 500;
-	
-	
+
+
 	private IAbility parent;
 	private Player player;
 	private Map<Block, Byte> frozenblocks = new HashMap<Block, Byte>();
@@ -52,16 +52,16 @@ public class FreezeMelt implements IAbility {
 			} else {
 				this.parent = parent;
 				this.player = player;
-				
+
 				@SuppressWarnings("deprecation")
 				byte data = block.getData();
 				block.setType(Material.ICE);
-				frozenblocks.put(block, data);
+				this.frozenblocks.put(block, data);
 				instances.put(player, this);
 			}
 		}
 	}
-	
+
 	public FreezeMelt(Player player, IAbility parent) {
 		this.parent = parent;
 		this.player = player;
@@ -82,7 +82,7 @@ public class FreezeMelt implements IAbility {
 		Location location = EntityTools.getTargetedLocation(player, range);
 		int y = (int) location.getY();
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-			if (block.getLocation().getY() >= y - DEPTH) {
+			if (block.getLocation().getY() >= (y - DEPTH)) {
 				new FreezeMelt(player, parent, block);
 			}
 		}
@@ -95,8 +95,8 @@ public class FreezeMelt implements IAbility {
 				block.getLocation())) {
 			return false;
 		}
-		if (block.getType() == Material.WATER
-				|| block.getType() == Material.STATIONARY_WATER) {
+		if ((block.getType() == Material.WATER)
+				|| (block.getType() == Material.STATIONARY_WATER)) {
 			if (WaterManipulation.canPhysicsChange(block)
 					&& !TempBlock.isTempBlock(block)) {
 				return true;
@@ -110,14 +110,14 @@ public class FreezeMelt implements IAbility {
 		@SuppressWarnings("deprecation")
 		byte data = block.getData();
 		block.setType(Material.ICE);
-		frozenblocks.put(block, data);
+		this.frozenblocks.put(block, data);
 	}
 
 
 	@SuppressWarnings("deprecation")
 	private boolean thaw(Block block) {
-		if (frozenblocks.containsKey(block)) {
-			byte data = frozenblocks.get(block);
+		if (this.frozenblocks.containsKey(block)) {
+			byte data = this.frozenblocks.get(block);
 			block.setType(Material.WATER);
 			block.setData(data);
 			return false;
@@ -127,7 +127,7 @@ public class FreezeMelt implements IAbility {
 
 	public void handleFrozenBlocks() {
 		List<Block> toRemove = new LinkedList<Block>();
-		for (Block block : frozenblocks.keySet()) {
+		for (Block block : this.frozenblocks.keySet()) {
 			if (canThaw(block)) {
 				boolean keep = thaw(block);
 				if (!keep) {
@@ -136,7 +136,7 @@ public class FreezeMelt implements IAbility {
 			}
 		}
 		for (Block block : toRemove) {
-			frozenblocks.remove(block);
+			this.frozenblocks.remove(block);
 		}
 	}
 
@@ -144,9 +144,8 @@ public class FreezeMelt implements IAbility {
 		if (!WaterManipulation.canPhysicsChange(block)) {
 			return false;
 		}
-		if (frozenblocks.containsKey(block)) {
-			if (EntityTools.hasAbility(getPlayer(), Abilities.PhaseChange)
-					&& EntityTools.canBend(getPlayer(), Abilities.PhaseChange)) {
+		if (this.frozenblocks.containsKey(block)) {
+			if (EntityTools.canBend(getPlayer(), Abilities.PhaseChange)) {
 				double range = PluginTools.waterbendingNightAugment(
 						RANGE, getPlayer().getWorld());
 				if (AvatarState.isAvatarState(getPlayer())) {
@@ -161,12 +160,12 @@ public class FreezeMelt implements IAbility {
 				}
 			}
 			if (EntityTools.getBendingAbility(getPlayer()) == Abilities.OctopusForm) {
-				if (block.getLocation().distance(getPlayer().getLocation()) <= OctopusForm.radius + 2) {
+				if (block.getLocation().distance(getPlayer().getLocation()) <= (OctopusForm.radius + 2)) {
 					return false;
 				}
 			}
 			return true;
-			
+
 		}
 		return false;
 	}
@@ -174,7 +173,7 @@ public class FreezeMelt implements IAbility {
 	@SuppressWarnings("deprecation")
 	public void thawAll() {
 		List<Block> toRemove = new LinkedList<Block>();
-		for (Entry<Block, Byte> entry : frozenblocks.entrySet()) {
+		for (Entry<Block, Byte> entry : this.frozenblocks.entrySet()) {
 			Block block = entry.getKey();
 			if (block.getType() == Material.ICE) {
 				byte data = entry.getValue();
@@ -183,11 +182,11 @@ public class FreezeMelt implements IAbility {
 				toRemove.add(block);
 			}
 		}
-		frozenblocks.clear();
+		this.frozenblocks.clear();
 	}
-	
+
 	private boolean isBlockFrozen(Block block) {
-		return frozenblocks.containsKey(block);
+		return this.frozenblocks.containsKey(block);
 	}
 
 	public static boolean isFrozen(Block block) {
@@ -198,7 +197,7 @@ public class FreezeMelt implements IAbility {
 		}
 		return false;
 	}
-	
+
 	public static void thawThenRemove(Block block) {
 		for(FreezeMelt fm : instances.values()) {
 			if(fm.thaw(block)) {
@@ -210,9 +209,9 @@ public class FreezeMelt implements IAbility {
 	private void remove(Block block) {
 		this.frozenblocks.remove(block);
 	}
-	
+
 	public boolean isBlockLevel(Object block, Byte level) {
-		return frozenblocks.get(block) == level;
+		return this.frozenblocks.get(block) == level;
 	}
 
 	public static boolean isLevel(Block block, byte level) {
@@ -222,15 +221,15 @@ public class FreezeMelt implements IAbility {
 			}
 		}
 		return false;
-		
+
 	}
-	
+
 	public static void progressAll() {
 		for(FreezeMelt fm : instances.values()) {
 			fm.handleFrozenBlocks();
 		}
 	}
-	
+
 	public static void removeAll() {
 		for(FreezeMelt fm : instances.values()) {
 			fm.thawAll();
@@ -240,11 +239,11 @@ public class FreezeMelt implements IAbility {
 
 	@Override
 	public IAbility getParent() {
-		return parent;
+		return this.parent;
 	}
 
 	public Player getPlayer() {
-		return player;
+		return this.player;
 	}
 
 }

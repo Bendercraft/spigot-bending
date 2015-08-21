@@ -5,6 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
@@ -20,15 +29,6 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-
 @BendingAbility(name="Surge", element=BendingType.Water)
 public class Wave implements IAbility {
 	private static Map<Integer, Wave> instances = new HashMap<Integer, Wave>();
@@ -37,19 +37,19 @@ public class Wave implements IAbility {
 
 
 	private static final byte full = 0x0;
-	
+
 	@ConfigurationParameter("Radius")
 	private static final double RADIUS = 3;
-	
+
 	@ConfigurationParameter("Horizontal-Factor")
 	private static final double HOR_FACTOR = 1;
-	
+
 	@ConfigurationParameter("Vertical-Factor")
 	private static final double VERT_FACTOR = 0.2;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
-	
+
 	private static final double maxfreezeradius = 7;
 
 	static double defaultrange = 20;
@@ -89,44 +89,44 @@ public class Wave implements IAbility {
 		}
 
 		if (AvatarState.isAvatarState(player)) {
-			maxradius = AvatarState.getValue(maxradius);
+			this.maxradius = AvatarState.getValue(this.maxradius);
 		}
-		maxradius = PluginTools.waterbendingNightAugment(maxradius, player.getWorld());
+		this.maxradius = PluginTools.waterbendingNightAugment(this.maxradius, player.getWorld());
 		if (prepare()) {
 			if (instances.containsKey(player.getEntityId())) {
 				instances.get(player.getEntityId()).remove();
 			}
 			instances.put(player.getEntityId(), this);
-			time = System.currentTimeMillis();
+			this.time = System.currentTimeMillis();
 		}
 
 	}
 
 	public boolean prepare() {
 		cancelPrevious();
-		Block block = BlockTools.getWaterSourceBlock(player, range,
-				EntityTools.canPlantbend(player));
+		Block block = BlockTools.getWaterSourceBlock(this.player, this.range,
+				EntityTools.canPlantbend(this.player));
 		if (block != null) {
-			sourceblock = block;
+			this.sourceblock = block;
 			focusBlock();
 			return true;
 		}
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);
 		if(bPlayer == null) {
 			return false;
 		}
 		//If no block available, check if bender can drainbend !
-		if(Drainbending.canDrainBend(player) && !bPlayer.isOnCooldown(Abilities.Drainbending)) {
-			Location location = player.getEyeLocation();
+		if(Drainbending.canDrainBend(this.player) && !bPlayer.isOnCooldown(Abilities.Drainbending)) {
+			Location location = this.player.getEyeLocation();
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if(Drainbending.canBeSource(block)) {
-				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-				sourceblock = block;
+				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				this.sourceblock = block;
 				focusBlock();
 				//Range and max radius is halfed for Drainbending
-				range = range/2;
-				maxradius = maxradius/2;
+				this.range = this.range/2;
+				this.maxradius = this.maxradius/2;
 				bPlayer.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
 				return true;
 			}
@@ -135,8 +135,8 @@ public class Wave implements IAbility {
 	}
 
 	private void cancelPrevious() {
-		if (instances.containsKey(player.getEntityId())) {
-			Wave old = instances.get(player.getEntityId());
+		if (instances.containsKey(this.player.getEntityId())) {
+			Wave old = instances.get(this.player.getEntityId());
 			if (old.progressing) {
 				old.breakBlock();
 				old.thaw();
@@ -148,56 +148,58 @@ public class Wave implements IAbility {
 	}
 
 	public void remove() {
-		finalRemoveWater(sourceblock);
-		if(drainedBlock != null) {
-			drainedBlock.revertBlock();
+		finalRemoveWater(this.sourceblock);
+		if(this.drainedBlock != null) {
+			this.drainedBlock.revertBlock();
 		}
-		instances.remove(player.getEntityId());
+		instances.remove(this.player.getEntityId());
 	}
 
 	private void focusBlock() {
-		location = sourceblock.getLocation();
+		this.location = this.sourceblock.getLocation();
 	}
 
 	public void moveWater() {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);
 
-		if (bPlayer.isOnCooldown(Abilities.Surge))
+		if (bPlayer.isOnCooldown(Abilities.Surge)) {
 			return;
+		}
 
 		bPlayer.cooldown(Abilities.Surge, COOLDOWN);
-		if (sourceblock == null) {
+		if (this.sourceblock == null) {
 			return;
 		}
-		if (sourceblock.getWorld() != player.getWorld()) {
+		if (this.sourceblock.getWorld() != this.player.getWorld()) {
 			return;
 		}
-		
-		range = PluginTools.waterbendingNightAugment(range, player.getWorld());
-		if (AvatarState.isAvatarState(player)){
-			factor = AvatarState.getValue(factor);
+
+		this.range = PluginTools.waterbendingNightAugment(this.range, this.player.getWorld());
+		if (AvatarState.isAvatarState(this.player)){
+			this.factor = AvatarState.getValue(this.factor);
 		}			
-		Entity target = EntityTools.getTargettedEntity(player, range);
-		if (target == null || ProtectionManager.isEntityProtectedByCitizens(target)) {
-			targetdestination = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending()).getLocation();
+		Entity target = EntityTools.getTargettedEntity(this.player, this.range);
+		if ((target == null) || ProtectionManager.isEntityProtectedByCitizens(target)) {
+			this.targetdestination = EntityTools.getTargetBlock(this.player, this.range, BlockTools.getTransparentEarthbending()).getLocation();
 		} else {
-			targetdestination = ((LivingEntity) target).getEyeLocation();
+			this.targetdestination = ((LivingEntity) target).getEyeLocation();
 		}
-		if (targetdestination.distance(location) <= 1) {
-			progressing = false;
-			targetdestination = null;
+		if (this.targetdestination.distance(this.location) <= 1) {
+			this.progressing = false;
+			this.targetdestination = null;
 		} else {
-			progressing = true;
-			targetdirection = getDirection(sourceblock.getLocation(),
-					targetdestination).normalize();
-			targetdestination = location.clone().add(
-					targetdirection.clone().multiply(range));
-			if (BlockTools.isPlant(sourceblock))
-				new Plantbending(sourceblock, this);
-			if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
-				sourceblock.setType(Material.AIR);
+			this.progressing = true;
+			this.targetdirection = getDirection(this.sourceblock.getLocation(),
+					this.targetdestination).normalize();
+			this.targetdestination = this.location.clone().add(
+					this.targetdirection.clone().multiply(this.range));
+			if (BlockTools.isPlant(this.sourceblock)) {
+				new Plantbending(this.sourceblock, this);
 			}
-			addWater(sourceblock);
+			if (!BlockTools.adjacentToThreeOrMoreSources(this.sourceblock)) {
+				this.sourceblock.setType(Material.AIR);
+			}
+			addWater(this.sourceblock);
 		}
 	}
 
@@ -218,49 +220,49 @@ public class Wave implements IAbility {
 	}
 
 	public boolean progress() {
-		if (player.isDead() || !player.isOnline()
-				|| !EntityTools.canBend(player, Abilities.Surge)) {
+		if (this.player.isDead() || !this.player.isOnline()
+				|| !EntityTools.canBend(this.player, Abilities.Surge)) {
 			breakBlock();
 			thaw();
 			return false;
 		}
-		if (System.currentTimeMillis() - time >= interval) {
-			time = System.currentTimeMillis();
+		if ((System.currentTimeMillis() - this.time) >= interval) {
+			this.time = System.currentTimeMillis();
 
-			if (!progressing
-					&& EntityTools.getBendingAbility(player) != Abilities.Surge) {
+			if (!this.progressing
+					&& (EntityTools.getBendingAbility(this.player) != Abilities.Surge)) {
 				return false;
 			}
 
-			if (!progressing) {
-				sourceblock.getWorld().playEffect(location, Effect.SMOKE, 4,
-						(int) range);
+			if (!this.progressing) {
+				this.sourceblock.getWorld().playEffect(this.location, Effect.SMOKE, 4,
+						(int) this.range);
 				return true;
 			}
 
-			if (location.getWorld() != player.getWorld()) {
+			if (this.location.getWorld() != this.player.getWorld()) {
 				thaw();
 				breakBlock();
 				return false;
 			}
 
-			if (activatefreeze) {
-				if (location.distance(player.getLocation()) > range) {
-					progressing = false;
+			if (this.activatefreeze) {
+				if (this.location.distance(this.player.getLocation()) > this.range) {
+					this.progressing = false;
 					thaw();
 					breakBlock();
 					return false;
 				}
-				if (!EntityTools.hasAbility(player, Abilities.PhaseChange)
-						&& EntityTools.getBendingAbility(player) != Abilities.Surge) {
-					progressing = false;
+				if (!EntityTools.canBend(this.player, Abilities.PhaseChange)
+						&& (EntityTools.getBendingAbility(this.player) != Abilities.Surge)) {
+					this.progressing = false;
 					thaw();
 					breakBlock();
 					returnWater();
 					return false;
 				}
-				if (!EntityTools.canBend(player, Abilities.Surge)) {
-					progressing = false;
+				if (!EntityTools.canBend(this.player, Abilities.Surge)) {
+					this.progressing = false;
 					thaw();
 					breakBlock();
 					returnWater();
@@ -269,31 +271,31 @@ public class Wave implements IAbility {
 
 			} else {
 
-				Vector direction = targetdirection;
+				Vector direction = this.targetdirection;
 
-				location = location.clone().add(direction);
-				Block blockl = location.getBlock();
+				this.location = this.location.clone().add(direction);
+				Block blockl = this.location.getBlock();
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!ProtectionManager.isRegionProtectedFromBending(player, Abilities.Surge,
-						location)
-						&& (((blockl.getType() == Material.AIR
-								|| blockl.getType() == Material.FIRE
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Surge,
+						this.location)
+						&& ((((blockl.getType() == Material.AIR)
+								|| (blockl.getType() == Material.FIRE)
 								|| BlockTools.isPlant(blockl)
 								|| BlockTools.isWater(blockl) 
-								|| BlockTools.isWaterbendable(blockl, player))) && blockl
-								.getType() != Material.LEAVES)) {
+								|| BlockTools.isWaterbendable(blockl, this.player))) && (blockl
+										.getType() != Material.LEAVES))) {
 
-					for (double i = 0; i <= radius; i += .5) {
+					for (double i = 0; i <= this.radius; i += .5) {
 						for (double angle = 0; angle < 360; angle += 10) {
 							Vector vec = Tools.getOrthogonalVector(
-									targetdirection, angle, i);
-							Block block = location.clone().add(vec).getBlock();
-							if (!blocks.contains(block)
-									&& (block.getType() == Material.AIR || block
-											.getType() == Material.FIRE)
-									|| BlockTools.isWaterbendable(block, player)) {
+									this.targetdirection, angle, i);
+							Block block = this.location.clone().add(vec).getBlock();
+							if ((!blocks.contains(block)
+									&& ((block.getType() == Material.AIR) || (block
+											.getType() == Material.FIRE)))
+									|| BlockTools.isWaterbendable(block, this.player)) {
 								blocks.add(block);
 								FireBlast.removeFireBlastsAroundPoint(
 										block.getLocation(), 2);
@@ -301,46 +303,48 @@ public class Wave implements IAbility {
 						}
 					}
 				}
-				
-				List<Block> toRemove = new LinkedList<Block>(wave.keySet());
+
+				List<Block> toRemove = new LinkedList<Block>(this.wave.keySet());
 				for (Block block : toRemove) {
-					if (!blocks.contains(block))
+					if (!blocks.contains(block)) {
 						finalRemoveWater(block);
+					}
 				}
 
 				for (Block block : blocks) {
-					if (!wave.containsKey(block))
+					if (!this.wave.containsKey(block)) {
 						addWater(block);
+					}
 				}
 
-				if (wave.isEmpty()) {
+				if (this.wave.isEmpty()) {
 					// blockl.setType(Material.GLOWSTONE);
 					breakBlock();
-					progressing = false;
+					this.progressing = false;
 					return false;
 				}
 
-				for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
-						2 * radius)) {
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location,
+						2 * this.radius)) {
 					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}
 					boolean knockback = false;
-	
-					List<Block> temp = new LinkedList<Block>(wave.keySet());
+
+					List<Block> temp = new LinkedList<Block>(this.wave.keySet());
 					for (Block block : temp) {
 						if (entity.getLocation().distance(block.getLocation()) <= 2) {
-							if (entity instanceof LivingEntity
-									&& freeze
-									&& entity.getEntityId() != player
-											.getEntityId()) {
-								activatefreeze = true;
-								frozenlocation = entity.getLocation();
+							if ((entity instanceof LivingEntity)
+									&& this.freeze
+									&& (entity.getEntityId() != this.player
+									.getEntityId())) {
+								this.activatefreeze = true;
+								this.frozenlocation = entity.getLocation();
 								freeze();
 								break;
 							}
-							if (entity.getEntityId() != player.getEntityId()
-									|| canhitself) {
+							if ((entity.getEntityId() != this.player.getEntityId())
+									|| this.canhitself) {
 								knockback = true;
 							}		
 						}
@@ -348,37 +352,38 @@ public class Wave implements IAbility {
 					if (knockback) {
 						Vector dir = direction.clone();
 						dir.setY(dir.getY() * VERT_FACTOR);
-						if (entity.getEntityId() == player.getEntityId()) {
+						if (entity.getEntityId() == this.player.getEntityId()) {
 							dir.multiply(2.0/3.0);
 						}
 						entity.setVelocity(entity
 								.getVelocity()
 								.clone()
 								.add(dir.clone().multiply(
-										PluginTools.waterbendingNightAugment(factor,
-												player.getWorld()))));
+										PluginTools.waterbendingNightAugment(this.factor,
+												this.player.getWorld()))));
 						entity.setFallDistance(0);
-						if (entity.getFireTicks() > 0)
+						if (entity.getFireTicks() > 0) {
 							entity.getWorld().playEffect(entity.getLocation(),
 									Effect.EXTINGUISH, 0);
+						}
 						entity.setFireTicks(0);
 					}
 				}
 
-				if (!progressing) {
+				if (!this.progressing) {
 					breakBlock();
 					return false;
 				}
 
-				if (location.distance(targetdestination) < 1) {
-					progressing = false;
+				if (this.location.distance(this.targetdestination) < 1) {
+					this.progressing = false;
 					breakBlock();
 					returnWater();
 					return false;
 				}
 
-				if (radius < maxradius) {
-					radius += .5;
+				if (this.radius < this.maxradius) {
+					this.radius += .5;
 				}				
 				return true;
 			}
@@ -389,35 +394,36 @@ public class Wave implements IAbility {
 	}
 
 	private void breakBlock() {
-		List<Block> temp = new LinkedList<Block>(wave.keySet());
+		List<Block> temp = new LinkedList<Block>(this.wave.keySet());
 		for (Block block : temp) {
 			finalRemoveWater(block);
 		}
 	}
 
 	private void finalRemoveWater(Block block) {
-		if (wave.containsKey(block)) {
+		if (this.wave.containsKey(block)) {
 			TempBlock.revertBlock(block);
-			wave.remove(block);
+			this.wave.remove(block);
 		}
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Surge,
-				block.getLocation()))
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Surge,
+				block.getLocation())) {
 			return;
+		}
 		if (!TempBlock.isTempBlock(block)) {
 			new TempBlock(block, Material.WATER, full);
 			// new TempBlock(block, Material.ICE, (byte) 0);
-			wave.put(block, block);
+			this.wave.put(block, block);
 		}
 	}
 
 	private void clearWave() {
-		for (Block block : wave.keySet()) {
+		for (Block block : this.wave.keySet()) {
 			TempBlock.revertBlock(block);
 		}
-		wave.clear();
+		this.wave.clear();
 	}
 
 	public static void moveWater(Player player) {
@@ -428,7 +434,7 @@ public class Wave implements IAbility {
 
 	public static void progressAll() {
 		List<Wave> toRemove = new LinkedList<Wave>();
-		
+
 		for(Wave wave : instances.values()) {
 			boolean keep = wave.progress();
 			if(!keep) {
@@ -442,8 +448,9 @@ public class Wave implements IAbility {
 
 	public static boolean isBlockWave(Block block) {
 		for (int ID : instances.keySet()) {
-			if (instances.get(ID).wave.containsKey(block))
+			if (instances.get(ID).wave.containsKey(block)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -470,45 +477,45 @@ public class Wave implements IAbility {
 	private void freeze() {
 		clearWave();
 
-		double freezeradius = radius;
+		double freezeradius = this.radius;
 		if (freezeradius > maxfreezeradius) {
 			freezeradius = maxfreezeradius;
 		}
 
-		for (Block block : BlockTools.getBlocksAroundPoint(frozenlocation,
+		for (Block block : BlockTools.getBlocksAroundPoint(this.frozenlocation,
 				freezeradius)) {
-			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Surge,
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Surge,
 					block.getLocation())
-					|| ProtectionManager.isRegionProtectedFromBending(player,
+					|| ProtectionManager.isRegionProtectedFromBending(this.player,
 							Abilities.PhaseChange, block.getLocation())){
 				continue;
 			}			
 			if (TempBlock.isTempBlock(block)){
 				continue;
 			}		
-			if (block.getType() == Material.AIR
-					|| block.getType() == Material.SNOW) {
+			if ((block.getType() == Material.AIR)
+					|| (block.getType() == Material.SNOW)) {
 				// block.setType(Material.ICE);
 				new TempBlock(block, Material.ICE, (byte) 0);
-				frozenblocks.put(block, block);
+				this.frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
-				new FreezeMelt(player, this, block);
+				new FreezeMelt(this.player, this, block);
 			}
-			if (BlockTools.isPlant(block) && block.getType() != Material.LEAVES) {
+			if (BlockTools.isPlant(block) && (block.getType() != Material.LEAVES)) {
 				block.breakNaturally();
 				// block.setType(Material.ICE);
 				new TempBlock(block, Material.ICE, (byte) 0);
-				frozenblocks.put(block, block);
+				this.frozenblocks.put(block, block);
 			}
 		}
 	}
 
 	private void thaw() {
-		for (Block block : frozenblocks.keySet()) {
+		for (Block block : this.frozenblocks.keySet()) {
 			TempBlock.revertBlock(block);
 		}
-		frozenblocks.clear();
+		this.frozenblocks.clear();
 	}
 
 	public static void thaw(Block block) {
@@ -530,22 +537,22 @@ public class Wave implements IAbility {
 	}
 
 	private void returnWater() {
-		if (location != null) {
-			new WaterReturn(player, location.getBlock(), this);
+		if (this.location != null) {
+			new WaterReturn(this.player, this.location.getBlock(), this);
 		}
 	}
-	
+
 	public static boolean isWaving(Player player) {
 		return instances.containsKey(player.getEntityId());
 	}
-	
+
 	public static Wave getWave(Player player) {
 		return instances.get(player.getEntityId());
 	}
 
 	@Override
 	public IAbility getParent() {
-		return parent;
+		return this.parent;
 	}
 
 }
