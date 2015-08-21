@@ -160,6 +160,13 @@ public abstract class Ability {
 	}
 
 	/**
+	 * Set state to Ended so that it will be deleted at next tick
+	 */
+	public final void consume () {
+		this.setState(AbilityState.Ended);
+	}
+
+	/**
 	 * This method is used by the Ability Constructor to determine if the
 	 * ability can be launched or not The ability state will then be changed to
 	 * CanStart or CannotStart according to this result

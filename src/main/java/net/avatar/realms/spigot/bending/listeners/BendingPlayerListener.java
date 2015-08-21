@@ -57,7 +57,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirShield;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
-import net.avatar.realms.spigot.bending.abilities.air.Speed;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
@@ -100,6 +99,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.fire.RingOfFire;
 import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
+import net.avatar.realms.spigot.bending.abilities.multi.Speed;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
@@ -661,8 +661,8 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast)
- || ((ability == Abilities.PlasticBomb)
-				        || (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble) || (ability == Abilities.AirBurst))) {
+						|| ((ability == Abilities.PlasticBomb)
+								|| (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble) || (ability == Abilities.AirBurst))) {
 
 					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
@@ -697,13 +697,15 @@ public class BendingPlayerListener implements Listener{
 		if (!player.isSprinting()
 				&& EntityTools.isBender(player, BendingType.Air)
 				&& EntityTools.canBendPassive(player, BendingType.Air)) {
-			new Speed(player);
+			Speed sp = new Speed(player);
+			sp.sprint();
 		}
 
 		if (!player.isSprinting()
 				&& EntityTools.isBender(player, BendingType.ChiBlocker)
 				&& EntityTools.canBendPassive(player, BendingType.ChiBlocker)) {
-			new Speed(player);
+			Speed sp = new Speed(player);
+			sp.sprint();
 		}
 	}
 

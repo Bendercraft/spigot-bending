@@ -116,10 +116,6 @@ public class AirBurst extends Ability {
 		return instances.containsKey(player);
 	}
 
-	public void consume () {
-		setState(AbilityState.Ended);
-	}
-
 	public boolean isCharged() {
 		return this.charged;
 	}

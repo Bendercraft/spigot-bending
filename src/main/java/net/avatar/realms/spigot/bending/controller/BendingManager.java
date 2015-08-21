@@ -23,7 +23,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirShield;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
-import net.avatar.realms.spigot.bending.abilities.air.Speed;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
@@ -114,7 +113,6 @@ public class BendingManager implements Runnable {
 		AirShield.progressAll();
 		AirSuction.progressAll();
 		AirSwipe.progressAll();
-		Speed.progressAll();
 		Tornado.progressAll();
 		AirScooter.progressAll();
 		AirSpout.spoutAll();
