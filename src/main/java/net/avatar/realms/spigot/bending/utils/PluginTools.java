@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
-import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
@@ -132,7 +131,6 @@ public class PluginTools {
 	}
 	
 	public static void stopAllBending() {
-		AirSuction.removeAll();
 		AirSwipe.removeAll();
 		Tornado.removeAll();
 		Suffocate.removeAll();

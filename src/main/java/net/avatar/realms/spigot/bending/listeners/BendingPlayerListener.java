@@ -53,7 +53,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
-import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
@@ -289,7 +288,8 @@ public class BendingPlayerListener implements Listener{
 			if ((ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
 					|| (ability == Abilities.AirBlast) || (ability == Abilities.HighJump) ||
  (ability == Abilities.PlasticBomb)
-			        || (ability == Abilities.AirScooter) || (ability == Abilities.AirSpout)) {
+			        || (ability == Abilities.AirSuction)
+					|| (ability == Abilities.AirScooter) || (ability == Abilities.AirSpout)) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -310,12 +310,6 @@ public class BendingPlayerListener implements Listener{
 					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.swing();
 				}
-				return;
-			}
-
-
-			if (ability == Abilities.AirSuction) {
-				new AirSuction(player, null);
 				return;
 			}
 
@@ -507,10 +501,6 @@ public class BendingPlayerListener implements Listener{
 			if (!player.isSneaking()) {
 				// If the player sneaks
 
-				if (ability == Abilities.AirSuction) {
-					AirSuction.setOrigin(player);
-				}
-
 				if (ability == Abilities.AirSwipe) {
 					AirSwipe.charge(player);
 				}
@@ -623,7 +613,7 @@ public class BendingPlayerListener implements Listener{
 					new Combustion(player, null);
 				}
 
-				if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast)
+				if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast) || (ability == Abilities.AirSuction)
 						|| ((ability == Abilities.PlasticBomb) || (ability == Abilities.AirScooter) || (ability == Abilities.AirShield)
 								|| (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble) || (ability == Abilities.AirBurst))) {
 
