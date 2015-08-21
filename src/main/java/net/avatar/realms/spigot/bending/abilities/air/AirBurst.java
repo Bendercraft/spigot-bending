@@ -79,6 +79,10 @@ public class AirBurst extends Ability {
 	@Override
 	public boolean progress () {
 
+		if (!super.progress()) {
+			return false;
+		}
+
 		if (!EntityTools.canBend(this.player, Abilities.AirBurst)
 				|| (EntityTools.getBendingAbility(this.player) != Abilities.AirBurst)) {
 			return false;

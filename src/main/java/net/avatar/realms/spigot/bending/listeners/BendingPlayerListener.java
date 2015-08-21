@@ -355,7 +355,6 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-
 			if (ability == Abilities.Catapult) {
 				new Catapult(player, null);
 				return;

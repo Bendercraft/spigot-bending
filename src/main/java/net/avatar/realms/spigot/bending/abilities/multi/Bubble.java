@@ -18,7 +18,6 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
-import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -149,7 +148,7 @@ public abstract class Bubble extends Ability {
 		}
 
 		for (Object o : instances.keySet()) {
-			AirBubble bubble = (AirBubble) instances.get(o);
+			Bubble bubble = (Bubble) instances.get(o);
 			if (bubble.blockInBubble(block)) {
 				return false;
 			}

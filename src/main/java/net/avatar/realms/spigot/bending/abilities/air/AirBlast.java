@@ -33,22 +33,22 @@ public class AirBlast extends Ability {
 
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 25.0;
-	
+
 	@ConfigurationParameter("Range")
 	public static double DEFAULT_RANGE = 20;
-	
+
 	@ConfigurationParameter("Radius")
 	public static double AFFECT_RADIUS = 2.0;
-	
+
 	@ConfigurationParameter("Push-Factor")
 	public static double PUSH_FACTOR = 3.0;
-	
+
 	@ConfigurationParameter("Origin-Range")
 	private static double SELECT_RANGE = 10;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 500;
-	
+
 	static final double maxspeed = 1. / PUSH_FACTOR;
 	public static byte full = 0x0;
 
@@ -65,7 +65,7 @@ public class AirBlast extends Ability {
 
 	public AirBlast(Player player) {
 		super (player, null);
-		
+
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
@@ -80,6 +80,11 @@ public class AirBlast extends Ability {
 	public AirBlast(Location location, Vector direction, Player player,
 			double factorpush, Ability parent) {
 		super(player, parent);
+
+		if (this.state.isBefore(AbilityState.CanStart)) {
+			return;
+		}
+
 		if (location.getBlock().isLiquid()) {
 			return;
 		}
@@ -90,6 +95,8 @@ public class AirBlast extends Ability {
 		this.location = location.clone();
 		this.id = ID;
 		this.pushfactor *= factorpush;
+
+		setState(AbilityState.Progressing);
 		AbilityManager.getManager().addInstance(this);
 		if (ID == Integer.MAX_VALUE) {
 			ID = Integer.MIN_VALUE;
@@ -111,13 +118,13 @@ public class AirBlast extends Ability {
 			setState(AbilityState.CannotStart);
 			return;
 		}
-		
+
 		this.origin = location;
 		System.out.println(this.origin.getBlock().getType());
 		setState(AbilityState.Started);
 		this.otherOrigin = true;
 	}
-	
+
 	@Override
 	public boolean swing() {
 		switch (this.state) {
@@ -169,13 +176,13 @@ public class AirBlast extends Ability {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if (this.state == AbilityState.Started) {
 			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4,
 					(int) SELECT_RANGE);
 			return true;
 		}
-		
+
 		if (this.state != AbilityState.Progressing) {
 			return false;
 		}
@@ -227,7 +234,7 @@ public class AirBlast extends Ability {
 		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
-		
+
 		boolean isUser = entity.getEntityId() == this.player.getEntityId();
 		if (entity.getFireTicks() > 0) {
 			entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
