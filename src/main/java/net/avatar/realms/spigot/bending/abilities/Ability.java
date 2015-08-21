@@ -99,6 +99,10 @@ public abstract class Ability {
 			return false;
 		}
 
+		if (this.state.isBefore(AbilityState.CanStart)) {
+			return false;
+		}
+
 		if (this.state.equals(AbilityState.Ended)) {
 			return false;
 		}

@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 
 @BendingAbility(name="Air Burst Sphere", element=BendingType.Air)
 public class AirBurstSphere extends Ability  {
-	
+
 	public AirBurstSphere(Player player, Ability parent) {
 		super(player, parent);
 		if(!AirBurst.isAirBursting(player)) {
@@ -23,7 +23,7 @@ public class AirBurstSphere extends Ability  {
 		if(!burst.isCharged()) {
 			return;
 		}
-		
+
 		Location location = player.getEyeLocation();
 		double x, y, z;
 		double r = 1;
@@ -40,7 +40,7 @@ public class AirBurstSphere extends Ability  {
 						AirBurst.PUSHFACTOR, this);
 			}
 		}
-		burst.remove();
+		burst.consume();
 	}
 
 	@Override

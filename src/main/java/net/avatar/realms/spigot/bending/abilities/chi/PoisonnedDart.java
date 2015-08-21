@@ -137,10 +137,6 @@ public class PoisonnedDart extends Ability{
 			return false;
 		}
 
-		if (this.state.isBefore(AbilityState.Started)) {
-			return true;
-		}
-
 		if (this.state == AbilityState.Started) {
 			setState(AbilityState.Progressing);
 		}

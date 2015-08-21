@@ -49,7 +49,6 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
@@ -550,10 +549,6 @@ public class BendingPlayerListener implements Listener{
 					AirSuction.setOrigin(player);
 				}
 
-				if (ability == Abilities.AirBurst) {
-					new AirBurst(player, null);
-				}
-
 				if (ability == Abilities.AirSwipe) {
 					AirSwipe.charge(player);
 				}
@@ -667,7 +662,8 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast)
-						|| ((ability == Abilities.PlasticBomb) || (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble))) {
+ || ((ability == Abilities.PlasticBomb)
+				        || (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble) || (ability == Abilities.AirBurst))) {
 
 					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 

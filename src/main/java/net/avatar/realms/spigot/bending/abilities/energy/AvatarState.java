@@ -21,32 +21,32 @@ import net.avatar.realms.spigot.bending.controller.Flight;
 public class AvatarState extends Ability{
 
 	@ConfigurationParameter("Factor")
-	private static double FACTOR = 4.5;
-	
+	public static double FACTOR = 4.5;
+
 	@ConfigurationParameter("Max-Duration")
 	private static long MAX_DURATION = 300000;
-	
+
 	@ConfigurationParameter("Cooldown-Factor")
 	private static int COOLDOWN_FACTOR = 4;
-	
+
 	private long realDuration;
 
 	public AvatarState (Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean swing() {
-		
-		if (this.state == AbilityState.CannotStart) {
+
+		if (this.state.isBefore(AbilityState.CanStart)) {
 			return true;
 		}
-		
+
 		if (this.state == AbilityState.Progressing) {
 			setState(AbilityState.Ended);
 			return false;
 		}
-		
+
 		if (this.state == AbilityState.CanStart) {
 			AbilityManager.getManager().addInstance(this);
 			setState(AbilityState.Progressing);
@@ -58,20 +58,17 @@ public class AvatarState extends Ability{
 
 	@Override
 	public boolean progress () {
-		
+
 		if (!super.progress()) {
 			return false;
 		}
-		
-		if (this.state == AbilityState.Ended) {
-			return false;
-		}
-		
+
 		if (this.state == AbilityState.Progressing) {
 			addPotionEffects();
+			return true;
 		}
-		
-		return true;
+
+		return false;
 	}
 
 	private void addPotionEffects () {
@@ -84,11 +81,11 @@ public class AvatarState extends Ability{
 
 	public static boolean isAvatarState (Player player) {
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
-		
+
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
-		
+
 		if (instances.containsKey(player)) {
 			return true;
 		}
@@ -102,20 +99,20 @@ public class AvatarState extends Ability{
 	public static int getValue (int value) {
 		return (int)FACTOR * value;
 	}
-	
+
 	public static List<Player> getPlayers() {
 		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
 		LinkedList<Player> players = new LinkedList<Player>();
 		if ((instances == null) || instances.isEmpty()) {
 			return players;
 		}
-		
+
 		for (Object obj : instances.keySet()) {
 			players.add((Player) obj);
 		}
 		return players;
 	}
-	
+
 	@Override
 	public void remove() {
 		long now = System.currentTimeMillis();

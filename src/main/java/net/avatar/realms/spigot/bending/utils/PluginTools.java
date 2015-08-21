@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
-import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
@@ -144,7 +143,6 @@ public class PluginTools {
 		AirSwipe.removeAll();
 		Speed.removeAll();
 		Tornado.removeAll();
-		AirBurst.removeAll();
 		Suffocate.removeAll();
 
 		Catapult.removeAll();

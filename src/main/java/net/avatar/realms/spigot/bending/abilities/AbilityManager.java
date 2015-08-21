@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
+import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
@@ -104,6 +105,8 @@ public class AbilityManager {
 				return new AirBlast(player);
 			case AirBubble:
 				return new AirBubble(player);
+			case AirBurst:
+				return new AirBurst(player);
 
 			case WaterBubble:
 				return new WaterBubble(player);
@@ -140,7 +143,7 @@ public class AbilityManager {
 
 		register(AirBlast.class);
 		register(AirBubble.class);
-		//		register(AirBurst.class);
+		register(AirBurst.class);
 		register(AirBurstCone.class);
 		register(AirBurstSphere.class);
 		register(AirFallBurst.class);

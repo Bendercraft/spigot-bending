@@ -12,7 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 //TODO : Parent = AirBurst
 @BendingAbility(name="Air Burst Cone", element=BendingType.Air)
 public class AirBurstCone extends Ability  {
-	
+
 	public AirBurstCone(Player player, Ability parent) {
 		super(player, parent);
 		if(!AirBurst.isAirBursting(player)) {
@@ -44,7 +44,7 @@ public class AirBurstCone extends Ability  {
 				}
 			}
 		}
-		burst.remove();
+		burst.consume();
 	}
 
 	@Override

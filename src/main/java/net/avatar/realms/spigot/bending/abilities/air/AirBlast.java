@@ -170,10 +170,6 @@ public class AirBlast extends Ability {
 			return false;
 		}
 		
-		if (this.state.isBefore(AbilityState.CanStart)) {
-			return false;
-		}
-		
 		if (this.state == AbilityState.Started) {
 			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4,
 					(int) SELECT_RANGE);
