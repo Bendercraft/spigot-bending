@@ -94,7 +94,7 @@ public class Tornado extends Ability {
 
 				setState(AbilityState.Progressing);
 				AbilityManager.getManager().addInstance(this);
-
+				return false;
 			case Preparing:
 			case Prepared:
 			case Progressing:
