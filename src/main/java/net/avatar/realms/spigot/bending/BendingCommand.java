@@ -149,7 +149,7 @@ public class BendingCommand {
 			for (Abilities ab : cooldowns.keySet()) {
 				ChatColor col = ChatColor.WHITE;
 				int min = (int) ((cooldowns.get(ab)/1000)/60);
-				int sec = (int) (((cooldowns.get(ab)/1000.0)/60.0-min)*60);
+				int sec = (int) ((((cooldowns.get(ab)/1000.0)/60.0)-min)*60);
 				if (!ab.isEnergyAbility()) {
 					col = PluginTools.getColor(Settings.getColorString(ab.getElement().name()));
 				}
@@ -1398,16 +1398,7 @@ public class BendingCommand {
 				return;
 			}
 			catch (final NumberFormatException e) {
-				final Material mat = Material.matchMaterial(args[1]);
-				if (mat != null) {
-					BendingPlayer.getBendingPlayer(player).removeAbility(Material.matchMaterial(args[1]));
-					sendMessage(player, "Item " + args[1] + " " + Messages.getString("general.slot_item_cleared"));
-					return;
-				}
-				else {
-					printClearUsage(player);
-					return;
-				}
+
 			}
 		}
 	}

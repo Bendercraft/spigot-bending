@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
-import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
@@ -55,7 +54,7 @@ import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class PluginTools {
-	
+
 	private static final Map<String, ChatColor> colors;	
 	static {
 		Map<String, ChatColor> tmpMap = new HashMap<String, ChatColor>();
@@ -129,9 +128,8 @@ public class PluginTools {
 
 		colors = Collections.unmodifiableMap(tmpMap);
 	}
-	
+
 	public static void stopAllBending() {
-		AirSwipe.removeAll();
 		Tornado.removeAll();
 		Suffocate.removeAll();
 
@@ -172,14 +170,14 @@ public class PluginTools {
 		Combustion.removeAll();
 
 		RapidPunch.removeAll();
-		
+
 		// BendingManager.removeFlyers();
 		Flight.removeAll();
 		WaterReturn.removeAll();
 		TempBlock.removeAll();
 		BlockTools.removeAllEarthbendedBlocks();
 	}
-	
+
 	public static void removeSpouts(Location location, double radius,
 			Player sourceplayer) {
 		WaterSpout.removeSpouts(location, radius, sourceplayer);
@@ -189,11 +187,11 @@ public class PluginTools {
 	public static void removeSpouts(Location location, Player sourceplayer) {
 		removeSpouts(location, 1.5, sourceplayer);
 	}
-	
+
 	public static ChatColor getColor(String input) {
 		return colors.get(input.toLowerCase().replace("&", ""));
 	}
-	
+
 	public static <T> void verbose(T something) {
 		if (something != null) {
 			Bending.log.info("[Bending] " + something.toString());
@@ -221,7 +219,7 @@ public class PluginTools {
 		return (Bending.language.getSupportedLanguages().contains(language
 				.toLowerCase()));
 	}
-	
+
 	public static double firebendingDayAugment(double value, World world) {
 		if (Tools.isDay(world)) {
 			return Settings.DAY_FACTOR * value;
@@ -249,5 +247,5 @@ public class PluginTools {
 		}
 		return 1;
 	}
-	
+
 }

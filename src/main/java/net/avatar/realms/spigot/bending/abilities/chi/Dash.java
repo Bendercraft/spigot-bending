@@ -18,30 +18,30 @@ public class Dash extends Ability {
 
 	@ConfigurationParameter("Length")
 	private static double LENGTH = 1.9;
-	
+
 	@ConfigurationParameter("Height")
 	private static double HEIGHT = 0.7;
-	
+
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 6000;
-	
+
 	private Vector direction;
 
 	public Dash(Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean sneak() {
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return true;
 		}
-		
+
 		if (this.state == AbilityState.CanStart) {
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Started);
+			setState(AbilityState.Preparing);
 		}
-		
+
 		return false;
 	}
 
@@ -62,7 +62,7 @@ public class Dash extends Ability {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if (this.state != AbilityState.Progressing) {
 			return true;
 		}
@@ -79,14 +79,14 @@ public class Dash extends Ability {
 
 	// This should be called in OnMoveEvent to set the direction dash the same as the player
 	public void setDirection(Vector d) {
-		if (this.state != AbilityState.Started) {
+		if (this.state != AbilityState.Preparing) {
 			return;
 		}
 		if (Double.isNaN(d.getX()) 
 				|| Double.isNaN(d.getY())
 				|| Double.isNaN(d.getZ())
 				|| (((d.getX() < 0.005) && (d.getX() > -0.005))
-				&& ((d.getZ() < 0.005) && (d.getZ() > -0.005)))) {
+						&& ((d.getZ() < 0.005) && (d.getZ() > -0.005)))) {
 			this.direction = this.player.getLocation().getDirection().clone().normalize();
 		} else {
 			this.direction = d.normalize();
@@ -94,7 +94,7 @@ public class Dash extends Ability {
 		System.out.println(this.player.getLocation().toString());
 		setState(AbilityState.Progressing);
 	}
-	
+
 	@Override
 	public void remove() {
 		this.bender.cooldown(Abilities.Dash, COOLDOWN);

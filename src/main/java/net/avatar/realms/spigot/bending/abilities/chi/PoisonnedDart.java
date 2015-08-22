@@ -66,7 +66,7 @@ public class PoisonnedDart extends Ability{
 	@Override
 	public boolean swing() {
 
-		if (this.state.equals(AbilityState.CannotStart) || this.state.equals(AbilityState.Started)) {
+		if (this.state.equals(AbilityState.CannotStart) || this.state.equals(AbilityState.Preparing)) {
 			return true;
 		}
 
@@ -74,7 +74,7 @@ public class PoisonnedDart extends Ability{
 		this.location = this.origin.clone();
 		this.direction = this.origin.getDirection().normalize();
 
-		setState(AbilityState.Started);
+		setState(AbilityState.Preparing);
 
 		AbilityManager.getManager().addInstance(this);
 
@@ -137,7 +137,7 @@ public class PoisonnedDart extends Ability{
 			return false;
 		}
 
-		if (this.state == AbilityState.Started) {
+		if (this.state == AbilityState.Preparing) {
 			setState(AbilityState.Progressing);
 		}
 

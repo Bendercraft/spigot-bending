@@ -25,19 +25,19 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @BendingAbility(name="Smoke Bomb", element=BendingType.ChiBlocker)
 public class SmokeBomb extends Ability {
-	
+
 	@ConfigurationParameter("Radius")
 	public static int RADIUS = 5;
-	
+
 	@ConfigurationParameter("Duration")
 	public static int DURATION = 10;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 6000;
-	
+
 	@ConfigurationParameter("Sound-Radius")
 	public static float SOUND_RADIUS = 20;
-	
+
 	private static Integer ID = Integer.MIN_VALUE;
 
 	private static PotionEffect blindnessBomber = new PotionEffect(
@@ -48,19 +48,19 @@ public class SmokeBomb extends Ability {
 	private Location origin;
 	private int ticksRemaining;
 	private List<Location> locs;
-	
+
 	private Integer id;
 
 	public SmokeBomb(Player player) {
 		super(player, null);
-		
+
 		if (this.state.equals(AbilityState.CannotStart)) {
 			return;
 		}
-		
+
 		this.origin = player.getLocation();
 		this.id = ID++;
-		
+
 		this.ticksRemaining = DURATION * 20;
 		this.locs = new ArrayList<Location>();
 		this.targets = new ArrayList<LivingEntity>();
@@ -70,22 +70,22 @@ public class SmokeBomb extends Ability {
 			this.locs.add(block.getLocation());
 		}		
 	}
-	
+
 	@Override
 	public boolean swing() {
-		if ((this.state == AbilityState.CannotStart) || (this.state == AbilityState.Started)) {
+		if ((this.state == AbilityState.CannotStart) || (this.state == AbilityState.Prepared)) {
 			return true;
 		}
-		
-		setState(AbilityState.Started);
-		
+
+		setState(AbilityState.Prepared);
+
 		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST,(SOUND_RADIUS/16.0f), 1.1f);
 		this.player.addPotionEffect(blindnessBomber);
-		
+
 		this.bender.cooldown(Abilities.SmokeBomb, COOLDOWN);
 		AbilityManager.getManager().addInstance(this);
-		
-		if (this.state == AbilityState.Started) {
+
+		if (this.state == AbilityState.Prepared) {
 			setState(AbilityState.Progressing);
 		}
 		return false;
@@ -93,7 +93,7 @@ public class SmokeBomb extends Ability {
 
 	@Override
 	public boolean progress() {
-		
+
 		Bending.plugin.getLogger().info("Before : " + this.state);
 		if (this.state != AbilityState.Progressing) {
 			return false;
@@ -103,7 +103,7 @@ public class SmokeBomb extends Ability {
 
 		this.blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS,
 				this.ticksRemaining, 2);
-		
+
 		for (LivingEntity targ : this.targets) {
 			if (!newTargets.contains(targ)) {
 				if (targ.getEntityId() != this.player.getEntityId()) {
@@ -114,9 +114,9 @@ public class SmokeBomb extends Ability {
 				}	
 			}
 		}
-		
+
 		this.targets.clear();
-		
+
 		for (LivingEntity targ : newTargets) {
 			if (targ.getEntityId() != this.player.getEntityId()) {
 				targ.addPotionEffect(this.blindnessTarget);
@@ -127,7 +127,7 @@ public class SmokeBomb extends Ability {
 			}
 			this.targets.add(targ);
 		}
-		
+
 		if ((this.ticksRemaining % 16) == 0) {
 			for (Location loc : this.locs) {
 				loc.getWorld().playEffect(loc, Effect.SMOKE, 1, 15);
@@ -160,7 +160,7 @@ public class SmokeBomb extends Ability {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		if (EntityTools.isWeapon(this.player.getItemInHand().getType())) {
 			return false;
 		}

@@ -7,12 +7,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.Ability;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.IAbility;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -27,18 +37,8 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-
 @BendingAbility(name="Air Swipe", element=BendingType.Air)
-public class AirSwipe implements IAbility {
-	private static Map<Integer, AirSwipe> instances = new HashMap<Integer, AirSwipe>();
+public class AirSwipe extends Ability {
 
 	private static int ID = Integer.MIN_VALUE;
 	private static List<Material> breakables = new ArrayList<Material>();
@@ -59,28 +59,28 @@ public class AirSwipe implements IAbility {
 
 	@ConfigurationParameter("Base-Damage")
 	private static int DAMAGE = 5;
-	
+
 	@ConfigurationParameter("Affecting-Radius")
 	private static double AFFECTING_RADIUS = 2.0;
-	
+
 	@ConfigurationParameter("Push-Factor")
 	private static double PUSHFACTOR = 1.0;
-	
+
 	@ConfigurationParameter("Range")
 	private static double RANGE = 16.0;
-	
+
 	@ConfigurationParameter("Arc")
 	private static int ARC = 20;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
-	
+
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 25;
-	
+
 	@ConfigurationParameter("Max-Charge-Time")
 	private static long MAX_CHARGE_TIME = 3000;
-	
+
 	private static int stepsize = 4;
 	private static byte full = AirBlast.full;
 	private static double maxfactor = 3;
@@ -88,165 +88,192 @@ public class AirSwipe implements IAbility {
 	private double speedfactor;
 
 	private Location origin;
-	private Player player;
-	private boolean charging = false;
-	private long time;
 	private int damage = DAMAGE;
 	private double pushfactor = PUSHFACTOR;
 	private int id;
 	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
 	private List<Entity> affectedentities = new ArrayList<Entity>();
-	private IAbility parent;
 
-	public AirSwipe(Player player, IAbility parent) {
-		this(player, false, parent);
+	public AirSwipe (Player player) {
+		super(player, null);
+
+		if (this.state.isBefore(AbilityState.CanStart)) {
+			return;
+		}
+
+		this.id = ID++;
+		this.speedfactor = SPEED * (Bending.time_step / 1000.);
 	}
 
-	public AirSwipe(Player player, boolean charging, IAbility parent) {
-		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (bPlayer.isOnCooldown(Abilities.AirSwipe))
-			return;
-
-		if (player.getEyeLocation().getBlock().isLiquid()) {
-			return;
+	@Override
+	public boolean sneak() {
+		switch (this.state) {
+			case None:
+			case CannotStart:
+				return true;
+			case CanStart:
+				setState(AbilityState.Preparing);
+				AbilityManager.getManager().addInstance(this);
+				return false;
+			case Preparing:
+			case Prepared:
+			case Progressing:
+			case Ended:
+			case Removed:
+				return false;
+			default: 
+				return false;
 		}
-		this.player = player;
-		this.charging = charging;
-		origin = player.getEyeLocation();
-		time = System.currentTimeMillis();
+	}
 
-		if (ID == Integer.MAX_VALUE) {
-			ID = Integer.MIN_VALUE;
+	@Override
+	public boolean swing() {
+		switch (this.state) {
+			case None:
+			case CannotStart:
+				return true;
+			case CanStart:
+				setState(AbilityState.Progressing);
+				AbilityManager.getManager().addInstance(this);
+			case Preparing:
+			case Prepared:
+				this.setState(AbilityState.Progressing);
+			case Progressing:
+				this.origin = this.player.getEyeLocation();
+				launch();
+				return false;
+			case Ended:
+			case Removed:
+				return false;
+			default: 
+				return false;
 		}
-		id = ID++;
-
-		instances.put(id, this);
-
-		bPlayer.cooldown(Abilities.AirSwipe, COOLDOWN);
-
-		if (!charging)
-			launch();
-
-		// timers.put(player, System.currentTimeMillis());
 	}
 
 	private void launch() {
-		origin = player.getEyeLocation();
+		this.origin = this.player.getEyeLocation();
 		for (int i = -ARC; i <= ARC; i += stepsize) {
-			double angle = Math.toRadians((double) i);
-			Vector direction = player.getEyeLocation().getDirection().clone();
+			double angle = Math.toRadians(i);
+			Vector direction = this.player.getEyeLocation().getDirection().clone();
 
 			double x, z, vx, vz;
 			x = direction.getX();
 			z = direction.getZ();
 
-			vx = x * Math.cos(angle) - z * Math.sin(angle);
-			vz = x * Math.sin(angle) + z * Math.cos(angle);
+			vx = (x * Math.cos(angle)) - (z * Math.sin(angle));
+			vz = (x * Math.sin(angle)) + (z * Math.cos(angle));
 
 			direction.setX(vx);
 			direction.setZ(vz);
 
-			elements.put(direction, origin);
+			this.elements.put(direction, this.origin);
 		}
-		
-	}
-	
-	private void remove() {
-		instances.remove(id);
-	}
-	
-	public static void removeAll() {
-		instances.clear();
 	}
 
+	@Override
+	public void remove () {
+		this.bender.cooldown(Abilities.AirSwipe, COOLDOWN);
+		super.remove();
+	}
+
+	@Override
 	public boolean progress() {
-		if (player.isDead() || !player.isOnline()) {
+		if (!super.progress()) {
 			return false;
 		}
-		speedfactor = SPEED * (Bending.time_step / 1000.);
-		if (!charging) {
-			if (elements.isEmpty()) {
+
+		if ((EntityTools.getBendingAbility(this.player) != Abilities.AirSwipe)) {
+			return false;
+		}
+
+		long now = System.currentTimeMillis();
+
+		if (this.state.equals(AbilityState.Preparing)) {
+			if (this.player.isSneaking()) {
+				if (now >= (this.startedTime + MAX_CHARGE_TIME)) {
+					setState(AbilityState.Prepared);
+					this.damage *= maxfactor;
+					this.pushfactor *= maxfactor;
+					return true;
+				}
+			}
+		}
+
+		if (this.state.equals(AbilityState.Prepared)) {
+			this.player.getWorld().playEffect(
+					this.player.getEyeLocation(), 
+					Effect.SMOKE, 
+					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 
+					3);
+		}
+
+		if (this.state.equals(AbilityState.Progressing)) {
+			if (this.elements.isEmpty()) {
 				return false;
 			}
 			return advanceSwipe();
-		} else {
-			if (EntityTools.getBendingAbility(player) != Abilities.AirSwipe
-					|| !EntityTools.canBend(player, Abilities.AirSwipe)) {
-				return false;
-			}
+		} 
 
-			if (!player.isSneaking()) {
-				double factor = 1;
-				if (System.currentTimeMillis() >= time + MAX_CHARGE_TIME) {
-					factor = maxfactor;
-				} else {
-					factor = maxfactor
-							* (double) (System.currentTimeMillis() - time)
-							/ (double) MAX_CHARGE_TIME;
-				}
-				charging = false;				
-				launch();
+		if (!this.player.isSneaking()) {
+			if (!this.state.equals(AbilityState.Prepared)) {
+				double factor = (maxfactor * (now - this.startedTime)) / MAX_CHARGE_TIME;
 				if (factor < 1) {
 					factor = 1;
 				}				
-				damage *= factor;
-				pushfactor *= factor;
-				return true;
-			} else if (System.currentTimeMillis() >= time + MAX_CHARGE_TIME) {
-				player.getWorld().playEffect(
-						player.getEyeLocation(),
-						Effect.SMOKE,
-						Tools.getIntCardinalDirection(player.getEyeLocation()
-								.getDirection()), 3);
+				this.damage *= factor;
+				this.pushfactor *= factor;
 			}
-		}
+
+			launch();
+			this.setState(AbilityState.Progressing);	
+			return true;
+		} 
+
 		return true;
 	}
 
 	@SuppressWarnings("deprecation")
 	private boolean advanceSwipe() {
-		affectedentities.clear();
-		
+		this.affectedentities.clear();
+
 		//Basically, AirSwipe is  just a set of smoke effect on some location called "elements"
 		Map<Vector, Location> toAdd = new HashMap<Vector, Location>();
-		
-		for(Entry<Vector, Location> entry : elements.entrySet()) {
+
+		for(Entry<Vector, Location> entry : this.elements.entrySet()) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
-			if (direction != null && location != null) {
+			if ((direction != null) && (location != null)) {
 				//For each elements, we calculate the next one and check afterwards if it is still in range
 				Location newlocation = location.clone().add(
-						direction.clone().multiply(speedfactor));
-				if (newlocation.distance(origin) <= RANGE
-						&& !ProtectionManager.isRegionProtectedFromBending(player,
+						direction.clone().multiply(this.speedfactor));
+				if ((newlocation.distance(this.origin) <= RANGE)
+						&& !ProtectionManager.isRegionProtectedFromBending(this.player,
 								Abilities.AirSwipe, newlocation)) {
 					//If new location is still valid, we add it
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
 						toAdd.put(direction, newlocation);
 					}
-					
+
 				}
 			}
 		}
-		elements.clear();
-		elements.putAll(toAdd);
+		this.elements.clear();
+		this.elements.putAll(toAdd);
 		List<Vector> toRemove = new LinkedList<Vector>();
-		for(Entry<Vector, Location> entry : elements.entrySet()) {
+		for(Entry<Vector, Location> entry : this.elements.entrySet()) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
-			PluginTools.removeSpouts(location, player);
+			PluginTools.removeSpouts(location, this.player);
 
 			double radius = FireBlast.AFFECTING_RADIUS;
-			Player source = player;
+			Player source = this.player;
 			if (EarthBlast.annihilateBlasts(location, radius, source)
 					|| WaterManipulation.annihilateBlasts(location,
 							radius, source)
 					|| FireBlast.annihilateBlasts(location, radius,
 							source)) {
 				toRemove.add(direction);
-				damage = 0;
+				this.damage = 0;
 				continue;
 			}
 
@@ -266,8 +293,8 @@ public class AirSwipe implements IAbility {
 				} else {
 					toRemove.add(direction);
 				}
-				if (block.getType() == Material.LAVA
-						|| block.getType() == Material.STATIONARY_LAVA && !TempBlock.isTempBlock(block)) {
+				if ((block.getType() == Material.LAVA)
+						|| ((block.getType() == Material.STATIONARY_LAVA) && !TempBlock.isTempBlock(block))) {
 					if (block.getData() == full) {
 						block.setType(Material.OBSIDIAN);
 					} else {
@@ -277,35 +304,36 @@ public class AirSwipe implements IAbility {
 			} else {
 				location.getWorld().playEffect(location, Effect.SMOKE,
 						4, (int) AirBlast.DEFAULT_RANGE);
-			
+
 				//Check affected people
-				PluginTools.removeSpouts(location, player);
+				PluginTools.removeSpouts(location, this.player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
 						AFFECTING_RADIUS)) {
 					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}
-					if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirSwipe,
+					if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AirSwipe,
 							entity.getLocation())) {
 						continue;
 					}
-						
-					if (entity.getEntityId() != player.getEntityId()) {
-						if (AvatarState.isAvatarState(player)) {
+
+					if (entity.getEntityId() != this.player.getEntityId()) {
+						if (AvatarState.isAvatarState(this.player)) {
 							entity.setVelocity(direction.multiply(AvatarState
-									.getValue(pushfactor)));
+									.getValue(this.pushfactor)));
 						} else {
-							entity.setVelocity(direction.multiply(pushfactor));
+							entity.setVelocity(direction.multiply(this.pushfactor));
 						}
-						
-						if (!affectedentities.contains(entity)) {
-							if (damage != 0)
-								EntityTools.damageEntity(player, entity, damage);
-							affectedentities.add(entity);
+
+						if (!this.affectedentities.contains(entity)) {
+							if (this.damage != 0) {
+								EntityTools.damageEntity(this.player, entity, this.damage);
+							}
+							this.affectedentities.add(entity);
 						}
-						
+
 						if (entity instanceof Player) {
-							new Flight((Player) entity, player);
+							new Flight((Player) entity, this.player);
 						}
 
 						toRemove.add(direction);
@@ -313,12 +341,12 @@ public class AirSwipe implements IAbility {
 				}
 			}
 		}
-		
+
 		for(Vector direction : toRemove) {
-			elements.remove(direction);
+			this.elements.remove(direction);
 		}
 
-		if (elements.isEmpty()) {
+		if (this.elements.isEmpty()) {
 			return false;
 		}
 		return true;
@@ -332,27 +360,32 @@ public class AirSwipe implements IAbility {
 		return false;
 	}
 
-	public static void progressAll() {
-		List<AirSwipe> toRemove = new LinkedList<AirSwipe>();
-		for(AirSwipe swipe : instances.values()) {
-			boolean keep = swipe.progress();
-			if(!keep) {
-				toRemove.add(swipe);
-			}
-		}
-		
-		for(AirSwipe swipe : toRemove) {
-			swipe.remove();
-		}
-	}
-
-	public static void charge(Player player) {
-		new AirSwipe(player, true, null);
+	@Override
+	protected long getMaxMillis () {
+		return 5 * 60 * 1000;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public boolean canBeInitialized () {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		if (this.player.getEyeLocation().getBlock().isLiquid()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public Abilities getAbilityType () {
+		return Abilities.AirSwipe;
+	}
+
+	@Override
+	public Object getIdentifier () {
+		return this.id;
 	}
 
 }

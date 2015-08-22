@@ -103,7 +103,7 @@ public abstract class Ability {
 			return false;
 		}
 
-		if (this.state.equals(AbilityState.Ended)) {
+		if (this.state.equals(AbilityState.Ended) || this.state.equals(AbilityState.Removed)) {
 			return false;
 		}
 

@@ -7,13 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 
 public class BendingPlayer {
@@ -21,14 +20,11 @@ public class BendingPlayer {
 	private UUID player;
 
 	private Map<Integer, Abilities> slotAbilities = new HashMap<Integer, Abilities>();
-	private Map<Material, Abilities> itemAbilities = new HashMap<Material, Abilities>();
 
 	private List<BendingType> bendings = new LinkedList<BendingType>();
 	private List<BendingSpecializationType> specializations = new LinkedList<BendingSpecializationType>();
 
 	private Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
-
-	//private boolean bendToItem = ConfigManager.bendToItem;
 
 	private long paralyzeTime = 0;
 	private long slowTime = 0;
@@ -46,8 +42,6 @@ public class BendingPlayer {
 		this.player = data.getPlayer();
 
 		this.bendings = data.getBendings();
-		//this.bendToItem = data.isBendToItem();
-		this.itemAbilities = data.getItemAbilities();
 		this.slotAbilities = data.getSlotAbilities();
 
 		this.specializations = data.getSpecialization();
@@ -90,7 +84,7 @@ public class BendingPlayer {
 	public void cooldown () {
 		cooldown(null, 0);
 	}
-	
+
 	public void cooldown (Abilities ability, long cooldownTime) {
 		long time = System.currentTimeMillis();
 		if (ability != null) {
@@ -101,7 +95,7 @@ public class BendingPlayer {
 			Bending.callEvent(new AbilityCooldownEvent(this, ability));
 		}
 	}
-	
+
 	public Map<Abilities, Long> getCooldowns() {
 		Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
 		long now = System.currentTimeMillis();
@@ -115,11 +109,11 @@ public class BendingPlayer {
 				cooldowns.put(ab, remain);
 			}
 		}
-		
+
 		for (Abilities ab : toRemove) {
 			cooldowns.remove(ab);
 		}
-		
+
 		return cooldowns;
 	}
 
@@ -192,7 +186,6 @@ public class BendingPlayer {
 
 	public void clearAbilities () {
 		this.slotAbilities = new HashMap<Integer, Abilities>();
-		this.itemAbilities = new HashMap<Material, Abilities>();
 		Bending.database.save(this.player);
 	}
 
@@ -220,17 +213,8 @@ public class BendingPlayer {
 		return this.slotAbilities.get(slot);
 	}
 
-	public Abilities getAbility (Material item) {
-		return this.itemAbilities.get(item);
-	}
-
 	public void setAbility (int slot, Abilities ability) {
 		this.slotAbilities.put(slot, ability);
-		Bending.database.save(this.player);
-	}
-
-	public void setAbility (Material item, Abilities ability) {
-		this.itemAbilities.put(item, ability);
 		Bending.database.save(this.player);
 	}
 
@@ -245,17 +229,12 @@ public class BendingPlayer {
 
 		int slot = p.getInventory().getHeldItemSlot();
 		removeAbility(slot);
-		
+
 		Bending.database.save(this.player);
 	}
 
 	public void removeAbility (int slot) {
 		setAbility(slot, null);
-		Bending.database.save(this.player);
-	}
-
-	public void removeAbility (Material item) {
-		setAbility(item, null);
 		Bending.database.save(this.player);
 	}
 
@@ -328,7 +307,6 @@ public class BendingPlayer {
 	public BendingPlayerData serialize () {
 		BendingPlayerData result = new BendingPlayerData();
 		result.setBendings(this.bendings);
-		result.setItemAbilities(this.itemAbilities);
 		result.setLastTime(this.lastTime);
 		result.setSpecialization(this.specializations);
 		result.setPlayer(this.player);

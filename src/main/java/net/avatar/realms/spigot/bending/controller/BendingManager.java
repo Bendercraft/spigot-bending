@@ -18,7 +18,6 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
@@ -86,9 +85,9 @@ public class BendingManager implements Runnable {
 		try {
 			Bending.time_step = System.currentTimeMillis() - this.time;
 			this.time = System.currentTimeMillis();
-			
+
 			AbilityManager.getManager().progressAllAbilities();
-			
+
 			manageAirbending();
 			manageEarthbending();
 			manageFirebending();
@@ -105,7 +104,6 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageAirbending() {
-		AirSwipe.progressAll();
 		Tornado.progressAll();
 		Suffocate.progressAll();
 	}
@@ -123,7 +121,7 @@ public class BendingManager implements Runnable {
 		Ripple.progressAll();
 		LavaTrain.progressAll();
 		MetalBending.progressAll();
-		
+
 		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());
 		for (Block block : copy) {
 			BlockTools.revertBlock(block);
@@ -140,8 +138,8 @@ public class BendingManager implements Runnable {
 	private void manageFirebending() {
 		FireStream.progressAll();
 		FireStream.removeAllNoneFireIgnitedBlock();
-		
-		
+
+
 		FireBall.progressAll();
 		WallOfFire.progressAll();
 		Lightning.progressAll();
@@ -176,7 +174,7 @@ public class BendingManager implements Runnable {
 		HealingWaters.progressAll();
 		FastSwimming.progressAll();
 		OctopusForm.progressAll();
-		
+
 		Plantbending.regrow();
 		WaterReturn.progressAll();
 	}
@@ -203,7 +201,7 @@ public class BendingManager implements Runnable {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Fire)
 							&& player
-									.hasPermission("bending.message.daymessage")) {
+							.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Fire"));
 						player.sendMessage(color
@@ -217,7 +215,7 @@ public class BendingManager implements Runnable {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Fire)
 							&& player
-									.hasPermission("bending.message.daymessage")) {
+							.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Fire"));
 						player.sendMessage(color
@@ -231,7 +229,7 @@ public class BendingManager implements Runnable {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Water)
 							&& player
-									.hasPermission("bending.message.nightmessage")) {
+							.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Water"));
 						player.sendMessage(color
@@ -245,7 +243,7 @@ public class BendingManager implements Runnable {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Water)
 							&& player
-									.hasPermission("bending.message.nightmessage")) {
+							.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Water"));
 						player.sendMessage(color

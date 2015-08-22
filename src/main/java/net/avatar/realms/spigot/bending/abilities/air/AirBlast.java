@@ -121,7 +121,7 @@ public class AirBlast extends Ability {
 
 		this.origin = location;
 		System.out.println(this.origin.getBlock().getType());
-		setState(AbilityState.Started);
+		setState(AbilityState.Preparing);
 		this.otherOrigin = true;
 	}
 
@@ -134,8 +134,8 @@ public class AirBlast extends Ability {
 			case CanStart:
 				this.origin = this.player.getEyeLocation();
 				AbilityManager.getManager().addInstance(this);
-				setState(AbilityState.Started);
-			case Started:
+				setState(AbilityState.Preparing);
+			case Preparing:
 				Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
 				if (entity != null) {
 					this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
@@ -161,10 +161,9 @@ public class AirBlast extends Ability {
 				setOtherOrigin(this.player);
 				AbilityManager.getManager().addInstance(this);
 				return false;
-			case Started:
-				setState(AbilityState.CannotStart);
-				remove();
-				return true;
+			case Preparing:
+				setOtherOrigin(this.player);
+				return false;
 			default : 
 				return true;
 		}
@@ -177,7 +176,7 @@ public class AirBlast extends Ability {
 			return false;
 		}
 
-		if (this.state == AbilityState.Started) {
+		if (this.state == AbilityState.Preparing) {
 			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4,
 					(int) SELECT_RANGE);
 			return true;

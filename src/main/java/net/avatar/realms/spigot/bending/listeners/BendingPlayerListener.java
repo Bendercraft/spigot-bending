@@ -53,7 +53,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
-import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
@@ -287,8 +286,8 @@ public class BendingPlayerListener implements Listener{
 
 			if ((ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
 					|| (ability == Abilities.AirBlast) || (ability == Abilities.HighJump) ||
- (ability == Abilities.PlasticBomb)
-			        || (ability == Abilities.AirSuction)
+					(ability == Abilities.PlasticBomb) || (ability == Abilities.AirSwipe)
+					|| (ability == Abilities.AirSuction)
 					|| (ability == Abilities.AirScooter) || (ability == Abilities.AirSpout)) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
@@ -310,11 +309,6 @@ public class BendingPlayerListener implements Listener{
 					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.swing();
 				}
-				return;
-			}
-
-			if (ability == Abilities.AirSwipe) {
-				new AirSwipe(player, null);
 				return;
 			}
 
@@ -501,10 +495,6 @@ public class BendingPlayerListener implements Listener{
 			if (!player.isSneaking()) {
 				// If the player sneaks
 
-				if (ability == Abilities.AirSwipe) {
-					AirSwipe.charge(player);
-				}
-
 				if (ability == Abilities.Suffocate) {
 					new Suffocate(player, null);
 					return;
@@ -614,7 +604,7 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast) || (ability == Abilities.AirSuction)
-						|| ((ability == Abilities.PlasticBomb) || (ability == Abilities.AirScooter) || (ability == Abilities.AirShield)
+						|| ((ability == Abilities.PlasticBomb) || (ability == Abilities.AirScooter) || (ability == Abilities.AirShield) || (ability == Abilities.AirSwipe)
 								|| (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble) || (ability == Abilities.AirBurst))) {
 
 					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
