@@ -188,7 +188,8 @@ public abstract class Ability {
 			return false;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, this.getAbilityType(), this.player.getLocation())) {
+		if (!EntityTools.canBend(this.player, this.getAbilityType())) {
+			// Also check region protection at player location
 			return false;
 		}
 

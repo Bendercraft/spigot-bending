@@ -287,7 +287,7 @@ public class BendingPlayerListener implements Listener{
 			if ((ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
 					|| (ability == Abilities.AirBlast) || (ability == Abilities.HighJump) ||
 					(ability == Abilities.PlasticBomb) || (ability == Abilities.AirSwipe)
-					|| (ability == Abilities.AirSuction)
+					|| (ability == Abilities.AirSuction) || (ability == Abilities.Suffocate)
 					|| (ability == Abilities.AirScooter) || (ability == Abilities.AirSpout)) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
@@ -494,11 +494,6 @@ public class BendingPlayerListener implements Listener{
 
 			if (!player.isSneaking()) {
 				// If the player sneaks
-
-				if (ability == Abilities.Suffocate) {
-					new Suffocate(player, null);
-					return;
-				}
 
 				if (ability == Abilities.Tornado) {
 					new Tornado(player, null);
