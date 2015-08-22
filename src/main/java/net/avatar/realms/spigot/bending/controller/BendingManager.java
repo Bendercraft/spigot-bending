@@ -18,7 +18,6 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
@@ -87,7 +86,6 @@ public class BendingManager implements Runnable {
 
 			AbilityManager.getManager().progressAllAbilities();
 
-			manageAirbending();
 			manageEarthbending();
 			manageFirebending();
 			manageWaterbending();
@@ -96,14 +94,11 @@ public class BendingManager implements Runnable {
 			Flight.handle();
 			handleDayNight();
 		} catch (Exception e) {
+			AbilityManager.getManager().stopAllAbilities(); 
 			PluginTools.stopAllBending();
 			this.plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
 		}
 
-	}
-
-	private void manageAirbending() {
-		Tornado.progressAll();
 	}
 
 	private void manageEarthbending() {

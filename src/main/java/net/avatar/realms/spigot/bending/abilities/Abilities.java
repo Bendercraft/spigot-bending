@@ -150,10 +150,11 @@ public enum Abilities {
 	}
 
 	public static boolean isAirbending (Abilities ability) {
-		if (ability.getElement().equals(BendingType.Air)) {
-			return true;
-		}
-		return false;
+		return ability.isAirbending();
+	}
+
+	public boolean isAirbending() {
+		return getElement().equals(BendingType.Air);
 	}
 
 	public static List<Abilities> getAirbendingAbilities () {
@@ -167,10 +168,11 @@ public enum Abilities {
 	}
 
 	public static boolean isWaterbending (Abilities ability) {
-		if (ability.getElement().equals(BendingType.Water)) {
-			return true;
-		}
-		return false;
+		return ability.isWaterbending();
+	}
+
+	public boolean isWaterbending () {
+		return getElement().equals(BendingType.Water);
 	}
 
 	public static List<Abilities> getWaterbendingAbilities () {
@@ -184,10 +186,11 @@ public enum Abilities {
 	}
 
 	public static boolean isEarthbending (Abilities ability) {
-		if (ability.getElement().equals(BendingType.Earth)) {
-			return true;
-		}
-		return false;
+		return ability.isEarthbending();
+	}
+
+	public boolean isEarthbending() {
+		return getElement().equals(BendingType.Earth);
 	}
 
 	public static List<Abilities> getEarthbendingAbilities () {
@@ -201,10 +204,11 @@ public enum Abilities {
 	}
 
 	public static boolean isFirebending (Abilities ability) {
-		if (ability.getElement().equals(BendingType.Fire)) {
-			return true;
-		}
-		return false;
+		return ability.isFirebending();
+	}
+
+	public boolean isFirebending() {
+		return getElement().equals(BendingType.Fire);
 	}
 
 	public static List<Abilities> getFirebendingAbilities () {
@@ -218,10 +222,11 @@ public enum Abilities {
 	}
 
 	public static boolean isChiBlocking (Abilities ability) {
-		if (ability.getElement().equals(BendingType.ChiBlocker)) {
-			return true;
-		}
-		return false;
+		return ability.isChiblocking();
+	}
+
+	public boolean isChiblocking() {
+		return getElement().equals(BendingType.ChiBlocker);
 	}
 
 	public static List<Abilities> getChiBlockingAbilities () {

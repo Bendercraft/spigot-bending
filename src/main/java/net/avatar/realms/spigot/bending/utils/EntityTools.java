@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,12 +30,15 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 
 public class EntityTools {
-	
+
 	public static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
 	public static Map<Player, Long> grabedPlayers = new HashMap<Player, Long>();
 	public static List<Player> toggledBending = new ArrayList<Player>();
 	public static List<Player> speToggledBenders = new ArrayList<Player>();
-	
+
+	// Tornados, Metalwire,...
+	public static final Map<UUID, Long> fallImmunity = new HashMap<UUID, Long>();
+
 	public static boolean isBender(Player player, BendingType type) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
@@ -42,7 +46,7 @@ public class EntityTools {
 		}
 		return bPlayer.isBender(type);
 	}
-	
+
 	public static boolean isSpecialized(Player player, BendingSpecializationType specialization) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
@@ -50,7 +54,7 @@ public class EntityTools {
 		}
 		return bPlayer.isSpecialized(specialization);
 	}
-	
+
 	public static boolean isBender(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
@@ -58,7 +62,7 @@ public class EntityTools {
 		}		
 		return true;
 	}
-	
+
 	public static List<BendingType> getBendingTypes(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
@@ -66,7 +70,7 @@ public class EntityTools {
 		}
 		return bPlayer.getBendingTypes();
 	}
-	
+
 	public static Abilities getBendingAbility(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
@@ -74,13 +78,25 @@ public class EntityTools {
 		}		
 		return bPlayer.getAbility();
 	}
-	
 
-	
+	public static boolean isFallImmune(Player player) {
+		if (!fallImmunity.containsKey(player.getUniqueId())) {
+			return false;
+		}
+
+		long now = System.currentTimeMillis();
+		if (now >= fallImmunity.get(player.getUniqueId())) {
+			fallImmunity.remove(player.getUniqueId());
+			return false;
+		}
+
+		return true;
+	}
+
 	public static String getPermissionKey(Abilities ability) {
 		return "bending."+ability.getElement().name().toLowerCase()+"."+ability.name().toLowerCase();
 	}
-	
+
 	public static boolean hasPermission(Player player, Abilities ability) {
 		if ((ability == Abilities.AvatarState)
 				&& player.hasPermission("bending.admin.AvatarState")) {
@@ -113,7 +129,7 @@ public class EntityTools {
 		}
 		return false;
 	}
-	
+
 	public static boolean canBend(Player player, Abilities ability) {
 		if (ability == null) {
 			return false;
@@ -122,7 +138,7 @@ public class EntityTools {
 		if (player == null) {
 			return false;
 		}
-		
+
 		if (!hasPermission(player, ability)) {
 			return false;
 		}
@@ -130,11 +146,11 @@ public class EntityTools {
 		if (ability == Abilities.AvatarState) {
 			return true;
 		}
-		
+
 		if(toggledBending(player)) {
 			return false;
 		}
-		
+
 		if ((isChiBlocked(player) 
 				|| Bloodbending.isBloodbended(player) 
 				|| isGrabed(player))) {
@@ -161,7 +177,7 @@ public class EntityTools {
 				&& !isBender(player, BendingType.Water)) {
 			return false;
 		}
-		
+
 		if(ability.isSpecialization()) {
 			if(!isSpecialized(player, ability.getSpecialization())) {
 				return false;
@@ -174,10 +190,10 @@ public class EntityTools {
 		if (ProtectionManager.isAllowedEverywhereAbility(ability)) {
 			return true;
 		}
-		
+
 		return !ProtectionManager.isRegionProtectedFromBending(player, ability, player.getLocation());
 	}
-	
+
 	public static boolean canBendPassive(Player player, BendingType type) {
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player))
 				&& !AvatarState.isAvatarState(player)) {
@@ -191,7 +207,7 @@ public class EntityTools {
 		}		
 		return true;
 	}
-	
+
 	public static boolean canPlantbend(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
@@ -202,11 +218,11 @@ public class EntityTools {
 		}
 		return false;
 	}
-	
+
 	public static void blockChi(Player player, long time) {
 		blockedChis.put(player,time);
 	}
-	
+
 	public static boolean isChiBlocked(Player player) {
 		if (Paralyze.isParalyzed(player) && !AvatarState.isAvatarState(player)) {
 			return true;
@@ -222,17 +238,17 @@ public class EntityTools {
 		}
 		return false;
 	}
-	
+
 	public static void grab(Player player, long time) {
 		grabedPlayers.put(player,time);
 	}
-	
+
 	public static void unGrab(Player player) {
 		if (grabedPlayers.containsKey(player)) {
 			grabedPlayers.remove(player);
 		}
 	}
-	
+
 	public static boolean isGrabed(Player player) {
 
 		if (grabedPlayers.containsKey(player)) {
@@ -246,40 +262,40 @@ public class EntityTools {
 		}
 		return false;
 	}
-	
+
 	public static boolean canBeBloodbent(Player player) {
-		
+
 		if (player.isOp()) {
 			return false;
 		}
-		
+
 		if (AvatarState.isAvatarState(player)) {
 			return false;
 		}
-			
+
 		if ((isChiBlocked(player)) || isGrabed(player)) {
 			return true;
 		}
-			
+
 		if (canBend(player, Abilities.Bloodbending) && !toggledBending(player)) {
 			return false;
 		}
-			
+
 		return true;
 	}
-	
+
 	public static boolean toggledBending(Player player) {
 		if (toggledBending.contains(player)) {
 			return true;
 		}
-			
+
 		return false;
 	}
-	
+
 	public static boolean speToggled(Player p) {
 		return speToggledBenders.contains(p);
 	}
-	
+
 	public static List<Entity> getEntitiesAroundPoint(Location location,
 			double radius) {
 
@@ -294,10 +310,10 @@ public class EntityTools {
 		}
 		return list;
 	}
-	
+
 	public static List<LivingEntity> getLivingEntitiesAroundPoint(Location location, double radius) {
 		List<LivingEntity> list = new LinkedList<LivingEntity>();
-		
+
 		for (LivingEntity le : location.getWorld().getLivingEntities()) {
 			if ((le.getWorld() == location.getWorld())
 					&& (le.getLocation().distance(location) < radius)) {
@@ -306,7 +322,7 @@ public class EntityTools {
 		}
 		return list;
 	}
-	
+
 	public static Location getTargetedLocation(Player player, double range) {
 		return getTargetedLocation(player, range,
 				Collections.singleton(Material.AIR));
@@ -332,7 +348,7 @@ public class EntityTools {
 
 		return location;
 	}
-	
+
 	public static Block getTargetBlock(Player player, double range) {
 		return getTargetBlock(player, range,
 				Collections.singleton(Material.AIR));
@@ -352,7 +368,7 @@ public class EntityTools {
 		}
 		return block;
 	}
-	
+
 	public static LivingEntity getTargettedEntity(Player player, double range) {
 		return getTargettedEntity(player, range, new ArrayList<Entity>());
 	}
@@ -382,7 +398,7 @@ public class EntityTools {
 		}
 		return target;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static void damageEntity(Player player, Entity entity, double damage) {
 		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
@@ -395,11 +411,11 @@ public class EntityTools {
 
 			((LivingEntity) entity).damage(damage, player);
 			((LivingEntity) entity)
-					.setLastDamageCause(new EntityDamageByEntityEvent(player,
-							entity, DamageCause.CUSTOM, damage));
+			.setLastDamageCause(new EntityDamageByEntityEvent(player,
+					entity, DamageCause.CUSTOM, damage));
 		}
 	}
-	
+
 	public static boolean isWeapon(Material mat) {
 		switch(mat) {
 			case WOOD_AXE :
@@ -423,7 +439,7 @@ public class EntityTools {
 			case DIAMOND_SPADE :
 			case DIAMOND_SWORD :
 				return true;
-						
+
 			default : 
 				return false;
 		}

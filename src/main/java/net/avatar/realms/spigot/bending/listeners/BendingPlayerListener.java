@@ -284,11 +284,9 @@ public class BendingPlayerListener implements Listener{
 
 		if (EntityTools.canBend(player, ability)) {
 
-			if ((ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
-					|| (ability == Abilities.AirBlast) || (ability == Abilities.HighJump) ||
-					(ability == Abilities.PlasticBomb) || (ability == Abilities.AirSwipe)
-					|| (ability == Abilities.AirSuction) || (ability == Abilities.Suffocate)
-					|| (ability == Abilities.AirScooter) || (ability == Abilities.AirSpout)) {
+			if (ability.isAirbending() || (ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
+					|| (ability == Abilities.HighJump) ||
+					(ability == Abilities.PlasticBomb) ) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -495,10 +493,6 @@ public class BendingPlayerListener implements Listener{
 			if (!player.isSneaking()) {
 				// If the player sneaks
 
-				if (ability == Abilities.Tornado) {
-					new Tornado(player, null);
-				}
-
 				if (ability == Abilities.EarthBlast) {
 					new EarthBlast(player, null);
 					return;
@@ -598,9 +592,9 @@ public class BendingPlayerListener implements Listener{
 					new Combustion(player, null);
 				}
 
-				if ((ability == Abilities.Dash) || (ability == Abilities.AirBlast) || (ability == Abilities.AirSuction)
-						|| ((ability == Abilities.PlasticBomb) || (ability == Abilities.AirScooter) || (ability == Abilities.AirShield) || (ability == Abilities.AirSwipe)
-								|| (ability == Abilities.WaterBubble) || (ability == Abilities.AirBubble) || (ability == Abilities.AirBurst))) {
+				if ( ability.isAirbending() || (ability == Abilities.Dash) 
+						|| ((ability == Abilities.PlasticBomb)
+								|| (ability == Abilities.WaterBubble))) {
 
 					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
@@ -712,7 +706,7 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if(!event.isCancelled()) {
-					if(Tornado.preventFall(player)) {
+					if(EntityTools.isFallImmune(player)) {
 						event.setCancelled(true);
 					}
 				}
@@ -788,7 +782,7 @@ public class BendingPlayerListener implements Listener{
 			event.setCancelled(true);
 			event.setReason(null);
 		}
-		if(Tornado.isAffected(event.getPlayer())) {
+		if(EntityTools.isFallImmune(event.getPlayer())) {
 			event.setCancelled(true);
 			event.setReason(null);
 		}
