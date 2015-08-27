@@ -1,12 +1,8 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
@@ -14,7 +10,6 @@ import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -44,53 +39,46 @@ public class RapidPunch extends Ability {
 	@ConfigurationParameter("Max-Duration")
 	private static long MAX_DURATION = 60 * 1000;
 
-	private static Map<Player, RapidPunch> instances = new HashMap<Player, RapidPunch>();
-	private int numpunches;
-
-	private Entity target;
-	public static List<Player> punching = new ArrayList<Player>();
-
-	public RapidPunch(Player p) {
-		super(p, null);
+	public RapidPunch(Player player) {
+		super(player, null);
 
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
 
-		Entity t = EntityTools.getTargettedEntity(p, RANGE);
+		Entity t = EntityTools.getTargettedEntity(player, RANGE);
 
 		if (t == null) {
+			setState(AbilityState.CannotStart);
 			return;
 		}
-
-		this.target = t;
-		this.numpunches = 0;
-		this.player = p;
-		instances.put(p, this);
-		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.RapidPunch, COOLDOWN);
 	}
 
 	@Override
 	public boolean swing() {
+		switch (this.state) {
+			case None:
+			case CannotStart:
+				return true;
 
-		return false;
+			case CanStart:
+			case Preparing:
+			case Prepared:
+			case Progressing:
+			case Ended:
+			case Removed:
+			default :
+				return false;
+		}
 	}
 
 	@Override
 	public boolean progress() {
-		if (this.numpunches >= punches) {
+		if (!super.progress()) {
 			return false;
 		}
 
-		if ((this.target != null) && (this.target instanceof LivingEntity)) {
-			LivingEntity lt = (LivingEntity) this.target;
-			EntityTools.damageEntity(this.player, this.target, DAMAGE);
-			if (this.target instanceof Player) {
-				EntityTools.blockChi((Player) this.target, System.currentTimeMillis());
-			}
-			lt.setNoDamageTicks(0);
-		}
-		this.numpunches++;
+
 		return true;
 	}
 
