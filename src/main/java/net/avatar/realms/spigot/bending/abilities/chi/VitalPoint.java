@@ -1,6 +1,8 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
 
+import java.util.Map;
+
 import org.bukkit.Effect;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -155,6 +157,25 @@ public class VitalPoint extends Ability {
 	public void remove() {
 		this.bender.cooldown(Abilities.Paralyze, COOLDOWN);
 		super.remove();
+	}
+
+	@Override
+	public boolean canBeInitialized () {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		if (EntityTools.isWeapon(this.player.getItemInHand().getType())) {
+			return false;
+		}
+
+		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.Paralyze);
+
+		if ((instances == null) || instances.isEmpty()) {
+			return true;
+		}
+
+		return !instances.containsKey(this.player);
 	}
 
 	@Override

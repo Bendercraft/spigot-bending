@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
-import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
@@ -164,8 +163,6 @@ public class PluginTools {
 		Illumination.removeAll();
 		FireBlade.removeAll();
 		Combustion.removeAll();
-
-		RapidPunch.removeAll();
 
 		// BendingManager.removeFlyers();
 		Flight.removeAll();

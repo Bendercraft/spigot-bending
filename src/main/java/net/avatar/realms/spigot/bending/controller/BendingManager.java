@@ -18,7 +18,6 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
@@ -89,7 +88,6 @@ public class BendingManager implements Runnable {
 			manageEarthbending();
 			manageFirebending();
 			manageWaterbending();
-			manageChiBlocking();
 			TempPotionEffect.progressAll();
 			Flight.handle();
 			handleDayNight();
@@ -146,10 +144,6 @@ public class BendingManager implements Runnable {
 		Enflamed.handleFlames();
 		FireBlade.progressAll();
 		Combustion.progressAll();
-	}
-
-	private void manageChiBlocking() {
-		RapidPunch.progressAll();
 	}
 
 	private void manageWaterbending() {

@@ -56,8 +56,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
-import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
-import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
@@ -281,9 +279,7 @@ public class BendingPlayerListener implements Listener{
 
 		if (EntityTools.canBend(player, ability)) {
 
-			if (ability.isAirbending() || (ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
-					|| (ability == Abilities.HighJump) || (ability == Abilities.Paralyze) ||
-					(ability == Abilities.PlasticBomb) ) {
+			if (ability.isAirbending() || ability.isChiblocking() || (ability == Abilities.AvatarState)) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -435,19 +431,6 @@ public class BendingPlayerListener implements Listener{
 			if (ability == Abilities.Bloodbending) {
 				Bloodbending.launch(player);
 				return;
-			}
-
-			if (!EntityTools.isWeapon(player.getItemInHand().getType())) {
-
-				if (ability == Abilities.RapidPunch) {
-					new RapidPunch(player, null);
-					return;
-				}
-
-				if (ability == Abilities.Paralyze) {
-					new VitalPoint(player);
-					return;
-				}				
 			}
 		}
 	}
