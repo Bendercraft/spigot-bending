@@ -32,6 +32,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
 import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
 import net.avatar.realms.spigot.bending.abilities.chi.PowerfulHit;
 import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
+import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.multi.Speed;
@@ -109,6 +110,8 @@ public class AbilityManager {
 				return new PowerfulHit(player);
 			case Dash:
 				return new Dash(player);
+			case Paralyze:
+				return new VitalPoint(player);
 
 			case AirBlast:
 				return new AirBlast(player);
@@ -164,7 +167,7 @@ public class AbilityManager {
 		register(C4.class);
 		register(Dash.class);
 		register(HighJump.class);
-		//		register(Paralyze.class);
+		register(VitalPoint.class);
 		register(PowerfulHit.class);
 		//		register(RapidPunch.class);
 		register(SmokeBomb.class);

@@ -1,24 +1,5 @@
 package net.avatar.realms.spigot.bending.listeners;
 
-import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.chi.C4;
-import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
-import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
-import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
-import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
-import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
-import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
-import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
-import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
-import net.avatar.realms.spigot.bending.abilities.water.Wave;
-import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -45,6 +26,24 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.projectiles.ProjectileSource;
+
+import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.chi.C4;
+import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
+import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
+import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
+import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
+import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
+import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
+import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
+import net.avatar.realms.spigot.bending.abilities.water.Wave;
+import net.avatar.realms.spigot.bending.controller.Settings;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 
 public class BendingEntityListener implements Listener {
@@ -96,13 +95,6 @@ public class BendingEntityListener implements Listener {
 			return;
 		}
 
-		if (Paralyze.isParalyzed(event.getDamager())) {
-			event.setCancelled(true);
-			return;
-		}
-
-		boolean dodged = false;
-
 		if ((source instanceof Player) && (entity instanceof Player)) {
 			Player sourceplayer = (Player)source;
 			Player targetplayer = (Player)entity;
@@ -121,22 +113,13 @@ public class BendingEntityListener implements Listener {
 					&& EntityTools.canBendPassive((Player)event.getEntity(), BendingType.ChiBlocker)) {
 				double rand = Math.random();
 
-				if ((rand <= (Settings.CHI_DODGE_CHANCE / 100.)) && !Paralyze.isParalyzed(event.getEntity())) {
+				if (rand <= (Settings.CHI_DODGE_CHANCE / 100.)) {
 					event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.SMOKE, 1);
-					dodged = true;
 					event.setCancelled(true);
 				}
 			}
 		}
 		if (source instanceof Player) {
-			if (!dodged) {
-				new Paralyze((Player)source, event.getEntity(), null);
-			}
-			if (EntityTools.isBender(((Player)event.getDamager()), BendingType.ChiBlocker)
-					&& (event.getCause() == DamageCause.ENTITY_ATTACK)
-					&& !EntityTools.isWeapon(((Player)event.getDamager()).getItemInHand().getType())) {
-			}
-
 			if (event.getCause().equals(DamageCause.ENTITY_ATTACK)) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player)source);
 				if ((bPlayer.getAbility() != null) && bPlayer.getAbility().equals(Abilities.FireBlade)) {
@@ -174,7 +157,7 @@ public class BendingEntityListener implements Listener {
 	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityTarget (EntityTargetEvent event) {
 		Entity entity = event.getEntity();
-		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
 	}
@@ -182,7 +165,7 @@ public class BendingEntityListener implements Listener {
 	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityTargetLiving (EntityTargetLivingEntityEvent event) {
 		Entity entity = event.getEntity();
-		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
 	}
@@ -190,7 +173,7 @@ public class BendingEntityListener implements Listener {
 	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityChangeBlock (EntityChangeBlockEvent event) {
 		Entity entity = event.getEntity();
-		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
 	}
@@ -199,7 +182,7 @@ public class BendingEntityListener implements Listener {
 	public void onEntityExplodeEvent (EntityExplodeEvent event) {
 		Entity entity = event.getEntity();
 		if (entity != null) {
-			if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+			if (Bloodbending.isBloodbended(entity)) {
 				event.setCancelled(true);
 			}
 		}
@@ -208,7 +191,7 @@ public class BendingEntityListener implements Listener {
 	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityInteractEvent (EntityInteractEvent event) {
 		Entity entity = event.getEntity();
-		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
 	}
@@ -216,7 +199,7 @@ public class BendingEntityListener implements Listener {
 	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityShootBowEvent (EntityShootBowEvent event) {
 		Entity entity = event.getEntity();
-		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
 	}
@@ -224,7 +207,7 @@ public class BendingEntityListener implements Listener {
 	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityTeleportEvent (EntityTeleportEvent event) {
 		Entity entity = event.getEntity();
-		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
 	}
@@ -239,7 +222,7 @@ public class BendingEntityListener implements Listener {
 		if (entity == null) {
 			return;
 		}
-		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
 		if (entity instanceof Player) {
@@ -279,7 +262,7 @@ public class BendingEntityListener implements Listener {
 	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntitySlimeSplitEvent (SlimeSplitEvent event) {
 		Entity entity = event.getEntity();
-		if (Paralyze.isParalyzed(entity) || Bloodbending.isBloodbended(entity)) {
+		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
 	}

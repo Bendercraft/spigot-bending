@@ -24,7 +24,6 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
@@ -157,23 +156,23 @@ public class EntityTools {
 			return false;
 		}
 
-		if (Abilities.isAirbending(ability)
+		if (ability.isAirbending()
 				&& !isBender(player, BendingType.Air)) {
 			return false;
 		}
-		if (Abilities.isChiBlocking(ability)
+		if (ability.isChiblocking()
 				&& !isBender(player, BendingType.ChiBlocker)) {
 			return false;
 		}
-		if (Abilities.isEarthbending(ability)
+		if (ability.isEarthbending()
 				&& !isBender(player, BendingType.Earth)) {
 			return false;
 		}
-		if (Abilities.isFirebending(ability)
+		if (ability.isFirebending()
 				&& !isBender(player, BendingType.Fire)) {
 			return false;
 		}
-		if (Abilities.isWaterbending(ability)
+		if (ability.isWaterbending()
 				&& !isBender(player, BendingType.Water)) {
 			return false;
 		}
@@ -220,16 +219,13 @@ public class EntityTools {
 	}
 
 	public static void blockChi(Player player, long time) {
-		blockedChis.put(player,time);
+		blockedChis.put(player, time);
 	}
 
 	public static boolean isChiBlocked(Player player) {
-		if (Paralyze.isParalyzed(player) && !AvatarState.isAvatarState(player)) {
-			return true;
-		}
 		if (blockedChis.containsKey(player)) {
-			long time = System.currentTimeMillis();
-			if ((time > (blockedChis.get(player) + Paralyze.CHIBLOCK_DURATION))
+			long now = System.currentTimeMillis();
+			if ((now > blockedChis.get(player))
 					|| AvatarState.isAvatarState(player)) {
 				blockedChis.remove(player);
 				return false;

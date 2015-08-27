@@ -56,8 +56,8 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
-import net.avatar.realms.spigot.bending.abilities.chi.Paralyze;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
+import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
@@ -187,8 +187,7 @@ public class BendingPlayerListener implements Listener{
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();	
 
-		if (Paralyze.isParalyzed(player) 
-				|| Bloodbending.isBloodbended(player)) {
+		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -217,8 +216,7 @@ public class BendingPlayerListener implements Listener{
 
 		Abilities ability = EntityTools.getBendingAbility(player);
 
-		if (Paralyze.isParalyzed(player) 
-				|| Bloodbending.isBloodbended(player)) {
+		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -272,8 +270,7 @@ public class BendingPlayerListener implements Listener{
 	public void onPlayerSwing(PlayerAnimationEvent event) {
 
 		Player player = event.getPlayer();
-		if (Bloodbending.isBloodbended(player) 
-				|| Paralyze.isParalyzed(player)) {
+		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}
 
@@ -285,7 +282,7 @@ public class BendingPlayerListener implements Listener{
 		if (EntityTools.canBend(player, ability)) {
 
 			if (ability.isAirbending() || (ability == Abilities.PoisonnedDart) || (ability == Abilities.SmokeBomb) || (ability == Abilities.AvatarState)
-					|| (ability == Abilities.HighJump) ||
+					|| (ability == Abilities.HighJump) || (ability == Abilities.Paralyze) ||
 					(ability == Abilities.PlasticBomb) ) {
 				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
 
@@ -448,9 +445,7 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if (ability == Abilities.Paralyze) {
-					Entity t = EntityTools.getTargettedEntity(player,
-							RapidPunch.RANGE);
-					new Paralyze(player, t, null);
+					new VitalPoint(player);
 					return;
 				}				
 			}
@@ -461,7 +456,7 @@ public class BendingPlayerListener implements Listener{
 	public void onPlayerSneak(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
 
-		if (Paralyze.isParalyzed(player) || Bloodbending.isBloodbended(player)) {
+		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}
 
@@ -739,10 +734,6 @@ public class BendingPlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		if (Paralyze.isParalyzed(player)) {
-			event.setCancelled(true);
-			return;
-		}
 		if (WaterSpout.isBending(event.getPlayer())
 				|| AirSpout.getPlayers().contains(event.getPlayer())) {
 			Vector vel = new Vector();

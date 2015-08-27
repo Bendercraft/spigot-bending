@@ -108,6 +108,7 @@ public class PoisonnedDart extends Ability{
 				is.setAmount(1);
 				break;
 			case SKULL_ITEM:
+				@SuppressWarnings("deprecation")
 				byte data = is.getData().getData();
 				// If this is a wither skull
 				if (data == 1) {
