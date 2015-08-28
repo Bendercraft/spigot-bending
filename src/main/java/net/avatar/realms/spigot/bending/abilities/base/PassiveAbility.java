@@ -18,6 +18,19 @@ public abstract class PassiveAbility extends Ability{
 		}
 	}
 
+	@Override
+	public boolean canBeInitialized () {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		if (ProtectionManager.isRegionProtectedFromBendingPassives(this.player, this.player.getLocation())) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public abstract void start();
 
 	@Override

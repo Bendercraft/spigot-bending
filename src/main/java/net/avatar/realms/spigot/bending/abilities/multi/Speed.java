@@ -19,7 +19,6 @@ import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name="Speed", element=BendingType.None)
 public class Speed extends PassiveAbility {
@@ -120,15 +119,11 @@ public class Speed extends PassiveAbility {
 
 	@Override
 	public boolean canBeInitialized () {
-		if ((this.player == null) || (this.bender == null)) {
+		if (!super.canBeInitialized()) {
 			return false;
 		}
 
 		if (!(this.bender.isBender(BendingType.Air) || this.bender.isBender(BendingType.ChiBlocker))) {
-			return false;
-		}
-
-		if (ProtectionManager.isRegionProtectedFromBendingPassives(this.player, this.player.getLocation())) {
 			return false;
 		}
 
