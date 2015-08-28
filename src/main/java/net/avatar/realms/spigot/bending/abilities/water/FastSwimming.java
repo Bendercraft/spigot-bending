@@ -1,43 +1,59 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
+import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @BendingAbility(name="Dolphin", element=BendingType.Water)
-public class FastSwimming implements net.avatar.realms.spigot.bending.abilities.deprecated.IPassiveAbility {
+public class FastSwimming extends PassiveAbility {
 
 	@ConfigurationParameter("Speed-Factor")
 	private static double FACTOR = 0.7;
-	private static Map<Player, FastSwimming> instances = new HashMap<Player, FastSwimming>();
-
-	private Player player;
 
 	public FastSwimming (Player player) {
-		if (!player.isOnline() || player.isDead()) {
-			return;
-		}
-		if (!EntityTools.canBendPassive(player, BendingType.Water)) {
-			return;
-		}
-
-		this.player = player;
-		instances.put(player, this);
+		super (player, null);
 	}
 
+	@Override
+	public boolean canBeInitialized () {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		if (this.player.isSneaking()) {
+			return false;
+		}
+
+		if (!EntityTools.canBendPassive(this.player, BendingType.Water)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public void start () {
+		if (this.state.isBefore(AbilityState.CanStart)) {
+			return;
+		}
+
+		AbilityManager.getManager().addInstance(this);
+		setState(AbilityState.Progressing);
+	}	
+
+	@Override
 	public boolean progress() {		
-		if (!this.player.isOnline() || this.player.isDead()) {
+		if (!super.progress()) {
 			return false;
 		}
 
@@ -56,27 +72,18 @@ public class FastSwimming implements net.avatar.realms.spigot.bending.abilities.
 		return true;
 	}
 
-	public static void progressAll() {
-		LinkedList<Player> toRemove = new LinkedList<Player>();
-		boolean keep;
-		for (Player p : instances.keySet()) {
-			keep = instances.get(p).progress();
-			if (!keep) {
-				toRemove.add(p);
-			}
-		}
-		for (Player p : toRemove) {
-			instances.get(p).remove();
-		}
-	}
-
-	public void remove() {
-		instances.remove(this.player);
-	}
-
-
 	private void swimFast() {
 		Vector dir = this.player.getEyeLocation().getDirection().clone();
 		this.player.setVelocity(dir.normalize().multiply(FACTOR));
-	}	
+	}
+
+	@Override
+	public Object getIdentifier () {
+		return this.player;
+	}
+
+	@Override
+	public Abilities getAbilityType () {
+		return Abilities.WaterPassive;
+	}
 }
