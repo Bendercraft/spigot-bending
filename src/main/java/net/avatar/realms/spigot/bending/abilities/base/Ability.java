@@ -48,6 +48,10 @@ public abstract class Ability implements IAbility{
 		return this.parent;
 	}
 
+	/**
+	 * Set the state in which the ability is currently in
+	 * @param newState <pre>The new state</pre>
+	 */
 	protected final void setState(AbilityState newState) {
 		Bending.plugin.getLogger().info(newState.name());
 		this.state = newState;

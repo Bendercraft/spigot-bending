@@ -9,7 +9,16 @@ public abstract class PassiveAbility extends Ability{
 
 	public PassiveAbility (Player player, Ability parent) {
 		super(player, parent);
+		if (canBeInitialized()) {
+			this.startedTime = System.currentTimeMillis();	
+			setState(AbilityState.CanStart);
+		}
+		else {
+			setState(AbilityState.CannotStart);
+		}
 	}
+
+	public abstract void start();
 
 	@Override
 	public boolean progress () {

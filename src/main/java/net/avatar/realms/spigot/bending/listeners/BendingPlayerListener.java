@@ -609,14 +609,14 @@ public class BendingPlayerListener implements Listener{
 				&& EntityTools.isBender(player, BendingType.Air)
 				&& EntityTools.canBendPassive(player, BendingType.Air)) {
 			Speed sp = new Speed(player);
-			sp.sprint();
+			sp.start();
 		}
 
 		if (!player.isSprinting()
 				&& EntityTools.isBender(player, BendingType.ChiBlocker)
 				&& EntityTools.canBendPassive(player, BendingType.ChiBlocker)) {
 			Speed sp = new Speed(player);
-			sp.sprint();
+			sp.start();
 		}
 	}
 

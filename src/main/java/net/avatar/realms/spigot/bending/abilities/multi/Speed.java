@@ -33,7 +33,11 @@ public class Speed extends PassiveAbility {
 		// Yes, this is useless
 	}
 
-	public void sprint () {
+	@Override
+	public void start () {
+		if (this.state.isBefore(AbilityState.CanStart)) {
+			return;
+		}
 		// I've separate it from constructor in case where a player bind Speed
 		// (as it became an Abilities enum) and make fun by clicking...
 		new Flight(this.player);

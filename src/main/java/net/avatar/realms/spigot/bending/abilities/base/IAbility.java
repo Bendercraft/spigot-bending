@@ -48,7 +48,13 @@ public interface IAbility {
 	 */
 	public void consume();
 
+	/**
+	 * @return The object that identifies this ability instance among the others
+	 */
 	public Object getIdentifier();
 
+	/**
+	 * @return The Abilities enum that matches this instance
+	 */
 	public Abilities getAbilityType();
 }
