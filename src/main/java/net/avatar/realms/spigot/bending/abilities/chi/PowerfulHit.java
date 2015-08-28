@@ -3,9 +3,9 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -16,17 +16,17 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  *
  */
 @BendingAbility(name="Powerful Hit", element=BendingType.ChiBlocker)
-public class PowerfulHit extends Ability{
-	
+public class PowerfulHit extends ActiveAbility{
+
 	@ConfigurationParameter("Damage")
 	public static long DAMAGE = 5;
-	
+
 	@ConfigurationParameter("Knockback")
 	public static long KNOCKBACK = 1;
-	
+
 	@ConfigurationParameter("Range")
 	public static long RANGE = 4;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 5000;
 
@@ -37,7 +37,7 @@ public class PowerfulHit extends Ability{
 	@Override
 	public boolean swing() {
 		// TODO Auto-generated method stub
-		
+
 		//Vector v = loc1.toVector().subtract(loc2.toVector())
 		return super.swing();
 	}
@@ -47,7 +47,7 @@ public class PowerfulHit extends Ability{
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		return false;
 	}
 
@@ -71,11 +71,11 @@ public class PowerfulHit extends Ability{
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		if (EntityTools.isWeapon(this.player.getItemInHand().getType())) {
 			return false;
 		}
-		
+
 		return true;
 	}
 

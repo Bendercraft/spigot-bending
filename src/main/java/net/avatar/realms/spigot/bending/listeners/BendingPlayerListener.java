@@ -44,7 +44,6 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
@@ -55,6 +54,8 @@ import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
@@ -280,24 +281,24 @@ public class BendingPlayerListener implements Listener{
 		if (EntityTools.canBend(player, ability)) {
 
 			if (ability.isAirbending() || ability.isChiblocking() || (ability == Abilities.AvatarState)) {
-				Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
+				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
-					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
+					ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.swing();
 					return;
 				}
 
 				boolean shouldCreateNew = false;
-				for (Ability a : abilities.values()) {
+				for (IAbility a : abilities.values()) {
 					if (a.getPlayer().equals(player)) {
-						if (a.swing()) {
+						if (((ActiveAbility)a).swing()) {
 							shouldCreateNew = true;
 						}
 					}
 				}
 				if (shouldCreateNew) {
-					Ability ab = AbilityManager.getManager().buildAbility(ability, player);
+					ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 					ab.swing();
 				}
 				return;
@@ -574,24 +575,24 @@ public class BendingPlayerListener implements Listener{
 						|| ((ability == Abilities.PlasticBomb)
 								|| (ability == Abilities.WaterBubble))) {
 
-					Map<Object, Ability> abilities = AbilityManager.getManager().getInstances(ability);
+					Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
 					if ((abilities == null) || abilities.isEmpty()) {
-						Ability ab = AbilityManager.getManager().buildAbility(ability, player);
+						ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 						ab.sneak();
 						return;
 					}
 
 					boolean shouldCreateNew = false;
-					for (Ability a : abilities.values()) {
+					for (IAbility a : abilities.values()) {
 						if (a.getPlayer().equals(player)) {
-							if (a.sneak()) {
+							if (((ActiveAbility)a).sneak()) {
 								shouldCreateNew = true;
 							}
 						}
 					}
 					if (shouldCreateNew) {
-						Ability ab = AbilityManager.getManager().buildAbility(ability, player);
+						ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 						ab.sneak();
 					}
 					return;

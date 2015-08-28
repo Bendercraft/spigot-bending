@@ -5,15 +5,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 
 //TODO : Parent = AirBurst
 @BendingAbility(name="Air Burst Cone", element=BendingType.Air)
-public class AirBurstCone extends Ability  {
+public class AirBurstCone extends ActiveAbility  {
 
-	public AirBurstCone(Player player, Ability parent) {
+	public AirBurstCone(Player player, ActiveAbility parent) {
 		super(player, parent);
 		if(!AirBurst.isAirBursting(player)) {
 			return;

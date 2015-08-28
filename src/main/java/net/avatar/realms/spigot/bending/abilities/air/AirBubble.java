@@ -4,10 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.multi.Bubble;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -25,7 +25,7 @@ public class AirBubble extends Bubble {
 		this(player, null);
 	}
 
-	public AirBubble (Player player, Ability parent) {
+	public AirBubble (Player player, ActiveAbility parent) {
 		super(player, parent);
 
 		if (this.state.isBefore(AbilityState.CanStart)) {

@@ -16,18 +16,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name="Suffocate", element=BendingType.Air, specialization=BendingSpecializationType.Suffocate)
-public class Suffocate extends Ability {
+public class Suffocate extends ActiveAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	private static String LORE_NAME = "Suffocation";
 	//private int distance = ConfigManager.suffocateDistance;
@@ -229,7 +230,7 @@ public class Suffocate extends Ability {
 			return false;
 		}
 
-		Map <Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.Suffocate);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Suffocate);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}

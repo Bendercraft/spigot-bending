@@ -15,15 +15,16 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-public abstract class Bubble extends Ability {
+public abstract class Bubble extends ActiveAbility {
 
 	protected double radius;
 	protected Location lastLocation;
@@ -32,7 +33,7 @@ public abstract class Bubble extends Ability {
 
 	protected Set<Material> pushedMaterials;
 
-	public Bubble (Player player, Ability parent) {
+	public Bubble (Player player, ActiveAbility parent) {
 		super(player, parent);
 
 		if (this.state.isBefore(AbilityState.CanStart)) {
@@ -133,11 +134,11 @@ public abstract class Bubble extends Ability {
 	}
 
 	public static boolean canFlowTo (Block block) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirBubble);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirBubble);
 		if (instances == null) {
-			instances = new HashMap<Object, Ability>();
+			instances = new HashMap<Object, IAbility>();
 		}
-		Map<Object, Ability> insts = AbilityManager.getManager().getInstances(Abilities.WaterBubble);
+		Map<Object, IAbility> insts = AbilityManager.getManager().getInstances(Abilities.WaterBubble);
 
 		if (insts != null) {
 			instances.putAll(insts);

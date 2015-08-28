@@ -3,12 +3,12 @@ package net.avatar.realms.spigot.bending.abilities.air;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 
 @BendingAbility(name="Air Manipulation", element=BendingType.Air)
-public class AirManipulation extends Ability{
+public class AirManipulation extends ActiveAbility{
 
 	public AirManipulation(Player player) {
 		super(player, null);

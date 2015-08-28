@@ -6,11 +6,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -22,7 +23,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  *
  */
 @BendingAbility(name="Rapid Punch", element=BendingType.ChiBlocker)
-public class RapidPunch extends Ability {
+public class RapidPunch extends ActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 7;
@@ -73,16 +74,6 @@ public class RapidPunch extends Ability {
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-
-		return true;
-	}
-
-	@Override
 	public void remove() {
 		this.bender.cooldown(Abilities.RapidPunch, COOLDOWN);
 		super.remove();
@@ -114,7 +105,7 @@ public class RapidPunch extends Ability {
 			return false;
 		}
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.RapidPunch);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.RapidPunch);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}

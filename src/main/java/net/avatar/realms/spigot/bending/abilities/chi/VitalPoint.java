@@ -10,11 +10,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -26,7 +27,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  *
  */
 @BendingAbility(name="Vital Point", element=BendingType.ChiBlocker)
-public class VitalPoint extends Ability {
+public class VitalPoint extends ActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 1;
@@ -169,7 +170,7 @@ public class VitalPoint extends Ability {
 			return false;
 		}
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.Paralyze);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Paralyze);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return true;

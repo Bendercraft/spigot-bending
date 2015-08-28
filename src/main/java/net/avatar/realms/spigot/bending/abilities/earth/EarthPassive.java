@@ -5,24 +5,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.IPassiveAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+
 @BendingAbility(name="Earth Passive", element=BendingType.Earth)
-public class EarthPassive implements IPassiveAbility {
+public class EarthPassive implements net.avatar.realms.spigot.bending.abilities.deprecated.IPassiveAbility {
 	private static Map<Block, Long> sandblocks = new HashMap<Block, Long>();
 	private static Map<Block, Material> sandidentities = new HashMap<Block, Material>();
-	
+
 	@ConfigurationParameter("Time-Before-Reverse")
 	private static long DURATION = 3000;
 
@@ -68,8 +67,9 @@ public class EarthPassive implements IPassiveAbility {
 		}
 
 		if (BlockTools.isEarthbendable(player, null, block)
-				|| BlockTools.isTransparentToEarthbending(player, null, block))
+				|| BlockTools.isTransparentToEarthbending(player, null, block)) {
 			return true;
+		}
 		return false;
 	}
 
@@ -89,7 +89,7 @@ public class EarthPassive implements IPassiveAbility {
 	public static void revertSands() {
 		List<Block> temp = new LinkedList<Block>(sandblocks.keySet());
 		for (Block block : temp) {
-			if (System.currentTimeMillis() >= sandblocks.get(block) + DURATION) {
+			if (System.currentTimeMillis() >= (sandblocks.get(block) + DURATION)) {
 				revertSand(block);
 			}
 		}

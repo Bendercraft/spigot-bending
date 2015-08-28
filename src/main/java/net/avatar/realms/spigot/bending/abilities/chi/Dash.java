@@ -6,15 +6,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 @BendingAbility(name="Dash", element=BendingType.ChiBlocker)
-public class Dash extends Ability {
+public class Dash extends ActiveAbility {
 
 	@ConfigurationParameter("Length")
 	private static double LENGTH = 1.9;
@@ -46,7 +47,7 @@ public class Dash extends Ability {
 	}
 
 	public static boolean isDashing(Player player) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.Dash);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Dash);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
@@ -54,7 +55,7 @@ public class Dash extends Ability {
 	}
 
 	public static Dash getDash(Player pl) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.Dash);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Dash);
 		return (Dash) instances.get(pl);
 	}
 	@Override

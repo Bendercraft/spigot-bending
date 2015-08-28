@@ -16,12 +16,13 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -37,7 +38,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  */
 
 @BendingAbility(name="Poisonned Dart", element=BendingType.ChiBlocker, specialization = BendingSpecializationType.Inventor)
-public class PoisonnedDart extends Ability{
+public class PoisonnedDart extends ActiveAbility{
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 2;
@@ -229,7 +230,7 @@ public class PoisonnedDart extends Ability{
 			return false;
 		}
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.PoisonnedDart);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PoisonnedDart);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}

@@ -12,17 +12,18 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 @BendingAbility(name="Air Scooter", element=BendingType.Air)
-public class AirScooter extends Ability {
+public class AirScooter extends ActiveAbility {
 
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 0.675;
@@ -156,7 +157,7 @@ public class AirScooter extends Ability {
 	public static ArrayList<Player> getPlayers() {
 		ArrayList<Player> players = new ArrayList<Player>();
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirScooter);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirScooter);
 		if ((instances == null) || instances.isEmpty()) {
 			return players;
 		}
@@ -184,7 +185,7 @@ public class AirScooter extends Ability {
 
 	public static boolean isOnScooter (Player player) {
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirScooter);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirScooter);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}

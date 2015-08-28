@@ -3,12 +3,12 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 
 @BendingAbility(name="Tremor Sense", element=BendingType.Earth)
-public class Tremorsense extends Ability {
+public class Tremorsense extends ActiveAbility {
 
 	public Tremorsense (Player player) {
 		super(player, null);

@@ -51,7 +51,7 @@ public class WaterBubble extends Bubble {
 	}
 
 	@Override
-	protected long getMaxMillis () {
+	public long getMaxMillis () {
 		return MAX_DURATION;
 	}
 }

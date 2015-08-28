@@ -5,7 +5,7 @@ import java.util.List;
 
 
 /**
- * This class list all bindable abilities
+ * This class list all abilities
  *
  */
 public enum Abilities {
@@ -102,7 +102,11 @@ public enum Abilities {
 	 * OTHER Abilities
 	 */
 
-	Speed (BendingType.Air, false);
+	AirPassive (BendingType.Air, false),
+	ChiPassive (BendingType.ChiBlocker, false),
+	EarthPassive (BendingType.Earth, false),
+	FirePassive (BendingType.Fire, false),
+	WaterPassive (BendingType.Water, false);
 
 	/*
 	 * 
@@ -257,10 +261,18 @@ public enum Abilities {
 		return false;
 	}
 
+	// TODO : Make sure passive abilities cannot be bound
 	public boolean isPassiveAbility () {
-		if (this == Speed) {
-			return true;
+		switch (this) {
+			case AirPassive:
+			case ChiPassive:
+			case EarthPassive:
+			case FirePassive:
+			case WaterPassive:
+				return true;
+			default:
+				return false;
+
 		}
-		return false;
 	}
 }

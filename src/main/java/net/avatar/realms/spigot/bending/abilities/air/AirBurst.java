@@ -7,11 +7,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -26,7 +27,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  */
 
 @BendingAbility(name="Air Burst", element=BendingType.Air)
-public class AirBurst extends Ability {
+public class AirBurst extends ActiveAbility {
 
 	@ConfigurationParameter("Charge-Time")
 	public static long DEFAULT_CHARGETIME = 1750;
@@ -109,7 +110,7 @@ public class AirBurst extends Ability {
 	}
 
 	public static boolean isAirBursting (Player player) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirBurst);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirBurst);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
@@ -121,7 +122,7 @@ public class AirBurst extends Ability {
 	}
 
 	public static AirBurst getAirBurst (Player player) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirBurst);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirBurst);
 		if ((instances == null) || instances.isEmpty()) {
 			return null;
 		}

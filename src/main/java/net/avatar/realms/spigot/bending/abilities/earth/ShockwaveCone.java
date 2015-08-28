@@ -2,7 +2,7 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.IAbility;
+import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
 
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;

@@ -9,16 +9,17 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 
 @BendingAbility(name="Avatar State", element=BendingType.Energy)
-public class AvatarState extends Ability{
+public class AvatarState extends ActiveAbility{
 
 	@ConfigurationParameter("Factor")
 	public static double FACTOR = 4.5;
@@ -80,7 +81,7 @@ public class AvatarState extends Ability{
 	}
 
 	public static boolean isAvatarState (Player player) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
@@ -101,7 +102,7 @@ public class AvatarState extends Ability{
 	}
 
 	public static List<Player> getPlayers() {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
 		LinkedList<Player> players = new LinkedList<Player>();
 		if ((instances == null) || instances.isEmpty()) {
 			return players;

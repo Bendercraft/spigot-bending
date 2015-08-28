@@ -10,18 +10,19 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
 @BendingAbility(name="Air Spout", element=BendingType.Air)
-public class AirSpout extends Ability {
+public class AirSpout extends ActiveAbility {
 
 	@ConfigurationParameter("Height")
 	private static double HEIGHT = 20.0;
@@ -74,7 +75,7 @@ public class AirSpout extends Ability {
 
 	public static List<Player> getPlayers() {
 		List<Player> players = new ArrayList<Player>();
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return players;
@@ -179,7 +180,7 @@ public class AirSpout extends Ability {
 
 	public static void removeSpouts(Location loc0, double radius,
 			Player sourceplayer) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return;
@@ -204,7 +205,7 @@ public class AirSpout extends Ability {
 	}
 
 	public static boolean isSpouting (Player player) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirSpout);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return false;

@@ -15,11 +15,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -27,7 +28,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name="Air Shield", element=BendingType.Air)
-public class AirShield extends Ability {
+public class AirShield extends ActiveAbility {
 
 	@ConfigurationParameter("Max-Radius")
 	private static double MAX_RADIUS = 5.0;
@@ -235,7 +236,7 @@ public class AirShield extends Ability {
 	}
 
 	public static boolean isShielded (Player player) {
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.AirShield);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirShield);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}

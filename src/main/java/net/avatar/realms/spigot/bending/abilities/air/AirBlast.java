@@ -13,12 +13,12 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Flight;
@@ -28,7 +28,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name="Air Blast", element=BendingType.Air)
-public class AirBlast extends Ability {
+public class AirBlast extends ActiveAbility {
 	private static int ID = Integer.MIN_VALUE;
 
 	@ConfigurationParameter("Speed")
@@ -78,7 +78,7 @@ public class AirBlast extends Ability {
 	}
 
 	public AirBlast(Location location, Vector direction, Player player,
-			double factorpush, Ability parent) {
+			double factorpush, ActiveAbility parent) {
 		super(player, parent);
 
 		if (this.state.isBefore(AbilityState.CanStart)) {

@@ -10,18 +10,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
 import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name="Speed", element=BendingType.None)
-public class Speed extends Ability {
+public class Speed extends PassiveAbility {
 
 	public Speed(Player player) {
 		super(player, null);
@@ -34,7 +35,7 @@ public class Speed extends Ability {
 
 	public void sprint () {
 		// I've separate it from constructor in case where a player bind Speed
-		// (as it became a Abilities enum) and make fun by clicking...
+		// (as it became an Abilities enum) and make fun by clicking...
 		new Flight(this.player);
 		this.player.setAllowFlight(true);
 		AbilityManager.getManager().addInstance(this);
@@ -43,11 +44,7 @@ public class Speed extends Ability {
 
 	@Override
 	public boolean progress() {
-		if (ProtectionManager.isRegionProtectedFromBendingPassives(this.player, this.player.getLocation())) {
-			return false;
-		}
-
-		if (!this.state.equals(AbilityState.Progressing)) {
+		if (!super.progress()) {
 			return false;
 		}
 
@@ -90,12 +87,12 @@ public class Speed extends Ability {
 		List<Player> players = new LinkedList<Player>();
 		List<Object> toRemove = new LinkedList<Object>();
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.Speed);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirPassive);
 		if ((instances == null) || instances.isEmpty()) {
 			return players;
 		}
 
-		for (Entry<Object, Ability> entry : instances.entrySet()) {
+		for (Entry<Object, IAbility> entry : instances.entrySet()) {
 			Player player = entry.getValue().getPlayer();
 			if (player.isSprinting()) {
 				players.add(player);
@@ -110,11 +107,6 @@ public class Speed extends Ability {
 		}
 
 		return players;
-	}
-
-	@Override
-	public Abilities getAbilityType () {
-		return Abilities.Speed;
 	}
 
 	@Override
@@ -139,4 +131,8 @@ public class Speed extends Ability {
 		return true;
 	}
 
+	@Override
+	public Abilities getAbilityType () {
+		return Abilities.AirPassive;
+	}
 }

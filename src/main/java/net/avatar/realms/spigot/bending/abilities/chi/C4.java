@@ -22,12 +22,13 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -36,7 +37,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
 @BendingAbility(name="Plastic Bomb", element=BendingType.ChiBlocker, specialization = BendingSpecializationType.Inventor)
-public class C4 extends Ability{
+public class C4 extends ActiveAbility{
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -119,12 +120,12 @@ public class C4 extends Ability{
 			return false;
 		}
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
 		int cpt = 0;
-		for (Ability ab : instances.values()) {
+		for (IAbility ab : instances.values()) {
 			if (ab.getPlayer().equals(this.player)) {
 				cpt++;
 				if (cpt >= MAX_BOMBS) {
@@ -371,7 +372,7 @@ public class C4 extends Ability{
 			return null;
 		}
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
 		for (Object obj : instances.keySet()) {
 			if (((C4)instances.get(obj)).bomb.equals(block)) {
 				return obj;
@@ -402,7 +403,7 @@ public class C4 extends Ability{
 
 	public static C4 getCFour(Object id) {
 
-		Map<Object, Ability> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
 		if ((instances != null)  && !instances.isEmpty()) {
 			return (C4) instances.get(id);
 		}

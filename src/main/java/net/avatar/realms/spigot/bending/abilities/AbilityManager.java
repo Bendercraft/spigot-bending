@@ -26,6 +26,8 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
@@ -47,7 +49,7 @@ public class AbilityManager {
 	private static AbilityManager manager =  null;
 
 	private Map<String, RegisteredAbility> availableAbilities;
-	private Map<Abilities, Map<Object, Ability>> abilities;
+	private Map<Abilities, Map<Object, IAbility>> abilities;
 
 	public static AbilityManager getManager() {
 		if (manager == null) {
@@ -57,14 +59,14 @@ public class AbilityManager {
 	}
 
 	private AbilityManager() {
-		this.abilities = new HashMap<Abilities, Map<Object, Ability>>();
+		this.abilities = new HashMap<Abilities, Map<Object, IAbility>>();
 		this.availableAbilities = new HashMap<String, RegisteredAbility>();
 	}
 
 	public void progressAllAbilities() {
-		List<Ability> toRemove = new LinkedList<Ability>();
+		List<IAbility> toRemove = new LinkedList<IAbility>();
 		for (Abilities key : this.abilities.keySet()) {
-			for (Ability ability : this.abilities.get(key).values()) {
+			for (IAbility ability : this.abilities.get(key).values()) {
 				boolean canKeep = ability.progress();
 				if (!canKeep) {
 					toRemove.add(ability);
@@ -72,15 +74,15 @@ public class AbilityManager {
 			}
 		}
 
-		for (Ability ability : toRemove) {
+		for (IAbility ability : toRemove) {
 			ability.stop();
 			ability.remove();
 		}
 	}
 
 	public void stopAllAbilities() {
-		for (Map<Object, Ability> instances : this.abilities.values()) {
-			for (Ability ability : instances.values()) {
+		for (Map<Object, IAbility> instances : this.abilities.values()) {
+			for (IAbility ability : instances.values()) {
 				ability.stop();
 			}
 		}
@@ -89,12 +91,12 @@ public class AbilityManager {
 	}
 
 	private void clearAllAbilities() {
-		for (Map<Object, Ability> instances : this.abilities.values()) {
+		for (Map<Object, IAbility> instances : this.abilities.values()) {
 			instances.clear();
 		}
 	}
 
-	public Ability buildAbility (Abilities abilityType, Player player) {
+	public ActiveAbility buildAbility (Abilities abilityType, Player player) {
 		switch (abilityType) {
 			case AvatarState:
 				return new AvatarState(player);
@@ -149,16 +151,16 @@ public class AbilityManager {
 		}
 	}
 
-	public void addInstance(Ability instance) {
-		Map<Object, Ability> map = this.abilities.get(instance.getAbilityType());
+	public void addInstance(IAbility instance) {
+		Map<Object, IAbility> map = this.abilities.get(instance.getAbilityType());
 		if (map == null) {
-			map = new HashMap<Object, Ability>();
+			map = new HashMap<Object, IAbility>();
 			this.abilities.put(instance.getAbilityType(), map);
 		}
 		map.put(instance.getIdentifier(), instance);
 	}
 
-	public Map<Object, Ability> getInstances(Abilities type) {
+	public Map<Object, IAbility> getInstances(Abilities type) {
 		return this.abilities.get(type);
 	}
 
@@ -254,7 +256,7 @@ public class AbilityManager {
 		//		register(Wave.class);
 	}
 
-	protected void register(Class<? extends Ability> ability) {
+	protected void register(Class<? extends IAbility> ability) {
 		BendingAbility annotation = ability.getAnnotation(BendingAbility.class);
 		if(annotation == null) {
 			Bending.plugin.getLogger().severe("Trying to register ability : "+ability+" but not annoted ! Aborting this registration...");
@@ -275,7 +277,7 @@ public class AbilityManager {
 		}
 	}
 
-	private void _register(String name, Class<? extends Ability> ability, BendingType element, BendingSpecializationType specialization) {
+	private void _register(String name, Class<? extends IAbility> ability, BendingType element, BendingSpecializationType specialization) {
 		if(this.availableAbilities.containsKey(name)) {
 			//Nope !
 			Bending.plugin.getLogger().severe("Ability "+name+" is already register with class "+this.availableAbilities.get(name)+" ! Aborting registration...");

@@ -14,17 +14,17 @@ import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @BendingAbility(name="Smoke Bomb", element=BendingType.ChiBlocker)
-public class SmokeBomb extends Ability {
+public class SmokeBomb extends ActiveAbility {
 
 	@ConfigurationParameter("Radius")
 	public static int RADIUS = 5;
@@ -143,6 +143,11 @@ public class SmokeBomb extends Ability {
 		else {
 			return true;
 		}
+	}
+
+	@Override
+	protected long getMaxMillis () {
+		return (DURATION*1000) + 1;
 	}
 
 	@Override

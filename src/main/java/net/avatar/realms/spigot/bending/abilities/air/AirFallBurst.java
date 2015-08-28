@@ -5,19 +5,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.Ability;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 //TODO : Parent = AirBurst
 @BendingAbility(name="Air Burst Fall", element=BendingType.Air)
-public class AirFallBurst extends Ability  {
+public class AirFallBurst extends ActiveAbility  {
 
 	@ConfigurationParameter("Fall-Threshold")
 	private static double THRESHOLD = 10;
 
-	public AirFallBurst(Player player, Ability parent) {
+	public AirFallBurst(Player player, ActiveAbility parent) {
 		super(player, parent);
 		System.out.println("FALL BURST !");
 		if(player.getFallDistance() < THRESHOLD) {
