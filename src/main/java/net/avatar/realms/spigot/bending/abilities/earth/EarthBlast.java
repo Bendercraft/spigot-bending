@@ -146,11 +146,7 @@ public class EarthBlast implements IAbility {
 
 	private void focusBlock() {	
 		if (EarthPassive.isPassiveSand(sourceblock)) {
-			
-			//TODO : To Koudja : I changed this part when I converted the EarthPassive.
-			// It previously was :
-			// EarthPassive.revertSand(sourceblock);
-			// But I'd rather to simply cancel the selection
+			 EarthPassive.revertSand(sourceblock);
 		}		
 		sourcetype = sourceblock.getType();
 		damage = EARTH_DAMAGE;

@@ -82,8 +82,9 @@ public class EarthPassive extends PassiveAbility {
 	@Override
 	public void stop() {
 		for (BlockState state : blocks.values()) {
-			state.update();
+			state.update(true);
 		}
+		blocks.clear();
 	}
 
 	public static boolean isPassiveSand(Block block) {
@@ -99,14 +100,20 @@ public class EarthPassive extends PassiveAbility {
 		return false;
 	}
 
-//	public static void revertSand(Block block) {
-//		Material type = sandidentities.get(block);
-//		sandidentities.remove(block);
-//		sandblocks.remove(block);
-//		if (block.getType() == Material.SAND) {
-//			block.setType(type);
-//		}
-//	}
+	public static void revertSand(Block block) {
+		EarthPassive passive = null;
+		for (IAbility abil : AbilityManager.getManager().getInstances(Abilities.EarthPassive).values()) {
+			if (((EarthPassive)abil).blocks.containsKey(block)) {
+				passive = ((EarthPassive)abil);
+				break;
+			}
+		}
+		if (passive == null) {
+			return;
+		}
+		passive.blocks.get(block).update(true);
+		passive.blocks.remove(block);
+	}
 	
 	@Override
 	public boolean canBeInitialized() {
