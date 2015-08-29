@@ -553,7 +553,7 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if (ability == Abilities.FireBlast) {
-					new FireBall(player, null);
+					new FireBall(player);
 				}
 
 				if (ability == Abilities.FireShield) {

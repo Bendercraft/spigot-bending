@@ -20,7 +20,7 @@ public class Messages {
 	private static File languageFile;
 	private static InputStream input;
 	
-	public static void loadMessages() {
+	public static void loadMessages () {
 		lines = new Properties();
 		
 		File folder = Bending.plugin.getDataFolder();
@@ -32,7 +32,8 @@ public class Messages {
 		if (languageFile.exists()) {
 			try {
 				input = new FileInputStream(languageFile);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
 			}
 		}
@@ -42,26 +43,27 @@ public class Messages {
 		
 		try {
 			lines.load(input);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 			// Should never happen, hope so
 		}
 		
 	}
 	
-	public static String getAbilityDescription(Abilities ability) {
-		return lines.getProperty("abilities."+ability.getElement().name().toLowerCase()+"."+ability.name().toLowerCase());
+	public static String getAbilityDescription (Abilities ability) {
+		return lines.getProperty("abilities." + ability.getElement().name().toLowerCase() + "." + ability.name().toLowerCase());
 	}
-
-	public static String getString(String string) {
+	
+	public static String getString (String string) {
 		return lines.getProperty(string);
 	}
 	
-	public static void sendMessage(Player player, String key) {
+	public static void sendMessage (Player player, String key) {
 		sendMessage(player, key, ChatColor.WHITE);
 	}
 	
-	public static void sendMessage(Player player, String key, ChatColor color) {
+	public static void sendMessage (Player player, String key, ChatColor color) {
 		if (player == null) {
 			Bending.plugin.getLogger().info(color + getString(key));
 		}
@@ -70,16 +72,15 @@ public class Messages {
 		}
 	}
 	
-	
 	// These one are not used yet, but we should.
-	public static void sendMessage(Player player, String key, Map<String, String> params) {
+	public static void sendMessage (Player player, String key, Map<String, String> params) {
 		sendMessage(player, key, ChatColor.WHITE, params);
 	}
 	
-	public static void sendMessage(Player player, String key, ChatColor color, Map<String, String> params) {
+	public static void sendMessage (Player player, String key, ChatColor color, Map<String, String> params) {
 		String msg = getString(key);
 		for (String k : params.keySet()) {
-			msg.replaceAll("%"+k+"%", params.get(k));
+			msg.replaceAll("%" + k + "%", params.get(k));
 		}
 		if (player == null) {
 			Bending.plugin.getLogger().info(color + msg);

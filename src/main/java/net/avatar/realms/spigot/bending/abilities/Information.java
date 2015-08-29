@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
+//TODO : Set to deprecated, After ability refactoring
 public class Information {
 
 	private long time;

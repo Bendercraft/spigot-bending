@@ -64,10 +64,8 @@ public class FireBall implements IAbility {
 	private boolean charged = false;
 	private boolean launched = false;
 	private TNTPrimed explosion = null;
-	private IAbility parent;
 
-	public FireBall(Player player, IAbility parent) {
-		this.parent = parent;
+	public FireBall(Player player) {
 		this.player = player;
 		time = System.currentTimeMillis();
 		starttime = time;
@@ -289,6 +287,6 @@ public class FireBall implements IAbility {
 
 	@Override
 	public IAbility getParent() {
-		return parent;
+		return null;
 	}
 }
