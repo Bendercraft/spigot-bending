@@ -39,6 +39,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
+import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.multi.Speed;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
@@ -142,6 +143,9 @@ public class AbilityManager {
 				return new Suffocate(player);
 			case Tornado:
 				return new Tornado(player);
+				
+			case Combustion:
+				return new Combustion(player);
 
 			case WaterBubble:
 				return new WaterBubble(player);
@@ -216,7 +220,7 @@ public class AbilityManager {
 		register(Tremorsense.class);
 
 		//		register(ArcOfFire.class);
-		//		register(Combustion.class);
+		register(Combustion.class);
 		//		register(Cook.class);
 		//		register(Enflamed.class);
 		//		register(Fireball.class);

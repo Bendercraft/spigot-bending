@@ -140,7 +140,6 @@ public class BendingManager implements Runnable {
 		Illumination.progressAll();
 		Enflamed.handleFlames();
 		FireBlade.progressAll();
-		Combustion.progressAll();
 	}
 
 	private void manageWaterbending() {

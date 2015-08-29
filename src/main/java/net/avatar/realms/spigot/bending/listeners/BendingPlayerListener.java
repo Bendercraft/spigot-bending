@@ -78,7 +78,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveCone;
 import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveFall;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.ArcOfFire;
-import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.Extinguish;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBall;
@@ -569,12 +568,8 @@ public class BendingPlayerListener implements Listener{
 					MetalBending.metalMelt(player);
 				}
 
-				if (ability == Abilities.Combustion) {
-					new Combustion(player, null);
-				}
-
-				if ( ability.isAirbending() || (ability == Abilities.Dash) 
-						|| ((ability == Abilities.PlasticBomb)
+				if ( ability.isAirbending() || (ability.isChiblocking()) 
+						|| ((ability == Abilities.Combustion)
 								|| (ability == Abilities.WaterBubble))) {
 
 					Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);

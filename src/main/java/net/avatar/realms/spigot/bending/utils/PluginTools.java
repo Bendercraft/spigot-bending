@@ -21,7 +21,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
-import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBall;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
@@ -160,7 +159,6 @@ public class PluginTools {
 		Cook.removeAll();
 		Illumination.removeAll();
 		FireBlade.removeAll();
-		Combustion.removeAll();
 
 		// BendingManager.removeFlyers();
 		Flight.removeAll();

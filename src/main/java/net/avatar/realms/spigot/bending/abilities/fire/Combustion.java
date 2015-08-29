@@ -1,16 +1,18 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -33,9 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Combustion", element=BendingType.Fire, specialization=BendingSpecializationType.Combustion)
-public class Combustion implements IAbility {
-	private static Map<Player, Combustion> instances = new HashMap<Player, Combustion>();
-
+public class Combustion extends ActiveAbility {
 	private static long interval = 25;
 	
 	@ConfigurationParameter("Radius")
@@ -62,57 +62,84 @@ public class Combustion implements IAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 2000;
 	
+	@ConfigurationParameter("Max-Move")
+	private static float MAX_DISTANCE = 2.5f; 
+	
 	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
 	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
 	
-	private Player player;
 	private Location origin;
 	private Block block;
 	private Location location;
 	private Vector direction;
 	private long time;
-	private IAbility parent;
-	private boolean charged = false;
 	private int progressed = 0;
 	
 	private double range = RANGE;
 	private double damage = DAMAGE;
 
-	public Combustion(Player player, IAbility parent) {
-		this.parent = parent;
-		this.player = player;
-		time = System.currentTimeMillis();
+	public Combustion(Player player) {
+		super (player, null);
+		
+		if (state.isBefore(AbilityState.CanStart)) {
+			return;
+		}
+		
+		time = startedTime;
 		if (AvatarState.isAvatarState(player)) {
 			damage = AvatarState.getValue(damage);
 		}
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
-		
 		block = player.getLocation().getBlock();
-		
-		if (!player.getEyeLocation().getBlock().isLiquid()) {
-			instances.put(player, this);
+	}
+	
+	@Override
+	public boolean sneak() {
+		switch (state) {
+			case None:
+			case CannotStart:
+				return false;
+			case CanStart:
+				if (!player.getEyeLocation().getBlock().isLiquid()) {
+					setState(AbilityState.Preparing);
+					AbilityManager.getManager().addInstance(this);
+				}
+				return false;
+			case Preparing:
+			case Prepared:
+			case Progressing:
+			case Ending:
+			case Ended:
+			case Removed:
+			default : 
+				return false;
 		}
-		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Combustion, COOLDOWN);
 	}
 
-	private boolean progress() {
-		if ((!EntityTools.canBend(player, Abilities.Combustion) 
-				|| EntityTools.getBendingAbility(player) != Abilities.Combustion)) {
+	@Override
+	public boolean progress() {
+		if (!super.progress()) {
 			return false;
 		}
 		
-		if(!charged) {
-			if(!player.getLocation().getBlock().getLocation().equals(block.getLocation())) {
-				return false;
-			}
+		if ((EntityTools.getBendingAbility(player) != Abilities.Combustion)) {
+			return false;
+		}
+		
+		if(!state.isBefore(AbilityState.Prepared)) {
 			if(!player.isSneaking()) {
 				return false;
 			}
+			
+			if(player.getLocation().getBlock().getLocation().distance(block.getLocation()) > MAX_DISTANCE) {
+				return false;
+			}
+			
 			if (System.currentTimeMillis() > time + chargeTime) {
 				location = player.getEyeLocation();
 				origin = location.clone();
 				direction = location.getDirection().normalize().multiply(radius);
-				charged = true;
+				setState(AbilityState.Prepared);
 			}
 			return true;
 		}
@@ -263,67 +290,57 @@ public class Combustion implements IAbility {
 		block.breakNaturally();
 	}
 
-	public static void progressAll() {
-		List<Combustion> toRemove = new LinkedList<Combustion>();
-		for (Combustion fireball : instances.values()) {
-			boolean keep = fireball.progress();
-			if(!keep) {
-				toRemove.add(fireball);
-			}
-		}
-		for(Combustion fireball : toRemove) {
-			fireball.remove();
-		}
-	}
-
+	@Override
 	public void remove() {
-		instances.remove(this.player);
+		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Combustion, COOLDOWN);
+		super.remove();
 	}
 
-	public static void removeAll() {
-		instances.clear();
-	}
-
-	public static void removeFireballsAroundPoint(Location location,
-			double radius) {
-		List<Combustion> toRemove = new LinkedList<Combustion>();
-		for (Combustion fireball : instances.values()) {
+	public static void removeFireballsAroundPoint(Location location, double radius) {
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Combustion);
+		if (instances == null) {
+			return;
+		}
+		for (IAbility ab : instances.values()) {
+			Combustion fireball = ((Combustion)ab);
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld()) {
-				if (location.distance(fireblastlocation) <= radius)
-					toRemove.add(fireball);
+				if (location.distance(fireblastlocation) <= radius) {
+					fireball.consume();
+				}
 			}
-		}
-		for(Combustion fireball : toRemove) {
-			fireball.remove();
 		}
 	}
 
-	public static boolean annihilateBlasts(Location location, double radius,
-			Player source) {
+	public static boolean annihilateBlasts(Location location, double radius, Player source) {
 		boolean broke = false;
-		List<Combustion> toRemove = new LinkedList<Combustion>();
-		for (Combustion fireball : instances.values()) {
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Combustion);
+		if (instances == null) {
+			return broke;
+		}
+		for (IAbility ab : instances.values()) {
+			Combustion fireball = ((Combustion)ab);
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld()
 					&& !source.equals(fireball.player)) {
 				if (location.distance(fireblastlocation) <= radius) {
 					fireball.explode();
-					toRemove.add(fireball);
+					fireball.consume();
 					broke = true;
 				}
 			}
-		}
-		
-		for(Combustion fireball : toRemove) {
-			fireball.remove();
 		}
 
 		return broke;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Object getIdentifier() {
+		return player;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.Combustion;
 	}
 }
