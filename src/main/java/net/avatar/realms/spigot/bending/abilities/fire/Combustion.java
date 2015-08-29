@@ -57,7 +57,7 @@ public class Combustion extends ActiveAbility {
 	private static double RANGE = 20;
 	
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 7;
+	private static int DAMAGE = 9;
 	
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 2000;
@@ -343,4 +343,11 @@ public class Combustion extends ActiveAbility {
 	public Abilities getAbilityType() {
 		return Abilities.Combustion;
 	}
+
+	@Override
+	protected long getMaxMillis() {
+		return 1000 * 90;
+	}
+	
+	
 }
