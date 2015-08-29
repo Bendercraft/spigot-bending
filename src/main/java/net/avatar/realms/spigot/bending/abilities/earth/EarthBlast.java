@@ -66,8 +66,6 @@ public class EarthBlast implements IAbility {
 	private int damage;
 	
 	private static final double deflectrange = 3;
-
-	
 	
 	// private static double speed = 1.5;
 
@@ -148,7 +146,11 @@ public class EarthBlast implements IAbility {
 
 	private void focusBlock() {	
 		if (EarthPassive.isPassiveSand(sourceblock)) {
-			EarthPassive.revertSand(sourceblock);
+			
+			//TODO : To Koudja : I changed this part when I converted the EarthPassive.
+			// It previously was :
+			// EarthPassive.revertSand(sourceblock);
+			// But I'd rather to simply cancel the selection
 		}		
 		sourcetype = sourceblock.getType();
 		damage = EARTH_DAMAGE;

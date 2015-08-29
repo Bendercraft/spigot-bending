@@ -56,7 +56,7 @@ public abstract class PassiveAbility extends Ability {
 	}
 
 	@Override
-	protected final long getMaxMillis() {
+	protected long getMaxMillis() {
 		return 0;
 	}
 

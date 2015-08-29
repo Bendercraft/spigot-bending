@@ -1,66 +1,67 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @BendingAbility(name="Earth Passive", element=BendingType.Earth)
-public class EarthPassive implements net.avatar.realms.spigot.bending.abilities.deprecated.IPassiveAbility {
-	private static Map<Block, Long> sandblocks = new HashMap<Block, Long>();
-	private static Map<Block, Material> sandidentities = new HashMap<Block, Material>();
+public class EarthPassive extends PassiveAbility {
 
 	@ConfigurationParameter("Time-Before-Reverse")
-	private static long DURATION = 3000;
-
-	public static boolean softenLanding(Player player) {
-		Block block = player.getLocation().getBlock()
-				.getRelative(BlockFace.DOWN);
-		if (ProtectionManager.isRegionProtectedFromBendingPassives(player, player.getLocation())) {
+	private static long DURATION = 2500;
+	
+	private Map<Block, BlockState> blocks = new HashMap<Block, BlockState>();
+	
+	public EarthPassive(Player player) {
+		super(player, null);
+	}
+	
+	@Override
+	public boolean start() {
+		if (state.isBefore(AbilityState.CanStart)) {
 			return false;
 		}
+		
+		Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+		
 		if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth, block)
 				|| BlockTools.isTransparentToEarthbending(player,
 						Abilities.RaiseEarth, block)) {
 
 			if (!BlockTools.isTransparentToEarthbending(player, block)) {
-				Material type = block.getType();
 				if (BlockTools.isSolid(block.getRelative(BlockFace.DOWN))) {
-					block.setType(Material.SAND);
-					if (!sandblocks.containsKey(block)) {
-						sandidentities.put(block, type);
-						sandblocks.put(block, System.currentTimeMillis());
+					if (!isPassiveSand(block)) {
+						blocks.put(block, block.getState());
+						block.setType(Material.SAND);
 					}
 				}
-
 			}
 
-			for (Block affectedblock : BlockTools.getBlocksAroundPoint(
-					block.getLocation(), 2)) {
+			for (Block affectedblock : BlockTools.getBlocksAroundPoint(block.getLocation(), 2)) {
 				if (BlockTools.isEarthbendable(player, affectedblock)
 						&& !BlockTools.isIronBendable(player,affectedblock.getType())) {
 					if (BlockTools.isSolid(affectedblock.getRelative(BlockFace.DOWN))) {
-						Material type = affectedblock.getType();
-						affectedblock.setType(Material.SAND);
-						if (!sandblocks.containsKey(affectedblock)) {
-							sandidentities.put(affectedblock, type);
-							sandblocks.put(affectedblock,
-									System.currentTimeMillis());
+						if (!isPassiveSand(affectedblock)) {
+							blocks.put(affectedblock, affectedblock.getState());
+							affectedblock.setType(Material.SAND);
 						}
 					}
-
 				}
 			}
 			return true;
@@ -72,39 +73,65 @@ public class EarthPassive implements net.avatar.realms.spigot.bending.abilities.
 		}
 		return false;
 	}
+	
+	@Override
+	protected long getMaxMillis() {
+		return DURATION;
+	}
+
+	@Override
+	public void stop() {
+		for (BlockState state : blocks.values()) {
+			state.update();
+		}
+	}
 
 	public static boolean isPassiveSand(Block block) {
-		return (sandblocks.containsKey(block));
-	}
-
-	public static void revertSand(Block block) {
-		Material type = sandidentities.get(block);
-		sandidentities.remove(block);
-		sandblocks.remove(block);
-		if (block.getType() == Material.SAND) {
-			block.setType(type);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.EarthPassive);
+		if (instances == null || instances.isEmpty()) {
+			return false;
 		}
-	}
-
-	public static void revertSands() {
-		List<Block> temp = new LinkedList<Block>(sandblocks.keySet());
-		for (Block block : temp) {
-			if (System.currentTimeMillis() >= (sandblocks.get(block) + DURATION)) {
-				revertSand(block);
+		for (IAbility passive : instances.values()) {
+			if (((EarthPassive)passive).blocks.containsKey(block)) {
+				return true;
 			}
 		}
-
+		return false;
 	}
 
-	public static void revertAllSand() {
-		List<Block> temp = new LinkedList<Block>(sandblocks.keySet());
-		for (Block block : temp) {
-			revertSand(block);
+//	public static void revertSand(Block block) {
+//		Material type = sandidentities.get(block);
+//		sandidentities.remove(block);
+//		sandblocks.remove(block);
+//		if (block.getType() == Material.SAND) {
+//			block.setType(type);
+//		}
+//	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
 		}
+		
+		if (!bender.isBender(BendingType.Earth)) {
+			return false;
+		}
+		
+		if (!EntityTools.canBendPassive(player, BendingType.Earth)) {
+			return false;
+		}
+		
+		return true;
 	}
 
-	public static void removeAll() {
-		revertAllSand();
+	@Override
+	public Object getIdentifier() {
+		return player;
 	}
 
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.EarthPassive;
+	}
 }

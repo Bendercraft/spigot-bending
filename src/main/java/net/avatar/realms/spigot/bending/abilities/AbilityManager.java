@@ -36,10 +36,12 @@ import net.avatar.realms.spigot.bending.abilities.chi.PowerfulHit;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.multi.Speed;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
+import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
@@ -200,7 +202,7 @@ public class AbilityManager {
 		//		register(EarthBlast.class);
 		//		register(EarthColumn.class);
 		//		register(EarthGrab.class);
-		//		register(EarthPassive.class);
+		register(EarthPassive.class);
 		//		register(EarthShield.class);
 		//		register(EarthTunnel.class);
 		//		register(EarthWall.class);
@@ -249,7 +251,7 @@ public class AbilityManager {
 		//		register(TorrentBurst.class);
 		register(WaterBubble.class);
 		//		register(WaterManipulation.class);
-		//		register(WaterPassive.class);
+		register(WaterPassive.class);
 		//		register(WaterReturn.class);
 		//		register(WaterSpout.class);
 		//		register(WaterWall.class);

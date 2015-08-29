@@ -56,6 +56,7 @@ import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
@@ -628,16 +629,17 @@ public class BendingPlayerListener implements Listener{
 			Abilities ability = EntityTools.getBendingAbility(player);
 
 			if (event.getCause() == DamageCause.FALL) {
+				PassiveAbility ab = null;
 				if (EntityTools.isBender(player, BendingType.Earth)) {
 
 					if (ability == Abilities.Shockwave) {
 						new ShockwaveFall(player, null);
 					}
 
-					if (EarthPassive.softenLanding(player)
-							&& EntityTools.canBendPassive(player, BendingType.Earth)) {
-						new Flight(player);
-						player.setAllowFlight(true);
+					ab = new EarthPassive (player);
+					if (ab.start()) {
+//						new Flight(player);
+//						player.setAllowFlight(true);
 						player.setFallDistance(0);
 						event.setDamage(0);
 						event.setCancelled(true);
@@ -652,8 +654,8 @@ public class BendingPlayerListener implements Listener{
 
 				if (EntityTools.isBender(player, BendingType.Air)
 						&& EntityTools.canBendPassive(player, BendingType.Air)) {
-					new Flight(player);
-					player.setAllowFlight(true);
+//					new Flight(player);
+//					player.setAllowFlight(true);
 					if (ability == Abilities.AirBurst) {
 						new AirFallBurst(player, null);
 					}
@@ -664,8 +666,8 @@ public class BendingPlayerListener implements Listener{
 
 				if (!event.isCancelled()
 						&& EntityTools.isBender(player, BendingType.Water)) {
-					WaterPassive passive = new WaterPassive (player);
-					if (passive.start()) {
+					ab = new WaterPassive (player);
+					if (ab.start()) {
 						//new Flight(player);
 						//player.setAllowFlight(true);
 						player.setFallDistance(0);

@@ -18,7 +18,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
@@ -132,7 +131,6 @@ public class PluginTools {
 		CompactColumn.removeAll();
 		EarthBlast.removeAll();
 		EarthColumn.removeAll();
-		EarthPassive.removeAll();
 		EarthArmor.removeAll();
 		EarthTunnel.removeAll();
 		Shockwave.removeAll();
