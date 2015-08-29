@@ -91,13 +91,14 @@ public class Tornado extends ActiveAbility {
 			case CanStart:
 				new Flight(this.player);
 				this.player.setAllowFlight(true);
-
 				setState(AbilityState.Progressing);
 				AbilityManager.getManager().addInstance(this);
 				return false;
+				
 			case Preparing:
 			case Prepared:
 			case Progressing:
+			case Ending:
 			case Ended:
 			case Removed:
 			default:

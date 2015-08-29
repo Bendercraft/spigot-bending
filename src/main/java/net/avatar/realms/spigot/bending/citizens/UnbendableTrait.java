@@ -7,5 +7,4 @@ public class UnbendableTrait extends Trait {
 	public UnbendableTrait() {
 		super("unbendable");
 	}
-
 }

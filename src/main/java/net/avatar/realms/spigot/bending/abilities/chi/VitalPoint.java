@@ -133,6 +133,7 @@ public class VitalPoint extends ActiveAbility {
 				this.time = System.currentTimeMillis();
 				return false;
 
+			case Ending:
 			case Ended:
 			case Removed:
 			default:

@@ -70,6 +70,10 @@ public class PoisonnedDart extends ActiveAbility{
 		if (this.state.equals(AbilityState.CannotStart) || this.state.equals(AbilityState.Preparing)) {
 			return true;
 		}
+		
+		if (!this.state.equals(AbilityState.CanStart)) {
+			return false;
+		}
 
 		this.origin = this.player.getEyeLocation();
 		this.location = this.origin.clone();

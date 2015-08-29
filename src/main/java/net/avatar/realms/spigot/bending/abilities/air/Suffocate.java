@@ -100,6 +100,7 @@ public class Suffocate extends ActiveAbility {
 			case Preparing:
 			case Prepared:
 			case Progressing:
+			case Ending:
 			case Ended:
 			case Removed:
 			default : 

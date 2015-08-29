@@ -8,8 +8,9 @@ public enum AbilityState {
 	Preparing 	(3), 
 	Prepared 	(4),
 	Progressing	(5),
-	Ended		(6),
-	Removed		(7);
+	Ending		(6),
+	Ended		(7),
+	Removed		(8);
 
 	private int step;
 

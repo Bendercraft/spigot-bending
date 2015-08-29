@@ -72,8 +72,6 @@ public class AirBurst extends ActiveAbility {
 			return false;
 		}
 
-
-
 		return false;
 	}
 

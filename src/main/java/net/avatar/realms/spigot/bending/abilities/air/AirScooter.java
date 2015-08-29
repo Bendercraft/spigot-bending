@@ -51,9 +51,8 @@ public class AirScooter extends ActiveAbility {
 
 	@Override
 	public boolean swing () {
-
 		if (this.state.isBefore(AbilityState.CanStart)) {
-			return false;
+			return true;
 		}
 
 		if (this.state == AbilityState.CanStart) {
@@ -63,7 +62,6 @@ public class AirScooter extends ActiveAbility {
 			this.player.setSprinting(false);
 
 			AbilityManager.getManager().addInstance(this);
-			// progress();
 			setState(AbilityState.Progressing);
 
 			return false;
@@ -86,6 +84,10 @@ public class AirScooter extends ActiveAbility {
 	@Override
 	public boolean progress () {
 		if (!super.progress()) {
+			return false;
+		}
+		
+		if (state == AbilityState.Ending) {
 			return false;
 		}
 

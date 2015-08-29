@@ -76,6 +76,10 @@ public class SmokeBomb extends ActiveAbility {
 		if ((this.state == AbilityState.CannotStart) || (this.state == AbilityState.Prepared)) {
 			return true;
 		}
+		
+		if (!this.state.equals(AbilityState.CanStart)) {
+			return false;
+		}
 
 		setState(AbilityState.Prepared);
 

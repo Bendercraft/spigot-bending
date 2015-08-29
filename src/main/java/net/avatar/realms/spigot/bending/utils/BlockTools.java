@@ -497,7 +497,6 @@ public class BlockTools {
 											.75));
 						}
 					}
-
 				}
 
 				if (up) {

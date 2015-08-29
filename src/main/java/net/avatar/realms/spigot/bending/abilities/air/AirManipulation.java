@@ -14,6 +14,23 @@ public class AirManipulation extends ActiveAbility{
 		super(player, null);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public boolean swing() {
+		switch (state) {
+		case None:
+		case CannotStart:
+			return true;
+			
+		case CanStart:
+		case Preparing:
+		case Prepared:
+		case Progressing:
+		case Ending:
+		case Ended: 
+		case Removed:
+			default: return false;
+		}
+	}
 
 	@Override
 	public Abilities getAbilityType() {
