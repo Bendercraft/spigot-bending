@@ -5,13 +5,13 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 
-//TODO : Rename to IAbility when conversion is done
 public interface IAbility {
 
 	/**
 	 * The logic that the ability must follow over the time.
+	 * 
 	 * @return <code>false</code> if the ability must be stopped
-	 * <code>true</code> if the ability can continue 
+	 *         <code>true</code> if the ability can continue
 	 */
 	public boolean progress();
 
@@ -26,9 +26,12 @@ public interface IAbility {
 	public void remove();
 
 	/**
-	 * <pre>Sometimes, an ability is the logical sequence of another ability.
+	 * <pre>
+	 * Sometimes, an ability is the logical sequence of another ability.
 	 * For example, FireBurst generates multiples FireBlast,
-	 * AirBurst can generate an AirFallBurst that generates multiple AirBlast </pre>
+	 * AirBurst can generate an AirFallBurst that generates multiple AirBlast
+	 * </pre>
+	 * 
 	 * @return The ability that generated this ability
 	 */
 	public IAbility getParent();

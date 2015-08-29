@@ -5,21 +5,20 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-public abstract class PassiveAbility extends Ability{
+public abstract class PassiveAbility extends Ability {
 
-	public PassiveAbility (Player player, Ability parent) {
+	public PassiveAbility(Player player, Ability parent) {
 		super(player, parent);
 		if (canBeInitialized()) {
-			this.startedTime = System.currentTimeMillis();	
+			this.startedTime = System.currentTimeMillis();
 			setState(AbilityState.CanStart);
-		}
-		else {
+		} else {
 			setState(AbilityState.CannotStart);
 		}
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
@@ -31,10 +30,16 @@ public abstract class PassiveAbility extends Ability{
 		return true;
 	}
 
-	public abstract void start();
+	/**
+	 * Start the new instance of the passive ability
+	 * 
+	 * @return <code>true</code> if the passive properly worked
+	 *         <code>false</code> if the passive did NOT properly work
+	 */
+	public abstract boolean start();
 
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}

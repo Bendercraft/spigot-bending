@@ -664,10 +664,10 @@ public class BendingPlayerListener implements Listener{
 
 				if (!event.isCancelled()
 						&& EntityTools.isBender(player, BendingType.Water)) {
-					if (WaterPassive.softenLanding(player)
-							&& EntityTools.canBendPassive(player, BendingType.Water)) {
-						new Flight(player);
-						player.setAllowFlight(true);
+					WaterPassive passive = new WaterPassive (player);
+					if (passive.start()) {
+						//new Flight(player);
+						//player.setAllowFlight(true);
 						player.setFallDistance(0);
 						event.setDamage(0);
 						event.setCancelled(true);

@@ -3,7 +3,6 @@ package net.avatar.realms.spigot.bending.abilities;
 import java.util.LinkedList;
 import java.util.List;
 
-
 /**
  * This class list all abilities
  *
@@ -13,16 +12,16 @@ public enum Abilities {
 	/*
 	 * AIR Abilities
 	 */
-	AirBlast(BendingType.Air, true),
-	AirBubble (BendingType.Air, true),
-	AirShield(BendingType.Air, true),
-	AirSuction(BendingType.Air, true),
-	AirSwipe(BendingType.Air, true),
-	AirScooter(BendingType.Air, false),
-	AirSpout(BendingType.Air, false),
-	AirBurst(BendingType.Air, true),
-	AirManipulation(BendingType.Air, true),
-	Tornado(BendingSpecializationType.Tornado, true),
+	AirBlast(BendingType.Air, true), 
+	AirBubble(BendingType.Air, true),
+	AirShield(BendingType.Air, true), 
+	AirSuction(BendingType.Air, true), 
+	AirSwipe(BendingType.Air, true), 
+	AirScooter(BendingType.Air, false), 
+	AirSpout(BendingType.Air, false), 
+	AirBurst(BendingType.Air, true), 
+	AirManipulation(BendingType.Air, true), 
+	Tornado(BendingSpecializationType.Tornado, true), 
 	Suffocate(BendingSpecializationType.Suffocate, true),
 
 	/*
@@ -30,16 +29,16 @@ public enum Abilities {
 	 * EARTH Abilities
 	 */
 
-	Catapult(BendingType.Earth, true),
-	RaiseEarth(BendingType.Earth, true),
+	Catapult(BendingType.Earth, true), 
+	RaiseEarth(BendingType.Earth, true), 
 	EarthGrab(BendingType.Earth, true),
 	EarthTunnel(BendingType.Earth, true),
-	EarthBlast(BendingType.Earth, true),
-	Collapse(BendingType.Earth, true),
-	Tremorsense(BendingType.Earth, true),
-	EarthArmor(BendingType.Earth, true),
-	Shockwave(BendingType.Earth, true),
-	LavaTrain(BendingSpecializationType.Lavabend, true),
+	EarthBlast(BendingType.Earth, true), 
+	Collapse(BendingType.Earth, true), 
+	Tremorsense(BendingType.Earth, true), 
+	EarthArmor(BendingType.Earth, true), 
+	Shockwave(BendingType.Earth, true), 
+	LavaTrain(BendingSpecializationType.Lavabend, true), 
 	MetalBending(BendingSpecializationType.Metalbend, true),
 
 	/*
@@ -47,16 +46,16 @@ public enum Abilities {
 	 * FIRE Abilities
 	 */
 
-	HeatControl(BendingType.Fire, true),
-	Blaze(BendingType.Fire, true),
-	FireJet(BendingType.Fire, false),
-	Illumination(BendingType.Fire, false),
-	WallOfFire(BendingType.Fire, false),
-	FireBlast(BendingType.Fire, true),
-	FireBurst(BendingType.Fire, true),
-	FireShield(BendingType.Fire, true),
+	HeatControl(BendingType.Fire, true), 
+	Blaze(BendingType.Fire, true), 
+	FireJet(BendingType.Fire, false), 
+	Illumination(BendingType.Fire, false), 
+	WallOfFire(BendingType.Fire, false), 
+	FireBlast(BendingType.Fire, true), 
+	FireBurst(BendingType.Fire, true), 
+	FireShield(BendingType.Fire, true), 
 	FireBlade(BendingType.Fire, false),
-	Combustion(BendingSpecializationType.Combustion, true),
+	Combustion(BendingSpecializationType.Combustion, true), 
 	Lightning(BendingSpecializationType.Lightning, true),
 
 	/*
@@ -64,17 +63,17 @@ public enum Abilities {
 	 * WATER Abilities
 	 */
 
-	WaterBubble(BendingType.Water, true),
-	PhaseChange(BendingType.Water, true),
+	WaterBubble(BendingType.Water, true), 
+	PhaseChange(BendingType.Water, true), 
 	HealingWaters(BendingType.Water, true),
-	WaterManipulation(BendingType.Water, true),
-	Surge(BendingType.Water, true),
-	WaterSpout(BendingType.Water, false),
+	WaterManipulation(BendingType.Water, true), 
+	Surge(BendingType.Water, true), 
+	WaterSpout(BendingType.Water, false), 
 	IceSpike(BendingType.Water, true),
-	OctopusForm(BendingType.Water, true),
-	Torrent(BendingType.Water, true),
-	IceSwipe(BendingType.Water, true),
-	Bloodbending(BendingSpecializationType.Bloodbend, true),
+	OctopusForm(BendingType.Water, true), 
+	Torrent(BendingType.Water, true), 
+	IceSwipe(BendingType.Water, true), 
+	Bloodbending(BendingSpecializationType.Bloodbend,true), 
 	Drainbending(BendingSpecializationType.DrainBend, false),
 
 	/*
@@ -82,13 +81,13 @@ public enum Abilities {
 	 * CHI-BLOCKERS Abilities
 	 */
 
-	HighJump(BendingType.ChiBlocker, false),
-	RapidPunch(BendingType.ChiBlocker, false),
-	Paralyze(BendingType.ChiBlocker, false),
-	SmokeBomb(BendingType.ChiBlocker, false),
-	Dash(BendingType.ChiBlocker, true),
-	PowerfulHit(BendingType.ChiBlocker, false),
-	PoisonnedDart(BendingSpecializationType.Inventor, false),
+	HighJump(BendingType.ChiBlocker, false), 
+	RapidPunch(BendingType.ChiBlocker, false), 
+	Paralyze(BendingType.ChiBlocker, false), 
+	SmokeBomb(BendingType.ChiBlocker, false), 
+	Dash(BendingType.ChiBlocker, true), 
+	PowerfulHit(BendingType.ChiBlocker, false), 
+	PoisonnedDart(BendingSpecializationType.Inventor, false), 
 	PlasticBomb(BendingSpecializationType.Inventor, true),
 
 	/*
@@ -96,17 +95,18 @@ public enum Abilities {
 	 * AVATAR Abilities
 	 */
 
-	AvatarState (BendingType.Energy, false),
+	AvatarState(BendingType.Energy, false),
 
 	/*
 	 * OTHER Abilities
 	 */
 
-	AirPassive (BendingType.Air, false),
-	ChiPassive (BendingType.ChiBlocker, false),
-	EarthPassive (BendingType.Earth, false),
-	FirePassive (BendingType.Fire, false),
-	WaterPassive (BendingType.Water, false);
+	AirPassive(BendingType.Air, false), 
+	ChiPassive(BendingType.ChiBlocker, false),
+	EarthPassive(BendingType.Earth, false), 
+	FirePassive(BendingType.Fire, false), 
+	FastSwimming(BendingType.Water, true), 
+	WaterPassive(BendingType.Water, false);
 
 	/*
 	 * 
@@ -116,27 +116,27 @@ public enum Abilities {
 	private BendingSpecializationType specialization;
 	private boolean shift;
 
-	Abilities (BendingType element, boolean shift) {
+	Abilities(BendingType element, boolean shift) {
 		this.element = element;
 		this.specialization = null;
 		this.shift = shift;
 	}
 
-	Abilities (BendingSpecializationType specialization, boolean shift) {
+	Abilities(BendingSpecializationType specialization, boolean shift) {
 		this.element = specialization.getElement();
 		this.specialization = specialization;
 		this.shift = shift;
 	}
 
-	public BendingType getElement () {
+	public BendingType getElement() {
 		return this.element;
 	}
 
-	public BendingSpecializationType getSpecialization () {
+	public BendingSpecializationType getSpecialization() {
 		return this.specialization;
 	}
 
-	public boolean isSpecialization () {
+	public boolean isSpecialization() {
 		if (this.specialization != null) {
 			return true;
 		}
@@ -144,7 +144,7 @@ public enum Abilities {
 	}
 
 	// Static methods
-	public static Abilities getAbility (String ability) {
+	public static Abilities getAbility(String ability) {
 		for (Abilities a : Abilities.values()) {
 			if (ability.equalsIgnoreCase(a.name())) {
 				return a;
@@ -153,7 +153,7 @@ public enum Abilities {
 		return null;
 	}
 
-	public static boolean isAirbending (Abilities ability) {
+	public static boolean isAirbending(Abilities ability) {
 		return ability.isAirbending();
 	}
 
@@ -161,7 +161,7 @@ public enum Abilities {
 		return getElement().equals(BendingType.Air);
 	}
 
-	public static List<Abilities> getAirbendingAbilities () {
+	public static List<Abilities> getAirbendingAbilities() {
 		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
 			if (isAirbending(a)) {
@@ -171,15 +171,15 @@ public enum Abilities {
 		return result;
 	}
 
-	public static boolean isWaterbending (Abilities ability) {
+	public static boolean isWaterbending(Abilities ability) {
 		return ability.isWaterbending();
 	}
 
-	public boolean isWaterbending () {
+	public boolean isWaterbending() {
 		return getElement().equals(BendingType.Water);
 	}
 
-	public static List<Abilities> getWaterbendingAbilities () {
+	public static List<Abilities> getWaterbendingAbilities() {
 		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
 			if (isWaterbending(a)) {
@@ -189,7 +189,7 @@ public enum Abilities {
 		return result;
 	}
 
-	public static boolean isEarthbending (Abilities ability) {
+	public static boolean isEarthbending(Abilities ability) {
 		return ability.isEarthbending();
 	}
 
@@ -197,7 +197,7 @@ public enum Abilities {
 		return getElement().equals(BendingType.Earth);
 	}
 
-	public static List<Abilities> getEarthbendingAbilities () {
+	public static List<Abilities> getEarthbendingAbilities() {
 		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
 			if (isEarthbending(a)) {
@@ -207,7 +207,7 @@ public enum Abilities {
 		return result;
 	}
 
-	public static boolean isFirebending (Abilities ability) {
+	public static boolean isFirebending(Abilities ability) {
 		return ability.isFirebending();
 	}
 
@@ -215,7 +215,7 @@ public enum Abilities {
 		return getElement().equals(BendingType.Fire);
 	}
 
-	public static List<Abilities> getFirebendingAbilities () {
+	public static List<Abilities> getFirebendingAbilities() {
 		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
 			if (isFirebending(a)) {
@@ -225,7 +225,7 @@ public enum Abilities {
 		return result;
 	}
 
-	public static boolean isChiBlocking (Abilities ability) {
+	public static boolean isChiBlocking(Abilities ability) {
 		return ability.isChiblocking();
 	}
 
@@ -233,7 +233,7 @@ public enum Abilities {
 		return getElement().equals(BendingType.ChiBlocker);
 	}
 
-	public static List<Abilities> getChiBlockingAbilities () {
+	public static List<Abilities> getChiBlockingAbilities() {
 		List<Abilities> result = new LinkedList<Abilities>();
 		for (Abilities a : Abilities.values()) {
 			if (isChiBlocking(a)) {
@@ -243,11 +243,11 @@ public enum Abilities {
 		return result;
 	}
 
-	public boolean isShiftAbility () {
+	public boolean isShiftAbility() {
 		return this.shift;
 	}
 
-	public static boolean isEnergyAbility (Abilities ab) {
+	public static boolean isEnergyAbility(Abilities ab) {
 		if (ab.getElement().equals(BendingType.Energy)) {
 			return true;
 		}
@@ -262,16 +262,17 @@ public enum Abilities {
 	}
 
 	// TODO : Make sure passive abilities cannot be bound
-	public boolean isPassiveAbility () {
+	public boolean isPassiveAbility() {
 		switch (this) {
-			case AirPassive:
-			case ChiPassive:
-			case EarthPassive:
-			case FirePassive:
-			case WaterPassive:
-				return true;
-			default:
-				return false;
+		case AirPassive:
+		case ChiPassive:
+		case EarthPassive:
+		case FirePassive:
+		case FastSwimming:
+		case WaterPassive:
+			return true;
+		default:
+			return false;
 
 		}
 	}

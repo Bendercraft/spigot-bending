@@ -33,9 +33,9 @@ public class Speed extends PassiveAbility {
 	}
 
 	@Override
-	public void start () {
+	public boolean start () {
 		if (this.state.isBefore(AbilityState.CanStart)) {
-			return;
+			return false;
 		}
 		// I've separate it from constructor in case where a player bind Speed
 		// (as it became an Abilities enum) and make fun by clicking...
@@ -43,6 +43,7 @@ public class Speed extends PassiveAbility {
 		this.player.setAllowFlight(true);
 		AbilityManager.getManager().addInstance(this);
 		setState(AbilityState.Progressing);
+		return true;
 	}
 
 	@Override

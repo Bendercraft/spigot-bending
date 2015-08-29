@@ -42,13 +42,15 @@ public class FastSwimming extends PassiveAbility {
 	}
 
 	@Override
-	public void start () {
+	public boolean start () {
 		if (this.state.isBefore(AbilityState.CanStart)) {
-			return;
+			return false;
 		}
 
 		AbilityManager.getManager().addInstance(this);
 		setState(AbilityState.Progressing);
+		
+		return true;
 	}	
 
 	@Override

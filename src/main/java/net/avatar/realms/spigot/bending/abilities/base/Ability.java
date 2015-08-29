@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 /**
  * Represent the base class for bending abilities
  */
-public abstract class Ability implements IAbility{
+public abstract class Ability implements IAbility {
 
 	private IAbility parent;
 
@@ -24,8 +24,11 @@ public abstract class Ability implements IAbility{
 
 	/**
 	 * Construct the bases of a new ability instance
-	 * @param player The player that launches this ability
-	 * @param parent The ability that generates this ability. null if none
+	 * 
+	 * @param player
+	 *            The player that launches this ability
+	 * @param parent
+	 *            The ability that generates this ability. null if none
 	 */
 	public Ability(Player player, IAbility parent) {
 		this.player = player;
@@ -50,7 +53,12 @@ public abstract class Ability implements IAbility{
 
 	/**
 	 * Set the state in which the ability is currently in
-	 * @param newState <pre>The new state</pre>
+	 * 
+	 * @param newState
+	 * 
+	 *            <pre>
+	 * The new state
+	 *            </pre>
 	 */
 	protected final void setState(AbilityState newState) {
 		Bending.plugin.getLogger().info(newState.name());
@@ -114,7 +122,7 @@ public abstract class Ability implements IAbility{
 	}
 
 	@Override
-	public final void consume () {
+	public final void consume() {
 		this.setState(AbilityState.Ended);
 	}
 
@@ -124,8 +132,12 @@ public abstract class Ability implements IAbility{
 	}
 
 	/**
-	 * @return <pre>Max time in millisecond the ability can keep running.
-	 * 0 if unlimited </pre>
+	 * @return
+	 * 
+	 * 		<pre>
+	 * Max time in millisecond the ability can keep running.
+	 * 0 if unlimited
+	 *         </pre>
 	 */
 	protected long getMaxMillis() {
 		return 60 * 1000;
@@ -138,7 +150,7 @@ public abstract class Ability implements IAbility{
 	}
 
 	@Override
-	public boolean equals (Object object) {
+	public boolean equals(Object object) {
 
 		if (this == object) {
 			return true;
