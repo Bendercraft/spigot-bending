@@ -22,8 +22,6 @@ public enum BendingPathType {
 	Equality	(BendingType.ChiBlocker),
 	Seeker		(BendingType.ChiBlocker),
 	Restless	(BendingType.ChiBlocker);
-	
-	
 
 	private BendingType element;
 	

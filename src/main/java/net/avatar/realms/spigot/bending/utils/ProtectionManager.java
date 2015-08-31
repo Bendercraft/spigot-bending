@@ -168,6 +168,13 @@ public class ProtectionManager {
 		LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 		RegionContainer container = worldguard.getRegionContainer();
 		RegionQuery query = container.createQuery();
+		
+		if (ability.isPassiveAbility()) {
+			if (!query.testState(loc, localPlayer, BENDING_PASSIVES)) {
+				return true;
+			}
+			return false;
+		}
 
 		if (!query.testState(loc, localPlayer, BENDING)) {
 			return true;

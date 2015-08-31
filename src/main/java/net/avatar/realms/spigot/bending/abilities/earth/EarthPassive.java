@@ -40,9 +40,8 @@ public class EarthPassive extends PassiveAbility {
 		
 		Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
 		
-		if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth, block)
-				|| BlockTools.isTransparentToEarthbending(player,
-						Abilities.RaiseEarth, block)) {
+		if (BlockTools.isEarthbendable(player, Abilities.EarthPassive, block)
+				|| BlockTools.isTransparentToEarthbending(player, Abilities.EarthPassive, block)) {
 
 			if (!BlockTools.isTransparentToEarthbending(player, block)) {
 				if (BlockTools.isSolid(block.getRelative(BlockFace.DOWN))) {
@@ -57,20 +56,18 @@ public class EarthPassive extends PassiveAbility {
 				if (BlockTools.isEarthbendable(player, affectedblock)
 						&& !BlockTools.isIronBendable(player,affectedblock.getType())) {
 					if (BlockTools.isSolid(affectedblock.getRelative(BlockFace.DOWN))) {
-						if (!isPassiveSand(affectedblock)) {
+						if (!isPassiveSand(affectedblock) && !block.getLocation().equals(affectedblock.getLocation())) {
 							blocks.put(affectedblock, affectedblock.getState());
 							affectedblock.setType(Material.SAND);
 						}
 					}
 				}
 			}
+			AbilityManager.getManager().addInstance(this);
+			setState(AbilityState.Progressing);
 			return true;
 		}
 
-		if (BlockTools.isEarthbendable(player, null, block)
-				|| BlockTools.isTransparentToEarthbending(player, null, block)) {
-			return true;
-		}
 		return false;
 	}
 	
@@ -129,7 +126,12 @@ public class EarthPassive extends PassiveAbility {
 			return false;
 		}
 		
-		return true;
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.EarthPassive);
+		if (instances == null) {
+			return true;
+		}
+		
+		return !instances.containsKey(player);
 	}
 
 	@Override
