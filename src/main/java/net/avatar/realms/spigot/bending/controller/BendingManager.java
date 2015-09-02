@@ -53,7 +53,6 @@ import net.avatar.realms.spigot.bending.abilities.water.Torrent;
 import net.avatar.realms.spigot.bending.abilities.water.TorrentBurst;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterReturn;
-import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -143,7 +142,6 @@ public class BendingManager implements Runnable {
 
 	private void manageWaterbending() {
 		FreezeMelt.progressAll();		
-		WaterSpout.progressAll();
 		WaterManipulation.progressAll();
 		WaterWall.progressAll();
 		Wave.progressAll();

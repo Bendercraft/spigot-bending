@@ -139,7 +139,6 @@ public class PluginTools {
 		IceSpike.removeAll();
 		IceSpike2.removeAll();
 		WaterManipulation.removeAll();
-		WaterSpout.removeAll();
 		WaterWall.removeAll();
 		Wave.removeAll();
 		Plantbending.regrow();

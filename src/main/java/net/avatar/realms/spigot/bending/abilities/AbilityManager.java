@@ -43,6 +43,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.multi.Speed;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
+import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
@@ -149,6 +150,8 @@ public class AbilityManager {
 
 			case WaterBubble:
 				return new WaterBubble(player);
+			case WaterSpout:
+				return new WaterSpout(player);
 
 			case Tremorsense:
 				return new Tremorsense(player);
@@ -257,7 +260,7 @@ public class AbilityManager {
 		//		register(WaterManipulation.class);
 		register(WaterPassive.class);
 		//		register(WaterReturn.class);
-		//		register(WaterSpout.class);
+		register(WaterSpout.class);
 		//		register(WaterWall.class);
 		//		register(Wave.class);
 	}
