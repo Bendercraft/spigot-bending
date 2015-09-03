@@ -5,72 +5,71 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
-import net.avatar.realms.spigot.bending.abilities.multi.Speed;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-
 public class Flight {
-
+	
 	private static Map<Player, Flight> instances = new HashMap<Player, Flight>();
-
+	
 	private static long duration = 5000;
-
+	
 	private Player player = null, source = null;
 	private boolean couldFly = false, wasFlying = false;
 	private long time;
-
+	
 	public Flight(Player player) {
 		this(player, null);
 	}
-
+	
 	public Flight(Player player, Player source) {
 		if (instances.containsKey(player)) {
 			Flight flight = instances.get(player);
 			flight.refresh(source);
 			return;
 		}
-
-		couldFly = player.getAllowFlight();
-		wasFlying = player.isFlying();
+		
+		this.couldFly = player.getAllowFlight();
+		this.wasFlying = player.isFlying();
 		this.player = player;
 		this.source = source;
-		time = System.currentTimeMillis();
+		this.time = System.currentTimeMillis();
 		instances.put(player, this);
 	}
-
+	
 	public static Player getLaunchedBy(Player player) {
 		if (instances.containsKey(player)) {
 			return instances.get(player).source;
 		}
-
+		
 		return null;
 	}
-
+	
 	private void revert() {
-		player.setAllowFlight(couldFly);
-		player.setFlying(wasFlying);
+		this.player.setAllowFlight(this.couldFly);
+		this.player.setFlying(this.wasFlying);
 	}
-
+	
 	private void remove() {
 		revert();
-		instances.remove(player);
+		instances.remove(this.player);
 	}
-
+	
 	private void refresh(Player source) {
 		this.source = source;
-		time = System.currentTimeMillis();
-		instances.put(player, this);
+		this.time = System.currentTimeMillis();
+		instances.put(this.player, this);
 	}
-
+	
 	public static void handle() {
 		List<Player> players = new LinkedList<Player>();
 		List<Player> newflyingplayers = new LinkedList<Player>();
@@ -78,15 +77,15 @@ public class Flight {
 		List<Player> airscooterplayers = new LinkedList<Player>();
 		List<Player> waterspoutplayers = new LinkedList<Player>();
 		List<Player> airspoutplayers = AirSpout.getPlayers();
-
+		
 		players.addAll(Tornado.getPlayers());
-		players.addAll(Speed.getPlayers());
+		//players.addAll(Speed.getPlayers());
 		players.addAll(FireJet.getPlayers());
 		players.addAll(Catapult.getPlayers());
 		avatarstateplayers = AvatarState.getPlayers();
 		airscooterplayers = AirScooter.getPlayers();
 		waterspoutplayers = WaterSpout.getPlayers();
-
+		
 		List<Flight> toRemove = new LinkedList<Flight>();
 		for (Player player : instances.keySet()) {
 			Flight flight = instances.get(player);
@@ -101,7 +100,7 @@ public class Flight {
 				player.setFlying(false);
 				continue;
 			}
-
+			
 			if (players.contains(player)) {
 				flight.refresh(null);
 				player.setAllowFlight(true);
@@ -111,23 +110,23 @@ public class Flight {
 				newflyingplayers.add(player);
 				continue;
 			}
-
+			
 			if (flight.source == null) {
 				flight.revert();
 				toRemove.add(flight);
 			} else {
-				if (System.currentTimeMillis() > flight.time + duration) {
+				if (System.currentTimeMillis() > (flight.time + duration)) {
 					toRemove.add(flight);
 				}
 			}
 		}
-		
+
 		for(Flight flight : toRemove) {
 			flight.remove();
 		}
-
+		
 	}
-
+	
 	public static void removeAll() {
 		for (Flight flight : instances.values()) {
 			if (flight.source != null) {
@@ -136,5 +135,5 @@ public class Flight {
 		}
 		instances.clear();
 	}
-
+	
 }

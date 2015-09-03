@@ -21,6 +21,7 @@ import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirManipulation;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
+import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
@@ -29,6 +30,7 @@ import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
+import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
 import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
@@ -40,7 +42,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
-import net.avatar.realms.spigot.bending.abilities.multi.Speed;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
@@ -185,6 +186,7 @@ public class AbilityManager {
 		register(PowerfulHit.class);
 		register(RapidPunch.class);
 		register(SmokeBomb.class);
+		register(ChiSpeed.class);
 
 		register(AirBlast.class);
 		register(AirBubble.class);
@@ -198,7 +200,7 @@ public class AbilityManager {
 		register(AirSpout.class);
 		register(AirSuction.class);
 		register(AirSwipe.class);
-		register(Speed.class);
+		register(AirSpeed.class);
 		register(Suffocate.class);
 		register(Tornado.class);
 
