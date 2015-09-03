@@ -1,6 +1,6 @@
 name: Bending
 main: net.avatar.realms.spigot.bending.Bending
-version: 5.0.6
+version: 5.2.0
 depend: [WorldGuard,WGCustomFlags]
 softdepend: [WorldEdit,CoreProtect,Citizens,Factions]
 commands:
@@ -341,15 +341,16 @@ permissions:
   bending.chiblocker.PoisonnedDart:
     description: Allows the use of PoisonnedDart
     default: false
-  
+
+# ENERGY PERMISSIONS
+  bending.energy.astralproject:
+    description: Allows the use of AstralProject
+    default: op
+  bending.energy.avatarstate:
+    description: Allows the use of the AvatarState
+    default: op
     
 # ADMIN PERMISSIONS
-  bending.admin.AvatarState: 
-    description: Allows the use of AvatarState.
-    default: op 
-  bending.admin.AstralProjection:
-    description: Allows the use of Astral Projection.
-    default: op
   bending.admin.remove: 
     description: Allows the use of /bending remove <player>
     default: op
@@ -403,15 +404,6 @@ permissions:
   bending.command.version:
     description: Allows the use of /bending version
     default: true
-  bending.command.bindmode:
-    description: Allows the use of /bending bindmode
-    default: true
-  bending.command.save:
-    description: Allows the use of /bending save
-    default: op
-  bending.command.getback:
-    description: Allows the use of /bending getback
-    default: op
 
   bending.avatar:
     description: Give the avatar prefix.
