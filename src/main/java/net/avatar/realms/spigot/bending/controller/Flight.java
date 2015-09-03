@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -18,58 +19,58 @@ import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 
 public class Flight {
-	
-	private static Map<Player, Flight> instances = new HashMap<Player, Flight>();
-	
+
+	private static Map<UUID, Flight> instances = new HashMap<UUID, Flight>();
+
 	private static long duration = 5000;
-	
+
 	private Player player = null, source = null;
 	private boolean couldFly = false, wasFlying = false;
 	private long time;
-	
+
 	public Flight(Player player) {
 		this(player, null);
 	}
-	
+
 	public Flight(Player player, Player source) {
 		if (instances.containsKey(player)) {
 			Flight flight = instances.get(player);
 			flight.refresh(source);
 			return;
 		}
-		
+
 		this.couldFly = player.getAllowFlight();
 		this.wasFlying = player.isFlying();
 		this.player = player;
 		this.source = source;
 		this.time = System.currentTimeMillis();
-		instances.put(player, this);
+		instances.put(player.getUniqueId(), this);
 	}
-	
+
 	public static Player getLaunchedBy(Player player) {
 		if (instances.containsKey(player)) {
 			return instances.get(player).source;
 		}
-		
+
 		return null;
 	}
-	
+
 	private void revert() {
 		this.player.setAllowFlight(this.couldFly);
 		this.player.setFlying(this.wasFlying);
 	}
-	
+
 	private void remove() {
 		revert();
 		instances.remove(this.player);
 	}
-	
+
 	private void refresh(Player source) {
 		this.source = source;
 		this.time = System.currentTimeMillis();
-		instances.put(this.player, this);
+		instances.put(this.player.getUniqueId(), this);
 	}
-	
+
 	public static void handle() {
 		List<Player> players = new LinkedList<Player>();
 		List<Player> newflyingplayers = new LinkedList<Player>();
@@ -77,7 +78,7 @@ public class Flight {
 		List<Player> airscooterplayers = new LinkedList<Player>();
 		List<Player> waterspoutplayers = new LinkedList<Player>();
 		List<Player> airspoutplayers = AirSpout.getPlayers();
-		
+
 		players.addAll(Tornado.getPlayers());
 		//players.addAll(Speed.getPlayers());
 		players.addAll(FireJet.getPlayers());
@@ -85,9 +86,9 @@ public class Flight {
 		avatarstateplayers = AvatarState.getPlayers();
 		airscooterplayers = AirScooter.getPlayers();
 		waterspoutplayers = WaterSpout.getPlayers();
-		
+
 		List<Flight> toRemove = new LinkedList<Flight>();
-		for (Player player : instances.keySet()) {
+		for (UUID player : instances.keySet()) {
 			Flight flight = instances.get(player);
 			if (avatarstateplayers.contains(player)
 					|| airscooterplayers.contains(player)
@@ -95,22 +96,22 @@ public class Flight {
 					|| airspoutplayers.contains(player)) {
 				continue;
 			}
-			if (Bloodbending.isBloodbended(player)) {
-				player.setAllowFlight(true);
-				player.setFlying(false);
+			if (Bloodbending.isBloodbended(flight.player)) {
+				flight.player.setAllowFlight(true);
+				flight.player.setFlying(false);
 				continue;
 			}
-			
+
 			if (players.contains(player)) {
 				flight.refresh(null);
-				player.setAllowFlight(true);
-				if (player.getGameMode() != GameMode.CREATIVE) {
-					player.setFlying(false);
+				flight.player.setAllowFlight(true);
+				if (flight.player.getGameMode() != GameMode.CREATIVE) {
+					flight.player.setFlying(false);
 				}
-				newflyingplayers.add(player);
+				newflyingplayers.add(flight.player);
 				continue;
 			}
-			
+
 			if (flight.source == null) {
 				flight.revert();
 				toRemove.add(flight);
@@ -120,13 +121,12 @@ public class Flight {
 				}
 			}
 		}
-
+		
 		for(Flight flight : toRemove) {
 			flight.remove();
 		}
-		
 	}
-	
+
 	public static void removeAll() {
 		for (Flight flight : instances.values()) {
 			if (flight.source != null) {
@@ -135,5 +135,21 @@ public class Flight {
 		}
 		instances.clear();
 	}
-	
+
+	public static boolean revert (Player player) {
+		if (player == null) {
+			return false;
+		}
+
+		Flight flight = instances.get(player.getUniqueId());
+
+		if (flight == null) {
+			return false;
+		}
+		
+		flight.remove();
+
+		return true;
+	}
+
 }
