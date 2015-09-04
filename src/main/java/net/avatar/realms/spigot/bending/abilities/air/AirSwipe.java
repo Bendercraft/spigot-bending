@@ -21,6 +21,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
@@ -91,6 +92,9 @@ public class AirSwipe extends ActiveAbility {
 	private int id;
 	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
 	private List<Entity> affectedentities = new ArrayList<Entity>();
+	
+	private double range;
+	private int arc;
 
 	public AirSwipe (Player player) {
 		super(player, null);
@@ -101,6 +105,14 @@ public class AirSwipe extends ActiveAbility {
 
 		this.id = ID++;
 		this.speedfactor = SPEED * (Bending.time_step / 1000.);
+		
+		arc = ARC;
+		range = RANGE;
+		
+		if(bender.hasPath(BendingPathType.Mobile)) {
+			arc *= 0.5;
+			range *= 1.4;
+		}
 	}
 
 	@Override
@@ -150,7 +162,7 @@ public class AirSwipe extends ActiveAbility {
 
 	private void launch() {
 		this.origin = this.player.getEyeLocation();
-		for (int i = -ARC; i <= ARC; i += stepsize) {
+		for (int i = -arc; i <= arc; i += stepsize) {
 			double angle = Math.toRadians(i);
 			Vector direction = this.player.getEyeLocation().getDirection().clone();
 
@@ -244,7 +256,7 @@ public class AirSwipe extends ActiveAbility {
 				//For each elements, we calculate the next one and check afterwards if it is still in range
 				Location newlocation = location.clone().add(
 						direction.clone().multiply(this.speedfactor));
-				if ((newlocation.distance(this.origin) <= RANGE)
+				if ((newlocation.distance(this.origin) <= range)
 						&& !ProtectionManager.isRegionProtectedFromBending(this.player,
 								Abilities.AirSwipe, newlocation)) {
 					//If new location is still valid, we add it

@@ -13,6 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
@@ -38,6 +39,8 @@ public class AirSpout extends ActiveAbility {
 
 	private long time;
 	private FlyingPlayer flying;
+	
+	private double height;
 
 	public AirSpout (Player player) {
 		super(player, null);
@@ -47,6 +50,11 @@ public class AirSpout extends ActiveAbility {
 		}
 
 		this.time = this.startedTime;
+		
+		height = HEIGHT;
+		if(bender.hasPath(BendingPathType.Mobile)) {
+			height *= 1.2;
+		}
 	}
 
 	@Override
@@ -104,7 +112,7 @@ public class AirSpout extends ActiveAbility {
 		Block block = getGround();
 		if (block != null) {
 			double dy = this.player.getLocation().getY() - block.getY();
-			if (dy > HEIGHT) {
+			if (dy > height) {
 				this.flying.resetState();
 			} else {
 				this.flying.fly();
@@ -119,7 +127,7 @@ public class AirSpout extends ActiveAbility {
 
 	private Block getGround() {
 		Block standingblock = this.player.getLocation().getBlock();
-		for (int i = 0; i <= (HEIGHT + 5); i++) {
+		for (int i = 0; i <= (height + 5); i++) {
 			Block block = standingblock.getRelative(BlockFace.DOWN, i);
 			if (BlockTools.isSolid(block) || block.isLiquid()) {
 				return block;
@@ -150,8 +158,8 @@ public class AirSpout extends ActiveAbility {
 					location.getY(), playerloc.getZ());
 
 			double dy = playerloc.getY() - block.getY();
-			if (dy > HEIGHT) {
-				dy = HEIGHT;
+			if (dy > height) {
+				dy = height;
 			}
 			Integer[] directions = { 0, 1, 2, 3, 5, 6, 7, 8 };
 			int index = this.angle;
@@ -195,11 +203,15 @@ public class AirSpout extends ActiveAbility {
 
 				double distance = Math.sqrt((dx * dx) + (dz * dz));
 
-				if ((distance <= radius) && (dy > 0) && (dy < HEIGHT)) {
+				if ((distance <= radius) && (dy > 0) && (dy < ((AirSpout) (instances.get(o))).getHeight())) {
 					instances.get(o).consume();
 				}
 			}
 		}
+	}
+
+	public double getHeight() {
+		return height;
 	}
 
 	public static boolean isSpouting (Player player) {

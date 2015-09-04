@@ -15,6 +15,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
@@ -35,6 +36,8 @@ public class AirScooter extends ActiveAbility {
 	private long time;
 	private ArrayList<Double> angles = new ArrayList<Double>();
 	
+	private double speed;
+	
 	public AirScooter (Player player) {
 		super(player, null);
 		
@@ -47,6 +50,11 @@ public class AirScooter extends ActiveAbility {
 			this.angles.add((double) (60 * i));
 		}
 		
+		speed = SPEED;
+		
+		if(bender.hasPath(BendingPathType.Mobile)) {
+			speed *= 0.2;
+		}
 	}
 	
 	@Override
@@ -107,10 +115,10 @@ public class AirScooter extends ActiveAbility {
 		
 		Vector velocity = this.player.getEyeLocation().getDirection().clone();
 		velocity.setY(0);
-		velocity = velocity.clone().normalize().multiply(SPEED);
+		velocity = velocity.clone().normalize().multiply(speed);
 		if (System.currentTimeMillis() > (this.time + INTERVAL)) {
 			this.time = System.currentTimeMillis();
-			if (this.player.getVelocity().length() < (SPEED * .5)) {
+			if (this.player.getVelocity().length() < (speed * .5)) {
 				return false;
 			}
 			spinScooter();
