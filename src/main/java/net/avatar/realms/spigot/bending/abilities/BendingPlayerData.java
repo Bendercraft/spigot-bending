@@ -10,6 +10,7 @@ public class BendingPlayerData {
 	private UUID player;
 	private List<BendingType> bendings;
 	private List<BendingSpecializationType> specialization;
+	private List<BendingPathType> paths;
 	private boolean bendToItem;
 	private Map<Integer, Abilities> slotAbilities;
 	private Map<Material, Abilities> itemAbilities;
@@ -57,5 +58,11 @@ public class BendingPlayerData {
 	}
 	public void setSpecialization(List<BendingSpecializationType> specialization) {
 		this.specialization = specialization;
+	}
+	public List<BendingPathType> getPaths() {
+		return paths;
+	}
+	public void setPaths(List<BendingPathType> paths) {
+		this.paths = paths;
 	}
 }

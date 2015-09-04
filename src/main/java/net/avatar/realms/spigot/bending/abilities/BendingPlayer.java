@@ -23,6 +23,7 @@ public class BendingPlayer {
 
 	private List<BendingType> bendings = new LinkedList<BendingType>();
 	private List<BendingSpecializationType> specializations = new LinkedList<BendingSpecializationType>();
+	private List<BendingPathType> paths = new LinkedList<BendingPathType>();
 
 	private Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
 
@@ -45,6 +46,7 @@ public class BendingPlayer {
 		this.slotAbilities = data.getSlotAbilities();
 
 		this.specializations = data.getSpecialization();
+		this.paths = data.getPaths();
 
 		this.lastTime = data.getLastTime();
 	}
@@ -131,6 +133,25 @@ public class BendingPlayer {
 
 	public boolean isSpecialized (BendingSpecializationType specialization) {
 		return this.specializations.contains(specialization);
+	}
+	
+	public boolean hasPath(BendingType type) {
+		if(paths == null) {
+			return false;
+		}
+		for(BendingPathType path : paths) {
+			if(path.getElement() == type) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasPath(BendingPathType path) {
+		if(paths == null) {
+			return false;
+		}
+		return this.paths.contains(path);
 	}
 
 	public void setBender (BendingType type) {
