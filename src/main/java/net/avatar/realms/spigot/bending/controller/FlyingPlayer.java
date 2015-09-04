@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.base.Ability;
 // I continue to use an extern class to handle flying because there can be many reasons to be flying
 // : WaterSpout and Tornado for example.
 // If your were WaterSpouting when a tornado comes against you, there may be a conflict giving the
-// flying to a player
+// fly to a player
 public class FlyingPlayer {
 	
 	private static Map<UUID, FlyingPlayer> flyingPlayers = new HashMap<UUID, FlyingPlayer>();
@@ -24,6 +24,7 @@ public class FlyingPlayer {
 	private Map<Ability, Long> causes;
 	
 	private FlyingPlayer (Player player) {
+
 		this.player = player;
 		this.couldFly = (player.getAllowFlight());
 		this.wasFlying = player.isFlying();
@@ -31,16 +32,19 @@ public class FlyingPlayer {
 	}
 	
 	public void fly () {
+
 		this.player.setAllowFlight(true);
 		this.player.setFlying(true);
 	}
 	
 	public void resetState () {
+
 		this.player.setAllowFlight(this.couldFly);
 		this.player.setFlying(this.wasFlying);
 	}
 	
 	private boolean addCause (Ability cause, Long maxDuration) {
+
 		if (this.causes == null) {
 			return false;
 		}
@@ -50,6 +54,7 @@ public class FlyingPlayer {
 	}
 	
 	public boolean hasCauses () {
+
 		if (this.causes == null) {
 			return false;
 		}
@@ -58,6 +63,7 @@ public class FlyingPlayer {
 	}
 
 	public boolean hasCause (Ability cause) {
+
 		if (this.causes == null) {
 			return false;
 		}
@@ -70,6 +76,7 @@ public class FlyingPlayer {
 	}
 
 	private void removeCause (Ability cause) {
+
 		if (this.causes == null) {
 			return;
 		}
@@ -80,6 +87,7 @@ public class FlyingPlayer {
 	}
 	
 	public static FlyingPlayer addFlyingPlayer (Player player, Ability cause, Long maxDuration) {
+
 		if ((player == null) || (cause == null)) {
 			return null;
 		}
@@ -104,6 +112,7 @@ public class FlyingPlayer {
 	}
 	
 	public static void removeFlyingPlayer (Player player, Ability cause) {
+
 		if (!flyingPlayers.containsKey(player.getUniqueId())) {
 			return;
 		}
