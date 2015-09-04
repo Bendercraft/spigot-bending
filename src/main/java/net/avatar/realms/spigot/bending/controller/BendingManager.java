@@ -35,7 +35,6 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBall;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
-import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
 import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
@@ -85,7 +84,6 @@ public class BendingManager implements Runnable {
 			manageWaterbending();
 			TempPotionEffect.progressAll();
 			FlyingPlayer.handleAll();
-			Flight.handle();
 			handleDayNight();
 		} catch (Exception e) {
 			AbilityManager.getManager().stopAllAbilities();
@@ -132,7 +130,6 @@ public class BendingManager implements Runnable {
 		FireProtection.progressAll();
 		FireBlast.progressAll();
 		FireBurst.progressAll();
-		FireJet.progressAll();
 		FireStream.dissipateAll();
 		Cook.progressAll();
 		Illumination.progressAll();
