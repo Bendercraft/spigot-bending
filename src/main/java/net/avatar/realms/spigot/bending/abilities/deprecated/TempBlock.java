@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities;
+package net.avatar.realms.spigot.bending.abilities.deprecated;
 
 import java.util.HashMap;
 import java.util.LinkedList;
