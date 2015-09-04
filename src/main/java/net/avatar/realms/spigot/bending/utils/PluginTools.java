@@ -11,8 +11,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
+import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
@@ -26,7 +26,6 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBall;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
-import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
 import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
@@ -45,7 +44,6 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterReturn;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
-import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class PluginTools {
@@ -154,13 +152,11 @@ public class PluginTools {
 		FireProtection.removeAll();
 		FireBlast.removeAll();
 		FireBurst.removeAll();
-		FireJet.removeAll();
 		Cook.removeAll();
 		Illumination.removeAll();
 		FireBlade.removeAll();
 
 		// BendingManager.removeFlyers();
-		Flight.removeAll();
 		WaterReturn.removeAll();
 		TempBlock.removeAll();
 		BlockTools.removeAllEarthbendedBlocks();

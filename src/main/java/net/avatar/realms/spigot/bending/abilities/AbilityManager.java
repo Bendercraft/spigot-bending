@@ -42,6 +42,7 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
+import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
@@ -148,6 +149,8 @@ public class AbilityManager {
 				
 			case Combustion:
 				return new Combustion(player);
+			case FireJet:
+				return new FireJet(player);
 
 			case WaterBubble:
 				return new WaterBubble(player);
@@ -234,7 +237,7 @@ public class AbilityManager {
 		//		register(FireBurst.class);
 		//		register(FireBurstCone.class);
 		//		register(FireBurstSphere.class);
-		//		register(FireJet.class);
+		register(FireJet.class);
 		//		register(FireProtection.class);
 		//		register(FireShield.class);
 		//		register(FireStream.class);

@@ -22,7 +22,6 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -30,7 +29,6 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -121,7 +119,7 @@ public class AirSwipe extends ActiveAbility {
 			case Ended:
 			case Removed:
 				return false;
-			default: 
+			default:
 				return false;
 		}
 	}
@@ -145,7 +143,7 @@ public class AirSwipe extends ActiveAbility {
 			case Ended:
 			case Removed:
 				return false;
-			default: 
+			default:
 				return false;
 		}
 	}
@@ -201,9 +199,9 @@ public class AirSwipe extends ActiveAbility {
 
 		if (this.state.equals(AbilityState.Prepared)) {
 			this.player.getWorld().playEffect(
-					this.player.getEyeLocation(), 
-					Effect.SMOKE, 
-					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 
+					this.player.getEyeLocation(),
+					Effect.SMOKE,
+					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()),
 					3);
 		}
 
@@ -212,22 +210,22 @@ public class AirSwipe extends ActiveAbility {
 				return false;
 			}
 			return advanceSwipe();
-		} 
+		}
 
 		if (!this.player.isSneaking()) {
 			if (!this.state.equals(AbilityState.Prepared)) {
 				double factor = (maxfactor * (now - this.startedTime)) / MAX_CHARGE_TIME;
 				if (factor < 1) {
 					factor = 1;
-				}				
+				}
 				this.damage *= factor;
 				this.pushfactor *= factor;
 			}
 
 			launch();
-			this.setState(AbilityState.Progressing);	
+			this.setState(AbilityState.Progressing);
 			return true;
-		} 
+		}
 
 		return true;
 	}
@@ -294,7 +292,7 @@ public class AirSwipe extends ActiveAbility {
 					toRemove.add(direction);
 				}
 				if ((block.getType() == Material.LAVA)
-						|| ((block.getType() == Material.STATIONARY_LAVA) && !TempBlock.isTempBlock(block))) {
+						|| ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
 					if (block.getData() == full) {
 						block.setType(Material.OBSIDIAN);
 					} else {
@@ -332,9 +330,9 @@ public class AirSwipe extends ActiveAbility {
 							this.affectedentities.add(entity);
 						}
 
-						if (entity instanceof Player) {
-							new Flight((Player) entity, this.player);
-						}
+						//						if (entity instanceof Player) {
+						//							new Flight((Player) entity, this.player);
+						//						}
 
 						toRemove.add(direction);
 					}

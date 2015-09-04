@@ -19,87 +19,92 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.controller.Flight;
+import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 @BendingAbility(name="Air Scooter", element=BendingType.Air)
 public class AirScooter extends ActiveAbility {
-
+	
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 0.675;
-
+	
 	private static final long INTERVAL = 100;
 	private static final double SCOOTER_RADIUS = 1;
-
+	
 	private Block floorblock;
 	private long time;
 	private ArrayList<Double> angles = new ArrayList<Double>();
-
+	
 	public AirScooter (Player player) {
 		super(player, null);
-
+		
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
-
+		
 		this.time = this.startedTime;
 		for (int i = 0; i < 5; i++) {
 			this.angles.add((double) (60 * i));
 		}
-
+		
 	}
-
+	
 	@Override
 	public boolean swing () {
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return true;
 		}
-
+		
 		if (this.state == AbilityState.CanStart) {
-			new Flight(this.player);
+			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			this.player.setAllowFlight(true);
 			this.player.setFlying(true);
 			this.player.setSprinting(false);
-
+			
 			AbilityManager.getManager().addInstance(this);
 			setState(AbilityState.Progressing);
-
+			
 			return false;
 		}
-
+		
 		if (this.state == AbilityState.Progressing) {
 			setState(AbilityState.Ended);
 			return false;
 		}
-
+		
 		return true;
 	}
-
+	
 	@Override
 	public boolean sneak () {
 		setState(AbilityState.Ended);
 		return false;
 	}
-
+	
+	@Override
+	public void stop () {
+		FlyingPlayer.removeFlyingPlayer(this.player, this);
+	}
+	
 	@Override
 	public boolean progress () {
 		if (!super.progress()) {
 			return false;
 		}
-		
-		if (state == AbilityState.Ending) {
+
+		if (this.state == AbilityState.Ending) {
 			return false;
 		}
-
+		
 		if (!this.player.isFlying()) {
 			return false;
 		}
-
+		
 		getFloor();
 		if (this.floorblock == null) {
 			return false;
 		}
-
+		
 		Vector velocity = this.player.getEyeLocation().getDirection().clone();
 		velocity.setY(0);
 		velocity = velocity.clone().normalize().multiply(SPEED);
@@ -125,10 +130,10 @@ public class AirScooter extends ActiveAbility {
 		this.player.setSprinting(false);
 		this.player.removePotionEffect(PotionEffectType.SPEED);
 		this.player.setVelocity(velocity);
-
+		
 		return true;
 	}
-
+	
 	private void spinScooter() {
 		Location origin = this.player.getLocation().clone();
 		origin.add(0, -SCOOTER_RADIUS, 0);
@@ -143,7 +148,7 @@ public class AirScooter extends ActiveAbility {
 			this.angles.set(i, this.angles.get(i) + 10);
 		}
 	}
-
+	
 	private void getFloor() {
 		this.floorblock = null;
 		for (int i = 0; i <= 7; i++) {
@@ -155,66 +160,66 @@ public class AirScooter extends ActiveAbility {
 			}
 		}
 	}
-
+	
 	public static ArrayList<Player> getPlayers() {
 		ArrayList<Player> players = new ArrayList<Player>();
-
+		
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirScooter);
 		if ((instances == null) || instances.isEmpty()) {
 			return players;
 		}
-
+		
 		for (Object player : instances.keySet()) {
 			players.add((Player) player);
 		}
 		return players;
 	}
-
+	
 	@Override
 	public Abilities getAbilityType () {
 		return Abilities.AirScooter;
 	}
-
+	
 	@Override
 	public Object getIdentifier () {
 		return this.player;
 	}
-
+	
 	@Override
 	protected long getMaxMillis () {
 		return 1000 * 60 * 10;
 	}
-
+	
 	public static boolean isOnScooter (Player player) {
-
+		
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirScooter);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
-
+		
 		return instances.containsKey(player);
 	}
-
+	
 	@Override
 	public boolean canBeInitialized () {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-
+		
 		if (isOnScooter(this.player)) {
 			return false;
 		}
-
+		
 		if (!this.player.isSprinting() || BlockTools.isSolid(this.player.getEyeLocation().getBlock())
 				|| this.player.getEyeLocation().getBlock().isLiquid()) {
 			return false;
 		}
-
+		
 		if (BlockTools.isSolid(this.player.getLocation().add(0, -0.5, 0).getBlock())) {
 			return false;
 		}
-
+		
 		return true;
 	}
-
+	
 }

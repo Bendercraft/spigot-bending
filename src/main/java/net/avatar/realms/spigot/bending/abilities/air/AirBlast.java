@@ -18,11 +18,9 @@ import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -177,7 +175,7 @@ public class AirBlast extends ActiveAbility {
 			case Preparing:
 				setOtherOrigin(this.player);
 				return false;
-			default : 
+			default :
 				return true;
 		}
 	}
@@ -213,7 +211,7 @@ public class AirBlast extends ActiveAbility {
 		if ((BlockTools.isSolid(block) || block.isLiquid())
 				&& !this.affectedlevers.contains(block)) {
 			if ((block.getType() == Material.LAVA)
-					|| ((block.getType() == Material.STATIONARY_LAVA) && !TempBlock.isTempBlock(block))) {
+					|| ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
 				if (block.getData() == full) {
 					block.setType(Material.OBSIDIAN);
 				} else {
@@ -231,8 +229,8 @@ public class AirBlast extends ActiveAbility {
 				AFFECT_RADIUS)) {
 			if (((entity.getEntityId() != this.player.getEntityId()) || this.otherOrigin)) {
 				affect(entity);
-			}		
-		}	
+			}
+		}
 		advanceLocation();
 		return true;
 	}
@@ -251,7 +249,7 @@ public class AirBlast extends ActiveAbility {
 		if (entity.getFireTicks() > 0) {
 			entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
 			entity.setFireTicks(0);
-		}	
+		}
 		Vector velocity = entity.getVelocity();
 		// double mag = Math.abs(velocity.getY());
 		double max = maxspeed;
@@ -297,13 +295,13 @@ public class AirBlast extends ActiveAbility {
 		}
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);
-		if (!isUser && (entity instanceof Player)) {
-			new Flight((Player) entity, this.player);
-		}
 		
 		if(bender.hasPath(BendingPathType.Renegade)) {
 			EntityTools.damageEntity(player, entity, 0.5);
 		}
+		//		if (!isUser && (entity instanceof Player)) {
+		//			new Flight((Player) entity, this.player);
+		//		}
 	}
 
 	@Override

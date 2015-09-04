@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.controller.Flight;
+import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 
 @BendingAbility(name="Avatar State", element=BendingType.Energy)
 public class AvatarState extends ActiveAbility{
@@ -49,9 +49,9 @@ public class AvatarState extends ActiveAbility{
 		}
 
 		if (this.state == AbilityState.CanStart) {
+			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			AbilityManager.getManager().addInstance(this);
 			setState(AbilityState.Progressing);
-			new Flight(this.player);
 		}
 
 		return false;
@@ -115,11 +115,11 @@ public class AvatarState extends ActiveAbility{
 	}
 
 	@Override
-	public void remove() {
+	public void stop () {
+		FlyingPlayer.removeFlyingPlayer(this.player, this);
 		long now = System.currentTimeMillis();
 		this.realDuration = now - this.startedTime;
 		this.bender.cooldown(Abilities.AvatarState, this.realDuration * COOLDOWN_FACTOR);
-		super.remove();
 	}
 
 	@Override

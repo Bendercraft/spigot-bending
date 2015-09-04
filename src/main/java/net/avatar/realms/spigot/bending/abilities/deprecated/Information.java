@@ -1,10 +1,11 @@
-package net.avatar.realms.spigot.bending.abilities;
+package net.avatar.realms.spigot.bending.abilities.deprecated;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
-//TODO : Set to deprecated, After ability refactoring
+@Deprecated
+// Use block state instead
 public class Information {
 
 	private long time;
@@ -17,14 +18,14 @@ public class Information {
 	private int id;
 
 	public Information() {
-		id = ID++;
+		this.id = ID++;
 		if (ID >= Integer.MAX_VALUE) {
 			ID = Integer.MIN_VALUE;
 		}
 	}
 
 	public int getID() {
-		return id;
+		return this.id;
 	}
 
 	public void setState(BlockState state) {
@@ -32,7 +33,7 @@ public class Information {
 	}
 
 	public BlockState getState() {
-		return state;
+		return this.state;
 	}
 
 	public void setTime(long time) {
@@ -40,7 +41,7 @@ public class Information {
 	}
 
 	public long getTime() {
-		return time;
+		return this.time;
 	}
 
 	public void setBlock(Block block) {
@@ -48,7 +49,7 @@ public class Information {
 	}
 
 	public Block getBlock() {
-		return block;
+		return this.block;
 	}
 
 	public void setType(Material type) {
@@ -56,7 +57,7 @@ public class Information {
 	}
 
 	public Material getType() {
-		return type;
+		return this.type;
 	}
 
 	public void setData(byte data) {
@@ -64,10 +65,9 @@ public class Information {
 	}
 
 	public byte getData() {
-		return data;
+		return this.data;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static Information fromBlock(Block block) {
 		if (block == null) {
 			return null;

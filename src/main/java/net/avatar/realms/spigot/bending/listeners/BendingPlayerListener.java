@@ -47,7 +47,6 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
@@ -60,6 +59,7 @@ import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
+import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
@@ -107,7 +107,6 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
-import net.avatar.realms.spigot.bending.controller.Flight;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -282,7 +281,7 @@ public class BendingPlayerListener implements Listener{
 		if (EntityTools.canBend(player, ability)) {
 
 			if (ability.isAirbending() || ability.isChiblocking() || (ability == Abilities.AvatarState)
-					|| (ability == Abilities.WaterSpout)) {
+					|| (ability == Abilities.WaterSpout) || (ability == Abilities.FireJet)) {
 				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -363,11 +362,6 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.Blaze) {
 				new ArcOfFire(player, null);
-				return;
-			}
-
-			if (ability == Abilities.FireJet) {
-				new FireJet(player, null);
 				return;
 			}
 
@@ -689,13 +683,13 @@ public class BendingPlayerListener implements Listener{
 				}
 			}
 
-			if (!event.isCancelled() && (event.getCause() == DamageCause.FALL)) {
-				Player source = Flight.getLaunchedBy(player);
-				if (source != null) {
-					event.setCancelled(true);
-					EntityTools.damageEntity(source, player, event.getDamage());
-				}
-			}
+			//			if (!event.isCancelled() && (event.getCause() == DamageCause.FALL)) {
+			//				Player source = Flight.getLaunchedBy(player);
+			//				if (source != null) {
+			//					event.setCancelled(true);
+			//					EntityTools.damageEntity(source, player, event.getDamage());
+			//				}
+			//			}
 
 			if (EntityTools.canBendPassive(player, BendingType.Fire)
 					&& EntityTools.isBender(player, BendingType.Fire)
