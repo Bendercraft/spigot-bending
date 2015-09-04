@@ -22,7 +22,6 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -38,7 +37,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name="Air Swipe", element=BendingType.Air)
 public class AirSwipe extends ActiveAbility {
-	
+
 	private static int ID = Integer.MIN_VALUE;
 	private static List<Material> breakables = new ArrayList<Material>();
 	static {
@@ -55,55 +54,55 @@ public class AirSwipe extends ActiveAbility {
 		breakables.add(Material.SUGAR_CANE);
 		breakables.add(Material.VINE);
 	};
-	
+
 	@ConfigurationParameter("Base-Damage")
 	private static int DAMAGE = 5;
-	
+
 	@ConfigurationParameter("Affecting-Radius")
 	private static double AFFECTING_RADIUS = 2.0;
-	
+
 	@ConfigurationParameter("Push-Factor")
 	private static double PUSHFACTOR = 1.0;
-	
+
 	@ConfigurationParameter("Range")
 	private static double RANGE = 16.0;
-	
+
 	@ConfigurationParameter("Arc")
 	private static int ARC = 20;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
-	
+
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 25;
-	
+
 	@ConfigurationParameter("Max-Charge-Time")
 	private static long MAX_CHARGE_TIME = 3000;
-	
+
 	private static int stepsize = 4;
 	private static byte full = AirBlast.full;
 	private static double maxfactor = 3;
-	
+
 	private double speedfactor;
-	
+
 	private Location origin;
 	private int damage = DAMAGE;
 	private double pushfactor = PUSHFACTOR;
 	private int id;
 	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
 	private List<Entity> affectedentities = new ArrayList<Entity>();
-	
+
 	public AirSwipe (Player player) {
 		super(player, null);
-		
+
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
-		
+
 		this.id = ID++;
 		this.speedfactor = SPEED * (Bending.time_step / 1000.);
 	}
-	
+
 	@Override
 	public boolean sneak() {
 		switch (this.state) {
@@ -124,7 +123,7 @@ public class AirSwipe extends ActiveAbility {
 				return false;
 		}
 	}
-	
+
 	@Override
 	public boolean swing() {
 		switch (this.state) {
@@ -148,45 +147,45 @@ public class AirSwipe extends ActiveAbility {
 				return false;
 		}
 	}
-	
+
 	private void launch() {
 		this.origin = this.player.getEyeLocation();
 		for (int i = -ARC; i <= ARC; i += stepsize) {
 			double angle = Math.toRadians(i);
 			Vector direction = this.player.getEyeLocation().getDirection().clone();
-			
+
 			double x, z, vx, vz;
 			x = direction.getX();
 			z = direction.getZ();
-			
+
 			vx = (x * Math.cos(angle)) - (z * Math.sin(angle));
 			vz = (x * Math.sin(angle)) + (z * Math.cos(angle));
-			
+
 			direction.setX(vx);
 			direction.setZ(vz);
-			
+
 			this.elements.put(direction, this.origin);
 		}
 	}
-	
+
 	@Override
 	public void remove () {
 		this.bender.cooldown(Abilities.AirSwipe, COOLDOWN);
 		super.remove();
 	}
-	
+
 	@Override
 	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if ((EntityTools.getBendingAbility(this.player) != Abilities.AirSwipe)) {
 			return false;
 		}
-		
+
 		long now = System.currentTimeMillis();
-		
+
 		if (this.state.equals(AbilityState.Preparing)) {
 			if (this.player.isSneaking()) {
 				if (now >= (this.startedTime + MAX_CHARGE_TIME)) {
@@ -197,7 +196,7 @@ public class AirSwipe extends ActiveAbility {
 				}
 			}
 		}
-		
+
 		if (this.state.equals(AbilityState.Prepared)) {
 			this.player.getWorld().playEffect(
 					this.player.getEyeLocation(),
@@ -205,14 +204,14 @@ public class AirSwipe extends ActiveAbility {
 					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()),
 					3);
 		}
-		
+
 		if (this.state.equals(AbilityState.Progressing)) {
 			if (this.elements.isEmpty()) {
 				return false;
 			}
 			return advanceSwipe();
 		}
-		
+
 		if (!this.player.isSneaking()) {
 			if (!this.state.equals(AbilityState.Prepared)) {
 				double factor = (maxfactor * (now - this.startedTime)) / MAX_CHARGE_TIME;
@@ -222,22 +221,22 @@ public class AirSwipe extends ActiveAbility {
 				this.damage *= factor;
 				this.pushfactor *= factor;
 			}
-			
+
 			launch();
 			this.setState(AbilityState.Progressing);
 			return true;
 		}
-		
+
 		return true;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	private boolean advanceSwipe() {
 		this.affectedentities.clear();
-		
+
 		//Basically, AirSwipe is  just a set of smoke effect on some location called "elements"
 		Map<Vector, Location> toAdd = new HashMap<Vector, Location>();
-		
+
 		for(Entry<Vector, Location> entry : this.elements.entrySet()) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
@@ -252,7 +251,7 @@ public class AirSwipe extends ActiveAbility {
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
 						toAdd.put(direction, newlocation);
 					}
-					
+
 				}
 			}
 		}
@@ -263,7 +262,7 @@ public class AirSwipe extends ActiveAbility {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
 			PluginTools.removeSpouts(location, this.player);
-			
+
 			double radius = FireBlast.AFFECTING_RADIUS;
 			Player source = this.player;
 			if (EarthBlast.annihilateBlasts(location, radius, source)
@@ -275,7 +274,7 @@ public class AirSwipe extends ActiveAbility {
 				this.damage = 0;
 				continue;
 			}
-			
+
 			Block block = location.getBlock();
 			for (Block testblock : BlockTools.getBlocksAroundPoint(location,
 					AFFECTING_RADIUS)) {
@@ -293,7 +292,7 @@ public class AirSwipe extends ActiveAbility {
 					toRemove.add(direction);
 				}
 				if ((block.getType() == Material.LAVA)
-						|| ((block.getType() == Material.STATIONARY_LAVA) && !TempBlock.isTempBlock(block))) {
+						|| ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
 					if (block.getData() == full) {
 						block.setType(Material.OBSIDIAN);
 					} else {
@@ -303,7 +302,7 @@ public class AirSwipe extends ActiveAbility {
 			} else {
 				location.getWorld().playEffect(location, Effect.SMOKE,
 						4, (int) AirBlast.DEFAULT_RANGE);
-				
+
 				//Check affected people
 				PluginTools.removeSpouts(location, this.player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
@@ -315,7 +314,7 @@ public class AirSwipe extends ActiveAbility {
 							entity.getLocation())) {
 						continue;
 					}
-					
+
 					if (entity.getEntityId() != this.player.getEntityId()) {
 						if (AvatarState.isAvatarState(this.player)) {
 							entity.setVelocity(direction.multiply(AvatarState
@@ -323,34 +322,34 @@ public class AirSwipe extends ActiveAbility {
 						} else {
 							entity.setVelocity(direction.multiply(this.pushfactor));
 						}
-						
+
 						if (!this.affectedentities.contains(entity)) {
 							if (this.damage != 0) {
 								EntityTools.damageEntity(this.player, entity, this.damage);
 							}
 							this.affectedentities.add(entity);
 						}
-						
+
 						//						if (entity instanceof Player) {
 						//							new Flight((Player) entity, this.player);
 						//						}
-						
+
 						toRemove.add(direction);
 					}
 				}
 			}
 		}
-		
+
 		for(Vector direction : toRemove) {
 			this.elements.remove(direction);
 		}
-		
+
 		if (this.elements.isEmpty()) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean isBlockBreakable(Block block) {
 		if (breakables.contains(block.getType())
 				&& !Illumination.isIlluminated(block)) {
@@ -358,33 +357,33 @@ public class AirSwipe extends ActiveAbility {
 		}
 		return false;
 	}
-	
+
 	@Override
 	protected long getMaxMillis () {
 		return 5 * 60 * 1000;
 	}
-	
+
 	@Override
 	public boolean canBeInitialized () {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		if (this.player.getEyeLocation().getBlock().isLiquid()) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public Abilities getAbilityType () {
 		return Abilities.AirSwipe;
 	}
-	
+
 	@Override
 	public Object getIdentifier () {
 		return this.id;
 	}
-	
+
 }
