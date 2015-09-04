@@ -13,7 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Information;
+import net.avatar.realms.spigot.bending.abilities.deprecated.Information;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 public class RevertChecker implements Runnable {

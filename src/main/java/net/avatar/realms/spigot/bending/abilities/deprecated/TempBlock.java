@@ -21,7 +21,6 @@ public class TempBlock {
 	private byte newdata;
 	private BlockState state;
 
-	@SuppressWarnings("deprecation")
 	public TempBlock(Block block, Material newtype, byte newdata) {
 		this.block = block;
 		this.newdata = newdata;
@@ -102,7 +101,6 @@ public class TempBlock {
 		setType(material, this.newdata);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void setType(Material material, byte data) {
 		this.newtype = material;
 		this.newdata = data;
