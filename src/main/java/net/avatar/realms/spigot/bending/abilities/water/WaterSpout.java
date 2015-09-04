@@ -89,13 +89,13 @@ public class WaterSpout extends ActiveAbility {
 			return false;
 		}
 		revertSpout();
-		spout();
-		return true;
+		return spout();
 	}
 	
 	@Override
 	public void stop () {
 		revertSpout();
+		Flight.revert(this.player);
 	}
 
 	private void revertSpout () {
@@ -113,7 +113,6 @@ public class WaterSpout extends ActiveAbility {
 	}
 
 	private boolean spout () {
-		
 		this.player.setFallDistance(0);
 		this.player.setSprinting(false);
 		this.player.removePotionEffect(PotionEffectType.SPEED);
