@@ -16,6 +16,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
@@ -75,6 +76,10 @@ public class AirBlast extends ActiveAbility {
 		}
 
 		this.id = ID++;
+		
+		if(bender.hasPath(BendingPathType.Renegade)) {
+			range = range * 0.6;
+		}
 	}
 
 	public AirBlast(Location location, Vector direction, Player player,
@@ -102,6 +107,10 @@ public class AirBlast extends ActiveAbility {
 			ID = Integer.MIN_VALUE;
 		}
 		ID++;
+		
+		if(bender.hasPath(BendingPathType.Renegade)) {
+			range = range * 0.6;
+		}
 	}
 
 	public void setOtherOrigin(Player player) {
@@ -143,7 +152,11 @@ public class AirBlast extends ActiveAbility {
 					this.direction = Tools.getDirection(this.origin, EntityTools.getTargetedLocation(this.player, this.range)).normalize();
 				}
 				this.location = this.origin.clone();
-				this.bender.cooldown(Abilities.AirBlast, COOLDOWN);
+				long cooldown = COOLDOWN;
+				if(bender.hasPath(BendingPathType.Renegade)) {
+					cooldown *= 1.2;
+				}
+				this.bender.cooldown(Abilities.AirBlast, cooldown);
 				setState(AbilityState.Progressing);
 				return false;
 			default:
@@ -286,6 +299,10 @@ public class AirBlast extends ActiveAbility {
 		entity.setFallDistance(0);
 		if (!isUser && (entity instanceof Player)) {
 			new Flight((Player) entity, this.player);
+		}
+		
+		if(bender.hasPath(BendingPathType.Renegade)) {
+			EntityTools.damageEntity(player, entity, 0.5);
 		}
 	}
 

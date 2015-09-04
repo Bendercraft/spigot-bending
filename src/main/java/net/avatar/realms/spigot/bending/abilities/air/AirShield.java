@@ -18,6 +18,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
@@ -40,9 +41,10 @@ public class AirShield extends ActiveAbility {
 	private static long MAX_DURATION = 5 * 60 * 1000;
 
 
-	private static int numberOfStreams = (int)(.75 * MAX_RADIUS);
+	private int numberOfStreams = (int)(.75 * MAX_RADIUS);
 
 	private double radius = 2;
+	private double maxRadius = MAX_RADIUS;
 
 	private double speedfactor;
 
@@ -56,8 +58,8 @@ public class AirShield extends ActiveAbility {
 		}
 
 		int angle = 0;
-		int di = (int)((MAX_RADIUS * 2) / numberOfStreams);
-		for (int i = -(int)MAX_RADIUS + di ; i < (int)MAX_RADIUS ; i += di) {
+		int di = (int)((maxRadius * 2) / numberOfStreams);
+		for (int i = -(int)maxRadius + di ; i < (int)maxRadius ; i += di) {
 			this.angles.put(i, angle);
 			angle += 90;
 			if (angle == 360) {
@@ -65,6 +67,12 @@ public class AirShield extends ActiveAbility {
 			}
 		}
 		this.speedfactor = 1;
+		
+		
+		if(bender.hasPath(BendingPathType.Renegade)) {
+			maxRadius *= 0.4;
+			numberOfStreams = (int)(.75 * MAX_RADIUS);
+		}
 	}
 
 	@Override
@@ -107,7 +115,7 @@ public class AirShield extends ActiveAbility {
 		return true;
 	}
 
-	private void rotateShield () {
+	private boolean rotateShield () {
 		Location origin = this.player.getLocation();
 
 		FireBlast.removeFireBlastsAroundPoint(origin, this.radius);
@@ -153,9 +161,18 @@ public class AirShield extends ActiveAbility {
 					velocity.setZ(vz);
 				}
 
-				velocity.multiply(this.radius / MAX_RADIUS);
+				velocity.multiply(this.radius / maxRadius);
+				
+				if(bender.hasPath(BendingPathType.Renegade)) {
+					EntityTools.damageEntity(player, entity, 0.5);
+					velocity.multiply(2);
+				}
 				entity.setVelocity(velocity);
 				entity.setFallDistance(0);
+				
+				if(bender.hasPath(BendingPathType.Renegade)) {
+					return false;
+				}
 			}
 		}
 
@@ -165,7 +182,7 @@ public class AirShield extends ActiveAbility {
 			double angle = this.angles.get(i);
 			angle = Math.toRadians(angle);
 
-			double factor = this.radius / MAX_RADIUS;
+			double factor = this.radius / maxRadius;
 
 			y = origin.getY() + (factor * i);
 
@@ -183,14 +200,14 @@ public class AirShield extends ActiveAbility {
 			this.angles.put(i, this.angles.get(i) + (int)(10 * this.speedfactor));
 		}
 
-		if (this.radius < MAX_RADIUS) {
+		if (this.radius < maxRadius) {
 			this.radius += .3;
 		}
 
-		if (this.radius > MAX_RADIUS) {
-			this.radius = MAX_RADIUS;
+		if (this.radius > maxRadius) {
+			this.radius = maxRadius;
 		}
-
+		return true;
 	}
 
 	@Override
@@ -207,13 +224,16 @@ public class AirShield extends ActiveAbility {
 			return false;
 		}
 
-		rotateShield();
-		return true;
+		return rotateShield();
 	}
 
 	@Override
 	public void remove () {
-		this.bender.cooldown(Abilities.AirShield, COOLDOWN);
+		long cooldown = COOLDOWN;
+		if(bender.hasPath(BendingPathType.Renegade)) {
+			cooldown *= 1.2;
+		}
+		this.bender.cooldown(Abilities.AirShield, cooldown);
 		super.remove();
 	}
 

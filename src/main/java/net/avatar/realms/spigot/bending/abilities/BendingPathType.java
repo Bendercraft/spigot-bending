@@ -5,7 +5,7 @@ public enum BendingPathType {
 	
 	Spiritual	(BendingType.Air), // Default
 	Mobile		(BendingType.Air), // Add mobility - Reduce speed
-	Renegade	(BendingType.Air), // Add damage - Reduce range
+	Renegade	(BendingType.Air), // Add damage - Reduce range & Augmented cooldown
 	
 	Balanced	(BendingType.Water), // Default
 	Marksman	(BendingType.Water), // Add range - Reduce damage

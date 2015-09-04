@@ -11,6 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -34,7 +35,7 @@ public class AirSuction extends ActiveAbility {
 	private static double speed = 25.0;
 
 	@ConfigurationParameter("Range")
-	private static double range = 20;
+	private static double RANGE = 20;
 
 	@ConfigurationParameter("Affecting-Radius")
 	private static double affectingradius = 2.0;
@@ -52,6 +53,7 @@ public class AirSuction extends ActiveAbility {
 	private Location origin;
 	private Vector direction;
 	private int id;
+	private double range = RANGE;
 	private boolean otherorigin = false;
 
 	private double speedfactor;
@@ -66,6 +68,10 @@ public class AirSuction extends ActiveAbility {
 		this.speedfactor = speed * (Bending.time_step / 1000.); // Really used ?
 
 		this.id = ID++;
+		
+		if(bender.hasPath(BendingPathType.Renegade)) {
+			range *= 0.6;
+		}
 	}
 
 	@Override
