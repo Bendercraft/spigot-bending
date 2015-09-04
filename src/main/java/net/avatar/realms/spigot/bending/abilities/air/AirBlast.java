@@ -286,7 +286,7 @@ public class AirBlast extends ActiveAbility {
 		entity.setFallDistance(0);
 		if (!isUser && (entity instanceof Player)) {
 			new Flight((Player) entity, this.player);
-		}			
+		}
 	}
 
 	@Override

@@ -51,12 +51,14 @@ import net.avatar.realms.spigot.bending.abilities.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.air.AirFallBurst;
+import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
@@ -93,7 +95,6 @@ import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.fire.RingOfFire;
 import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
-import net.avatar.realms.spigot.bending.abilities.multi.Speed;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
@@ -122,11 +123,11 @@ public class BendingPlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
-		BendingPlayer.getBendingPlayer(player);	  
+		BendingPlayer.getBendingPlayer(player);
 
 		if (!(Settings.CHAT_COMPATIBILITY) && (Settings.CHAT_ENABLED)) {
 			player.setDisplayName(player.getName());
-		}	
+		}
 
 		if ((Settings.CHAT_COMPATIBILITY) && (Settings.CHAT_ENABLED)) {
 			ChatColor color = ChatColor.WHITE;
@@ -184,7 +185,7 @@ public class BendingPlayerListener implements Listener{
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		Player player = event.getPlayer();	
+		Player player = event.getPlayer();
 
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
@@ -280,7 +281,8 @@ public class BendingPlayerListener implements Listener{
 
 		if (EntityTools.canBend(player, ability)) {
 
-			if (ability.isAirbending() || ability.isChiblocking() || (ability == Abilities.AvatarState)) {
+			if (ability.isAirbending() || ability.isChiblocking() || (ability == Abilities.AvatarState)
+					|| (ability == Abilities.WaterSpout)) {
 				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -424,11 +426,6 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-			if (ability == Abilities.WaterSpout) {
-				new WaterSpout(player, null);
-				return;
-			}
-
 			if (ability == Abilities.Bloodbending) {
 				Bloodbending.launch(player);
 				return;
@@ -568,7 +565,7 @@ public class BendingPlayerListener implements Listener{
 					MetalBending.metalMelt(player);
 				}
 
-				if ( ability.isAirbending() || (ability.isChiblocking()) 
+				if ( ability.isAirbending() || (ability.isChiblocking())
 						|| ((ability == Abilities.Combustion)
 								|| (ability == Abilities.WaterBubble))) {
 
@@ -601,19 +598,22 @@ public class BendingPlayerListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSprint(PlayerToggleSprintEvent event) {
 		Player player = event.getPlayer();
+		if (!player.isSprinting()) {
+			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			if (bender.isBender(BendingType.Air)) {
+				if (EntityTools.canBendPassive(player, BendingType.Air)) {
+					AirSpeed sp = new AirSpeed(player);
+					sp.start();
+				}
 
-		if (!player.isSprinting()
-				&& EntityTools.isBender(player, BendingType.Air)
-				&& EntityTools.canBendPassive(player, BendingType.Air)) {
-			Speed sp = new Speed(player);
-			sp.start();
-		}
+			}
 
-		if (!player.isSprinting()
-				&& EntityTools.isBender(player, BendingType.ChiBlocker)
-				&& EntityTools.canBendPassive(player, BendingType.ChiBlocker)) {
-			Speed sp = new Speed(player);
-			sp.start();
+			if (bender.isBender(BendingType.ChiBlocker)) {
+				if (EntityTools.canBendPassive(player, BendingType.ChiBlocker)) {
+					ChiSpeed sp = new ChiSpeed(player);
+					sp.start();
+				}
+			}
 		}
 	}
 
@@ -633,8 +633,8 @@ public class BendingPlayerListener implements Listener{
 
 					ab = new EarthPassive (player);
 					if (ab.start()) {
-//						new Flight(player);
-//						player.setAllowFlight(true);
+						//						new Flight(player);
+						//						player.setAllowFlight(true);
 						player.setFallDistance(0);
 						event.setDamage(0);
 						event.setCancelled(true);
@@ -649,8 +649,8 @@ public class BendingPlayerListener implements Listener{
 
 				if (EntityTools.isBender(player, BendingType.Air)
 						&& EntityTools.canBendPassive(player, BendingType.Air)) {
-//					new Flight(player);
-//					player.setAllowFlight(true);
+					//					new Flight(player);
+					//					player.setAllowFlight(true);
 					if (ability == Abilities.AirBurst) {
 						new AirFallBurst(player, null);
 					}
@@ -810,7 +810,6 @@ public class BendingPlayerListener implements Listener{
 	public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
 		Player p = event.getPlayer();
 		if (Tornado.getPlayers().contains(p) || Bloodbending.isBloodbended(p)
-				|| Speed.getPlayers().contains(p)
 				|| FireJet.getPlayers().contains(p)
 				|| AvatarState.getPlayers().contains(p)) {
 			event.setCancelled(p.getGameMode() != GameMode.CREATIVE);
@@ -827,7 +826,7 @@ public class BendingPlayerListener implements Listener{
 			Location loc = player.getLocation();
 			LavaTrain lT = LavaTrain.getLavaTrain(loc.getBlock());
 			if (lT != null) {
-				event.setDeathMessage(player.getName() + " died swimming in " 
+				event.setDeathMessage(player.getName() + " died swimming in "
 						+ lT.getPlayer().getName() + "'s lava train");
 			}
 		}
@@ -840,7 +839,7 @@ public class BendingPlayerListener implements Listener{
 				// Remove eartharmor from items drops
 				if (!armor.isArmor(drops.get(i))){
 					newdrops.add((drops.get(i)));
-				}	
+				}
 			}
 			// Koudja : Since "EarthArmor.removeEffect" already restore player
 			// armor, do not drop it again !

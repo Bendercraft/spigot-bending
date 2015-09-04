@@ -22,8 +22,6 @@ public enum BendingPathType {
 	Equality	(BendingType.ChiBlocker), // Default
 	Seeker		(BendingType.ChiBlocker), // Reduce cooldown - Reduce damage
 	Restless	(BendingType.ChiBlocker); // Add resistance - Augment cooldown
-	
-	
 
 	private BendingType element;
 	

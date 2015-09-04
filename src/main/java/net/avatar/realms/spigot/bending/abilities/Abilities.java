@@ -19,6 +19,7 @@ public enum Abilities {
 	AirScooter (BendingType.Air, false),
 	AirSpout (BendingType.Air, false),
 	AirBurst (BendingType.Air, true),
+	AirSpeed (BendingType.Air, true),
 	AirManipulation (BendingType.Air, true),
 	Tornado (BendingSpecializationType.Tornado, true),
 	Suffocate (BendingSpecializationType.Suffocate, true),
@@ -77,6 +78,7 @@ public enum Abilities {
 	 */
 	
 	HighJump (BendingType.ChiBlocker, false),
+	ChiSpeed (BendingType.ChiBlocker, false),
 	RapidPunch (BendingType.ChiBlocker, false),
 	Paralyze (BendingType.ChiBlocker, false),
 	SmokeBomb (BendingType.ChiBlocker, false),
@@ -103,7 +105,7 @@ public enum Abilities {
 	WaterPassive (BendingType.Water, false);
 	
 	/*
-	 * 
+	 *
 	 */
 	
 	private BendingType element;
@@ -259,7 +261,9 @@ public enum Abilities {
 	public boolean isPassiveAbility () {
 		switch (this) {
 			case AirPassive:
+			case AirSpeed:
 			case ChiPassive:
+			case ChiSpeed:
 			case EarthPassive:
 			case FirePassive:
 			case FastSwimming:
@@ -269,5 +273,9 @@ public enum Abilities {
 				return false;
 				
 		}
+	}
+
+	public String getPermission () {
+		return "bending." + getElement().toString().toLowerCase() + name().toLowerCase();
 	}
 }
