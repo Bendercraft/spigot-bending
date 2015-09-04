@@ -17,7 +17,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.controller.Flight;
+import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
@@ -37,6 +37,7 @@ public class AirSpout extends ActiveAbility {
 	private int angle = 0;
 
 	private long time;
+	private FlyingPlayer flying;
 
 	public AirSpout (Player player) {
 		super(player, null);
@@ -56,9 +57,11 @@ public class AirSpout extends ActiveAbility {
 		}
 
 		if (this.state == AbilityState.CanStart) {
-			setState(AbilityState.Progressing);
-			new Flight(this.player);
-			AbilityManager.getManager().addInstance(this);
+			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+			if (this.flying != null) {
+				setState(AbilityState.Progressing);
+				AbilityManager.getManager().addInstance(this);
+			}
 			return false;
 		}
 
@@ -102,9 +105,9 @@ public class AirSpout extends ActiveAbility {
 		if (block != null) {
 			double dy = this.player.getLocation().getY() - block.getY();
 			if (dy > HEIGHT) {
-				removeFlight();
+				this.flying.resetState();
 			} else {
-				allowFlight();
+				this.flying.fly();
 			}
 			rotateAirColumn(block);
 		} else {
@@ -112,16 +115,6 @@ public class AirSpout extends ActiveAbility {
 		}
 
 		return true;
-	}
-
-	private void allowFlight() {
-		this.player.setAllowFlight(true);
-		this.player.setFlying(true);
-	}
-
-	private void removeFlight() {
-		this.player.setAllowFlight(false);
-		this.player.setFlying(false);
 	}
 
 	private Block getGround() {
@@ -133,6 +126,11 @@ public class AirSpout extends ActiveAbility {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public void stop () {
+		FlyingPlayer.removeFlyingPlayer(this.player, this);
 	}
 
 	@Override
@@ -231,12 +229,6 @@ public class AirSpout extends ActiveAbility {
 
 		return true;
 	}
-
-	@Override
-	public void stop () {
-		removeFlight();
-	}
-
 
 	@Override
 	public Abilities getAbilityType () {

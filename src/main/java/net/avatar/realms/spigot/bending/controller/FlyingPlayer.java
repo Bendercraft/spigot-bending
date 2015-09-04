@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.base.Ability;
 
 // I continue to use an extern class to handle flying because there can be many reasons to be flying
 // : WaterSpout and Tornado for example.
@@ -21,13 +22,13 @@ public class FlyingPlayer {
 	private Player player;
 	private boolean couldFly;
 	private boolean wasFlying;
-	private List<Abilities> causes;
+	private Map<Ability, Long> causes;
 
 	private FlyingPlayer (Player player) {
 		this.player = player;
-		this.couldFly = player.getAllowFlight();
+		this.couldFly = (player.getAllowFlight() || player.getGameMode().equals(GameMode.CREATIVE));
 		this.wasFlying = player.isFlying();
-		this.causes = new LinkedList<Abilities>();
+		this.causes = new HashMap<Ability, Long>();
 	}
 
 	public void fly () {
@@ -36,16 +37,16 @@ public class FlyingPlayer {
 	}
 
 	public void resetState () {
-		this.player.setAllowFlight(this.couldFly);
+		this.player.setAllowFlight(this.couldFly || this.player.getGameMode().equals(GameMode.CREATIVE));
 		this.player.setFlying(this.wasFlying);
 	}
 
-	public boolean addCause (Abilities cause) {
+	private boolean addCause (Ability cause, Long maxDuration) {
 		if (this.causes == null) {
 			return false;
 		}
 		
-		this.causes.add(cause);
+		this.causes.put(cause, maxDuration);
 		return true;
 	}
 
@@ -57,7 +58,7 @@ public class FlyingPlayer {
 		return !this.causes.isEmpty();
 	}
 	
-	public boolean hasCause (Abilities cause) {
+	public boolean hasCause (Ability cause) {
 		if (this.causes == null) {
 			return false;
 		}
@@ -66,20 +67,20 @@ public class FlyingPlayer {
 			return false;
 		}
 		
-		return this.causes.contains(cause);
+		return this.causes.containsKey(cause);
 	}
 	
-	public void removeCause (Abilities cause) {
+	private void removeCause (Ability cause) {
 		if (this.causes == null) {
 			return;
 		}
 		
-		if (this.causes.contains(cause)) {
+		if (this.causes.containsKey(cause)) {
 			this.causes.remove(cause);
 		}
 	}
 
-	public static FlyingPlayer addFlyingPlayer (Player player, Abilities cause) {
+	public static FlyingPlayer addFlyingPlayer (Player player, Ability cause, Long maxDuration) {
 		if ((player == null) || (cause == null)) {
 			return null;
 		}
@@ -95,7 +96,7 @@ public class FlyingPlayer {
 			flying = new FlyingPlayer(player);
 		}
 		
-		flying.addCause(cause);
+		flying.addCause(cause, System.currentTimeMillis() + maxDuration);
 		if (flying.hasCauses()) {
 			flyingPlayers.put(player.getUniqueId(), flying);
 			flying.fly();
@@ -103,7 +104,7 @@ public class FlyingPlayer {
 		return flying;
 	}
 
-	public static void removeFlyingPlayer (Player player, Abilities cause) {
+	public static void removeFlyingPlayer (Player player, Ability cause) {
 		if (!flyingPlayers.containsKey(player.getUniqueId())) {
 			return;
 		}
@@ -120,6 +121,38 @@ public class FlyingPlayer {
 				flying.resetState();
 				flyingPlayers.remove(player.getUniqueId());
 			}
+		}
+	}
+	
+	private boolean handle () {
+		
+		long now = System.currentTimeMillis();
+		List<Ability> toRemove = new LinkedList<Ability>();
+		for (Ability ab : this.causes.keySet()) {
+			if (now > this.causes.get(ab)) {
+				toRemove.add(ab);
+			}
+		}
+		
+		for (Ability ab : toRemove) {
+			this.causes.remove(ab);
+		}
+
+		return hasCauses();
+	}
+
+	public static void handleAll () {
+		
+		List<UUID> toRemove = new LinkedList<UUID>();
+		for (UUID id : flyingPlayers.keySet()) {
+			if (!flyingPlayers.get(id).handle()) {
+				toRemove.add(id);
+			}
+		}
+
+		for (UUID id : toRemove) {
+			flyingPlayers.get(id).resetState();
+			flyingPlayers.remove(id);
 		}
 	}
 }
