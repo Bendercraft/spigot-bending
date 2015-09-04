@@ -144,6 +144,9 @@ public class AirBlast extends ActiveAbility {
 				setState(AbilityState.Preparing);
 			case Preparing:
 				Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
+				if(bender.hasPath(BendingPathType.Mobile)) {
+					entity = null;
+				}
 				if (entity != null) {
 					this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
 				} else {
@@ -153,6 +156,9 @@ public class AirBlast extends ActiveAbility {
 				long cooldown = COOLDOWN;
 				if(bender.hasPath(BendingPathType.Renegade)) {
 					cooldown *= 1.2;
+				}
+				if(bender.hasPath(BendingPathType.Mobile)) {
+					cooldown *= 0.8;
 				}
 				this.bender.cooldown(Abilities.AirBlast, cooldown);
 				setState(AbilityState.Progressing);
