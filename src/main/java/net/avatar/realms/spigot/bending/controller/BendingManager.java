@@ -61,26 +61,25 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 public class BendingManager implements Runnable {
-	public static List<Player> flyingplayers = new LinkedList<Player>();
 	public Bending plugin;
 	private long time;
 	private List<World> worlds = new LinkedList<World>();
 	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
-
+	
 	public BendingManager(Bending bending) {
 		this.plugin = bending;
 		this.time = System.currentTimeMillis();
 	}
-
+	
 	@Override
 	public void run() {
 		try {
 			Bending.time_step = System.currentTimeMillis() - this.time;
 			this.time = System.currentTimeMillis();
-
+			
 			AbilityManager.getManager().progressAllAbilities();
-
+			
 			manageEarthbending();
 			manageFirebending();
 			manageWaterbending();
@@ -93,9 +92,9 @@ public class BendingManager implements Runnable {
 			PluginTools.stopAllBending();
 			this.plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
 		}
-
+		
 	}
-
+	
 	private void manageEarthbending() {
 		Catapult.progressAll();
 		EarthColumn.progressAll();
@@ -108,24 +107,24 @@ public class BendingManager implements Runnable {
 		Ripple.progressAll();
 		LavaTrain.progressAll();
 		MetalBending.progressAll();
-
+		
 		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());
 		for (Block block : copy) {
 			BlockTools.revertBlock(block);
 		}
 		RevertChecker.revertQueue.clear();
-
+		
 		Set<Integer> otherCopy = new HashSet<Integer>(RevertChecker.airRevertQueue.keySet());
 		for (int i : otherCopy) {
 			BlockTools.revertAirBlock(i);
 		}
 		RevertChecker.airRevertQueue.clear();
 	}
-
+	
 	private void manageFirebending() {
 		FireStream.progressAll();
 		FireStream.removeAllNoneFireIgnitedBlock();
-
+		
 		FireBall.progressAll();
 		WallOfFire.progressAll();
 		Lightning.progressAll();
@@ -140,7 +139,7 @@ public class BendingManager implements Runnable {
 		Enflamed.handleFlames();
 		FireBlade.progressAll();
 	}
-
+	
 	private void manageWaterbending() {
 		FreezeMelt.progressAll();
 		WaterManipulation.progressAll();
@@ -153,11 +152,11 @@ public class BendingManager implements Runnable {
 		Bloodbending.progressAll();
 		HealingWaters.progressAll();
 		OctopusForm.progressAll();
-
+		
 		Plantbending.regrow();
 		WaterReturn.progressAll();
 	}
-
+	
 	private void handleDayNight() {
 		for (World world : this.plugin.getServer().getWorlds()) {
 			if ((world.getWorldType() == WorldType.NORMAL)
@@ -167,7 +166,7 @@ public class BendingManager implements Runnable {
 				this.days.put(world, false);
 			}
 		}
-
+		
 		List<World> removeWorlds = new LinkedList<World>();
 		for (World world : this.worlds) {
 			if (!this.plugin.getServer().getWorlds().contains(world)) {
@@ -189,7 +188,7 @@ public class BendingManager implements Runnable {
 				}
 				this.days.put(world, true);
 			}
-
+			
 			if (!Tools.isDay(world) && day) {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Fire)
@@ -203,7 +202,7 @@ public class BendingManager implements Runnable {
 				}
 				this.days.put(world, false);
 			}
-
+			
 			if (Tools.isNight(world) && !night) {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Water)
@@ -217,7 +216,7 @@ public class BendingManager implements Runnable {
 				}
 				this.nights.put(world, true);
 			}
-
+			
 			if (!Tools.isNight(world) && night) {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Water)
@@ -232,10 +231,10 @@ public class BendingManager implements Runnable {
 				this.nights.put(world, false);
 			}
 		}
-
+		
 		for (World world : removeWorlds) {
 			this.worlds.remove(world);
 		}
 	}
-
+	
 }
