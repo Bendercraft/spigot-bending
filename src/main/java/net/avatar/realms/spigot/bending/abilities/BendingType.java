@@ -12,5 +12,4 @@ public enum BendingType {
 		}
 		return null;
 	}
-
 }
