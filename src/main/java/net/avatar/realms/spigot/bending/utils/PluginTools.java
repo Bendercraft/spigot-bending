@@ -29,7 +29,6 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
 import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
-import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
@@ -153,7 +152,6 @@ public class PluginTools {
 		FireBlast.removeAll();
 		FireBurst.removeAll();
 		Cook.removeAll();
-		Illumination.removeAll();
 		FireBlade.removeAll();
 
 		// BendingManager.removeFlyers();
