@@ -172,6 +172,12 @@ public class BendingPlayer {
 		this.specializations.add(specialization);
 		Bending.database.save(this.player);
 	}
+	
+	public void setPath(BendingPathType path) {
+		this.clearPath(path.getElement());
+		this.paths.add(path);
+		Bending.database.save(this.player);
+	}
 
 	public void addSpecialization (BendingSpecializationType specialization) {
 		if (!this.specializations.contains(specialization)) {
@@ -198,6 +204,18 @@ public class BendingPlayer {
 		}
 		// clear abilities will save for us
 		clearAbilities();
+	}
+	
+	public void clearPath(BendingType element) {
+		List<BendingPathType> toRemove = new LinkedList<BendingPathType>();
+		for (BendingPathType path : this.paths) {
+			if (path.getElement().equals(element)) {
+				toRemove.add(path);
+			}
+		}
+		for (BendingPathType path : toRemove) {
+			this.paths.remove(path);
+		}
 	}
 
 	public void clearSpecialization () {

@@ -12,6 +12,7 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
@@ -30,6 +31,7 @@ public class BendingCommand {
 	private final String[] chooseAliases = {"choose", "ch"};
 	private final String[] addAliases = {"add", "a"};
 	private final String[] specializeAliases = {"specialize", "spe"};
+	private final String[] pathAliases = {"path", "p"};
 	private final String[] removeAliases = {"remove", "r"};
 	private final String[] toggleAliases = {"toggle", "t"};
 	private final String[] displayAliases = {"display", "disp", "dis", "d"};
@@ -88,6 +90,9 @@ public class BendingCommand {
 			else if (Arrays.asList(this.specializeAliases).contains(arg)) {
 				specialize(player, args);
 			}
+			else if (Arrays.asList(this.pathAliases).contains(arg)) {
+				path(player, args);
+			}
 			else if (Arrays.asList(this.removeAliases).contains(arg)) {
 				remove(player, args);
 			}
@@ -130,6 +135,56 @@ public class BendingCommand {
 		}
 	}
 	
+	private void path(Player player, String[] args) {
+		if (!hasPermission(player, "bending.admin.path")) {
+			return;
+		}
+		// If no args, just list
+		if (args.length == 1) {
+			for (final BendingPathType path : BendingPathType.values()) {
+				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
+				sendMessage(player, color + path.name());
+			}
+			return;
+		}
+		final String subAction = args[1];
+		if (subAction.equals("set")) {
+			if (args.length < 3) {
+				printPathUsage(player);
+			}
+			final String choice = args[2].toLowerCase();
+			final BendingPathType path = BendingPathType.getType(choice);
+			if (path == null) {
+				Messages.sendMessage(player, "general.bad_path");
+				return;
+			}
+			BendingPlayer bPlayer = null;
+			if (args.length == 4) {
+				final String playername = args[3];
+				final Player targetplayer = getOnlinePlayer(playername);
+				if (targetplayer == null) {
+					player.sendMessage("Player "+playername+" is unknown.");
+					return;
+				}
+				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
+			}
+			else {
+				bPlayer = BendingPlayer.getBendingPlayer(player);
+			}
+			if (bPlayer == null) {
+				// Wut !
+				return;
+			}
+			if (!bPlayer.isBender(path.getElement())) {
+				Messages.sendMessage(player, "general.bad_path_element");
+				return;
+			}
+			bPlayer.setPath(path);
+			return;
+		}
+		printPathUsage(player);
+	}
+
 	private void cooldowns(Player player) {
 		if (player == null) {
 			return;
@@ -1049,12 +1104,20 @@ public class BendingCommand {
 			printUsageMessage(player, "/bending spe add <specialization>", "General.spe_add_self");
 			printUsageMessage(player, "/bending spe remove <specialization>", "General.spe_remove_self");
 			printUsageMessage(player, "/bending spe clear", "General.spe_clear_self");
-		}
-		else {
+		} else {
 			printUsageMessage(player, "/bending spe set <specialization> <player>", "General.spe_set_other");
 			printUsageMessage(player, "/bending spe add <specialization> <player>", "General.spe_add_other");
 			printUsageMessage(player, "/bending spe remove <specialization> <player>", "General.spe_remove_self");
 			printUsageMessage(player, "/bending spe clear <player>", "General.spe_clear_self");
+		}
+	}
+	
+	private void printPathUsage (final Player player) {
+		printUsageMessage(player, "/bending path", "General.path_list");
+		if (player != null) {
+			printUsageMessage(player, "/bending path set <path>", "General.path_set_self");
+		} else {
+			printUsageMessage(player, "/bending path set <path> <player>", "General.path_set_other");
 		}
 	}
 	
