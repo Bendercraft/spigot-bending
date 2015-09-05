@@ -1,8 +1,6 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -11,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
@@ -23,13 +22,15 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name="Water Spout", element=BendingType.Water)
 public class WaterSpout extends ActiveAbility {
+
+	private static final Vector[] vectors = { new Vector(0, 0, -1), new Vector(1, 0, -1), new Vector(1, 0, 0),
+			new Vector(1, 0, 1), new Vector(0, 0, 1), new Vector(-1, 0, 1), new Vector(-1, 0, 0), new Vector(-1, 0, -1)
+	};
 
 	@ConfigurationParameter ("Rotation-Speed")
 	public static int SPEED = 4;
@@ -40,12 +41,11 @@ public class WaterSpout extends ActiveAbility {
 	@ConfigurationParameter ("Cooldown")
 	private static long COOLDOWN = 0;
 
-	//	private static final byte full = 0x0;
 	private int currentCardinalPoint = 0;
-	private Block base;
 	private BlockState baseState;
 	private Map<Block, BlockState> blocks;
 	private FlyingPlayer flying;
+	private int height;
 
 	public WaterSpout (Player player) {
 		super(player, null);
@@ -60,6 +60,7 @@ public class WaterSpout extends ActiveAbility {
 
 			case CanStart:
 				if (canWaterSpout(this.player)) {
+					this.height = 0;
 					this.blocks = new HashMap<Block, BlockState>();
 					this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 					if (this.flying != null) {
@@ -119,128 +120,73 @@ public class WaterSpout extends ActiveAbility {
 		this.player.removePotionEffect(PotionEffectType.SPEED);
 
 		Location location = this.player.getLocation().clone().add(0, 0.2, 0);
-		Block block = location.clone().getBlock();
-		int height = spoutableWaterHeight(location);
+		int result = spoutableWaterHeight(location);
 
-		if (height == -1) {
+		if (result == -1) {
 			return false;
 		}
-
-		location = this.base.getLocation();
-		for (int i = 1, cardinalPoint = this.currentCardinalPoint / SPEED; i <= height; i++, cardinalPoint++) {
-			if (cardinalPoint == 8) {
-				cardinalPoint = 0;
-			}
-
-			block = location.clone().add(0, i, 0).getBlock();
-			if (!BlockTools.isTempBlock(block)) {
-				if (!isWaterSpoutBlock(block)) {
-					this.blocks.put(block, block.getState());
-				}
-				block.setType(Material.WATER);
-			}
-
-			switch (cardinalPoint) {
-				case 0:
-					block = location.clone().add(0, i, -1).getBlock();
-					break;
-				case 1:
-					block = location.clone().add(-1, i, -1).getBlock();
-					break;
-				case 2:
-					block = location.clone().add(-1, i, 0).getBlock();
-					break;
-				case 3:
-					block = location.clone().add(-1, i, 1).getBlock();
-					break;
-				case 4:
-					block = location.clone().add(0, i, 1).getBlock();
-					break;
-				case 5:
-					block = location.clone().add(1, i, 1).getBlock();
-					break;
-				case 6:
-					block = location.clone().add(1, i, 0).getBlock();
-					break;
-				case 7:
-					block = location.clone().add(1, i, -1).getBlock();
-					break;
-				default:
-					break;
-			}
-
-			if (block.getType().equals(Material.AIR) || isWaterSpoutBlock(block)) {
-				if (!BlockTools.isTempBlock(block)) {
-					if (!isWaterSpoutBlock(block)) {
-						this.blocks.put(block, block.getState());
-					}
-					block.setType(Material.WATER);
-				}
-			}
+		else if (result == -2) {
+			this.flying.resetState();
 		}
+		else {
+			this.flying.fly();
+		}
+		Block block = location.getBlock();
+		location = block.getLocation();
+		for (int i = 0, cardinalPoint = this.currentCardinalPoint / SPEED; i < (this.height + 1); i++, cardinalPoint--) {
+			Location loc = location.clone().add(0, -i, 0);
+			if (!BlockTools.isTempBlock(loc.getBlock())) {
+				this.blocks.put(loc.getBlock(), loc.getBlock().getState());
+				loc.getBlock().setType(Material.STATIONARY_WATER);
+			}
+
+			if (cardinalPoint == -1) {
+				cardinalPoint = 7;
+			}
+			
+			loc = loc.add(vectors[cardinalPoint]);
+			if (loc.getBlock().getType().equals(Material.AIR)) {
+				this.blocks.put(loc.getBlock(), loc.getBlock().getState());
+				loc.getBlock().setType(Material.WATER);
+			}
+			
+		}
+
 		this.currentCardinalPoint++;
 		if (this.currentCardinalPoint == (SPEED * 8)) {
 			this.currentCardinalPoint = 0;
-		}
-
-		if (this.player.getLocation().getBlockY() > block.getY()) {
-			this.flying.resetState();
-		} else {
-			this.flying.fly();
 		}
 		return true;
 	}
 
 	private int spoutableWaterHeight (Location location) {
 
-		int height = HEIGHT;
-		if (Tools.isNight(this.player.getWorld())) {
-			height = (int) PluginTools.waterbendingNightAugment(
-					height, this.player.getWorld());
+		Location loc = location.clone();
+		this.height = HEIGHT;
+		if (Tools.isNight(loc.getWorld())) {
+			this.height = (int) (Settings.NIGHT_FACTOR * HEIGHT) + 1;
 		}
-		int maxheight = (int) (HEIGHT * Settings.NIGHT_FACTOR) + 5;
-		Block blocki;
-		for (int i = 0; i < maxheight; i++) {
-			blocki = location.clone().add(0, -i, 0).getBlock();
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.WaterSpout,
-					blocki.getLocation())) {
+		for (int i = 0; i <= (this.height + 1); i++) {
+			Location locToTest = loc.add(0, -1, 0);
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.WaterSpout, locToTest)) {
 				return -1;
 			}
-			if (!isWaterSpoutBlock(blocki)) {
-				if ((blocki.getType() == Material.WATER)
-						|| (blocki.getType() == Material.STATIONARY_WATER)) {
-					if (!BlockTools.isTempBlock(blocki)) {
-						revertBaseBlock();
-					}
-					this.base = blocki;
-					if (i > height) {
-						return height;
-					}
-					return i;
-				}
-				if ((blocki.getType() == Material.ICE)
-						|| (blocki.getType() == Material.SNOW)
-						|| (blocki.getType() == Material.SNOW_BLOCK)) {
-					if (!BlockTools.isTempBlock(blocki)) {
-						revertBaseBlock();
-						this.baseState = blocki.getState();
-						blocki.setType(Material.WATER);
-					}
-					this.base = blocki;
-					if (i > height) {
-						return height;
-					}
-					return i;
-				}
-				if (((blocki.getType() != Material.AIR)
-						&& (!BlockTools.isPlant(blocki) || !EntityTools.canPlantbend(this.player)))) {
-					revertBaseBlock();
-					return -1;
-				}
+			Block block = locToTest.getBlock();
+			if (block.getType().equals(Material.AIR)) {
+				this.height = i + 1;
+				continue;
+			}
+			if (BlockTools.isWaterBased(block)) {
+				// Valid source !
+				return i + 1;
+			}
+			else {
+				return -1;
+				//Cannot waterspout
 			}
 		}
-		revertBaseBlock();
-		return -1;
+		return -2;
+		//Can waterspout but too high
 	}
 	
 	private void revertBaseBlock () {
@@ -263,18 +209,6 @@ public class WaterSpout extends ActiveAbility {
 			}
 		}
 		return false;
-	}
-
-	public static List<Player> getPlayers() {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.WaterSpout);
-		LinkedList<Player> players = new LinkedList<Player>();
-		if ((instances == null) || instances.isEmpty()) {
-			return players;
-		}
-		for (Object o : instances.keySet()) {
-			players.add((Player) o);
-		}
-		return players;
 	}
 
 	public static void removeSpouts (Location loc0, double radius, Player sourceplayer) {
