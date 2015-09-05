@@ -77,6 +77,8 @@ public class Torrent implements IAbility {
 	
 	private double damage;
 	private double range;
+	
+	private BendingPlayer bender;
 
 	private IAbility parent;
 
@@ -100,10 +102,14 @@ public class Torrent implements IAbility {
 		
 		damage = DAMAGE;
 		range = RANGE;
-		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		bender = BendingPlayer.getBendingPlayer(player);
 		if(bender.hasPath(BendingPathType.Marksman)) {
 			range *= 1.4;
 			damage *= 0.8;
+		}
+		
+		if(bender.hasPath(BendingPathType.Flowless)) {
+			damage *= 1.2;
 		}
 	}
 
@@ -310,8 +316,11 @@ public class Torrent implements IAbility {
 			}
 		}
 
-		Entity target = EntityTools.getTargettedEntity(this.player, range,
-				this.hurtentities);
+		Entity target = null;
+		if(!bender.hasPath(BendingPathType.Flowless)) {
+			target = EntityTools.getTargettedEntity(this.player, range,
+					this.hurtentities);
+		}
 		Location targetloc = EntityTools.getTargetBlock(this.player, range,
 				BlockTools.getTransparentEarthbending()).getLocation();
 
