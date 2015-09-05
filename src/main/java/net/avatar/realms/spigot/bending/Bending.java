@@ -5,6 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
@@ -21,13 +28,6 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Bending extends JavaPlugin {
 	public static long time_step = 1; // in ms
@@ -57,8 +57,8 @@ public class Bending extends JavaPlugin {
 		Messages.loadMessages();
 		
 		//Learning
-		learning = new BendingLearning();
-		learning.onEnable();
+		this.learning = new BendingLearning();
+		this.learning.onEnable();
 		
 		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));
@@ -93,7 +93,7 @@ public class Bending extends JavaPlugin {
 		AbilityManager.getManager().stopAllAbilities();
 		getServer().getScheduler().cancelTasks(plugin);
 		
-		learning.onDisable();
+		this.learning.onDisable();
 	}
 
 	public void reloadConfiguration () {
@@ -113,7 +113,6 @@ public class Bending extends JavaPlugin {
 		commands.put("command.display", "display");
 		commands.put("command.bind", "bind <ability>");
 		commands.put("command.version", "version");
-		commands.put("command.bindmode", "bindmode [item/slot]");
 	}
 
 	@Override
