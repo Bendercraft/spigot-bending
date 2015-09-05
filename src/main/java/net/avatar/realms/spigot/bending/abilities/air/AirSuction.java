@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities.air;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -204,6 +205,11 @@ public class AirSuction extends ActiveAbility {
 			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
 			}
+			
+			if (entity.getType().equals(EntityType.ENDER_PEARL)) {
+				continue;
+			}
+			
 			if (entity.getFireTicks() > 0) {
 				entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
 				entity.setFireTicks(0);
