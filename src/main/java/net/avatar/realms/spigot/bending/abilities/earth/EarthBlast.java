@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
@@ -69,11 +70,12 @@ public class EarthBlast implements IAbility {
 	
 	// private static double speed = 1.5;
 
-	private static long interval = (long) (1000. / SPEED);
+	private long interval;
 
 	private static int ID = Integer.MIN_VALUE;
 
 	private Player player;
+	private BendingPlayer bender;
 	private int id;
 	private Location location = null;
 	private Block sourceblock = null;
@@ -89,6 +91,8 @@ public class EarthBlast implements IAbility {
 	public EarthBlast(Player player, IAbility parent) {
 		this.parent = parent;
 		this.player = player;
+		
+		
 		if (prepare()) {
 			id = ID++;
 			if (ID >= Integer.MAX_VALUE)
@@ -96,7 +100,13 @@ public class EarthBlast implements IAbility {
 			instances.put(id, this);
 			time = System.currentTimeMillis();
 		}
-
+		bender = BendingPlayer.getBendingPlayer(player);
+		double speed = SPEED;
+		if(bender.hasPath(BendingPathType.Reckless)) {
+			speed *= 0.8;
+		}
+		
+		this.interval = (long) (1000. / speed);
 	}
 
 	public boolean prepare() {
@@ -177,6 +187,13 @@ public class EarthBlast implements IAbility {
 			
 		}
 		location = sourceblock.getLocation();
+		
+		if(bender.hasPath(BendingPathType.Tough)) {
+			damage *= 0.85;
+		}
+		if(bender.hasPath(BendingPathType.Reckless)) {
+			damage *= 1.15;
+		}
 	}
 
 	private void remove() {

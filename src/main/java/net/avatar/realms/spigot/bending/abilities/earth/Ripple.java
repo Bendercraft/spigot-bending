@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -36,6 +38,8 @@ public class Ripple implements IAbility {
 	private static int ID = Integer.MIN_VALUE;
 
 	private Player player;
+	private BendingPlayer bender;
+	
 	private Vector direction;
 	private Location origin, location;
 
@@ -71,6 +75,7 @@ public class Ripple implements IAbility {
 			instances.put(id, this);
 		}
 
+		bender = BendingPlayer.getBendingPlayer(player);
 	}
 
 	private static Location getInitialLocation(Player player, Vector direction) {
@@ -272,8 +277,17 @@ public class Ripple implements IAbility {
 			return;
 		}
 		
+		double damage = DAMAGE;
+		if(bender.hasPath(BendingPathType.Tough)) {
+			damage *= 0.85;
+		}
+		
+		if(bender.hasPath(BendingPathType.Reckless)) {
+			damage *= 1.15;
+		}
+		
 		if (entity instanceof LivingEntity) {
-			EntityTools.damageEntity(player, entity, DAMAGE);
+			EntityTools.damageEntity(player, entity, damage);
 		}
 
 		Vector vector = direction.clone();

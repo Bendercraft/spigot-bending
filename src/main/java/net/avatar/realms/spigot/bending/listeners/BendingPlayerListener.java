@@ -21,6 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType.SlotType;
@@ -45,6 +46,7 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurstCone;
@@ -616,7 +618,13 @@ public class BendingPlayerListener implements Listener{
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			Abilities ability = EntityTools.getBendingAbility(player);
-
+			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			if(bender != null) {
+				if(bender.hasPath(BendingPathType.Tough)) {
+					event.setDamage(event.getDamage()*0.8);
+				}
+			}
+			
 			if (event.getCause() == DamageCause.FALL) {
 				PassiveAbility ab = null;
 				if (EntityTools.isBender(player, BendingType.Earth)) {
