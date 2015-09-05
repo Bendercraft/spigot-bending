@@ -17,6 +17,8 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
@@ -37,13 +39,13 @@ public class Torrent implements IAbility {
 	private static int defaultrange = 20;
 	private static int selectrange = 10;
 	private static double radius = 3;
-	static double range = 25;
+	private static double RANGE = 25;
 
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 6;
+	private static double DAMAGE = 6;
 
 	@ConfigurationParameter("Throw-Factor")
-	private static int DEFLECT_DAMAGE = 2;
+	private static double DEFLECT_DAMAGE = 2;
 
 	private static double factor = 1;
 	private static int maxlayer = 3;
@@ -72,6 +74,9 @@ public class Torrent implements IAbility {
 	private boolean launch = false;
 	private boolean launching = false;
 	private boolean freeze = false;
+	
+	private double damage;
+	private double range;
 
 	private IAbility parent;
 
@@ -91,6 +96,14 @@ public class Torrent implements IAbility {
 		if (this.sourceblock != null) {
 			this.sourceselected = true;
 			instances.put(player, this);
+		}
+		
+		damage = DAMAGE;
+		range = RANGE;
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		if(bender.hasPath(BendingPathType.Marksman)) {
+			range *= 1.4;
+			damage *= 0.8;
 		}
 	}
 
@@ -553,16 +566,22 @@ public class Torrent implements IAbility {
 			velocity.setX(vec.getX());
 			velocity.setZ(vec.getY());
 		}
-
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		if(bender.hasPath(BendingPathType.Marksman)) {
+			velocity = velocity.multiply(1.5);
+		}
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);
 
 		World world = this.player.getWorld();
-		int damagedealt = DEFLECT_DAMAGE;
-		if (Tools.isNight(world)) {
-			damagedealt = (int) (PluginTools.getWaterbendingNightAugment(world) * DEFLECT_DAMAGE);
+		
+		if(!bender.hasPath(BendingPathType.Marksman)) {
+			double damagedealt = DEFLECT_DAMAGE;
+			if (Tools.isNight(world)) {
+				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * DEFLECT_DAMAGE);
+			}
+			EntityTools.damageEntity(this.player, entity, damagedealt);
 		}
-		EntityTools.damageEntity(this.player, entity, damagedealt);
 
 	}
 
@@ -583,10 +602,10 @@ public class Torrent implements IAbility {
 
 		if (!this.hurtentities.contains(entity)) {
 			World world = this.player.getWorld();
-			int damagedealt = DAMAGE;
+			double damagedealt = damage;
 			if (Tools.isNight(world)) {
-				damagedealt = (int) (PluginTools
-						.getWaterbendingNightAugment(world) * DAMAGE);
+				damagedealt = (PluginTools
+						.getWaterbendingNightAugment(world) * damage);
 			}
 
 			EntityTools.damageEntity(this.player, entity, damagedealt);
@@ -622,8 +641,7 @@ public class Torrent implements IAbility {
 				toThawIce.add(block);
 				continue;
 			}
-			if ((block.getLocation().distance(player.getLocation()) > range)
-					|| !EntityTools.canBend(player, Abilities.Torrent)) {
+			if (!EntityTools.canBend(player, Abilities.Torrent)) {
 				toThawIce.add(block);
 			}
 		}

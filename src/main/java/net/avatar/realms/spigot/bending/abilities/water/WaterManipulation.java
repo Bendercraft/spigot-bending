@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
@@ -44,7 +45,7 @@ public class WaterManipulation implements IAbility {
 	// private static final byte half = 0x4;
 
 	@ConfigurationParameter("Range")
-	static double RANGE = 25;
+	private static double RANGE = 25;
 	
 	@ConfigurationParameter("Push")
 	private static double PUSHFACTOR = 0.3;
@@ -80,7 +81,8 @@ public class WaterManipulation implements IAbility {
 	// private boolean targetting = false;
 	private final boolean displacing = false;
 	private long time;
-	private int damage = DAMAGE;
+	private int damage;
+	private double range;
 	private int displrange;
 	
 	private IAbility parent;
@@ -93,6 +95,17 @@ public class WaterManipulation implements IAbility {
 			water.add((byte) 9);
 		}
 		this.player = player;
+		
+		damage = DAMAGE;
+		range = RANGE;
+		
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		
+		if(bender.hasPath(BendingPathType.Marksman)) {
+			damage *= 0.8;
+			range *= 1.4;
+		}
+		
 		if (prepare()) {
 			this.id = ID;
 			instances.put(this.id, this);
@@ -106,7 +119,7 @@ public class WaterManipulation implements IAbility {
 	}
 
 	private boolean prepare() {
-		Block block = BlockTools.getWaterSourceBlock(this.player, RANGE,
+		Block block = BlockTools.getWaterSourceBlock(this.player, range,
 				EntityTools.canPlantbend(this.player));
 		cancelPrevious();
 		block(this.player);
@@ -181,7 +194,7 @@ public class WaterManipulation implements IAbility {
 			this.firstdestination = getToEyeLevel();
 			this.firstdirection = Tools.getDirection(this.sourceblock.getLocation(), this.firstdestination).normalize();
 			this.targetdestination = Tools.getPointOnLine(this.firstdestination,
-					this.targetdestination, RANGE);
+					this.targetdestination, range);
 			this.targetdirection = Tools.getDirection(this.firstdestination,
 					this.targetdestination).normalize();
 
@@ -193,11 +206,11 @@ public class WaterManipulation implements IAbility {
 		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.WaterManipulation, COOLDOWN);
 	}
 
-	private static Location getTargetLocation(Player player) {
-		Entity target = EntityTools.getTargettedEntity(player, RANGE);
+	private Location getTargetLocation(Player player) {
+		Entity target = EntityTools.getTargettedEntity(player, range);
 		Location location;
 		if ((target == null) || ProtectionManager.isEntityProtectedByCitizens(target)) {
-			location = EntityTools.getTargetedLocation(player, RANGE,
+			location = EntityTools.getTargetedLocation(player, range,
 					BlockTools.transparentEarthbending);
 		} else {
 			// targetting = true;
@@ -230,7 +243,7 @@ public class WaterManipulation implements IAbility {
 
 	private void redirect(Player player, Location targetlocation) {
 		if (this.progressing && !this.settingup) {
-			if (this.location.distance(player.getLocation()) <= RANGE) {
+			if (this.location.distance(player.getLocation()) <= range) {
 				this.targetdirection = Tools.getDirection(this.location, targetlocation)
 						.normalize();
 			}
@@ -271,7 +284,7 @@ public class WaterManipulation implements IAbility {
 			} else {
 				if (!this.progressing) {
 					this.sourceblock.getWorld().playEffect(this.location, Effect.SMOKE,
-							4, (int) RANGE);
+							4, (int) range);
 					return true;
 				}
 				
@@ -394,7 +407,7 @@ public class WaterManipulation implements IAbility {
 				this.sourceblock = block;
 
 				if ((this.location.distance(this.targetdestination) <= 1)
-						|| (this.location.distance(this.firstdestination) > RANGE)) {
+						|| (this.location.distance(this.firstdestination) > range)) {
 
 					this.falling = true;
 					this.progressing = false;
@@ -485,18 +498,15 @@ public class WaterManipulation implements IAbility {
 				if (BlockTools.isTransparentToEarthbending(player, block)
 						&& BlockTools.isTransparentToEarthbending(player,
 								eyeloc.getBlock())) {
-
-					if (getTargetLocation(player).distance(block.getLocation()) > 1) {
-						block.setType(Material.WATER);
-						block.setData(full);
-						WaterManipulation watermanip = new WaterManipulation(
-								player, null);
-						watermanip.moveWater();
-						if (!watermanip.progressing) {
-							block.setType(Material.AIR);
-						} else {
-							WaterReturn.emptyWaterBottle(player);
-						}
+					block.setType(Material.WATER);
+					block.setData(full);
+					WaterManipulation watermanip = new WaterManipulation(
+							player, null);
+					watermanip.moveWater();
+					if (!watermanip.progressing) {
+						block.setType(Material.AIR);
+					} else {
+						WaterReturn.emptyWaterBottle(player);
 					}
 				}
 			}
@@ -521,19 +531,19 @@ public class WaterManipulation implements IAbility {
 			}
 
 			if (manip.player.equals(player)){
-				manip.redirect(player, getTargetLocation(player));
+				manip.redirect(player, manip.getTargetLocation(player));
 			}
 
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = manip.location;
-			if ((mloc.distance(location) <= RANGE)
+			if ((mloc.distance(location) <= manip.range)
 					&& (Tools.getDistanceFromLine(vector, location,
 							manip.location) < deflectrange)
 					&& (mloc.distance(location.clone().add(vector)) < mloc
 							.distance(location.clone().add(
 									vector.clone().multiply(-1))))) {
-				manip.redirect(player, getTargetLocation(player));
+				manip.redirect(player, manip.getTargetLocation(player));
 			}
 
 		}
@@ -562,7 +572,7 @@ public class WaterManipulation implements IAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = manip.location;
-			if ((mloc.distance(location) <= RANGE)
+			if ((mloc.distance(location) <= manip.range)
 					&& (Tools.getDistanceFromLine(vector, location,
 							manip.location) < deflectrange)
 					&& (mloc.distance(location.clone().add(vector)) < mloc
