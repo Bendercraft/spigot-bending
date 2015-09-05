@@ -28,6 +28,7 @@ import net.avatar.realms.spigot.bending.abilities.deprecated.Information;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
+import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
@@ -137,17 +138,8 @@ public class BlockTools {
 		
 	}
 
-	public static boolean isTempBlock (Block block) {
-		//TODO : Check in almost every ability that the block isn't a block state
-
-		if (WaterSpout.isWaterSpoutBlock(block)) {
-			return true;
-		}
-
-		return false;
-	}
-
 	public static Set<Material> ironBendables = new HashSet<Material>();
+	
 	static {
 		ironBendables.add(Material.IRON_BLOCK);
 		ironBendables.add(Material.IRON_ORE);
@@ -159,6 +151,20 @@ public class BlockTools {
 
 	public static Map<Block, Information> bendedBlocks = new HashMap<Block, Information>();
 	public static Map<Integer, Information> tempAir = new HashMap<Integer, Information>();
+
+	public static boolean isTempBlock (Block block) {
+		//TODO : Check in almost every ability that the block isn't a block state
+
+		if (WaterSpout.isWaterSpoutBlock(block)) {
+			return true;
+		}
+		
+		if (Illumination.isIlluminated(block)) {
+			return true;
+		}
+
+		return false;
+	}
 
 	public static Set<Material> getTransparentEarthbending() {
 		Set<Material> set = new HashSet<Material>();

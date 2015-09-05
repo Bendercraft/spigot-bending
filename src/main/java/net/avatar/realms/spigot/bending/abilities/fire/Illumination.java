@@ -21,7 +21,6 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 @BendingAbility(name="Illumination", element=BendingType.Fire)
 public class Illumination extends ActiveAbility {
-	//	private static Map<Block, Player> blocks = new HashMap<Block, Player>();
 
 	@ConfigurationParameter("Range")
 	private static final int RANGE = 5;
@@ -37,13 +36,12 @@ public class Illumination extends ActiveAbility {
 	}
 
 	@Override
-	public boolean swing () {
+	public boolean sneak () {
 		switch (this.state) {
 			case None:
 			case CannotStart:
 				return false;
 			case CanStart:
-				set();
 				AbilityManager.getManager().addInstance(this);
 				setState(AbilityState.Progressing);
 				return false;
@@ -51,6 +49,7 @@ public class Illumination extends ActiveAbility {
 			case Prepared:
 			case Progressing:
 				setState(AbilityState.Ended);
+				return false;
 			case Ending:
 			case Ended:
 			case Removed:
@@ -110,6 +109,11 @@ public class Illumination extends ActiveAbility {
 	}
 
 	@Override
+	protected long getMaxMillis () {
+		return 1000 * 60 * 15;
+	}
+	
+	@Override
 	public void remove () {
 		this.bender.cooldown(Abilities.Illumination, COOLDOWN);
 		super.remove();
@@ -117,6 +121,9 @@ public class Illumination extends ActiveAbility {
 
 	public static boolean isIlluminated (Block block) {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Illumination);
+		if (instances == null) {
+			return false;
+		}
 		for (Object o : instances.keySet()) {
 			Illumination ill = (Illumination) instances.get(o);
 			if (ill.block.equals(block)) {
