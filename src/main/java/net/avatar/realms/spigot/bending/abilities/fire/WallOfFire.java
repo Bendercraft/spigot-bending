@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
@@ -67,14 +68,16 @@ public class WallOfFire implements IAbility {
 	private int height;
 	private long duration;
 
+	private BendingPlayer bender;
+
 	public WallOfFire(Player player, IAbility parent) {
 		this.parent = parent;
 		if (instances.containsKey(player) && !AvatarState.isAvatarState(player)) {
 			return;
 		}
 
-		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
-				Abilities.WallOfFire))
+		bender = BendingPlayer.getBendingPlayer(player);
+		if (bender.isOnCooldown(Abilities.WallOfFire))
 			return;
 
 		this.player = player;
@@ -92,6 +95,13 @@ public class WallOfFire implements IAbility {
 					(double) DURATION, world);
 			damage = (int) PluginTools.firebendingDayAugment((double) DAMAGE,
 					world);
+		}
+		
+		if(bender.hasPath(BendingPathType.Nurture)) {
+			damage *= 0.8;
+		}
+		if(bender.hasPath(BendingPathType.Lifeless)) {
+			damage *= 1.1;
 		}
 
 		time = System.currentTimeMillis();
@@ -211,10 +221,9 @@ public class WallOfFire implements IAbility {
 		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
-		entity.setFireTicks(50);
 		entity.setVelocity(new Vector(0, 0, 0));
 		EntityTools.damageEntity(player, entity, damage);
-		new Enflamed(entity, player, this);
+		new Enflamed(entity, player, 1, this);
 
 	}
 

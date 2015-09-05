@@ -9,6 +9,7 @@ import java.util.Map;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
@@ -82,9 +83,9 @@ public class FireBlast implements IAbility {
 
 	public FireBlast(Player player, IAbility parent) {
 		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.FireBlast))
+		if (bender.isOnCooldown(Abilities.FireBlast))
 			return;
 
 		if (player.getEyeLocation().getBlock().isLiquid()
@@ -99,10 +100,17 @@ public class FireBlast implements IAbility {
 		location = location.add(direction.clone());
 		id = ID;
 		instances.put(id, this);
-		bPlayer.cooldown(Abilities.FireBlast, COOLDOWN);
+		bender.cooldown(Abilities.FireBlast, COOLDOWN);
 		if (ID == Integer.MAX_VALUE)
 			ID = Integer.MIN_VALUE;
 		ID++;
+		
+		if(bender.hasPath(BendingPathType.Nurture)) {
+			damage *= 0.8;
+		}
+		if(bender.hasPath(BendingPathType.Lifeless)) {
+			damage *= 1.1;
+		}
 	}
 
 	public FireBlast(Location location, Vector direction, Player player,
@@ -241,10 +249,9 @@ public class FireBlast implements IAbility {
 			} else {
 				entity.setVelocity(direction.clone().multiply(PUSH_FACTOR));
 			}
-			entity.setFireTicks(50);
 			EntityTools.damageEntity(player, entity, PluginTools.firebendingDayAugment((double) damage,
 							entity.getWorld()));
-			new Enflamed(entity, player, this);
+			new Enflamed(entity, player, 1, this);
 			return false;
 		}
 		return true;

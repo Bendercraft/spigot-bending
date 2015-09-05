@@ -133,7 +133,7 @@ public class BendingManager implements Runnable {
 		FireStream.dissipateAll();
 		Cook.progressAll();
 		Illumination.progressAll();
-		Enflamed.handleFlames();
+		Enflamed.progressAll();
 		FireBlade.progressAll();
 	}
 	

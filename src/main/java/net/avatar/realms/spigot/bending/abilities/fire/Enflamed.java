@@ -6,76 +6,104 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 @BendingAbility(name="Enflamed", element=BendingType.Fire)
 public class Enflamed implements IAbility {
-	private static Map<Entity, Player> instances = new HashMap<Entity, Player>();
-	private static Map<Entity, Long> times = new HashMap<Entity, Long>();
+	private static Map<Entity, Enflamed> instances = new HashMap<Entity, Enflamed>();
 
-	private static final int DAMAGE = 1;
-	private static final int max = 90;
-	private static final long buffer = 30;
+	private static final double DAMAGE = 1;
+	
+	private int secondsLeft;
+	private Player source;
+	private Entity target;
+	
+	private long time;
+	private BendingPlayer bender;
 	
 	private IAbility parent;
 
-	public Enflamed(Entity entity, Player source, IAbility parent) {
+	public Enflamed(Entity entity, Player source, int seconds, IAbility parent) {
 		this.parent = parent;
+		this.target = entity;
+		this.source = source;
+		this.time = System.currentTimeMillis();
 		if (entity.getEntityId() == source.getEntityId())
 			return;
 		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
-		instances.put(entity, source);
-	}
-
-	public static boolean isEnflamed(Entity entity) {
-		// return false;
-		if (instances.containsKey(entity)) {
-			if (times.containsKey(entity)) {
-				long time = times.get(entity);
-				if (System.currentTimeMillis() < time + buffer) {
-					return false;
-				}
-			}
-			times.put(entity, System.currentTimeMillis());
-			return true;
-		} else {
-			return false;
+		bender = BendingPlayer.getBendingPlayer(source);
+		if(bender.hasPath(BendingPathType.Lifeless)) {
+			return;
 		}
-	}
-
-	public static void dealFlameDamage(Entity entity) {
-		if (instances.containsKey(entity) && entity instanceof LivingEntity) {
-			if (entity instanceof Player) {
-				if (!Extinguish.canBurn((Player) entity)) {
-					return;
-				}
-			}
-			LivingEntity Lentity = (LivingEntity) entity;
-			Player source = instances.get(entity);
-			Lentity.damage(DAMAGE, source);
-			if (entity.getFireTicks() > max)
-				entity.setFireTicks(max);
-		}
-	}
-
-	public static void handleFlames() {
-		List<Entity> toRemove = new LinkedList<Entity>();
-		for (Entity entity : instances.keySet()) {
-			if (entity.getFireTicks() <= 0) {
-				toRemove.add(entity);
+		
+		if(bender.hasPath(BendingPathType.Nurture)) {
+			if(instances.containsKey(target)) {
+				instances.get(target).addSeconds(seconds);
+				return;
 			}
 		}
 		
-		for(Entity entity : toRemove) {
-			instances.remove(entity);
+		instances.put(entity, this);
+	}
+	
+	public void addSeconds(int amount) {
+		secondsLeft += amount;
+	}
+	
+	public boolean progress() {
+		long now = System.currentTimeMillis();
+		if(now - time < 1000) {
+			return true;
+		}
+		
+		if (!Extinguish.canBurn((Player) target)) {
+			return false;
+		}
+		
+		if (target.getFireTicks() == 0) {
+			if(bender.hasPath(BendingPathType.Nurture)) {
+				target.setFireTicks(secondsLeft*50);
+			} else {
+				return false;
+			}
+		}
+		
+		secondsLeft--;
+		EntityTools.damageEntity(source, target, DAMAGE);
+		
+		return true;
+	}
+	
+	public boolean remove() {
+		instances.remove(target);
+		return true;
+	}
+	
+
+	public static boolean isEnflamed(Entity entity) {
+		return instances.containsKey(entity);
+	}
+
+	public static void progressAll() {
+		List<Enflamed> toRemove = new LinkedList<Enflamed>();
+		for (Enflamed flame : instances.values()) {
+			if (flame.progress()) {
+				toRemove.add(flame);
+			}
+		}
+		
+		for(Enflamed flame : toRemove) {
+			flame.remove();
 		}
 	}
 

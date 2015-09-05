@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
@@ -29,6 +30,7 @@ public class FireShield implements IAbility {
 	private static boolean ignite = true;
 
 	private Player player;
+	private BendingPlayer bender;
 	private long time;
 	private IAbility parent;
 
@@ -38,15 +40,15 @@ public class FireShield implements IAbility {
 		if (instances.containsKey(player)) {
 			return;
 		}
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+		bender = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.FireShield)) {
+		if (bender.isOnCooldown(Abilities.FireShield)) {
 			return;
 		}
 
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			this.time = System.currentTimeMillis();
-			BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.FireShield, FireProtection.COOLDOWN);
+			bender.cooldown(Abilities.FireShield, FireProtection.COOLDOWN);
 			instances.put(player, this);
 		}
 	}
@@ -106,8 +108,10 @@ public class FireShield implements IAbility {
 					continue;
 				}	
 				if ((this.player.getEntityId() != entity.getEntityId()) && ignite) {
-					entity.setFireTicks(120);
-					new Enflamed(entity, this.player, this);
+					if(bender.hasPath(BendingPathType.Lifeless)) {
+						EntityTools.damageEntity(player, entity, 2);
+					}
+					new Enflamed(entity, this.player, 3, this);
 				}
 			}
 
