@@ -25,28 +25,28 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 @BendingAbility(name="Fire Jet", element=BendingType.Fire)
 public class FireJet extends ActiveAbility {
-
+	
 	@ConfigurationParameter("Speed")
 	private static double FACTOR = 0.7;
-
+	
 	@ConfigurationParameter("Duration")
-	private static long DURATION = 1500;
-
+	private static long DURATION = 1550;
+	
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 6000;
-	
+
 	private long duration = DURATION;
 	private double factor = FACTOR;
-	
+
 	public FireJet (Player player) {
 		super(player, null);
-		
+
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
 		this.factor = PluginTools.firebendingDayAugment(FACTOR, player.getWorld());
 	}
-	
+
 	@Override
 	public boolean swing () {
 		switch (this.state) {
@@ -75,20 +75,20 @@ public class FireJet extends ActiveAbility {
 				return false;
 		}
 	}
-	
+
 	public static boolean checkTemporaryImmunity (Player player) {
 		if (getPlayers().contains(player)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		long now = System.currentTimeMillis();
 		if ((BlockTools.isWater(this.player.getLocation().getBlock()) || (now > (this.startedTime + this.duration)))
 				&& !AvatarState.isAvatarState(this.player)) {
@@ -110,40 +110,40 @@ public class FireJet extends ActiveAbility {
 		}
 		return true;
 	}
-	
+
 	public static List<Player> getPlayers () {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireJet);
 		LinkedList<Player> players = new LinkedList<Player>();
 		if (instances == null) {
 			return players;
 		}
-
+		
 		for (Object o : instances.keySet()) {
 			players.add((Player) o);
 		}
-
+		
 		return players;
 	}
-	
+
 	@Override
 	public void stop () {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 	}
-	
+
 	@Override
 	public void remove () {
 		this.bender.cooldown(Abilities.FireJet, COOLDOWN);
 		super.remove();
 	}
-	
+
 	@Override
 	public Object getIdentifier () {
 		return this.player;
 	}
-	
+
 	@Override
 	public Abilities getAbilityType () {
 		return Abilities.FireJet;
 	}
-	
+
 }

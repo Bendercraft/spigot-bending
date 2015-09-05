@@ -15,7 +15,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -68,8 +67,8 @@ public class AirSuction extends ActiveAbility {
 		
 		this.id = ID++;
 		
-		if(bender.hasPath(BendingPathType.Renegade)) {
-			range *= 0.6;
+		if(this.bender.hasPath(BendingPathType.Renegade)) {
+			this.range *= 0.6;
 		}
 	}
 	
@@ -117,13 +116,13 @@ public class AirSuction extends ActiveAbility {
 		
 		if (this.state == AbilityState.Preparing) {
 			
-			Entity entity = EntityTools.getTargettedEntity(this.player, range);
+			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
 			if (entity != null) {
 				this.direction = Tools.getDirection(entity.getLocation(), this.origin).normalize();
 				this.location = getLocation(this.origin, this.direction.clone().multiply(-1));
 			}
 			else {
-				this.location = EntityTools.getTargetedLocation(this.player, range, BlockTools.nonOpaque);
+				this.location = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.nonOpaque);
 				this.direction = Tools.getDirection(this.location, this.origin).normalize();
 			}
 			
@@ -136,7 +135,7 @@ public class AirSuction extends ActiveAbility {
 	
 	private Location getLocation(Location origin, Vector direction) {
 		Location location = origin.clone();
-		for (double i = 1; i <= range; i++) {
+		for (double i = 1; i <= this.range; i++) {
 			location = origin.clone().add(direction.clone().multiply(i));
 			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock())
 					|| ProtectionManager.isRegionProtectedFromBending(this.player,
@@ -195,7 +194,7 @@ public class AirSuction extends ActiveAbility {
 			return false;
 		}
 		
-		if ((this.location.distance(this.origin) > range)
+		if ((this.location.distance(this.origin) > this.range)
 				|| (this.location.distance(this.origin) <= 1)) {
 			return false;
 		}
@@ -231,7 +230,7 @@ public class AirSuction extends ActiveAbility {
 				}
 			}
 			
-			factor *= 1 - (this.location.distance(this.origin) / (2 * range));
+			factor *= 1 - (this.location.distance(this.origin) / (2 * this.range));
 			
 			double comp = velocity.dot(push.clone().normalize());
 			if (comp > factor) {
@@ -285,10 +284,6 @@ public class AirSuction extends ActiveAbility {
 		}
 		
 		if (this.player.getEyeLocation().getBlock().isLiquid()) {
-			return false;
-		}
-		
-		if (AirSpout.isSpouting(this.player) || WaterSpout.getPlayers().contains(this.player)) {
 			return false;
 		}
 		
