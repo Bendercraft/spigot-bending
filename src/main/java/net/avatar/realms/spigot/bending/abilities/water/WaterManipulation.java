@@ -66,7 +66,8 @@ public class WaterManipulation implements IAbility {
 
 	private static long interval = (long) (1000. / SPEED);
 
-	Player player;
+	private Player player;
+	private BendingPlayer bender;
 	private int id;
 	private Location location = null;
 	private Block sourceblock = null;
@@ -99,11 +100,15 @@ public class WaterManipulation implements IAbility {
 		damage = DAMAGE;
 		range = RANGE;
 		
-		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		bender = BendingPlayer.getBendingPlayer(player);
 		
 		if(bender.hasPath(BendingPathType.Marksman)) {
 			damage *= 0.8;
 			range *= 1.4;
+		}
+		
+		if(bender.hasPath(BendingPathType.Flowless)) {
+			damage *= 1.15;
 		}
 		
 		if (prepare()) {
@@ -207,8 +212,11 @@ public class WaterManipulation implements IAbility {
 	}
 
 	private Location getTargetLocation(Player player) {
-		Entity target = EntityTools.getTargettedEntity(player, range);
-		Location location;
+		Entity target = null;
+		if(!bender.hasPath(BendingPathType.Flowless)) {
+			target = EntityTools.getTargettedEntity(player, range);
+		}
+		Location location = null;
 		if ((target == null) || ProtectionManager.isEntityProtectedByCitizens(target)) {
 			location = EntityTools.getTargetedLocation(player, range,
 					BlockTools.transparentEarthbending);
