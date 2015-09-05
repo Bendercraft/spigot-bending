@@ -27,37 +27,37 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name="Water Spout", element=BendingType.Water)
 public class WaterSpout extends ActiveAbility {
-
+	
 	private static final Vector[] vectors = { new Vector(0, 0, -1), new Vector(1, 0, -1), new Vector(1, 0, 0),
 			new Vector(1, 0, 1), new Vector(0, 0, 1), new Vector(-1, 0, 1), new Vector(-1, 0, 0), new Vector(-1, 0, -1)
 	};
-
+	
 	@ConfigurationParameter ("Rotation-Speed")
 	public static int SPEED = 4;
-
+	
 	@ConfigurationParameter ("Height")
 	private static int HEIGHT = 18;
-
+	
 	@ConfigurationParameter ("Cooldown")
 	private static long COOLDOWN = 0;
-
+	
 	private int currentCardinalPoint = 0;
 	private BlockState baseState;
 	private Map<Block, BlockState> blocks;
 	private FlyingPlayer flying;
 	private int height;
-
+	
 	public WaterSpout (Player player) {
 		super(player, null);
 	}
-
+	
 	@Override
 	public boolean swing () {
 		switch (this.state) {
 			case None:
 			case CannotStart:
 				return false;
-
+				
 			case CanStart:
 				if (canWaterSpout(this.player)) {
 					this.height = 0;
@@ -70,13 +70,13 @@ public class WaterSpout extends ActiveAbility {
 					}
 				}
 				return false;
-
+				
 			case Preparing:
 			case Prepared:
 			case Progressing:
 				setState(AbilityState.Ended);
 				return false;
-				
+
 			case Ending:
 			case Ended:
 			case Removed:
@@ -84,7 +84,7 @@ public class WaterSpout extends ActiveAbility {
 				return false;
 		}
 	}
-	
+
 	@Override
 	public boolean progress () {
 		if (!super.progress()) {
@@ -93,13 +93,13 @@ public class WaterSpout extends ActiveAbility {
 		revertSpout();
 		return spout();
 	}
-	
+
 	@Override
 	public void stop () {
 		revertSpout();
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 	}
-
+	
 	private void revertSpout () {
 		revertBaseBlock();
 		for (Block b : this.blocks.keySet()) {
@@ -107,21 +107,21 @@ public class WaterSpout extends ActiveAbility {
 		}
 		this.blocks.clear();
 	}
-
+	
 	@Override
 	public void remove () {
 		this.bender.cooldown(Abilities.WaterSpout, COOLDOWN);
 		super.remove();
 	}
-
+	
 	private boolean spout () {
 		this.player.setFallDistance(0);
 		this.player.setSprinting(false);
 		this.player.removePotionEffect(PotionEffectType.SPEED);
-
+		
 		Location location = this.player.getLocation().clone().add(0, 0.2, 0);
 		int result = spoutableWaterHeight(location);
-
+		
 		if (result == -1) {
 			return false;
 		}
@@ -139,34 +139,34 @@ public class WaterSpout extends ActiveAbility {
 				this.blocks.put(loc.getBlock(), loc.getBlock().getState());
 				loc.getBlock().setType(Material.STATIONARY_WATER);
 			}
-
+			
 			if (cardinalPoint == -1) {
 				cardinalPoint = 7;
 			}
-			
+
 			loc = loc.add(vectors[cardinalPoint]);
 			if (loc.getBlock().getType().equals(Material.AIR)) {
 				this.blocks.put(loc.getBlock(), loc.getBlock().getState());
 				loc.getBlock().setType(Material.WATER);
 			}
-			
-		}
 
+		}
+		
 		this.currentCardinalPoint++;
 		if (this.currentCardinalPoint == (SPEED * 8)) {
 			this.currentCardinalPoint = 0;
 		}
 		return true;
 	}
-
+	
 	private int spoutableWaterHeight (Location location) {
-
+		
 		Location loc = location.clone();
-		this.height = HEIGHT;
+		int height = HEIGHT;
 		if (Tools.isNight(loc.getWorld())) {
-			this.height = (int) (Settings.NIGHT_FACTOR * HEIGHT) + 1;
+			height = (int) (Settings.NIGHT_FACTOR * HEIGHT) + 1;
 		}
-		for (int i = 0; i <= (this.height + 1); i++) {
+		for (int i = 0; i <= (height + 1); i++) {
 			Location locToTest = loc.add(0, -1, 0);
 			if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.WaterSpout, locToTest)) {
 				return -1;
@@ -188,20 +188,20 @@ public class WaterSpout extends ActiveAbility {
 		return -2;
 		//Can waterspout but too high
 	}
-	
+
 	private void revertBaseBlock () {
 		if (this.baseState != null) {
 			this.baseState.update(true);
 			this.baseState = null;
 		}
 	}
-	
+
 	public static boolean isWaterSpoutBlock (Block block) {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.WaterSpout);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
-		
+
 		for (IAbility ab : instances.values()) {
 			WaterSpout spout = (WaterSpout) ab;
 			if (spout.blocks.containsKey(block)) {
@@ -210,13 +210,13 @@ public class WaterSpout extends ActiveAbility {
 		}
 		return false;
 	}
-
+	
 	public static void removeSpouts (Location loc0, double radius, Player sourceplayer) {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.WaterSpout);
 		if (instances == null) {
 			return;
 		}
-		
+
 		for (Object obj : instances.keySet()) {
 			Player player = (Player) obj;
 			if (!player.equals(sourceplayer)) {
@@ -225,16 +225,16 @@ public class WaterSpout extends ActiveAbility {
 				double dx = loc1.getX() - loc0.getX();
 				double dy = loc1.getY() - loc0.getY();
 				double dz = loc1.getZ() - loc0.getZ();
-
+				
 				double distance = Math.sqrt((dx * dx) + (dz * dz));
-
+				
 				if ((distance <= radius) && (dy > 0) && (dy < HEIGHT)) {
 					instances.get(player).consume();
 				}
 			}
 		}
 	}
-
+	
 	public static boolean isBending(Player player) {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.WaterSpout);
 		if (instances == null) {
@@ -242,7 +242,7 @@ public class WaterSpout extends ActiveAbility {
 		}
 		return instances.containsKey(player);
 	}
-
+	
 	public static boolean canWaterSpout(Player player) {
 		Location loc = player.getLocation();
 		if (BlockTools.isWaterBased(loc.getBlock())){
@@ -258,20 +258,20 @@ public class WaterSpout extends ActiveAbility {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public Object getIdentifier () {
 		return this.player;
 	}
-
+	
 	@Override
 	public Abilities getAbilityType () {
 		return Abilities.WaterSpout;
 	}
-
+	
 	@Override
 	protected long getMaxMillis () {
 		return 1000 * 60 * 20;
 	}
-
+	
 }
