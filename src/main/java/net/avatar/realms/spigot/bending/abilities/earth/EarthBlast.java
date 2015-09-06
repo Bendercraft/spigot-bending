@@ -1,17 +1,17 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -30,10 +30,15 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+/**
+ * State Prepared = block is selected but still not threw
+ * State Progressing = block is threw
+ * 
+ * @author Koudja
+ *
+ */
 @BendingAbility(name="Earth Blast", element=BendingType.Earth)
-public class EarthBlast implements IAbility {
-	private static Map<Integer, EarthBlast> instances = new HashMap<Integer, EarthBlast>();
-
+public class EarthBlast extends ActiveAbility {
 	@ConfigurationParameter("Hit-Self")
 	private static boolean HITSELF = false;
 	
@@ -74,32 +79,27 @@ public class EarthBlast implements IAbility {
 
 	private static int ID = Integer.MIN_VALUE;
 
-	private Player player;
-	private BendingPlayer bender;
 	private int id;
 	private Location location = null;
 	private Block sourceblock = null;
 	private Material sourcetype = null;
-	private boolean progressing = false;
 	private Location destination = null;
 	private Location firstdestination = null;
-	private boolean falling = false;
 	private long time;
 	private boolean settingup = true;
-	private IAbility parent;
 
-	public EarthBlast(Player player, IAbility parent) {
-		this.parent = parent;
-		this.player = player;
-		
-		
-		if (prepare()) {
-			id = ID++;
-			if (ID >= Integer.MAX_VALUE)
-				ID = Integer.MIN_VALUE;
-			instances.put(id, this);
-			time = System.currentTimeMillis();
+	public EarthBlast(Player player) {
+		super (player, null);
+
+		if (this.state.isBefore(AbilityState.CanStart)) {
+			return;
 		}
+		
+		id = ID++;
+		if (ID >= Integer.MAX_VALUE)
+			ID = Integer.MIN_VALUE;
+		time = System.currentTimeMillis();
+		
 		bender = BendingPlayer.getBendingPlayer(player);
 		double speed = SPEED;
 		if(bender.hasPath(BendingPathType.Reckless)) {
@@ -109,14 +109,58 @@ public class EarthBlast implements IAbility {
 		this.interval = (long) (1000. / speed);
 	}
 
-	public boolean prepare() {
+	@Override
+	public boolean sneak() {
+		if(this.state != AbilityState.CanStart) {
+			return true;
+		}
+		
 		Block block = BlockTools.getEarthSourceBlock(player, Abilities.EarthBlast, SELECT_RANGE);
 		cancelPrevious(block);	
 		block(player);
 		if (block != null) {
 			sourceblock = block;
-			focusBlock();
-			return true;
+			if (EarthPassive.isPassiveSand(sourceblock)) {
+				 EarthPassive.revertSand(sourceblock);
+			}		
+			sourcetype = sourceblock.getType();
+			damage = EARTH_DAMAGE;
+			if (sourcetype == Material.SAND) {
+				sourceblock.setType(Material.SANDSTONE);
+				damage = SANG_DAMAGE;
+			} else if (sourcetype == Material.STONE) {
+				sourceblock.setType(Material.COBBLESTONE);
+			} else {
+				if (EntityTools.canBend(player, Abilities.MetalBending)
+						&& BlockTools.isIronBendable(player, sourceblock.getType())) {
+					if (sourcetype == Material.IRON_BLOCK){
+						sourceblock.setType(Material.IRON_ORE);
+					}
+					else {
+						sourceblock.setType(Material.IRON_BLOCK);
+					}
+					damage = IRON_DAMAGE;
+				}
+				else if (EntityTools.canBend(player, Abilities.LavaTrain)
+						&& sourceblock.getType() == Material.OBSIDIAN) {
+					damage = IRON_DAMAGE;
+					sourceblock.setType(Material.BEDROCK);
+				}
+				else {
+					sourceblock.setType(Material.STONE);
+				}
+				
+			}
+			location = sourceblock.getLocation();
+			
+			if(bender.hasPath(BendingPathType.Tough)) {
+				damage *= 0.85;
+			}
+			if(bender.hasPath(BendingPathType.Reckless)) {
+				damage *= 1.15;
+			}
+			
+			this.state = AbilityState.Prepared;
 		}
 		return false;
 	}
@@ -136,8 +180,9 @@ public class EarthBlast implements IAbility {
 
 	private void cancelPrevious(Block b) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
-		for (EarthBlast blast : instances.values()) {
-			if ((blast.sourceblock.equals(b) || blast.player == player) && !blast.progressing) {
+		for (IAbility ab : AbilityManager.getManager().getInstances(getAbilityType()).values()) {
+			EarthBlast blast = (EarthBlast) ab;
+			if ((blast.sourceblock.equals(b) || blast.player == player) && blast.state == AbilityState.Prepared) {
 				blast.cancel();
 				toRemove.add(blast);
 			}
@@ -152,52 +197,6 @@ public class EarthBlast implements IAbility {
 	 */
 	public void cancel() {
 		sourceblock.setType(sourcetype);
-	}
-
-	private void focusBlock() {	
-		if (EarthPassive.isPassiveSand(sourceblock)) {
-			 EarthPassive.revertSand(sourceblock);
-		}		
-		sourcetype = sourceblock.getType();
-		damage = EARTH_DAMAGE;
-		if (sourcetype == Material.SAND) {
-			sourceblock.setType(Material.SANDSTONE);
-			damage = SANG_DAMAGE;
-		} else if (sourcetype == Material.STONE) {
-			sourceblock.setType(Material.COBBLESTONE);
-		} else {
-			if (EntityTools.canBend(player, Abilities.MetalBending)
-					&& BlockTools.isIronBendable(player, sourceblock.getType())) {
-				if (sourcetype == Material.IRON_BLOCK){
-					sourceblock.setType(Material.IRON_ORE);
-				}
-				else {
-					sourceblock.setType(Material.IRON_BLOCK);
-				}
-				damage = IRON_DAMAGE;
-			}
-			else if (EntityTools.canBend(player, Abilities.LavaTrain)
-					&& sourceblock.getType() == Material.OBSIDIAN) {
-				damage = IRON_DAMAGE;
-				sourceblock.setType(Material.BEDROCK);
-			}
-			else {
-				sourceblock.setType(Material.STONE);
-			}
-			
-		}
-		location = sourceblock.getLocation();
-		
-		if(bender.hasPath(BendingPathType.Tough)) {
-			damage *= 0.85;
-		}
-		if(bender.hasPath(BendingPathType.Reckless)) {
-			damage *= 1.15;
-		}
-	}
-
-	private void remove() {
-		instances.remove(id);
 	}
 
 	public void throwEarth() {
@@ -230,10 +229,10 @@ public class EarthBlast implements IAbility {
 		}
 
 		if (destination.distance(location) <= 1) {
-			progressing = false;
+			state = AbilityState.Ended;
 			destination = null;
 		} else {
-			progressing = true;
+			state = AbilityState.Progressing;
 			sourceblock.getWorld().playEffect(sourceblock.getLocation(),
 												Effect.GHAST_SHOOT, 0,
 												10);
@@ -245,27 +244,31 @@ public class EarthBlast implements IAbility {
 	}
 
 	public static EarthBlast getBlastFromSource(Block block) {
-		for (int id : instances.keySet()) {
-			EarthBlast blast = instances.get(id);
+		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.EarthBlast).values()) {
+			EarthBlast blast = (EarthBlast) ab;
 			if (blast.sourceblock.equals(block))
 				return blast;
 		}
 		return null;
 	}
 
-	private boolean progress() {
+	@Override
+	public boolean progress() {
+		if(!super.progress()) {
+			return false;
+		}
 		if (player.isDead() || !player.isOnline()
 				|| !EntityTools.canBend(player, Abilities.EarthBlast)) {
 			breakBlock();
 			return false;
 		}
+		
+		if(this.state.isBefore(AbilityState.Prepared)) {
+			return false;
+		}
+		
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
-
-			if (falling) {
-				breakBlock();
-				return false;
-			}
 
 			if (!BlockTools.isEarthbendable(player, Abilities.EarthBlast, sourceblock)
 					&& sourceblock.getType() != Material.COBBLESTONE
@@ -274,8 +277,7 @@ public class EarthBlast implements IAbility {
 				return false;
 			}
 
-			if (!progressing && !falling) {
-
+			if (state ==  AbilityState.Prepared) {
 				if (EntityTools.getBendingAbility(player) != Abilities.EarthBlast) {
 					cancel();
 					return false;
@@ -291,129 +293,120 @@ public class EarthBlast implements IAbility {
 					cancel();
 					return false;
 				}
+				return true;
 			}
 
-			if (falling) {
+			if (sourceblock.getY() == firstdestination.getBlockY())
+				settingup = false;
+
+			Vector direction;
+			if (settingup) {
+				direction = Tools.getDirection(location, firstdestination)
+						.normalize();
+			} else {
+				direction = Tools.getDirection(location, destination)
+						.normalize();
+			}
+
+			location = location.clone().add(direction);
+
+			PluginTools.removeSpouts(location, player);
+
+			Block block = location.getBlock();
+			if (block.getLocation().equals(sourceblock.getLocation())) {
+				location = location.clone().add(direction);
+				block = location.getBlock();
+			}
+
+			if (BlockTools.isTransparentToEarthbending(player, block)
+					&& !block.isLiquid()) {
+				BlockTools.breakBlock(block);
+			} else if (!settingup) {
 				breakBlock();
 				return false;
 			} else {
-				if (!progressing) {
-					return true;
-				}
-
-				if (sourceblock.getY() == firstdestination.getBlockY())
-					settingup = false;
-
-				Vector direction;
-				if (settingup) {
-					direction = Tools.getDirection(location, firstdestination)
-							.normalize();
-				} else {
-					direction = Tools.getDirection(location, destination)
-							.normalize();
-				}
-
+				location = location.clone().subtract(direction);
+				direction = Tools.getDirection(location, destination)
+						.normalize();
 				location = location.clone().add(direction);
 
 				PluginTools.removeSpouts(location, player);
+				double radius = FireBlast.AFFECTING_RADIUS;
+				Player source = player;
+				if (EarthBlast.shouldAnnihilateBlasts(location, radius, source, false)
+						|| WaterManipulation.annihilateBlasts(location,
+								radius, source)
+						|| FireBlast.annihilateBlasts(location, radius,
+								source)) {
+					breakBlock();
+					return false;
+				}
 
-				Block block = location.getBlock();
-				if (block.getLocation().equals(sourceblock.getLocation())) {
+				Block block2 = location.getBlock();
+				if (block2.getLocation().equals(sourceblock.getLocation())) {
 					location = location.clone().add(direction);
-					block = location.getBlock();
+					block2 = location.getBlock();
 				}
 
 				if (BlockTools.isTransparentToEarthbending(player, block)
 						&& !block.isLiquid()) {
 					BlockTools.breakBlock(block);
-				} else if (!settingup) {
-					breakBlock();
-					return false;
 				} else {
-					location = location.clone().subtract(direction);
-					direction = Tools.getDirection(location, destination)
-							.normalize();
-					location = location.clone().add(direction);
-
-					PluginTools.removeSpouts(location, player);
-					double radius = FireBlast.AFFECTING_RADIUS;
-					Player source = player;
-					if (EarthBlast.shouldAnnihilateBlasts(location, radius, source, false)
-							|| WaterManipulation.annihilateBlasts(location,
-									radius, source)
-							|| FireBlast.annihilateBlasts(location, radius,
-									source)) {
-						breakBlock();
-						return false;
-					}
-
-					Block block2 = location.getBlock();
-					if (block2.getLocation().equals(sourceblock.getLocation())) {
-						location = location.clone().add(direction);
-						block2 = location.getBlock();
-					}
-
-					if (BlockTools.isTransparentToEarthbending(player, block)
-							&& !block.isLiquid()) {
-						BlockTools.breakBlock(block);
-					} else {
-						breakBlock();
-						return false;
-					}
-				}
-				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
-						FireBlast.AFFECTING_RADIUS)) {
-					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
-						continue;
-					}
-					if (ProtectionManager.isRegionProtectedFromBending(player,
-							Abilities.EarthBlast, entity.getLocation())) {
-						continue;
-					}
-						
-					if ((entity.getEntityId() != player.getEntityId() || HITSELF)) {
-						Location location = player.getEyeLocation();
-				 		Vector vector = location.getDirection();
-				 		entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
-				 		EntityTools.damageEntity(player, entity, damage);
-						progressing = false;
-					}
-				}
-
-				if (!progressing) {
 					breakBlock();
 					return false;
 				}
+			}
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
+					FireBlast.AFFECTING_RADIUS)) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
+				if (ProtectionManager.isRegionProtectedFromBending(player,
+						Abilities.EarthBlast, entity.getLocation())) {
+					continue;
+				}
+					
+				if ((entity.getEntityId() != player.getEntityId() || HITSELF)) {
+					Location location = player.getEyeLocation();
+			 		Vector vector = location.getDirection();
+			 		entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
+			 		EntityTools.damageEntity(player, entity, damage);
+					state = AbilityState.Ended;
+				}
+			}
 
-				if (REVERT) {
-					// Tools.addTempEarthBlock(sourceblock, block);
+			if (state != AbilityState.Progressing) {
+				breakBlock();
+				return false;
+			}
+
+			if (REVERT) {
+				// Tools.addTempEarthBlock(sourceblock, block);
+				sourceblock.setType(sourcetype);
+				BlockTools.moveEarthBlock(sourceblock, block);
+				if (block.getType() == Material.SAND) {
+					block.setType(Material.SANDSTONE);
+				}
+					
+				if (block.getType() == Material.GRAVEL) {
+					block.setType(Material.STONE);
+				}
+					
+			} else {
+				block.setType(sourceblock.getType());
+				sourceblock.setType(Material.AIR);
+			}
+
+			sourceblock = block;
+
+			if (location.distance(destination) < 1) {
+				if (sourcetype == Material.SAND
+						|| sourcetype == Material.GRAVEL) {
 					sourceblock.setType(sourcetype);
-					BlockTools.moveEarthBlock(sourceblock, block);
-					if (block.getType() == Material.SAND) {
-						block.setType(Material.SANDSTONE);
-					}
-						
-					if (block.getType() == Material.GRAVEL) {
-						block.setType(Material.STONE);
-					}
-						
-				} else {
-					block.setType(sourceblock.getType());
-					sourceblock.setType(Material.AIR);
 				}
-
-				sourceblock = block;
-
-				if (location.distance(destination) < 1) {
-					if (sourcetype == Material.SAND
-							|| sourcetype == Material.GRAVEL) {
-						progressing = false;
-						sourceblock.setType(sourcetype);
-					}
-					falling = true;
-					progressing = false;
-				}
-				return true;
+				state = AbilityState.Ended;
+				breakBlock();
+				return false;
 			}
 		}
 		return true;
@@ -431,54 +424,28 @@ public class EarthBlast implements IAbility {
 		}
 	}
 
-	public static void throwEarth(Player player) {
+	@Override
+	public boolean swing() {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		ArrayList<EarthBlast> ignore = new ArrayList<EarthBlast>();
 
-		if (!bPlayer.isOnCooldown(Abilities.EarthBlast)) {
-
-			boolean cooldown = false;
-			for (int id : instances.keySet()) {
-				EarthBlast blast = instances.get(id);
-				if (blast.player == player && !blast.progressing) {
-					blast.throwEarth();
-					cooldown = true;
-					ignore.add(blast);
-				}
-			}
-
-			if (cooldown) {
+		if (!bPlayer.isOnCooldown(getAbilityType())) {
+			if (state == AbilityState.Prepared) {
+				throwEarth();
 				bPlayer.cooldown(Abilities.EarthBlast, COOLDOWN);
+				ignore.add(this);
 			}
 		}
 
 		redirectTargettedBlasts(player, ignore);
-	}
-
-	public static void progressAll() {
-		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
-		for(EarthBlast blast : instances.values()) {
-			boolean keep = blast.progress();
-			if(!keep) {
-				toRemove.add(blast);
-			}
-		}
-		for(EarthBlast blast : toRemove) {
-			blast.remove();
-		}
-	}
-
-	public static void removeAll() {
-		for(EarthBlast blast : instances.values()) {
-			blast.breakBlock();
-		}
-		instances.clear();
+		return false;
 	}
 
 	private static void redirectTargettedBlasts(Player player,
 			ArrayList<EarthBlast> ignore) {
-		for(EarthBlast blast : instances.values()) {
-			if (!blast.progressing || ignore.contains(blast))
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.EarthBlast).values()) {
+			EarthBlast blast = (EarthBlast) ab;
+			if (blast.state == AbilityState.Prepared || ignore.contains(blast))
 				continue;
 
 			if (!blast.location.getWorld().equals(player.getWorld()))
@@ -507,7 +474,7 @@ public class EarthBlast implements IAbility {
 	}
 
 	private void redirect(Player player, Location targetlocation) {
-		if (progressing) {
+		if (state == AbilityState.Progressing) {
 			if (location.distance(player.getLocation()) <= RANGE) {
 				settingup = false;
 				destination = targetlocation;
@@ -517,7 +484,8 @@ public class EarthBlast implements IAbility {
 
 	private static void block(Player player) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
-		for (EarthBlast blast : instances.values()) {
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.EarthBlast).values()) {
+			EarthBlast blast = (EarthBlast) ab;
 			if (blast.player.equals(player)) {
 				continue;
 			}			
@@ -526,7 +494,7 @@ public class EarthBlast implements IAbility {
 				continue;
 			}			
 
-			if (!blast.progressing){
+			if (blast.state == AbilityState.Prepared){
 				continue;
 			}			
 
@@ -555,7 +523,8 @@ public class EarthBlast implements IAbility {
 
 	public static void removeAroundPoint(Location location, double radius) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
-		for (EarthBlast blast : instances.values()) {
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.EarthBlast).values()) {
+			EarthBlast blast = (EarthBlast) ab;
 			if (blast.location.getWorld().equals(location.getWorld())) {
 				if (blast.location.distance(location) <= radius) {
 					blast.breakBlock();
@@ -572,7 +541,8 @@ public class EarthBlast implements IAbility {
 			Player source, boolean remove) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
 		boolean broke = false;
-		for (EarthBlast blast : instances.values()) {
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.EarthBlast).values()) {
+			EarthBlast blast = (EarthBlast) ab;
 			if (blast.location.getWorld().equals(location.getWorld())
 					&& !source.equals(blast.player))
 				if (blast.location.distance(location) <= radius) {
@@ -595,8 +565,13 @@ public class EarthBlast implements IAbility {
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Object getIdentifier() {
+		return id;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.EarthBlast;
 	}
 
 }

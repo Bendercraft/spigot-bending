@@ -125,7 +125,6 @@ public class PluginTools {
 
 		Catapult.removeAll();
 		CompactColumn.removeAll();
-		EarthBlast.removeAll();
 		EarthColumn.removeAll();
 		EarthArmor.removeAll();
 		EarthTunnel.removeAll();

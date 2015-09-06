@@ -65,7 +65,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
@@ -330,11 +329,6 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-			if (ability == Abilities.EarthBlast) {
-				EarthBlast.throwEarth(player);
-				return;
-			}
-
 			if (ability == Abilities.EarthArmor) {
 				new EarthArmor(player, null);
 				return;
@@ -458,11 +452,6 @@ public class BendingPlayerListener implements Listener{
 
 			if (!player.isSneaking()) {
 				// If the player sneaks
-
-				if (ability == Abilities.EarthBlast) {
-					new EarthBlast(player, null);
-					return;
-				}
 
 				if (ability == Abilities.EarthGrab) {
 					new EarthGrab(player, true, null);

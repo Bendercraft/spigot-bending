@@ -38,6 +38,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.PowerfulHit;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -162,6 +163,8 @@ public class AbilityManager {
 
 			case Tremorsense:
 				return new Tremorsense(player);
+			case EarthBlast:
+				return new EarthBlast(player);
 
 			default : return null;
 		}

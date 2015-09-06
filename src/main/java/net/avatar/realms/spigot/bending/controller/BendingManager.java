@@ -21,7 +21,6 @@ import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
@@ -96,7 +95,6 @@ public class BendingManager implements Runnable {
 		Catapult.progressAll();
 		EarthColumn.progressAll();
 		CompactColumn.progressAll();
-		EarthBlast.progressAll();
 		EarthGrab.progressAll();
 		EarthTunnel.progressAll();
 		EarthArmor.progressAll();
