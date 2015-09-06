@@ -5,10 +5,13 @@ public enum AbilityState {
 	None 		(0),
 	CannotStart	(1),
 	CanStart 	(2),
-	Preparing 	(3), 
+	Preparing 	(3),
 	Prepared 	(4),
-	Progressing	(5),
+	Progressing (5),
 	Ending		(6),
+	/**
+	 * When the state is on Ended, the ability will be removed in the next tick
+	 */
 	Ended		(7),
 	Removed		(8);
 
