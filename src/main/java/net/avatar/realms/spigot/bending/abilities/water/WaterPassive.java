@@ -28,22 +28,22 @@ public class WaterPassive extends PassiveAbility{
 	
 	@Override
 	public boolean start() {
-		if (state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(AbilityState.CanStart)) {
 			return false;
 		}
 		
-		Block block = player.getLocation().getBlock();
+		Block block = this.player.getLocation().getBlock();
 		Block fallblock = block.getRelative(BlockFace.DOWN);
 		
 		if (fallblock.getType() == Material.AIR) {
 			return true;
 		}
 		
-		if (BlockTools.isWaterbendable(block, player) && !BlockTools.isPlant(block)) {
+		if (BlockTools.isWaterbendable(block, this.player) && !BlockTools.isPlant(block)) {
 			return true;
 		}
 		
-		if ((BlockTools.isWaterbendable(fallblock, player) && !BlockTools.isPlant(fallblock))
+		if ((BlockTools.isWaterbendable(fallblock, this.player) && !BlockTools.isPlant(fallblock))
 				|| (fallblock.getType() == Material.SNOW_BLOCK)) {
 			return true;
 		}
@@ -51,15 +51,9 @@ public class WaterPassive extends PassiveAbility{
 		return false;
 	}
 
-//	public static boolean softenLanding(Player player) {
-////		Block block = player.getLocation().getBlock();
-////		Block fallblock = block.getRelative(BlockFace.DOWN);
-//		return false;
-//	}
-
 	@Override
 	public Object getIdentifier() {
-		return player;
+		return this.player;
 	}
 
 	@Override
@@ -73,11 +67,11 @@ public class WaterPassive extends PassiveAbility{
 			return false;
 		}
 		
-		if (!bender.isBender(BendingType.Water)) {
+		if (!this.bender.isBender(BendingType.Water)) {
 			return false;
 		}
 		
-		if (!EntityTools.canBendPassive(player, BendingType.Water)) {
+		if (!EntityTools.canBendPassive(this.player, BendingType.Water)) {
 			return false;
 		}
 		
