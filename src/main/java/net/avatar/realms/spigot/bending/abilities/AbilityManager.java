@@ -44,6 +44,7 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
+import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
@@ -154,6 +155,8 @@ public class AbilityManager {
 				return new FireJet(player);
 			case Illumination:
 				return new Illumination(player);
+			case Lightning:
+				return new Lightning(player);
 
 			case WaterBubble:
 				return new WaterBubble(player);
@@ -246,7 +249,7 @@ public class AbilityManager {
 		//		register(FireStream.class);
 		//		register(HeatMelt.class);
 		register(Illumination.class);
-		//		register(Lightning.class);
+		register(Lightning.class);
 		//		register(RingOfFire.class);
 		//		register(WallOfFire.class);
 
