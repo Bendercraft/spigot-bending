@@ -60,7 +60,6 @@ import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
-import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
@@ -91,7 +90,6 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
 import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
-import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.fire.RingOfFire;
 import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
@@ -107,6 +105,7 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.controller.Settings;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
@@ -515,10 +514,6 @@ public class BendingPlayerListener implements Listener{
 					new Melt(player, null);
 				}
 
-				if (ability == Abilities.Lightning) {
-					new Lightning(player, null);
-				}
-
 				if (ability == Abilities.Blaze) {
 					new RingOfFire(player, null);
 				}
@@ -545,7 +540,8 @@ public class BendingPlayerListener implements Listener{
 
 				if ( ability.isAirbending() || (ability.isChiblocking())
 						|| ((ability == Abilities.Combustion)
-								|| (ability == Abilities.WaterBubble) || (ability == Abilities.Illumination))) {
+								|| (ability == Abilities.WaterBubble)
+								|| (ability == Abilities.Illumination) || (ability == Abilities.Lightning))) {
 
 					Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
@@ -689,8 +685,8 @@ public class BendingPlayerListener implements Listener{
 			}
 
 			if (EntityTools.isBender(player, BendingType.Earth)
-					&& ((event.getCause() == DamageCause.SUFFOCATION) && TempBlock
-							.isTempBlock(player.getEyeLocation().getBlock()))) {
+ && ((event.getCause() == DamageCause.SUFFOCATION)
+					&& BlockTools.isTempBlock(player.getEyeLocation().getBlock()))) {
 				event.setDamage(0);
 				event.setCancelled(true);
 			}

@@ -37,11 +37,9 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
 import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
-import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
-import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike2;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
@@ -122,7 +120,6 @@ public class BendingManager implements Runnable {
 		
 		FireBall.progressAll();
 		WallOfFire.progressAll();
-		Lightning.progressAll();
 		FireShield.progressAll();
 		FireProtection.progressAll();
 		FireBlast.progressAll();
@@ -143,7 +140,6 @@ public class BendingManager implements Runnable {
 		Torrent.progressAll();
 		TorrentBurst.progressAll();
 		Bloodbending.progressAll();
-		HealingWaters.progressAll();
 		OctopusForm.progressAll();
 		
 		Plantbending.regrow();

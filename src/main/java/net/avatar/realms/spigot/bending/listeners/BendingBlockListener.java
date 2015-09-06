@@ -36,13 +36,13 @@ import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 public class BendingBlockListener implements Listener{
-
+	
 	public Bending plugin;
-
+	
 	public BendingBlockListener(Bending bending) {
 		this.plugin = bending;
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
@@ -51,7 +51,7 @@ public class BendingBlockListener implements Listener{
 			event.setCancelled(true);
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		if (event.getCause() == IgniteCause.LIGHTNING) {
@@ -61,7 +61,7 @@ public class BendingBlockListener implements Listener{
 			}
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockFlowTo(BlockFromToEvent event) {
 		Block toblock = event.getToBlock();
@@ -84,7 +84,7 @@ public class BendingBlockListener implements Listener{
 			}
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockMeltEvent(BlockFadeEvent event) {
 		Block block = event.getBlock();
@@ -108,7 +108,7 @@ public class BendingBlockListener implements Listener{
 			FireStream.remove(block);
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
@@ -120,7 +120,7 @@ public class BendingBlockListener implements Listener{
 			event.setCancelled(BlockTools.tempnophysics.contains(block));
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
@@ -135,20 +135,20 @@ public class BendingBlockListener implements Listener{
 		if (blast != null) {
 			blast.cancel();
 		}
-
+		
 		Object bomber = C4.isCFour(block);
 		if (bomber != null) {
 			block.getDrops().clear();
 			C4.getCFour(bomber).cancel();
 		}
-
-
+		
+		
 		EarthGrab grab = EarthGrab.blockInEarthGrab(block);
 		if (grab != null) {
 			grab.setToKeep(false);
 			event.setCancelled(true);
 		}
-
+		
 		if (FreezeMelt.isFrozen(block)) {
 			FreezeMelt.thawThenRemove(block);
 			event.setCancelled(true);
@@ -165,10 +165,10 @@ public class BendingBlockListener implements Listener{
 		}
 		TempBlock.revertBlock(block);
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockForm(BlockFormEvent event) {
-		if (TempBlock.isTempBlock(event.getBlock())) {
+		if (BlockTools.isTempBlock(event.getBlock())) {
 			event.setCancelled(true);
 		}
 		if (!WaterManipulation.canPhysicsChange(event.getBlock())) {

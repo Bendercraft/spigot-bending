@@ -29,11 +29,9 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
 import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
-import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
-import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike2;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
@@ -140,12 +138,10 @@ public class PluginTools {
 		Plantbending.regrow();
 		OctopusForm.removeAll();
 		Bloodbending.removeAll();
-		HealingWaters.removeAll();
 
 		FireStream.removeAll();
 		FireBall.removeAll();
 		WallOfFire.removeAll();
-		Lightning.removeAll();
 		FireShield.removeAll();
 		FireProtection.removeAll();
 		FireBlast.removeAll();

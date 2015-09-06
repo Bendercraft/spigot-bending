@@ -1,19 +1,6 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
-import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
-import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,80 +11,93 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-@BendingAbility(name="Healing Waters", element=BendingType.Water)
-public class HealingWaters implements IAbility {
+import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
+@BendingAbility(name="Healing Waters", element=BendingType.Water)
+public class HealingWaters extends ActiveAbility {
+	
 	@ConfigurationParameter("Range")
 	private static double RANGE = 5.0;
-	
-	private static Map<Player, HealingWaters> instances = new HashMap<Player, HealingWaters>();
-	private Player healer;
-	private BendingPlayer bPlayer;
+
 	private long time = 0;
-	private IAbility parent;
 	private LivingEntity target;
-
+	
 	public HealingWaters (final Player player) {
-		if (instances.containsKey(player)) {
+		super(player, null);
+
+		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
-		if (!inWater(player) && !(isWaterPotion(player.getItemInHand()))) {
-			return;
-		}
-		this.healer = player;
-		this.bPlayer = BendingPlayer.getBendingPlayer(this.healer);
-		this.time = System.currentTimeMillis();
-		LivingEntity temp = EntityTools.getTargettedEntity(player, RANGE);
-		if (temp == null) {
-			temp = this.healer;
-		}
-		this.target = temp;
-		instances.put(player, this);
+		this.time = this.startedTime;
 	}
 
-	public static void progressAll () {
-		final LinkedList<Player> toRemove = new LinkedList<Player>();
-		boolean keep;
-		for (final Player p : instances.keySet()) {
-			keep = instances.get(p).progress();
-			if (!keep) {
-				toRemove.add(p);
-			}
-		}
-		for (final Player p : toRemove) {
-			instances.remove(p);
+	@Override
+	public boolean sneak () {
+		switch (this.state) {
+			case None:
+			case CannotStart:
+				return false;
+			case CanStart:
+				LivingEntity temp = EntityTools.getTargettedEntity(this.player, RANGE);
+				if (temp == null) {
+					temp = this.player;
+				}
+				this.target = temp;
+				setState(AbilityState.Progressing);
+				AbilityManager.getManager().addInstance(this);
+				return false;
+			case Preparing:
+			case Prepared:
+			case Progressing:
+			case Ended:
+			case Removed:
+			default:
+				return false;
 		}
 	}
-
+	
+	@Override
 	public boolean progress () {
-		if (!this.healer.isOnline() || this.healer.isDead()) {
+		if (!super.progress()) {
 			return false;
 		}
-		if (!this.healer.isSneaking()) {
+		if (!this.player.isSneaking()) {
 			return false;
 		}
-		if (this.bPlayer.getAbility() != Abilities.HealingWaters) {
+		if (this.bender.getAbility() != Abilities.HealingWaters) {
 			return false;
 		}
-		LivingEntity entity = EntityTools.getTargettedEntity(this.healer, RANGE);
+		LivingEntity entity = EntityTools.getTargettedEntity(this.player, RANGE);
 		if (entity == null) {
-			entity = this.healer;
+			entity = this.player;
 		}
 		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return false;
 		}
-		if (ProtectionManager
-				.isRegionProtectedFromBending(this.healer, Abilities.HealingWaters, entity
-						.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.HealingWaters, entity.getLocation())) {
 			return false;
 		}
+		
+		final long now = System.currentTimeMillis();
 		if (entity.getEntityId() != this.target.getEntityId()) {
-			this.time = System.currentTimeMillis();
+			this.time = now;
 		}
+
 		this.target = entity;
-		if (isWaterPotion(this.healer.getItemInHand())) {
+		if (isWaterPotion(this.player.getItemInHand())) {
 			giveHPToEntity(this.target);
-		} else if (inWater(this.healer)) {
+		}
+		else if (inWater(this.player)) {
 			if (!inWater(this.target)) {
 				return true;
 			}
@@ -105,7 +105,7 @@ public class HealingWaters implements IAbility {
 		} else {
 			return true;
 		}
-		final long now = System.currentTimeMillis();
+
 		if ((now - this.time) > 1000) {
 			this.target.setFireTicks(0);
 			if ((now - this.time) > 3500) {
@@ -118,7 +118,7 @@ public class HealingWaters implements IAbility {
 		}
 		return true;
 	}
-
+	
 	public static boolean isNegativePotionEffect (final PotionEffectType peType) {
 		if (peType.equals(PotionEffectType.BLINDNESS)) {
 			return true;
@@ -143,14 +143,14 @@ public class HealingWaters implements IAbility {
 		}
 		return false;
 	}
-
+	
 	private static boolean isWaterPotion (final ItemStack item) {
 		if ((item.getType() == Material.POTION) && (item.getDurability() == 0)) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	private static void giveHPToEntity (LivingEntity le) {
 		if (le.isDead()) {
 			return;
@@ -161,25 +161,43 @@ public class HealingWaters implements IAbility {
 			applyHealingToEntity(le);
 		}
 	}
-
+	
 	private static boolean inWater (final Entity entity) {
 		final Block block = entity.getLocation().getBlock();
-		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block)) {
+		if (BlockTools.isWater(block) && !BlockTools.isTempBlock(block)) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	private static void applyHealingToEntity (final LivingEntity le) {
 		le.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 70, 1));
 	}
 
-	public static void removeAll () {
-		instances.clear();
+	@Override
+	public Object getIdentifier () {
+		return this.player;
 	}
 
 	@Override
-	public IAbility getParent () {
-		return this.parent;
+	public Abilities getAbilityType () {
+		return Abilities.HealingWaters;
+	}
+	
+	@Override
+	public boolean canBeInitialized () {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		if (!inWater(this.player) && !(isWaterPotion(this.player.getItemInHand()))) {
+			return false;
+		}
+		
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.HealingWaters);
+		if (instances ==  null) {
+			return true;
+		}
+		return !instances.containsKey(this.player);
 	}
 }
