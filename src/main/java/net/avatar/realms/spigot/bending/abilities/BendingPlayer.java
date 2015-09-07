@@ -235,6 +235,7 @@ public class BendingPlayer {
 		clearAbilities();
 		this.specializations.clear();
 		this.bendings.clear();
+		this.paths.clear();
 		Bending.database.save(this.player);
 	}
 
@@ -342,8 +343,12 @@ public class BendingPlayer {
 		return string;
 	}
 
-	public List<BendingSpecializationType> getSpecializations () {
+	public List<BendingSpecializationType> getSpecializations() {
 		return this.specializations;
+	}
+	
+	public List<BendingPathType> getPath() {
+		return this.paths;
 	}
 
 	public BendingPlayerData serialize () {
@@ -353,7 +358,7 @@ public class BendingPlayer {
 		result.setSpecialization(this.specializations);
 		result.setPlayer(this.player);
 		result.setSlotAbilities(this.slotAbilities);
-
+		result.setPaths(this.paths);
 		return result;
 	}
 

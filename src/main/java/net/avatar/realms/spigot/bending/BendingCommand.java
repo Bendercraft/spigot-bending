@@ -141,9 +141,9 @@ public class BendingCommand {
 		}
 		// If no args, just list
 		if (args.length == 1) {
-			for (final BendingPathType path : BendingPathType.values()) {
+			for(BendingPathType path : bPlayer.getPath()) {
 				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
-				sendMessage(player, color + path.name());
+				sendMessage(player, color + "You are "+path.name()+" for element "+path.getElement().name()+".");
 			}
 			return;
 		}
@@ -180,6 +180,12 @@ public class BendingCommand {
 				return;
 			}
 			bPlayer.setPath(path);
+			return;
+		} else if(subAction.equals("list")) {
+			for (final BendingPathType path : BendingPathType.values()) {
+				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
+				sendMessage(player, color + path.name());
+			}
 			return;
 		}
 		printPathUsage(player);
