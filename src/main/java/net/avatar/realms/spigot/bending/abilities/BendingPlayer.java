@@ -47,6 +47,9 @@ public class BendingPlayer {
 
 		this.specializations = data.getSpecialization();
 		this.paths = data.getPaths();
+		if(this.paths == null) {
+			this.paths = new LinkedList<BendingPathType>();
+		}
 
 		this.lastTime = data.getLastTime();
 	}

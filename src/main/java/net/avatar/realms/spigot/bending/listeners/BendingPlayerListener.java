@@ -278,8 +278,11 @@ public class BendingPlayerListener implements Listener{
 
 		if (EntityTools.canBend(player, ability)) {
 
-			if (ability.isAirbending() || ability.isChiblocking() || (ability == Abilities.AvatarState)
-					|| (ability == Abilities.WaterSpout) || (ability == Abilities.FireJet)) {
+			if (ability.isAirbending() || ability.isChiblocking() 
+					|| (ability == Abilities.AvatarState)
+					|| (ability == Abilities.EarthBlast) 
+					|| (ability == Abilities.WaterSpout) 
+					|| (ability == Abilities.FireJet)) {
 				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -539,9 +542,11 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if ( ability.isAirbending() || (ability.isChiblocking())
+						|| (ability == Abilities.EarthBlast) 
 						|| ((ability == Abilities.Combustion)
-								|| (ability == Abilities.WaterBubble)
-								|| (ability == Abilities.Illumination) || (ability == Abilities.Lightning))) {
+						|| (ability == Abilities.WaterBubble)
+						|| (ability == Abilities.Illumination) 
+						|| (ability == Abilities.Lightning))) {
 
 					Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 

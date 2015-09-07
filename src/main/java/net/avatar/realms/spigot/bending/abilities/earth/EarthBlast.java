@@ -107,14 +107,17 @@ public class EarthBlast extends ActiveAbility {
 		}
 		
 		this.interval = (long) (1000. / speed);
+		state = AbilityState.Preparing;
+		
+		AbilityManager.getManager().addInstance(this);
 	}
 
 	@Override
 	public boolean sneak() {
-		if(this.state != AbilityState.CanStart) {
+		if(this.state != AbilityState.Preparing && this.state != AbilityState.Prepared) {
 			return true;
 		}
-		
+		state = AbilityState.Preparing;
 		Block block = BlockTools.getEarthSourceBlock(player, Abilities.EarthBlast, SELECT_RANGE);
 		cancelPrevious(block);	
 		block(player);
@@ -160,7 +163,7 @@ public class EarthBlast extends ActiveAbility {
 				damage *= 1.15;
 			}
 			
-			this.state = AbilityState.Prepared;
+			state = AbilityState.Prepared;
 		}
 		return false;
 	}
@@ -182,7 +185,7 @@ public class EarthBlast extends ActiveAbility {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
 		for (IAbility ab : AbilityManager.getManager().getInstances(getAbilityType()).values()) {
 			EarthBlast blast = (EarthBlast) ab;
-			if ((blast.sourceblock.equals(b) || blast.player == player) && blast.state == AbilityState.Prepared) {
+			if (blast.state == AbilityState.Prepared && (blast.sourceblock.equals(b) || blast.player == player)) {
 				blast.cancel();
 				toRemove.add(blast);
 			}
@@ -426,13 +429,12 @@ public class EarthBlast extends ActiveAbility {
 
 	@Override
 	public boolean swing() {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		ArrayList<EarthBlast> ignore = new ArrayList<EarthBlast>();
 
-		if (!bPlayer.isOnCooldown(getAbilityType())) {
+		if (!bender.isOnCooldown(getAbilityType())) {
 			if (state == AbilityState.Prepared) {
 				throwEarth();
-				bPlayer.cooldown(Abilities.EarthBlast, COOLDOWN);
+				bender.cooldown(Abilities.EarthBlast, COOLDOWN);
 				ignore.add(this);
 			}
 		}
@@ -445,7 +447,7 @@ public class EarthBlast extends ActiveAbility {
 			ArrayList<EarthBlast> ignore) {
 		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.EarthBlast).values()) {
 			EarthBlast blast = (EarthBlast) ab;
-			if (blast.state == AbilityState.Prepared || ignore.contains(blast))
+			if (blast.state != AbilityState.Progressing || ignore.contains(blast))
 				continue;
 
 			if (!blast.location.getWorld().equals(player.getWorld()))
