@@ -14,56 +14,51 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name="Fire Shield", element=BendingType.Fire)
-public class FireShield implements IAbility {
+public class FireShield extends ActiveAbility {
 	private static Map<Player, FireShield> instances = new HashMap<Player, FireShield>();
 
 	private static long interval = 100;
 	private static double radius = 3;
 	private static boolean ignite = true;
 
-	private Player player;
-	private BendingPlayer bender;
 	private long time;
-	private IAbility parent;
 
-	public FireShield(Player player, IAbility parent) {
-		this.parent = parent;
-		this.player = player;
+	public FireShield(Player player) {
+		super (player, null);
 		if (instances.containsKey(player)) {
 			return;
 		}
-		bender = BendingPlayer.getBendingPlayer(player);
 
-		if (bender.isOnCooldown(Abilities.FireShield)) {
+		if (this.bender.isOnCooldown(Abilities.FireShield)) {
 			return;
 		}
 
 		if (!player.getEyeLocation().getBlock().isLiquid()) {
 			this.time = System.currentTimeMillis();
-			bender.cooldown(Abilities.FireShield, FireProtection.COOLDOWN);
+
 			instances.put(player, this);
 		}
 	}
 
-	private void remove() {
-		instances.remove(this.player);
+	@Override
+	public void remove() {
+		this.bender.cooldown(Abilities.FireShield, FireProtection.COOLDOWN);
+		super.remove();
 	}
 
-	private boolean progress() {
-		if ((!this.player.isSneaking())
- || !EntityTools.canBend(this.player, Abilities.FireShield)) {
+	@Override
+	public boolean progress() {
+		if (!super.progress()) {
 			return false;
 		}
-
-		if (!this.player.isOnline() || this.player.isDead()) {
+		if (!this.player.isSneaking()){
 			return false;
 		}
 
@@ -106,10 +101,10 @@ public class FireShield implements IAbility {
 				if (ProtectionManager.isRegionProtectedFromBending(this.player,
 						Abilities.FireShield, entity.getLocation())) {
 					continue;
-				}	
+				}
 				if ((this.player.getEntityId() != entity.getEntityId()) && ignite) {
-					if(bender.hasPath(BendingPathType.Lifeless)) {
-						EntityTools.damageEntity(player, entity, 2);
+					if(this.bender.hasPath(BendingPathType.Lifeless)) {
+						EntityTools.damageEntity(this.player, entity, 2);
 					}
 					new Enflamed(entity, this.player, 3, this);
 				}
@@ -121,26 +116,14 @@ public class FireShield implements IAbility {
 		return true;
 	}
 
-	public static void progressAll() {
-		List<FireShield> toRemove = new LinkedList<FireShield>();
-		for (FireShield shield : instances.values()) {
-			boolean keep = shield.progress();
-			if(!keep) {
-				toRemove.add(shield);
-			}
-		}
-
-		for(FireShield shield : toRemove) {
-			shield.remove();
-		}
-	}
-
-	public static void removeAll() {
-		instances.clear();
+	@Override
+	public Object getIdentifier () {
+		return this.player;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return this.parent;
+	public Abilities getAbilityType () {
+		return Abilities.FireShield;
 	}
+
 }

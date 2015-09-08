@@ -81,17 +81,12 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.ArcOfFire;
 import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.Extinguish;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBall;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBurstCone;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
-import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.RingOfFire;
-import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
@@ -278,10 +273,10 @@ public class BendingPlayerListener implements Listener{
 
 		if (EntityTools.canBend(player, ability)) {
 
-			if (ability.isAirbending() || ability.isChiblocking() 
+			if (ability.isAirbending() || ability.isChiblocking()
 					|| (ability == Abilities.AvatarState)
-					|| (ability == Abilities.EarthBlast) 
-					|| (ability == Abilities.WaterSpout) 
+					|| (ability == Abilities.EarthBlast)
+					|| (ability == Abilities.WaterSpout)
 					|| (ability == Abilities.FireJet)) {
 				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
@@ -346,11 +341,6 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-			if (ability == Abilities.FireBlast) {
-				new FireBlast(player, null);
-				return;
-			}
-
 			if (ability == Abilities.HeatControl) {
 				new Extinguish(player, null);
 				return;
@@ -358,16 +348,6 @@ public class BendingPlayerListener implements Listener{
 
 			if (ability == Abilities.Blaze) {
 				new ArcOfFire(player, null);
-				return;
-			}
-
-			if (ability == Abilities.WallOfFire) {
-				new WallOfFire(player, null);
-				return;
-			}
-
-			if (ability == Abilities.FireBurst) {
-				new FireBurstCone(player, null);
 				return;
 			}
 
@@ -525,14 +505,6 @@ public class BendingPlayerListener implements Listener{
 					new FireBurst(player, null);
 				}
 
-				if (ability == Abilities.FireBlast) {
-					new FireBall(player);
-				}
-
-				if (ability == Abilities.FireShield) {
-					new FireShield(player, null);
-				}
-
 				if (ability == Abilities.HeatControl) {
 					new Cook(player, null);
 				}
@@ -542,11 +514,12 @@ public class BendingPlayerListener implements Listener{
 				}
 
 				if ( ability.isAirbending() || (ability.isChiblocking())
-						|| (ability == Abilities.EarthBlast) 
+						|| (ability == Abilities.EarthBlast)
 						|| ((ability == Abilities.Combustion)
-						|| (ability == Abilities.WaterBubble)
-						|| (ability == Abilities.Illumination) 
-						|| (ability == Abilities.Lightning))) {
+								|| (ability == Abilities.WaterBubble)
+								|| (ability == Abilities.Illumination)
+								|| (ability == Abilities.Lightning)
+								|| (ability == Abilities.FireShield))) {
 
 					Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
@@ -690,8 +663,8 @@ public class BendingPlayerListener implements Listener{
 			}
 
 			if (EntityTools.isBender(player, BendingType.Earth)
- && ((event.getCause() == DamageCause.SUFFOCATION)
-					&& BlockTools.isTempBlock(player.getEyeLocation().getBlock()))) {
+					&& ((event.getCause() == DamageCause.SUFFOCATION)
+							&& BlockTools.isTempBlock(player.getEyeLocation().getBlock()))) {
 				event.setDamage(0);
 				event.setCancelled(true);
 			}

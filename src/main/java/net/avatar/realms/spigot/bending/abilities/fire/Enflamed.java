@@ -5,19 +5,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-
 @BendingAbility(name="Enflamed", element=BendingType.Fire)
-public class Enflamed implements IAbility {
+public class Enflamed {
 	private static Map<Entity, Enflamed> instances = new HashMap<Entity, Enflamed>();
 
 	private static final double DAMAGE = 1;
@@ -25,30 +25,32 @@ public class Enflamed implements IAbility {
 	private int secondsLeft;
 	private Player source;
 	private Entity target;
+	@SuppressWarnings ("unused")
+	private IAbility parent;
 	
 	private long time;
 	private BendingPlayer bender;
 	
-	private IAbility parent;
 
 	public Enflamed(Entity entity, Player source, int seconds, IAbility parent) {
 		this.parent = parent;
 		this.target = entity;
 		this.source = source;
 		this.time = System.currentTimeMillis();
-		if (entity.getEntityId() == source.getEntityId())
+		if (entity.getEntityId() == source.getEntityId()) {
 			return;
+		}
 		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
-		bender = BendingPlayer.getBendingPlayer(source);
-		if(bender.hasPath(BendingPathType.Lifeless)) {
+		this.bender = BendingPlayer.getBendingPlayer(source);
+		if(this.bender.hasPath(BendingPathType.Lifeless)) {
 			return;
 		}
 		
-		if(bender.hasPath(BendingPathType.Nurture)) {
-			if(instances.containsKey(target)) {
-				instances.get(target).addSeconds(seconds);
+		if(this.bender.hasPath(BendingPathType.Nurture)) {
+			if(instances.containsKey(this.target)) {
+				instances.get(this.target).addSeconds(seconds);
 				return;
 			}
 		}
@@ -57,38 +59,32 @@ public class Enflamed implements IAbility {
 	}
 	
 	public void addSeconds(int amount) {
-		secondsLeft += amount;
+		this.secondsLeft += amount;
 	}
 	
 	public boolean progress() {
 		long now = System.currentTimeMillis();
-		if(now - time < 1000) {
+		if((now - this.time) < 1000) {
 			return true;
 		}
 		
-		if (!Extinguish.canBurn((Player) target)) {
+		if (!Extinguish.canBurn((Player) this.target)) {
 			return false;
 		}
 		
-		if (target.getFireTicks() == 0) {
-			if(bender.hasPath(BendingPathType.Nurture)) {
-				target.setFireTicks(secondsLeft*50);
+		if (this.target.getFireTicks() == 0) {
+			if(this.bender.hasPath(BendingPathType.Nurture)) {
+				this.target.setFireTicks(this.secondsLeft*50);
 			} else {
 				return false;
 			}
 		}
 		
-		secondsLeft--;
-		EntityTools.damageEntity(source, target, DAMAGE);
+		this.secondsLeft--;
+		EntityTools.damageEntity(this.source, this.target, DAMAGE);
 		
 		return true;
 	}
-	
-	public boolean remove() {
-		instances.remove(target);
-		return true;
-	}
-	
 
 	public static boolean isEnflamed(Entity entity) {
 		return instances.containsKey(entity);
@@ -106,10 +102,9 @@ public class Enflamed implements IAbility {
 			flame.remove();
 		}
 	}
-
-	@Override
-	public IAbility getParent() {
-		return parent;
+	
+	public boolean remove() {
+		instances.remove(this.target);
+		return true;
 	}
-
 }

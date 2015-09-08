@@ -30,13 +30,10 @@ import net.avatar.realms.spigot.bending.abilities.earth.Ripple;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBall;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
-import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
-import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
@@ -80,7 +77,8 @@ public class BendingManager implements Runnable {
 			TempPotionEffect.progressAll();
 			FlyingPlayer.handleAll();
 			handleDayNight();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			AbilityManager.getManager().stopAllAbilities();
 			PluginTools.stopAllBending();
 			this.plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
@@ -117,9 +115,6 @@ public class BendingManager implements Runnable {
 		FireStream.progressAll();
 		FireStream.removeAllNoneFireIgnitedBlock();
 
-		FireBall.progressAll();
-		WallOfFire.progressAll();
-		FireShield.progressAll();
 		FireProtection.progressAll();
 		FireBlast.progressAll();
 		FireBurst.progressAll();
