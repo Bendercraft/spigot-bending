@@ -24,7 +24,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
-import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.Ripple;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
@@ -93,7 +92,6 @@ public class BendingManager implements Runnable {
 		EarthArmor.progressAll();
 		Shockwave.progressAll();
 		Ripple.progressAll();
-		LavaTrain.progressAll();
 		MetalBending.progressAll();
 
 		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());

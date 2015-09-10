@@ -40,6 +40,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
+import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
@@ -56,24 +57,24 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 
 public class AbilityManager {
-
+	
 	private static AbilityManager manager =  null;
-
+	
 	private Map<String, RegisteredAbility> availableAbilities;
 	private Map<Abilities, Map<Object, IAbility>> abilities;
-
+	
 	public static AbilityManager getManager() {
 		if (manager == null) {
 			manager = new AbilityManager();
 		}
 		return manager;
 	}
-
+	
 	private AbilityManager() {
 		this.abilities = new HashMap<Abilities, Map<Object, IAbility>>();
 		this.availableAbilities = new HashMap<String, RegisteredAbility>();
 	}
-
+	
 	public void progressAllAbilities() {
 		List<IAbility> toRemove = new LinkedList<IAbility>();
 		for (Abilities key : this.abilities.keySet()) {
@@ -84,34 +85,34 @@ public class AbilityManager {
 				}
 			}
 		}
-
+		
 		for (IAbility ability : toRemove) {
 			ability.stop();
 			ability.remove();
 		}
 	}
-
+	
 	public void stopAllAbilities() {
 		for (Map<Object, IAbility> instances : this.abilities.values()) {
 			for (IAbility ability : instances.values()) {
 				ability.stop();
 			}
 		}
-
+		
 		clearAllAbilities();
 	}
-
+	
 	private void clearAllAbilities() {
 		for (Map<Object, IAbility> instances : this.abilities.values()) {
 			instances.clear();
 		}
 	}
-
+	
 	public ActiveAbility buildAbility (Abilities abilityType, Player player) {
 		switch (abilityType) {
 			case AvatarState:
 				return new AvatarState(player);
-
+				
 			case PlasticBomb:
 				return new C4(player);
 			case PoisonnedDart:
@@ -128,7 +129,7 @@ public class AbilityManager {
 				return new VitalPoint(player);
 			case RapidPunch:
 				return new RapidPunch(player);
-
+				
 			case AirBlast:
 				return new AirBlast(player);
 			case AirBubble:
@@ -151,7 +152,7 @@ public class AbilityManager {
 				return new Suffocate(player);
 			case Tornado:
 				return new Tornado(player);
-				
+
 			case Combustion:
 				return new Combustion(player);
 			case FireJet:
@@ -162,23 +163,25 @@ public class AbilityManager {
 				return new Lightning(player);
 			case FireBlade:
 				return new FireBlade(player);
-
+				
 			case WaterBubble:
 				return new WaterBubble(player);
 			case WaterSpout:
 				return new WaterSpout(player);
 			case HealingWaters:
 				return new HealingWaters(player);
-
+				
 			case Tremorsense:
 				return new Tremorsense(player);
 			case EarthBlast:
 				return new EarthBlast(player);
-
+			case LavaTrain:
+				return new LavaTrain(player);
+				
 			default : return null;
 		}
 	}
-
+	
 	public void addInstance(IAbility instance) {
 		Map<Object, IAbility> map = this.abilities.get(instance.getAbilityType());
 		if (map == null) {
@@ -187,41 +190,41 @@ public class AbilityManager {
 		}
 		map.put(instance.getIdentifier(), instance);
 	}
-
+	
 	public Map<Object, IAbility> getInstances(Abilities type) {
 		if(this.abilities.containsKey(type)) {
 			return this.abilities.get(type);
 		}
 		return null;
 	}
-
+	
 	public boolean isUsingAbility(Player player, Abilities ability) {
 		if (player == null) {
 			return false;
 		}
-
+		
 		if (ability == null) {
 			return false;
 		}
-
+		
 		Map<Object, IAbility> instances = getInstances(ability);
 		if (instances == null) {
 			return false;
 		}
-
+		
 		for (IAbility ab : instances.values()) {
 			if (ab.getPlayer().getUniqueId().equals(player.getUniqueId())) {
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
+	
 	public void registerAllAbilities() {
-
+		
 		register(AvatarState.class);
-
+		
 		register(PoisonnedDart.class);
 		register(C4.class);
 		register(Dash.class);
@@ -231,7 +234,7 @@ public class AbilityManager {
 		register(RapidPunch.class);
 		register(SmokeBomb.class);
 		register(ChiSpeed.class);
-
+		
 		register(AirBlast.class);
 		register(AirBubble.class);
 		register(AirBurst.class);
@@ -247,7 +250,7 @@ public class AbilityManager {
 		register(AirSpeed.class);
 		register(Suffocate.class);
 		register(Tornado.class);
-
+		
 		//		register(Catapult.class);
 		//		register(Collapse.class);
 		//		register(CompactColumn.class);
@@ -259,7 +262,7 @@ public class AbilityManager {
 		//		register(EarthShield.class);
 		//		register(EarthTunnel.class);
 		//		register(EarthWall.class);
-		//		register(LavaTrain.class);
+		register(LavaTrain.class);
 		//		register(MetalBending.class);
 		//		register(Ripple.class);
 		//		register(Shockwave.class);
@@ -267,7 +270,7 @@ public class AbilityManager {
 		//		register(ShockwaveCone.class);
 		//		register(ShockwaveFall.class);
 		register(Tremorsense.class);
-
+		
 		//		register(ArcOfFire.class);
 		register(Combustion.class);
 		//		register(Cook.class);
@@ -287,7 +290,7 @@ public class AbilityManager {
 		register(Lightning.class);
 		//		register(RingOfFire.class);
 		//		register(WallOfFire.class);
-
+		
 		//		register(Bloodbending.class);
 		//		register(Drainbending.class);
 		//		register(FastSwmimming.class);
@@ -310,7 +313,7 @@ public class AbilityManager {
 		//		register(WaterWall.class);
 		//		register(Wave.class);
 	}
-
+	
 	protected void register(Class<? extends IAbility> ability) {
 		BendingAbility annotation = ability.getAnnotation(BendingAbility.class);
 		if(annotation == null) {
@@ -331,7 +334,7 @@ public class AbilityManager {
 			_register(annotation.name(), ability, annotation.element(), null);
 		}
 	}
-
+	
 	private void _register(String name, Class<? extends IAbility> ability, BendingType element, BendingSpecializationType specialization) {
 		if(this.availableAbilities.containsKey(name)) {
 			//Nope !
@@ -341,11 +344,11 @@ public class AbilityManager {
 		RegisteredAbility ra = new RegisteredAbility(name, ability, element, specialization);
 		this.availableAbilities.put(name, ra);
 	}
-
+	
 	public void applyConfiguration(File configDir) {
 		configDir.mkdirs();
 		File configFile = new File(configDir, "abilities_config.json");
-
+		
 		Map<String, Field> fields = new TreeMap<String, Field>();
 		for(RegisteredAbility ab : this.availableAbilities.values()) {
 			for(Field f : ab.getAbility().getDeclaredFields()) {

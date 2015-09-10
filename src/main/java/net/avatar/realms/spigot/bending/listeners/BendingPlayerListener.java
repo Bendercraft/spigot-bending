@@ -334,11 +334,6 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 
-			if ((ability == Abilities.LavaTrain) && player.isSneaking()) {
-				new LavaTrain(player, null);
-				return;
-			}
-
 			if (ability == Abilities.HeatControl) {
 				new Extinguish(player, null);
 				return;
