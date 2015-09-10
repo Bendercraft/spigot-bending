@@ -46,6 +46,17 @@ public class FireShield extends ActiveAbility {
 			instances.put(player, this);
 		}
 	}
+	
+	@Override
+	public boolean sneak() {
+		return false;
+	}
+	
+	@Override
+	public boolean swing() {
+		FireProtection protect = new FireProtection(this.player);
+		return protect.swing();
+	}
 
 	@Override
 	public void remove() {

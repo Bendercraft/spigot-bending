@@ -32,7 +32,6 @@ import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
-import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
@@ -57,20 +56,20 @@ public class BendingManager implements Runnable {
 	private List<World> worlds = new LinkedList<World>();
 	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
-
+	
 	public BendingManager(Bending bending) {
 		this.plugin = bending;
 		this.time = System.currentTimeMillis();
 	}
-
+	
 	@Override
 	public void run() {
 		try {
 			Bending.time_step = System.currentTimeMillis() - this.time;
 			this.time = System.currentTimeMillis();
-
+			
 			AbilityManager.getManager().progressAllAbilities();
-
+			
 			manageEarthbending();
 			manageFirebending();
 			manageWaterbending();
@@ -83,9 +82,9 @@ public class BendingManager implements Runnable {
 			PluginTools.stopAllBending();
 			this.plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
 		}
-
+		
 	}
-
+	
 	private void manageEarthbending() {
 		Catapult.progressAll();
 		EarthColumn.progressAll();
@@ -97,32 +96,31 @@ public class BendingManager implements Runnable {
 		Ripple.progressAll();
 		LavaTrain.progressAll();
 		MetalBending.progressAll();
-
+		
 		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());
 		for (Block block : copy) {
 			BlockTools.revertBlock(block);
 		}
 		RevertChecker.revertQueue.clear();
-
+		
 		Set<Integer> otherCopy = new HashSet<Integer>(RevertChecker.airRevertQueue.keySet());
 		for (int i : otherCopy) {
 			BlockTools.revertAirBlock(i);
 		}
 		RevertChecker.airRevertQueue.clear();
 	}
-
+	
 	private void manageFirebending() {
 		FireStream.progressAll();
 		FireStream.removeAllNoneFireIgnitedBlock();
-
-		FireProtection.progressAll();
+		
 		FireBlast.progressAll();
 		FireBurst.progressAll();
 		FireStream.dissipateAll();
 		Cook.progressAll();
 		Enflamed.progressAll();
 	}
-
+	
 	private void manageWaterbending() {
 		FreezeMelt.progressAll();
 		WaterManipulation.progressAll();
@@ -134,11 +132,11 @@ public class BendingManager implements Runnable {
 		TorrentBurst.progressAll();
 		Bloodbending.progressAll();
 		OctopusForm.progressAll();
-
+		
 		Plantbending.regrow();
 		WaterReturn.progressAll();
 	}
-
+	
 	private void handleDayNight() {
 		for (World world : this.plugin.getServer().getWorlds()) {
 			if ((world.getWorldType() == WorldType.NORMAL)
@@ -148,7 +146,7 @@ public class BendingManager implements Runnable {
 				this.days.put(world, false);
 			}
 		}
-
+		
 		List<World> removeWorlds = new LinkedList<World>();
 		for (World world : this.worlds) {
 			if (!this.plugin.getServer().getWorlds().contains(world)) {
@@ -170,7 +168,7 @@ public class BendingManager implements Runnable {
 				}
 				this.days.put(world, true);
 			}
-
+			
 			if (!Tools.isDay(world) && day) {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Fire)
@@ -184,7 +182,7 @@ public class BendingManager implements Runnable {
 				}
 				this.days.put(world, false);
 			}
-
+			
 			if (Tools.isNight(world) && !night) {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Water)
@@ -198,7 +196,7 @@ public class BendingManager implements Runnable {
 				}
 				this.nights.put(world, true);
 			}
-
+			
 			if (!Tools.isNight(world) && night) {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingType.Water)
@@ -213,10 +211,10 @@ public class BendingManager implements Runnable {
 				this.nights.put(world, false);
 			}
 		}
-
+		
 		for (World world : removeWorlds) {
 			this.worlds.remove(world);
 		}
 	}
-
+	
 }
