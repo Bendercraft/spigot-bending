@@ -20,7 +20,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
-import net.avatar.realms.spigot.bending.abilities.fire.Cook;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
@@ -136,9 +135,7 @@ public class PluginTools {
 		FireStream.removeAll();
 		FireBlast.removeAll();
 		FireBurst.removeAll();
-		Cook.removeAll();
 		
-		// BendingManager.removeFlyers();
 		WaterReturn.removeAll();
 		TempBlock.removeAll();
 		BlockTools.removeAllEarthbendedBlocks();

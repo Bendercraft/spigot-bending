@@ -1,5 +1,10 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
@@ -12,11 +17,6 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-
-import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 @BendingAbility(name="Extinguish", element=BendingType.Fire)
 public class Extinguish implements IAbility {
@@ -31,16 +31,20 @@ public class Extinguish implements IAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1000;
 	private static byte full = AirBlast.full;
+
+	private Player player;
 	
 	private IAbility parent;
 
 	@SuppressWarnings("deprecation")
 	public Extinguish(Player player, IAbility parent) {
+		this.player = player;
 		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.HeatControl))
+		if (bPlayer.isOnCooldown(Abilities.HeatControl)) {
 			return;
+		}
 
 		double range = PluginTools.firebendingDayAugment(RANGE,
 				player.getWorld());
@@ -53,8 +57,9 @@ public class Extinguish implements IAbility {
 		for (Block block : BlockTools.getBlocksAroundPoint(
 				EntityTools.getTargetBlock(player, range).getLocation(), radius)) {
 			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Blaze,
-					block.getLocation()))
+					block.getLocation())) {
 				continue;
+			}
 			//Do not allow firebender to completly negate lavabend
 			if(LavaTrain.isLavaPart(block)) {
 				continue;
@@ -80,15 +85,20 @@ public class Extinguish implements IAbility {
 
 		bPlayer.cooldown(Abilities.HeatControl, COOLDOWN);
 	}
+	
+	public boolean sneak() {
+		Cook cook = new Cook(this.player);
+		return cook.sneak();
+	}
 
 	public static boolean canBurn(Player player) {
-		if (EntityTools.getBendingAbility(player) == Abilities.HeatControl
+		if ((EntityTools.getBendingAbility(player) == Abilities.HeatControl)
 				|| FireJet.checkTemporaryImmunity(player)) {
 			player.setFireTicks(0);
 			return false;
 		}
 
-		if (player.getFireTicks() > 80
+		if ((player.getFireTicks() > 80)
 				&& EntityTools.canBendPassive(player, BendingType.Fire)) {
 			player.setFireTicks(80);
 		}
@@ -98,6 +108,6 @@ public class Extinguish implements IAbility {
 
 	@Override
 	public IAbility getParent() {
-		return parent;
+		return this.parent;
 	}
 }
