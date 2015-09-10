@@ -13,21 +13,21 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 
 public class Messages {
-	
-	private static String FILENAME = "messages.properties";
-	
+
+	private static final String FILENAME = "messages.properties";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;
-	
+
 	public static void loadMessages () {
 		lines = new Properties();
-		
+
 		File folder = Bending.plugin.getDataFolder();
 		if (!folder.exists()) {
 			folder.mkdir();
 		}
-		
+
 		languageFile = new File(folder + File.separator + FILENAME);
 		if (languageFile.exists()) {
 			try {
@@ -40,7 +40,7 @@ public class Messages {
 		else {
 			input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
 		}
-		
+
 		try {
 			lines.load(input);
 		}
@@ -48,21 +48,21 @@ public class Messages {
 			e.printStackTrace();
 			// Should never happen, hope so
 		}
-		
+
 	}
-	
+
 	public static String getAbilityDescription (Abilities ability) {
 		return lines.getProperty("abilities." + ability.getElement().name().toLowerCase() + "." + ability.name().toLowerCase());
 	}
-	
+
 	public static String getString (String string) {
 		return lines.getProperty(string);
 	}
-	
+
 	public static void sendMessage (Player player, String key) {
 		sendMessage(player, key, ChatColor.WHITE);
 	}
-	
+
 	public static void sendMessage (Player player, String key, ChatColor color) {
 		if (player == null) {
 			Bending.plugin.getLogger().info(color + getString(key));
@@ -71,12 +71,12 @@ public class Messages {
 			player.sendMessage(color + getString(key));
 		}
 	}
-	
+
 	// These one are not used yet, but we should.
 	public static void sendMessage (Player player, String key, Map<String, String> params) {
 		sendMessage(player, key, ChatColor.WHITE, params);
 	}
-	
+
 	public static void sendMessage (Player player, String key, ChatColor color, Map<String, String> params) {
 		String msg = getString(key);
 		for (String k : params.keySet()) {
@@ -89,5 +89,5 @@ public class Messages {
 			player.sendMessage(color + msg);
 		}
 	}
-	
+
 }
