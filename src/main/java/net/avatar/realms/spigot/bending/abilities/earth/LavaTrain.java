@@ -23,48 +23,51 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-// TODO : Use ability State instead of reached
+/**
+ * State Preparing : The lava train is growing
+ * State Progressing : The lava train has finished growing and is now continuing until the end of
+ * the duration
+ */
 
 @BendingAbility(name="Lavatrain", element=BendingType.Earth, specialization=BendingSpecializationType.Lavabend)
 public class LavaTrain extends ActiveAbility {
 	public static double speed = 5;
 	private static long interval = (long) (1000. / speed);
-	
+
 	@ConfigurationParameter("Range")
 	public static int RANGE = 7;
-	
+
 	@ConfigurationParameter("Train-Width")
 	public static int TRAIN_WIDTH = 1;
-	
+
 	@ConfigurationParameter("Random-Width")
 	public static int RANDOM_WIDTH = 2;
-	
+
 	@ConfigurationParameter("Random-Chance")
 	public static double RANDOM_CHANCE = 0.25;
-	
+
 	@ConfigurationParameter("Reach-Width")
 	public static int REACH_WIDTH = 3;
-	
+
 	@ConfigurationParameter("Max-Duration")
 	public static long DURATION = 20000; //ms
-	
+
 	@ConfigurationParameter("Cooldown-Factor")
 	public static int COOLDOWN_FACTOR = 2;
-	
+
 	private Location origin;
 	private Block safePoint;
 	private Location current;
 	private Vector direction;
-	private boolean reached = false;
-	
-	private Map<Block, BlockState> affecteds = new HashMap<Block, BlockState>();
 
-	private long time;
+	private Map<Block, BlockState> affecteds = new HashMap<Block, BlockState>();
 	
+	private long time;
+
 	public LavaTrain (Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean swing () {
 		switch (this.state) {
@@ -77,7 +80,7 @@ public class LavaTrain extends ActiveAbility {
 				}
 				this.safePoint = this.player.getLocation().getBlock();
 				this.time = this.startedTime;
-				
+
 				this.direction = this.player.getEyeLocation().getDirection().clone();
 				this.direction.setY(0);
 				this.direction = this.direction.normalize();
@@ -85,7 +88,7 @@ public class LavaTrain extends ActiveAbility {
 						.add(this.direction.clone().multiply(TRAIN_WIDTH + 1 + RANDOM_WIDTH));
 				this.origin.setY(this.origin.getY() - 1);
 				this.current = this.origin.clone();
-				
+
 				setState(AbilityState.Preparing);
 				AbilityManager.getManager().addInstance(this);
 				return false;
@@ -99,21 +102,21 @@ public class LavaTrain extends ActiveAbility {
 				return false;
 		}
 	}
-	
+
 	@Override
 	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.LavaTrain, this.current)) {
 			return false;
 		}
-		
+
 		if((this.direction.getX() == 0) && (this.direction.getZ() == 0)) {
-			if(!this.reached) {
+			if (!this.state.equals(AbilityState.Progressing)) {
 				this.affectBlocks(this.current, REACH_WIDTH);
-				this.reached = true;
+				setState(AbilityState.Progressing);
 			} else {
 				if ((System.currentTimeMillis() - this.time) > DURATION) {
 					return false;
@@ -123,9 +126,9 @@ public class LavaTrain extends ActiveAbility {
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			if(this.origin.distance(this.current) >= RANGE) {
-				if(!this.reached) {
+				if (!this.state.equals(AbilityState.Progressing)) {
 					this.affectBlocks(this.current, REACH_WIDTH);
-					this.reached = true;
+					setState(AbilityState.Progressing);
 				} else {
 					if ((System.currentTimeMillis() - this.time) > DURATION) {
 						return false;
@@ -135,28 +138,28 @@ public class LavaTrain extends ActiveAbility {
 			} else {
 				this.affectBlocks(this.current, TRAIN_WIDTH);
 			}
-			
+
 			if(this.affecteds.isEmpty()) {
 				return false;
 			}
-			
+
 			this.time = System.currentTimeMillis();
 			this.current = this.current.clone().add(this.direction);
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public void remove () {
 		this.bender.cooldown(Abilities.LavaTrain, DURATION * COOLDOWN_FACTOR); //TODO : Real duration * COOLDOWN_FACTOR
 		super.remove();
 	}
-	
+
 	private void affectBlocks(Location current, int width) {
 		List<Block> safe = BlockTools.getBlocksOnPlane(this.safePoint.getLocation(), 1);
 		safe.add(this.safePoint);
-		
+
 		for(int i=-1; i <= 2 ; i++) {
 			Location tmp = current.clone();
 			tmp.setY(current.getY()+i);
@@ -168,7 +171,7 @@ public class LavaTrain extends ActiveAbility {
 					potentialsBlocks.add(potentialsBlock);
 				}
 			}
-			
+
 			for(Block potentialsBlock : potentialsBlocks) {
 				if (BlockTools.isEarthbendable(this.player, Abilities.LavaTrain, potentialsBlock)
 						&& !BlockTools.isTempBlock(potentialsBlock)) {
@@ -181,8 +184,8 @@ public class LavaTrain extends ActiveAbility {
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	public void stop () {
 		for (BlockState affected : this.affecteds.values()) {
@@ -190,7 +193,7 @@ public class LavaTrain extends ActiveAbility {
 		}
 		this.affecteds.clear();
 	}
-	
+
 	public static boolean isLavaPart(Block block) {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.LavaTrain);
 		if (instances == null) {
@@ -204,13 +207,13 @@ public class LavaTrain extends ActiveAbility {
 		}
 		return false;
 	}
-	
+
 	public static LavaTrain getLavaTrain(Block b) {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.LavaTrain);
 		if (instances == null) {
 			return null;
 		}
-		
+
 		for (IAbility ab : instances.values()) {
 			LavaTrain train = (LavaTrain) ab;
 			if (train.affecteds.containsKey(b)) {
@@ -219,26 +222,26 @@ public class LavaTrain extends ActiveAbility {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean canBeInitialized () {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.LavaTrain);
 		if (instances == null) {
 			return true;
 		}
-
+		
 		return !instances.containsKey(this.player);
 	}
-
+	
 	@Override
 	public Object getIdentifier () {
 		return this.player;
 	}
-
+	
 	@Override
 	public Abilities getAbilityType () {
 		return Abilities.LavaTrain;
