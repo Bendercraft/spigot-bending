@@ -31,25 +31,37 @@ public class FireStream extends ActiveAbility {
 	private static Map<Block, Long> ignitedtimes = new HashMap<Block, Long>();
 	static final long soonesttime = Tools.timeinterval;
 
+	private static final Material[] overwriteable = { Material.SAPLING, Material.LONG_GRASS, Material.DEAD_BUSH,
+			Material.YELLOW_FLOWER, Material.RED_ROSE, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.FIRE,
+			Material.SNOW, Material.TORCH };
+			
+	private static final Material[] ignitables = { Material.BEDROCK, Material.BOOKSHELF, Material.BRICK, Material.CLAY,
+			Material.CLAY_BRICK, Material.COAL_ORE, Material.COBBLESTONE, Material.DIAMOND_ORE, Material.DIAMOND_BLOCK,
+			Material.DIRT, Material.ENDER_STONE, Material.GLOWING_REDSTONE_ORE, Material.GOLD_BLOCK, Material.GRAVEL,
+			Material.GRASS, Material.HUGE_MUSHROOM_1, Material.HUGE_MUSHROOM_2, Material.LAPIS_BLOCK, Material.LAPIS_ORE,
+			Material.LOG, Material.MOSSY_COBBLESTONE, Material.MYCEL, Material.NETHER_BRICK, Material.NETHERRACK,
+			Material.OBSIDIAN, Material.REDSTONE_ORE, Material.SAND, Material.SANDSTONE, Material.SMOOTH_BRICK, Material.STONE,
+			Material.SOUL_SAND, Material.SNOW_BLOCK, Material.WOOD, Material.WOOL, Material.LEAVES };
+	
 	public static int firedamage = 3;
 	public static int tickdamage = 2;
-
-	private static int ID = Integer.MIN_VALUE;
 	
+	private static int ID = Integer.MIN_VALUE;
+
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 15;
 	private static long interval = (long) (1000. / SPEED);
-
+	
 	@ConfigurationParameter("Dissipate-Time")
 	private static long dissipateAfter = 1200;
-
+	
 	private Location origin;
 	private Location location;
 	private Vector direction;
 	private int id;
 	private long time;
 	private double range;
-
+	
 	public FireStream(Location location, Vector direction, Player player,
 			int range, IAbility parent) {
 		super(player, parent);
@@ -65,7 +77,7 @@ public class FireStream extends ActiveAbility {
 		this.time = this.startedTime;
 		AbilityManager.getManager().addInstance(this);
 	}
-
+	
 	@Override
 	public boolean progress() {
 		if (!super.progress()) {
@@ -95,11 +107,11 @@ public class FireStream extends ActiveAbility {
 			} else {
 				return false;
 			}
-
+			
 		}
 		return true;
 	}
-
+	
 	private void ignite(Block block) {
 		if (BlockTools.isPlant(block)) {
 			//TODO :new Plantbending(block, this);
@@ -108,53 +120,33 @@ public class FireStream extends ActiveAbility {
 		ignitedblocks.put(block, this.player);
 		ignitedtimes.put(block, System.currentTimeMillis());
 	}
-
+	
 	public static boolean isIgnitable(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Blaze,
-				block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Blaze, block.getLocation())) {
 			return false;
 		}
-
-		Material[] overwriteable = { Material.SAPLING, Material.LONG_GRASS,
-				Material.DEAD_BUSH, Material.YELLOW_FLOWER, Material.RED_ROSE,
-				Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.FIRE,
-				Material.SNOW, Material.TORCH };
-
+		
 		if (Arrays.asList(overwriteable).contains(block.getType())) {
 			return true;
 		} else if (block.getType() != Material.AIR) {
 			return false;
 		}
-
-		Material[] ignitable = { Material.BEDROCK, Material.BOOKSHELF,
-				Material.BRICK, Material.CLAY, Material.CLAY_BRICK,
-				Material.COAL_ORE, Material.COBBLESTONE, Material.DIAMOND_ORE,
-				Material.DIAMOND_BLOCK, Material.DIRT, Material.ENDER_STONE,
-				Material.GLOWING_REDSTONE_ORE, Material.GOLD_BLOCK,
-				Material.GRAVEL, Material.GRASS, Material.HUGE_MUSHROOM_1,
-				Material.HUGE_MUSHROOM_2, Material.LAPIS_BLOCK,
-				Material.LAPIS_ORE, Material.LOG, Material.MOSSY_COBBLESTONE,
-				Material.MYCEL, Material.NETHER_BRICK, Material.NETHERRACK,
-				Material.OBSIDIAN, Material.REDSTONE_ORE, Material.SAND,
-				Material.SANDSTONE, Material.SMOOTH_BRICK, Material.STONE,
-				Material.SOUL_SAND, Material.SNOW_BLOCK, Material.WOOD,
-				Material.WOOL, Material.LEAVES };
-
+		
 		Block belowblock = block.getRelative(BlockFace.DOWN);
-		if (Arrays.asList(ignitable).contains(belowblock.getType())) {
+		if (Arrays.asList(ignitables).contains(belowblock.getType())) {
 			return true;
 		}
-
+		
 		return false;
 	}
-	
+
 	public static void removeAll() {
 		List<Block> toRemove = new LinkedList<Block>(ignitedblocks.keySet());
 		for (Block block : toRemove) {
 			remove(block);
 		}
 	}
-
+	
 	public static void removeAllNoneFireIgnitedBlock() {
 		List<Block> toRemove = new LinkedList<Block>(ignitedblocks.keySet());
 		for (Block block : toRemove) {
@@ -163,7 +155,7 @@ public class FireStream extends ActiveAbility {
 			}
 		}
 	}
-
+	
 	public static void dissipateAll() {
 		if (dissipateAfter != 0) {
 			List<Block> toRemove = new LinkedList<Block>(ignitedtimes.keySet());
@@ -180,8 +172,8 @@ public class FireStream extends ActiveAbility {
 			}
 		}
 	}
-
-
+	
+	
 	public static void remove(Block block) {
 		if (ignitedblocks.containsKey(block)) {
 			ignitedblocks.remove(block);
@@ -189,9 +181,9 @@ public class FireStream extends ActiveAbility {
 		if (ignitedtimes.containsKey(block)) {
 			ignitedtimes.remove(block);
 		}
-
+		
 	}
-
+	
 	public static void removeAroundPoint(Location location, double radius) {
 		List<FireStream> toRemove = new LinkedList<FireStream>();
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireStream);
@@ -207,25 +199,25 @@ public class FireStream extends ActiveAbility {
 			stream.remove();
 		}
 	}
-	
+
 	public static void addIgnitedBlock(Block block, Player player, long time) {
 		ignitedblocks.put(block, player);
 		ignitedtimes.put(block, time);
 	}
-	
+
 	public static boolean isIgnited(Block block) {
 		return ignitedblocks.containsKey(block);
 	}
-
+	
 	public static Player getIgnited(Block block) {
 		return ignitedblocks.get(block);
 	}
-
+	
 	@Override
 	public Object getIdentifier () {
 		return this.id;
 	}
-
+	
 	@Override
 	public Abilities getAbilityType () {
 		return Abilities.FireStream;
