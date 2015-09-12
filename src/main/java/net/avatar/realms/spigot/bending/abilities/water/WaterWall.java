@@ -236,8 +236,6 @@ public class WaterWall implements IAbility {
 						firstdestination);
 				targetdirection = getDirection(firstdestination,
 						targetdestination);
-				if (BlockTools.isPlant(sourceblock))
-					new Plantbending(sourceblock, this);
 				if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 					sourceblock.setType(Material.AIR);
 				}
@@ -559,7 +557,7 @@ public class WaterWall implements IAbility {
 
 	private void returnWater() {
 		if (location != null) {
-			new WaterReturn(player, location.getBlock(), this);
+			//new WaterReturn(player, location.getBlock(), this); TODO temp
 		}
 	}
 	

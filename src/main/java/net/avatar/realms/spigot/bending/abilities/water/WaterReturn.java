@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -25,27 +27,17 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Water Return", element=BendingType.Water)
-public class WaterReturn implements IAbility {
-
-	private static Map<Player, WaterReturn> instances = new HashMap<Player, WaterReturn>();
-	// private static int ID = Integer.MIN_VALUE;
+public class WaterReturn extends ActiveAbility {
 	private static long interval = 50;
-
 	private static final byte full = 0x0;
 	private static double range = 30;
 
-	private Player player;
-	// private int id;
 	private Location location;
 	private TempBlock block;
 	private long time;
-	private IAbility parent;
 
 	public WaterReturn(Player player, Block block, IAbility parent) {
-		this.parent = parent;
-		if (instances.containsKey(player))
-			return;
-		this.player = player;
+		super(player, parent);
 		location = block.getLocation();
 		if (!ProtectionManager.isRegionProtectedFromBending(player,
 				Abilities.WaterManipulation, location)
@@ -55,11 +47,11 @@ public class WaterReturn implements IAbility {
 				this.block = new TempBlock(block, Material.WATER, full);
 			}
 		}
-
-		instances.put(player, this);
+		AbilityManager.getManager().addInstance(this);
 	}
 
-	private boolean progress() {
+	@Override
+	public boolean progress() {
 		if (!hasEmptyWaterBottle()) {
 			return false;
 		}
@@ -121,9 +113,10 @@ public class WaterReturn implements IAbility {
 		}
 	}
 
-	private void remove() {
+	@Override
+	public void remove() {
 		this.clear();
-		instances.remove(player);
+		super.remove();
 	}
 
 	private boolean hasEmptyWaterBottle() {
@@ -169,15 +162,15 @@ public class WaterReturn implements IAbility {
 			return true;
 		}
 
-		if (IceSpike2.isBending(player))
+		if (IceSpike.isBending(player))
 			return true;
 
 		return false;
 	}
 
 	public static boolean hasWaterBottle(Player player) {
-		if (instances.containsKey(player))
-			return false;
+		//if (instances.containsKey(player))
+		//	return false;
 		if (isBending(player))
 			return false;
 		PlayerInventory inventory = player.getInventory();
@@ -204,30 +197,14 @@ public class WaterReturn implements IAbility {
 		}
 	}
 
-	public static void progressAll() {
-		List<WaterReturn> toRemove = new LinkedList<WaterReturn>();
-		for (WaterReturn water : instances.values()) {
-			boolean keep = water.progress();
-			if(!keep) {
-				toRemove.add(water);
-			}
-		}
-		for(WaterReturn water : toRemove) {
-			water.remove();
-		}
-	}
-
-	public static void removeAll() {
-		for (WaterReturn water : instances.values()) {
-			if (water.block != null)
-				water.block.revertBlock();
-		}
-		instances.clear();
+	@Override
+	public Object getIdentifier() {
+		return player;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Abilities getAbilityType() {
+		return null;
 	}
 
 }

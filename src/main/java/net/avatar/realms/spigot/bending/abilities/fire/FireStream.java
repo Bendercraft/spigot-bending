@@ -10,7 +10,6 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
-import net.avatar.realms.spigot.bending.abilities.water.Plantbending;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -103,9 +102,6 @@ public class FireStream implements IAbility {
 	}
 
 	private void ignite(Block block) {
-		if (BlockTools.isPlant(block)) {
-			new Plantbending(block, this);
-		}
 		block.setType(Material.FIRE);
 		ignitedblocks.put(block, this.player);
 		ignitedtimes.put(block, System.currentTimeMillis());

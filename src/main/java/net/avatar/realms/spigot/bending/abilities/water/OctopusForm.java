@@ -8,7 +8,8 @@ import java.util.Map;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -25,7 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Octopus Form", element=BendingType.Water)
-public class OctopusForm implements IAbility {
+public class OctopusForm extends ActiveAbility {
 	private static Map<Player, OctopusForm> instances = new HashMap<Player, OctopusForm>();
 
 	private static int range = 10;
@@ -36,7 +37,6 @@ public class OctopusForm implements IAbility {
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 2;
 
-	private Player player;
 	private Block sourceblock;
 	private Location sourcelocation;
 	private TempBlock source;
@@ -52,10 +52,9 @@ public class OctopusForm implements IAbility {
 	private boolean settingup = false;
 	private boolean forming = false;
 	private boolean formed = false;
-	private IAbility parent;
 
 	public OctopusForm(Player player, IAbility parent) {
-		this.parent = parent;
+		super(player, parent);
 		if (instances.containsKey(player)) {
 			if (instances.get(player).formed) {
 				instances.get(player).attack();
@@ -115,7 +114,6 @@ public class OctopusForm implements IAbility {
 		incrementStep();
 		
 		if (BlockTools.isPlant(sourceblock)) {
-			new Plantbending(sourceblock, this);
 			sourceblock.setType(Material.AIR);
 		} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 			sourceblock.setType(Material.AIR);
@@ -163,20 +161,8 @@ public class OctopusForm implements IAbility {
 		}
 	}
 
-	public static void progressAll() {
-		List<OctopusForm> toRemove = new LinkedList<OctopusForm>();
-		for (OctopusForm octopus : instances.values()) {
-			boolean keep = octopus.progress();
-			if(!keep) {
-				toRemove.add(octopus);
-			}
-		}
-		for(OctopusForm octopus : toRemove) {
-			octopus.remove();
-		}
-	}
-
-	private boolean progress() {
+	@Override
+	public boolean progress() {
 		if (!EntityTools.canBend(player, Abilities.OctopusForm)
 				|| (!player.isSneaking() && !sourceselected)
 				|| EntityTools.getBendingAbility(player) != Abilities.OctopusForm) {
@@ -428,9 +414,10 @@ public class OctopusForm implements IAbility {
 			block.revertBlock();
 	}
 	
-	private void remove() {
+	@Override
+	public void remove() {
 		this.clear();
-		instances.remove(player);
+		super.remove();
 	}
 
 	private void returnWater() {
@@ -448,22 +435,19 @@ public class OctopusForm implements IAbility {
 			new WaterReturn(player, block, this);
 		}
 	}
-
-	public static void removeAll() {
-		for (OctopusForm octopus : instances.values()) {
-			octopus.clear();
-		}
-		
-		instances.clear();
-	}
 	
 	public static boolean isOctopus(Player player) {
 		return instances.containsKey(player);
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Object getIdentifier() {
+		return player;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.OctopusForm;
 	}
 
 }

@@ -16,11 +16,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -31,8 +32,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name="Torrent", element=BendingType.Water)
-public class Torrent implements IAbility {
-	private static Map<Player, Torrent> instances = new HashMap<Player, Torrent>();
+public class Torrent extends ActiveAbility {
 	private static Map<TempBlock, Player> frozenblocks = new HashMap<TempBlock, Player>();
 
 	static long interval = 30;
@@ -77,27 +77,23 @@ public class Torrent implements IAbility {
 	
 	private double damage;
 	private double range;
-	
-	private BendingPlayer bender;
 
-	private IAbility parent;
-
-	public Torrent(Player player, IAbility parent) {
-		this.parent = parent;
-		if (instances.containsKey(player)) {
-			Torrent torrent = instances.get(player);
-			if (!torrent.sourceselected) {
-				instances.get(player).use();
-				return;
-			}
-		}
-		this.player = player;
+	public Torrent(Player player) {
+		super(player, null);
+		
 		this.time = System.currentTimeMillis();
 		this.sourceblock = BlockTools.getWaterSourceBlock(player, selectrange,
 				EntityTools.canPlantbend(player));
-		if (this.sourceblock != null) {
-			this.sourceselected = true;
-			instances.put(player, this);
+		
+		if (this.sourceblock == null && WaterReturn.hasWaterBottle(player)) {
+			Location eyeloc = player.getEyeLocation();
+			Block block = eyeloc.add(eyeloc.getDirection().normalize())
+					.getBlock();
+			if (BlockTools.isTransparentToEarthbending(player, block)
+					&& BlockTools.isTransparentToEarthbending(player,
+							eyeloc.getBlock())) {
+				WaterReturn.emptyWaterBottle(player);
+			}
 		}
 		
 		damage = DAMAGE;
@@ -110,6 +106,11 @@ public class Torrent implements IAbility {
 		
 		if(bender.hasPath(BendingPathType.Flowless)) {
 			damage *= 1.2;
+		}
+		
+		if (this.sourceblock != null) {
+			this.sourceselected = true;
+			AbilityManager.getManager().addInstance(this);
 		}
 	}
 
@@ -130,7 +131,8 @@ public class Torrent implements IAbility {
 		}
 	}
 
-	private boolean progress() {
+	@Override
+	public boolean progress() {
 		if (this.player.isDead() || !this.player.isOnline()) {
 			return false;
 		}
@@ -163,7 +165,6 @@ public class Torrent implements IAbility {
 					this.settingup = true;				
 
 					if (BlockTools.isPlant(this.sourceblock)) {
-						new Plantbending(this.sourceblock, this);
 						this.sourceblock.setType(Material.AIR);
 					} else if (!BlockTools
 							.adjacentToThreeOrMoreSources(this.sourceblock)) {
@@ -499,44 +500,14 @@ public class Torrent implements IAbility {
 		}
 	}
 
-	private void remove() {
+	@Override
+	public void remove() {
 		this.clear();
-		instances.remove(this.player);
+		super.remove();
 	}
 
 	private void returnWater(Location location) {
 		new WaterReturn(this.player, location.getBlock(), this);
-	}
-
-	public static void use(Player player) {
-		if (instances.containsKey(player)) {
-			instances.get(player).use();
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	public static void create(Player player) {
-		if (instances.containsKey(player)) {
-			return;
-		}
-
-		if (WaterReturn.hasWaterBottle(player)) {
-			Location eyeloc = player.getEyeLocation();
-			Block block = eyeloc.add(eyeloc.getDirection().normalize())
-					.getBlock();
-			if (BlockTools.isTransparentToEarthbending(player, block)
-					&& BlockTools.isTransparentToEarthbending(player,
-							eyeloc.getBlock())) {
-				block.setType(Material.WATER);
-				block.setData(full);
-				Torrent tor = new Torrent(player, null);
-				if (tor.sourceselected || tor.settingup) {
-					WaterReturn.emptyWaterBottle(player);
-				} else {
-					block.setType(Material.AIR);
-				}
-			}
-		}
 	}
 
 	private void use() {
@@ -624,44 +595,6 @@ public class Torrent implements IAbility {
 		}
 	}
 
-	public static void progressAll() {
-		List<Torrent> toRemove = new LinkedList<Torrent>();
-		//Concurrent modification exception here
-		for (Torrent torrent : instances.values()) {
-			boolean keep = torrent.progress();
-			if (!keep) {
-				toRemove.add(torrent);
-			}
-		}
-
-		for (Torrent torrent : toRemove) {
-			torrent.remove();
-		}
-
-		List<TempBlock> toRemoveIce = new LinkedList<TempBlock>();
-		List<TempBlock> toThawIce = new LinkedList<TempBlock>();
-		for (TempBlock block : frozenblocks.keySet()) {
-			Player player = frozenblocks.get(block);
-			if (block.getBlock().getType() != Material.ICE) {
-				toRemoveIce.add(block);
-				continue;
-			}
-			if (block.getBlock().getWorld() != player.getWorld()) {
-				toThawIce.add(block);
-				continue;
-			}
-			if (!EntityTools.canBend(player, Abilities.Torrent)) {
-				toThawIce.add(block);
-			}
-		}
-		for (TempBlock block : toRemoveIce) {
-			frozenblocks.remove(block);
-		}
-		for (TempBlock block : toThawIce) {
-			thaw(block);
-		}
-	}
-
 	public static void thaw(Block block) {
 		if (TempBlock.isTempBlock(block)) {
 			TempBlock tblock = TempBlock.get(block);
@@ -684,23 +617,9 @@ public class Torrent implements IAbility {
 		return true;
 	}
 
-	public static void removeAll() {
-		for (Torrent torrent : instances.values()) {
-			torrent.clear();
-		}
-
-		instances.clear();
-
-		for (TempBlock block : frozenblocks.keySet()) {
-			block.revertBlock();
-		}
-
-		frozenblocks.clear();
-	}
-
 	public static boolean wasBrokenFor(Player player, Block block) {
-		if (instances.containsKey(player)) {
-			Torrent torrent = instances.get(player);
+		if (AbilityManager.getManager().getInstances(Abilities.Torrent).containsKey(player)) {
+			Torrent torrent = (Torrent) AbilityManager.getManager().getInstances(Abilities.Torrent).get(player);
 			if (torrent.sourceblock == null) {
 				return false;
 			}
@@ -712,8 +631,13 @@ public class Torrent implements IAbility {
 	}
 
 	@Override
-	public IAbility getParent() {
-		return this.parent;
+	public Object getIdentifier() {
+		return player;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.Torrent;
 	}
 
 }
