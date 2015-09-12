@@ -5,6 +5,7 @@ import java.util.Map;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
@@ -19,11 +20,10 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
- * AirBurst is just an utility abilities, it does no damage or whatever, only providing a way to check if a player has charged
- * Classes AirSphereBurst, AirConeBurst, AirFallBurst consumes charge and remove it
- * 
- * @author Koudja
+ * State Preparing : Player is sneaking but the Burst is not ready
+ * State Prepared : Player is sneaking and the burst is ready
  *
+ * @author Koudja
  */
 
 @BendingAbility(name="Air Burst", element=BendingType.Air)
@@ -43,9 +43,11 @@ public class AirBurst extends ActiveAbility {
 
 	@ConfigurationParameter("Del-Phi")
 	public static double DELPHI = 10;
+	
+	@ConfigurationParameter ("Fall-Threshold")
+	private static double THRESHOLD = 10;
 
 	private long chargetime = DEFAULT_CHARGETIME;
-	private boolean charged = false;
 
 	public AirBurst (Player player) {
 		super(player, null);
@@ -61,14 +63,9 @@ public class AirBurst extends ActiveAbility {
 
 	@Override
 	public boolean sneak () {
-
-		if (this.state.isBefore(AbilityState.CanStart)) {
-			return false;
-		}
-
 		if (this.state.equals(AbilityState.CanStart)) {
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Progressing);
+			setState(AbilityState.Preparing);
 			return false;
 		}
 
@@ -76,33 +73,51 @@ public class AirBurst extends ActiveAbility {
 	}
 
 	@Override
-	public boolean progress () {
+	public boolean swing () {
+		if (this.state == AbilityState.Prepared) {
+			coneBurst();
+			return false;
+		}
 
+		return true;
+	}
+	
+	@Override
+	public boolean fall () {
+		if (this.player.getFallDistance() < THRESHOLD) {
+			return false;
+		}
+
+		fallBurst();
+		
+		return true;
+	}
+
+	@Override
+	public boolean progress () {
 		if (!super.progress()) {
 			return false;
 		}
 
-		if (!EntityTools.canBend(this.player, Abilities.AirBurst)
-				|| (EntityTools.getBendingAbility(this.player) != Abilities.AirBurst)) {
+		if ((EntityTools.getBendingAbility(this.player) != Abilities.AirBurst)) {
 			return false;
 		}
 
 		if (!this.player.isSneaking()) {
+			if (this.state.equals(AbilityState.Prepared)) {
+				sphereBurst();
+			}
 			return false;
 		}
 
-		if ((System.currentTimeMillis() > (this.startedTime + this.chargetime)) && !this.charged) {
-			this.charged = true;
+		if (!this.state.equals(AbilityState.Prepared) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
+			setState(AbilityState.Prepared);
 		}
 
-		if (this.charged) {
+		if (this.state == AbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
-			// location = location.add(location.getDirection().normalize());
-			location.getWorld().playEffect(
-					location,
-					Effect.SMOKE,
-					Tools.getIntCardinalDirection(this.player.getEyeLocation()
-							.getDirection()), 3);
+			location.getWorld().playEffect(location, Effect.SMOKE,
+					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 3);
 		}
 		return true;
 	}
@@ -116,7 +131,7 @@ public class AirBurst extends ActiveAbility {
 	}
 
 	public boolean isCharged() {
-		return this.charged;
+		return (this.state == AbilityState.Prepared);
 	}
 
 	public static AirBurst getAirBurst (Player player) {
@@ -130,7 +145,65 @@ public class AirBurst extends ActiveAbility {
 		return (AirBurst) instances.get(player);
 	}
 
-
+	private void sphereBurst () {
+		Location location = this.player.getEyeLocation();
+		double x, y, z;
+		double r = 1;
+		for (double theta = 0; theta <= 180; theta += AirBurst.DELTHETA) {
+			double dphi = AirBurst.DELPHI / Math.sin(Math.toRadians(theta));
+			for (double phi = 0; phi < 360; phi += dphi) {
+				double rphi = Math.toRadians(phi);
+				double rtheta = Math.toRadians(theta);
+				x = r * Math.cos(rphi) * Math.sin(rtheta);
+				y = r * Math.sin(rphi) * Math.sin(rtheta);
+				z = r * Math.cos(rtheta);
+				Vector direction = new Vector(x, z, y);
+				new AirBlast(location, direction.normalize(), this.player, AirBurst.PUSHFACTOR, this);
+			}
+		}
+		setState(AbilityState.Ended);
+	}
+	
+	private void coneBurst () {
+		Location location = this.player.getEyeLocation();
+		Vector vector = location.getDirection();
+		double angle = Math.toRadians(30);
+		double x, y, z;
+		double r = 1;
+		for (double theta = 0; theta <= 180; theta += AirBurst.DELTHETA) {
+			double dphi = AirBurst.DELPHI / Math.sin(Math.toRadians(theta));
+			for (double phi = 0; phi < 360; phi += dphi) {
+				double rphi = Math.toRadians(phi);
+				double rtheta = Math.toRadians(theta);
+				x = r * Math.cos(rphi) * Math.sin(rtheta);
+				y = r * Math.sin(rphi) * Math.sin(rtheta);
+				z = r * Math.cos(rtheta);
+				Vector direction = new Vector(x, z, y);
+				if (direction.angle(vector) <= angle) {
+					new AirBlast(location, direction.normalize(), this.player, AirBurst.PUSHFACTOR, this);
+				}
+			}
+		}
+		setState(AbilityState.Ended);
+	}
+	
+	private void fallBurst () {
+		Location location = this.player.getLocation();
+		double x, y, z;
+		double r = 1;
+		for (double theta = 75; theta < 105; theta += AirBurst.DELTHETA) {
+			double dphi = AirBurst.DELTHETA / Math.sin(Math.toRadians(theta));
+			for (double phi = 0; phi < 360; phi += dphi) {
+				double rphi = Math.toRadians(phi);
+				double rtheta = Math.toRadians(theta);
+				x = r * Math.cos(rphi) * Math.sin(rtheta);
+				y = r * Math.sin(rphi) * Math.sin(rtheta);
+				z = r * Math.cos(rtheta);
+				Vector direction = new Vector(x, z, y);
+				new AirBlast(location, direction.normalize(), this.player, AirBurst.PUSHFACTOR, this);
+			}
+		}
+	}
 
 	@Override
 	public Abilities getAbilityType () {

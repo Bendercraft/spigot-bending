@@ -46,6 +46,17 @@ public class FireShield extends ActiveAbility {
 			instances.put(player, this);
 		}
 	}
+	
+	@Override
+	public boolean sneak() {
+		return false;
+	}
+	
+	@Override
+	public boolean swing() {
+		FireProtection protect = new FireProtection(this.player);
+		return protect.swing();
+	}
 
 	@Override
 	public void remove() {
@@ -106,7 +117,7 @@ public class FireShield extends ActiveAbility {
 					if(this.bender.hasPath(BendingPathType.Lifeless)) {
 						EntityTools.damageEntity(this.player, entity, 2);
 					}
-					new Enflamed(entity, this.player, 3, this);
+					new Enflamed(this.player, entity, 3, this);
 				}
 			}
 

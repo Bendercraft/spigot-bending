@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
@@ -32,14 +33,15 @@ public class Enflamed {
 	private BendingPlayer bender;
 	
 
-	public Enflamed(Entity entity, Player source, int seconds, IAbility parent) {
+	public Enflamed(Player source, Entity entity, int seconds, IAbility parent) {
+		if (entity.getEntityId() == source.getEntityId()) {
+			return;
+		}
 		this.parent = parent;
 		this.target = entity;
 		this.source = source;
 		this.time = System.currentTimeMillis();
-		if (entity.getEntityId() == source.getEntityId()) {
-			return;
-		}
+
 		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
@@ -68,7 +70,7 @@ public class Enflamed {
 			return true;
 		}
 		
-		if (!Extinguish.canBurn((Player) this.target)) {
+		if (!canBurn((Player) this.target)) {
 			return false;
 		}
 		
@@ -88,6 +90,19 @@ public class Enflamed {
 
 	public static boolean isEnflamed(Entity entity) {
 		return instances.containsKey(entity);
+	}
+
+	public static boolean canBurn (Player player) {
+		if ((EntityTools.getBendingAbility(player) == Abilities.HeatControl) || FireJet.checkTemporaryImmunity(player)) {
+			player.setFireTicks(0);
+			return false;
+		}
+
+		if ((player.getFireTicks() > 80) && EntityTools.canBendPassive(player, BendingType.Fire)) {
+			player.setFireTicks(80);
+		}
+
+		return true;
 	}
 
 	public static void progressAll() {

@@ -59,7 +59,7 @@ public class BendingEntityListener implements Listener {
 		Entity entity = event.getEntity();
 		Block block = entity.getLocation().getBlock();
 		if (FireStream.isIgnited(block) && (entity instanceof LivingEntity)) {
-			new Enflamed(entity, FireStream.getIgnited(block), 2, null);
+			new Enflamed(FireStream.getIgnited(block), entity, 2, null);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class BendingEntityListener implements Listener {
 	public void onEntityDamageEvent (EntityDamageEvent event) {
 		Entity entity = event.getEntity();
 		if ((event.getCause() == DamageCause.FIRE) && FireStream.isIgnited(entity.getLocation().getBlock())) {
-			new Enflamed(entity, FireStream.getIgnited(entity.getLocation().getBlock()), 2, null);
+			new Enflamed(FireStream.getIgnited(entity.getLocation().getBlock()), entity, 2, null);
 		}
 		if (Enflamed.isEnflamed(entity) && (event.getCause() == DamageCause.FIRE_TICK)) {
 			event.setCancelled(true);

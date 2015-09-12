@@ -27,6 +27,10 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
+/**
+ * Preparing state = Origin set
+ * Progressing state = Airblast thrown
+ */
 @BendingAbility(name="Air Blast", element=BendingType.Air)
 public class AirBlast extends ActiveAbility {
 	private static int ID = Integer.MIN_VALUE;
@@ -97,15 +101,11 @@ public class AirBlast extends ActiveAbility {
 		this.origin = location.clone();
 		this.direction = direction.clone();
 		this.location = location.clone();
-		this.id = ID;
+		this.id = ID++;
 		this.pushfactor *= factorpush;
 
 		setState(AbilityState.Progressing);
 		AbilityManager.getManager().addInstance(this);
-		if (ID == Integer.MAX_VALUE) {
-			ID = Integer.MIN_VALUE;
-		}
-		ID++;
 		
 		if(this.bender.hasPath(BendingPathType.Renegade)) {
 			this.range = this.range * 0.6;
@@ -113,10 +113,8 @@ public class AirBlast extends ActiveAbility {
 	}
 
 	public void setOtherOrigin(Player player) {
-		Location location = EntityTools.getTargetedLocation(player,
-				SELECT_RANGE, BlockTools.nonOpaque);
-		if (location.getBlock().isLiquid()
-				|| BlockTools.isSolid(location.getBlock())) {
+		Location location = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.nonOpaque);
+		if (location.getBlock().isLiquid() || BlockTools.isSolid(location.getBlock())) {
 			setState(AbilityState.CannotStart);
 			return;
 		}

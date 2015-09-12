@@ -87,6 +87,7 @@ public class OctopusForm extends ActiveAbility {
 	}
 
 	@SuppressWarnings("deprecation")
+	//SNEAK
 	public static void form(Player player) {
 		if (instances.containsKey(player)) {
 			instances.get(player).form();
