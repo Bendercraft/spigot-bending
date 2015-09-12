@@ -236,7 +236,7 @@ public class WallOfFire extends ActiveAbility {
 		}
 		entity.setVelocity(new Vector(0, 0, 0));
 		EntityTools.damageEntity(this.player, entity, this.damage);
-		new Enflamed(entity, this.player, 1, this);
+		new Enflamed(this.player, entity, 1, this);
 
 	}
 	

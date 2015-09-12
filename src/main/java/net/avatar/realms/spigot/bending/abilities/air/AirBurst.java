@@ -28,109 +28,100 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name="Air Burst", element=BendingType.Air)
 public class AirBurst extends ActiveAbility {
-	
+
 	@ConfigurationParameter("Charge-Time")
 	public static long DEFAULT_CHARGETIME = 1750;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 2000;
-	
+
 	@ConfigurationParameter("Push-Factor")
 	public static double PUSHFACTOR = 1.5;
-	
+
 	@ConfigurationParameter("Del-Theta")
 	public static double DELTHETA = 10;
-	
+
 	@ConfigurationParameter("Del-Phi")
 	public static double DELPHI = 10;
-
+	
 	@ConfigurationParameter ("Fall-Threshold")
 	private static double THRESHOLD = 10;
-	
+
 	private long chargetime = DEFAULT_CHARGETIME;
-	
+
 	public AirBurst (Player player) {
 		super(player, null);
-		
+
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
-		
+
 		if (AvatarState.isAvatarState(player)) {
 			this.chargetime = (long) (DEFAULT_CHARGETIME / AvatarState.FACTOR);
 		}
 	}
-	
+
 	@Override
 	public boolean sneak () {
-		if (this.state.isBefore(AbilityState.CanStart)) {
-			return false;
-		}
-		
 		if (this.state.equals(AbilityState.CanStart)) {
 			AbilityManager.getManager().addInstance(this);
 			setState(AbilityState.Preparing);
 			return false;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public boolean swing () {
 		if (this.state == AbilityState.Prepared) {
 			coneBurst();
 			return false;
 		}
-		
-		return true;
-	}
-
-	@Override
-	public boolean fall () {
-		
-		if (this.player.getFallDistance() < THRESHOLD) {
-			return false;
-		}
-		
-		fallBurst();
 
 		return true;
 	}
 	
 	@Override
+	public boolean fall () {
+		if (this.player.getFallDistance() < THRESHOLD) {
+			return false;
+		}
+
+		fallBurst();
+		
+		return true;
+	}
+
+	@Override
 	public boolean progress () {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if ((EntityTools.getBendingAbility(this.player) != Abilities.AirBurst)) {
 			return false;
 		}
-		
+
 		if (!this.player.isSneaking()) {
 			if (this.state.equals(AbilityState.Prepared)) {
 				sphereBurst();
 			}
 			return false;
 		}
-		
+
 		if (!this.state.equals(AbilityState.Prepared) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
 			setState(AbilityState.Prepared);
 		}
-		
+
 		if (this.state == AbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
-			// location = location.add(location.getDirection().normalize());
-			location.getWorld().playEffect(
-					location,
-					Effect.SMOKE,
-					Tools.getIntCardinalDirection(this.player.getEyeLocation()
-							.getDirection()), 3);
+			location.getWorld().playEffect(location, Effect.SMOKE,
+					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 3);
 		}
 		return true;
 	}
-	
+
 	public static boolean isAirBursting (Player player) {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirBurst);
 		if ((instances == null) || instances.isEmpty()) {
@@ -138,11 +129,11 @@ public class AirBurst extends ActiveAbility {
 		}
 		return instances.containsKey(player);
 	}
-	
+
 	public boolean isCharged() {
 		return (this.state == AbilityState.Prepared);
 	}
-	
+
 	public static AirBurst getAirBurst (Player player) {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirBurst);
 		if ((instances == null) || instances.isEmpty()) {
@@ -153,7 +144,7 @@ public class AirBurst extends ActiveAbility {
 		}
 		return (AirBurst) instances.get(player);
 	}
-	
+
 	private void sphereBurst () {
 		Location location = this.player.getEyeLocation();
 		double x, y, z;
@@ -172,7 +163,7 @@ public class AirBurst extends ActiveAbility {
 		}
 		setState(AbilityState.Ended);
 	}
-
+	
 	private void coneBurst () {
 		Location location = this.player.getEyeLocation();
 		Vector vector = location.getDirection();
@@ -195,7 +186,7 @@ public class AirBurst extends ActiveAbility {
 		}
 		setState(AbilityState.Ended);
 	}
-
+	
 	private void fallBurst () {
 		Location location = this.player.getLocation();
 		double x, y, z;
@@ -213,30 +204,30 @@ public class AirBurst extends ActiveAbility {
 			}
 		}
 	}
-	
+
 	@Override
 	public Abilities getAbilityType () {
 		return Abilities.AirBurst;
 	}
-	
+
 	@Override
 	protected long getMaxMillis () {
 		return 60 * 10 * 1000;
 	}
-	
+
 	@Override
 	public boolean canBeInitialized () {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		if (isAirBursting(this.player)) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public Object getIdentifier () {
 		return this.player;

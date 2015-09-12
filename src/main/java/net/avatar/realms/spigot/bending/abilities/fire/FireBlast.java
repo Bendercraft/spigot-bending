@@ -254,7 +254,7 @@ public class FireBlast extends ActiveAbility {
 			}
 			EntityTools.damageEntity(this.player, entity, PluginTools.firebendingDayAugment(this.damage,
 					entity.getWorld()));
-			new Enflamed(entity, this.player, 1, this);
+			new Enflamed(this.player, entity, 1, this);
 			return false;
 		}
 		return true;

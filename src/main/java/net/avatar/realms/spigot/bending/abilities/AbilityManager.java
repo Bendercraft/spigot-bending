@@ -42,12 +42,10 @@ import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Blaze;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
-import net.avatar.realms.spigot.bending.abilities.fire.Cook;
-import net.avatar.realms.spigot.bending.abilities.fire.Extinguish;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
-import net.avatar.realms.spigot.bending.abilities.fire.HeatMelt;
+import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
@@ -168,7 +166,7 @@ public class AbilityManager {
 			case FireBlade:
 				return new FireBlade(player);
 			case HeatControl:
-				return new Extinguish(player);
+				return new HeatControl(player);
 				
 			case WaterBubble:
 				return new WaterBubble(player);
@@ -274,10 +272,9 @@ public class AbilityManager {
 		//		register(ShockwaveFall.class);
 		register(Tremorsense.class);
 		
-		register(Extinguish.class);
+		register(HeatControl.class);
 		register(Blaze.class);
 		register(Combustion.class);
-		register(Cook.class);
 		//		register(Enflamed.class);
 		register(FireBlade.class);
 		register(FireBlast.class);
@@ -288,7 +285,6 @@ public class AbilityManager {
 		//		register(FireProtection.class);
 		//		register(FireShield.class);
 		//		register(FireStream.class);
-		register(HeatMelt.class);
 		register(Illumination.class);
 		register(Lightning.class);
 		//		register(WallOfFire.class);

@@ -1,5 +1,11 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
@@ -12,34 +18,29 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-
 @BendingAbility(name="Phase Change", element=BendingType.Water)
 public class Melt implements IAbility {
-	
-	
+
+
 	private int range = FreezeMelt.RANGE;
 	private int radius = FreezeMelt.RADIUS;
-
+	
 	private static final byte full = 0x0;
 	private IAbility parent;
-
+	
 	public Melt(Player player, IAbility parent) {
 		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (bPlayer.isOnCooldown(Abilities.PhaseChange))
+		
+		if (bPlayer.isOnCooldown(Abilities.PhaseChange)) {
 			return;
-
+		}
+		
 		int range = (int) PluginTools.waterbendingNightAugment(this.range,
 				player.getWorld());
 		int radius = (int) PluginTools.waterbendingNightAugment(this.radius,
 				player.getWorld());
-
+		
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
 			radius = AvatarState.getValue(radius);
@@ -48,15 +49,16 @@ public class Melt implements IAbility {
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			melt(player, block);
 		}
-
+		
 		bPlayer.cooldown(Abilities.PhaseChange, FreezeMelt.COOLDOWN);
 	}
-
+	
 	@SuppressWarnings("deprecation")
 	public static void melt(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PhaseChange,
-				block.getLocation()))
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PhaseChange, block.getLocation())) {
 			return;
+		}
+		
 		if (!Wave.canThaw(block)) {
 			Wave.thaw(block);
 			return;
@@ -79,21 +81,22 @@ public class Melt implements IAbility {
 			}
 		}
 	}
-
+	
 	public static void evaporate(Player player, Block block) {
 		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PhaseChange,
-				block.getLocation()))
+				block.getLocation())) {
 			return;
+		}
 		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block)
 				&& WaterManipulation.canPhysicsChange(block)) {
 			block.setType(Material.AIR);
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1);
 		}
 	}
-
+	
 	@Override
 	public IAbility getParent() {
-		return parent;
+		return this.parent;
 	}
-
+	
 }
