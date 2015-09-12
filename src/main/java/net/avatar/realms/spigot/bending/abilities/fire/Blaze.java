@@ -16,10 +16,10 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 public class Blaze extends ActiveAbility {
 
 	@ConfigurationParameter ("Arc")
-	private static int defaultarc = 20;
+	private static int DEFAULT_ARC = 20;
 
 	@ConfigurationParameter ("Range")
-	private static int defaultrange = 20;
+	private static int DEFAULT_RANGE = 20;
 
 	@ConfigurationParameter ("Arc-Cooldown")
 	public static long ARC_COOLDOWN = 1000;
@@ -48,7 +48,7 @@ public class Blaze extends ActiveAbility {
 			default:
 				Location location = this.player.getLocation();
 				
-				int arc = (int) PluginTools.firebendingDayAugment(defaultarc, this.player.getWorld());
+				int arc = (int) PluginTools.firebendingDayAugment(DEFAULT_ARC, this.player.getWorld());
 				
 				for (int i = -arc; i <= arc; i += stepsize) {
 					double angle = Math.toRadians(i);
@@ -64,7 +64,7 @@ public class Blaze extends ActiveAbility {
 					direction.setX(vx);
 					direction.setZ(vz);
 					
-					int range = defaultrange;
+					int range = DEFAULT_RANGE;
 					if (AvatarState.isAvatarState(this.player)) {
 						range = AvatarState.getValue(range);
 					}
