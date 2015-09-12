@@ -108,7 +108,6 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageFirebending() {
-		FireStream.progressAll();
 		FireStream.removeAllNoneFireIgnitedBlock();
 
 		FireBlast.progressAll();
