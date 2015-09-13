@@ -55,7 +55,6 @@ public class Lightning extends ActiveAbility {
 	private int damage = DAMAGE;
 	private double strikeradius = 4;
 	
-	private long starttime;
 	private long warmup;
 	private LightningStrike strike = null;
 	private List<Entity> hitentities = new LinkedList<Entity>();
@@ -66,7 +65,6 @@ public class Lightning extends ActiveAbility {
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
-		this.starttime = System.currentTimeMillis();
 		this.warmup = WARMUP;
 		if (AvatarState.isAvatarState(this.player)) {
 			this.warmup = 0;
@@ -186,7 +184,7 @@ public class Lightning extends ActiveAbility {
 		
 		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
 
-		if (System.currentTimeMillis() > (this.starttime + this.warmup)) {
+		if (System.currentTimeMillis() > (this.startedTime + this.warmup)) {
 			setState(AbilityState.Prepared);
 		}
 		
@@ -237,7 +235,7 @@ public class Lightning extends ActiveAbility {
 			}
 			if (instances.get(obj).getPlayer().getLocation().distance(location) <= blockdistance) {
 				isNearby = true;
-				((Lightning) instances.get(obj)).starttime = 0;
+				((Lightning) instances.get(obj)).startedTime = 0;
 			}
 		}
 		return isNearby;
