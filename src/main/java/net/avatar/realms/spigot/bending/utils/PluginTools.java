@@ -19,11 +19,8 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
-import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
-import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
@@ -119,7 +116,6 @@ public class PluginTools {
 		Bloodbending.removeAll();
 
 		FireStream.removeAll();
-		FireBurst.removeAll();
 		
 		// BendingManager.removeFlyers();
 		TempBlock.removeAll();

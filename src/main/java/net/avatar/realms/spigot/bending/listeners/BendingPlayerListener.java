@@ -78,8 +78,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveFall;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBurstSphere;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
@@ -87,7 +85,6 @@ import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.Melt;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
-import net.avatar.realms.spigot.bending.abilities.water.Torrent;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
@@ -366,10 +363,6 @@ public class BendingPlayerListener implements Listener{
 				if (ability == Abilities.Shockwave) {
 					new ShockwaveArea(player, null);
 				}
-				
-				if (ability == Abilities.FireBurst) {
-					new FireBurstSphere(player, null);
-				}
 			}
 			
 			if (!player.isSneaking()) {
@@ -427,10 +420,6 @@ public class BendingPlayerListener implements Listener{
 				
 				if (ability == Abilities.PhaseChange) {
 					new Melt(player, null);
-				}
-				
-				if (ability == Abilities.FireBurst) {
-					new FireBurst(player, null);
 				}
 				
 				if (ability == Abilities.MetalBending) {
