@@ -129,14 +129,20 @@ public class FireBlast extends ActiveAbility {
 			case Prepared:
 				this.damage *= 1.10;
 				launchSingle();
-				//TODO : Throw 2 more fireblast with the other constructor
+				Vector perpDir = this.direction.clone();
+				double tempZ = -perpDir.getZ();
+				perpDir.setZ(perpDir.getX());
+				perpDir.setX(tempZ);
+				List<Block> safes = new LinkedList<Block>();
+				new FireBlast(this.player, this, this.location.clone().add(perpDir), this.direction, this.damage, safes);
+				new FireBlast(this.player, this, this.location.clone().subtract(perpDir), this.direction, this.damage, safes);
 				this.bender.cooldown(Abilities.FireBlast, CHARGED_COOLDOWN);
-				return true;
+				return false;
 			case Progressing:
 			case Ending:
 			case Ended:
 			case Removed:
-				return false;
+				return true;
 		}
 		return true;
 	}
@@ -175,14 +181,13 @@ public class FireBlast extends ActiveAbility {
 			return false;
 		}
 		
-		if (this.location.distance(this.origin) > this.range) {
-			return false;
-		}
-		
 		long now = System.currentTimeMillis();
 		if (this.state == AbilityState.Preparing) {
 			if ((now - this.startedTime) > CHARGE_TIME) {
 				setState(AbilityState.Prepared);
+			}
+			else {
+				return true;
 			}
 		}
 
@@ -192,6 +197,9 @@ public class FireBlast extends ActiveAbility {
 		}
 		
 		if (this.state == AbilityState.Progressing) {
+			if (this.location.distance(this.origin) > this.range) {
+				return false;
+			}
 			Block block = this.location.getBlock();
 			if (BlockTools.isSolid(block) || block.isLiquid()) {
 				if (((block.getType() == Material.FURNACE) || (block.getType() == Material.BURNING_FURNACE)) && POWER_FURNACE) {
