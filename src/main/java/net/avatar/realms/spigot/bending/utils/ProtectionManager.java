@@ -36,6 +36,12 @@ public class ProtectionManager {
 
 	private static WorldGuardPlugin worldguard = null;
 	private static WGCustomFlagsPlugin wgCustomFlags = null;
+	
+	private static boolean useWG = false;
+	private static boolean useCustomFlagsWG = false;
+	private static boolean useFactions = false;
+	private static boolean useCitizens = false;
+	
 
 	private static StateFlag BENDING;
 	private static StateFlag BENDING_AIR;
@@ -49,25 +55,22 @@ public class ProtectionManager {
 
 	public static void init () {
 		// WorldGuard
-		boolean handleWG = Settings.RESPECT_WORLDGUARD;
-		if (handleWG) {
+		if (Settings.RESPECT_WORLDGUARD) {
 			pm = Bending.plugin.getServer().getPluginManager();
 			Plugin plugin = pm.getPlugin("WorldGuard");
 			if ((plugin != null) && (plugin.isEnabled())) {
 				worldguard = (WorldGuardPlugin) plugin;
+				useWG = true;
 			}
 
 			plugin = pm.getPlugin("WGCustomFlags");
 			if ((plugin != null) && (plugin.isEnabled())) {
 				wgCustomFlags = (WGCustomFlagsPlugin) plugin;
-			}
-
-			if ((worldguard == null) || (wgCustomFlags == null)) {
-				handleWG = false;
+				useCustomFlagsWG = true;
 			}
 		}
 
-		if (handleWG) {
+		if (useWG && useCustomFlagsWG) {
 			BENDING = 			new StateFlag("bending", true);
 			BENDING_AIR = 		new StateFlag("bending-air", true);
 			BENDING_CHI = 		new StateFlag("bending-chi", true);
@@ -96,6 +99,7 @@ public class ProtectionManager {
 		if (fcp != null) {
 			PluginTools.verbose("Recognized Factions...");
 			if (Settings.RESPECT_FACTIONS) {
+				useFactions = true;
 				PluginTools.verbose("Bending is set to respect Factions' claimed lands.");
 			}
 			else {
@@ -107,6 +111,7 @@ public class ProtectionManager {
 		if (citizens != null) {
 			PluginTools.verbose("Recognized Citizens...");
 			if (Settings.RESPECT_CITIZENS) {
+				useCitizens = true;
 				PluginTools.verbose("Bending is set to respect Citizens traits.");
 			}
 			else {
@@ -116,7 +121,7 @@ public class ProtectionManager {
 	}
 
 	public static boolean isEntityProtectedByCitizens (Entity entity) {
-		if (Settings.RESPECT_CITIZENS) {
+		if (useCitizens) {
 			if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
 				for (Trait trait : CitizensAPI.getNPCRegistry().getNPC(entity).getTraits()) {
 					if (trait.getName().equals("unbendable")) {
@@ -133,7 +138,7 @@ public class ProtectionManager {
 			return true;
 		}
 
-		if ((worldguard != null) && Settings.RESPECT_WORLDGUARD) {
+		if (useWG) {
 			LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 			for (Location location : new Location[] {loc, player.getLocation()}) {
 				if (!player.isOnline()) {
@@ -150,7 +155,7 @@ public class ProtectionManager {
 	}
 
 	public static boolean isRegionProtectedFromBending (Player player, Abilities ability, Location loc) {
-		if (!Settings.RESPECT_WORLDGUARD) {
+		if (!useWG) {
 			return false;
 		}
 
@@ -219,7 +224,7 @@ public class ProtectionManager {
 	}
 
 	public static boolean isRegionProtectedFromBendingPassives(Player player, Location loc) {
-		if (Settings.RESPECT_WORLDGUARD && (worldguard != null)) {
+		if (useWG) {
 			LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 			RegionContainer container = worldguard.getRegionContainer();
 			RegionQuery query = container.createQuery();
