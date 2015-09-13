@@ -17,11 +17,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -34,10 +37,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name="Water Manipulation", element=BendingType.Water)
-public class WaterManipulation implements IAbility {
-	private static Map<Integer, WaterManipulation> instances = new HashMap<Integer, WaterManipulation>();
+public class WaterManipulation extends ActiveAbility {
 	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
-	private static Map<Player, Integer> prepared = new HashMap<Player, Integer>();
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -66,8 +67,6 @@ public class WaterManipulation implements IAbility {
 
 	private static long interval = (long) (1000. / SPEED);
 
-	private Player player;
-	private BendingPlayer bender;
 	private int id;
 	private Location location = null;
 	private Block sourceblock = null;
@@ -85,11 +84,10 @@ public class WaterManipulation implements IAbility {
 	private int damage;
 	private double range;
 	private int displrange;
-	
-	private IAbility parent;
+	private boolean prepared = false;
 
 	public WaterManipulation(Player player, IAbility parent) {
-		this.parent = parent;
+		super(player, parent);
 		if (water.isEmpty()) {
 			water.add((byte) 0);
 			water.add((byte) 8);
@@ -111,19 +109,16 @@ public class WaterManipulation implements IAbility {
 			damage *= 1.15;
 		}
 		
-		if (prepare()) {
-			this.id = ID;
-			instances.put(this.id, this);
-			prepared.put(player, this.id);
-			if (ID == Integer.MAX_VALUE) {
-				ID = Integer.MIN_VALUE;
-			}
-			ID++;
-			this.time = System.currentTimeMillis();
+		this.id = ID;
+		if (ID == Integer.MAX_VALUE) {
+			ID = Integer.MIN_VALUE;
 		}
+		ID++;
+		this.time = System.currentTimeMillis();
 	}
 
-	private boolean prepare() {
+	@Override
+	public boolean sneak() {
 		Block block = BlockTools.getWaterSourceBlock(this.player, range,
 				EntityTools.canPlantbend(this.player));
 		cancelPrevious();
@@ -131,7 +126,7 @@ public class WaterManipulation implements IAbility {
 		if (block != null) {
 			this.sourceblock = block;
 			focusBlock();
-			return true;
+			return false;
 		}
 		
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);
@@ -149,31 +144,28 @@ public class WaterManipulation implements IAbility {
 				this.sourceblock = block;
 				focusBlock();
 				bPlayer.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
-				return true;
+				return false;
 			}
 		}
-		
+		AbilityManager.getManager().addInstance(this);
+		prepared = true;
 		return false;
 	}
 
 	private void cancelPrevious() {
-		if (prepared.containsKey(this.player)) {
-			if (instances.containsKey(prepared.get(this.player))) {
-				WaterManipulation old = instances.get(prepared.get(this.player));
-				if (!old.progressing) {
-					old.remove();
-				}
-			}
+		if (prepared && ! progressing) {
+			state = AbilityState.Ended;
 		}
 	}
 
+	@Override
 	public void remove() {
 		finalRemoveWater(this.sourceblock);
 		if(this.drainedBlock != null) {
 			this.drainedBlock.revertBlock();
 			this.drainedBlock = null;
 		}
-		remove(this.id);
+		super.remove();
 	}
 
 	private void focusBlock() {
@@ -181,6 +173,30 @@ public class WaterManipulation implements IAbility {
 	}
 
 	public void moveWater() {
+		if (!bender.isOnCooldown(Abilities.WaterManipulation)) {
+			if (!prepared && WaterReturn.hasWaterBottle(player)) {
+				Location eyeloc = player.getEyeLocation();
+				Block block = eyeloc.add(eyeloc.getDirection().normalize())
+						.getBlock();
+				if (BlockTools.isTransparentToEarthbending(player, block)
+						&& BlockTools.isTransparentToEarthbending(player,
+								eyeloc.getBlock())) {
+					block.setType(Material.WATER);
+					block.setData(full);
+					WaterManipulation watermanip = new WaterManipulation(
+							player, null);
+					watermanip.moveWater();
+					if (!watermanip.progressing) {
+						block.setType(Material.AIR);
+					} else {
+						WaterReturn.emptyWaterBottle(player);
+					}
+				}
+			}
+		}
+
+		redirectTargettedBlasts(player);
+		
 		if (this.sourceblock == null) {
 			return;
 		}
@@ -192,7 +208,7 @@ public class WaterManipulation implements IAbility {
 		if (this.targetdestination.distance(this.location) <= 1) {
 			this.progressing = false;
 			this.targetdestination = null;
-			remove(this.id);
+			this.state = AbilityState.Ended;
 		} else {
 			this.progressing = true;
 			this.settingup = true;
@@ -202,10 +218,6 @@ public class WaterManipulation implements IAbility {
 					this.targetdestination, range);
 			this.targetdirection = Tools.getDirection(this.firstdestination,
 					this.targetdestination).normalize();
-
-			if (BlockTools.isPlant(this.sourceblock)) {
-				new Plantbending(this.sourceblock, this);
-			}
 			addWater(this.sourceblock);
 		}
 		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.WaterManipulation, COOLDOWN);
@@ -239,16 +251,6 @@ public class WaterManipulation implements IAbility {
 		return loc;
 	}
 
-	private static void remove(int id) {
-		Player player = instances.get(id).player;
-		if (prepared.containsKey(player)) {
-			if (prepared.get(player) == id) {
-				prepared.remove(player);
-			}
-		}
-		instances.remove(id);
-	}
-
 	private void redirect(Player player, Location targetlocation) {
 		if (this.progressing && !this.settingup) {
 			if (this.location.distance(player.getLocation()) <= range) {
@@ -260,11 +262,8 @@ public class WaterManipulation implements IAbility {
 		}
 	}
 
-	/**
-	 * If return false, breakBlock has to be called !
-	 * @return
-	 */
-	private boolean progress() {
+	@Override
+	public boolean progress() {
 		if (this.player.isDead() || !this.player.isOnline()
 				|| !EntityTools.canBend(this.player, Abilities.WaterManipulation)) {
 			return false;
@@ -488,43 +487,9 @@ public class WaterManipulation implements IAbility {
 		block.setData(full);
 	}
 
-	@SuppressWarnings("deprecation")
-	public static void moveWater(Player player) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (!bPlayer.isOnCooldown(Abilities.WaterManipulation)) {
-
-			if (prepared.containsKey(player)) {
-				if (instances.containsKey(prepared.get(player))) {
-					instances.get(prepared.get(player)).moveWater();
-				}
-				prepared.remove(player);
-			} else if (WaterReturn.hasWaterBottle(player)) {
-				Location eyeloc = player.getEyeLocation();
-				Block block = eyeloc.add(eyeloc.getDirection().normalize())
-						.getBlock();
-				if (BlockTools.isTransparentToEarthbending(player, block)
-						&& BlockTools.isTransparentToEarthbending(player,
-								eyeloc.getBlock())) {
-					block.setType(Material.WATER);
-					block.setData(full);
-					WaterManipulation watermanip = new WaterManipulation(
-							player, null);
-					watermanip.moveWater();
-					if (!watermanip.progressing) {
-						block.setType(Material.AIR);
-					} else {
-						WaterReturn.emptyWaterBottle(player);
-					}
-				}
-			}
-		}
-
-		redirectTargettedBlasts(player);
-	}
-
 	private static void redirectTargettedBlasts(Player player) {
-		for(WaterManipulation manip : instances.values()) {
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+			WaterManipulation manip = (WaterManipulation) ab;
 			if (!manip.progressing){
 				continue;
 			}
@@ -559,7 +524,8 @@ public class WaterManipulation implements IAbility {
 
 	private static void block(Player player) {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for(WaterManipulation manip : instances.values()) {
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.player.equals(player)) {
 				continue;
 			}
@@ -591,19 +557,6 @@ public class WaterManipulation implements IAbility {
 
 		}
 		
-		for(WaterManipulation manip : toBreak) {
-			manip.remove();
-		}
-	}
-
-	public static void progressAll() {
-		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for(WaterManipulation manip : instances.values()) {
-			boolean keep = manip.progress();
-			if(!keep) {
-				toBreak.add(manip);
-			}
-		}
 		for(WaterManipulation manip : toBreak) {
 			manip.remove();
 		}
@@ -671,14 +624,6 @@ public class WaterManipulation implements IAbility {
 		}
 		return true;
 	}
-	
-	public static void removeAll() {
-		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>(instances.values());
-		for (WaterManipulation manip : toBreak) {
-			manip.remove();
-		}
-		prepared.clear();
-	}
 
 	public static boolean canBubbleWater(Block block) {
 		return canPhysicsChange(block);
@@ -686,7 +631,8 @@ public class WaterManipulation implements IAbility {
 
 	public static void removeAroundPoint(Location location, double radius) {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for(WaterManipulation manip : instances.values()) {
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.location.getWorld().equals(location.getWorld())) {
 				if (manip.location.distance(location) <= radius) {
 					toBreak.add(manip);
@@ -702,7 +648,8 @@ public class WaterManipulation implements IAbility {
 			Player source, boolean remove) {
 		boolean broke = false;
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for(WaterManipulation manip : instances.values()) {
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.location.getWorld().equals(location.getWorld())
 					&& !source.equals(manip.player)) {
 				if (manip.location.distance(location) <= radius) {
@@ -725,7 +672,8 @@ public class WaterManipulation implements IAbility {
 	}
 	
 	public static boolean isWaterManipulater(Player player) {
-		for (WaterManipulation manip : instances.values()) {
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+			WaterManipulation manip = (WaterManipulation) ab;
 			if(manip.player.equals(player)) {
 				return true;
 			}
@@ -734,7 +682,12 @@ public class WaterManipulation implements IAbility {
 	}
 
 	@Override
-	public IAbility getParent() {
-		return this.parent;
+	public Object getIdentifier() {
+		return id;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.WaterManipulation;
 	}
 }

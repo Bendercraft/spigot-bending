@@ -85,7 +85,6 @@ import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
-import net.avatar.realms.spigot.bending.abilities.water.IceSpike2;
 import net.avatar.realms.spigot.bending.abilities.water.Melt;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
@@ -254,7 +253,6 @@ public class BendingPlayerListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSwing(PlayerAnimationEvent event) {
-		
 		Player player = event.getPlayer();
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
@@ -266,12 +264,9 @@ public class BendingPlayerListener implements Listener{
 		}
 		
 		if (EntityTools.canBend(player, ability)) {
-			
-			if (ability.isAirbending() || ability.isChiblocking()
+			if (ability.isAirbending() || ability.isChiblocking() || ability.isWaterbending() || (ability.isFirebending()
 					|| (ability == Abilities.AvatarState)
-					|| (ability == Abilities.EarthBlast)
-					|| (ability == Abilities.WaterSpout)
-					|| (ability.isFirebending())) {
+					|| (ability == Abilities.EarthBlast))) {
 				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 				
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -330,16 +325,6 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 			
-			if (ability == Abilities.WaterManipulation) {
-				WaterManipulation.moveWater(player);
-				return;
-			}
-			
-			if (ability == Abilities.IceSpike) {
-				IceSpike2.activate(player);
-				return;
-			}
-			
 			if (ability == Abilities.PhaseChange) {
 				new FreezeMelt(player, null);
 				return;
@@ -347,16 +332,6 @@ public class BendingPlayerListener implements Listener{
 			
 			if (ability == Abilities.Surge) {
 				new WaterWall(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.OctopusForm) {
-				new OctopusForm(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.Torrent) {
-				new Torrent(player, null);
 				return;
 			}
 			
@@ -429,11 +404,7 @@ public class BendingPlayerListener implements Listener{
 				if (ability == Abilities.HealingWaters) {
 					new HealingWaters(player);
 				}
-				
-				if (ability == Abilities.IceSpike) {
-					new IceSpike2(player, null);
-				}
-				
+
 				if (ability == Abilities.EarthTunnel) {
 					new EarthTunnel(player, null);
 				}
@@ -448,10 +419,6 @@ public class BendingPlayerListener implements Listener{
 				
 				if (ability == Abilities.OctopusForm) {
 					OctopusForm.form(player);
-				}
-				
-				if (ability == Abilities.Torrent) {
-					Torrent.create(player);
 				}
 				
 				if (ability == Abilities.Bloodbending) {
@@ -469,11 +436,9 @@ public class BendingPlayerListener implements Listener{
 				if (ability == Abilities.MetalBending) {
 					MetalBending.metalMelt(player);
 				}
-				
-				if ( ability.isAirbending() || (ability.isChiblocking()) || ability.isFirebending()
-						|| (ability == Abilities.EarthBlast)
-						|| (ability == Abilities.WaterBubble)) {
-					
+
+				if ( ability.isAirbending() || (ability.isChiblocking()) || ability.isWaterbending() || ability.isFirebending()
+						|| (ability == Abilities.EarthBlast)) {
 					Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 					
 					if ((abilities == null) || abilities.isEmpty()) {

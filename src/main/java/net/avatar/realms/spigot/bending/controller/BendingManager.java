@@ -32,14 +32,6 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
-import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
-import net.avatar.realms.spigot.bending.abilities.water.IceSpike2;
-import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
-import net.avatar.realms.spigot.bending.abilities.water.Plantbending;
-import net.avatar.realms.spigot.bending.abilities.water.Torrent;
-import net.avatar.realms.spigot.bending.abilities.water.TorrentBurst;
-import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.abilities.water.WaterReturn;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -115,19 +107,9 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageWaterbending() {
-		FreezeMelt.progressAll();
-		WaterManipulation.progressAll();
 		WaterWall.progressAll();
 		Wave.progressAll();
-		IceSpike.progressAll();
-		IceSpike2.progressAll();
-		Torrent.progressAll();
-		TorrentBurst.progressAll();
 		Bloodbending.progressAll();
-		OctopusForm.progressAll();
-
-		Plantbending.regrow();
-		WaterReturn.progressAll();
 	}
 
 	private void handleDayNight() {

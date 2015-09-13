@@ -193,9 +193,6 @@ public class Wave implements IAbility {
 					this.targetdestination).normalize();
 			this.targetdestination = this.location.clone().add(
 					this.targetdirection.clone().multiply(this.range));
-			if (BlockTools.isPlant(this.sourceblock)) {
-				new Plantbending(this.sourceblock, this);
-			}
 			if (!BlockTools.adjacentToThreeOrMoreSources(this.sourceblock)) {
 				this.sourceblock.setType(Material.AIR);
 			}
@@ -500,7 +497,7 @@ public class Wave implements IAbility {
 				this.frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
-				new FreezeMelt(this.player, this, block);
+				//new FreezeMelt(this.player, this, block); TODO temp
 			}
 			if (BlockTools.isPlant(block) && (block.getType() != Material.LEAVES)) {
 				block.breakNaturally();
@@ -538,7 +535,7 @@ public class Wave implements IAbility {
 
 	private void returnWater() {
 		if (this.location != null) {
-			new WaterReturn(this.player, this.location.getBlock(), this);
+			//new WaterReturn(this.player, this.location.getBlock(), this); TODO temp
 		}
 	}
 

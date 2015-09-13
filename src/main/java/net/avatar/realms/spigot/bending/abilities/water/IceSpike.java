@@ -1,26 +1,24 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -29,237 +27,272 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Ice Spikes", element=BendingType.Water)
-public class IceSpike implements IAbility {
-	private static Map<Integer, IceSpike> instances = new HashMap<Integer, IceSpike>();
-	
-	private Map<Player, Long> removeTimers = new HashMap<Player, Long>();
-	private static Map<Player, Long> cooldowns = new HashMap<Player, Long>();
-	private static long removeTimer = 500;
-	private static Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
-
+public class IceSpike extends ActiveAbility {
+	private static double defaultrange = 20;
+	private static int defaultdamage = 1;
+	private static int defaultmod = 2;
 	private static int ID = Integer.MIN_VALUE;
+	static long slowCooldown = 5000;
 
-	@ConfigurationParameter("Range")
-	private static double RANGE = 20;
-	
-	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 2000;
-	
-	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 4;
-	
-	@ConfigurationParameter("Throw-Mult")
-	private static double THROW_MULT = 0.7;
-	
-	private static double speed = 25;
-	private static final Vector direction = new Vector(0, 1, 0);
+	private static final long interval = 20;
+	private static final byte data = 0;
+	private static final double affectingradius = 2;
+	private static final double deflectrange = 3;
 
-	private static long interval = (long) (1000. / speed);
-
-	private Location origin;
-	private Location location;
-	private Block block;
-	private Player player;
-	private int progress = 0;
-	private int damage = DAMAGE;
-	int id;
+	private int id;
+	private double range;
+	private boolean plantbending = false;
+	private Block sourceblock;
+	private TempBlock source;
+	private boolean prepared = false;
+	private boolean settingup = false;
+	private boolean progressing = false;
 	private long time;
-	int height = 2;
-	private Vector thrown = new Vector(0, THROW_MULT, 0);
-	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
-	private List<LivingEntity> damaged = new ArrayList<LivingEntity>();
-	private IAbility parent;
+
+	private Location location;
+	private Location firstdestination;
+	private Location destination;
+	
+	private SpikeField field = null;
 
 	public IceSpike(Player player, IAbility parent) {
-		this.parent = parent;
-		if (cooldowns.containsKey(player))
-			if (cooldowns.get(player) + COOLDOWN >= System.currentTimeMillis())
-				return;
-		try {
-			this.player = player;
-
-			double lowestdistance = RANGE + 1;
-			Entity closestentity = null;
-			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
-					player.getLocation(), RANGE)) {
-				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
-					continue;
-				}
-				if (Tools.getDistanceFromLine(player.getLocation()
-						.getDirection(), player.getLocation(), entity
-						.getLocation()) <= 2
-						&& (entity.getEntityId() != player.getEntityId())) {
-					double distance = player.getLocation().distance(
-							entity.getLocation());
-					if (distance < lowestdistance) {
-						closestentity = entity;
-						lowestdistance = distance;
-					}
-				}
-			}
-			if (closestentity != null) {
-				Block temptestingblock = closestentity.getLocation().getBlock()
-						.getRelative(BlockFace.DOWN, 1);
-				// if (temptestingblock.getType() == Material.ICE){
-				this.block = temptestingblock;
-				// }
-			} else {
-				this.block = EntityTools.getTargetBlock(player, RANGE);
-			}
-			origin = block.getLocation();
-			location = origin.clone();
-
-		} catch (IllegalStateException e) {
-			return;
-		}
-
-		loadAffectedBlocks();
-
-		if (height != 0) {
-			if (canInstantiate()) {
-				id = ID;
-				instances.put(id, this);
-				if (ID >= Integer.MAX_VALUE) {
-					ID = Integer.MIN_VALUE;
-				}
-				ID++;
-				time = System.currentTimeMillis() - interval;
-				cooldowns.put(player, System.currentTimeMillis());
-			}
-		}
-	}
-
-	public IceSpike(Player player, Location origin, int damage,
-			Vector throwing, long aoecooldown, IAbility parent) {
-		this.parent = parent;
+		super(player, parent);
+		block(player);
+		if (EntityTools.canPlantbend(player))
+			plantbending = true;
+		range = PluginTools.waterbendingNightAugment(defaultrange,
+				player.getWorld());
 		this.player = player;
-		this.origin = origin;
-		location = origin.clone();
-		block = location.getBlock();
-		this.damage = damage;
-		this.thrown = throwing;
+		sourceblock = BlockTools.getWaterSourceBlock(player, range,
+				plantbending);
 
-		loadAffectedBlocks();
+		if (sourceblock == null) {
+			field = new SpikeField(player, this);
+		}
+	}
 
-		if (block.getType() == Material.ICE) {
-			if (canInstantiate()) {
-				id = ID;
-				instances.put(id, this);
-				if (ID >= Integer.MAX_VALUE) {
-					ID = Integer.MIN_VALUE;
-				}
-				ID++;
-				time = System.currentTimeMillis() - interval;
+	//SNEAK
+	@Override
+	public boolean sneak() {
+		if (sourceblock == null) {
+			state = AbilityState.Ended;
+			return false;
+		}
+		
+		for (IAbility ab : AbilityManager.getManager().getInstances(this.getAbilityType()).values()) {
+			IceSpike ice = (IceSpike) ab;
+			if (ice.prepared && ice.player == player) {
+				ice.remove();
 			}
 		}
-	}
+		location = sourceblock.getLocation();
+		prepared = true;
 
-	private void loadAffectedBlocks() {
-		affectedblocks.clear();
-		Block thisblock;
-		for (int i = 1; i <= height; i++) {
-			thisblock = block.getWorld().getBlockAt(
-					location.clone().add(direction.clone().multiply(i)));
-			affectedblocks.put(thisblock, thisblock);
+		id = ID++;
+		if (ID >= Integer.MAX_VALUE) {
+			ID = Integer.MIN_VALUE;
 		}
-	}
-
-	private boolean blockInAffectedBlocks(Block block) {
-		return affectedblocks.containsKey(block);
-	}
-
-	public static boolean blockInAllAffectedBlocks(Block block) {
-		for (IceSpike spike : instances.values()) {
-			if (spike.blockInAffectedBlocks(block))
-				return true;
-		}
+		AbilityManager.getManager().addInstance(this);
 		return false;
 	}
 
-	public static void revertBlock(Block block) {
-		for (IceSpike spike : instances.values()) {
-			if (spike.blockInAffectedBlocks(block)) {
-				spike.affectedblocks.remove(block);
-			}
-		}
-	}
+	//SWING
+	@Override
+	public boolean swing() {
+		redirect(player);
+		boolean activate = false;
 
-	private boolean canInstantiate() {
-		if (block.getType() != Material.ICE)
+		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
+				Abilities.IceSpike)){
 			return false;
-		for (Block block : affectedblocks.keySet()) {
-			if (blockInAllAffectedBlocks(block)
-					|| block.getType() != Material.AIR
-					|| (block.getX() == player.getEyeLocation().getBlock()
-							.getX() && block.getZ() == player.getEyeLocation()
-							.getBlock().getZ())) {
-				return false;
+		}
+			
+		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.IceSpike).values()) {
+			IceSpike ice = (IceSpike) ab;
+			if (ice.prepared && ice.player == player) {
+				ice.throwIce();
+				activate = true;
 			}
 		}
-		return true;
-	}
-	
-	public static void progressAll() {
-		List<IceSpike> toRemove = new LinkedList<IceSpike>();
-		for(IceSpike spike : instances.values()) {
-			boolean keep = spike.progress();
-			if(!keep) {
-				toRemove.add(spike);
-			}
-		}
-		
-		for(IceSpike spike : toRemove) {
-			spike.remove();
-		}
-	}
-	
-	private void remove() {
-		instances.remove(id);
-	}
 
-	private boolean progress() {
-		if (System.currentTimeMillis() - time >= interval) {
-			time = System.currentTimeMillis();
-			if (progress < height) {
-				moveEarth();
-				removeTimers.put(player, System.currentTimeMillis());
-			} else {
-				if (removeTimers.get(player) + removeTimer <= System
-						.currentTimeMillis()) {
-					baseblocks.put(
-							location.clone()
-									.add(direction.clone().multiply(
-											-1 * (height))).getBlock(),
-							(height - 1));
-					if (!revertblocks()) {
+		if (!activate) {
+			IceSpike spike = new IceSpike(player, null);
+			if (spike.id == 0 && WaterReturn.hasWaterBottle(player)) {
+				Location eyeloc = player.getEyeLocation();
+				Block block = eyeloc.add(eyeloc.getDirection().normalize())
+						.getBlock();
+				if (BlockTools.isTransparentToEarthbending(player, block)
+						&& BlockTools.isTransparentToEarthbending(player,
+								eyeloc.getBlock())) {
+
+					LivingEntity target = (LivingEntity) EntityTools
+							.getTargettedEntity(player, defaultrange);
+					Location destination;
+					if (target == null) {
+						destination = EntityTools.getTargetedLocation(player,
+								defaultrange, BlockTools.transparentEarthbending);
+					} else {
+						destination = Tools.getPointOnLine(player.getEyeLocation(),
+								target.getEyeLocation(), defaultrange);
+					}
+
+					if (destination.distance(block.getLocation()) < 1)
 						return false;
+
+					block.setType(Material.WATER);
+					block.setData((byte) 0x0);
+					throwIce();
+
+					if (progressing) {
+						WaterReturn.emptyWaterBottle(player);
+					} else {
+						block.setType(Material.AIR);
 					}
 				}
 			}
 		}
-		return true;
+		
+		return false;
 	}
 
-	private boolean moveEarth() {
-		progress++;
-		Block affectedblock = location.clone().add(direction).getBlock();
-		location = location.add(direction);
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
-				location))
+	private void throwIce() {
+		if (!prepared)
+			return;
+		LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(
+				player, range);
+		if (target == null) {
+			destination = EntityTools.getTargetedLocation(player, range,
+					BlockTools.transparentEarthbending);
+		} else {
+			destination = target.getEyeLocation();
+		}
+	
+		location = sourceblock.getLocation();
+		if (destination.distance(location) < 1)
+			return;
+		firstdestination = location.clone();
+		if (destination.getY() - location.getY() > 2) {
+			firstdestination.setY(destination.getY() - 1);
+		} else {
+			firstdestination.add(0, 2, 0);
+		}
+		destination = Tools
+				.getPointOnLine(firstdestination, destination, range);
+		progressing = true;
+		settingup = true;
+		prepared = false;
+
+		if (BlockTools.isPlant(sourceblock)) {
+			sourceblock.setType(Material.AIR);
+		} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
+			sourceblock.setType(Material.AIR);
+		}
+
+		source = new TempBlock(sourceblock, Material.ICE, data);
+	}
+
+	@Override
+	public boolean progress() {
+		if (player.isDead() || !player.isOnline()
+				|| !EntityTools.canBend(player, Abilities.IceSpike)) {
 			return false;
-		for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(location, 1.4)) {
-			if (en != player && !damaged.contains(((LivingEntity) en))) {
-				LivingEntity le = (LivingEntity) en;
-				affect(le);
+		}
+
+		if (!player.getWorld().equals(location.getWorld())) {
+			return false;
+		}
+
+		if (player.getEyeLocation().distance(location) >= range) {
+			if (progressing) {
+				returnWater();
 			}
-		}
-		affectedblock.setType(Material.ICE);
-		loadAffectedBlocks();
-
-		if (location.distance(origin) >= height) {
 			return false;
 		}
 
+		if (EntityTools.getBendingAbility(player) != Abilities.IceSpike
+				&& prepared) {
+			return false;
+		}
+
+		if (System.currentTimeMillis() < time + interval) {
+			// Not enough time has passed to progress, just waiting
+			return true;
+		}
+
+		time = System.currentTimeMillis();
+
+		if (progressing) {
+			Vector direction = null;
+
+			if (location.getBlockY() == firstdestination.getBlockY()) {
+				settingup = false;
+			}
+
+			if (location.distance(destination) <= 2) {
+				returnWater();
+				return false;
+			}
+
+			if (settingup) {
+				direction = Tools.getDirection(location, firstdestination)
+						.normalize();
+			} else {
+				direction = Tools.getDirection(location, destination)
+						.normalize();
+			}
+
+			location.add(direction);
+
+			Block block = location.getBlock();
+
+			if (block.equals(sourceblock)) {
+				return true;
+			}
+
+			source.revertBlock();
+			source = null;
+
+			if (BlockTools.isTransparentToEarthbending(player, block)
+					&& !block.isLiquid()) {
+				BlockTools.breakBlock(block);
+			} else if (!BlockTools.isWater(block)) {
+				returnWater();
+				return false;
+			}
+
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
+					location)) {
+				returnWater();
+				return false;
+			}
+
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
+					affectingradius)) {
+				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					continue;
+				}
+				if (entity.getEntityId() != player.getEntityId()) {
+					affect(entity);
+					progressing = false;
+					returnWater();
+				}
+			}
+
+			if (!progressing) {
+				return false;
+			}
+
+			sourceblock = block;
+			source = new TempBlock(sourceblock, Material.ICE, data);
+
+		} else if (prepared) {
+			Tools.playFocusWaterEffect(sourceblock);
+		}
+		
+		if(field != null) {
+			return field.progress();
+		}
+		
 		return true;
 	}
 
@@ -268,56 +301,158 @@ public class IceSpike implements IAbility {
 			return;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		entity.setVelocity(thrown);
-		entity.damage(damage);
-		damaged.add(entity);
-		long slowCooldown = IceSpike2.slowCooldown;
-		int mod = 2;
+		int mod = (int) PluginTools.waterbendingNightAugment(defaultmod,
+				player.getWorld());
+		double damage = (int) PluginTools.waterbendingNightAugment(
+				defaultdamage, player.getWorld());
 		if (entity instanceof Player) {
 			if (bPlayer.canBeSlowed()) {
 				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW,
 						70, mod);
 				new TempPotionEffect(entity, effect);
 				bPlayer.slow(slowCooldown);
+				entity.damage(damage, player);
 			}
 		} else {
 			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70,
 					mod);
 			new TempPotionEffect(entity, effect);
+			entity.damage(damage, player);
 		}
 
 	}
 
-	public static boolean blockIsBase(Block block) {
-		if (baseblocks.containsKey(block)) {
-			return true;
+	private static void redirect(Player player) {
+		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.IceSpike).values()) {
+			IceSpike ice = (IceSpike) ab;
+			
+			if (!ice.progressing)
+				continue;
+
+			if (!ice.location.getWorld().equals(player.getWorld()))
+				continue;
+
+			if (ice.player.equals(player)) {
+				Location location;
+				Entity target = EntityTools.getTargettedEntity(player,
+						defaultrange);
+				if (target == null) {
+					location = EntityTools.getTargetedLocation(player,
+							defaultrange);
+				} else {
+					location = ((LivingEntity) target).getEyeLocation();
+				}
+				location = Tools.getPointOnLine(ice.location, location,
+						defaultrange * 2);
+				ice.redirect(location, player);
+			}
+
+			Location location = player.getEyeLocation();
+			Vector vector = location.getDirection();
+			Location mloc = ice.location;
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
+					mloc))
+				continue;
+			if (mloc.distance(location) <= defaultrange
+					&& Tools.getDistanceFromLine(vector, location, ice.location) < deflectrange
+					&& mloc.distance(location.clone().add(vector)) < mloc
+							.distance(location.clone().add(
+									vector.clone().multiply(-1)))) {
+				Location loc;
+				Entity target = EntityTools.getTargettedEntity(player,
+						defaultrange);
+				if (target == null) {
+					loc = EntityTools.getTargetedLocation(player, defaultrange);
+				} else {
+					loc = ((LivingEntity) target).getEyeLocation();
+				}
+				loc = Tools.getPointOnLine(ice.location, loc, defaultrange * 2);
+				ice.redirect(loc, player);
+			}
+
+		}
+	}
+
+	private static void block(Player player) {
+		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.IceSpike).values()) {
+			IceSpike ice = (IceSpike) ab;
+
+			if (ice.player.equals(player)) {
+				continue;
+			}
+
+			if (!ice.location.getWorld().equals(player.getWorld())) {
+				continue;
+			}
+
+			if (!ice.progressing) {
+				continue;
+			}
+
+			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
+					ice.location)) {
+				continue;
+			}
+
+			if (player != null) {
+				Location location = player.getEyeLocation();
+				Vector vector = location.getDirection();
+				Location mloc = ice.location;
+				if (mloc.distance(location) <= defaultrange
+						&& Tools.getDistanceFromLine(vector, location,
+								ice.location) < deflectrange
+						&& mloc.distance(location.clone().add(vector)) < mloc
+								.distance(location.clone().add(
+										vector.clone().multiply(-1)))) {
+					ice.state = AbilityState.Ended;
+				}
+			}
+		}
+	}
+
+	private void redirect(Location destination, Player player) {
+		this.destination = destination;
+		this.player = player;
+	}
+
+	/**
+	 * Remove cleanly this ability in game, but does not remove it on instances
+	 * list; assuming it is done after
+	 */
+	private void clear() {
+		if (progressing) {
+			if (source != null)
+				source.revertBlock();
+			progressing = false;
+		}
+	}
+
+	@Override
+	public void remove() {
+		this.clear();
+		super.remove();
+	}
+
+	private void returnWater() {
+		new WaterReturn(player, sourceblock, this);
+	}
+
+	public static boolean isBending(Player player) {
+		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.IceSpike).values()) {
+			IceSpike ice = (IceSpike) ab;
+			if (ice.player.equals(player))
+				return true;
 		}
 		return false;
 	}
 
-	public static void removeBlockBase(Block block) {
-		if (baseblocks.containsKey(block)) {
-			baseblocks.remove(block);
-		}
-
-	}
-
-	public static void removeAll() {
-		instances.clear();
-	}
-
-	public boolean revertblocks() {
-		Vector direction = new Vector(0, -1, 0);
-		location.getBlock().setType(Material.AIR);// .clone().add(direction).getBlock().setType(Material.AIR);
-		location.add(direction);
-		if (blockIsBase(location.getBlock()))
-			return false;
-		return true;
+	@Override
+	public Object getIdentifier() {
+		return id;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Abilities getAbilityType() {
+		return Abilities.IceSpike;
 	}
-
 }

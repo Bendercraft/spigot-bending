@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -26,9 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Torrent", element=BendingType.Water)
-public class TorrentBurst implements IAbility {
-	private static Map<Integer, TorrentBurst> instances = new HashMap<Integer, TorrentBurst>();
-
+public class TorrentBurst extends ActiveAbility {
 	private static int ID = Integer.MIN_VALUE;
 	private static double defaultmaxradius = 15;
 	private static double dr = 0.5;
@@ -48,8 +48,6 @@ public class TorrentBurst implements IAbility {
 	private Map<Integer, Map<Integer, Double>> heights = new HashMap<Integer, Map<Integer, Double>>();
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private List<Entity> affectedentities = new LinkedList<Entity>();
-	
-	private IAbility parent;
 
 	public TorrentBurst(Player player, IAbility parent) {
 		this(player, player.getEyeLocation(), dr, parent);
@@ -64,8 +62,7 @@ public class TorrentBurst implements IAbility {
 	}
 
 	public TorrentBurst(Player player, Location location, double radius, IAbility parent) {
-		this.parent = parent;
-		this.player = player;
+		super(player, parent);
 		World world = player.getWorld();
 		origin = location.clone();
 		time = System.currentTimeMillis();
@@ -77,7 +74,7 @@ public class TorrentBurst implements IAbility {
 			ID = Integer.MIN_VALUE;
 		}
 		initializeHeightsMap();
-		instances.put(id, this);
+		AbilityManager.getManager().addInstance(this);
 	}
 
 	private void initializeHeightsMap() {
@@ -93,7 +90,8 @@ public class TorrentBurst implements IAbility {
 		}
 	}
 
-	private boolean progress() {
+	@Override
+	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
@@ -206,9 +204,10 @@ public class TorrentBurst implements IAbility {
 		}
 	}
 
-	private void remove() {
+	@Override
+	public void remove() {
 		this.clear();
-		instances.remove(id);
+		super.remove();
 	}
 
 	private void returnWater() {
@@ -221,29 +220,13 @@ public class TorrentBurst implements IAbility {
 		new WaterReturn(player, location.getBlock(), this);
 	}
 
-	public static void progressAll() {
-		List<TorrentBurst> toRemove = new LinkedList<TorrentBurst>();
-		for (TorrentBurst burst : instances.values()) {
-			boolean keep = burst.progress();
-			if(!keep) {
-				toRemove.add(burst);
-			}
-		}
-		for (TorrentBurst burst : toRemove) {
-			burst.remove();
-		}
-	}
-
-	public static void removeAll() {
-		for (TorrentBurst burst : instances.values())
-			burst.clear();
-		
-		instances.clear();
+	@Override
+	public Object getIdentifier() {
+		return id;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Abilities getAbilityType() {
+		return Abilities.Torrent;
 	}
-
 }

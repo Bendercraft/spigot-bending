@@ -23,12 +23,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
-import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
-import net.avatar.realms.spigot.bending.abilities.water.IceSpike2;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
-import net.avatar.realms.spigot.bending.abilities.water.Plantbending;
-import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.abilities.water.WaterReturn;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
@@ -119,21 +114,16 @@ public class PluginTools {
 		EarthTunnel.removeAll();
 		Shockwave.removeAll();
 
-		FreezeMelt.removeAll();
-		IceSpike.removeAll();
-		IceSpike2.removeAll();
-		WaterManipulation.removeAll();
 		WaterWall.removeAll();
 		Wave.removeAll();
-		Plantbending.regrow();
-		OctopusForm.removeAll();
 		Bloodbending.removeAll();
 
 		FireStream.removeAll();
 		FireBurst.removeAll();
-
-		WaterReturn.removeAll();
-		TempBlock.removeAll(); // Should do itself when conversion is done
+		
+		// BendingManager.removeFlyers();
+		TempBlock.removeAll();
+		
 		BlockTools.removeAllEarthbendedBlocks();
 	}
 

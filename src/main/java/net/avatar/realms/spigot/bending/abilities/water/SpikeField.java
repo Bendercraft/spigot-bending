@@ -2,13 +2,12 @@ package net.avatar.realms.spigot.bending.abilities.water;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -21,9 +20,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Spikes Field", element=BendingType.Water)
-public class SpikeField implements IAbility {
-
+public class SpikeField {
 	@ConfigurationParameter("Radius")
 	private static int RADIUS = 6;
 	
@@ -43,10 +40,10 @@ public class SpikeField implements IAbility {
 	
 	private int damage = DAMAGE;
 	private Vector thrown = new Vector(0, THROW_MULT, 0);
-	private IAbility parent;
+	
+	private List<IceSpikeColumn> spikes = new LinkedList<IceSpikeColumn>();
 
 	public SpikeField(Player p, IAbility parent) {
-		this.parent = parent;
 		if (cooldowns.containsKey(p))
 			if (cooldowns.get(p) + COOLDOWN >= System.currentTimeMillis())
 				return;
@@ -106,16 +103,19 @@ public class SpikeField implements IAbility {
 			}
 
 			if (targetblock.getRelative(BlockFace.UP).getType() != Material.ICE) {
-				new IceSpike(p, targetblock.getLocation(), damage, thrown,
-						COOLDOWN, this);
+				spikes.add(new IceSpikeColumn(p, targetblock.getLocation(), damage, thrown,
+						COOLDOWN, this));
 				cooldowns.put(p, System.currentTimeMillis());
 				iceblocks.remove(targetblock);
 			}
 		}
 	}
-
-	@Override
-	public IAbility getParent() {
-		return parent;
+	
+	public boolean progress() {
+		boolean result = false;
+		for(IceSpikeColumn column : spikes) {
+			result = result || column.progress();
+		}
+		return result;
 	}
 }
