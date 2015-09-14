@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,7 +50,12 @@ import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
+import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
+import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
+import net.avatar.realms.spigot.bending.abilities.water.Torrent;
+import net.avatar.realms.spigot.bending.abilities.water.TorrentBurst;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
+import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
@@ -77,8 +83,8 @@ public class AbilityManager {
 	
 	public void progressAllAbilities() {
 		List<IAbility> toRemove = new LinkedList<IAbility>();
-		for (Abilities key : this.abilities.keySet()) {
-			for (IAbility ability : this.abilities.get(key).values()) {
+		for (Map<Object, IAbility> abilities : this.abilities.values()) {
+			for (IAbility ability : abilities.values()) {
 				boolean canKeep = ability.progress();
 				if (!canKeep) {
 					toRemove.add(ability);
@@ -174,6 +180,8 @@ public class AbilityManager {
 				return new WaterSpout(player);
 			case HealingWaters:
 				return new HealingWaters(player);
+			case WaterManipulation:
+				return new WaterManipulation(player, null);
 				
 			case Tremorsense:
 				return new Tremorsense(player);
@@ -199,7 +207,7 @@ public class AbilityManager {
 		if(this.abilities.containsKey(type)) {
 			return this.abilities.get(type);
 		}
-		return null;
+		return Collections.emptyMap();
 	}
 	
 	public boolean isUsingAbility(Player player, Abilities ability) {
@@ -294,19 +302,15 @@ public class AbilityManager {
 		//		register(FastSwmimming.class);
 		//		register(FreezeMelt.class);
 		register(HealingWaters.class);
-		//		register(IceSpike.class);
-		//		register(IceSpike2.class);
+		register(IceSpike.class);
 		//		register(IceSwipe.class);
 		//		register(Melt.class);
-		//		register(OctopusForm.class);
-		//		register(Plantbending.class);
-		//		register(SpikeField.class);
-		//		register(Torrent.class);
-		//		register(TorrentBurst.class);
+		register(OctopusForm.class);
+		register(Torrent.class);
+		register(TorrentBurst.class);
 		register(WaterBubble.class);
-		//		register(WaterManipulation.class);
+		register(WaterManipulation.class);
 		register(WaterPassive.class);
-		//		register(WaterReturn.class);
 		register(WaterSpout.class);
 		//		register(WaterWall.class);
 		//		register(Wave.class);

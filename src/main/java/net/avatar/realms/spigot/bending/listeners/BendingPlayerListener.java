@@ -264,9 +264,9 @@ public class BendingPlayerListener implements Listener{
 		}
 		
 		if (EntityTools.canBend(player, ability)) {
-			if (ability.isAirbending() || ability.isChiblocking() || ability.isWaterbending() || (ability.isFirebending()
+			if (ability.isAirbending() || ability.isChiblocking() || ability.isWaterbending() || ability.isFirebending()
 					|| (ability == Abilities.AvatarState)
-					|| (ability == Abilities.EarthBlast))) {
+					|| (ability == Abilities.EarthBlast)) {
 				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
 				
 				if ((abilities == null) || abilities.isEmpty()) {
@@ -356,7 +356,7 @@ public class BendingPlayerListener implements Listener{
 					&& EntityTools.canBendPassive(player, BendingType.Water)){
 				FastSwimming ab = new FastSwimming(player);
 				ab.start();
-				return;
+				//return;
 			}
 		}
 		
@@ -394,11 +394,6 @@ public class BendingPlayerListener implements Listener{
 				
 				if (ability == Abilities.EarthArmor) {
 					new EarthShield(player, null);
-				}
-				
-				if (ability == Abilities.WaterManipulation) {
-					new WaterManipulation(player, null);
-					return;
 				}
 				
 				if (ability == Abilities.HealingWaters) {
@@ -443,6 +438,7 @@ public class BendingPlayerListener implements Listener{
 					
 					if ((abilities == null) || abilities.isEmpty()) {
 						ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+						Bending.log.info("I created proudly (and fresh) "+ab);
 						ab.sneak();
 						return;
 					}
@@ -457,6 +453,7 @@ public class BendingPlayerListener implements Listener{
 					}
 					if (shouldCreateNew) {
 						ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+						Bending.log.info("I created proudly (because I was not satisfied) "+ab);
 						ab.sneak();
 					}
 					return;

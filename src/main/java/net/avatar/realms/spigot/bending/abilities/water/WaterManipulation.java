@@ -84,7 +84,8 @@ public class WaterManipulation extends ActiveAbility {
 	private int damage;
 	private double range;
 	private int displrange;
-	private boolean prepared = false;
+	
+	private WaterReturn waterReturn;
 
 	public WaterManipulation(Player player, IAbility parent) {
 		super(player, parent);
@@ -119,23 +120,24 @@ public class WaterManipulation extends ActiveAbility {
 
 	@Override
 	public boolean sneak() {
+		if(state != AbilityState.CanStart && state != AbilityState.Prepared) {
+			return true;
+		}
+		state = AbilityState.Preparing;
 		Block block = BlockTools.getWaterSourceBlock(this.player, range,
 				EntityTools.canPlantbend(this.player));
-		cancelPrevious();
+		
 		block(this.player);
 		if (block != null) {
 			this.sourceblock = block;
 			focusBlock();
-			return false;
-		}
-		
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);
-		if(bPlayer == null) {
+			AbilityManager.getManager().addInstance(this);
+			state = AbilityState.Prepared;
 			return false;
 		}
 		
 		//If no block available, check if bender can drainbend !
-		if(Drainbending.canDrainBend(this.player) && !bPlayer.isOnCooldown(Abilities.Drainbending)) {
+		if(Drainbending.canDrainBend(this.player) && !bender.isOnCooldown(Abilities.Drainbending)) {
 			Location location = this.player.getEyeLocation();
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
@@ -143,19 +145,34 @@ public class WaterManipulation extends ActiveAbility {
 				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 				this.sourceblock = block;
 				focusBlock();
-				bPlayer.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
+				bender.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
+				AbilityManager.getManager().addInstance(this);
+				state = AbilityState.Prepared;
 				return false;
 			}
 		}
-		AbilityManager.getManager().addInstance(this);
-		prepared = true;
-		return false;
-	}
-
-	private void cancelPrevious() {
-		if (prepared && ! progressing) {
-			state = AbilityState.Ended;
+		
+		//Check for bottle too !
+		if (!bender.isOnCooldown(Abilities.WaterManipulation)) {
+			if (state != AbilityState.Prepared && WaterReturn.hasWaterBottle(player)) {
+				Location eyeloc = player.getEyeLocation();
+				block = eyeloc.add(eyeloc.getDirection().normalize())
+						.getBlock();
+				if (BlockTools.isTransparentToEarthbending(player, block)
+						&& BlockTools.isTransparentToEarthbending(player,
+								eyeloc.getBlock())) {
+					block.setType(Material.WATER);
+					block.setData(full);
+					if (!progressing) {
+						block.setType(Material.AIR);
+					} else {
+						WaterReturn.emptyWaterBottle(player);
+					}
+				}
+			}
 		}
+		
+		return false;
 	}
 
 	@Override
@@ -165,6 +182,17 @@ public class WaterManipulation extends ActiveAbility {
 			this.drainedBlock.revertBlock();
 			this.drainedBlock = null;
 		}
+		if(this.trail != null) {
+			this.trail.revertBlock();
+			this.trail = null;
+		}
+		if(this.trail2 != null) {
+			this.trail2.revertBlock();
+			this.trail2 = null;
+		}
+		if(waterReturn != null) {
+			waterReturn.remove();
+		}
 		super.remove();
 	}
 
@@ -172,55 +200,42 @@ public class WaterManipulation extends ActiveAbility {
 		this.location = this.sourceblock.getLocation();
 	}
 
-	public void moveWater() {
-		if (!bender.isOnCooldown(Abilities.WaterManipulation)) {
-			if (!prepared && WaterReturn.hasWaterBottle(player)) {
-				Location eyeloc = player.getEyeLocation();
-				Block block = eyeloc.add(eyeloc.getDirection().normalize())
-						.getBlock();
-				if (BlockTools.isTransparentToEarthbending(player, block)
-						&& BlockTools.isTransparentToEarthbending(player,
-								eyeloc.getBlock())) {
-					block.setType(Material.WATER);
-					block.setData(full);
-					WaterManipulation watermanip = new WaterManipulation(
-							player, null);
-					watermanip.moveWater();
-					if (!watermanip.progressing) {
-						block.setType(Material.AIR);
-					} else {
-						WaterReturn.emptyWaterBottle(player);
-					}
-				}
-			}
+	@Override
+	public boolean swing() {
+		if(state == AbilityState.CanStart || state == AbilityState.Progressing) {
+			redirectTargettedBlasts(player);
+			return false;
 		}
 
-		redirectTargettedBlasts(player);
+		if(state == AbilityState.Prepared) {
+			if (this.sourceblock == null) {
+				return false;
+			}
+			if (this.sourceblock.getWorld() != this.player.getWorld()) {
+				return false;
+			}
+			
+			this.targetdestination = getTargetLocation(this.player);
+			if (this.targetdestination.distance(this.location) <= 1) {
+				this.progressing = false;
+				this.targetdestination = null;
+				this.state = AbilityState.Ended;
+			} else {
+				this.progressing = true;
+				this.settingup = true;
+				this.firstdestination = getToEyeLevel();
+				this.firstdirection = Tools.getDirection(this.sourceblock.getLocation(), this.firstdestination).normalize();
+				this.targetdestination = Tools.getPointOnLine(this.firstdestination,
+						this.targetdestination, range);
+				this.targetdirection = Tools.getDirection(this.firstdestination,
+						this.targetdestination).normalize();
+				addWater(this.sourceblock);
+				state = AbilityState.Progressing;
+			}
+			BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.WaterManipulation, COOLDOWN);
+		}
 		
-		if (this.sourceblock == null) {
-			return;
-		}
-		if (this.sourceblock.getWorld() != this.player.getWorld()) {
-			return;
-		}
-		
-		this.targetdestination = getTargetLocation(this.player);
-		if (this.targetdestination.distance(this.location) <= 1) {
-			this.progressing = false;
-			this.targetdestination = null;
-			this.state = AbilityState.Ended;
-		} else {
-			this.progressing = true;
-			this.settingup = true;
-			this.firstdestination = getToEyeLevel();
-			this.firstdirection = Tools.getDirection(this.sourceblock.getLocation(), this.firstdestination).normalize();
-			this.targetdestination = Tools.getPointOnLine(this.firstdestination,
-					this.targetdestination, range);
-			this.targetdirection = Tools.getDirection(this.firstdestination,
-					this.targetdestination).normalize();
-			addWater(this.sourceblock);
-		}
-		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.WaterManipulation, COOLDOWN);
+		return false;
 	}
 
 	private Location getTargetLocation(Player player) {
@@ -264,17 +279,14 @@ public class WaterManipulation extends ActiveAbility {
 
 	@Override
 	public boolean progress() {
-		if (this.player.isDead() || !this.player.isOnline()
-				|| !EntityTools.canBend(this.player, Abilities.WaterManipulation)) {
+		if(!super.progress()) {
 			return false;
+		}
+		if(waterReturn != null) {
+			return waterReturn.progress();
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			// removeWater(oldwater);
-			if (ProtectionManager.isRegionProtectedFromBending(this.player,
-					Abilities.WaterManipulation, this.location)) {
-				return false;
-			}
-
 			this.time = System.currentTimeMillis();
 
 			if (!this.progressing
@@ -285,7 +297,7 @@ public class WaterManipulation extends ActiveAbility {
 
 			if (this.falling) {
 				finalRemoveWater(this.sourceblock);
-				new WaterReturn(this.player, this.sourceblock, this);
+				waterReturn = new WaterReturn(this.player, this.sourceblock, this);
 				return false;
 
 			} else {
@@ -332,7 +344,7 @@ public class WaterManipulation extends ActiveAbility {
 									radius, source, false)
 							|| FireBlast.annihilateBlasts(this.location, radius,
 									source)) {
-						new WaterReturn(this.player, this.sourceblock, this);
+						waterReturn = new WaterReturn(this.player, this.sourceblock, this);
 						return false;
 					}
 
@@ -368,7 +380,7 @@ public class WaterManipulation extends ActiveAbility {
 					BlockTools.breakBlock(block);
 				} else if ((block.getType() != Material.AIR)
 						&& !BlockTools.isWater(block)) {
-					new WaterReturn(this.player, this.sourceblock, this);
+					waterReturn = new WaterReturn(this.player, this.sourceblock, this);
 					return false;
 				}
 
@@ -395,7 +407,7 @@ public class WaterManipulation extends ActiveAbility {
 				}
 
 				if (!this.progressing) {
-					new WaterReturn(this.player, this.sourceblock, this);
+					waterReturn = new WaterReturn(this.player, this.sourceblock, this);
 					return false;
 				}
 

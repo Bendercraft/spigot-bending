@@ -26,8 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Water Return", element=BendingType.Water)
-public class WaterReturn extends ActiveAbility {
+public class WaterReturn {
 	private static long interval = 50;
 	private static final byte full = 0x0;
 	private static double range = 30;
@@ -35,10 +34,11 @@ public class WaterReturn extends ActiveAbility {
 	private Location location;
 	private TempBlock block;
 	private long time;
+	private Player player;
 
 	public WaterReturn(Player player, Block block, IAbility parent) {
-		super(player, parent);
 		location = block.getLocation();
+		this.player = player;
 		if (!ProtectionManager.isRegionProtectedFromBending(player,
 				Abilities.WaterManipulation, location)
 				&& EntityTools.canBend(player, Abilities.WaterManipulation)) {
@@ -47,10 +47,8 @@ public class WaterReturn extends ActiveAbility {
 				this.block = new TempBlock(block, Material.WATER, full);
 			}
 		}
-		AbilityManager.getManager().addInstance(this);
 	}
 
-	@Override
 	public boolean progress() {
 		if (!hasEmptyWaterBottle()) {
 			return false;
@@ -106,17 +104,11 @@ public class WaterReturn extends ActiveAbility {
 		return true;
 	}
 	
-	private void clear() {
+	public void remove() {
 		if (block != null) {
 			block.revertBlock();
 			block = null;
 		}
-	}
-
-	@Override
-	public void remove() {
-		this.clear();
-		super.remove();
 	}
 
 	private boolean hasEmptyWaterBottle() {
@@ -195,16 +187,6 @@ public class WaterReturn extends ActiveAbility {
 				}
 			}
 		}
-	}
-
-	@Override
-	public Object getIdentifier() {
-		return player;
-	}
-
-	@Override
-	public Abilities getAbilityType() {
-		return null;
 	}
 
 }
