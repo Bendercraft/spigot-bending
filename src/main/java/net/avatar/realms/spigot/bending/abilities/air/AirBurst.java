@@ -116,8 +116,7 @@ public class AirBurst extends ActiveAbility {
 
 		if (this.state == AbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
-			location.getWorld().playEffect(location, Effect.SMOKE,
-					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 3);
+			location.getWorld().playEffect(location, Effect.SMOKE, Tools.getIntCardinalDirection(location.getDirection()), 3);
 		}
 		return true;
 	}

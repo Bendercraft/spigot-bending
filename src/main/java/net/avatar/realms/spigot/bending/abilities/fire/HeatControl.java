@@ -247,5 +247,4 @@ public class HeatControl extends ActiveAbility {
 	public Abilities getAbilityType () {
 		return Abilities.HeatControl;
 	}
-	
 }

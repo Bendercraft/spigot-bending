@@ -28,11 +28,8 @@ import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.Ripple;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
-import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -102,8 +99,6 @@ public class BendingManager implements Runnable {
 	private void manageFirebending() {
 		FireStream.removeAllNoneFireIgnitedBlock();
 
-		FireBlast.progressAll();
-		FireBurst.progressAll();
 		FireStream.dissipateAll();
 		Enflamed.progressAll();
 	}

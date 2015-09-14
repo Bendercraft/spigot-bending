@@ -45,6 +45,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.Blaze;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
+import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
@@ -173,6 +174,10 @@ public class AbilityManager {
 				return new FireBlade(player);
 			case HeatControl:
 				return new HeatControl(player);
+			case FireBlast:
+				return new FireBlast(player);
+			case FireBurst:
+				return new FireBurst(player);
 				
 			case WaterBubble:
 				return new WaterBubble(player);
@@ -286,9 +291,7 @@ public class AbilityManager {
 		//		register(Enflamed.class);
 		register(FireBlade.class);
 		register(FireBlast.class);
-		//		register(FireBurst.class);
-		//		register(FireBurstCone.class);
-		//		register(FireBurstSphere.class);
+		register(FireBurst.class);
 		register(FireJet.class);
 		//		register(FireProtection.class);
 		//		register(FireShield.class);
