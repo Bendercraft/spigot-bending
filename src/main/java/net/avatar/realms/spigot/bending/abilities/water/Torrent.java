@@ -57,7 +57,6 @@ public class Torrent extends ActiveAbility {
 	private Block sourceblock;
 	private TempBlock source;
 	private Location location;
-	private Player player;
 	private long time;
 	private double angle = 20;
 	private int layer = 0;
@@ -78,9 +77,28 @@ public class Torrent extends ActiveAbility {
 	private double damage;
 	private double range;
 
+	private TorrentBurst burst;
+
+	private WaterReturn waterReturn;
+
 	public Torrent(Player player) {
 		super(player, null);
 		
+		damage = DAMAGE;
+		range = RANGE;
+		bender = BendingPlayer.getBendingPlayer(player);
+		if(bender.hasPath(BendingPathType.Marksman)) {
+			range *= 1.4;
+			damage *= 0.8;
+		}
+		
+		if(bender.hasPath(BendingPathType.Flowless)) {
+			damage *= 1.2;
+		}
+	}
+	
+	@Override
+	public boolean sneak() {
 		this.time = System.currentTimeMillis();
 		this.sourceblock = BlockTools.getWaterSourceBlock(player, selectrange,
 				EntityTools.canPlantbend(player));
@@ -96,22 +114,12 @@ public class Torrent extends ActiveAbility {
 			}
 		}
 		
-		damage = DAMAGE;
-		range = RANGE;
-		bender = BendingPlayer.getBendingPlayer(player);
-		if(bender.hasPath(BendingPathType.Marksman)) {
-			range *= 1.4;
-			damage *= 0.8;
-		}
-		
-		if(bender.hasPath(BendingPathType.Flowless)) {
-			damage *= 1.2;
-		}
-		
 		if (this.sourceblock != null) {
 			this.sourceselected = true;
 			AbilityManager.getManager().addInstance(this);
 		}
+		
+		return false;
 	}
 
 	private void freeze() {
@@ -130,14 +138,19 @@ public class Torrent extends ActiveAbility {
 			}
 		}
 	}
+	
+	@Override
+	public boolean swing() {
+		launch = true;
+		if (launching)
+			freeze = true;
+		
+		return false;
+	}
 
 	@Override
 	public boolean progress() {
-		if (this.player.isDead() || !this.player.isOnline()) {
-			return false;
-		}
-
-		if (!EntityTools.canBend(this.player, Abilities.Torrent)) {
+		if(!super.progress()) {
 			return false;
 		}
 
@@ -146,6 +159,18 @@ public class Torrent extends ActiveAbility {
 				returnWater(this.location);
 			}
 			return false;
+		}
+		
+		if(waterReturn != null) {
+			return waterReturn.progress();
+		}
+		
+		if(burst != null) {
+			if(!burst.progress()) {
+				returnWater(location);
+				return false;
+			}
+			return true;
 		}
 
 		if (System.currentTimeMillis() > (this.time + interval)) {
@@ -251,8 +276,8 @@ public class Torrent extends ActiveAbility {
 			}
 
 			if (this.formed && !this.player.isSneaking() && !this.launch) {
-				new TorrentBurst(this.player, radius, this);
-				return false;
+				burst = new TorrentBurst(this.player, radius, this);
+				return true;
 			}
 
 			if (this.launch && this.formed) {
@@ -495,6 +520,10 @@ public class Torrent extends ActiveAbility {
 			block.revertBlock();
 		}
 		this.launchblocks.clear();
+		for (TempBlock block : this.blocks) {
+			block.revertBlock();
+		}
+		this.blocks.clear();
 		if (this.source != null) {
 			this.source.revertBlock();
 		}
@@ -503,18 +532,18 @@ public class Torrent extends ActiveAbility {
 	@Override
 	public void remove() {
 		this.clear();
+		if(waterReturn != null) {
+			waterReturn.remove();
+		}
+		if(burst != null) {
+			burst.remove();
+		}
 		super.remove();
 	}
 
 	private void returnWater(Location location) {
-		new WaterReturn(this.player, location.getBlock(), this);
-	}
-
-	private void use() {
-		this.launch = true;
-		if (this.launching) {
-			this.freeze = true;
-		}
+		this.clear();
+		waterReturn = new WaterReturn(this.player, location.getBlock(), this);
 	}
 
 	private void deflect(LivingEntity entity) {

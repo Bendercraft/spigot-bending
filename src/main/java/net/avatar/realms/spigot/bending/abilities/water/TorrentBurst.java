@@ -7,10 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -27,8 +23,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Torrent", element=BendingType.Water)
-public class TorrentBurst extends ActiveAbility {
+public class TorrentBurst {
 	private static int ID = Integer.MIN_VALUE;
 	private static double defaultmaxradius = 15;
 	private static double dr = 0.5;
@@ -49,22 +44,10 @@ public class TorrentBurst extends ActiveAbility {
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private List<Entity> affectedentities = new LinkedList<Entity>();
 
-	public TorrentBurst(Player player, IAbility parent) {
-		this(player, player.getEyeLocation(), dr, parent);
-	}
-
-	public TorrentBurst(Player player, Location location, IAbility parent) {
-		this(player, location, dr, parent);
-	}
-
 	public TorrentBurst(Player player, double radius, IAbility parent) {
-		this(player, player.getEyeLocation(), radius, parent);
-	}
-
-	public TorrentBurst(Player player, Location location, double radius, IAbility parent) {
-		super(player, parent);
+		this.player = player;
 		World world = player.getWorld();
-		origin = location.clone();
+		origin = player.getEyeLocation().clone();
 		time = System.currentTimeMillis();
 		id = ID++;
 		factor = PluginTools.waterbendingNightAugment(factor, world);
@@ -74,7 +57,6 @@ public class TorrentBurst extends ActiveAbility {
 			ID = Integer.MIN_VALUE;
 		}
 		initializeHeightsMap();
-		AbilityManager.getManager().addInstance(this);
 	}
 
 	private void initializeHeightsMap() {
@@ -90,7 +72,6 @@ public class TorrentBurst extends ActiveAbility {
 		}
 	}
 
-	@Override
 	public boolean progress() {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
@@ -104,7 +85,6 @@ public class TorrentBurst extends ActiveAbility {
 			if (radius < maxradius) {
 				radius += dr;
 			} else {
-				returnWater();
 				return false;
 			}
 
@@ -204,29 +184,7 @@ public class TorrentBurst extends ActiveAbility {
 		}
 	}
 
-	@Override
 	public void remove() {
 		this.clear();
-		super.remove();
-	}
-
-	private void returnWater() {
-		Location location = new Location(origin.getWorld(), origin.getX()
-				+ radius, origin.getY(), origin.getZ());
-		if (!location.getWorld().equals(player.getWorld()))
-			return;
-		if (location.distance(player.getLocation()) > maxradius + 5)
-			return;
-		new WaterReturn(player, location.getBlock(), this);
-	}
-
-	@Override
-	public Object getIdentifier() {
-		return id;
-	}
-
-	@Override
-	public Abilities getAbilityType() {
-		return Abilities.Torrent;
 	}
 }

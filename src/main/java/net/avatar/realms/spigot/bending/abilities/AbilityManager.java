@@ -183,6 +183,8 @@ public class AbilityManager {
 				return new WaterBubble(player);
 			case WaterSpout:
 				return new WaterSpout(player);
+			case Torrent:
+				return new Torrent(player);
 			case HealingWaters:
 				return new HealingWaters(player);
 			case WaterManipulation:
@@ -310,7 +312,6 @@ public class AbilityManager {
 		//		register(Melt.class);
 		register(OctopusForm.class);
 		register(Torrent.class);
-		register(TorrentBurst.class);
 		register(WaterBubble.class);
 		register(WaterManipulation.class);
 		register(WaterPassive.class);
