@@ -405,10 +405,6 @@ public class BendingPlayerListener implements Listener{
 					WaterWall.form(player);
 				}
 				
-				if (ability == Abilities.OctopusForm) {
-					OctopusForm.form(player);
-				}
-				
 				if (ability == Abilities.Bloodbending) {
 					new Bloodbending(player, null);
 				}

@@ -189,6 +189,8 @@ public class AbilityManager {
 				return new HealingWaters(player);
 			case WaterManipulation:
 				return new WaterManipulation(player, null);
+			case OctopusForm:
+				return new OctopusForm(player, null);
 				
 			case Tremorsense:
 				return new Tremorsense(player);
