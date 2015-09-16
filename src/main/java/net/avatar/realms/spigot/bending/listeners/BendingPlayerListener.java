@@ -394,10 +394,6 @@ public class BendingPlayerListener implements Listener{
 					new EarthWall(player, null);
 				}
 				
-				if (ability == Abilities.Surge) {
-					WaterWall.form(player);
-				}
-				
 				if (ability == Abilities.PhaseChange) {
 					new Melt(player, null);
 				}

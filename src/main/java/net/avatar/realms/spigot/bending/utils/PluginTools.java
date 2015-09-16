@@ -21,8 +21,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
-import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
-import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class PluginTools {
@@ -109,9 +107,6 @@ public class PluginTools {
 		EarthArmor.removeAll();
 		EarthTunnel.removeAll();
 		Shockwave.removeAll();
-
-		WaterWall.removeAll();
-		Wave.removeAll();
 
 		FireStream.removeAll();
 		

@@ -15,10 +15,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
@@ -29,10 +28,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name="Surge", element=BendingType.Water)
-public class Wave implements IAbility {
-	private static Map<Integer, Wave> instances = new HashMap<Integer, Wave>();
-
+public class Wave {
 	private static final long interval = 30;
 
 
@@ -72,38 +68,26 @@ public class Wave implements IAbility {
 	double range = defaultrange;
 	private double factor = HOR_FACTOR;
 	boolean canhitself = true;
-	private IAbility parent;
 
 	private TempBlock drainedBlock;
 
-	public Wave(Player player, IAbility parent) {
-		this.parent = parent;
-		this.player = player;
 
-		if (instances.containsKey(player.getEntityId())) {
-			if (instances.get(player.getEntityId()).progressing
-					&& !instances.get(player.getEntityId()).freeze) {
-				instances.get(player.getEntityId()).freeze = true;
-				return;
-			}
-		}
+	private WaterReturn waterReturn;
+
+	public Wave(Player player) {
+		this.player = player;
 
 		if (AvatarState.isAvatarState(player)) {
 			this.maxradius = AvatarState.getValue(this.maxradius);
 		}
 		this.maxradius = PluginTools.waterbendingNightAugment(this.maxradius, player.getWorld());
-		if (prepare()) {
-			if (instances.containsKey(player.getEntityId())) {
-				instances.get(player.getEntityId()).remove();
-			}
-			instances.put(player.getEntityId(), this);
-			this.time = System.currentTimeMillis();
-		}
-
+	}
+	
+	public void freeze() {
+		freeze = true;
 	}
 
 	public boolean prepare() {
-		cancelPrevious();
 		Block block = BlockTools.getWaterSourceBlock(this.player, this.range,
 				EntityTools.canPlantbend(this.player));
 		if (block != null) {
@@ -134,25 +118,14 @@ public class Wave implements IAbility {
 		return false;
 	}
 
-	private void cancelPrevious() {
-		if (instances.containsKey(this.player.getEntityId())) {
-			Wave old = instances.get(this.player.getEntityId());
-			if (old.progressing) {
-				old.breakBlock();
-				old.thaw();
-				old.returnWater();
-			} else {
-				old.remove();
-			}
-		}
-	}
-
 	public void remove() {
 		finalRemoveWater(this.sourceblock);
 		if(this.drainedBlock != null) {
 			this.drainedBlock.revertBlock();
 		}
-		instances.remove(this.player.getEntityId());
+		if(waterReturn != null) {
+			waterReturn.remove();
+		}
 	}
 
 	private void focusBlock() {
@@ -217,6 +190,9 @@ public class Wave implements IAbility {
 	}
 
 	public boolean progress() {
+		if(waterReturn != null) {
+			return waterReturn.progress();
+		}
 		if (this.player.isDead() || !this.player.isOnline()
 				|| !EntityTools.canBend(this.player, Abilities.Surge)) {
 			breakBlock();
@@ -337,7 +313,7 @@ public class Wave implements IAbility {
 									.getEntityId())) {
 								this.activatefreeze = true;
 								this.frozenlocation = entity.getLocation();
-								freeze();
+								freezeAround();
 								break;
 							}
 							if ((entity.getEntityId() != this.player.getEntityId())
@@ -423,55 +399,19 @@ public class Wave implements IAbility {
 		this.wave.clear();
 	}
 
-	public static void moveWater(Player player) {
-		if (instances.containsKey(player.getEntityId())) {
-			instances.get(player.getEntityId()).moveWater();
-		}
-	}
-
-	public static void progressAll() {
-		List<Wave> toRemove = new LinkedList<Wave>();
-
-		for(Wave wave : instances.values()) {
-			boolean keep = wave.progress();
-			if(!keep) {
-				toRemove.add(wave);
-			}
-		}
-		for(Wave wave : toRemove) {
-			wave.remove();
-		}
-	}
-
 	public static boolean isBlockWave(Block block) {
-		for (int ID : instances.keySet()) {
-			if (instances.get(ID).wave.containsKey(block)) {
-				return true;
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.Surge).values()) {
+			WaterWall wall = (WaterWall) ab;
+			if(wall.getWave() != null) {
+				if(wall.getWave().wave.containsKey(block)) {
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
-	public static void launch(Player player) {
-		moveWater(player);
-	}
-
-	public static void removeAll() {
-		for (Wave wave : instances.values()) {
-			List<Block> waveBlock = new LinkedList<Block>(wave.wave.keySet());
-			for (Block block : waveBlock) {
-				block.setType(Material.AIR);
-				wave.wave.remove(block);
-			}
-			List<Block> frozenBlock = new LinkedList<Block>(wave.frozenblocks.keySet());
-			for (Block block : frozenBlock) {
-				block.setType(Material.AIR);
-				wave.frozenblocks.remove(block);
-			}
-		}
-	}
-
-	private void freeze() {
+	private void freezeAround() {
 		clearWave();
 
 		double freezeradius = this.radius;
@@ -516,18 +456,24 @@ public class Wave implements IAbility {
 	}
 
 	public static void thaw(Block block) {
-		for (Wave wave : instances.values()) {
-			if (wave.frozenblocks.containsKey(block)) {
-				TempBlock.revertBlock(block);
-				wave.frozenblocks.remove(block);
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.Surge).values()) {
+			WaterWall wall = (WaterWall) ab;
+			if(wall.getWave() != null) {
+				if (wall.getWave().frozenblocks.containsKey(block)) {
+					TempBlock.revertBlock(block);
+					wall.getWave().frozenblocks.remove(block);
+				}
 			}
 		}
 	}
 
 	public static boolean canThaw(Block block) {
-		for (int id : instances.keySet()) {
-			if (instances.get(id).frozenblocks.containsKey(block)) {
-				return false;
+		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.Surge).values()) {
+			WaterWall wall = (WaterWall) ab;
+			if(wall.getWave() != null) {
+				if (wall.getWave().frozenblocks.containsKey(block)) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -535,21 +481,16 @@ public class Wave implements IAbility {
 
 	private void returnWater() {
 		if (this.location != null) {
-			//new WaterReturn(this.player, this.location.getBlock(), this); TODO temp
+			waterReturn = new WaterReturn(this.player, this.location.getBlock(), null);
 		}
 	}
 
 	public static boolean isWaving(Player player) {
-		return instances.containsKey(player.getEntityId());
-	}
-
-	public static Wave getWave(Player player) {
-		return instances.get(player.getEntityId());
-	}
-
-	@Override
-	public IAbility getParent() {
-		return this.parent;
+		WaterWall wall = (WaterWall) AbilityManager.getManager().getInstances(Abilities.Surge).get(player);
+		if(wall != null && wall.getWave() != null) {
+			return true;
+		}
+		return false;
 	}
 
 }

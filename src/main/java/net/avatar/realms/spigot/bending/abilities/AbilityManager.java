@@ -59,6 +59,7 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
+import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
@@ -195,6 +196,8 @@ public class AbilityManager {
 				return new IceSpike(player, null);
 			case Bloodbending:
 				return new Bloodbending(player);
+			case Surge:
+				return new WaterWall(player, null);
 				
 			case Tremorsense:
 				return new Tremorsense(player);
