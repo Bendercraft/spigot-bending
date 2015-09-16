@@ -84,8 +84,6 @@ import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
 import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.Melt;
-import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
-import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
@@ -331,11 +329,6 @@ public class BendingPlayerListener implements Listener{
 				new WaterWall(player, null);
 				return;
 			}
-			
-			if (ability == Abilities.Bloodbending) {
-				Bloodbending.launch(player);
-				return;
-			}
 		}
 	}
 	
@@ -403,10 +396,6 @@ public class BendingPlayerListener implements Listener{
 				
 				if (ability == Abilities.Surge) {
 					WaterWall.form(player);
-				}
-				
-				if (ability == Abilities.Bloodbending) {
-					new Bloodbending(player, null);
 				}
 				
 				if (ability == Abilities.PhaseChange) {

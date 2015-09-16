@@ -17,12 +17,15 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -30,10 +33,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name="Blood Bending", element=BendingType.Water, specialization=BendingSpecializationType.Bloodbend)
-public class Bloodbending implements IAbility {
-
-	private static Map<Player, Bloodbending> instances = new HashMap<Player, Bloodbending>();
-
+public class Bloodbending extends ActiveAbility {
 	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
 
 	@ConfigurationParameter("Throw-Factor")
@@ -48,21 +48,22 @@ public class Bloodbending implements IAbility {
 	@ConfigurationParameter("Range")
 	public static int RANGE = 8;
 
-	private Player player;
-	private int range = RANGE;
-	private IAbility parent;
+	private int range;
 	private Long time;
 
-	public Bloodbending(Player player, IAbility parent) {
-		this.parent = parent;
-		if (instances.containsKey(player)) {
-			instances.get(player).remove();
-			return;
-		}
-		this.range = (int) PluginTools.waterbendingNightAugment(this.range,
+	public Bloodbending(Player player) {
+		super(player, null);
+		
+		this.range = (int) PluginTools.waterbendingNightAugment(RANGE,
 				player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			this.range = AvatarState.getValue(this.range);
+		}
+	}
+	
+	@Override
+	public boolean sneak() {
+		if (AvatarState.isAvatarState(player)) {
 			for (LivingEntity entity : EntityTools
 					.getLivingEntitiesAroundPoint(player.getLocation(), this.range)) {
 				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
@@ -80,30 +81,29 @@ public class Bloodbending implements IAbility {
 				}
 				EntityTools.damageEntity(player, entity, 0);
 				this.targetEntities.put(entity, entity.getLocation().clone());
-
 			}
 		} else {
 			if (BendingPlayer.getBendingPlayer(player).isOnCooldown(Abilities.Bloodbending)) {
-				return;
+				return false;
 			}
 			Entity target = EntityTools.getTargettedEntity(player, this.range);
 			if(ProtectionManager.isEntityProtectedByCitizens(target)) {
-				return;
+				return false;
 			}
 			if (target == null) {
-				return;
+				return false;
 			}		
 			if (!(target instanceof LivingEntity)
 					|| ProtectionManager.isRegionProtectedFromBending(player,
 							Abilities.Bloodbending, target.getLocation())) {
-				return;
+				return false;
 			}
 			if (target instanceof Player) {
 				if (EntityTools
 						.canBend((Player) target, Abilities.Bloodbending)
 						|| AvatarState.isAvatarState((Player) target)
 						|| ((Player) target).isOp()) {
-					return;
+					return false;
 				}
 
 			}
@@ -111,17 +111,12 @@ public class Bloodbending implements IAbility {
 			this.targetEntities.put(target, target.getLocation().clone());
 		}
 		this.time = System.currentTimeMillis();
-		this.player = player;
-		instances.put(player, this);
+		AbilityManager.getManager().addInstance(this);
+		return false;
 	}
 
-	public static void launch(Player player) {
-		if (instances.containsKey(player)) {
-			instances.get(player).launch();
-		}
-	}
-
-	private void launch() {
+	@Override
+	public boolean swing() {
 		Location location = this.player.getLocation();
 		for (Entity entity : this.targetEntities.keySet()) {
 			double dx, dy, dz;
@@ -133,10 +128,13 @@ public class Bloodbending implements IAbility {
 			vector.normalize();
 			entity.setVelocity(vector.multiply(FACTOR));
 		}
-		remove();
+		state = AbilityState.Ended;
+		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.Bloodbending, COOLDOWN);
+		return false;
 	}
 
-	private boolean progress() {
+	@Override
+	public boolean progress() {
 		PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 60, 1);
 
 		if (!this.player.isSneaking()
@@ -236,27 +234,9 @@ public class Bloodbending implements IAbility {
 		return true;
 	}
 
-	public static void progressAll() {
-		List<Bloodbending> toRemove = new LinkedList<Bloodbending>();
-		for (Bloodbending bloodBend : instances.values()) {
-			boolean keep = bloodBend.progress();
-			if (!keep) {
-				toRemove.add(bloodBend);
-			}
-		}
-
-		for (Bloodbending bloodBend : toRemove) {
-			bloodBend.remove();
-		}
-	}
-
-	private void remove() {
-		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.Bloodbending, COOLDOWN);
-		instances.remove(this.player);
-	}
-
 	public static boolean isBloodbended(Entity entity) {
-		for (Bloodbending bloodBend : instances.values()) {
+		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.Bloodbending).values()) {
+			Bloodbending bloodBend = (Bloodbending) ab;
 			if (bloodBend.getTargetEntities().containsKey(entity)) {
 				return true;
 			}
@@ -265,7 +245,8 @@ public class Bloodbending implements IAbility {
 	}
 
 	public static Location getBloodbendingLocation(Entity entity) {
-		for (Bloodbending bloodBend : instances.values()) {
+		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.Bloodbending).values()) {
+			Bloodbending bloodBend = (Bloodbending) ab;
 			if (bloodBend.getTargetEntities().containsKey(entity)) {
 				return bloodBend.getTargetEntities().get(entity);
 			}
@@ -273,17 +254,18 @@ public class Bloodbending implements IAbility {
 		return null;
 	}
 
-	public static void removeAll() {
-		instances.clear();
-	}
-
 	public Map<Entity, Location> getTargetEntities() {
 		return this.targetEntities;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return this.parent;
+	public Object getIdentifier() {
+		return player;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.Bloodbending;
 	}
 
 }

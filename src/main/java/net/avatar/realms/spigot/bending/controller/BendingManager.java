@@ -29,7 +29,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.Ripple;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
-import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -106,7 +105,6 @@ public class BendingManager implements Runnable {
 	private void manageWaterbending() {
 		WaterWall.progressAll();
 		Wave.progressAll();
-		Bloodbending.progressAll();
 	}
 
 	private void handleDayNight() {

@@ -50,11 +50,11 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
+import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
-import net.avatar.realms.spigot.bending.abilities.water.TorrentBurst;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
@@ -193,6 +193,8 @@ public class AbilityManager {
 				return new OctopusForm(player, null);
 			case IceSpike:
 				return new IceSpike(player, null);
+			case Bloodbending:
+				return new Bloodbending(player);
 				
 			case Tremorsense:
 				return new Tremorsense(player);
