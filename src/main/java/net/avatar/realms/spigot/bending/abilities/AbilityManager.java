@@ -316,7 +316,7 @@ public class AbilityManager {
 		register(Lightning.class);
 		register(WallOfFire.class);
 
-		// register(Bloodbending.class);
+		register(Bloodbending.class);
 		// register(Drainbending.class);
 		// register(FastSwmimming.class);
 		// register(FreezeMelt.class);
