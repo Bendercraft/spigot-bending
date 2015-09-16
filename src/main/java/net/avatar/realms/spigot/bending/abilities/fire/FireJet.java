@@ -4,12 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
@@ -23,22 +17,28 @@ import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@BendingAbility(name="Fire Jet", element=BendingType.Fire)
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
+@BendingAbility(name = "Fire Jet", element = BendingType.Fire)
 public class FireJet extends ActiveAbility {
-	
+
 	@ConfigurationParameter("Speed")
 	private static double FACTOR = 0.7;
-	
+
 	@ConfigurationParameter("Duration")
 	private static long DURATION = 1550;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 6000;
 
 	private long duration = DURATION;
 	private double factor = FACTOR;
 
-	public FireJet (Player player) {
+	public FireJet(Player player) {
 		super(player, null);
 
 		if (this.state.isBefore(AbilityState.CanStart)) {
@@ -48,35 +48,33 @@ public class FireJet extends ActiveAbility {
 	}
 
 	@Override
-	public boolean swing () {
+	public boolean swing() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
-				return false;
-			case CanStart:
-				Block block = this.player.getLocation().getBlock();
-				if (FireStream.isIgnitable(this.player, block) || (block.getType() == Material.AIR)
-						|| AvatarState.isAvatarState(this.player)) {
-					FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
-					this.player
-					.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor));
-					AbilityManager.getManager().addInstance(this);
-				}
-				return false;
-			case Preparing:
-			case Prepared:
-			case Progressing:
-				setState(AbilityState.Ended);
-				return false;
-			case Ending:
-			case Ended:
-			case Removed:
-			default:
-				return false;
+		case None:
+		case CannotStart:
+			return false;
+		case CanStart:
+			Block block = this.player.getLocation().getBlock();
+			if (FireStream.isIgnitable(this.player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(this.player)) {
+				FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+				this.player.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor));
+				AbilityManager.getManager().addInstance(this);
+			}
+			return false;
+		case Preparing:
+		case Prepared:
+		case Progressing:
+			setState(AbilityState.Ended);
+			return false;
+		case Ending:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
 
-	public static boolean checkTemporaryImmunity (Player player) {
+	public static boolean checkTemporaryImmunity(Player player) {
 		if (getPlayers().contains(player)) {
 			return true;
 		}
@@ -93,15 +91,12 @@ public class FireJet extends ActiveAbility {
 		if ((BlockTools.isWater(this.player.getLocation().getBlock()) || (now > (this.startedTime + this.duration)))
 				&& !AvatarState.isAvatarState(this.player)) {
 			return false;
-		}
-		else {
-			this.player.getWorld().playEffect(this.player.getLocation(),
-					Effect.MOBSPAWNER_FLAMES, 1);
+		} else {
+			this.player.getWorld().playEffect(this.player.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
 			double timefactor;
 			if (AvatarState.isAvatarState(this.player)) {
 				timefactor = 1;
-			}
-			else {
+			} else {
 				timefactor = 1 - ((now - this.startedTime) / (2.0 * this.duration));
 			}
 			Vector velocity = this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor * timefactor);
@@ -111,38 +106,38 @@ public class FireJet extends ActiveAbility {
 		return true;
 	}
 
-	public static List<Player> getPlayers () {
+	public static List<Player> getPlayers() {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireJet);
 		LinkedList<Player> players = new LinkedList<Player>();
 		if (instances == null) {
 			return players;
 		}
-		
+
 		for (Object o : instances.keySet()) {
 			players.add((Player) o);
 		}
-		
+
 		return players;
 	}
 
 	@Override
-	public void stop () {
+	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 	}
 
 	@Override
-	public void remove () {
+	public void remove() {
 		this.bender.cooldown(Abilities.FireJet, COOLDOWN);
 		super.remove();
 	}
 
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 
 	@Override
-	public Abilities getAbilityType () {
+	public Abilities getAbilityType() {
 		return Abilities.FireJet;
 	}
 

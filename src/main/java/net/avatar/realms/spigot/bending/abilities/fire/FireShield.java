@@ -1,9 +1,20 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -11,18 +22,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-
-@BendingAbility(name="Fire Shield", element=BendingType.Fire)
+@BendingAbility(name = "Fire Shield", element = BendingType.Fire)
 public class FireShield extends ActiveAbility {
-	private static Map<Player, FireShield> instances = new HashMap<Player, FireShield>();
 
 	private static long interval = 100;
 	private static double radius = 3;
@@ -31,27 +32,18 @@ public class FireShield extends ActiveAbility {
 	private long time;
 
 	public FireShield(Player player) {
-		super (player, null);
-		if (instances.containsKey(player)) {
-			return;
-		}
-
-		if (this.bender.isOnCooldown(Abilities.FireShield)) {
-			return;
-		}
-
-		if (!player.getEyeLocation().getBlock().isLiquid()) {
-			this.time = System.currentTimeMillis();
-
-			instances.put(player, this);
-		}
+		super(player, null);
 	}
-	
+
 	@Override
 	public boolean sneak() {
+		if (state == AbilityState.CanStart) {
+			this.time = System.currentTimeMillis();
+			AbilityManager.getManager().addInstance(this);
+		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean swing() {
 		FireProtection protect = new FireProtection(this.player);
@@ -69,7 +61,7 @@ public class FireShield extends ActiveAbility {
 		if (!super.progress()) {
 			return false;
 		}
-		if (!this.player.isSneaking()){
+		if (!this.player.isSneaking()) {
 			return false;
 		}
 
@@ -83,38 +75,30 @@ public class FireShield extends ActiveAbility {
 				for (double phi = 0; phi < 360; phi += 20) {
 					double rphi = Math.toRadians(phi);
 					double rtheta = Math.toRadians(theta);
-					Block block = location
-							.clone()
-							.add(radius * Math.cos(rphi) * Math.sin(rtheta),
-									radius * Math.cos(rtheta),
-									radius * Math.sin(rphi)
-									* Math.sin(rtheta)).getBlock();
-					if (!blocks.contains(block) && !BlockTools.isSolid(block)
-							&& !block.isLiquid()) {
+					Block block = location.clone()
+							.add(radius * Math.cos(rphi) * Math.sin(rtheta), radius * Math.cos(rtheta), radius * Math.sin(rphi) * Math.sin(rtheta))
+							.getBlock();
+					if (!blocks.contains(block) && !BlockTools.isSolid(block) && !block.isLiquid()) {
 						blocks.add(block);
 					}
 				}
 			}
 
 			for (Block block : blocks) {
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player,
-						Abilities.FireShield, block.getLocation())) {
-					block.getWorld().playEffect(block.getLocation(),
-							Effect.MOBSPAWNER_FLAMES, 0, 20);
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.FireShield, block.getLocation())) {
+					block.getWorld().playEffect(block.getLocation(), Effect.MOBSPAWNER_FLAMES, 0, 20);
 				}
 			}
 
-			for (Entity entity : EntityTools.getEntitiesAroundPoint(location,
-					radius)) {
-				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(location, radius)) {
+				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 					continue;
 				}
-				if (ProtectionManager.isRegionProtectedFromBending(this.player,
-						Abilities.FireShield, entity.getLocation())) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.FireShield, entity.getLocation())) {
 					continue;
 				}
 				if ((this.player.getEntityId() != entity.getEntityId()) && ignite) {
-					if(this.bender.hasPath(BendingPathType.Lifeless)) {
+					if (this.bender.hasPath(BendingPathType.Lifeless)) {
 						EntityTools.damageEntity(this.player, entity, 2);
 					}
 					new Enflamed(this.player, entity, 3, this);
@@ -128,12 +112,26 @@ public class FireShield extends ActiveAbility {
 	}
 
 	@Override
-	public Object getIdentifier () {
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		if (player.getEyeLocation().getBlock().isLiquid()) {
+			return false;
+		}
+
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireShield);
+		return !instances.containsKey(player);
+	}
+
+	@Override
+	public Object getIdentifier() {
 		return this.player;
 	}
 
 	@Override
-	public Abilities getAbilityType () {
+	public Abilities getAbilityType() {
 		return Abilities.FireShield;
 	}
 
