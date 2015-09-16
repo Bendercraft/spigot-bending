@@ -330,8 +330,7 @@ public class AbilityManager {
 		register(WaterManipulation.class);
 		register(WaterPassive.class);
 		register(WaterSpout.class);
-		// register(WaterWall.class);
-		// register(Wave.class);
+		register(WaterWall.class);
 	}
 
 	protected void register(Class<? extends IAbility> ability) {
