@@ -45,9 +45,14 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
+import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
+import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
+import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
+import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
+import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
@@ -176,6 +181,8 @@ public class AbilityManager {
 			return new FireBlast(player);
 		case FireBurst:
 			return new FireBurst(player);
+		case WallOfFire:
+			return new WallOfFire(player);
 
 		case WaterBubble:
 			return new WaterBubble(player);
@@ -187,6 +194,12 @@ public class AbilityManager {
 			return new HealingWaters(player);
 		case WaterManipulation:
 			return new WaterManipulation(player, null);
+		case OctopusForm:
+			return new OctopusForm(player, null);
+		case IceSpike:
+			return new IceSpike(player, null);
+		case Bloodbending:
+			return new Bloodbending(player);
 
 		case Tremorsense:
 			return new Tremorsense(player);
@@ -289,17 +302,16 @@ public class AbilityManager {
 		register(HeatControl.class);
 		register(Blaze.class);
 		register(Combustion.class);
-		// register(Enflamed.class);
 		register(FireBlade.class);
 		register(FireBlast.class);
 		register(FireBurst.class);
 		register(FireJet.class);
-		// register(FireProtection.class);
-		// register(FireShield.class);
-		// register(FireStream.class);
+		register(FireProtection.class);
+		register(FireShield.class);
+		register(FireStream.class);
 		register(Illumination.class);
 		register(Lightning.class);
-		// register(WallOfFire.class);
+		register(WallOfFire.class);
 
 		// register(Bloodbending.class);
 		// register(Drainbending.class);

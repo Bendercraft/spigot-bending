@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.AbilityState;
@@ -54,6 +55,7 @@ public class IceSpike extends ActiveAbility {
 	private Location destination;
 	
 	private SpikeField field = null;
+	private WaterReturn waterReturn;
 
 	public IceSpike(Player player, IAbility parent) {
 		super(player, parent);
@@ -62,20 +64,20 @@ public class IceSpike extends ActiveAbility {
 			plantbending = true;
 		range = PluginTools.waterbendingNightAugment(defaultrange,
 				player.getWorld());
-		this.player = player;
-		sourceblock = BlockTools.getWaterSourceBlock(player, range,
-				plantbending);
-
-		if (sourceblock == null) {
-			field = new SpikeField(player, this);
-		}
+		
 	}
 
 	//SNEAK
 	@Override
 	public boolean sneak() {
+		if(field != null) {
+			return false;
+		}
+		sourceblock = BlockTools.getWaterSourceBlock(player, range,
+				plantbending);
 		if (sourceblock == null) {
-			state = AbilityState.Ended;
+			field = new SpikeField(player, this);
+			AbilityManager.getManager().addInstance(this);
 			return false;
 		}
 		
@@ -99,6 +101,9 @@ public class IceSpike extends ActiveAbility {
 	//SWING
 	@Override
 	public boolean swing() {
+		if(field != null) {
+			return false;
+		}
 		redirect(player);
 		boolean activate = false;
 
@@ -193,6 +198,14 @@ public class IceSpike extends ActiveAbility {
 
 	@Override
 	public boolean progress() {
+		if(waterReturn != null) {
+			return waterReturn.progress();
+		}
+		
+		if(field != null) {
+			return field.progress();
+		}
+		
 		if (player.isDead() || !player.isOnline()
 				|| !EntityTools.canBend(player, Abilities.IceSpike)) {
 			return false;
@@ -429,12 +442,15 @@ public class IceSpike extends ActiveAbility {
 
 	@Override
 	public void remove() {
+		if(waterReturn != null) {
+			waterReturn.remove();
+		}
 		this.clear();
 		super.remove();
 	}
 
 	private void returnWater() {
-		new WaterReturn(player, sourceblock, this);
+		waterReturn = new WaterReturn(player, sourceblock, this);
 	}
 
 	public static boolean isBending(Player player) {

@@ -1,11 +1,11 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
@@ -27,8 +27,6 @@ import org.bukkit.util.Vector;
 
 @BendingAbility(name="Octopus Form", element=BendingType.Water)
 public class OctopusForm extends ActiveAbility {
-	private static Map<Player, OctopusForm> instances = new HashMap<Player, OctopusForm>();
-
 	private static int range = 10;
 	static final double radius = 3;
 	private static final byte full = 0x0;
@@ -52,25 +50,10 @@ public class OctopusForm extends ActiveAbility {
 	private boolean settingup = false;
 	private boolean forming = false;
 	private boolean formed = false;
+	private WaterReturn waterReturn;
 
 	public OctopusForm(Player player, IAbility parent) {
 		super(player, parent);
-		if (instances.containsKey(player)) {
-			if (instances.get(player).formed) {
-				instances.get(player).attack();
-				return;
-			} else if (!instances.get(player).sourceselected) {
-				return;
-			}
-		}
-		this.player = player;
-		time = System.currentTimeMillis();
-		sourceblock = BlockTools.getWaterSourceBlock(player, range, EntityTools.canPlantbend(player));
-		if (sourceblock != null) {
-			sourcelocation = sourceblock.getLocation();
-			sourceselected = true;
-			instances.put(player, this);
-		}
 	}
 
 	private void incrementStep() {
@@ -86,32 +69,12 @@ public class OctopusForm extends ActiveAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	//SNEAK
-	public static void form(Player player) {
-		if (instances.containsKey(player)) {
-			instances.get(player).form();
-		} else if (WaterReturn.hasWaterBottle(player)) {
-			Location eyeloc = player.getEyeLocation();
-			Block block = eyeloc.add(eyeloc.getDirection().normalize())
-					.getBlock();
-			if (BlockTools.isTransparentToEarthbending(player, block)
-					&& BlockTools.isTransparentToEarthbending(player,
-							eyeloc.getBlock())) {
-				block.setType(Material.WATER);
-				block.setData(full);
-				OctopusForm form = new OctopusForm(player, null);
-				form.form();
-				if (form.formed || form.forming || form.settingup) {
-					WaterReturn.emptyWaterBottle(player);
-				} else {
-					block.setType(Material.AIR);
-				}
-			}
+	@Override
+	public boolean sneak() {
+		if(state != AbilityState.Preparing) {
+			return false;
 		}
-	}
-
-	private void form() {
+		
 		incrementStep();
 		
 		if (BlockTools.isPlant(sourceblock)) {
@@ -120,11 +83,48 @@ public class OctopusForm extends ActiveAbility {
 			sourceblock.setType(Material.AIR);
 		}
 		source = new TempBlock(sourceblock, Material.WATER, full);
+		
+		state = AbilityState.Prepared;
+		return false;
 	}
 
-	private void attack() {
+	@Override
+	public boolean swing() {
+		if(state == AbilityState.CanStart) {
+			sourceblock = BlockTools.getWaterSourceBlock(player, range, EntityTools.canPlantbend(player));
+			if (sourceblock == null && WaterReturn.hasWaterBottle(player)) {
+				Location eyeloc = player.getEyeLocation();
+				Block block = eyeloc.add(eyeloc.getDirection().normalize())
+						.getBlock();
+				if (BlockTools.isTransparentToEarthbending(player, block)
+						&& BlockTools.isTransparentToEarthbending(player,
+								eyeloc.getBlock())) {
+					block.setType(Material.WATER);
+					block.setData(full);
+					sourceblock = BlockTools.getWaterSourceBlock(player, range, EntityTools.canPlantbend(player));
+					if (formed || forming || settingup) {
+						WaterReturn.emptyWaterBottle(player);
+					} else {
+						block.setType(Material.AIR);
+					}
+				}
+			}
+			
+			if (sourceblock == null) {
+				return false;
+			}
+			
+			time = System.currentTimeMillis();
+			
+			sourcelocation = sourceblock.getLocation();
+			sourceselected = true;
+			AbilityManager.getManager().addInstance(this);
+			state = AbilityState.Preparing;
+			return false;
+		}
+		
 		if (!formed)
-			return;
+			return false;
 		double tentacleangle = (new Vector(1, 0, 0)).angle(player
 				.getEyeLocation().getDirection()) + dta / 2;
 
@@ -136,6 +136,8 @@ public class OctopusForm extends ActiveAbility {
 					.add(new Vector(radius * Math.cos(phi), 1, radius
 							* Math.sin(phi))));
 		}
+		
+		return false;
 	}
 
 	private void affect(Location location) {
@@ -164,6 +166,14 @@ public class OctopusForm extends ActiveAbility {
 
 	@Override
 	public boolean progress() {
+		if(!super.progress()) {
+			return false;
+		}
+		
+		if(waterReturn != null) {
+			return waterReturn.progress();
+		}
+		
 		if (!EntityTools.canBend(player, Abilities.OctopusForm)
 				|| (!player.isSneaking() && !sourceselected)
 				|| EntityTools.getBendingAbility(player) != Abilities.OctopusForm) {
@@ -398,8 +408,8 @@ public class OctopusForm extends ActiveAbility {
 	}
 
 	public static boolean wasBrokenFor(Player player, Block block) {
-		if (instances.containsKey(player)) {
-			OctopusForm form = instances.get(player);
+		if (isOctopus(player)) {
+			OctopusForm form = (OctopusForm) AbilityManager.getManager().getInstances(Abilities.OctopusForm).get(player);
 			if (form.sourceblock == null)
 				return false;
 			if (form.sourceblock.equals(block))
@@ -418,13 +428,16 @@ public class OctopusForm extends ActiveAbility {
 	@Override
 	public void remove() {
 		this.clear();
+		if(waterReturn != null) {
+			waterReturn.remove();
+		}
 		super.remove();
 	}
 
 	private void returnWater() {
 		if (source != null) {
 			source.revertBlock();
-			new WaterReturn(player, source.getLocation().getBlock(), this);
+			waterReturn = new WaterReturn(player, source.getLocation().getBlock(), this);
 			source = null;
 		} else {
 			Location location = player.getLocation();
@@ -433,12 +446,12 @@ public class OctopusForm extends ActiveAbility {
 					.clone()
 					.add(new Vector(radius * Math.cos(rtheta), 0, radius
 							* Math.sin(rtheta))).getBlock();
-			new WaterReturn(player, block, this);
+			waterReturn = new WaterReturn(player, block, this);
 		}
 	}
 	
 	public static boolean isOctopus(Player player) {
-		return instances.containsKey(player);
+		return AbilityManager.getManager().getInstances(Abilities.OctopusForm).containsKey(player);
 	}
 
 	@Override
