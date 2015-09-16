@@ -1,30 +1,32 @@
 package net.avatar.realms.spigot.bending.abilities;
 
 public enum BendingSpecializationType {
-	None 		(BendingType.None),
-	
-	Tornado		(BendingType.Air), 
-	Suffocate	(BendingType.Air), 
-	
-	Bloodbend	(BendingType.Water), 
-	DrainBend	(BendingType.Water), 
-	
-	Lightning	(BendingType.Fire), 
-	Combustion	(BendingType.Fire), 
-	
-	Metalbend	(BendingType.Earth), 
-	Lavabend	(BendingType.Earth),
-	
-	Inventor	(BendingType.ChiBlocker);
-	
-	
+	None(BendingType.None),
+
+	Tornado(BendingType.Air),
+	Suffocate(BendingType.Air),
+
+	Bloodbend(BendingType.Water),
+	DrainBend(BendingType.Water),
+
+	Lightning(BendingType.Fire),
+	Combustion(BendingType.Fire),
+
+	Metalbend(BendingType.Earth),
+	Lavabend(BendingType.Earth),
+
+	Inventor(BendingType.ChiBlocker),
+	Air(BendingType.ChiBlocker),
+	Earth(BendingType.ChiBlocker),
+	Fire(BendingType.ChiBlocker),
+	Water(BendingType.ChiBlocker);
 
 	private BendingType element;
-	
+
 	BendingSpecializationType(BendingType element) {
 		this.element = element;
 	}
-	
+
 	public static BendingSpecializationType getType(String string) {
 		for (BendingSpecializationType type : BendingSpecializationType.values()) {
 			if (type.toString().equalsIgnoreCase(string))
@@ -32,7 +34,7 @@ public enum BendingSpecializationType {
 		}
 		return null;
 	}
-	
+
 	public BendingType getElement() {
 		return element;
 	}
