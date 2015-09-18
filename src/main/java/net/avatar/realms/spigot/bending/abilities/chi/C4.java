@@ -36,8 +36,8 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
-@BendingAbility(name="Plastic Bomb", element=BendingType.ChiBlocker, specialization = BendingSpecializationType.Inventor)
-public class C4 extends ActiveAbility{
+@BendingAbility(name = "Plastic Bomb", element = BendingType.ChiBlocker, specialization = BendingSpecializationType.Inventor)
+public class C4 extends ActiveAbility {
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -71,8 +71,8 @@ public class C4 extends ActiveAbility{
 	private Block hitBlock = null;
 	private BlockFace hitFace = null;
 
-	public C4 (Player player){
-		super (player, null);
+	public C4(Player player) {
+		super(player, null);
 
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
@@ -82,12 +82,12 @@ public class C4 extends ActiveAbility{
 			setState(AbilityState.CannotStart);
 		}
 
-		loadBlockByDir(player.getEyeLocation(),player.getEyeLocation().getDirection());
+		loadBlockByDir(player.getEyeLocation(), player.getEyeLocation().getDirection());
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb, this.location)){
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb, this.location)) {
 			setState(AbilityState.CannotStart);
 			return;
-		}		
+		}
 		if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
 			setState(AbilityState.CannotStart);
 			return;
@@ -95,19 +95,19 @@ public class C4 extends ActiveAbility{
 		this.previousType = this.location.getBlock().getType();
 	}
 
-	public C4 (Player player, Arrow arrow) {
-		super (player, null);
+	public C4(Player player, Arrow arrow) {
+		super(player, null);
 
 		if (this.state.isBefore(AbilityState.CanStart)) {
 			return;
 		}
 
-		loadBlockByDir(arrow.getLocation(),arrow.getVelocity().normalize());
+		loadBlockByDir(arrow.getLocation(), arrow.getVelocity().normalize());
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb, this.location)){
+		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb, this.location)) {
 			setState(AbilityState.CannotStart);
 			return;
-		}		
+		}
 		if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
 			setState(AbilityState.CannotStart);
 			return;
@@ -136,7 +136,7 @@ public class C4 extends ActiveAbility{
 		return true;
 	}
 
-	private void loadBlockByDir(Location source,Vector direction) {
+	private void loadBlockByDir(Location source, Vector direction) {
 		BlockIterator bi = null;
 		this.hitBlock = this.player.getEyeLocation().getBlock();
 		Block previousBlock = this.player.getEyeLocation().getBlock();
@@ -201,8 +201,7 @@ public class C4 extends ActiveAbility{
 
 	private boolean hasDetonator(Player player) {
 		ItemStack held = player.getItemInHand();
-		if ((held.getType() == Material.LEVER) ||
-				(held.getType() == Material.BOW)) {
+		if ((held.getType() == Material.LEVER) || (held.getType() == Material.BOW)) {
 			return true;
 		}
 		return false;
@@ -222,11 +221,11 @@ public class C4 extends ActiveAbility{
 			return false;
 		}
 
-		if ((this.bomb!=null) && (this.bomb.getType() != Material.SKULL)) {
+		if ((this.bomb != null) && (this.bomb.getType() != Material.SKULL)) {
 			return false;
 		}
 
-		if(this.bomb.getDrops() != null) {
+		if (this.bomb.getDrops() != null) {
 			this.bomb.getDrops().clear();
 		}
 		return true;
@@ -253,11 +252,21 @@ public class C4 extends ActiveAbility{
 		this.bomb = block;
 		byte facing = 0x1;
 		switch (face) {
-			case SOUTH : facing = 0x3; break;
-			case NORTH : facing = 0x2; break;
-			case WEST : facing = 0x4; break;
-			case EAST : facing = 0x5; break;
-			default : facing = 0x1; break;
+			case SOUTH:
+				facing = 0x3;
+				break;
+			case NORTH:
+				facing = 0x2;
+				break;
+			case WEST:
+				facing = 0x4;
+				break;
+			case EAST:
+				facing = 0x5;
+				break;
+			default:
+				facing = 0x1;
+				break;
 		}
 		this.bomb.setTypeIdAndData(Material.SKULL.getId(), facing, true);
 		Skull skull = (Skull) this.bomb.getState();
@@ -276,21 +285,20 @@ public class C4 extends ActiveAbility{
 			if (block.getType() == Material.OBSIDIAN) {
 				obsidian = true;
 			}
-			if (!obsidian || (obsidian && (this.location.distance(block.getLocation()) < (RADIUS/2.0)))) {
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.PlasticBomb,
-						block.getLocation()) 
+			if (!obsidian || (obsidian && (this.location.distance(block.getLocation()) < (RADIUS / 2.0)))) {
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.PlasticBomb, block.getLocation())
 						&& !ProtectionManager.isRegionProtectedFromExplosion(this.player, Abilities.PlasticBomb, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}
 		}
 		for (Block block : affecteds) {
-			if(!block.getType().equals(Material.BEDROCK)) {
-				if (!obsidian || (this.location.distance(block.getLocation())<2.0)) {
+			if (!block.getType().equals(Material.BEDROCK)) {
+				if (!obsidian || (this.location.distance(block.getLocation()) < 2.0)) {
 					if (block.getType() == Material.TNT) {
 						block.setType(Material.AIR);
 						block.getWorld().spawn(block.getLocation().add(0.5, 0.5, 0.5), TNTPrimed.class);
-					}else {
+					} else {
 						List<Block> adjacent = new LinkedList<Block>();
 						adjacent.add(block.getRelative(BlockFace.NORTH));
 						adjacent.add(block.getRelative(BlockFace.SOUTH));
@@ -298,23 +306,23 @@ public class C4 extends ActiveAbility{
 						adjacent.add(block.getRelative(BlockFace.WEST));
 						adjacent.add(block.getRelative(BlockFace.UP));
 						adjacent.add(block.getRelative(BlockFace.DOWN));
-						if(affecteds.containsAll(adjacent)) {
-							//Explosion ok
+						if (affecteds.containsAll(adjacent)) {
+							// Explosion ok
 							this.removeBlock(block);
 						} else {
 							double rand = Math.random();
-							if(rand < 0.8) {
+							if (rand < 0.8) {
 								this.removeBlock(block);
 							}
 						}
 					}
-				}	
+				}
 			}
 		}
 
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(this.location, RADIUS+1);
-		for(LivingEntity entity : entities) {
-			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(this.location, RADIUS + 1);
+		for (LivingEntity entity : entities) {
+			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
 			}
 			this.dealDamage(entity);
@@ -324,18 +332,18 @@ public class C4 extends ActiveAbility{
 
 	public void dealDamage(Entity entity) {
 		double distance = entity.getLocation().distance(this.location);
-		if (distance > RADIUS){
+		if (distance > RADIUS) {
 			return;
-		}	
+		}
 
 		EntityTools.damageEntity(this.player, entity, MAX_DAMAGE);
 	}
 
 	private void knockBack(Entity entity) {
 		double distance = entity.getLocation().distance(this.location);
-		if (distance > RADIUS){
+		if (distance > RADIUS) {
 			return;
-		}	
+		}
 		double dx = entity.getLocation().getX() - this.location.getX();
 		double dy = entity.getLocation().getY() - this.location.getY();
 		double dz = entity.getLocation().getZ() - this.location.getZ();
@@ -349,12 +357,12 @@ public class C4 extends ActiveAbility{
 
 	@SuppressWarnings("deprecation")
 	private void removeBlock(Block block) {
-		if(Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
+		if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
 			cp.logRemoval(this.player.getName(), block.getLocation(), block.getType(), block.getData());
 		}
 		double rand = Math.random();
-		if(rand < 0.5) {
+		if (rand < 0.5) {
 			block.getDrops().clear();
 		}
 		block.breakNaturally();
@@ -374,7 +382,7 @@ public class C4 extends ActiveAbility{
 
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
 		for (Object obj : instances.keySet()) {
-			if (((C4)instances.get(obj)).bomb.equals(block)) {
+			if (((C4) instances.get(obj)).bomb.equals(block)) {
 				return obj;
 			}
 		}
@@ -397,14 +405,14 @@ public class C4 extends ActiveAbility{
 	}
 
 	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return MAX_DURATION;
 	}
 
 	public static C4 getCFour(Object id) {
 
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
-		if ((instances != null)  && !instances.isEmpty()) {
+		if ((instances != null) && !instances.isEmpty()) {
 			return (C4) instances.get(id);
 		}
 		return null;

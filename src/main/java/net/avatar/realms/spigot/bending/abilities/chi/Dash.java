@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@BendingAbility(name="Dash", element=BendingType.ChiBlocker)
+@BendingAbility(name = "Dash", element = BendingType.ChiBlocker)
 public class Dash extends ActiveAbility {
 
 	@ConfigurationParameter("Length")
@@ -58,6 +58,7 @@ public class Dash extends ActiveAbility {
 		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Dash);
 		return (Dash) instances.get(pl);
 	}
+
 	@Override
 	public boolean progress() {
 		if (!super.progress()) {
@@ -78,16 +79,14 @@ public class Dash extends ActiveAbility {
 		setState(AbilityState.Ended);
 	}
 
-	// This should be called in OnMoveEvent to set the direction dash the same as the player
+	// This should be called in OnMoveEvent to set the direction dash the same
+	// as the player
 	public void setDirection(Vector d) {
 		if (this.state != AbilityState.Preparing) {
 			return;
 		}
-		if (Double.isNaN(d.getX()) 
-				|| Double.isNaN(d.getY())
-				|| Double.isNaN(d.getZ())
-				|| (((d.getX() < 0.005) && (d.getX() > -0.005))
-						&& ((d.getZ() < 0.005) && (d.getZ() > -0.005)))) {
+		if (Double.isNaN(d.getX()) || Double.isNaN(d.getY()) || Double.isNaN(d.getZ())
+				|| (((d.getX() < 0.005) && (d.getX() > -0.005)) && ((d.getZ() < 0.005) && (d.getZ() > -0.005)))) {
 			this.direction = this.player.getLocation().getDirection().clone().normalize();
 		} else {
 			this.direction = d.normalize();
@@ -98,7 +97,13 @@ public class Dash extends ActiveAbility {
 
 	@Override
 	public void remove() {
-		this.bender.cooldown(Abilities.Dash, COOLDOWN);
+		long cd = COOLDOWN;
+		if (ComboPoints.getComboPointAmount(player) >= 1) {
+			ComboPoints.consume(player, 1);
+		} else {
+			cd *= 2;
+		}
+		this.bender.cooldown(Abilities.Dash, cd);
 		super.remove();
 	}
 
