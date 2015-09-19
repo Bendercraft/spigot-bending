@@ -1,8 +1,8 @@
 package net.avatar.realms.spigot.bending.commands;
 
 public abstract class BendingCommands {
-
-	public static final String[] BIND_ALIASES = { "bind", "b" };
+	
+	public static final String[] BIND_ALIASES = { "bind", "b", "B" };
 	public static final String[] CLEAR_ALIASES = { "clear", "cl" };
 	public static final String[] CHOOSE_ALIASES = { "choose", "ch" };
 	public static final String[] ADD_ALIASES = { "add", "a" };

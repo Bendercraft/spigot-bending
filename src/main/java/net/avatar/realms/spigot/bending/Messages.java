@@ -11,8 +11,24 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.controller.LanguageParameter;
 
 public class Messages {
+	
+	@LanguageParameter ("command.not_console")
+	public static String NOT_CONSOLE_COMMAND = "This command cannot be executed by the console.";
+	
+	@LanguageParameter ("command.no_permission")
+	public static String NO_PERMISSION = "You do not have the permission to execute that command.";
+	
+	@LanguageParameter ("command.invalid_ability")
+	public static String INVALID_ABILITY = "This is an invalid ability.";
+
+	@LanguageParameter ("command.not_element")
+	public static String NOT_HAVE_ELEMENT = "You do not have the proper element : ";
+	
+	@LanguageParameter ("command.ability_bound")
+	public static String ABILITY_BOUND = "{0} bound to slot {1}.";
 
 	private static final String FILENAME = "messages.properties";
 

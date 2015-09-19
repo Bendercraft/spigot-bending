@@ -14,8 +14,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
-import net.avatar.realms.spigot.bending.commands.BendingCommandExecutor;
 import net.avatar.realms.spigot.bending.commands.BendingCommandCompleter;
+import net.avatar.realms.spigot.bending.commands.BendingCommandExecutor;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
 import net.avatar.realms.spigot.bending.controller.RevertChecker;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -46,6 +46,7 @@ public class Bending extends JavaPlugin {
 	public Tools tools;
 
 	public BendingLearning learning;
+
 	private BendingCommandExecutor commandExecutor;
 	private BendingCommandCompleter commandCompleter;
 
@@ -54,8 +55,8 @@ public class Bending extends JavaPlugin {
 		plugin = this;
 		log = plugin.getLogger();
 
-		commandExecutor = new BendingCommandExecutor();
-		commandCompleter = new BendingCommandCompleter();
+		this.commandExecutor = new BendingCommandExecutor();
+		this.commandCompleter = new BendingCommandCompleter();
 
 		Settings.applyConfiguration(getDataFolder());
 		AbilityManager.getManager().registerAllAbilities();
@@ -81,8 +82,8 @@ public class Bending extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(this.bpListener, this);
 		getServer().getPluginManager().registerEvents(this.blListener, this);
 
-		getCommand("bending").setExecutor(commandExecutor);
-		getCommand("bending").setTabCompleter(commandCompleter);
+		getCommand("bending").setExecutor(this.commandExecutor);
+		getCommand("bending").setTabCompleter(this.commandCompleter);
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin, this.revertChecker, 0, 200);
