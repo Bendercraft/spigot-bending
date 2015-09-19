@@ -17,6 +17,8 @@ import net.avatar.realms.spigot.bending.controller.Settings;
  */
 public class ComboPoints {
 
+	private static final int MAX_COMBO_POINTS = 5;
+
 	private static Map<UUID, ComboPoints> combos = new HashMap<UUID, ComboPoints>();
 
 	@SuppressWarnings("unused")
@@ -110,7 +112,7 @@ public class ComboPoints {
 			this.comboAmount = 0;
 		}
 
-		if (this.comboAmount < 5) {
+		if (this.comboAmount < MAX_COMBO_POINTS) {
 			this.comboAmount++;
 		}
 
@@ -137,8 +139,8 @@ public class ComboPoints {
 			return false;
 		}
 
-		if (amount > 5) {
-			amount = 5;
+		if (amount > MAX_COMBO_POINTS) {
+			amount = MAX_COMBO_POINTS;
 		}
 
 		if (!combos.containsKey(player.getUniqueId())) {
