@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -26,38 +25,35 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 public class BendingCommand {
 
-	private final String[] bindAliases = { "bind", "b" };
-	private final String[] clearAliases = { "clear", "cl" };
-	private final String[] chooseAliases = { "choose", "ch" };
-	private final String[] addAliases = { "add", "a" };
-	private final String[] specializeAliases = { "specialize", "spe" };
-	private final String[] pathAliases = { "path", "p" };
-	private final String[] removeAliases = { "remove", "r" };
-	private final String[] toggleAliases = { "toggle", "t" };
-	private final String[] displayAliases = { "display", "disp", "dis", "d" };
-	private final String[] reloadAliases = { "reload" };
-	private final String[] helpAliases = { "help", "h", "?" };
-	private final String[] importAliases = { "import" };
-	private final String[] whoAliases = { "who", "wh", "w" };
-	private final String[] languageAliases = { "language", "lang", "la" };
-	private final String[] bindModeAliases = { "bindmode", "bmode", "bindm", "bm" };
-	private final String[] versionAliases = { "version", "ver", "v" };
-	private final String[] airbendingAliases = { "air", "a", "airbender", "airbending", "airbend" };
-	private final String[] earthbendingAliases = { "earth", "e", "earthbender", "earthbending", "earthbend", "terre" };
-	private final String[] firebendingAliases = { "fire", "f", "firebender", "firebending", "firebend", "feu" };
-	private final String[] waterbendingAliases = { "water", "w", "waterbender", "waterbending", "waterbend", "eau" };
-	private final String[] chiblockingAliases = { "chi", "c", "chiblock", "chiblocker", "chiblocking" };
-	private final String[] dbAlias = { "db" };
-	private final String[] learningAlias = { "learning", "l" };
-	private final String[] cooldownsAlias = { "cooldown", "cd" };
-	private final File dataFolder;
+	private static final String[] bindAliases = { "bind", "b" };
+	private static final String[] clearAliases = { "clear", "cl" };
+	private static final String[] chooseAliases = { "choose", "ch" };
+	private static final String[] addAliases = { "add", "a" };
+	private static final String[] specializeAliases = { "specialize", "spe" };
+	private static final String[] pathAliases = { "path", "p" };
+	private static final String[] removeAliases = { "remove", "r" };
+	private static final String[] toggleAliases = { "toggle", "t" };
+	private static final String[] displayAliases = { "display", "disp", "dis", "d" };
+	private static final String[] reloadAliases = { "reload" };
+	private static final String[] helpAliases = { "help", "h", "?" };
+	private static final String[] importAliases = { "import" };
+	private static final String[] whoAliases = { "who", "wh", "w" };
+	private static final String[] languageAliases = { "language", "lang", "la" };
+	private static final String[] bindModeAliases = { "bindmode", "bmode", "bindm", "bm" };
+	private static final String[] versionAliases = { "version", "ver", "v" };
+	private static final String[] airbendingAliases = { "air", "a", "airbender", "airbending", "airbend" };
+	private static final String[] earthbendingAliases = { "earth", "e", "earthbender", "earthbending", "earthbend", "terre" };
+	private static final String[] firebendingAliases = { "fire", "f", "firebender", "firebending", "firebend", "feu" };
+	private static final String[] waterbendingAliases = { "water", "w", "waterbender", "waterbending", "waterbend", "eau" };
+	private static final String[] chiblockingAliases = { "chi", "c", "chiblock", "chiblocker", "chiblocking" };
+	private static final String[] dbAlias = { "db" };
+	private static final String[] learningAlias = { "learning", "l" };
+	private static final String[] cooldownsAlias = { "cooldown", "cd" };
 	private final Server server;
 	private boolean verbose = true;
 	private BendingPlayer bPlayer;
 
-	public BendingCommand(final Player player, String[] args, final File dataFolder, final Server server) {
-		this.dataFolder = dataFolder;
-		// this.config = config;
+	public BendingCommand(final Player player, String[] args, final Server server) {
 		this.server = server;
 		if (player != null) {
 			this.bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -893,7 +889,6 @@ public class BendingCommand {
 		if (!hasPermission(player, "bending.admin.reload")) {
 			return;
 		}
-		Bending.language.load(new File(this.dataFolder, "language.yml"));
 		PluginTools.stopAllBending();
 		sendMessage(player, ChatColor.AQUA + "Bending " + Messages.getString("general.reload_success"));
 	}
