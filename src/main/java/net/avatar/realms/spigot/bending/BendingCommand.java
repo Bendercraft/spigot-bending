@@ -2,7 +2,6 @@ package net.avatar.realms.spigot.bending;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,55 +70,53 @@ public class BendingCommand {
 				args = temp;
 			}
 			final String arg = args[0];
-			if (Arrays.asList(this.bindAliases).contains(arg)) {
+			if (Arrays.asList(bindAliases).contains(arg)) {
 				bind(player, args);
 			}
-			else if (Arrays.asList(this.clearAliases).contains(arg)) {
+			else if (Arrays.asList(clearAliases).contains(arg)) {
 				clear(player, args);
 			}
-			else if (Arrays.asList(this.chooseAliases).contains(arg)) {
+			else if (Arrays.asList(chooseAliases).contains(arg)) {
 				choose(player, args);
 			}
-			else if (Arrays.asList(this.addAliases).contains(arg)) {
+			else if (Arrays.asList(addAliases).contains(arg)) {
 				add(player, args);
 			}
-			else if (Arrays.asList(this.specializeAliases).contains(arg)) {
+			else if (Arrays.asList(specializeAliases).contains(arg)) {
 				specialize(player, args);
 			}
-			else if (Arrays.asList(this.pathAliases).contains(arg)) {
+			else if (Arrays.asList(pathAliases).contains(arg)) {
 				path(player, args);
 			}
-			else if (Arrays.asList(this.removeAliases).contains(arg)) {
+			else if (Arrays.asList(removeAliases).contains(arg)) {
 				remove(player, args);
 			}
-			else if (Arrays.asList(this.toggleAliases).contains(arg)) {
+			else if (Arrays.asList(toggleAliases).contains(arg)) {
 				toggle(player, args);
 			}
-			else if (Arrays.asList(this.displayAliases).contains(arg)) {
+			else if (Arrays.asList(displayAliases).contains(arg)) {
 				display(player, args);
 			}
-			else if (Arrays.asList(this.reloadAliases).contains(arg)) {
+			else if (Arrays.asList(reloadAliases).contains(arg)) {
 				reload(player, args);
 			}
-			else if (Arrays.asList(this.helpAliases).contains(arg)) {
+			else if (Arrays.asList(helpAliases).contains(arg)) {
 				help(player, args);
 			}
-			else if (Arrays.asList(this.whoAliases).contains(arg)) {
+			else if (Arrays.asList(whoAliases).contains(arg)) {
 				who(player, args);
 			}
-			// else if (Arrays.asList(this.languageAliases).contains(arg)) {
-			// language(player, args);
-			// }
-			else if (Arrays.asList(this.versionAliases).contains(arg)) {
+
+			else if (Arrays.asList(versionAliases).contains(arg)) {
 				version(player, args);
 			}
-			else if (Arrays.asList(this.dbAlias).contains(arg)) {
+			else if (Arrays.asList(dbAlias).contains(arg)) {
 				db(player, args);
 			}
-			else if (Arrays.asList(this.learningAlias).contains(arg)) {
+			else if (Arrays.asList(learningAlias).contains(arg)) {
 				learning(player, args);
 			}
-			else if (Arrays.asList(this.cooldownsAlias).contains(arg)) {
+			else if (Arrays.asList(cooldownsAlias).contains(arg)) {
 				cooldowns(player);
 			}
 			else {
@@ -513,7 +510,7 @@ public class BendingCommand {
 				return;
 			}
 			final String choice = args[1].toLowerCase();
-			if (Arrays.asList(this.airbendingAliases).contains(choice)) {
+			if (Arrays.asList(airbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.air")) {
 					sendMessage(player, Messages.getString("general.no_perms_air"));
 					return;
@@ -522,7 +519,7 @@ public class BendingCommand {
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Air);
 				return;
 			}
-			if (Arrays.asList(this.firebendingAliases).contains(choice)) {
+			if (Arrays.asList(firebendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.fire")) {
 					Messages.sendMessage(player, "general.no_perms_fire");
 					return;
@@ -531,7 +528,7 @@ public class BendingCommand {
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Fire);
 				return;
 			}
-			if (Arrays.asList(this.earthbendingAliases).contains(choice)) {
+			if (Arrays.asList(earthbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.earth")) {
 					Messages.sendMessage(player, "General.no_perms_earth");
 					return;
@@ -540,7 +537,7 @@ public class BendingCommand {
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Earth);
 				return;
 			}
-			if (Arrays.asList(this.waterbendingAliases).contains(choice)) {
+			if (Arrays.asList(waterbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.water")) {
 					Messages.sendMessage(player, "general.no_perms_water");
 					return;
@@ -549,7 +546,7 @@ public class BendingCommand {
 				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Water);
 				return;
 			}
-			if (Arrays.asList(this.chiblockingAliases).contains(choice)) {
+			if (Arrays.asList(chiblockingAliases).contains(choice)) {
 				if (!hasHelpPermission(player, "bending.chiblocking")) {
 					Messages.sendMessage(player, "general.no_perms_chiblocking");
 					return;
@@ -575,7 +572,7 @@ public class BendingCommand {
 				senderName = player.getName();
 			}
 			final String choice = args[2].toLowerCase();
-			if (Arrays.asList(this.airbendingAliases).contains(choice)) {
+			if (Arrays.asList(airbendingAliases).contains(choice)) {
 				if (!hasHelpPermission(targetplayer, "bending.air")) {
 					Messages.sendMessage(player, "general.other_no_perms_air");
 					return;
@@ -1694,60 +1691,5 @@ public class BendingCommand {
 			}
 		}
 		return null;
-	}
-
-	private String autoCompleteParameter(String start, Abilities[] abilities) {
-		List<String> values = new LinkedList<String>();
-		for (Abilities ability : abilities) {
-			values.add(ability.name());
-		}
-		return autoCompleteParameter(start, values);
-	}
-
-	private String autoCompleteParameter(String start, List<String> values) {
-		if (start == null || start.isEmpty()) {
-			return " ";
-		}
-		int length = start.length();
-
-		List<String> valids = new LinkedList<String>();
-		for (String value : values) {
-			String temp = value.substring(0, length);
-			if (temp.equalsIgnoreCase(start)) {
-				valids.add(value);
-			}
-		}
-		if (valids.size() < 1) {
-			return start;
-		}
-		else if (valids.size() == 1) {
-			return valids.get(0);
-		}
-		else {
-			String base = valids.get(0);
-			valids.remove(0);
-			StringBuilder builder = new StringBuilder();
-			int i = 0;
-			boolean done = false;
-			while (!done) {
-				if (i >= base.length()) {
-					break;
-				}
-				boolean same = true;
-				char c = base.charAt(i);
-				for (String other : valids) {
-					if (other.charAt(i) != c) {
-						same = false;
-						done = true;
-						break;
-					}
-				}
-				if (same) {
-					builder.append(c);
-				}
-				i++;
-			}
-			return builder.toString();
-		}
 	}
 }

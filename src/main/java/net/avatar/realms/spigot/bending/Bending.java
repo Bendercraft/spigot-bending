@@ -14,6 +14,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
+import net.avatar.realms.spigot.bending.commands.BendingCommandExecutor;
+import net.avatar.realms.spigot.bending.commands.BendingCommandCompleter;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
 import net.avatar.realms.spigot.bending.controller.RevertChecker;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -42,24 +44,29 @@ public class Bending extends JavaPlugin {
 	public static Language language;
 	public static IBendingDB database;
 	public Tools tools;
-	
+
 	public BendingLearning learning;
+	private BendingCommandExecutor commandExecutor;
+	private BendingCommandCompleter commandCompleter;
 
 	@Override
-	public void onEnable () {
+	public void onEnable() {
 		plugin = this;
 		log = plugin.getLogger();
-		
+
+		commandExecutor = new BendingCommandExecutor();
+		commandCompleter = new BendingCommandCompleter();
+
 		Settings.applyConfiguration(getDataFolder());
 		AbilityManager.getManager().registerAllAbilities();
 		AbilityManager.getManager().applyConfiguration(getDataFolder());
-		
+
 		Messages.loadMessages();
-		
-		//Learning
+
+		// Learning
 		this.learning = new BendingLearning();
 		this.learning.onEnable();
-		
+
 		language = new Language();
 		language.load(new File(getDataFolder(), "language.yml"));
 		database = DBUtils.choose(Settings.DATABASE);
@@ -69,39 +76,42 @@ public class Bending extends JavaPlugin {
 		}
 		database.init(this);
 		this.tools = new Tools();
-		
+
 		getServer().getPluginManager().registerEvents(this.listener, this);
 		getServer().getPluginManager().registerEvents(this.bpListener, this);
 		getServer().getPluginManager().registerEvents(this.blListener, this);
-		
+
+		getCommand("bending").setExecutor(commandExecutor);
+		getCommand("bending").setTabCompleter(commandCompleter);
+
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin, this.revertChecker, 0, 200);
-		
+
 		ProtectionManager.init();
 		PluginTools.verbose("Bending v" + getDescription().getVersion() + " has been loaded.");
 		registerCommands();
-		
-		//Citizens
+
+		// Citizens
 		if ((getServer().getPluginManager().getPlugin("Citizens") != null) && getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
-			 CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(UnbendableTrait.class).withName("unbendable"));
-	    }
+			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(UnbendableTrait.class).withName("unbendable"));
+		}
 	}
 
 	@Override
-	public void onDisable () {
+	public void onDisable() {
 		PluginTools.stopAllBending();
 		AbilityManager.getManager().stopAllAbilities();
 		getServer().getScheduler().cancelTasks(plugin);
-		
+
 		this.learning.onDisable();
 	}
 
-	public void reloadConfiguration () {
+	public void reloadConfiguration() {
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
 
-	private void registerCommands () {
+	private void registerCommands() {
 		commands.put("command.admin", "remove <player>");
 		commands.put("admin.reload", "reload");
 		commands.put("admin.permaremove", "permaremove <player>");
@@ -116,11 +126,11 @@ public class Bending extends JavaPlugin {
 	}
 
 	@Override
-	public boolean onCommand (CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		// Will have to change that to allow the console sender
 		Player player = null;
 		if (sender instanceof Player) {
-			player = (Player)sender;
+			player = (Player) sender;
 		}
 		if (cmd.getName().equalsIgnoreCase("bending")) {
 			new BendingCommand(player, args, getServer());
@@ -128,7 +138,7 @@ public class Bending extends JavaPlugin {
 		return true;
 	}
 
-	public static void callEvent (Event e) {
+	public static void callEvent(Event e) {
 		Bukkit.getServer().getPluginManager().callEvent(e);
 	}
 }
