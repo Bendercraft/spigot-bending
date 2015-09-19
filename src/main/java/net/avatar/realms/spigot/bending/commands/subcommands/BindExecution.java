@@ -84,5 +84,4 @@ public class BindExecution implements IBendingCommand {
 	public void printUsage (CommandSender sender) {
 		sender.sendMessage("/bending bind <ability> [slot]");
 	}
-
 }

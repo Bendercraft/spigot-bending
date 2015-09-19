@@ -24,7 +24,6 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 public class BendingCommand {
 	
 	private static final String[] clearAliases = { "clear", "cl" };
-	private static final String[] chooseAliases = { "choose", "ch" };
 	private static final String[] addAliases = { "add", "a" };
 	private static final String[] specializeAliases = { "specialize", "spe" };
 	private static final String[] pathAliases = { "path", "p" };
@@ -67,9 +66,6 @@ public class BendingCommand {
 			final String arg = args[0];
 			if (Arrays.asList(clearAliases).contains(arg)) {
 				clear(player, args);
-			}
-			else if (Arrays.asList(chooseAliases).contains(arg)) {
-				choose(player, args);
 			}
 			else if (Arrays.asList(addAliases).contains(arg)) {
 				add(player, args);
@@ -404,166 +400,6 @@ public class BendingCommand {
 		final String description = Messages.getString(key);
 		sendMessage(player, color + usage + ": " + command);
 		sendMessage(player, color + "-" + description);
-	}
-	
-	private void printChooseUsage(final Player player) {
-		if (!hasHelpPermission(player, "bending.admin.choose") && !hasHelpPermission(player, "bending.admin.rechoose")
-				&& !hasHelpPermission(player, "bending.command.choose")) {
-			sendNoCommandPermissionMessage(player, "choose");
-			return;
-		}
-		if (hasHelpPermission(player, "bending.command.choose") || hasHelpPermission(player, "bending.admin.rechoose")) {
-			printUsageMessage(player, "/bending choose <element>", "General.choose_usage");
-		}
-		if (hasHelpPermission(player, "bending.admin.choose")) {
-			printUsageMessage(player, "/bending choose <player> <element>", "General.choose_player_usage");
-		}
-	}
-	
-	private void choose(final Player player, final String[] args) {
-		if ((args.length != 2) && (args.length != 3)) {
-			printChooseUsage(player);
-			if (!player.hasPermission("bending.command.choose") && !player.hasPermission("bending.admin.rechoose")
-					&& !player.hasPermission("bending.admin.choose")) {
-				printNoPermissions(player);
-				return;
-			}
-			return;
-		}
-		if (args.length == 2) {
-			if (player == null) {
-				printChooseUsage(player);
-				return;
-			}
-			if (!player.hasPermission("bending.command.choose") && !player.hasPermission("bending.admin.rechoose")
-					&& !player.hasPermission("bending.admin.choose")) {
-				printNoPermissions(player);
-				return;
-			}
-			if (EntityTools.isBender(player) && !player.hasPermission("bending.admin.rechoose")) {
-				printNoPermissions(player);
-				return;
-			}
-			final String choice = args[1].toLowerCase();
-			if (Arrays.asList(airbendingAliases).contains(choice)) {
-				if (!hasHelpPermission(player, "bending.air")) {
-					sendMessage(player, Messages.getString("general.no_perms_air"));
-					return;
-				}
-				Messages.sendMessage(player, "general.choosen_air");
-				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Air);
-				return;
-			}
-			if (Arrays.asList(firebendingAliases).contains(choice)) {
-				if (!hasHelpPermission(player, "bending.fire")) {
-					Messages.sendMessage(player, "general.no_perms_fire");
-					return;
-				}
-				Messages.sendMessage(player, "general.choosen_fire");
-				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Fire);
-				return;
-			}
-			if (Arrays.asList(earthbendingAliases).contains(choice)) {
-				if (!hasHelpPermission(player, "bending.earth")) {
-					Messages.sendMessage(player, "General.no_perms_earth");
-					return;
-				}
-				Messages.sendMessage(player, "general.choosen_earth");
-				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Earth);
-				return;
-			}
-			if (Arrays.asList(waterbendingAliases).contains(choice)) {
-				if (!hasHelpPermission(player, "bending.water")) {
-					Messages.sendMessage(player, "general.no_perms_water");
-					return;
-				}
-				Messages.sendMessage(player, "general.choosen_water");
-				BendingPlayer.getBendingPlayer(player).setBender(BendingType.Water);
-				return;
-			}
-			if (Arrays.asList(chiblockingAliases).contains(choice)) {
-				if (!hasHelpPermission(player, "bending.chiblocking")) {
-					Messages.sendMessage(player, "general.no_perms_chiblocking");
-					return;
-				}
-				Messages.sendMessage(player, "general.choosen_chi");
-				BendingPlayer.getBendingPlayer(player).setBender(BendingType.ChiBlocker);
-				return;
-			}
-			printChooseUsage(player);
-		}
-		else if (args.length == 3) {
-			if (!hasPermission(player, "bending.admin.choose")) {
-				return;
-			}
-			final String playername = args[1];
-			final Player targetplayer = getOnlinePlayer(playername);
-			if (targetplayer == null) {
-				printChooseUsage(player);
-				return;
-			}
-			String senderName = Messages.getString("general.the_server");
-			if (player != null) {
-				senderName = player.getName();
-			}
-			final String choice = args[2].toLowerCase();
-			if (Arrays.asList(airbendingAliases).contains(choice)) {
-				if (!hasHelpPermission(targetplayer, "bending.air")) {
-					Messages.sendMessage(player, "general.other_no_perms_air");
-					return;
-				}
-				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName() + "'s bending.");
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
-				Messages.sendMessage(targetplayer, "general.choosen_air");
-				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.Air);
-				return;
-			}
-			if (Arrays.asList(firebendingAliases).contains(choice)) {
-				if (!hasHelpPermission(targetplayer, "bending.fire")) {
-					Messages.sendMessage(player, "general.other_no_perms_fire");
-					return;
-				}
-				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName() + "'s bending.");
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
-				Messages.sendMessage(targetplayer, "general.choosen_fire");
-				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.Fire);
-				return;
-			}
-			if (Arrays.asList(earthbendingAliases).contains(choice)) {
-				if (!hasHelpPermission(targetplayer, "bending.earth")) {
-					Messages.sendMessage(player, "general.other_no_perms_earth");
-					return;
-				}
-				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName() + "'s bending.");
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
-				Messages.sendMessage(targetplayer, "general.choosen_earth");
-				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.Earth);
-				return;
-			}
-			if (Arrays.asList(waterbendingAliases).contains(choice)) {
-				if (!hasHelpPermission(targetplayer, "bending.water")) {
-					Messages.sendMessage(player, "general.other_no_perms_water");
-					return;
-				}
-				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName() + "'s bending.");
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
-				Messages.sendMessage(targetplayer, "general.choosen_water");
-				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.Water);
-				return;
-			}
-			if (Arrays.asList(chiblockingAliases).contains(choice)) {
-				if (!hasHelpPermission(targetplayer, "bending.chiblocking")) {
-					sendMessage(player, "General.other_no_perms_chi");
-					return;
-				}
-				sendMessage(player, Messages.getString("general.you_changed") + " " + targetplayer.getName() + "'s bending.");
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.changed_you"));
-				Messages.sendMessage(targetplayer, "general.choosen_chi");
-				BendingPlayer.getBendingPlayer(targetplayer).setBender(BendingType.ChiBlocker);
-				return;
-			}
-			printChooseUsage(player);
-		}
 	}
 	
 	private void sendMessage(final Player player, final String message) {

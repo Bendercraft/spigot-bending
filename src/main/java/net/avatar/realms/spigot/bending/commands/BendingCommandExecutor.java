@@ -8,13 +8,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import net.avatar.realms.spigot.bending.commands.subcommands.BindExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.ChooseExecution;
 
 public class BendingCommandExecutor implements CommandExecutor {
 
 	private IBendingCommand bind;
+	private IBendingCommand choose;
 
 	public BendingCommandExecutor () {
 		this.bind = new BindExecution();
+		this.choose = new ChooseExecution();
 	}
 
 	@Override
@@ -30,6 +33,9 @@ public class BendingCommandExecutor implements CommandExecutor {
 		String subCommand = argList.remove(0);
 		if (Arrays.asList(BendingCommands.BIND_ALIASES).contains(subCommand)) {
 			return this.bind.execute(sender, argList);
+		}
+		else if (Arrays.asList(BendingCommands.CHOOSE_ALIASES).contains(subCommand)) {
+			return this.choose.execute(sender, argList);
 		}
 		return false;
 	}

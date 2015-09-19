@@ -128,6 +128,7 @@ permissions:
   bending.command:
     description: Allows all user commands.
     children:
+      bending.command.choose.other: true
       bending.command.choose: true
       bending.command.displayelement: true
       bending.command.clear: true
@@ -366,7 +367,7 @@ permissions:
   bending.admin.rechoose:
     description: Allows the use of /bending choose <element> after choosing one.
     default: op
-  bending.admin.choose:
+  bending.command.choose.other:
     description: Allows the use of /bending choose <player> <element>
     default: op
   bending.admin.add: 
@@ -404,12 +405,6 @@ permissions:
   bending.command.version:
     description: Allows the use of /bending version
     default: true
-
-  bending.avatar:
-    description: Give the avatar prefix.
-    default: false
-  bending.command.import:
-    default: op
     
   bending.message.daymessage:
     description: Allows receipt of the sun rising and falling for firebenders
