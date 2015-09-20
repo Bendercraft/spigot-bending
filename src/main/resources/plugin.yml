@@ -405,6 +405,18 @@ permissions:
   bending.command.version:
     description: Allows the use of /bending version
     default: true
+  bending.command.cooldown:
+    description: Allows the use of /bending cooldown
+    default: true
+  bending.command.path:
+    description: Allows the use of /bending path
+    default: true
+  bending.command.path.choose:
+    description: Allows to choose a path
+    default: op
+  bending.command.specialization:
+    description: Allows to choose a specialization
+    default: op
     
   bending.message.daymessage:
     description: Allows receipt of the sun rising and falling for firebenders

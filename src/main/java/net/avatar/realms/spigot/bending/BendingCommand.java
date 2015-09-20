@@ -3,7 +3,6 @@ package net.avatar.realms.spigot.bending;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -40,7 +39,6 @@ public class BendingCommand {
 	private static final String[] chiblockingAliases = { "chi", "c", "chiblock", "chiblocker", "chiblocking" };
 	private static final String[] dbAlias = { "db" };
 	private static final String[] learningAlias = { "learning", "l" };
-	private static final String[] cooldownsAlias = { "cooldown", "cd" };
 	private final Server server;
 	private boolean verbose = true;
 	private BendingPlayer bPlayer;
@@ -98,9 +96,6 @@ public class BendingCommand {
 			}
 			else if (Arrays.asList(learningAlias).contains(arg)) {
 				learning(player, args);
-			}
-			else if (Arrays.asList(cooldownsAlias).contains(arg)) {
-				cooldowns(player);
 			}
 			else {
 				printHelpDialogue(player);
@@ -166,34 +161,6 @@ public class BendingCommand {
 			return;
 		}
 		printPathUsage(player);
-	}
-
-	private void cooldowns(Player player) {
-		if (player == null) {
-			return;
-		}
-		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-		if (bender == null) {
-			Bending.plugin.getLogger().warning("Cooldowns command was not able to find bending player for " + player.getName());
-			return;
-		}
-
-		Map<Abilities, Long> cooldowns = bender.getCooldowns();
-		player.sendMessage("-Cooldowns :");
-		if ((cooldowns == null) || cooldowns.isEmpty()) {
-			player.sendMessage("--- None");
-		}
-		else {
-			for (Abilities ab : cooldowns.keySet()) {
-				ChatColor col = ChatColor.WHITE;
-				int min = (int) ((cooldowns.get(ab) / 1000) / 60);
-				int sec = (int) ((((cooldowns.get(ab) / 1000.0) / 60.0) - min) * 60);
-				if (!ab.isEnergyAbility()) {
-					col = PluginTools.getColor(Settings.getColorString(ab.getElement().name()));
-				}
-				player.sendMessage(col + "--- " + ab.name() + " ~ " + min + ":" + sec);
-			}
-		}
 	}
 
 	private void db(final Player player, final String[] args) {
