@@ -26,23 +26,23 @@ import net.citizensnpcs.api.trait.Trait;
 
 
 public class ProtectionManager {
-
+	
 	private static Set<Abilities> allowedEverywhereAbilities = new HashSet<Abilities>();
 	static {
 		allowedEverywhereAbilities.add(Abilities.HealingWaters);
 	}
-
+	
 	private static PluginManager pm;
-
+	
 	private static WorldGuardPlugin worldguard = null;
 	private static WGCustomFlagsPlugin wgCustomFlags = null;
-	
+
 	private static boolean useWG = false;
 	private static boolean useCustomFlagsWG = false;
-	private static boolean useFactions = false;
+	//	private static boolean useFactions = false;
 	private static boolean useCitizens = false;
-	
 
+	
 	private static StateFlag BENDING;
 	private static StateFlag BENDING_AIR;
 	private static StateFlag BENDING_CHI;
@@ -52,7 +52,7 @@ public class ProtectionManager {
 	private static StateFlag BENDING_PASSIVES;
 	private static StateFlag BENDING_SPE;
 	private static StateFlag BENDING_ENERGY;
-
+	
 	public static void init () {
 		// WorldGuard
 		if (Settings.RESPECT_WORLDGUARD) {
@@ -62,14 +62,14 @@ public class ProtectionManager {
 				worldguard = (WorldGuardPlugin) plugin;
 				useWG = true;
 			}
-
+			
 			plugin = pm.getPlugin("WGCustomFlags");
 			if ((plugin != null) && (plugin.isEnabled())) {
 				wgCustomFlags = (WGCustomFlagsPlugin) plugin;
 				useCustomFlagsWG = true;
 			}
 		}
-
+		
 		if (useWG && useCustomFlagsWG) {
 			BENDING = 			new StateFlag("bending", true);
 			BENDING_AIR = 		new StateFlag("bending-air", true);
@@ -80,8 +80,8 @@ public class ProtectionManager {
 			BENDING_PASSIVES = 	new StateFlag("bending-passives", true);
 			BENDING_SPE = 		new StateFlag("bending-spe", true);
 			BENDING_ENERGY = 	new StateFlag("bending-energy", true);
-
-
+			
+			
 			wgCustomFlags.addCustomFlag(BENDING);
 			wgCustomFlags.addCustomFlag(BENDING_PASSIVES);
 			wgCustomFlags.addCustomFlag(BENDING_AIR);
@@ -92,21 +92,19 @@ public class ProtectionManager {
 			wgCustomFlags.addCustomFlag(BENDING_SPE);
 			wgCustomFlags.addCustomFlag(BENDING_ENERGY);
 		}
-
-
-
-		Plugin fcp = Bukkit.getPluginManager().getPlugin("Factions");
-		if (fcp != null) {
-			PluginTools.verbose("Recognized Factions...");
-			if (Settings.RESPECT_FACTIONS) {
-				useFactions = true;
-				PluginTools.verbose("Bending is set to respect Factions' claimed lands.");
-			}
-			else {
-				PluginTools.verbose("But Bending is set to ignore Factions' claimed lands.");
-			}
-		}
-
+		
+		//		Plugin fcp = Bukkit.getPluginManager().getPlugin("Factions");
+		//		if (fcp != null) {
+		//			PluginTools.verbose("Recognized Factions...");
+		//			if (Settings.RESPECT_FACTIONS) {
+		//				useFactions = true;
+		//				PluginTools.verbose("Bending is set to respect Factions' claimed lands.");
+		//			}
+		//			else {
+		//				PluginTools.verbose("But Bending is set to ignore Factions' claimed lands.");
+		//			}
+		//		}
+		
 		Plugin citizens = Bukkit.getPluginManager().getPlugin("Citizens");
 		if (citizens != null) {
 			PluginTools.verbose("Recognized Citizens...");
@@ -119,7 +117,7 @@ public class ProtectionManager {
 			}
 		}
 	}
-
+	
 	public static boolean isEntityProtectedByCitizens (Entity entity) {
 		if (useCitizens) {
 			if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
@@ -132,12 +130,12 @@ public class ProtectionManager {
 		}
 		return false;
 	}
-
+	
 	public static boolean isRegionProtectedFromExplosion (Player player, Abilities ability, Location loc) {
 		if (isRegionProtectedFromBending(player, ability, loc)) {
 			return true;
 		}
-
+		
 		if (useWG) {
 			LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 			for (Location location : new Location[] {loc, player.getLocation()}) {
@@ -153,76 +151,76 @@ public class ProtectionManager {
 		}
 		return false;
 	}
-
+	
 	public static boolean isRegionProtectedFromBending (Player player, Abilities ability, Location loc) {
 		if (!useWG) {
 			return false;
 		}
-
+		
 		if (ability == null) {
 			return false;
 		}
-
+		
 		if (player.isOp()) {
 			return false;
 		}
-
+		
 		if (isAllowedEverywhereAbility(ability)) {
 			return false;
 		}
 		LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 		RegionContainer container = worldguard.getRegionContainer();
 		RegionQuery query = container.createQuery();
-		
+
 		if (ability.isPassiveAbility()) {
 			if (!query.testState(loc, localPlayer, BENDING_PASSIVES)) {
 				return true;
 			}
 			return false;
 		}
-
+		
 		if (!query.testState(loc, localPlayer, BENDING)) {
 			return true;
 		}
-
+		
 		if (ability.isSpecialization()
 				&& !query.testState(loc, localPlayer, BENDING_SPE)) {
 			return true;
 		}
-
+		
 		if ((ability == Abilities.AvatarState)
 				&& !query.testState(loc, localPlayer, BENDING_ENERGY)) {
 			return true;
 		}
-
-		if (Abilities.isAirbending(ability)
+		
+		if (ability.isAirbending()
 				&& !query.testState(loc, localPlayer, BENDING_AIR)) {
 			return true;
 		}
-
-		if (Abilities.isChiBlocking(ability)
+		
+		if (ability.isChiblocking()
 				&& !query.testState(loc, localPlayer, BENDING_CHI)) {
 			return true;
 		}
-
-		if (Abilities.isEarthbending(ability)
+		
+		if (ability.isEarthbending()
 				&& !query.testState(loc, localPlayer, BENDING_EARTH)) {
 			return true;
 		}
-
-		if (Abilities.isFirebending(ability)
+		
+		if (ability.isFirebending()
 				&& !query.testState(loc, localPlayer, BENDING_FIRE)) {
 			return true;
 		}
-
-		if (Abilities.isWaterbending(ability)
+		
+		if (ability.isWaterbending()
 				&& !query.testState(loc, localPlayer, BENDING_WATER)) {
 			return true;
 		}
-
+		
 		return false;
 	}
-
+	
 	public static boolean isRegionProtectedFromBendingPassives(Player player, Location loc) {
 		if (useWG) {
 			LocalPlayer localPlayer = worldguard.wrapPlayer(player);
@@ -232,7 +230,7 @@ public class ProtectionManager {
 		}
 		return false;
 	}
-
+	
 	public static boolean isAllowedEverywhereAbility (Abilities ability) {
 		return allowedEverywhereAbilities.contains(ability);
 	}
