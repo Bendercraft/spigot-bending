@@ -15,38 +15,38 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 public class BindExecution implements IBendingCommand {
-	
+
 	@Override
 	public boolean execute (CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
 			return true;
 		}
-		
+
 		Player player = (Player) sender;
-		
+
 		if (!player.hasPermission("bending.command.bind")) {
 			player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
-
+		
 		if ((args.size() != 1) && (args.size() != 2)) {
 			printUsage(player);
 			return true;
 		}
-
+		
 		final String a = args.get(0);
 		final Abilities ability = Abilities.getAbility(a);
-		if (ability == null) {
+		if ((ability == null) || ability.isPassiveAbility()) {
 			player.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
 			return true;
 		}
-
+		
 		if (!EntityTools.hasPermission(player, ability)) {
 			player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
-		
+
 		int slot;
 		if (args.size() == 2) {
 			try {
@@ -79,7 +79,7 @@ public class BindExecution implements IBendingCommand {
 		player.sendMessage(color + boundMessage);
 		return true;
 	}
-
+	
 	@Override
 	public void printUsage (CommandSender sender) {
 		sender.sendMessage("/bending bind <ability> [slot]");
