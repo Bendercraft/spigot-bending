@@ -10,11 +10,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.commands.subcommands.AddExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.AffinityExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.BindExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.ChooseExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.ClearExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.CooldownExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.DisplayExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.HelpExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.LearningExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.PathExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.ReloadExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.RemoveExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.ToggleExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.VersionExecution;
@@ -31,6 +37,14 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 	private IBendingCommand who;
 	private IBendingCommand display;
 	private IBendingCommand cooldown;
+	private IBendingCommand clear;
+	private IBendingCommand add;
+	private IBendingCommand affinity;
+	private IBendingCommand path;
+	private IBendingCommand reload;
+	private IBendingCommand help;
+
+	private List<IBendingCommand> commands;
 
 	public BendingCommandExecutor() {
 		this.bind = new BindExecution();
@@ -42,6 +56,29 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		this.who = new WhoExecution();
 		this.display = new DisplayExecution();
 		this.cooldown = new CooldownExecution();
+		this.clear = new ClearExecution();
+		this.add = new AddExecution();
+		this.affinity = new AffinityExecution();
+		this.path = new PathExecution();
+		this.reload = new ReloadExecution();
+		this.help = new HelpExecution();
+
+		this.commands = new LinkedList<IBendingCommand>();
+		this.commands.add(this.bind);
+		this.commands.add(this.choose);
+		this.commands.add(this.remove);
+		this.commands.add(this.add);
+		this.commands.add(this.affinity);
+		this.commands.add(this.path);
+		this.commands.add(this.learning);
+		this.commands.add(this.help);
+		this.commands.add(this.version);
+		this.commands.add(this.toggle);
+		this.commands.add(this.who);
+		this.commands.add(this.display);
+		this.commands.add(this.cooldown);
+		this.commands.add(this.clear);
+		this.commands.add(this.reload);
 	}
 
 	@Override
@@ -55,34 +92,12 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 
 		List<String> argList = Arrays.asList(args);
 		String subCommand = argList.remove(0);
-		if (this.bind.isCommand(subCommand)) {
-			return this.bind.execute(sender, argList);
-		}
-		else if (this.choose.isCommand(subCommand)) {
-			return this.choose.execute(sender, argList);
-		}
-		else if (this.who.isCommand(subCommand)) {
-			return this.who.execute(sender, argList);
-		}
-		else if (this.cooldown.isCommand(subCommand)) {
-			return this.cooldown.execute(sender, argList);
-		}
-		else if (this.display.isCommand(subCommand)) {
-			return this.display.execute(sender, argList);
-		}
-		else if (this.remove.isCommand(subCommand)) {
-			return this.remove.execute(sender, argList);
-		}
-		else if (this.learning.isCommand(subCommand)) {
-			return this.learning.execute(sender, argList);
-		}
-		else if (this.version.isCommand(subCommand)) {
-			return this.version.execute(sender, argList);
-		}
-		else if (this.toggle.isCommand(subCommand)) {
-			return this.toggle.execute(sender, argList);
-		}
 
+		for (IBendingCommand command : this.commands) {
+			if (command.isCommand(subCommand)) {
+				return command.execute(sender, argList);
+			}
+		}
 		return false;
 	}
 
