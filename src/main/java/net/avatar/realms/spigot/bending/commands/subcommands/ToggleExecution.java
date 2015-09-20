@@ -26,7 +26,8 @@ public class ToggleExecution implements IBendingCommand {
 
 		Player player = (Player) sender;
 
-		if (args.size() >= 1 && args.get(0).equalsIgnoreCase("spe")) {
+		if (args.size() >= 1
+				&& (args.get(0).equalsIgnoreCase("spe") || args.get(0).equalsIgnoreCase("aff") || args.get(0).equalsIgnoreCase("affinity"))) {
 			if (EntityTools.speToggledBenders.contains(player.getUniqueId())) {
 				EntityTools.speToggledBenders.remove(player.getUniqueId());
 				player.sendMessage("You toggled back your specialization");
