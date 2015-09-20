@@ -30,7 +30,6 @@ public class BendingCommand {
 	private static final String[] reloadAliases = { "reload" };
 	private static final String[] helpAliases = { "help", "h", "?" };
 	private static final String[] whoAliases = { "who", "wh", "w" };
-	private static final String[] versionAliases = { "version", "ver", "v" };
 	private static final String[] airbendingAliases = { "air", "a", "airbender", "airbending", "airbend" };
 	private static final String[] earthbendingAliases = { "earth", "e", "earthbender", "earthbending", "earthbend", "terre" };
 	private static final String[] firebendingAliases = { "fire", "f", "firebender", "firebending", "firebend", "feu" };
@@ -85,9 +84,6 @@ public class BendingCommand {
 			}
 			else if (Arrays.asList(whoAliases).contains(arg)) {
 				who(player, args);
-			}
-			else if (Arrays.asList(versionAliases).contains(arg)) {
-				version(player, args);
 			}
 			else if (Arrays.asList(dbAlias).contains(arg)) {
 				db(player, args);
@@ -198,15 +194,6 @@ public class BendingCommand {
 		}
 		sendMessage(player, "Must be used /db convert <flatfile|mongodb> <flatfile|mongodb>");
 		sendMessage(player, "Where the first one is the source, and the second destination");
-	}
-
-	private void version(final Player player, final String[] args) {
-		if (!hasHelpPermission(player, "bending.command.version")) {
-			sendNoCommandPermissionMessage(player, "version");
-			return;
-		}
-		sendMessage(player, "Bending v" + Bending.plugin.getDescription().getVersion());
-		sendMessage(player, "Author: orion304; updated by : Koudja, Noko");
 	}
 
 	private void printWhoUsage(final Player player) {
