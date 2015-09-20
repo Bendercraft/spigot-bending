@@ -38,7 +38,7 @@ public class Messages {
 	public static String CONSOLE_SPECIFY_PLAYER = "You must specify a player if you are a console.";
 
 	@LanguageParameter("command.error.invalid_player")
-	public static String INVALID_PLAYER = "Invalid player.";
+	public static String INVALID_PLAYER = "Invalid player (may not be connected on server).";
 
 	@LanguageParameter("command.error.invalid_element")
 	public static String INVALID_ELEMENT = "Invalid element";
@@ -78,6 +78,14 @@ public class Messages {
 
 	@LanguageParameter("bending.toggle_spe_off")
 	public static String TOGGLE_SPE_OFF = "You deactivated your bending specialization.";
+
+	@LanguageParameter("command.no_bending")
+	public static String NO_BENDING = "No bending";
+
+	@LanguageParameter("command.who.is_bending")
+	public static String WHO_IS_BENDING = "{0} is a {1} bender.";
+
+	public static String WHO_IS_CHI = "{0} is a chi-blocker.";
 
 	private static Properties lines;
 	private static File languageFile;

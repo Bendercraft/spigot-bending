@@ -2,9 +2,18 @@ package net.avatar.realms.spigot.bending.commands.subcommands;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.Messages;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
+import net.avatar.realms.spigot.bending.controller.Settings;
+import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 public class WhoExecution extends BendingCommand {
 
@@ -17,13 +26,94 @@ public class WhoExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		// TODO Auto-generated method stub
-		return false;
+		if (!(sender instanceof Player)) {
+			// We do not allow console to use this command because this would
+			// spam the logs
+			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
+			return true;
+		}
+
+		if (sender.hasPermission("bending.command.who")) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+			return true;
+		}
+
+		Player player = (Player) sender;
+
+		if (args.isEmpty()) {
+			sendList(player);
+		}
+		else {
+			sendWho(player, args.get(0));
+		}
+		return true;
+	}
+
+	private void sendWho(Player player, String playerName) {
+		Player p = getPlayer(playerName);
+		if (p == null || !player.canSee(p)) {
+			player.sendMessage(ChatColor.RED + Messages.INVALID_PLAYER);
+			return;
+		}
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(p);
+		if (bender == null || bender.getBendingTypes() == null || bender.getBendingTypes().isEmpty()) {
+			player.sendMessage(playerName);
+			player.sendMessage(Messages.NO_BENDING);
+			return;
+		}
+
+		ChatColor color = ChatColor.WHITE;
+		if (bender.getBendingTypes().size() > 1) {
+			color = PluginTools.getColor(Settings.getColorString(BendingType.Energy.name()));
+		}
+		else {
+			color = PluginTools.getColor(Settings.getColorString(bender.getBendingTypes().get(0).name()));
+		}
+		player.sendMessage(color + playerName);
+		for (BendingType element : bender.getBendingTypes()) {
+			color = PluginTools.getColor(Settings.getColorString(element.name()));
+			String msg;
+			if (element == BendingType.ChiBlocker) {
+				msg = Messages.WHO_IS_CHI;
+			}
+			else {
+				msg = Messages.WHO_IS_BENDING;
+				msg = msg.replaceAll("{1}", element.name());
+			}
+			msg = msg.replaceAll("{0}", p.getName());
+			msg = color + msg;
+			player.sendMessage(msg);
+
+			for (BendingSpecializationType aff : bender.getSpecializations()) {
+				if (aff.getElement() == element) {
+					player.sendMessage(color + p.getName() + " has affinity : " + aff.name());
+					break;
+				}
+			}
+		}
+	}
+
+	private void sendList(Player player) {
+		for (final Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if (player.canSee(p)) {
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
+				ChatColor color;
+				if (bPlayer.getBendingTypes() != null && !bPlayer.getBendingTypes().isEmpty()) {
+					BendingType el = bPlayer.getBendingTypes().get(0);
+					color = PluginTools.getColor(Settings.getColorString(el.name()));
+				}
+				else {
+					color = ChatColor.WHITE;
+				}
+				player.sendMessage(color + p.getName());
+			}
+		}
 	}
 
 	@Override
 	public void printUsage(CommandSender sender) {
-		// TODO Auto-generated method stub
-
+		if (sender.hasPermission("bending.command.who")) {
+			sender.sendMessage("/bending who <player>");
+		}
 	}
 }

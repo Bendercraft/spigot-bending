@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class BendingCommand {
 	private static final String[] displayAliases = { "display", "disp", "dis", "d" };
 	private static final String[] reloadAliases = { "reload" };
 	private static final String[] helpAliases = { "help", "h", "?" };
-	private static final String[] whoAliases = { "who", "wh", "w" };
 	private static final String[] airbendingAliases = { "air", "a", "airbender", "airbending", "airbend" };
 	private static final String[] earthbendingAliases = { "earth", "e", "earthbender", "earthbending", "earthbend", "terre" };
 	private static final String[] firebendingAliases = { "fire", "f", "firebender", "firebending", "firebend", "feu" };
@@ -78,9 +76,6 @@ public class BendingCommand {
 			}
 			else if (Arrays.asList(helpAliases).contains(arg)) {
 				help(player, args);
-			}
-			else if (Arrays.asList(whoAliases).contains(arg)) {
-				who(player, args);
 			}
 			else if (Arrays.asList(dbAlias).contains(arg)) {
 				db(player, args);
@@ -193,148 +188,6 @@ public class BendingCommand {
 		sendMessage(player, "Where the first one is the source, and the second destination");
 	}
 
-	private void printWhoUsage(final Player player) {
-		if (!hasHelpPermission(player, "bending.command.who")) {
-			sendNoCommandPermissionMessage(player, "who");
-			return;
-		}
-		printUsageMessage(player, "/bending who", "General.who_usage");
-		printUsageMessage(player, "/bending who <player>", "General.who_player_usage");
-	}
-
-	private void who(final Player player, final String[] args) {
-		if (!hasPermission(player, "bending.admin")) {
-			player.sendMessage(ChatColor.RED + "You are not authorized to perform this command");
-			return;
-		}
-		if (args.length > 2) {
-			printWhoUsage(player);
-			return;
-		}
-		if (args.length == 1) {
-			for (final Player p : this.server.getOnlinePlayers()) {
-				if (player != null) {
-					if (!player.canSee(p)) {
-						continue;
-					}
-				}
-
-				ChatColor color = ChatColor.WHITE;
-
-				BendingPlayer bender = BendingPlayer.getBendingPlayer(p);
-				if ((bender.getBendingTypes() != null) && !bender.getBendingTypes().isEmpty()) {
-					BendingType el = bender.getBendingTypes().get(0);
-					color = PluginTools.getColor(Settings.getColorString(el.name()));
-				}
-
-				sendMessage(player, color + p.getName());
-			}
-		}
-		else if (args.length == 2) {
-			final Player p = getOnlinePlayer(args[1]);
-			if (p == null) {
-				sendMessage(player, args[1] + " " + Messages.getString("general.who_not_on_server"));
-			}
-			else if (player != null) {
-				if (!player.canSee(p)) {
-					sendMessage(player, args[1] + " " + Messages.getString("general.who_not_on_server"));
-				}
-				else {
-					sendMessage(player, p.getDisplayName());
-					if (!EntityTools.isBender(p)) {
-						sendMessage(player, "- No bending");
-					}
-					else {
-						if (EntityTools.isBender(p, BendingType.Air)) {
-							String elementMessage = PluginTools.getColor(Settings.getColorString("Air")) + "- Airbending";
-							for (BendingSpecializationType spe : this.bPlayer.getSpecializations()) {
-								if (spe.getElement() == BendingType.Air) {
-									elementMessage = elementMessage + " (" + spe.name() + ")";
-								}
-							}
-							sendMessage(player, elementMessage);
-							for (final Abilities ability : Abilities.getAirbendingAbilities()) {
-								if (EntityTools.hasPermission(p, ability)) {
-									sendMessage(player, PluginTools.getColor(Settings.getColorString("Air")) + "   -- " + ability.name());
-								}
-							}
-						}
-						if (EntityTools.isBender(p, BendingType.Water)) {
-							String elementMessage = PluginTools.getColor(Settings.getColorString("Water")) + "- Waterbending";
-							for (BendingSpecializationType spe : this.bPlayer.getSpecializations()) {
-								if (spe.getElement() == BendingType.Water) {
-									elementMessage = elementMessage + " (" + spe.name() + ")";
-								}
-							}
-							sendMessage(player, elementMessage);
-							for (final Abilities ability : Abilities.getWaterbendingAbilities()) {
-								if (EntityTools.hasPermission(p, ability)) {
-									sendMessage(player, PluginTools.getColor(Settings.getColorString("Water")) + "   -- " + ability.name());
-								}
-							}
-						}
-						if (EntityTools.isBender(p, BendingType.Fire)) {
-							String elementMessage = PluginTools.getColor(Settings.getColorString("Fire")) + "- Firebending";
-							for (BendingSpecializationType spe : this.bPlayer.getSpecializations()) {
-								if (spe.getElement() == BendingType.Fire) {
-									elementMessage = elementMessage + " (" + spe.name() + ")";
-								}
-							}
-							sendMessage(player, elementMessage);
-							for (final Abilities ability : Abilities.getFirebendingAbilities()) {
-								if (EntityTools.hasPermission(p, ability)) {
-									sendMessage(player, PluginTools.getColor(Settings.getColorString("Fire")) + "   -- " + ability.name());
-								}
-							}
-						}
-						if (EntityTools.isBender(p, BendingType.Earth)) {
-							String elementMessage = PluginTools.getColor(Settings.getColorString("Earth")) + "- Earthbending";
-							for (BendingSpecializationType spe : this.bPlayer.getSpecializations()) {
-								if (spe.getElement() == BendingType.Earth) {
-									elementMessage = elementMessage + " (" + spe.name() + ")";
-								}
-							}
-							sendMessage(player, elementMessage);
-							for (final Abilities ability : Abilities.getEarthbendingAbilities()) {
-								if (EntityTools.hasPermission(p, ability)) {
-									sendMessage(player, PluginTools.getColor(Settings.getColorString("Earth")) + "   -- " + ability.name());
-								}
-							}
-						}
-						if (EntityTools.isBender(p, BendingType.ChiBlocker)) {
-							String elementMessage = PluginTools.getColor(Settings.getColorString("ChiBlocker")) + "- Chiblocking";
-							for (BendingSpecializationType spe : this.bPlayer.getSpecializations()) {
-								if (spe.getElement() == BendingType.ChiBlocker) {
-									elementMessage = elementMessage + " (" + spe.name() + ")";
-								}
-							}
-							sendMessage(player, elementMessage);
-							for (final Abilities ability : Abilities.getChiBlockingAbilities()) {
-								if (EntityTools.hasPermission(p, ability)) {
-									sendMessage(player, PluginTools.getColor(Settings.getColorString("ChiBlocker")) + "   -- " + ability.name());
-								}
-							}
-						}
-					}
-				}
-			}
-			else {
-				sendMessage(player, p.getDisplayName());
-				if (!EntityTools.isBender(p)) {
-					sendMessage(player, "-No bending");
-				}
-				else {
-					BendingPlayer bender = BendingPlayer.getBendingPlayer(p);
-					ChatColor color = PluginTools.getColor(Settings.getColorString(bender.getBendingTypes().get(0).name()));
-					sendMessage(player, color + bender.getBendingTypes().get(0).name());
-				}
-			}
-		}
-		else {
-			printWhoUsage(player);
-		}
-	}
-
 	private void printUsageMessage(final Player player, final String command, final String key) {
 		final ChatColor color = ChatColor.AQUA;
 		final String usage = Messages.getString("general.usage");
@@ -360,12 +213,7 @@ public class BendingCommand {
 	}
 
 	private void help(final Player player, final String[] args) {
-		final List<String> command = new ArrayList<String>();
-		// for (final String s : Bending.commands.keySet()) {
-		// if (hasHelpPermission(player, "bending." + s)) {
-		// command.add(Bending.commands.get(s));
-		// }
-		// }
+
 		if (args.length > 1) {
 			helpCommand(player, args);
 			final Abilities ability = Abilities.getAbility(args[1]);
