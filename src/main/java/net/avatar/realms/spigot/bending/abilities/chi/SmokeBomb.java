@@ -23,7 +23,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Smoke Bomb", element=BendingType.ChiBlocker)
+@BendingAbility(name = "Smoke Bomb", element = BendingType.ChiBlocker)
 public class SmokeBomb extends ActiveAbility {
 
 	@ConfigurationParameter("Radius")
@@ -40,8 +40,7 @@ public class SmokeBomb extends ActiveAbility {
 
 	private static Integer ID = Integer.MIN_VALUE;
 
-	private static PotionEffect blindnessBomber = new PotionEffect(
-			PotionEffectType.BLINDNESS, 20, 2);
+	private static PotionEffect blindnessBomber = new PotionEffect(PotionEffectType.BLINDNESS, 20, 2);
 
 	private PotionEffect blindnessTarget;
 	private List<LivingEntity> targets;
@@ -68,7 +67,7 @@ public class SmokeBomb extends ActiveAbility {
 		List<Block> blocks = BlockTools.getBlocksAroundPoint(this.origin, RADIUS);
 		for (Block block : blocks) {
 			this.locs.add(block.getLocation());
-		}		
+		}
 	}
 
 	@Override
@@ -76,14 +75,14 @@ public class SmokeBomb extends ActiveAbility {
 		if ((this.state == AbilityState.CannotStart) || (this.state == AbilityState.Prepared)) {
 			return true;
 		}
-		
+
 		if (!this.state.equals(AbilityState.CanStart)) {
 			return false;
 		}
 
 		setState(AbilityState.Prepared);
 
-		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST,(SOUND_RADIUS/16.0f), 1.1f);
+		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST, (SOUND_RADIUS / 16.0f), 1.1f);
 		this.player.addPotionEffect(blindnessBomber);
 
 		this.bender.cooldown(Abilities.SmokeBomb, COOLDOWN);
@@ -102,11 +101,9 @@ public class SmokeBomb extends ActiveAbility {
 		if (this.state != AbilityState.Progressing) {
 			return false;
 		}
-		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(
-				this.origin, RADIUS);
+		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(this.origin, RADIUS);
 
-		this.blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS,
-				this.ticksRemaining, 2);
+		this.blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS, this.ticksRemaining, 2);
 
 		for (LivingEntity targ : this.targets) {
 			if (!newTargets.contains(targ)) {
@@ -115,7 +112,7 @@ public class SmokeBomb extends ActiveAbility {
 				}
 				else {
 					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
-				}	
+				}
 			}
 		}
 
@@ -126,7 +123,7 @@ public class SmokeBomb extends ActiveAbility {
 				targ.addPotionEffect(this.blindnessTarget);
 			}
 			else {
-				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining,1);
+				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
 				targ.addPotionEffect(invisibilityLauncher);
 			}
 			this.targets.add(targ);
@@ -150,8 +147,8 @@ public class SmokeBomb extends ActiveAbility {
 	}
 
 	@Override
-	protected long getMaxMillis () {
-		return (DURATION*1000) + 1;
+	protected long getMaxMillis() {
+		return (DURATION * 1000) + 1;
 	}
 
 	@Override

@@ -25,7 +25,6 @@ public class BendingCommand {
 	private static final String[] addAliases = { "add", "a" };
 	private static final String[] specializeAliases = { "specialize", "spe" };
 	private static final String[] pathAliases = { "path", "p" };
-	private static final String[] toggleAliases = { "toggle", "t" };
 	private static final String[] displayAliases = { "display", "disp", "dis", "d" };
 	private static final String[] reloadAliases = { "reload" };
 	private static final String[] helpAliases = { "help", "h", "?" };
@@ -69,9 +68,6 @@ public class BendingCommand {
 			}
 			else if (Arrays.asList(pathAliases).contains(arg)) {
 				path(player, args);
-			}
-			else if (Arrays.asList(toggleAliases).contains(arg)) {
-				toggle(player, args);
 			}
 			else if (Arrays.asList(displayAliases).contains(arg)) {
 				display(player, args);
@@ -392,202 +388,203 @@ public class BendingCommand {
 	}
 
 	private void helpCommand(final Player player, final String[] args) {
-		//		final ChatColor color = ChatColor.AQUA;
-		//		final String command = args[1];
-		//		if (Arrays.asList(this.bindAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.bind")) {
-		//				sendNoCommandPermissionMessage(player, "bind");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending bind");
-		//			String aliases = "";
-		//			for (final String alias : this.bindAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printBindUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.clearAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.clear")) {
-		//				sendNoCommandPermissionMessage(player, "clear");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending clear");
-		//			String aliases = "";
-		//			for (final String alias : this.clearAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printClearUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.chooseAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.choose") && !hasHelpPermission(player, "bending.admin.choose")
-		//					&& !hasHelpPermission(player, "bending.admin.rechoose")) {
-		//				sendNoCommandPermissionMessage(player, "choose");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending choose");
-		//			String aliases = "";
-		//			for (final String alias : this.chooseAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printChooseUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.addAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.add")) {
-		//				sendNoCommandPermissionMessage(player, "add");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending add");
-		//			String aliases = "";
-		//			for (final String alias : this.addAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printAddUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.specializeAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.admin.specialize")) {
-		//				sendNoCommandPermissionMessage(player, "specialize");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending specialize");
-		//			String aliases = "";
-		//			for (final String alias : this.specializeAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printAddUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.removeAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.remove")) {
-		//				sendNoCommandPermissionMessage(player, "remove");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending remove");
-		//			String aliases = "";
-		//			for (final String alias : this.removeAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printRemoveUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.toggleAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.toggle")) {
-		//				sendNoCommandPermissionMessage(player, "toggle");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending toggle");
-		//			String aliases = "";
-		//			for (final String alias : this.toggleAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printToggleUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.displayAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.display")) {
-		//				sendNoCommandPermissionMessage(player, "display");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending display");
-		//			String aliases = "";
-		//			for (final String alias : this.displayAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printDisplayUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.reloadAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.reload")) {
-		//				sendNoCommandPermissionMessage(player, "reload");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending reload");
-		//			String aliases = "";
-		//			for (final String alias : this.reloadAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printReloadUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.importAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.import")) {
-		//				sendNoCommandPermissionMessage(player, "import");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending import");
-		//			String aliases = "";
-		//			for (final String alias : this.importAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printImportUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.whoAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.who")) {
-		//				sendNoCommandPermissionMessage(player, "who");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending who");
-		//			String aliases = "";
-		//			for (final String alias : this.whoAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printWhoUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.languageAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.language")) {
-		//				sendNoCommandPermissionMessage(player, "language");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending language");
-		//			String aliases = "";
-		//			for (final String alias : this.languageAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printLanguageUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.versionAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.version")) {
-		//				sendNoCommandPermissionMessage(player, "version");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending version");
-		//			String aliases = "";
-		//			for (final String alias : this.versionAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printVersionUsage(player);
-		//		}
-		//		else if (Arrays.asList(this.bindModeAliases).contains(command)) {
-		//			if (!hasHelpPermission(player, "bending.command.bindmode")) {
-		//				sendNoCommandPermissionMessage(player, "bindmode");
-		//				return;
-		//			}
-		//			sendMessage(player, color + "Command: /bending bindmode");
-		//			String aliases = "";
-		//			for (final String alias : this.bindModeAliases) {
-		//				aliases = aliases + alias + " ";
-		//			}
-		//			sendMessage(player, color + "Aliases: " + aliases);
-		//			printBindModeUsage(player);
-		//		}
+		// final ChatColor color = ChatColor.AQUA;
+		// final String command = args[1];
+		// if (Arrays.asList(this.bindAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.bind")) {
+		// sendNoCommandPermissionMessage(player, "bind");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending bind");
+		// String aliases = "";
+		// for (final String alias : this.bindAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printBindUsage(player);
+		// }
+		// else if (Arrays.asList(this.clearAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.clear")) {
+		// sendNoCommandPermissionMessage(player, "clear");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending clear");
+		// String aliases = "";
+		// for (final String alias : this.clearAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printClearUsage(player);
+		// }
+		// else if (Arrays.asList(this.chooseAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.choose") &&
+		// !hasHelpPermission(player, "bending.admin.choose")
+		// && !hasHelpPermission(player, "bending.admin.rechoose")) {
+		// sendNoCommandPermissionMessage(player, "choose");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending choose");
+		// String aliases = "";
+		// for (final String alias : this.chooseAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printChooseUsage(player);
+		// }
+		// else if (Arrays.asList(this.addAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.add")) {
+		// sendNoCommandPermissionMessage(player, "add");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending add");
+		// String aliases = "";
+		// for (final String alias : this.addAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printAddUsage(player);
+		// }
+		// else if (Arrays.asList(this.specializeAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.admin.specialize")) {
+		// sendNoCommandPermissionMessage(player, "specialize");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending specialize");
+		// String aliases = "";
+		// for (final String alias : this.specializeAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printAddUsage(player);
+		// }
+		// else if (Arrays.asList(this.removeAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.remove")) {
+		// sendNoCommandPermissionMessage(player, "remove");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending remove");
+		// String aliases = "";
+		// for (final String alias : this.removeAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printRemoveUsage(player);
+		// }
+		// else if (Arrays.asList(this.toggleAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.toggle")) {
+		// sendNoCommandPermissionMessage(player, "toggle");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending toggle");
+		// String aliases = "";
+		// for (final String alias : this.toggleAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printToggleUsage(player);
+		// }
+		// else if (Arrays.asList(this.displayAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.display")) {
+		// sendNoCommandPermissionMessage(player, "display");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending display");
+		// String aliases = "";
+		// for (final String alias : this.displayAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printDisplayUsage(player);
+		// }
+		// else if (Arrays.asList(this.reloadAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.reload")) {
+		// sendNoCommandPermissionMessage(player, "reload");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending reload");
+		// String aliases = "";
+		// for (final String alias : this.reloadAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printReloadUsage(player);
+		// }
+		// else if (Arrays.asList(this.importAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.import")) {
+		// sendNoCommandPermissionMessage(player, "import");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending import");
+		// String aliases = "";
+		// for (final String alias : this.importAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printImportUsage(player);
+		// }
+		// else if (Arrays.asList(this.whoAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.who")) {
+		// sendNoCommandPermissionMessage(player, "who");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending who");
+		// String aliases = "";
+		// for (final String alias : this.whoAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printWhoUsage(player);
+		// }
+		// else if (Arrays.asList(this.languageAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.language")) {
+		// sendNoCommandPermissionMessage(player, "language");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending language");
+		// String aliases = "";
+		// for (final String alias : this.languageAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printLanguageUsage(player);
+		// }
+		// else if (Arrays.asList(this.versionAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.version")) {
+		// sendNoCommandPermissionMessage(player, "version");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending version");
+		// String aliases = "";
+		// for (final String alias : this.versionAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printVersionUsage(player);
+		// }
+		// else if (Arrays.asList(this.bindModeAliases).contains(command)) {
+		// if (!hasHelpPermission(player, "bending.command.bindmode")) {
+		// sendNoCommandPermissionMessage(player, "bindmode");
+		// return;
+		// }
+		// sendMessage(player, color + "Command: /bending bindmode");
+		// String aliases = "";
+		// for (final String alias : this.bindModeAliases) {
+		// aliases = aliases + alias + " ";
+		// }
+		// sendMessage(player, color + "Aliases: " + aliases);
+		// printBindModeUsage(player);
+		// }
 	}
 
-	//	private void printReloadUsage(final Player player) {
-	//		if (!hasHelpPermission(player, "bending.admin.reload")) {
-	//			sendNoCommandPermissionMessage(player, "reload");
-	//			return;
-	//		}
-	//		else {
-	//			printUsageMessage(player, "/bending reload", "General.reload_usage");
-	//		}
-	//	}
+	// private void printReloadUsage(final Player player) {
+	// if (!hasHelpPermission(player, "bending.admin.reload")) {
+	// sendNoCommandPermissionMessage(player, "reload");
+	// return;
+	// }
+	// else {
+	// printUsageMessage(player, "/bending reload", "General.reload_usage");
+	// }
+	// }
 
 	private void reload(final Player player, final String[] args) {
 		if (!hasPermission(player, "bending.admin.reload")) {
@@ -684,69 +681,6 @@ public class BendingCommand {
 			else {
 				printDisplayUsage(player);
 			}
-		}
-	}
-
-	private boolean toggleSpe(final Player player, final String[] args) {
-		if ((args.length == 2) && Arrays.asList(specializeAliases).contains(args[0])
-				&& Arrays.asList(toggleAliases).contains(args[1])) {
-			if (EntityTools.speToggledBenders.contains(player)) {
-				EntityTools.speToggledBenders.remove(player);
-				player.sendMessage("You toggled back your specialization");
-			}
-			else {
-				EntityTools.speToggledBenders.add(player);
-				player.sendMessage("You toggled your specialization");
-			}
-			return true;
-		}
-		return false;
-	}
-
-	private void toggle(final Player player, final String[] args) {
-		if (args.length == 1) {
-			if (!hasHelpPermission(player, "bending.command.toggle") && !hasHelpPermission(player, "bending.admin.toggle")) {
-				printNoPermissions(player);
-				return;
-			}
-			if (player == null) {
-				printNotFromConsole();
-				return;
-			}
-			if (!EntityTools.toggledBending.contains(player)) {
-				EntityTools.toggledBending.add(player);
-				Messages.sendMessage(player, "general.toggle_off", ChatColor.AQUA);
-			}
-			else {
-				EntityTools.toggledBending.remove(player);
-				Messages.sendMessage(player, "general.toggle_on", ChatColor.AQUA);
-			}
-		}
-		else {
-			if (!hasPermission(player, "bending.admin.toggle")) {
-				return;
-			}
-			String playerlist = "";
-			for (int i = 1; i < args.length; i++) {
-				final String name = args[i];
-				final Player targetplayer = getOnlinePlayer(name);
-				String senderName = Messages.getString("general.the_server");
-				if (player != null) {
-					senderName = player.getName();
-				}
-				if (targetplayer != null) {
-					if (!EntityTools.toggledBending.contains(targetplayer)) {
-						EntityTools.toggledBending.add(targetplayer);
-						sendMessage(targetplayer, senderName + " " + "general.admin_toggle_off");
-					}
-					else {
-						EntityTools.toggledBending.remove(targetplayer);
-						sendMessage(targetplayer, senderName + " " + "general.admin_toggle_on");
-					}
-					playerlist = playerlist + " " + targetplayer.getName();
-				}
-			}
-			sendMessage(player, Messages.getString("general.admin_toggle") + " " + playerlist);
 		}
 	}
 
@@ -950,13 +884,7 @@ public class BendingCommand {
 	}
 
 	private void specialize(final Player player, final String[] args) {
-		boolean toggled = false;
-		if (args.length == 2) {
-			toggled = toggleSpe(player, args);
-			if (toggled) {
-				return;
-			}
-		}
+
 		if (!hasPermission(player, "bending.admin.specialize")) {
 			return;
 		}

@@ -19,66 +19,78 @@ public class Messages {
 
 	private static final String FILENAME = "messages.properties";
 
-	@LanguageParameter ("command.error.not_console")
+	@LanguageParameter("command.error.not_console")
 	public static String NOT_CONSOLE_COMMAND = "This command cannot be executed by the console.";
 
-	@LanguageParameter ("command.error.no_permission")
+	@LanguageParameter("command.error.no_permission")
 	public static String NO_PERMISSION = "You do not have the permission to execute that command.";
 
-	@LanguageParameter ("command.error.invalid_ability")
+	@LanguageParameter("command.error.invalid_ability")
 	public static String INVALID_ABILITY = "This is an invalid ability.";
-	
-	@LanguageParameter ("command.error.not_element")
+
+	@LanguageParameter("command.error.not_element")
 	public static String NOT_HAVE_ELEMENT = "You do not have the proper element : ";
 
-	@LanguageParameter ("command.ability_bound")
+	@LanguageParameter("command.ability_bound")
 	public static String ABILITY_BOUND = "{0} bound to slot {1}.";
 
-	@LanguageParameter ("command.error.console_specify_player")
+	@LanguageParameter("command.error.console_specify_player")
 	public static String CONSOLE_SPECIFY_PLAYER = "You must specify a player if you are a console.";
-	
-	@LanguageParameter ("command.error.invalid_player")
+
+	@LanguageParameter("command.error.invalid_player")
 	public static String INVALID_PLAYER = "Invalid player.";
-	
-	@LanguageParameter ("command.error.invalid_element")
+
+	@LanguageParameter("command.error.invalid_element")
 	public static String INVALID_ELEMENT = "Invalid element";
-	
-	@LanguageParameter ("command.error.choose_other")
+
+	@LanguageParameter("command.error.choose_other")
 	public static String ERROR_CHOOSE_OTHER = "You do not have the permission to change another one's bending element";
-	
-	@LanguageParameter ("command.error.change_element")
+
+	@LanguageParameter("command.error.change_element")
 	public static String ERROR_CHANGE_ELEMENT = "You do not have the permission to change your bending element";
-	
-	@LanguageParameter ("command.other_change_you")
+
+	@LanguageParameter("command.other_change_you")
 	public static String OTHER_CHANGE_YOU = "Your bending bending element has been set to {0}.";
-	
-	@LanguageParameter ("command.you_change_other")
+
+	@LanguageParameter("command.you_change_other")
 	public static String YOU_CHANGE_OTHER = "You've set the bending element of {0} to {1}";
-	
-	@LanguageParameter ("command.element_set")
+
+	@LanguageParameter("command.element_set")
 	public static String SET_ELEMENT = "You've set your bending element to : {0}.";
 
-	@LanguageParameter ("command.you_remove_other")
+	@LanguageParameter("command.you_remove_other")
 	public static String YOU_REMOVE_OTHER = "You've removed the bending of {0}.";
 
-	@LanguageParameter ("command.other_remove_you")
+	@LanguageParameter("command.other_remove_you")
 	public static String OTHER_REMOVE_YOU = "Your bending has been removed.";
 
-	@LanguageParameter ("command.you_no_exist")
+	@LanguageParameter("command.you_no_exist")
 	public static String YOU_NO_EXIST = "You do not exist.";
-	
+
+	@LanguageParameter("bending.toggle_on")
+	public static String TOGGLE_ON = "You activated your bending.";
+
+	@LanguageParameter("bending.toggle_off")
+	public static String TOGGLE_OFF = "You deactivated your bending.";
+
+	@LanguageParameter("bending.toggle_spe_on")
+	public static String TOGGLE_SPE_ON = "You activated your bending specialization.";
+
+	@LanguageParameter("bending.toggle_spe_off")
+	public static String TOGGLE_SPE_OFF = "You deactivated your bending specialization.";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;
-	
-	public static void loadMessages () {
+
+	public static void loadMessages() {
 		lines = new Properties();
-		
+
 		File folder = Bending.plugin.getDataFolder();
 		if (!folder.exists()) {
 			folder.mkdir();
 		}
-		
+
 		languageFile = new File(folder + File.separator + FILENAME);
 		if (languageFile.exists()) {
 			try {
@@ -91,7 +103,7 @@ public class Messages {
 		else {
 			input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
 		}
-		
+
 		try {
 			lines.load(input);
 		}
@@ -99,22 +111,22 @@ public class Messages {
 			e.printStackTrace();
 			// Should never happen, hope so
 		}
-		
+
 	}
-	
-	public static String getAbilityDescription (Abilities ability) {
+
+	public static String getAbilityDescription(Abilities ability) {
 		return lines.getProperty("abilities." + ability.getElement().name().toLowerCase() + "." + ability.name().toLowerCase());
 	}
-	
-	public static String getString (String string) {
+
+	public static String getString(String string) {
 		return lines.getProperty(string);
 	}
-	
-	public static void sendMessage (Player player, String key) {
+
+	public static void sendMessage(Player player, String key) {
 		sendMessage(player, key, ChatColor.WHITE);
 	}
-	
-	public static void sendMessage (Player player, String key, ChatColor color) {
+
+	public static void sendMessage(Player player, String key, ChatColor color) {
 		if (player == null) {
 			Bending.plugin.getLogger().info(color + getString(key));
 		}
@@ -122,13 +134,13 @@ public class Messages {
 			player.sendMessage(color + getString(key));
 		}
 	}
-	
+
 	// These one are not used yet, but we should.
-	public static void sendMessage (Player player, String key, Map<String, String> params) {
+	public static void sendMessage(Player player, String key, Map<String, String> params) {
 		sendMessage(player, key, ChatColor.WHITE, params);
 	}
-	
-	public static void sendMessage (Player player, String key, ChatColor color, Map<String, String> params) {
+
+	public static void sendMessage(Player player, String key, ChatColor color, Map<String, String> params) {
 		String msg = getString(key);
 		for (String k : params.keySet()) {
 			msg.replaceAll("%" + k + "%", params.get(k));
@@ -140,5 +152,5 @@ public class Messages {
 			player.sendMessage(color + msg);
 		}
 	}
-	
+
 }
