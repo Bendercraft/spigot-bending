@@ -11,14 +11,21 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.commands.IBendingCommand;
+import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-public class CooldownExecution implements IBendingCommand {
-	
+public class CooldownExecution extends BendingCommand {
+
+	public CooldownExecution() {
+		super();
+		this.command = "cooldown";
+		this.aliases.add("cd");
+		this.aliases.add("cooldowns");
+	}
+
 	@Override
-	public boolean execute (CommandSender sender, List<String> args) {
+	public boolean execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
 			return true;
@@ -29,14 +36,14 @@ public class CooldownExecution implements IBendingCommand {
 			return true;
 		}
 		Player player = (Player) sender;
-		
+
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (bender == null) {
 			Bending.plugin.getLogger().warning("Cooldown command was not able to find bending player for " + player.getName());
 			sender.sendMessage(ChatColor.RED + Messages.YOU_NO_EXIST);
 			return true;
 		}
-		
+
 		Map<Abilities, Long> cooldowns = bender.getCooldowns();
 		player.sendMessage("-Cooldowns :");
 		if ((cooldowns == null) || cooldowns.isEmpty()) {
@@ -55,9 +62,9 @@ public class CooldownExecution implements IBendingCommand {
 		}
 		return true;
 	}
-	
+
 	@Override
-	public void printUsage (CommandSender sender) {
+	public void printUsage(CommandSender sender) {
 		if (sender.hasPermission("bending.command.cooldown")) {
 			sender.sendMessage("/bending cooldown");
 		}
@@ -65,5 +72,5 @@ public class CooldownExecution implements IBendingCommand {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
-	
+
 }

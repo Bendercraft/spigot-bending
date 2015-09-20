@@ -3,7 +3,6 @@ package net.avatar.realms.spigot.bending.commands.subcommands;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,20 +10,26 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.commands.BendingCommands;
-import net.avatar.realms.spigot.bending.commands.IBendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-public class ChooseExecution implements IBendingCommand {
+public class ChooseExecution extends BendingCommand {
+
+	public ChooseExecution() {
+		super();
+		this.command = "choose";
+		this.aliases.add("ch");
+	}
 
 	@Override
-	public boolean execute (CommandSender sender, List<String> args) {
+	public boolean execute(CommandSender sender, List<String> args) {
 		if (!sender.hasPermission("bending.command.choose")) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
-		
+
 		if ((args.size() != 1) && (args.size() != 2)) {
 			printUsage(sender);
 			return true;
@@ -61,7 +66,7 @@ public class ChooseExecution implements IBendingCommand {
 				}
 			}
 		}
-		
+
 		String choice = args.remove(0);
 		BendingType element = BendingType.None;
 		if (Arrays.asList(BendingCommands.AIRBENDING_ALIASES).contains(choice)) {
@@ -84,9 +89,9 @@ public class ChooseExecution implements IBendingCommand {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_ELEMENT);
 			return true;
 		}
-		
+
 		bender.setBender(element);
-		
+
 		ChatColor color = PluginTools.getColor(Settings.getColorString(element.name()));
 		if (other) {
 			String msg = Messages.YOU_CHANGE_OTHER;
@@ -107,7 +112,7 @@ public class ChooseExecution implements IBendingCommand {
 	}
 
 	@Override
-	public void printUsage (CommandSender sender) {
+	public void printUsage(CommandSender sender) {
 		if (sender.hasPermission("bending.admin.choose") || sender.hasPermission("bending.admin.rechoose")) {
 			sender.sendMessage("/bending choose [player] <element>");
 		}
@@ -117,14 +122,5 @@ public class ChooseExecution implements IBendingCommand {
 		else {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
-	}
-
-	private Player getPlayer (String name) {
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			if (player.getName().equalsIgnoreCase(name)) {
-				return player;
-			}
-		}
-		return null;
 	}
 }

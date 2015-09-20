@@ -4,23 +4,20 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
-import net.avatar.realms.spigot.bending.learning.LearningCommand;
 
-public class LearningExecution extends BendingCommand {
+public class DisplayExecution extends BendingCommand {
 
-	public LearningExecution() {
+	public DisplayExecution() {
 		super();
-		this.command = "learning";
-		this.aliases.add("learn");
-		this.aliases.add("l");
+		this.command = "display";
+		this.aliases.add("d");
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		new LearningCommand(Bending.plugin.learning, sender, args);
-		return true;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
@@ -28,5 +25,4 @@ public class LearningExecution extends BendingCommand {
 		// TODO Auto-generated method stub
 
 	}
-
 }

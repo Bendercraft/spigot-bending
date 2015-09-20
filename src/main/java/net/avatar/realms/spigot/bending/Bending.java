@@ -1,20 +1,14 @@
 package net.avatar.realms.spigot.bending;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
-import net.avatar.realms.spigot.bending.commands.BendingCommandCompleter;
 import net.avatar.realms.spigot.bending.commands.BendingCommandExecutor;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
 import net.avatar.realms.spigot.bending.controller.RevertChecker;
@@ -40,7 +34,6 @@ public class Bending extends JavaPlugin {
 	public final BendingPlayerListener bpListener = new BendingPlayerListener(this);
 	public final BendingBlockListener blListener = new BendingBlockListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
-	static Map<String, String> commands = new HashMap<String, String>();
 	public static Language language;
 	public static IBendingDB database;
 	public Tools tools;
@@ -48,7 +41,6 @@ public class Bending extends JavaPlugin {
 	public BendingLearning learning;
 
 	private BendingCommandExecutor commandExecutor;
-	private BendingCommandCompleter commandCompleter;
 
 	@Override
 	public void onEnable() {
@@ -56,7 +48,6 @@ public class Bending extends JavaPlugin {
 		log = plugin.getLogger();
 
 		this.commandExecutor = new BendingCommandExecutor();
-		this.commandCompleter = new BendingCommandCompleter();
 
 		Settings.applyConfiguration(getDataFolder());
 		AbilityManager.getManager().registerAllAbilities();
@@ -83,14 +74,13 @@ public class Bending extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(this.blListener, this);
 
 		getCommand("bending").setExecutor(this.commandExecutor);
-		getCommand("bending").setTabCompleter(this.commandCompleter);
+		getCommand("bending").setTabCompleter(this.commandExecutor);
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin, this.revertChecker, 0, 200);
 
 		ProtectionManager.init();
 		PluginTools.verbose("Bending v" + getDescription().getVersion() + " has been loaded.");
-		registerCommands();
 
 		// Citizens
 		if ((getServer().getPluginManager().getPlugin("Citizens") != null) && getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
@@ -110,33 +100,6 @@ public class Bending extends JavaPlugin {
 	public void reloadConfiguration() {
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-	}
-
-	private void registerCommands() {
-		commands.put("command.admin", "remove <player>");
-		commands.put("admin.reload", "reload");
-		commands.put("admin.permaremove", "permaremove <player>");
-		commands.put("command.choose", "choose <element>");
-		commands.put("admin.choose", "choose <player> <element>");
-		commands.put("admin.add", "add <element>");
-		commands.put("command.displayelement", "display <element>");
-		commands.put("command.clear", "clear");
-		commands.put("command.display", "display");
-		commands.put("command.bind", "bind <ability>");
-		commands.put("command.version", "version");
-	}
-
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		// Will have to change that to allow the console sender
-		Player player = null;
-		if (sender instanceof Player) {
-			player = (Player) sender;
-		}
-		if (cmd.getName().equalsIgnoreCase("bending")) {
-			new BendingCommand(player, args, getServer());
-		}
-		return true;
 	}
 
 	public static void callEvent(Event e) {

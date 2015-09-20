@@ -9,15 +9,21 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.commands.IBendingCommand;
+import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-public class BindExecution implements IBendingCommand {
+public class BindExecution extends BendingCommand {
+
+	public BindExecution() {
+		super();
+		this.command = "bind";
+		this.aliases.add("b");
+	}
 
 	@Override
-	public boolean execute (CommandSender sender, List<String> args) {
+	public boolean execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
 			return true;
@@ -29,19 +35,19 @@ public class BindExecution implements IBendingCommand {
 			player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
-		
+
 		if ((args.size() != 1) && (args.size() != 2)) {
 			printUsage(player);
 			return true;
 		}
-		
+
 		final String a = args.get(0);
 		final Abilities ability = Abilities.getAbility(a);
 		if ((ability == null) || ability.isPassiveAbility()) {
 			player.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
 			return true;
 		}
-		
+
 		if (!EntityTools.hasPermission(player, ability)) {
 			player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
@@ -79,9 +85,9 @@ public class BindExecution implements IBendingCommand {
 		player.sendMessage(color + boundMessage);
 		return true;
 	}
-	
+
 	@Override
-	public void printUsage (CommandSender sender) {
+	public void printUsage(CommandSender sender) {
 		sender.sendMessage("/bending bind <ability> [slot]");
 	}
 }

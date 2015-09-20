@@ -2,38 +2,45 @@ package net.avatar.realms.spigot.bending.commands.subcommands;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.commands.IBendingCommand;
+import net.avatar.realms.spigot.bending.commands.BendingCommand;
 
-public class RemoveExecution implements IBendingCommand {
-	
+public class RemoveExecution extends BendingCommand {
+
+	public RemoveExecution() {
+		super();
+		this.command = "remove";
+		this.aliases.add("r");
+		this.aliases.add("rem");
+		this.aliases.add("rm");
+	}
+
 	@Override
-	public boolean execute (CommandSender sender, List<String> args) {
+	public boolean execute(CommandSender sender, List<String> args) {
 		if (!sender.hasPermission("bending.admin.remove")) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
-		
+
 		if (args.isEmpty()) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_PLAYER);
 			printUsage(sender);
 			return true;
 		}
-		
+
 		String playerName = args.get(0);
 		Player player = getPlayer(playerName);
-		
+
 		if (player == null) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_PLAYER);
 			return true;
 		}
-		
+
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		bender.removeBender();
 
@@ -43,23 +50,14 @@ public class RemoveExecution implements IBendingCommand {
 		sender.sendMessage(msg);
 		return true;
 	}
-	
+
 	@Override
-	public void printUsage (CommandSender sender) {
+	public void printUsage(CommandSender sender) {
 		if (sender.hasPermission("bending.admin.remove")) {
 			sender.sendMessage(ChatColor.RED + "/bending remove <player>");
 		}
 		else {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
-	}
-
-	private Player getPlayer (String name) {
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			if (player.getName().equalsIgnoreCase(name)) {
-				return player;
-			}
-		}
-		return null;
 	}
 }

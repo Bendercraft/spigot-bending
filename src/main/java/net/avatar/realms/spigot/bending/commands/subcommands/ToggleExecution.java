@@ -7,10 +7,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.commands.IBendingCommand;
+import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-public class ToggleExecution implements IBendingCommand {
+public class ToggleExecution extends BendingCommand {
+
+	public ToggleExecution() {
+		super();
+		this.command = "toggle";
+		this.aliases.add("t");
+	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
@@ -26,8 +32,7 @@ public class ToggleExecution implements IBendingCommand {
 
 		Player player = (Player) sender;
 
-		if (args.size() >= 1
-				&& (args.get(0).equalsIgnoreCase("spe") || args.get(0).equalsIgnoreCase("aff") || args.get(0).equalsIgnoreCase("affinity"))) {
+		if (args.size() >= 1 && isAffinityToggle(args.get(0))) {
 			if (EntityTools.speToggledBenders.contains(player.getUniqueId())) {
 				EntityTools.speToggledBenders.remove(player.getUniqueId());
 				player.sendMessage("You toggled back your specialization");
@@ -56,5 +61,12 @@ public class ToggleExecution implements IBendingCommand {
 		if (sender.hasPermission("bending.command.toggle")) {
 			sender.sendMessage("/bending toggle (spe)");
 		}
+	}
+
+	private boolean isAffinityToggle(String arg) {
+		if (arg.equalsIgnoreCase("spe") || arg.equalsIgnoreCase("aff") || arg.equalsIgnoreCase("affinity")) {
+			return true;
+		}
+		return false;
 	}
 }

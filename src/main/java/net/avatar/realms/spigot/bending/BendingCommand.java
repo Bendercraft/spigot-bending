@@ -19,6 +19,7 @@ import net.avatar.realms.spigot.bending.db.IBendingDB;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
+@Deprecated
 public class BendingCommand {
 
 	private static final String[] clearAliases = { "clear", "cl" };
@@ -360,11 +361,11 @@ public class BendingCommand {
 
 	private void help(final Player player, final String[] args) {
 		final List<String> command = new ArrayList<String>();
-		for (final String s : Bending.commands.keySet()) {
-			if (hasHelpPermission(player, "bending." + s)) {
-				command.add(Bending.commands.get(s));
-			}
-		}
+		// for (final String s : Bending.commands.keySet()) {
+		// if (hasHelpPermission(player, "bending." + s)) {
+		// command.add(Bending.commands.get(s));
+		// }
+		// }
 		if (args.length > 1) {
 			helpCommand(player, args);
 			final Abilities ability = Abilities.getAbility(args[1]);
