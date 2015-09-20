@@ -16,7 +16,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.db.DBUtils;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
-import net.avatar.realms.spigot.bending.learning.LearningCommand;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
@@ -38,7 +37,6 @@ public class BendingCommand {
 	private static final String[] waterbendingAliases = { "water", "w", "waterbender", "waterbending", "waterbend", "eau" };
 	private static final String[] chiblockingAliases = { "chi", "c", "chiblock", "chiblocker", "chiblocking" };
 	private static final String[] dbAlias = { "db" };
-	private static final String[] learningAlias = { "learning", "l" };
 	private final Server server;
 	private boolean verbose = true;
 	private BendingPlayer bPlayer;
@@ -93,9 +91,6 @@ public class BendingCommand {
 			}
 			else if (Arrays.asList(dbAlias).contains(arg)) {
 				db(player, args);
-			}
-			else if (Arrays.asList(learningAlias).contains(arg)) {
-				learning(player, args);
 			}
 			else {
 				printHelpDialogue(player);
@@ -1145,10 +1140,6 @@ public class BendingCommand {
 
 			}
 		}
-	}
-
-	private void learning(final Player player, final String[] args) {
-		new LearningCommand(Bending.plugin.learning, player, args);
 	}
 
 	private boolean hasPermission(final Player player, final String permission) {
