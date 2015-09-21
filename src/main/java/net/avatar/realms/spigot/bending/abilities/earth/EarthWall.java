@@ -1,10 +1,13 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -18,8 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Raise Earth", element=BendingType.Earth)
-public class EarthWall implements IAbility {
-
+public class EarthWall extends ActiveAbility {
 	@ConfigurationParameter("Range")
 	private static int RANGE = 15;
 	
@@ -35,19 +37,44 @@ public class EarthWall implements IAbility {
 	private int height = HEIGHT;
 	private int halfwidth = WIDTH / 2;
 	
-	private IAbility parent;
+	private List<EarthColumn> columns = new LinkedList<EarthColumn>();
 
-	public EarthWall(Player player, IAbility parent) {
-		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (bPlayer.isOnCooldown(Abilities.RaiseEarth))
-			return;
-
+	public EarthWall(Player player) {
+		super(player, null);
+		
 		if (AvatarState.isAvatarState(player)) {
 			height = (int) (2. / 5. * (double) AvatarState.getValue(height));
 			halfwidth = AvatarState.getValue(halfwidth);
 		}
+	}
+	
+	
+	
+	@Override
+	public boolean swing() {
+		// One column
+		if(state != AbilityState.CanStart) {
+			return false;
+		}
+		
+		if (bender.isOnCooldown(Abilities.RaiseEarth)) {
+			return false;
+		}
+		
+		columns.add(new EarthColumn(player));
+		state = AbilityState.Progressing;
+		return false;
+	}
+
+	@Override
+	public boolean sneak() {
+		if(state != AbilityState.CanStart) {
+			return false;
+		}
+		
+		// Wall
+		if (bender.isOnCooldown(Abilities.RaiseEarth))
+			return false;
 
 		Vector direction = player.getEyeLocation().getDirection().normalize();
 
@@ -78,7 +105,7 @@ public class EarthWall implements IAbility {
 					block = block.getRelative(BlockFace.DOWN);
 					if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth, block)) {
 						cooldown = true;
-						new EarthColumn(player, block.getLocation(), height, this);
+						columns.add(new EarthColumn(player, block.getLocation(), height));
 						// } else if (block.getType() != Material.AIR
 						// && !block.isLiquid()) {
 					} else if (!BlockTools.isTransparentToEarthbending(player, block)) {
@@ -92,25 +119,59 @@ public class EarthWall implements IAbility {
 					
 					if (BlockTools.isTransparentToEarthbending(player, block)) {
 						cooldown = true;
-						new EarthColumn(player, block.getRelative(
-								BlockFace.DOWN).getLocation(), height, this);
+						columns.add(new EarthColumn(player, block.getRelative(
+								BlockFace.DOWN).getLocation(), height));
 					} else if (!BlockTools.isEarthbendable(player, block)) {
 						break;
 					}
 				}
 			} else if (BlockTools.isEarthbendable(player, block)) {
 				cooldown = true;
-				new EarthColumn(player, block.getLocation(), height, this);
+				columns.add(new EarthColumn(player, block.getLocation(), height));
 			}
 		}
 		if (cooldown) {
-			bPlayer.cooldown(Abilities.RaiseEarth, COOLDOWN);
+			bender.cooldown(Abilities.RaiseEarth, COOLDOWN);
 		}
+		state = AbilityState.Progressing;
+		return false;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public boolean progress() {
+		if(super.progress()) {
+			return false;
+		}
+		
+		if(state == AbilityState.Progressing && columns.isEmpty()) {
+			return false;
+		}
+		
+		for(EarthColumn column : columns) {
+			if(!column.progress()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	@Override
+	public void remove() {
+		for(EarthColumn column : columns) {
+			column.remove();
+		}
+		super.remove();
+	}
+
+	@Override
+	public Object getIdentifier() {
+		return player;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.RaiseEarth;
 	}
 
 }

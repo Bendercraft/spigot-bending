@@ -264,11 +264,6 @@ public class BendingPlayerListener implements Listener {
 				ab.swing();
 			}
 //			
-//			if (ability == Abilities.RaiseEarth) {
-//				new EarthColumn(player, null);
-//				return;
-//			}
-//			
 //			if (ability == Abilities.Collapse) {
 //				new CompactColumn(player, null);
 //				return;
@@ -323,10 +318,6 @@ public class BendingPlayerListener implements Listener {
 //				
 //				if (ability == Abilities.HealingWaters) {
 //					new HealingWaters(player);
-//				}
-//				
-//				if (ability == Abilities.RaiseEarth) {
-//					new EarthWall(player, null);
 //				}
 //				
 //				if (ability == Abilities.PhaseChange) {

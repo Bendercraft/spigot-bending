@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
@@ -20,8 +17,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Raise Earth", element=BendingType.Earth)
-public class EarthColumn implements IAbility {
+public class EarthColumn {
 	private static Map<Integer, EarthColumn> instances = new HashMap<Integer, EarthColumn>();
 	
 	@ConfigurationParameter("Height")
@@ -55,10 +51,8 @@ public class EarthColumn implements IAbility {
 	private int height = HEIGHT;
 	private List<Block> affectedBlocks = new ArrayList<Block>();
 	private EarthGrab earthGrab = null;
-	private IAbility parent;
 
-	public EarthColumn(Player player, IAbility parent) {
-		this.parent = parent;
+	public EarthColumn(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.RaiseEarth)) {
@@ -95,8 +89,7 @@ public class EarthColumn implements IAbility {
 		}
 	}
 
-	public EarthColumn(Player player, Location origin, IAbility parent) {
-		this.parent = parent;
+	public EarthColumn(Player player, Location origin) {
 		this.origin = origin;
 		location = origin.clone();
 		block = location.getBlock();
@@ -119,8 +112,7 @@ public class EarthColumn implements IAbility {
 		}
 	}
 
-	public EarthColumn(Player player, Location origin, int height, IAbility parent) {
-		this.parent = parent;
+	public EarthColumn(Player player, Location origin, int height) {
 		this.height = height;
 		this.origin = origin;
 		location = origin.clone();
@@ -144,8 +136,8 @@ public class EarthColumn implements IAbility {
 		}
 	}
 	
-	public EarthColumn(Player player, Location origin,int height, EarthGrab grab, IAbility parent) {
-		this(player,origin, height, parent);
+	public EarthColumn(Player player, Location origin,int height, EarthGrab grab) {
+		this(player,origin, height);
 		this.earthGrab = grab;
 	}
 	
@@ -200,7 +192,7 @@ public class EarthColumn implements IAbility {
 		return true;
 	}
 
-	private boolean progress() {
+	public boolean progress() {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 			if (!moveEarth()) {
@@ -232,20 +224,7 @@ public class EarthColumn implements IAbility {
 		return true;
 	}
 
-	public static void progressAll() {
-		List<EarthColumn> toRemove = new LinkedList<EarthColumn>();
-		for(EarthColumn column : instances.values()) {
-			boolean keep = column.progress();
-			if(!keep) {
-				toRemove.add(column);
-			}
-		}
-		for(EarthColumn column : toRemove) {
-			column.remove();
-		}
-	}
-
-	private void remove() {
+	public void remove() {
 		instances.remove(id);
 	}
 
@@ -262,10 +241,6 @@ public class EarthColumn implements IAbility {
 		}
 	}
 
-	public static void removeAll() {
-		instances.clear();
-	}
-
 	public static void resetBlock(Block block) {
 		if (alreadydoneblocks.containsKey(block)) {
 			alreadydoneblocks.remove(block);
@@ -275,10 +250,4 @@ public class EarthColumn implements IAbility {
 	public  List<Block> getAffectedBlocks() {
 		return affectedBlocks;
 	}
-
-	@Override
-	public IAbility getParent() {
-		return parent;
-	}
-
 }

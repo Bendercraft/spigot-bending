@@ -19,7 +19,6 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -61,7 +60,6 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageEarthbending() {
-		EarthColumn.progressAll();
 		CompactColumn.progressAll();
 
 		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());
