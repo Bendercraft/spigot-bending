@@ -58,12 +58,12 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		this.who = new WhoExecution();
 		this.cooldown = new CooldownExecution();
 		this.add = new AddExecution();
-		// TODO :
+		this.reload = new ReloadExecution();
 		this.display = new DisplayExecution();
+		// TODO :
 		this.clear = new ClearExecution();
 		this.affinity = new AffinityExecution();
 		this.path = new PathExecution();
-		this.reload = new ReloadExecution();
 		this.help = new HelpExecution();
 		this.available = new AvailableExecution();
 

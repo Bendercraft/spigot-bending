@@ -357,7 +357,7 @@ permissions:
   bending.command.remove: 
     description: Allows the use of /bending remove <player>
     default: op
-  bending.admin.reload:
+  bending.command.reload:
     description: Allows the use of /bending reload
     default: op
   bending.admin.permaremove:

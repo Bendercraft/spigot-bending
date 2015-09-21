@@ -137,21 +137,21 @@ public class BendingPlayer {
 	public boolean isSpecialized (BendingSpecializationType specialization) {
 		return this.specializations.contains(specialization);
 	}
-	
+
 	public boolean hasPath(BendingType type) {
-		if(paths == null) {
+		if(this.paths == null) {
 			return false;
 		}
-		for(BendingPathType path : paths) {
+		for(BendingPathType path : this.paths) {
 			if(path.getElement() == type) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	public boolean hasPath(BendingPathType path) {
-		if(paths == null) {
+		if(this.paths == null) {
 			return false;
 		}
 		return this.paths.contains(path);
@@ -175,7 +175,7 @@ public class BendingPlayer {
 		this.specializations.add(specialization);
 		Bending.database.save(this.player);
 	}
-	
+
 	public void setPath(BendingPathType path) {
 		this.clearPath(path.getElement());
 		this.paths.add(path);
@@ -208,7 +208,7 @@ public class BendingPlayer {
 		// clear abilities will save for us
 		clearAbilities();
 	}
-	
+
 	public void clearPath(BendingType element) {
 		List<BendingPathType> toRemove = new LinkedList<BendingPathType>();
 		for (BendingPathType path : this.paths) {
@@ -250,6 +250,10 @@ public class BendingPlayer {
 
 		int slot = player.getInventory().getHeldItemSlot();
 		return getAbility(slot);
+	}
+
+	public Map<Integer, Abilities> getAbilities() {
+		return this.slotAbilities;
 	}
 
 	public Abilities getAbility (int slot) {
@@ -346,7 +350,7 @@ public class BendingPlayer {
 	public List<BendingSpecializationType> getSpecializations() {
 		return this.specializations;
 	}
-	
+
 	public List<BendingPathType> getPath() {
 		return this.paths;
 	}
