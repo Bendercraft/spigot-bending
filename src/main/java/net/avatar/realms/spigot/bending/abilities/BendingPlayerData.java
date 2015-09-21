@@ -15,53 +15,67 @@ public class BendingPlayerData {
 	private Map<Integer, BendingAbilities> slotAbilities;
 	private Map<Material, BendingAbilities> itemAbilities;
 	private long lastTime;
-	
-	
+
 	public UUID getPlayer() {
 		return player;
 	}
+
 	public void setPlayer(UUID player) {
 		this.player = player;
 	}
+
 	public List<BendingElement> getBendings() {
 		return bendings;
 	}
+
 	public void setBendings(List<BendingElement> bending) {
 		this.bendings = bending;
 	}
+
 	public boolean isBendToItem() {
 		return bendToItem;
 	}
+
 	public void setBendToItem(boolean bendToItem) {
 		this.bendToItem = bendToItem;
 	}
+
 	public Map<Integer, BendingAbilities> getSlotAbilities() {
 		return slotAbilities;
 	}
+
 	public void setSlotAbilities(Map<Integer, BendingAbilities> slotAbilities) {
 		this.slotAbilities = slotAbilities;
 	}
+
 	public Map<Material, BendingAbilities> getItemAbilities() {
 		return itemAbilities;
 	}
+
 	public void setItemAbilities(Map<Material, BendingAbilities> itemAbilities) {
 		this.itemAbilities = itemAbilities;
 	}
+
 	public long getLastTime() {
 		return lastTime;
 	}
+
 	public void setLastTime(long lastTime) {
 		this.lastTime = lastTime;
 	}
+
 	public List<BendingAffinity> getSpecialization() {
 		return specialization;
 	}
+
 	public void setSpecialization(List<BendingAffinity> specialization) {
 		this.specialization = specialization;
 	}
+
 	public List<BendingPath> getPaths() {
 		return paths;
 	}
+
 	public void setPaths(List<BendingPath> paths) {
 		this.paths = paths;
 	}

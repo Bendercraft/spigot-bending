@@ -36,7 +36,7 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Fire Blast", element = BendingElement.Fire)
+@BendingAbility(name = "Fire Blast", bind = BendingAbilities.FireBlast, element = BendingElement.Fire)
 public class FireBlast extends BendingActiveAbility {
 	private static int ID = Integer.MIN_VALUE;
 
@@ -233,8 +233,7 @@ public class FireBlast extends BendingActiveAbility {
 
 			double radius = FireBlast.AFFECTING_RADIUS;
 			Player source = this.player;
-			if (EarthBlast.annihilateBlasts(this.location, radius, source) || WaterManipulation.annihilateBlasts(this.location, radius, source)
-					|| FireBlast.shouldAnnihilateBlasts(this.location, radius, source, false)) {
+			if (EarthBlast.annihilateBlasts(this.location, radius, source) || WaterManipulation.annihilateBlasts(this.location, radius, source) || FireBlast.shouldAnnihilateBlasts(this.location, radius, source, false)) {
 				return false;
 			}
 
@@ -334,11 +333,6 @@ public class FireBlast extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.id;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.FireBlast;
 	}
 
 }

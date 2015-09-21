@@ -26,7 +26,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Fire Shield", element = BendingElement.Fire)
+@BendingAbility(name = "Fire Shield", bind = BendingAbilities.FireShield, element = BendingElement.Fire)
 public class FireProtection extends BendingActiveAbility {
 
 	@ConfigurationParameter("Cooldown")
@@ -149,10 +149,5 @@ public class FireProtection extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.FireShield;
 	}
 }

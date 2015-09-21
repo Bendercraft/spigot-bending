@@ -17,12 +17,12 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
  * 
- * This ability will be modified : 
- * When you hit an entity, you deal some damage to it.
- * The more you hit, the more you deal damage. (But the more big the cooldown will be)
+ * This ability will be modified : When you hit an entity, you deal some damage
+ * to it. The more you hit, the more you deal damage. (But the more big the
+ * cooldown will be)
  *
  */
-@BendingAbility(name="Rapid Punch", element=BendingElement.ChiBlocker)
+@BendingAbility(name = "Rapid Punch", bind = BendingAbilities.RapidPunch, element = BendingElement.ChiBlocker)
 public class RapidPunch extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
@@ -58,18 +58,18 @@ public class RapidPunch extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
-				return true;
+		case None:
+		case CannotStart:
+			return true;
 
-			case CanStart:
-			case Preparing:
-			case Prepared:
-			case Progressing:
-			case Ended:
-			case Removed:
-			default :
-				return false;
+		case CanStart:
+		case Preparing:
+		case Prepared:
+		case Progressing:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
 
@@ -79,24 +79,18 @@ public class RapidPunch extends BendingActiveAbility {
 		super.remove();
 	}
 
-
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.RapidPunch;
-	}
-
-	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 
 	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return MAX_DURATION;
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}

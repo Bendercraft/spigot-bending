@@ -42,8 +42,7 @@ public class WhoExecution extends BendingCommand {
 
 		if (args.isEmpty()) {
 			sendList(player);
-		}
-		else {
+		} else {
 			sendWho(player, args.get(0));
 		}
 		return true;
@@ -65,8 +64,7 @@ public class WhoExecution extends BendingCommand {
 		ChatColor color = ChatColor.WHITE;
 		if (bender.getBendingTypes().size() > 1) {
 			color = PluginTools.getColor(Settings.getColorString(BendingElement.Energy.name()));
-		}
-		else {
+		} else {
 			color = PluginTools.getColor(Settings.getColorString(bender.getBendingTypes().get(0).name()));
 		}
 		player.sendMessage(color + playerName);
@@ -75,8 +73,7 @@ public class WhoExecution extends BendingCommand {
 			String msg;
 			if (element == BendingElement.ChiBlocker) {
 				msg = Messages.WHO_IS_CHI;
-			}
-			else {
+			} else {
 				msg = Messages.WHO_IS_BENDING;
 				msg = msg.replaceAll("{1}", element.name());
 			}
@@ -101,8 +98,7 @@ public class WhoExecution extends BendingCommand {
 				if (bPlayer.getBendingTypes() != null && !bPlayer.getBendingTypes().isEmpty()) {
 					BendingElement el = bPlayer.getBendingTypes().get(0);
 					color = PluginTools.getColor(Settings.getColorString(el.name()));
-				}
-				else {
+				} else {
 					color = ChatColor.WHITE;
 				}
 				player.sendMessage(color + p.getName());

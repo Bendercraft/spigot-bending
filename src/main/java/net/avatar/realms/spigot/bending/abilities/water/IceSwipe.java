@@ -20,7 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-@BendingAbility(name = "Ice Swipe", element = BendingElement.Water)
+@BendingAbility(name = "Ice Swipe", bind = BendingAbilities.IceSwipe, element = BendingElement.Water)
 public class IceSwipe extends BendingActiveAbility {
 
 	@ConfigurationParameter("Range")
@@ -51,10 +51,10 @@ public class IceSwipe extends BendingActiveAbility {
 
 	public boolean sneak() {
 		switch (state) {
-			case None:
-				return false;
-			default:
-				return false;
+		case None:
+			return false;
+		default:
+			return false;
 		}
 	}
 
@@ -142,10 +142,5 @@ public class IceSwipe extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.IceSwipe;
 	}
 }

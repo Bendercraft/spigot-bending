@@ -122,19 +122,16 @@ public class Messages {
 		if (languageFile.exists()) {
 			try {
 				input = new FileInputStream(languageFile);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
 			}
-		}
-		else {
+		} else {
 			input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
 		}
 
 		try {
 			lines.load(input);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			// Should never happen, hope so
 		}
@@ -156,8 +153,7 @@ public class Messages {
 	public static void sendMessage(Player player, String key, ChatColor color) {
 		if (player == null) {
 			Bending.plugin.getLogger().info(color + getString(key));
-		}
-		else {
+		} else {
 			player.sendMessage(color + getString(key));
 		}
 	}
@@ -173,8 +169,7 @@ public class Messages {
 		}
 		if (player == null) {
 			Bending.plugin.getLogger().info(color + msg);
-		}
-		else {
+		} else {
 			player.sendMessage(color + msg);
 		}
 	}

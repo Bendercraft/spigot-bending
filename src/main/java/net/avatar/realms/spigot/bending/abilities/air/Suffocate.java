@@ -27,11 +27,11 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Suffocate", element=BendingElement.Air, affinity=BendingAffinity.Suffocate)
+@BendingAbility(name = "Suffocate", bind = BendingAbilities.Suffocate, element = BendingElement.Air, affinity = BendingAffinity.Suffocate)
 public class Suffocate extends BendingActiveAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	private static String LORE_NAME = "Suffocation";
-	//private int distance = ConfigManager.suffocateDistance;
+	// private int distance = ConfigManager.suffocateDistance;
 
 	@ConfigurationParameter("Range")
 	private static int RANGE = 10;
@@ -54,7 +54,7 @@ public class Suffocate extends BendingActiveAbility {
 	private long time;
 
 	public Suffocate(Player player) {
-		super (player, null);
+		super(player, null);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
@@ -74,37 +74,37 @@ public class Suffocate extends BendingActiveAbility {
 	public boolean swing() {
 
 		switch (this.state) {
-			case None:
-			case CannotStart:
-				return true;
-			case CanStart:
-				Entity target = EntityTools.getTargettedEntity(this.player, RANGE);
+		case None:
+		case CannotStart:
+			return true;
+		case CanStart:
+			Entity target = EntityTools.getTargettedEntity(this.player, RANGE);
 
-				if(!(target instanceof Player)) {
-					return false;
-				}
-
-				this.target = (Player) target;
-				this.targetLocation = this.target.getLocation().getBlock();
-
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Suffocate, this.target.getLocation())) {
-					return false;
-				}
-
-				this.helmet = this.target.getInventory().getHelmet();
-				this.target.getInventory().setHelmet(this.temp);
-
-				setState(BendingAbilityState.Progressing);
-				AbilityManager.getManager().addInstance(this);
+			if (!(target instanceof Player)) {
 				return false;
-			case Preparing:
-			case Prepared:
-			case Progressing:
-			case Ending:
-			case Ended:
-			case Removed:
-			default : 
+			}
+
+			this.target = (Player) target;
+			this.targetLocation = this.target.getLocation().getBlock();
+
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Suffocate, this.target.getLocation())) {
 				return false;
+			}
+
+			this.helmet = this.target.getInventory().getHelmet();
+			this.target.getInventory().setHelmet(this.temp);
+
+			setState(BendingAbilityState.Progressing);
+			AbilityManager.getManager().addInstance(this);
+			return false;
+		case Preparing:
+		case Prepared:
+		case Progressing:
+		case Ending:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
 
@@ -118,7 +118,7 @@ public class Suffocate extends BendingActiveAbility {
 			return false;
 		}
 
-		if(this.target.isDead()) {
+		if (this.target.isDead()) {
 			return false;
 		}
 
@@ -130,25 +130,25 @@ public class Suffocate extends BendingActiveAbility {
 			return false;
 		}
 
-		//Must have line of sight anyway
-		if(!this.player.hasLineOfSight(this.target)) {
+		// Must have line of sight anyway
+		if (!this.player.hasLineOfSight(this.target)) {
 			return false;
 		}
 
-		if(this.target.getLocation().getWorld() != this.player.getLocation().getWorld()) {
+		if (this.target.getLocation().getWorld() != this.player.getLocation().getWorld()) {
 			return false;
 		}
 
-		if (this.target.getLocation().distance(this.player.getLocation()) > (2*RANGE)) {
+		if (this.target.getLocation().distance(this.player.getLocation()) > (2 * RANGE)) {
 			return false;
 		}
 
-		//Target should be slowed to hell
-		if(!this.target.hasPotionEffect(PotionEffectType.SLOW)) {
+		// Target should be slowed to hell
+		if (!this.target.hasPotionEffect(PotionEffectType.SLOW)) {
 			this.target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 500, 1));
 		}
-		//Target is weakened
-		if(!this.target.hasPotionEffect(PotionEffectType.WEAKNESS)) {
+		// Target is weakened
+		if (!this.target.hasPotionEffect(PotionEffectType.WEAKNESS)) {
 			this.target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 500, 1));
 		}
 
@@ -156,15 +156,15 @@ public class Suffocate extends BendingActiveAbility {
 			this.time = System.currentTimeMillis();
 			double addtionnalDamage = 0;
 			try {
-				addtionnalDamage = (this.targetLocation.getLocation().distance(this.target.getLocation())/10);
-				if(addtionnalDamage > 6) {
+				addtionnalDamage = (this.targetLocation.getLocation().distance(this.target.getLocation()) / 10);
+				if (addtionnalDamage > 6) {
 					addtionnalDamage = 6;
 				}
-			} catch(Exception e) {
-				//Quiet, does not matter
+			} catch (Exception e) {
+				// Quiet, does not matter
 			}
 			this.target.getWorld().playEffect(this.target.getEyeLocation(), Effect.SMOKE, 4);
-			this.target.damage(baseDamage+addtionnalDamage, this.player);
+			this.target.damage(baseDamage + addtionnalDamage, this.player);
 
 			this.targetLocation = this.target.getLocation().getBlock();
 		}
@@ -173,7 +173,7 @@ public class Suffocate extends BendingActiveAbility {
 	}
 
 	public void restoreTargetHelmet() {
-		if(this.temp != null) {
+		if (this.temp != null) {
 			this.target.getInventory().setHelmet(this.helmet);
 			this.temp = null;
 		}
@@ -191,20 +191,18 @@ public class Suffocate extends BendingActiveAbility {
 	}
 
 	public static boolean isTempHelmet(ItemStack is) {
-		if(is == null) {
+		if (is == null) {
 			return false;
 		}
-		if((is.getItemMeta() != null) 
-				&& (is.getItemMeta().getLore() != null)
-				&& is.getItemMeta().getLore().contains(LORE_NAME)) {
+		if ((is.getItemMeta() != null) && (is.getItemMeta().getLore() != null) && is.getItemMeta().getLore().contains(LORE_NAME)) {
 			return true;
 		}
 		return false;
 	}
 
 	public static boolean isTargeted(Player p) {
-		for(Suffocate suffocate : instances.values()) {
-			if(suffocate.target.getUniqueId().equals(p.getUniqueId())) {
+		for (Suffocate suffocate : instances.values()) {
+			if (suffocate.target.getUniqueId().equals(p.getUniqueId())) {
 				return true;
 			}
 		}
@@ -213,8 +211,8 @@ public class Suffocate extends BendingActiveAbility {
 	}
 
 	public static Suffocate getSuffocateByTarget(Player p) {
-		for(Suffocate suffocate : instances.values()) {
-			if(suffocate.target.getUniqueId().equals(p.getUniqueId())) {
+		for (Suffocate suffocate : instances.values()) {
+			if (suffocate.target.getUniqueId().equals(p.getUniqueId())) {
 				return suffocate;
 			}
 		}
@@ -240,12 +238,7 @@ public class Suffocate extends BendingActiveAbility {
 	}
 
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.Suffocate;
-	}
-
-	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 }

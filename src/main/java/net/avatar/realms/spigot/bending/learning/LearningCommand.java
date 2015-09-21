@@ -21,10 +21,10 @@ public class LearningCommand {
 	private CommandSender sender;
 	private BendingPlayer bPlayer;
 
-	public LearningCommand (BendingLearning plugin, CommandSender sender, List<String> args) {
+	public LearningCommand(BendingLearning plugin, CommandSender sender, List<String> args) {
 		this.plugin = plugin;
 		this.sender = sender;
-		if(sender instanceof Player) {
+		if (sender instanceof Player) {
 			this.bPlayer = BendingPlayer.getBendingPlayer((Player) sender);
 		}
 
@@ -33,20 +33,15 @@ public class LearningCommand {
 		array = args.toArray(array);
 		if (subCommand.equals("spe")) {
 			this.chooseSpe(array);
-		}
-		else if (subCommand.equals("ability")) {
+		} else if (subCommand.equals("ability")) {
 			this.unlockAbility(array);
-		}
-		else if (subCommand.equals("avatar")) {
+		} else if (subCommand.equals("avatar")) {
 			this.unlockAvatarElement(array);
-		}
-		else if (subCommand.equals("unavatar")) {
+		} else if (subCommand.equals("unavatar")) {
 			this.lockAvatar(array);
-		}
-		else if (subCommand.equals("free")) {
+		} else if (subCommand.equals("free")) {
 			this.free(array);
-		}
-		else {
+		} else {
 			sender.sendMessage("Unkown subcommand : " + subCommand);
 			this.usage();
 		}
@@ -54,233 +49,231 @@ public class LearningCommand {
 	}
 
 	private void free(String[] args) {
-		if(!this.sender.hasPermission("bending.command.learning")) {
+		if (!this.sender.hasPermission("bending.command.learning")) {
 			this.sender.sendMessage("You do not have this permission");
 			return;
 		}
-		if(args.length < 3) {
+		if (args.length < 3) {
 			this.sender.sendMessage("Insufficient args");
 			return;
 		}
 		String subChoice = args[1];
-		if(subChoice.equals("spe")) {
+		if (subChoice.equals("spe")) {
 			BendingPlayer target = this.bPlayer;
-			if(args.length == 4) {
+			if (args.length == 4) {
 				target = BendingPlayer.getBendingPlayer(Bukkit.getPlayer(args[3]));
 			}
-			if(target == null) {
-				this.sender.sendMessage("No player targeted ("+args[2]+")");
+			if (target == null) {
+				this.sender.sendMessage("No player targeted (" + args[2] + ")");
 				return;
 			}
-			if(target.isBender(BendingElement.ChiBlocker)) {
+			if (target.isBender(BendingElement.ChiBlocker)) {
 				BendingElement type = BendingElement.getType(args[2]);
-				if(type == null) {
+				if (type == null) {
 					return;
 				}
 				List<BendingElement> bends = target.getBendingTypes();
 				bends.remove(type);
 				target.removeBender();
-				for(BendingElement bend : bends) {
+				for (BendingElement bend : bends) {
 					target.addBender(bend);
 				}
 			} else {
 				BendingAffinity spe = BendingAffinity.getType(args[2]);
-				if(spe == null) {
+				if (spe == null) {
 					return;
 				}
-				for(BendingAbilities ability : BendingAbilities.values()) {
-					if((ability.getSpecialization() != null) && ability.getSpecialization().equals(spe)) {
+				for (BendingAbilities ability : BendingAbilities.values()) {
+					if ((ability.getSpecialization() != null) && ability.getSpecialization().equals(spe)) {
 						this.plugin.removePermission(target.getPlayer(), ability);
 					}
 				}
 				target.removeSpecialization(spe);
-				this.sender.sendMessage(ChatColor.GREEN+"Player "+target.getPlayer().getName()+" has lost "+spe.name()+".");
+				this.sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has lost " + spe.name() + ".");
 			}
-		} else if(subChoice.equals("ability")) {
+		} else if (subChoice.equals("ability")) {
 			BendingPlayer target = this.bPlayer;
-			if(args.length == 4) {
+			if (args.length == 4) {
 				target = BendingPlayer.getBendingPlayer(Bukkit.getPlayer(args[3]));
 			}
-			if(target == null) {
-				this.sender.sendMessage("No player targeted ("+args[2]+")");
+			if (target == null) {
+				this.sender.sendMessage("No player targeted (" + args[2] + ")");
 				return;
 			}
 			BendingAbilities ability = BendingAbilities.getAbility(args[2]);
-			if(ability == null) {
-				this.sender.sendMessage(ChatColor.RED +"Ability "+ability+" is unknown");
+			if (ability == null) {
+				this.sender.sendMessage(ChatColor.RED + "Ability " + ability + " is unknown");
 				return;
 			}
-			if(this.plugin.removePermission(target.getPlayer(), ability)) {
+			if (this.plugin.removePermission(target.getPlayer(), ability)) {
 				target.clearAbilities();
 			}
-			this.sender.sendMessage(ChatColor.GREEN+"Player "+target.getPlayer().getName()+" has lost "+ability.name()+".");
+			this.sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has lost " + ability.name() + ".");
 		}
 	}
 
 	private void lockAvatar(String[] args) {
-		if(!this.sender.hasPermission("bending.command.learning")) {
+		if (!this.sender.hasPermission("bending.command.learning")) {
 			this.sender.sendMessage("You do not have this permission");
 			return;
 		}
-		if(args.length < 2) {
+		if (args.length < 2) {
 			this.sender.sendMessage("Insufficient args");
 			return;
 		}
 		BendingPlayer target = this.bPlayer;
-		if(args.length == 3) {
+		if (args.length == 3) {
 			target = BendingPlayer.getBendingPlayer(Bukkit.getPlayer(args[2]));
 		}
-		if(target == null) {
-			this.sender.sendMessage("No player targeted ("+args[2]+")");
+		if (target == null) {
+			this.sender.sendMessage("No player targeted (" + args[2] + ")");
 			return;
 		}
 		BendingElement type = BendingElement.getType(args[1]);
-		if(type == null) {
-			this.sender.sendMessage("Incorrect type : "+args[1]);
+		if (type == null) {
+			this.sender.sendMessage("Incorrect type : " + args[1]);
 			return;
 		}
-		//Reset bending here
+		// Reset bending here
 		target.setBender(type);
-		//Ensure it keeps all previous
-		for(BendingAbilities ability : BendingAbilities.values()) {
-			if(ability.getElement().equals(type) && !ability.isSpecialization()) {
+		// Ensure it keeps all previous
+		for (BendingAbilities ability : BendingAbilities.values()) {
+			if (ability.getElement().equals(type) && !ability.isSpecialization()) {
 				this.plugin.addPermission(target.getPlayer(), ability);
 			}
 		}
-		this.sender.sendMessage(ChatColor.DARK_GREEN+"Player "+target.getPlayer().getName()+" has lost all element except : "+type.name());
+		this.sender.sendMessage(ChatColor.DARK_GREEN + "Player " + target.getPlayer().getName() + " has lost all element except : " + type.name());
 	}
 
 	private void unlockAvatarElement(String[] args) {
-		if(!this.sender.hasPermission("bending.command.learning")) {
+		if (!this.sender.hasPermission("bending.command.learning")) {
 			this.sender.sendMessage("You do not have this permission");
 			return;
 		}
-		if(args.length < 2) {
+		if (args.length < 2) {
 			this.sender.sendMessage("Insufficient args");
 			return;
 		}
 		BendingPlayer target = this.bPlayer;
-		if(args.length == 3) {
+		if (args.length == 3) {
 			target = BendingPlayer.getBendingPlayer(Bukkit.getPlayer(args[2]));
 		}
-		if(target == null) {
-			this.sender.sendMessage("No player targeted ("+args[2]+")");
+		if (target == null) {
+			this.sender.sendMessage("No player targeted (" + args[2] + ")");
 			return;
 		}
-		if(!EntityTools.canBend(target.getPlayer(), BendingAbilities.AvatarState)) {
-			this.sender.sendMessage(target.getPlayer().getName()+" is not an avatar");
+		if (!EntityTools.canBend(target.getPlayer(), BendingAbilities.AvatarState)) {
+			this.sender.sendMessage(target.getPlayer().getName() + " is not an avatar");
 			return;
 		}
 		BendingElement type = BendingElement.getType(args[1]);
-		if(type == null) {
-			this.sender.sendMessage("Incorrect type : "+args[1]);
+		if (type == null) {
+			this.sender.sendMessage("Incorrect type : " + args[1]);
 			return;
 		}
-		if(!target.isBender(type)) {
+		if (!target.isBender(type)) {
 			target.addBender(type);
 			ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
-			String message = "Congratulations, you can now bend "+type.name();
-			target.getPlayer().sendMessage(color+message);
-			for(BendingAbilities ability : BendingAbilities.values()) {
-				if(ability.getElement().equals(type) && !ability.isSpecialization()) {
+			String message = "Congratulations, you can now bend " + type.name();
+			target.getPlayer().sendMessage(color + message);
+			for (BendingAbilities ability : BendingAbilities.values()) {
+				if (ability.getElement().equals(type) && !ability.isSpecialization()) {
 					this.plugin.addPermission(target.getPlayer(), ability);
-					message = "You can now use "+ability.name();
-					target.getPlayer().sendMessage(color+message);
+					message = "You can now use " + ability.name();
+					target.getPlayer().sendMessage(color + message);
 				}
 			}
-			this.sender.sendMessage(ChatColor.DARK_GREEN+"Player "+target.getPlayer().getName()+" has unlocked element : "+type.name());
+			this.sender.sendMessage(ChatColor.DARK_GREEN + "Player " + target.getPlayer().getName() + " has unlocked element : " + type.name());
 		} else {
-			this.sender.sendMessage(ChatColor.RED+"Player "+target.getPlayer().getName()+" already bend : "+type.name());
+			this.sender.sendMessage(ChatColor.RED + "Player " + target.getPlayer().getName() + " already bend : " + type.name());
 		}
 	}
 
 	private void unlockAbility(String[] args) {
-		if(!this.sender.hasPermission("bending.command.learning")) {
+		if (!this.sender.hasPermission("bending.command.learning")) {
 			this.sender.sendMessage(ChatColor.RED + "You do not have this permission");
 			return;
 		}
-		if(args.length < 2) {
-			this.sender.sendMessage(ChatColor.RED +"Insufficient args");
+		if (args.length < 2) {
+			this.sender.sendMessage(ChatColor.RED + "Insufficient args");
 			return;
 		}
 
 		BendingPlayer target = this.bPlayer;
-		if(args.length == 3) {
+		if (args.length == 3) {
 			target = BendingPlayer.getBendingPlayer(Bukkit.getPlayer(args[2]));
 		}
-		if(target == null) {
-			this.sender.sendMessage("No player targeted ("+args[2]+")");
+		if (target == null) {
+			this.sender.sendMessage("No player targeted (" + args[2] + ")");
 			return;
 		}
 
 		BendingAbilities ability = BendingAbilities.getAbility(args[1]);
 		if (ability == null) {
-			this.sender.sendMessage(ChatColor.RED +"Ability "+ability+" is unknown");
+			this.sender.sendMessage(ChatColor.RED + "Ability " + ability + " is unknown");
 			return;
 		}
-		if (target.isBender(BendingElement.ChiBlocker)
-				&& !BendingAbilities.isChiBlocking(ability)
-				&& !this.plugin.isBasicBendingAbility(ability)) {
-			this.sender.sendMessage(ChatColor.RED +"Ability "+ability+" is not available for chiblocker");
+		if (target.isBender(BendingElement.ChiBlocker) && !BendingAbilities.isChiBlocking(ability) && !this.plugin.isBasicBendingAbility(ability)) {
+			this.sender.sendMessage(ChatColor.RED + "Ability " + ability + " is not available for chiblocker");
 			return;
 		}
-		if(target.isBender(ability.getElement())) {
-			if(this.plugin.addPermission(target.getPlayer(), ability)) {
+		if (target.isBender(ability.getElement())) {
+			if (this.plugin.addPermission(target.getPlayer(), ability)) {
 				ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
-				String message = "You can now use "+ability.name();
-				target.getPlayer().sendMessage(color+message);
-				this.sender.sendMessage(ChatColor.GREEN+"Player "+target.getPlayer().getName()+" has received "+ability.name()+".");
+				String message = "You can now use " + ability.name();
+				target.getPlayer().sendMessage(color + message);
+				this.sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has received " + ability.name() + ".");
 			} else {
-				this.sender.sendMessage(ChatColor.RED +target.getPlayer().getName()+" did not receive "+ability+" (permission was denied)");
+				this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " did not receive " + ability + " (permission was denied)");
 			}
 		} else {
-			this.sender.sendMessage(ChatColor.RED +target.getPlayer().getName()+" do not bend "+ability.getElement());
+			this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " do not bend " + ability.getElement());
 		}
 	}
 
 	private void chooseSpe(String[] args) {
-		if(!this.sender.hasPermission("bending.command.learning")) {
+		if (!this.sender.hasPermission("bending.command.learning")) {
 			this.sender.sendMessage("You do not have this permission");
 			return;
 		}
-		if(args.length < 2) {
+		if (args.length < 2) {
 			this.sender.sendMessage("Insufficient args");
 			return;
 		}
 		String speString = args[1];
 
 		BendingPlayer target = this.bPlayer;
-		if(args.length == 3) {
+		if (args.length == 3) {
 			target = BendingPlayer.getBendingPlayer(Bukkit.getPlayer(args[2]));
 		}
-		if(target == null) {
-			this.sender.sendMessage("No player targeted ("+args[2]+")");
+		if (target == null) {
+			this.sender.sendMessage("No player targeted (" + args[2] + ")");
 			return;
 		}
 
 		BendingAffinity spe = BendingAffinity.getType(speString);
 		BendingElement type = BendingElement.getType(speString);
 
-		if(target.isBender(BendingElement.ChiBlocker)) {
+		if (target.isBender(BendingElement.ChiBlocker)) {
 			if ((target.getBendingTypes().size() == 1) && (target.getSpecializations().size() <= 0)) {
 				if (spe != null) {
-					if(target.isBender(spe.getElement())) {
+					if (target.isBender(spe.getElement())) {
 						boolean canLearn = true;
-						for(BendingAffinity speTarget : target.getSpecializations()) {
-							if(speTarget.getElement().equals(spe.getElement())) {
+						for (BendingAffinity speTarget : target.getSpecializations()) {
+							if (speTarget.getElement().equals(spe.getElement())) {
 								canLearn = false;
 							}
 						}
-						if(canLearn) {
+						if (canLearn) {
 							target.setSpecialization(spe);
 							ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
-							String message = "Congratulations, you can now use "+spe.name();
-							target.getPlayer().sendMessage(color+message);
-							for(BendingAbilities ability : BendingAbilities.values()) {
-								if(ability.isSpecialization() && ability.getSpecialization().equals(spe)) {
+							String message = "Congratulations, you can now use " + spe.name();
+							target.getPlayer().sendMessage(color + message);
+							for (BendingAbilities ability : BendingAbilities.values()) {
+								if (ability.isSpecialization() && ability.getSpecialization().equals(spe)) {
 									this.plugin.addPermission(target.getPlayer(), ability);
-									message = "You can now use "+ability.name();
-									target.getPlayer().sendMessage(color+message);
+									message = "You can now use " + ability.name();
+									target.getPlayer().sendMessage(color + message);
 								}
 							}
 						}
@@ -288,58 +281,58 @@ public class LearningCommand {
 				} else if (type != null) {
 					target.addBender(type);
 					ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
-					String message = "Congratulations, you can now bend "+type.name()+" as well as "+BendingElement.ChiBlocker.name();
-					target.getPlayer().sendMessage(color+message);
-					for(BendingAbilities ability : BendingAbilities.values()) {
-						if(ability.getElement().equals(type)) {
-							if(EntityTools.hasPermission(target.getPlayer(), ability)) {
-								message = "You can now use "+ability.name();
-								target.getPlayer().sendMessage(color+message);
+					String message = "Congratulations, you can now bend " + type.name() + " as well as " + BendingElement.ChiBlocker.name();
+					target.getPlayer().sendMessage(color + message);
+					for (BendingAbilities ability : BendingAbilities.values()) {
+						if (ability.getElement().equals(type)) {
+							if (EntityTools.hasPermission(target.getPlayer(), ability)) {
+								message = "You can now use " + ability.name();
+								target.getPlayer().sendMessage(color + message);
 							}
 						}
 					}
 				} else {
-					this.sender.sendMessage(ChatColor.RED+speString+" is not a valid a specialization/element");
+					this.sender.sendMessage(ChatColor.RED + speString + " is not a valid a specialization/element");
 				}
 			} else {
-				this.sender.sendMessage(ChatColor.RED+target.getPlayer().getName()+" already have a specialization");
+				this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " already have a specialization");
 			}
 		} else {
-			if(spe != null) {
-				if(target.isBender(spe.getElement())) {
+			if (spe != null) {
+				if (target.isBender(spe.getElement())) {
 					boolean canLearn = true;
-					for(BendingAffinity speTarget : target.getSpecializations()) {
-						if(speTarget.getElement().equals(spe.getElement())) {
+					for (BendingAffinity speTarget : target.getSpecializations()) {
+						if (speTarget.getElement().equals(spe.getElement())) {
 							canLearn = false;
 						}
 					}
-					if(canLearn) {
+					if (canLearn) {
 						target.setSpecialization(spe);
 						ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
-						String message = "Congratulations, you can now use "+spe.name();
-						target.getPlayer().sendMessage(color+message);
-						for(BendingAbilities ability : BendingAbilities.values()) {
-							if(ability.isSpecialization() && ability.getSpecialization().equals(spe)) {
+						String message = "Congratulations, you can now use " + spe.name();
+						target.getPlayer().sendMessage(color + message);
+						for (BendingAbilities ability : BendingAbilities.values()) {
+							if (ability.isSpecialization() && ability.getSpecialization().equals(spe)) {
 								this.plugin.addPermission(target.getPlayer(), ability);
-								message = "You can now use "+ability.name();
-								target.getPlayer().sendMessage(color+message);
+								message = "You can now use " + ability.name();
+								target.getPlayer().sendMessage(color + message);
 							}
 						}
-						this.sender.sendMessage(ChatColor.GREEN+"Player "+target.getPlayer().getName()+" has received "+spe.name()+".");
+						this.sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has received " + spe.name() + ".");
 					} else {
-						this.sender.sendMessage(ChatColor.RED+target.getPlayer().getName()+" already have a specialization for "+spe.getElement());
+						this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " already have a specialization for " + spe.getElement());
 					}
 				} else {
-					this.sender.sendMessage(ChatColor.RED+target.getPlayer().getName()+" cannot take "+spe.name()+" because cannot bend "+spe.getElement()+".");
+					this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " cannot take " + spe.name() + " because cannot bend " + spe.getElement() + ".");
 				}
 			} else {
-				this.sender.sendMessage(ChatColor.RED+speString+" is not a valid a specialization");
+				this.sender.sendMessage(ChatColor.RED + speString + " is not a valid a specialization");
 			}
 		}
 	}
 
 	private void usage() {
-		if(!this.sender.hasPermission("bending.command.learning")) {
+		if (!this.sender.hasPermission("bending.command.learning")) {
 			this.sender.sendMessage("You do not have this permission");
 			return;
 		}

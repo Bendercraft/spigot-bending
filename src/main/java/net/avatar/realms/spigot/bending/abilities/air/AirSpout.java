@@ -22,7 +22,7 @@ import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
-@BendingAbility(name="Air Spout", element=BendingElement.Air)
+@BendingAbility(name = "Air Spout", bind = BendingAbilities.AirSpout, element = BendingElement.Air)
 public class AirSpout extends BendingActiveAbility {
 
 	@ConfigurationParameter("Height")
@@ -39,10 +39,10 @@ public class AirSpout extends BendingActiveAbility {
 
 	private long time;
 	private FlyingPlayer flying;
-	
+
 	private double height;
 
-	public AirSpout (Player player) {
+	public AirSpout(Player player) {
 		super(player, null);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
@@ -50,15 +50,15 @@ public class AirSpout extends BendingActiveAbility {
 		}
 
 		this.time = this.startedTime;
-		
+
 		height = HEIGHT;
-		if(bender.hasPath(BendingPath.Mobile)) {
+		if (bender.hasPath(BendingPath.Mobile)) {
 			height *= 1.2;
 		}
 	}
 
 	@Override
-	public boolean swing () {
+	public boolean swing() {
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return true;
@@ -99,12 +99,11 @@ public class AirSpout extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		if (this.player.getEyeLocation().getBlock().isLiquid()
-				|| BlockTools.isSolid(this.player.getEyeLocation().getBlock())) {
+		if (this.player.getEyeLocation().getBlock().isLiquid() || BlockTools.isSolid(this.player.getEyeLocation().getBlock())) {
 			return false;
 		}
 		this.player.setFallDistance(0);
@@ -135,14 +134,14 @@ public class AirSpout extends BendingActiveAbility {
 		}
 		return null;
 	}
-	
+
 	@Override
-	public void stop () {
+	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 	}
 
 	@Override
-	public void remove () {
+	public void remove() {
 		this.bender.cooldown(BendingAbilities.AirSpout, COOLDOWN);
 		super.remove();
 	}
@@ -154,8 +153,7 @@ public class AirSpout extends BendingActiveAbility {
 
 			Location location = block.getLocation();
 			Location playerloc = this.player.getLocation();
-			location = new Location(location.getWorld(), playerloc.getX(),
-					location.getY(), playerloc.getZ());
+			location = new Location(location.getWorld(), playerloc.getX(), location.getY(), playerloc.getZ());
 
 			double dy = playerloc.getY() - block.getY();
 			if (dy > height) {
@@ -175,17 +173,16 @@ public class AirSpout extends BendingActiveAbility {
 					index = 0;
 				}
 
-				Location effectloc2 = new Location(location.getWorld(),
-						location.getX(), block.getY() + i, location.getZ());
+				Location effectloc2 = new Location(location.getWorld(), location.getX(), block.getY() + i, location.getZ());
 
-				//location.getWorld().playEffect(effectloc2, Effect.SMOKE, (int) directions[index], (int) height + 5);
+				// location.getWorld().playEffect(effectloc2, Effect.SMOKE,
+				// (int) directions[index], (int) height + 5);
 				VISUAL.display(0, 0, 0, 1, 1, effectloc2, 20);
 			}
 		}
 	}
 
-	public static void removeSpouts(Location loc0, double radius,
-			Player sourceplayer) {
+	public static void removeSpouts(Location loc0, double radius, Player sourceplayer) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirSpout);
 
 		if ((instances == null) || instances.isEmpty()) {
@@ -214,7 +211,7 @@ public class AirSpout extends BendingActiveAbility {
 		return height;
 	}
 
-	public static boolean isSpouting (Player player) {
+	public static boolean isSpouting(Player player) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirSpout);
 
 		if ((instances == null) || instances.isEmpty()) {
@@ -225,12 +222,12 @@ public class AirSpout extends BendingActiveAbility {
 	}
 
 	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return 1000 * 60 * 20;
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
@@ -243,12 +240,7 @@ public class AirSpout extends BendingActiveAbility {
 	}
 
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.AirSpout;
-	}
-
-	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 

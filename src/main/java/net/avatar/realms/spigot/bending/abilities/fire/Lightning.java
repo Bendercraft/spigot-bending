@@ -30,7 +30,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name="Lightning", element=BendingElement.Fire, affinity=BendingAffinity.Lightning)
+@BendingAbility(name = "Lightning", bind = BendingAbilities.Lightning, element = BendingElement.Fire, affinity = BendingAffinity.Lightning)
 public class Lightning extends BendingActiveAbility {
 	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();
 
@@ -51,82 +51,77 @@ public class Lightning extends BendingActiveAbility {
 
 	private static double threshold = 0.1;
 	private static double blockdistance = 4;
-	
+
 	private int damage = DAMAGE;
 	private double strikeradius = 4;
-	
+
 	private long warmup;
 	private LightningStrike strike = null;
 	private List<Entity> hitentities = new LinkedList<Entity>();
-	
-	public Lightning (Player player) {
+
+	public Lightning(Player player) {
 		super(player, null);
-		
+
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 		this.warmup = WARMUP;
 		if (AvatarState.isAvatarState(this.player)) {
 			this.warmup = 0;
-		}
-		else if (Tools.isDay(this.player.getWorld())) {
+		} else if (Tools.isDay(this.player.getWorld())) {
 			this.warmup /= Settings.NIGHT_FACTOR;
 		}
 	}
-	
+
 	@Override
-	public boolean sneak () {
+	public boolean sneak() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
-				return false;
-			case CanStart:
-				AbilityManager.getManager().addInstance(this);
-				setState(BendingAbilityState.Preparing);
-				return false;
-			case Preparing:
-			case Prepared:
-			case Progressing:
-			case Ended:
-			case Removed:
-			default:
-				return false;
+		case None:
+		case CannotStart:
+			return false;
+		case CanStart:
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Preparing);
+			return false;
+		case Preparing:
+		case Prepared:
+		case Progressing:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
-	
+
 	public static Lightning getLightning(Entity entity) {
 		return strikes.get(entity);
 	}
-	
+
 	private void strike() {
 		Location targetlocation = getTargetLocation();
 		if (AvatarState.isAvatarState(this.player)) {
 			this.damage = AvatarState.getValue(this.damage);
 		}
 
-		if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Lightning,
-				targetlocation)) {
+		if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Lightning, targetlocation)) {
 			this.strike = this.player.getWorld().strikeLightning(targetlocation);
 			strikes.put(this.strike, this);
 		}
 	}
-	
+
 	private Location getTargetLocation() {
-		int distance = (int) PluginTools.firebendingDayAugment(RANGE,
-				this.player.getWorld());
-		
+		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
+
 		Location targetlocation;
 		targetlocation = EntityTools.getTargetedLocation(this.player, distance);
 		Entity target = EntityTools.getTargettedEntity(this.player, distance);
 		if (target != null) {
-			if ((target instanceof LivingEntity)
-					&& (this.player.getLocation().distance(targetlocation) > target
-							.getLocation().distance(this.player.getLocation()))) {
-				//Check redirection
-				if(target instanceof Player){
+			if ((target instanceof LivingEntity) && (this.player.getLocation().distance(targetlocation) > target.getLocation().distance(this.player.getLocation()))) {
+				// Check redirection
+				if (target instanceof Player) {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) target);
-					if((bPlayer != null) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.Lightning)) {
-						//Redirection !
+					if ((bPlayer != null) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.Lightning)) {
+						// Redirection !
 						targetlocation = EntityTools.getTargetedLocation((Player) target, distance);
 					} else {
 						targetlocation = target.getLocation();
@@ -145,53 +140,52 @@ public class Lightning extends BendingActiveAbility {
 		} else {
 			MISS_CHANCE = 0;
 		}
-		
+
 		if (targetlocation.getBlock().getType() == Material.AIR) {
 			targetlocation.add(0, -1, 0);
 		}
 		if (targetlocation.getBlock().getType() == Material.AIR) {
 			targetlocation.add(0, -1, 0);
 		}
-		
+
 		if ((MISS_CHANCE != 0) && !AvatarState.isAvatarState(this.player)) {
 			double A = Math.random() * Math.PI * MISS_CHANCE * MISS_CHANCE;
 			double theta = Math.random() * Math.PI * 2;
 			double r = Math.sqrt(A) / Math.PI;
 			double x = r * Math.cos(theta);
 			double z = r * Math.sin(theta);
-			
+
 			targetlocation = targetlocation.add(x, 0, z);
 		}
-		
+
 		return targetlocation;
 	}
 
 	@Override
-	public void remove () {
+	public void remove() {
 		this.bender.cooldown(BendingAbilities.Lightning, COOLDOWN);
 		super.remove();
 	}
-	
+
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.Lightning) {
 			return false;
 		}
-		
+
 		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
 
 		if (System.currentTimeMillis() > (this.startedTime + this.warmup)) {
 			setState(BendingAbilityState.Prepared);
 		}
-		
+
 		if (this.state.equals(BendingAbilityState.Prepared)) {
 			if (this.player.isSneaking()) {
-				this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE,
-						Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), distance);
+				this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE, Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), distance);
 			} else {
 				strike();
 				setState(BendingAbilityState.Ended);
@@ -205,9 +199,9 @@ public class Lightning extends BendingActiveAbility {
 		}
 		return true;
 	}
-	
+
 	public void dealDamage(Entity entity) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
 		if (this.strike == null) {
@@ -224,8 +218,8 @@ public class Lightning extends BendingActiveAbility {
 		this.hitentities.add(entity);
 		EntityTools.damageEntity(this.player, entity, (int) dmg);
 	}
-	
-	public static boolean isNearbyChannel (Location location) {
+
+	public static boolean isNearbyChannel(Location location) {
 		boolean isNearby = false;
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Lightning);
 
@@ -240,23 +234,18 @@ public class Lightning extends BendingActiveAbility {
 		}
 		return isNearby;
 	}
-	
+
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
-	}
-	
-	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.Lightning;
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Lightning);
 
 		if (instances == null) {

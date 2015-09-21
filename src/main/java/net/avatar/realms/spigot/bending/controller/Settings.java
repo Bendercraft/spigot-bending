@@ -29,28 +29,22 @@ public class Settings {
 	public static double NIGHT_FACTOR = 1.1;
 
 	@ConfigurationParameter("earth.bendables")
-	public static String[] EARTHBENDABLES = {
-			"STONE", "CLAY", "DIRT", "GRASS", "GRAVEL", "COAL_ORE", "LAPIS_ORE", "REDSTONE_ORE", "SAND", "GLOWING_REDSTONE_ORE", "MYCEL", };
+	public static String[] EARTHBENDABLES = { "STONE", "CLAY", "DIRT", "GRASS", "GRAVEL", "COAL_ORE", "LAPIS_ORE", "REDSTONE_ORE", "SAND", "GLOWING_REDSTONE_ORE", "MYCEL", };
 
 	@ConfigurationParameter("aliases.air")
-	public static String[] AIR_ALIASES = {
-			"air", "airbending", "airbender" };
+	public static String[] AIR_ALIASES = { "air", "airbending", "airbender" };
 
 	@ConfigurationParameter("aliases.chi")
-	public static String[] CHI_ALIASES = {
-			"chi", "chiblocker", "chiblocking" };
+	public static String[] CHI_ALIASES = { "chi", "chiblocker", "chiblocking" };
 
 	@ConfigurationParameter("aliases.earth")
-	public static String[] EARTH_ALIASES = {
-			"earth", "earthbender", "earthbending" };
+	public static String[] EARTH_ALIASES = { "earth", "earthbender", "earthbending" };
 
 	@ConfigurationParameter("aliases.fire")
-	public static String[] FIRE_ALIASES = {
-			"fire", "firebender", "firebending" };
+	public static String[] FIRE_ALIASES = { "fire", "firebender", "firebending" };
 
 	@ConfigurationParameter("aliases.water")
-	public static String[] WATER_ALIASES = {
-			"water", "waterbender", "waterbender" };
+	public static String[] WATER_ALIASES = { "water", "waterbender", "waterbender" };
 
 	@ConfigurationParameter("chi.fall-damage-reduction")
 	public static double CHI_FALL_REDUCTION = 1.0;
@@ -125,23 +119,17 @@ public class Settings {
 	public static String getColorString(String name) {
 		if (name.equals("Energy")) {
 			return AVATAR_COLOR;
-		}
-		else if (name.equals("ChiBlocker")) {
+		} else if (name.equals("ChiBlocker")) {
 			return CHI_COLOR;
-		}
-		else if (name.equals("Fire")) {
+		} else if (name.equals("Fire")) {
 			return FIRE_COLOR;
-		}
-		else if (name.equals("Water")) {
+		} else if (name.equals("Water")) {
 			return WATER_COLOR;
-		}
-		else if (name.equals("Air")) {
+		} else if (name.equals("Air")) {
 			return AIR_COLOR;
-		}
-		else if (name.equals("Earth")) {
+		} else if (name.equals("Earth")) {
 			return EARTH_COLOR;
-		}
-		else {
+		} else {
 			return "WHITE";
 		}
 	}

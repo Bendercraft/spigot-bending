@@ -11,12 +11,12 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
  * 
- * This ability hit the first entity in front of you powerfully driving to a knockback
- * You must be sneaking when clicking to activate this technique.
+ * This ability hit the first entity in front of you powerfully driving to a
+ * knockback You must be sneaking when clicking to activate this technique.
  *
  */
-@BendingAbility(name="Powerful Hit", element=BendingElement.ChiBlocker)
-public class PowerfulHit extends BendingActiveAbility{
+@BendingAbility(name = "Powerful Hit", bind = BendingAbilities.PowerfulHit, element = BendingElement.ChiBlocker)
+public class PowerfulHit extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	public static long DAMAGE = 5;
@@ -32,13 +32,13 @@ public class PowerfulHit extends BendingActiveAbility{
 
 	public PowerfulHit(Player player) {
 		super(player, null);
-	}	
+	}
 
 	@Override
 	public boolean swing() {
 		// TODO Auto-generated method stub
 
-		//Vector v = loc1.toVector().subtract(loc2.toVector())
+		// Vector v = loc1.toVector().subtract(loc2.toVector())
 		return super.swing();
 	}
 
@@ -54,11 +54,6 @@ public class PowerfulHit extends BendingActiveAbility{
 	@Override
 	protected long getMaxMillis() {
 		return 1;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.PowerfulHit;
 	}
 
 	@Override

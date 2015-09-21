@@ -17,17 +17,17 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Catapult", element=BendingElement.Earth)
+@BendingAbility(name = "Catapult", bind = BendingAbilities.Catapult, element = BendingElement.Earth)
 public class Catapult extends BendingActiveAbility {
 	@ConfigurationParameter("Length")
 	private static int length = 6;
-	
+
 	@ConfigurationParameter("Speed")
 	private static double speed = 10.0;
 
 	@ConfigurationParameter("Push")
 	private static double push = 4.0;
-	
+
 	@ConfigurationParameter("Catapult")
 	public static long COOLDOWN = 5000;
 
@@ -47,10 +47,10 @@ public class Catapult extends BendingActiveAbility {
 	public Catapult(Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean swing() {
-		if(state != BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		state = BendingAbilityState.Progressing;
@@ -64,8 +64,7 @@ public class Catapult extends BendingActiveAbility {
 			location = origin.clone().add(neg.clone().multiply((double) i));
 			block = location.getBlock();
 			if (BlockTools.isEarthbendable(player, BendingAbilities.Catapult, block)) {
-				distance = BlockTools.getEarthbendableBlocksLength(player, block,
-						neg, length - i);
+				distance = BlockTools.getEarthbendableBlocksLength(player, block, neg, length - i);
 				break;
 			} else if (!BlockTools.isTransparentToEarthbending(player, block)) {
 				break;
@@ -82,12 +81,12 @@ public class Catapult extends BendingActiveAbility {
 			AbilityManager.getManager().addInstance(this);
 			bender.cooldown(BendingAbilities.Catapult, COOLDOWN);
 		}
-		
+
 		return false;
 	}
 
 	public boolean progress() {
-		if(!super.progress()) {
+		if (!super.progress()) {
 			return false;
 		}
 		if (player.isDead() || !player.isOnline()) {
@@ -152,7 +151,7 @@ public class Catapult extends BendingActiveAbility {
 			if (location.distance(origin) < .5) {
 				boolean remove = false;
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, 2)) {
-					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}
 					if (entity instanceof Player) {
@@ -162,32 +161,24 @@ public class Catapult extends BendingActiveAbility {
 							remove = true;
 						}
 					}
-					entity.setVelocity(direction.clone().multiply(
-							push * distance / length));
+					entity.setVelocity(direction.clone().multiply(push * distance / length));
 				}
 				return remove;
 			}
 		} else {
 			if (location.distance(origin) <= length - distance) {
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2)) {
-					entity.setVelocity(direction.clone().multiply(
-							push * distance / length));
+					entity.setVelocity(direction.clone().multiply(push * distance / length));
 				}
 				return false;
 			}
 		}
-		BlockTools.moveEarth(player, location.clone().subtract(direction),
-				direction, distance, false);
+		BlockTools.moveEarth(player, location.clone().subtract(direction), direction, distance, false);
 		return true;
 	}
 
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.Catapult;
 	}
 }

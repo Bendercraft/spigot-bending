@@ -48,12 +48,10 @@ public class DisplayExecution extends BendingCommand {
 					ChatColor color = PluginTools.getColor(Settings.getColorString(slot.getValue().getElement().name()));
 					player.sendMessage("--" + color + slot.getKey() + white + " : " + color + slot.getValue().name());
 				}
-			}
-			else {
+			} else {
 				player.sendMessage("-" + Messages.NOTHING_BOUND);
 			}
-		}
-		else {
+		} else {
 			BendingElement element = getElement(args.get(0));
 			if (element == null) {
 				sender.sendMessage(ChatColor.RED + Messages.INVALID_ELEMENT);

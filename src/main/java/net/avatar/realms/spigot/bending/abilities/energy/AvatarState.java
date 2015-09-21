@@ -18,8 +18,8 @@ import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 
-@BendingAbility(name="Avatar State", element=BendingElement.Energy)
-public class AvatarState extends BendingActiveAbility{
+@BendingAbility(name = "Avatar State", bind = BendingAbilities.AvatarState, element = BendingElement.Energy)
+public class AvatarState extends BendingActiveAbility {
 
 	@ConfigurationParameter("Factor")
 	public static double FACTOR = 4.5;
@@ -32,7 +32,7 @@ public class AvatarState extends BendingActiveAbility{
 
 	private long realDuration;
 
-	public AvatarState (Player player) {
+	public AvatarState(Player player) {
 		super(player, null);
 	}
 
@@ -58,7 +58,7 @@ public class AvatarState extends BendingActiveAbility{
 	}
 
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 
 		if (!super.progress()) {
 			return false;
@@ -72,7 +72,7 @@ public class AvatarState extends BendingActiveAbility{
 		return false;
 	}
 
-	private void addPotionEffects () {
+	private void addPotionEffects() {
 		int duration = 70;
 		this.player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, duration, 2));
 		this.player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, duration, 2));
@@ -80,7 +80,7 @@ public class AvatarState extends BendingActiveAbility{
 		this.player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, duration, 0));
 	}
 
-	public static boolean isAvatarState (Player player) {
+	public static boolean isAvatarState(Player player) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AvatarState);
 
 		if ((instances == null) || instances.isEmpty()) {
@@ -93,12 +93,12 @@ public class AvatarState extends BendingActiveAbility{
 		return false;
 	}
 
-	public static double getValue (double value) {
+	public static double getValue(double value) {
 		return FACTOR * value;
 	}
 
-	public static int getValue (int value) {
-		return (int)FACTOR * value;
+	public static int getValue(int value) {
+		return (int) FACTOR * value;
 	}
 
 	public static List<Player> getPlayers() {
@@ -115,7 +115,7 @@ public class AvatarState extends BendingActiveAbility{
 	}
 
 	@Override
-	public void stop () {
+	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 		long now = System.currentTimeMillis();
 		this.realDuration = now - this.startedTime;
@@ -125,11 +125,6 @@ public class AvatarState extends BendingActiveAbility{
 	@Override
 	protected long getMaxMillis() {
 		return MAX_DURATION;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.AvatarState;
 	}
 
 	@Override

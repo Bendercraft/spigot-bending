@@ -67,7 +67,7 @@ public class Information {
 	public byte getData() {
 		return this.data;
 	}
-	
+
 	public static Information fromBlock(Block block) {
 		if (block == null) {
 			return null;
@@ -79,7 +79,7 @@ public class Information {
 		info.setData(block.getData());
 		info.setState(block.getState());
 		info.setTime(System.currentTimeMillis());
-		
+
 		return info;
 	}
 

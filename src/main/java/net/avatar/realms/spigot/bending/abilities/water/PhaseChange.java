@@ -25,8 +25,8 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Phase Change", element=BendingElement.Water)
-public class FreezeMelt extends BendingActiveAbility {
+@BendingAbility(name = "Phase Change", bind = BendingAbilities.PhaseChange, element = BendingElement.Water)
+public class PhaseChange extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	public static int RANGE = 20;
 
@@ -42,9 +42,9 @@ public class FreezeMelt extends BendingActiveAbility {
 	private Map<Block, Byte> frozenblocks = new HashMap<Block, Byte>();
 	private Block source;
 
-	public FreezeMelt(Player player, IBendingAbility parent, Block block) {
+	public PhaseChange(Player player, IBendingAbility parent, Block block) {
 		super(player, parent);
-		if(isFreezable(player, block)) {
+		if (isFreezable(player, block)) {
 			source = block;
 			byte data = block.getData();
 			block.setType(Material.ICE);
@@ -53,17 +53,15 @@ public class FreezeMelt extends BendingActiveAbility {
 		}
 	}
 
-	public FreezeMelt(Player player, IBendingAbility parent) {
-		super(player, parent);
+	public PhaseChange(Player player) {
+		super(player, null);
 
 		if (bender.isOnCooldown(BendingAbilities.PhaseChange)) {
 			return;
 		}
 
-		int range = (int) PluginTools.waterbendingNightAugment(RANGE,
-				player.getWorld());
-		int radius = (int) PluginTools.waterbendingNightAugment(RADIUS,
-				player.getWorld());
+		int range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
+		int radius = (int) PluginTools.waterbendingNightAugment(RADIUS, player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
 		}
@@ -72,22 +70,19 @@ public class FreezeMelt extends BendingActiveAbility {
 		int y = (int) location.getY();
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (block.getLocation().getY() >= (y - DEPTH)) {
-				new FreezeMelt(player, parent, block);
+				new PhaseChange(player, this, block);
 			}
 		}
 
 		bender.cooldown(BendingAbilities.PhaseChange, COOLDOWN);
 	}
 
-	private static boolean isFreezable(Player player, Block block) {	
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange,
-				block.getLocation())) {
+	private static boolean isFreezable(Player player, Block block) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange, block.getLocation())) {
 			return false;
 		}
-		if ((block.getType() == Material.WATER)
-				|| (block.getType() == Material.STATIONARY_WATER)) {
-			if (WaterManipulation.canPhysicsChange(block)
-					&& !TempBlock.isTempBlock(block)) {
+		if ((block.getType() == Material.WATER) || (block.getType() == Material.STATIONARY_WATER)) {
+			if (WaterManipulation.canPhysicsChange(block) && !TempBlock.isTempBlock(block)) {
 				return true;
 			}
 		}
@@ -138,13 +133,12 @@ public class FreezeMelt extends BendingActiveAbility {
 		}
 		if (this.frozenblocks.containsKey(block)) {
 			if (EntityTools.canBend(getPlayer(), BendingAbilities.PhaseChange)) {
-				double range = PluginTools.waterbendingNightAugment(
-						RANGE, getPlayer().getWorld());
+				double range = PluginTools.waterbendingNightAugment(RANGE, getPlayer().getWorld());
 				if (AvatarState.isAvatarState(getPlayer())) {
 					range = AvatarState.getValue(range);
 				}
-				//Player just changed world, allow thaw
-				if(!block.getLocation().getWorld().getUID().equals(getPlayer().getLocation().getWorld().getUID())) {
+				// Player just changed world, allow thaw
+				if (!block.getLocation().getWorld().getUID().equals(getPlayer().getLocation().getWorld().getUID())) {
 					return true;
 				}
 				if (block.getLocation().distance(getPlayer().getLocation()) <= range) {
@@ -182,9 +176,9 @@ public class FreezeMelt extends BendingActiveAbility {
 	}
 
 	public static boolean isFrozen(Block block) {
-		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
-			FreezeMelt fm = (FreezeMelt) ab;
-			if(fm.isBlockFrozen(block)) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+			PhaseChange fm = (PhaseChange) ab;
+			if (fm.isBlockFrozen(block)) {
 				return true;
 			}
 		}
@@ -192,9 +186,9 @@ public class FreezeMelt extends BendingActiveAbility {
 	}
 
 	public static void thawThenRemove(Block block) {
-		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
-			FreezeMelt fm = (FreezeMelt) ab;
-			if(fm.thaw(block)) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+			PhaseChange fm = (PhaseChange) ab;
+			if (fm.thaw(block)) {
 				fm.remove(block);
 			}
 		}
@@ -209,9 +203,9 @@ public class FreezeMelt extends BendingActiveAbility {
 	}
 
 	public static boolean isLevel(Block block, byte level) {
-		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
-			FreezeMelt fm = (FreezeMelt) ab;
-			if(fm.isBlockLevel(block, level)) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+			PhaseChange fm = (PhaseChange) ab;
+			if (fm.isBlockLevel(block, level)) {
 				return true;
 			}
 		}
@@ -222,10 +216,5 @@ public class FreezeMelt extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.PhaseChange;
 	}
 }

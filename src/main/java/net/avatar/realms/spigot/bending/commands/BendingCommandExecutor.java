@@ -133,11 +133,9 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		}
 		if (valids.size() < 1) {
 			return start;
-		}
-		else if (valids.size() == 1) {
+		} else if (valids.size() == 1) {
 			return valids.get(0);
-		}
-		else {
+		} else {
 			String base = valids.get(0);
 			valids.remove(0);
 			StringBuilder builder = new StringBuilder();

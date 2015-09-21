@@ -13,62 +13,57 @@ import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility (name = "ChiSpeed", element = BendingElement.ChiBlocker)
+@BendingAbility(name = "ChiSpeed", bind = BendingAbilities.ChiSpeed, element = BendingElement.ChiBlocker)
 public class ChiSpeed extends BendingPassiveAbility {
-	
-	public ChiSpeed (Player player) {
+
+	public ChiSpeed(Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
-	
+
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.ChiSpeed;
-	}
-	
-	@Override
-	public boolean start () {
+	public boolean start() {
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
 		// I've separate it from constructor in case where a player bind Speed
 		// (as it became an Abilities enum) and make fun by clicking...
-		//new Flight(this.player);
-		//this.player.setAllowFlight(true);
+		// new Flight(this.player);
+		// this.player.setAllowFlight(true);
 		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
 		return true;
 	}
 
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if (this.player.isSprinting()) {
 			if (this.bender.isBender(BendingElement.ChiBlocker)) {
 				applySpeed();
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	private void applySpeed () {
+
+	private void applySpeed() {
 		PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, 0);
 		PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 1);
-		
+
 		new TempPotionEffect(this.player, speed);
 		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.AirScooter) {
 			new TempPotionEffect(this.player, jump);
 		}
-		
+
 	}
-	
+
 }

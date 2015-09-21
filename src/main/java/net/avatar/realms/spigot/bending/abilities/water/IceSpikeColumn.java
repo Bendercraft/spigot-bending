@@ -36,16 +36,16 @@ public class IceSpikeColumn {
 
 	@ConfigurationParameter("Range")
 	private static double RANGE = 20;
-	
+
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2000;
-	
+
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 4;
-	
+
 	@ConfigurationParameter("Throw-Mult")
 	private static double THROW_MULT = 0.7;
-	
+
 	private static double speed = 25;
 	private static final Vector direction = new Vector(0, 1, 0);
 
@@ -72,17 +72,12 @@ public class IceSpikeColumn {
 		try {
 			double lowestdistance = RANGE + 1;
 			Entity closestentity = null;
-			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(
-					player.getLocation(), RANGE)) {
-				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), RANGE)) {
+				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 					continue;
 				}
-				if (Tools.getDistanceFromLine(player.getLocation()
-						.getDirection(), player.getLocation(), entity
-						.getLocation()) <= 2
-						&& (entity.getEntityId() != player.getEntityId())) {
-					double distance = player.getLocation().distance(
-							entity.getLocation());
+				if (Tools.getDistanceFromLine(player.getLocation().getDirection(), player.getLocation(), entity.getLocation()) <= 2 && (entity.getEntityId() != player.getEntityId())) {
+					double distance = player.getLocation().distance(entity.getLocation());
 					if (distance < lowestdistance) {
 						closestentity = entity;
 						lowestdistance = distance;
@@ -90,8 +85,7 @@ public class IceSpikeColumn {
 				}
 			}
 			if (closestentity != null) {
-				Block temptestingblock = closestentity.getLocation().getBlock()
-						.getRelative(BlockFace.DOWN, 1);
+				Block temptestingblock = closestentity.getLocation().getBlock().getRelative(BlockFace.DOWN, 1);
 				// if (temptestingblock.getType() == Material.ICE){
 				this.block = temptestingblock;
 				// }
@@ -121,8 +115,7 @@ public class IceSpikeColumn {
 		}
 	}
 
-	public IceSpikeColumn(Player player, Location origin, int damage,
-			Vector throwing, long aoecooldown, SpikeField spikeField) {
+	public IceSpikeColumn(Player player, Location origin, int damage, Vector throwing, long aoecooldown, SpikeField spikeField) {
 		this.player = player;
 		this.origin = origin;
 		location = origin.clone();
@@ -149,8 +142,7 @@ public class IceSpikeColumn {
 		affectedblocks.clear();
 		Block thisblock;
 		for (int i = 1; i <= height; i++) {
-			thisblock = block.getWorld().getBlockAt(
-					location.clone().add(direction.clone().multiply(i)));
+			thisblock = block.getWorld().getBlockAt(location.clone().add(direction.clone().multiply(i)));
 			affectedblocks.put(thisblock, thisblock);
 		}
 	}
@@ -171,11 +163,7 @@ public class IceSpikeColumn {
 		if (block.getType() != Material.ICE)
 			return false;
 		for (Block block : affectedblocks.keySet()) {
-			if (blockInAllAffectedBlocks(block)
-					|| block.getType() != Material.AIR
-					|| (block.getX() == player.getEyeLocation().getBlock()
-							.getX() && block.getZ() == player.getEyeLocation()
-							.getBlock().getZ())) {
+			if (blockInAllAffectedBlocks(block) || block.getType() != Material.AIR || (block.getX() == player.getEyeLocation().getBlock().getX() && block.getZ() == player.getEyeLocation().getBlock().getZ())) {
 				return false;
 			}
 		}
@@ -189,13 +177,8 @@ public class IceSpikeColumn {
 				moveEarth();
 				removeTimers.put(player, System.currentTimeMillis());
 			} else {
-				if (removeTimers.get(player) + removeTimer <= System
-						.currentTimeMillis()) {
-					baseblocks.put(
-							location.clone()
-									.add(direction.clone().multiply(
-											-1 * (height))).getBlock(),
-							(height - 1));
+				if (removeTimers.get(player) + removeTimer <= System.currentTimeMillis()) {
+					baseblocks.put(location.clone().add(direction.clone().multiply(-1 * (height))).getBlock(), (height - 1));
 					if (!revertblocks()) {
 						return false;
 					}
@@ -209,8 +192,7 @@ public class IceSpikeColumn {
 		progress++;
 		Block affectedblock = location.clone().add(direction).getBlock();
 		location = location.add(direction);
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike,
-				location))
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike, location))
 			return false;
 		for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(location, 1.4)) {
 			if (en != player && !damaged.contains(((LivingEntity) en))) {
@@ -229,7 +211,7 @@ public class IceSpikeColumn {
 	}
 
 	private void affect(LivingEntity entity) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -240,14 +222,12 @@ public class IceSpikeColumn {
 		int mod = 2;
 		if (entity instanceof Player) {
 			if (bPlayer.canBeSlowed()) {
-				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW,
-						70, mod);
+				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
 				new TempPotionEffect(entity, effect);
 				bPlayer.slow(slowCooldown);
 			}
 		} else {
-			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70,
-					mod);
+			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
 			new TempPotionEffect(entity, effect);
 		}
 

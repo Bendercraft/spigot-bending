@@ -20,47 +20,45 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Raise Earth", element=BendingElement.Earth)
+@BendingAbility(name = "Raise Earth", bind = BendingAbilities.RaiseEarth, element = BendingElement.Earth)
 public class EarthWall extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	private static int RANGE = 15;
-	
+
 	@ConfigurationParameter("Height")
 	private static int HEIGHT = 6;
-	
+
 	@ConfigurationParameter("Width")
 	private static int WIDTH = 6;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
 
 	private int height = HEIGHT;
 	private int halfwidth = WIDTH / 2;
-	
+
 	private List<EarthColumn> columns = new LinkedList<EarthColumn>();
 
 	public EarthWall(Player player) {
 		super(player, null);
-		
+
 		if (AvatarState.isAvatarState(player)) {
 			height = (int) (2. / 5. * (double) AvatarState.getValue(height));
 			halfwidth = AvatarState.getValue(halfwidth);
 		}
 	}
-	
-	
-	
+
 	@Override
 	public boolean swing() {
 		// One column
-		if(state != BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		
+
 		if (bender.isOnCooldown(BendingAbilities.RaiseEarth)) {
 			return false;
 		}
-		
+
 		columns.add(new EarthColumn(player));
 		state = BendingAbilityState.Progressing;
 		return false;
@@ -68,10 +66,10 @@ public class EarthWall extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(state != BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		
+
 		// Wall
 		if (bender.isOnCooldown(BendingAbilities.RaiseEarth))
 			return false;
@@ -97,8 +95,7 @@ public class EarthWall extends BendingActiveAbility {
 
 		boolean cooldown = false;
 		for (int i = -halfwidth; i <= halfwidth; i++) {
-			Block block = world.getBlockAt(origin.clone().add(
-					orth.clone().multiply((double) i)));
+			Block block = world.getBlockAt(origin.clone().add(orth.clone().multiply((double) i)));
 
 			if (BlockTools.isTransparentToEarthbending(player, block)) {
 				for (int j = 1; j < height; j++) {
@@ -112,15 +109,13 @@ public class EarthWall extends BendingActiveAbility {
 						break;
 					}
 				}
-			} else if (BlockTools.isEarthbendable(player, BendingAbilities.RaiseEarth,
-						block.getRelative(BlockFace.UP))) {
+			} else if (BlockTools.isEarthbendable(player, BendingAbilities.RaiseEarth, block.getRelative(BlockFace.UP))) {
 				for (int j = 1; j < height; j++) {
 					block = block.getRelative(BlockFace.UP);
-					
+
 					if (BlockTools.isTransparentToEarthbending(player, block)) {
 						cooldown = true;
-						columns.add(new EarthColumn(player, block.getRelative(
-								BlockFace.DOWN).getLocation(), height));
+						columns.add(new EarthColumn(player, block.getRelative(BlockFace.DOWN).getLocation(), height));
 					} else if (!BlockTools.isEarthbendable(player, block)) {
 						break;
 					}
@@ -139,26 +134,26 @@ public class EarthWall extends BendingActiveAbility {
 
 	@Override
 	public boolean progress() {
-		if(super.progress()) {
+		if (super.progress()) {
 			return false;
 		}
-		
-		if(state == BendingAbilityState.Progressing && columns.isEmpty()) {
+
+		if (state == BendingAbilityState.Progressing && columns.isEmpty()) {
 			return false;
 		}
-		
-		for(EarthColumn column : columns) {
-			if(!column.progress()) {
+
+		for (EarthColumn column : columns) {
+			if (!column.progress()) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
 	@Override
 	public void remove() {
-		for(EarthColumn column : columns) {
+		for (EarthColumn column : columns) {
 			column.remove();
 		}
 		super.remove();
@@ -167,11 +162,6 @@ public class EarthWall extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.RaiseEarth;
 	}
 
 }

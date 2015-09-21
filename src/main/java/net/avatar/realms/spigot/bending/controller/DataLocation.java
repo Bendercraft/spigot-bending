@@ -58,7 +58,7 @@ public class DataLocation {
 	public void setPitch(float pitch) {
 		this.pitch = pitch;
 	}
-	
+
 	public static DataLocation fromLocation(Location loc) {
 		if (loc == null || loc.getWorld() == null) {
 			return null;
@@ -69,18 +69,17 @@ public class DataLocation {
 		location.setY(loc.getY());
 		location.setZ(loc.getZ());
 		location.setPitch(loc.getPitch());
-		location.setYaw(loc.getYaw());	
+		location.setYaw(loc.getYaw());
 		return location;
 	}
-	
-	public static Location toLocation (DataLocation loc) {
+
+	public static Location toLocation(DataLocation loc) {
 		if (loc == null) {
 			return null;
 		}
-		Location location = new Location(Bukkit.getServer().getWorld(loc.getWorld()),
-				loc.getX(), loc.getY(),loc.getZ());
+		Location location = new Location(Bukkit.getServer().getWorld(loc.getWorld()), loc.getX(), loc.getY(), loc.getZ());
 		location.setYaw(loc.getYaw());
-		location.setPitch(loc.getPitch());	
+		location.setPitch(loc.getPitch());
 		return location;
 	}
 

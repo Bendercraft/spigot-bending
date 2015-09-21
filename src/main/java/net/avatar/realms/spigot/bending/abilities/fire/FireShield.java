@@ -22,7 +22,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-@BendingAbility(name = "Fire Shield", element = BendingElement.Fire)
+@BendingAbility(name = "Fire Shield", bind = BendingAbilities.FireShield, element = BendingElement.Fire)
 public class FireShield extends BendingActiveAbility {
 
 	private static long interval = 100;
@@ -75,9 +75,7 @@ public class FireShield extends BendingActiveAbility {
 				for (double phi = 0; phi < 360; phi += 20) {
 					double rphi = Math.toRadians(phi);
 					double rtheta = Math.toRadians(theta);
-					Block block = location.clone()
-							.add(radius * Math.cos(rphi) * Math.sin(rtheta), radius * Math.cos(rtheta), radius * Math.sin(rphi) * Math.sin(rtheta))
-							.getBlock();
+					Block block = location.clone().add(radius * Math.cos(rphi) * Math.sin(rtheta), radius * Math.cos(rtheta), radius * Math.sin(rphi) * Math.sin(rtheta)).getBlock();
 					if (!blocks.contains(block) && !BlockTools.isSolid(block) && !block.isLiquid()) {
 						blocks.add(block);
 					}
@@ -128,11 +126,6 @@ public class FireShield extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.FireShield;
 	}
 
 }

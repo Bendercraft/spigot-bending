@@ -14,7 +14,7 @@ public class TempPotionEffect {
 	private static final long tick = 21;
 
 	private int ID = Integer.MIN_VALUE;
-	
+
 	private Map<Integer, PotionInfo> infos = new HashMap<Integer, PotionInfo>();
 	private LivingEntity entity;
 
@@ -38,13 +38,11 @@ public class TempPotionEffect {
 
 	}
 
-	public TempPotionEffect(LivingEntity entity, PotionEffect effect,
-			long starttime) {
+	public TempPotionEffect(LivingEntity entity, PotionEffect effect, long starttime) {
 		this.entity = entity;
 		if (instances.containsKey(entity)) {
 			TempPotionEffect instance = instances.get(entity);
-			instance.infos
-					.put(instance.ID++, new PotionInfo(starttime, effect));
+			instance.infos.put(instance.ID++, new PotionInfo(starttime, effect));
 			// instance.effects.put(starttime, effect);
 			instances.put(entity, instance);
 		} else {
@@ -67,11 +65,8 @@ public class TempPotionEffect {
 						return;
 					} else {
 						int dt = effect.getDuration() - peffect.getDuration();
-						PotionEffect neweffect = new PotionEffect(
-								effect.getType(), dt, effect.getAmplifier());
-						new TempPotionEffect(entity, neweffect,
-								System.currentTimeMillis()
-										+ peffect.getDuration() * tick);
+						PotionEffect neweffect = new PotionEffect(effect.getType(), dt, effect.getAmplifier());
+						new TempPotionEffect(entity, neweffect, System.currentTimeMillis() + peffect.getDuration() * tick);
 						return;
 					}
 
@@ -81,11 +76,8 @@ public class TempPotionEffect {
 						entity.removePotionEffect(peffect.getType());
 						entity.addPotionEffect(effect);
 						int dt = peffect.getDuration() - effect.getDuration();
-						PotionEffect neweffect = new PotionEffect(
-								peffect.getType(), dt, peffect.getAmplifier());
-						new TempPotionEffect(entity, neweffect,
-								System.currentTimeMillis()
-										+ effect.getDuration() * tick);
+						PotionEffect neweffect = new PotionEffect(peffect.getType(), dt, peffect.getAmplifier());
+						new TempPotionEffect(entity, neweffect, System.currentTimeMillis() + effect.getDuration() * tick);
 						return;
 					} else {
 						entity.removePotionEffect(peffect.getType());
@@ -109,13 +101,13 @@ public class TempPotionEffect {
 				toRemove.add(id);
 			}
 		}
-		for(int id : toRemove) {
+		for (int id : toRemove) {
 			infos.remove(id);
 		}
-		
+
 		if (infos.isEmpty() && instances.containsKey(entity))
 			return false;
-		
+
 		return true;
 	}
 
@@ -123,7 +115,7 @@ public class TempPotionEffect {
 		List<TempPotionEffect> toRemove = new LinkedList<TempPotionEffect>();
 		for (TempPotionEffect effect : instances.values()) {
 			boolean keep = effect.progress();
-			if(!keep) {
+			if (!keep) {
 				toRemove.add(effect);
 			}
 		}

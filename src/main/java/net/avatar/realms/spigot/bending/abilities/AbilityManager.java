@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
@@ -9,12 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
-import net.avatar.realms.spigot.bending.abilities.air.AirManipulation;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
@@ -55,12 +56,13 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.FireProtection;
 import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
-import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
+import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
+import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
@@ -79,8 +81,11 @@ public class AbilityManager {
 
 	private static AbilityManager manager = null;
 
-	private Map<String, RegisteredAbility> availableAbilities;
-	private Map<BendingAbilities, Map<Object, IBendingAbility>> abilities;
+	private Map<BendingAbilities, RegisteredAbility> binds;
+	private Map<BendingAbilities, Map<Object, IBendingAbility>> runnings;
+	private Map<Class<? extends IBendingAbility>, BendingAbilities> reverseBinds; // For
+																					// performance
+																					// purpose
 
 	public static AbilityManager getManager() {
 		if (manager == null) {
@@ -90,13 +95,14 @@ public class AbilityManager {
 	}
 
 	private AbilityManager() {
-		this.abilities = new HashMap<BendingAbilities, Map<Object, IBendingAbility>>();
-		this.availableAbilities = new HashMap<String, RegisteredAbility>();
+		this.runnings = new HashMap<BendingAbilities, Map<Object, IBendingAbility>>();
+		this.binds = new HashMap<BendingAbilities, RegisteredAbility>();
+		this.reverseBinds = new HashMap<Class<? extends IBendingAbility>, BendingAbilities>();
 	}
 
 	public void progressAllAbilities() {
 		List<IBendingAbility> toRemove = new LinkedList<IBendingAbility>();
-		for (Map<Object, IBendingAbility> abilities : this.abilities.values()) {
+		for (Map<Object, IBendingAbility> abilities : this.runnings.values()) {
 			for (IBendingAbility ability : abilities.values()) {
 				boolean canKeep = ability.progress();
 				if (!canKeep) {
@@ -112,7 +118,7 @@ public class AbilityManager {
 	}
 
 	public void stopAllAbilities() {
-		for (Map<Object, IBendingAbility> instances : this.abilities.values()) {
+		for (Map<Object, IBendingAbility> instances : this.runnings.values()) {
 			for (IBendingAbility ability : instances.values()) {
 				ability.stop();
 			}
@@ -122,134 +128,49 @@ public class AbilityManager {
 	}
 
 	private void clearAllAbilities() {
-		for (Map<Object, IBendingAbility> instances : this.abilities.values()) {
+		for (Map<Object, IBendingAbility> instances : this.runnings.values()) {
 			instances.clear();
 		}
 	}
 
 	public BendingActiveAbility buildAbility(BendingAbilities abilityType, Player player) {
-		switch (abilityType) {
-		case AvatarState:
-			return new AvatarState(player);
-
-		case PlasticBomb:
-			return new C4(player);
-		case PoisonnedDart:
-			return new PoisonnedDart(player);
-		case HighJump:
-			return new HighJump(player);
-		case SmokeBomb:
-			return new SmokeBomb(player);
-		case PowerfulHit:
-			return new PowerfulHit(player);
-		case Dash:
-			return new Dash(player);
-		case VitalPoint:
-			return new VitalPoint(player);
-		case RapidPunch:
-			return new RapidPunch(player);
-
-		case AirBlast:
-			return new AirBlast(player);
-		case AirBubble:
-			return new AirBubble(player);
-		case AirBurst:
-			return new AirBurst(player);
-		case AirManipulation:
-			return new AirManipulation(player);
-		case AirScooter:
-			return new AirScooter(player);
-		case AirShield:
-			return new AirShield(player);
-		case AirSpout:
-			return new AirSpout(player);
-		case AirSuction:
-			return new AirSuction(player);
-		case AirSwipe:
-			return new AirSwipe(player);
-		case Suffocate:
-			return new Suffocate(player);
-		case Tornado:
-			return new Tornado(player);
-
-		case Blaze:
-			return new Blaze(player);
-		case Combustion:
-			return new Combustion(player);
-		case FireJet:
-			return new FireJet(player);
-		case Illumination:
-			return new Illumination(player);
-		case Lightning:
-			return new Lightning(player);
-		case FireBlade:
-			return new FireBlade(player);
-		case HeatControl:
-			return new HeatControl(player);
-		case FireBlast:
-			return new FireBlast(player);
-		case FireBurst:
-			return new FireBurst(player);
-		case WallOfFire:
-			return new WallOfFire(player);
-
-		case WaterBubble:
-			return new WaterBubble(player);
-		case WaterSpout:
-			return new WaterSpout(player);
-		case Torrent:
-			return new Torrent(player);
-		case HealingWaters:
-			return new HealingWaters(player);
-		case WaterManipulation:
-			return new WaterManipulation(player, null);
-		case OctopusForm:
-			return new OctopusForm(player, null);
-		case IceSpike:
-			return new IceSpike(player, null);
-		case Bloodbending:
-			return new Bloodbending(player);
-		case Surge:
-			return new WaterWall(player, null);
-
-		case Tremorsense:
-			return new Tremorsense(player);
-		case EarthBlast:
-			return new EarthBlast(player);
-		case Shockwave:
-			return new Shockwave(player);
-		case Catapult:
-			return new Catapult(player);
-		case EarthArmor:
-			return new EarthArmor(player);
-		case EarthGrab:
-			return new EarthGrab(player);
-		case RaiseEarth:
-			return new EarthWall(player);
-		case Collapse:
-			return new Collapse(player);
-		case LavaTrain:
-			return new LavaTrain(player);
-		case MetalBending:
-			return new MetalBending(player);
-
-		default:
-			return null;
+		RegisteredAbility registered = binds.get(abilityType);
+		if (registered == null) {
+			return null; // Invalid bind
 		}
+		Constructor<? extends IBendingAbility> contructor = registered.getConstructor();
+		if (contructor == null) {
+			return null; // Invalid bind
+		}
+		try {
+			BendingActiveAbility ab = (BendingActiveAbility) contructor.newInstance(player);
+			if (ab == null) {
+				Bending.log.warning("Invalid class for ability " + abilityType);
+			}
+			return ab;
+		} catch (Exception e) {
+			Bending.log.log(Level.SEVERE, "Invalid constructor for ability " + abilityType, e);
+		}
+		return null;
+	}
+
+	public BendingAbilities getAbilityType(IBendingAbility instance) {
+		return reverseBinds.get(instance.getClass());
 	}
 
 	public void addInstance(IBendingAbility instance) {
-		Map<Object, IBendingAbility> map = this.abilities.get(instance.getAbilityType());
+		BendingAbilities bind = getAbilityType(instance);
+		Map<Object, IBendingAbility> map = this.runnings.get(bind);
 		if (map == null) {
 			map = new HashMap<Object, IBendingAbility>();
-			this.abilities.put(instance.getAbilityType(), map);
+			this.runnings.put(bind, map);
 		}
 		map.put(instance.getIdentifier(), instance);
 	}
 
 	public Map<Object, IBendingAbility> getInstances(BendingAbilities type) {
-		if (this.abilities.containsKey(type)) {
-			return this.abilities.get(type);
+		if (this.runnings.containsKey(type)) {
+			return this.runnings.get(type);
 		}
 		return Collections.emptyMap();
 	}
@@ -294,7 +215,6 @@ public class AbilityManager {
 		register(AirBlast.class);
 		register(AirBubble.class);
 		register(AirBurst.class);
-		register(AirManipulation.class);
 		register(AirScooter.class);
 		register(AirShield.class);
 		register(AirSpout.class);
@@ -326,18 +246,15 @@ public class AbilityManager {
 		register(FireJet.class);
 		register(FireProtection.class);
 		register(FireShield.class);
-		register(FireStream.class);
 		register(Illumination.class);
 		register(Lightning.class);
 		register(WallOfFire.class);
 
 		register(Bloodbending.class);
-		// register(FastSwmimming.class);
-		// register(FreezeMelt.class);
+		register(FastSwimming.class);
+		register(PhaseChange.class);
 		register(HealingWaters.class);
 		register(IceSpike.class);
-		// register(IceSwipe.class);
-		// register(Melt.class);
 		register(OctopusForm.class);
 		register(Torrent.class);
 		register(WaterBubble.class);
@@ -354,31 +271,39 @@ public class AbilityManager {
 			return;
 		}
 		if ((annotation.name() == null) || annotation.name().equals("")) {
-			Bending.plugin.getLogger().severe(
-					"Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
+			Bending.plugin.getLogger().severe("Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
 			return;
 		}
 		if (annotation.affinity() != BendingAffinity.None) {
-			_register(annotation.name(), ability, annotation.affinity().getElement(), annotation.affinity());
+			_register(annotation.name(), annotation.bind(), ability, annotation.affinity().getElement(), annotation.affinity());
 		} else {
 			if (annotation.element() == BendingElement.None) {
-				Bending.plugin.getLogger().severe(
-						"Trying to register ability : " + ability + " but element&specilization are not set ! Aborting this registration...");
+				Bending.plugin.getLogger().severe("Trying to register ability : " + ability + " but element&specilization are not set ! Aborting this registration...");
 				return;
 			}
-			_register(annotation.name(), ability, annotation.element(), null);
+			_register(annotation.name(), annotation.bind(), ability, annotation.element(), null);
 		}
 	}
 
-	private void _register(String name, Class<? extends IBendingAbility> ability, BendingElement element, BendingAffinity specialization) {
-		if (this.availableAbilities.containsKey(name)) {
+	private void _register(String name, BendingAbilities bind, Class<? extends IBendingAbility> ability, BendingElement element, BendingAffinity specialization) {
+		if (this.binds.containsKey(name)) {
 			// Nope !
-			Bending.plugin.getLogger().severe(
-					"Ability " + name + " is already register with class " + this.availableAbilities.get(name) + " ! Aborting registration...");
+			Bending.log.severe("Ability " + name + " is already register with class " + this.binds.get(name) + " ! Aborting registration...");
 			return;
 		}
-		RegisteredAbility ra = new RegisteredAbility(name, ability, element, specialization);
-		this.availableAbilities.put(name, ra);
+
+		try {
+			Constructor<? extends IBendingAbility> constructor = ability.getConstructor(Player.class);
+			if (constructor == null) {
+				Bending.log.severe("Bind " + bind + " associated with class " + ability + " has no valid constructor with just one player.");
+				return;
+			}
+			RegisteredAbility ra = new RegisteredAbility(name, ability, element, specialization, constructor);
+			this.binds.put(bind, ra);
+		} catch (Exception e) {
+			Bending.log.log(Level.SEVERE, "Bind " + bind + " associated with class " + ability + " threw exception when getting constructor", e);
+		}
+
 	}
 
 	public void applyConfiguration(File configDir) {
@@ -386,7 +311,7 @@ public class AbilityManager {
 		File configFile = new File(configDir, "abilities_config.json");
 
 		Map<String, Field> fields = new TreeMap<String, Field>();
-		for (RegisteredAbility ab : this.availableAbilities.values()) {
+		for (RegisteredAbility ab : this.binds.values()) {
 			for (Field f : ab.getAbility().getDeclaredFields()) {
 				if (Modifier.isStatic(f.getModifiers())) {
 					ConfigurationParameter an = f.getAnnotation(ConfigurationParameter.class);

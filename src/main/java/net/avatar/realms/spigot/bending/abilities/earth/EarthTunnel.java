@@ -16,14 +16,14 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Earth Tunnel", element=BendingElement.Earth)
+@BendingAbility(name = "Earth Tunnel", bind = BendingAbilities.EarthTunnel, element = BendingElement.Earth)
 public class EarthTunnel extends BendingActiveAbility {
 	@ConfigurationParameter("Max-Radius")
 	private static double RADIUS = 1.0;
-	
+
 	@ConfigurationParameter("Range")
 	private static double range = 9.0;
-	
+
 	@ConfigurationParameter("Radius")
 	private static double radiusinc = 0.25;
 
@@ -42,10 +42,10 @@ public class EarthTunnel extends BendingActiveAbility {
 	public EarthTunnel(Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean sneak() {
-		if(state == BendingAbilityState.CanStart) {
+		if (state == BendingAbilityState.CanStart) {
 			return false;
 		}
 		location = player.getEyeLocation().clone();
@@ -58,7 +58,7 @@ public class EarthTunnel extends BendingActiveAbility {
 		angle = 0;
 		radius = radiusinc;
 		time = System.currentTimeMillis();
-		
+
 		AbilityManager.getManager().addInstance(this);
 		state = BendingAbilityState.Progressing;
 		return false;
@@ -71,9 +71,7 @@ public class EarthTunnel extends BendingActiveAbility {
 		if (System.currentTimeMillis() - time >= INTERVAL) {
 			time = System.currentTimeMillis();
 			// Tools.verbose("progressing");
-			if (Math.abs(Math.toDegrees(player.getEyeLocation().getDirection()
-					.angle(direction))) > 20
-					|| !player.isSneaking()) {
+			if (Math.abs(Math.toDegrees(player.getEyeLocation().getDirection().angle(direction))) > 20 || !player.isSneaking()) {
 				return false;
 			} else {
 				while (!BlockTools.isEarthbendable(player, block)) {
@@ -97,11 +95,8 @@ public class EarthTunnel extends BendingActiveAbility {
 						angle += 20;
 					}
 					// block.setType(Material.GLASS);
-					Vector vec = Tools.getOrthogonalVector(direction, angle,
-							radius);
-					block = location.clone()
-							.add(direction.clone().normalize().multiply(depth))
-							.add(vec).getBlock();
+					Vector vec = Tools.getOrthogonalVector(direction, angle, radius);
+					block = location.clone().add(direction.clone().normalize().multiply(depth)).add(vec).getBlock();
 				}
 
 				if (REVERT) {
@@ -119,11 +114,6 @@ public class EarthTunnel extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.EarthTunnel;
 	}
 
 }

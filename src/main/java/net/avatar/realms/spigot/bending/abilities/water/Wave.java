@@ -31,7 +31,6 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 public class Wave {
 	private static final long interval = 30;
 
-
 	private static final byte full = 0x0;
 
 	@ConfigurationParameter("Radius")
@@ -49,7 +48,6 @@ public class Wave {
 	private static final double maxfreezeradius = 7;
 
 	static double defaultrange = 20;
-
 
 	Player player;
 	private Location location = null;
@@ -71,7 +69,6 @@ public class Wave {
 
 	private TempBlock drainedBlock;
 
-
 	private WaterReturn waterReturn;
 
 	public Wave(Player player) {
@@ -82,35 +79,34 @@ public class Wave {
 		}
 		this.maxradius = PluginTools.waterbendingNightAugment(this.maxradius, player.getWorld());
 	}
-	
+
 	public void freeze() {
 		freeze = true;
 	}
 
 	public boolean prepare() {
-		Block block = BlockTools.getWaterSourceBlock(this.player, this.range,
-				EntityTools.canPlantbend(this.player));
+		Block block = BlockTools.getWaterSourceBlock(this.player, this.range, EntityTools.canPlantbend(this.player));
 		if (block != null) {
 			this.sourceblock = block;
 			focusBlock();
 			return true;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);
-		if(bPlayer == null) {
+		if (bPlayer == null) {
 			return false;
 		}
-		//If no block available, check if bender can drainbend !
-		if(Drainbending.canDrainBend(this.player) && !bPlayer.isOnCooldown(BendingAbilities.Drainbending)) {
+		// If no block available, check if bender can drainbend !
+		if (Drainbending.canDrainBend(this.player) && !bPlayer.isOnCooldown(BendingAbilities.Drainbending)) {
 			Location location = this.player.getEyeLocation();
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
-			if(Drainbending.canBeSource(block)) {
+			if (Drainbending.canBeSource(block)) {
 				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 				this.sourceblock = block;
 				focusBlock();
-				//Range and max radius is halfed for Drainbending
-				this.range = this.range/2;
-				this.maxradius = this.maxradius/2;
+				// Range and max radius is halfed for Drainbending
+				this.range = this.range / 2;
+				this.maxradius = this.maxradius / 2;
 				bPlayer.cooldown(BendingAbilities.Drainbending, Drainbending.COOLDOWN);
 				return true;
 			}
@@ -120,10 +116,10 @@ public class Wave {
 
 	public void remove() {
 		finalRemoveWater(this.sourceblock);
-		if(this.drainedBlock != null) {
+		if (this.drainedBlock != null) {
 			this.drainedBlock.revertBlock();
 		}
-		if(waterReturn != null) {
+		if (waterReturn != null) {
 			waterReturn.remove();
 		}
 	}
@@ -148,9 +144,9 @@ public class Wave {
 		}
 
 		this.range = PluginTools.waterbendingNightAugment(this.range, this.player.getWorld());
-		if (AvatarState.isAvatarState(this.player)){
+		if (AvatarState.isAvatarState(this.player)) {
 			this.factor = AvatarState.getValue(this.factor);
-		}			
+		}
 		Entity target = EntityTools.getTargettedEntity(this.player, this.range);
 		if ((target == null) || ProtectionManager.isEntityProtectedByCitizens(target)) {
 			this.targetdestination = EntityTools.getTargetBlock(this.player, this.range, BlockTools.getTransparentEarthbending()).getLocation();
@@ -162,10 +158,8 @@ public class Wave {
 			this.targetdestination = null;
 		} else {
 			this.progressing = true;
-			this.targetdirection = getDirection(this.sourceblock.getLocation(),
-					this.targetdestination).normalize();
-			this.targetdestination = this.location.clone().add(
-					this.targetdirection.clone().multiply(this.range));
+			this.targetdirection = getDirection(this.sourceblock.getLocation(), this.targetdestination).normalize();
+			this.targetdestination = this.location.clone().add(this.targetdirection.clone().multiply(this.range));
 			if (!BlockTools.adjacentToThreeOrMoreSources(this.sourceblock)) {
 				this.sourceblock.setType(Material.AIR);
 			}
@@ -190,11 +184,10 @@ public class Wave {
 	}
 
 	public boolean progress() {
-		if(waterReturn != null) {
+		if (waterReturn != null) {
 			return waterReturn.progress();
 		}
-		if (this.player.isDead() || !this.player.isOnline()
-				|| !EntityTools.canBend(this.player, BendingAbilities.Surge)) {
+		if (this.player.isDead() || !this.player.isOnline() || !EntityTools.canBend(this.player, BendingAbilities.Surge)) {
 			breakBlock();
 			thaw();
 			return false;
@@ -202,14 +195,12 @@ public class Wave {
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			this.time = System.currentTimeMillis();
 
-			if (!this.progressing
-					&& (EntityTools.getBendingAbility(this.player) != BendingAbilities.Surge)) {
+			if (!this.progressing && (EntityTools.getBendingAbility(this.player) != BendingAbilities.Surge)) {
 				return false;
 			}
 
 			if (!this.progressing) {
-				this.sourceblock.getWorld().playEffect(this.location, Effect.SMOKE, 4,
-						(int) this.range);
+				this.sourceblock.getWorld().playEffect(this.location, Effect.SMOKE, 4, (int) this.range);
 				return true;
 			}
 
@@ -226,8 +217,7 @@ public class Wave {
 					breakBlock();
 					return false;
 				}
-				if (!EntityTools.canBend(this.player, BendingAbilities.PhaseChange)
-						&& (EntityTools.getBendingAbility(this.player) != BendingAbilities.Surge)) {
+				if (!EntityTools.canBend(this.player, BendingAbilities.PhaseChange) && (EntityTools.getBendingAbility(this.player) != BendingAbilities.Surge)) {
 					this.progressing = false;
 					thaw();
 					breakBlock();
@@ -251,27 +241,15 @@ public class Wave {
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge,
-						this.location)
-						&& ((((blockl.getType() == Material.AIR)
-								|| (blockl.getType() == Material.FIRE)
-								|| BlockTools.isPlant(blockl)
-								|| BlockTools.isWater(blockl) 
-								|| BlockTools.isWaterbendable(blockl, this.player))) && (blockl
-										.getType() != Material.LEAVES))) {
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge, this.location) && ((((blockl.getType() == Material.AIR) || (blockl.getType() == Material.FIRE) || BlockTools.isPlant(blockl) || BlockTools.isWater(blockl) || BlockTools.isWaterbendable(blockl, this.player))) && (blockl.getType() != Material.LEAVES))) {
 
 					for (double i = 0; i <= this.radius; i += .5) {
 						for (double angle = 0; angle < 360; angle += 10) {
-							Vector vec = Tools.getOrthogonalVector(
-									this.targetdirection, angle, i);
+							Vector vec = Tools.getOrthogonalVector(this.targetdirection, angle, i);
 							Block block = this.location.clone().add(vec).getBlock();
-							if ((!blocks.contains(block)
-									&& ((block.getType() == Material.AIR) || (block
-											.getType() == Material.FIRE)))
-									|| BlockTools.isWaterbendable(block, this.player)) {
+							if ((!blocks.contains(block) && ((block.getType() == Material.AIR) || (block.getType() == Material.FIRE))) || BlockTools.isWaterbendable(block, this.player)) {
 								blocks.add(block);
-								FireBlast.removeFireBlastsAroundPoint(
-										block.getLocation(), 2);
+								FireBlast.removeFireBlastsAroundPoint(block.getLocation(), 2);
 							}
 						}
 					}
@@ -297,9 +275,8 @@ public class Wave {
 					return false;
 				}
 
-				for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location,
-						2 * this.radius)) {
-					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, 2 * this.radius)) {
+					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}
 					boolean knockback = false;
@@ -307,37 +284,27 @@ public class Wave {
 					List<Block> temp = new LinkedList<Block>(this.wave.keySet());
 					for (Block block : temp) {
 						if (entity.getLocation().distance(block.getLocation()) <= 2) {
-							if ((entity instanceof LivingEntity)
-									&& this.freeze
-									&& (entity.getEntityId() != this.player
-									.getEntityId())) {
+							if ((entity instanceof LivingEntity) && this.freeze && (entity.getEntityId() != this.player.getEntityId())) {
 								this.activatefreeze = true;
 								this.frozenlocation = entity.getLocation();
 								freezeAround();
 								break;
 							}
-							if ((entity.getEntityId() != this.player.getEntityId())
-									|| this.canhitself) {
+							if ((entity.getEntityId() != this.player.getEntityId()) || this.canhitself) {
 								knockback = true;
-							}		
+							}
 						}
 					}
 					if (knockback) {
 						Vector dir = direction.clone();
 						dir.setY(dir.getY() * VERT_FACTOR);
 						if (entity.getEntityId() == this.player.getEntityId()) {
-							dir.multiply(2.0/3.0);
+							dir.multiply(2.0 / 3.0);
 						}
-						entity.setVelocity(entity
-								.getVelocity()
-								.clone()
-								.add(dir.clone().multiply(
-										PluginTools.waterbendingNightAugment(this.factor,
-												this.player.getWorld()))));
+						entity.setVelocity(entity.getVelocity().clone().add(dir.clone().multiply(PluginTools.waterbendingNightAugment(this.factor, this.player.getWorld()))));
 						entity.setFallDistance(0);
 						if (entity.getFireTicks() > 0) {
-							entity.getWorld().playEffect(entity.getLocation(),
-									Effect.EXTINGUISH, 0);
+							entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
 						}
 						entity.setFireTicks(0);
 					}
@@ -357,7 +324,7 @@ public class Wave {
 
 				if (this.radius < this.maxradius) {
 					this.radius += .5;
-				}				
+				}
 				return true;
 			}
 		}
@@ -381,8 +348,7 @@ public class Wave {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge,
-				block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge, block.getLocation())) {
 			return;
 		}
 		if (!TempBlock.isTempBlock(block)) {
@@ -400,10 +366,10 @@ public class Wave {
 	}
 
 	public static boolean isBlockWave(Block block) {
-		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
-			if(wall.getWave() != null) {
-				if(wall.getWave().wave.containsKey(block)) {
+			if (wall.getWave() != null) {
+				if (wall.getWave().wave.containsKey(block)) {
 					return true;
 				}
 			}
@@ -419,25 +385,20 @@ public class Wave {
 			freezeradius = maxfreezeradius;
 		}
 
-		for (Block block : BlockTools.getBlocksAroundPoint(this.frozenlocation,
-				freezeradius)) {
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge,
-					block.getLocation())
-					|| ProtectionManager.isRegionProtectedFromBending(this.player,
-							BendingAbilities.PhaseChange, block.getLocation())){
+		for (Block block : BlockTools.getBlocksAroundPoint(this.frozenlocation, freezeradius)) {
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge, block.getLocation()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.PhaseChange, block.getLocation())) {
 				continue;
-			}			
-			if (TempBlock.isTempBlock(block)){
+			}
+			if (TempBlock.isTempBlock(block)) {
 				continue;
-			}		
-			if ((block.getType() == Material.AIR)
-					|| (block.getType() == Material.SNOW)) {
+			}
+			if ((block.getType() == Material.AIR) || (block.getType() == Material.SNOW)) {
 				// block.setType(Material.ICE);
 				new TempBlock(block, Material.ICE, (byte) 0);
 				this.frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
-				//new FreezeMelt(this.player, this, block); TODO temp
+				// new FreezeMelt(this.player, this, block); TODO temp
 			}
 			if (BlockTools.isPlant(block) && (block.getType() != Material.LEAVES)) {
 				block.breakNaturally();
@@ -456,9 +417,9 @@ public class Wave {
 	}
 
 	public static void thaw(Block block) {
-		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
-			if(wall.getWave() != null) {
+			if (wall.getWave() != null) {
 				if (wall.getWave().frozenblocks.containsKey(block)) {
 					TempBlock.revertBlock(block);
 					wall.getWave().frozenblocks.remove(block);
@@ -468,9 +429,9 @@ public class Wave {
 	}
 
 	public static boolean canThaw(Block block) {
-		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
-			if(wall.getWave() != null) {
+			if (wall.getWave() != null) {
 				if (wall.getWave().frozenblocks.containsKey(block)) {
 					return false;
 				}
@@ -487,7 +448,7 @@ public class Wave {
 
 	public static boolean isWaving(Player player) {
 		WaterWall wall = (WaterWall) AbilityManager.getManager().getInstances(BendingAbilities.Surge).get(player);
-		if(wall != null && wall.getWave() != null) {
+		if (wall != null && wall.getWave() != null) {
 			return true;
 		}
 		return false;

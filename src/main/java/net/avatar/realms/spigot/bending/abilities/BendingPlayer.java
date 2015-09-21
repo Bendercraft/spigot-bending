@@ -14,7 +14,6 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 
-
 public class BendingPlayer {
 
 	private UUID player;
@@ -34,12 +33,12 @@ public class BendingPlayer {
 
 	private boolean tremorsense = true;
 
-	public BendingPlayer (UUID id) {
+	public BendingPlayer(UUID id) {
 		this.player = id;
 		this.lastTime = System.currentTimeMillis();
 	}
 
-	public BendingPlayer (BendingPlayerData data) {
+	public BendingPlayer(BendingPlayerData data) {
 		this.player = data.getPlayer();
 
 		this.bendings = data.getBendings();
@@ -47,22 +46,22 @@ public class BendingPlayer {
 
 		this.specializations = data.getSpecialization();
 		this.paths = data.getPaths();
-		if(this.paths == null) {
+		if (this.paths == null) {
 			this.paths = new LinkedList<BendingPath>();
 		}
 
 		this.lastTime = data.getLastTime();
 	}
 
-	public static BendingPlayer getBendingPlayer (Player player) {
+	public static BendingPlayer getBendingPlayer(Player player) {
 		return Bending.database.get(player.getUniqueId());
 	}
 
-	public boolean isOnGlobalCooldown () {
+	public boolean isOnGlobalCooldown() {
 		return (System.currentTimeMillis() <= (this.lastTime + Settings.GLOBAL_COOLDOWN));
 	}
 
-	public boolean isOnCooldown (BendingAbilities ability) {
+	public boolean isOnCooldown(BendingAbilities ability) {
 
 		if (isOnGlobalCooldown()) {
 			return true;
@@ -72,25 +71,24 @@ public class BendingPlayer {
 			long time = System.currentTimeMillis();
 			return (time <= this.cooldowns.get(ability));
 
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
 
-	public void toggleTremorsense () {
+	public void toggleTremorsense() {
 		this.tremorsense = !this.tremorsense;
 	}
 
-	public boolean isTremorsensing () {
+	public boolean isTremorsensing() {
 		return this.tremorsense;
 	}
 
-	public void cooldown () {
+	public void cooldown() {
 		cooldown(null, 0);
 	}
 
-	public void cooldown (BendingAbilities ability, long cooldownTime) {
+	public void cooldown(BendingAbilities ability, long cooldownTime) {
 		long time = System.currentTimeMillis();
 		if (ability != null) {
 			this.cooldowns.put(ability, time + cooldownTime);
@@ -109,8 +107,7 @@ public class BendingPlayer {
 			long remain = this.cooldowns.get(ab) - now;
 			if (remain <= 0) {
 				toRemove.add(ab);
-			}
-			else {
+			} else {
 				cooldowns.put(ab, remain);
 			}
 		}
@@ -122,28 +119,28 @@ public class BendingPlayer {
 		return cooldowns;
 	}
 
-	public UUID getPlayerID () {
+	public UUID getPlayerID() {
 		return this.player;
 	}
 
-	public boolean isBender () {
+	public boolean isBender() {
 		return !this.bendings.isEmpty();
 	}
 
-	public boolean isBender (BendingElement type) {
+	public boolean isBender(BendingElement type) {
 		return this.bendings.contains(type);
 	}
 
-	public boolean isSpecialized (BendingAffinity specialization) {
+	public boolean isSpecialized(BendingAffinity specialization) {
 		return this.specializations.contains(specialization);
 	}
 
 	public boolean hasPath(BendingElement type) {
-		if(this.paths == null) {
+		if (this.paths == null) {
 			return false;
 		}
-		for(BendingPath path : this.paths) {
-			if(path.getElement() == type) {
+		for (BendingPath path : this.paths) {
+			if (path.getElement() == type) {
 				return true;
 			}
 		}
@@ -151,26 +148,26 @@ public class BendingPlayer {
 	}
 
 	public boolean hasPath(BendingPath path) {
-		if(this.paths == null) {
+		if (this.paths == null) {
 			return false;
 		}
 		return this.paths.contains(path);
 	}
 
-	public void setBender (BendingElement type) {
+	public void setBender(BendingElement type) {
 		removeBender();
 		this.bendings.add(type);
 		Bending.database.save(this.player);
 	}
 
-	public void addBender (BendingElement type) {
+	public void addBender(BendingElement type) {
 		if (!this.bendings.contains(type)) {
 			this.bendings.add(type);
 			Bending.database.save(this.player);
 		}
 	}
 
-	public void setSpecialization (BendingAffinity specialization) {
+	public void setSpecialization(BendingAffinity specialization) {
 		this.clearSpecialization(specialization.getElement());
 		this.specializations.add(specialization);
 		Bending.database.save(this.player);
@@ -182,20 +179,20 @@ public class BendingPlayer {
 		Bending.database.save(this.player);
 	}
 
-	public void addSpecialization (BendingAffinity specialization) {
+	public void addSpecialization(BendingAffinity specialization) {
 		if (!this.specializations.contains(specialization)) {
 			this.specializations.add(specialization);
 			Bending.database.save(this.player);
 		}
 	}
 
-	public void removeSpecialization (BendingAffinity specialization) {
+	public void removeSpecialization(BendingAffinity specialization) {
 		this.specializations.remove(specialization);
 		clearAbilities();
 		// clear abilities will save for us
 	}
 
-	public void clearSpecialization (BendingElement element) {
+	public void clearSpecialization(BendingElement element) {
 		List<BendingAffinity> toRemove = new LinkedList<BendingAffinity>();
 		for (BendingAffinity spe : this.specializations) {
 			if (spe.getElement().equals(element)) {
@@ -221,17 +218,17 @@ public class BendingPlayer {
 		}
 	}
 
-	public void clearSpecialization () {
+	public void clearSpecialization() {
 		this.specializations.clear();
 		Bending.database.save(this.player);
 	}
 
-	public void clearAbilities () {
+	public void clearAbilities() {
 		this.slotAbilities = new HashMap<Integer, BendingAbilities>();
 		Bending.database.save(this.player);
 	}
 
-	public void removeBender () {
+	public void removeBender() {
 		clearAbilities();
 		this.specializations.clear();
 		this.bendings.clear();
@@ -239,7 +236,7 @@ public class BendingPlayer {
 		Bending.database.save(this.player);
 	}
 
-	public BendingAbilities getAbility () {
+	public BendingAbilities getAbility() {
 		Player player = getPlayer();
 		if (player == null) {
 			return null;
@@ -256,16 +253,16 @@ public class BendingPlayer {
 		return this.slotAbilities;
 	}
 
-	public BendingAbilities getAbility (int slot) {
+	public BendingAbilities getAbility(int slot) {
 		return this.slotAbilities.get(slot);
 	}
 
-	public void setAbility (int slot, BendingAbilities ability) {
+	public void setAbility(int slot, BendingAbilities ability) {
 		this.slotAbilities.put(slot, ability);
 		Bending.database.save(this.player);
 	}
 
-	public void removeSelectedAbility () {
+	public void removeSelectedAbility() {
 		Player p = getPlayer();
 		if (p == null) {
 			return;
@@ -280,16 +277,16 @@ public class BendingPlayer {
 		Bending.database.save(this.player);
 	}
 
-	public void removeAbility (int slot) {
+	public void removeAbility(int slot) {
 		setAbility(slot, null);
 		Bending.database.save(this.player);
 	}
 
-	public Player getPlayer () {
+	public Player getPlayer() {
 		return Bukkit.getServer().getPlayer(this.player);
 	}
 
-	public List<BendingElement> getBendingTypes () {
+	public List<BendingElement> getBendingTypes() {
 		List<BendingElement> list = new ArrayList<BendingElement>();
 		for (BendingElement index : this.bendings) {
 			list.add(index);
@@ -297,7 +294,7 @@ public class BendingPlayer {
 		return list;
 	}
 
-	public String bendingsToString () {
+	public String bendingsToString() {
 
 		Player pl = getPlayer();
 		if (pl != null) {
@@ -311,32 +308,32 @@ public class BendingPlayer {
 
 	}
 
-	public boolean canBeParalyzed () {
+	public boolean canBeParalyzed() {
 		return (System.currentTimeMillis() > this.paralyzeTime);
 	}
 
-	public boolean canBeSlowed () {
+	public boolean canBeSlowed() {
 		return (System.currentTimeMillis() > this.slowTime);
 	}
 
-	public void paralyze (long cooldown) {
+	public void paralyze(long cooldown) {
 		this.paralyzeTime = System.currentTimeMillis() + cooldown;
 	}
 
-	public void slow (long cooldown) {
+	public void slow(long cooldown) {
 		this.slowTime = System.currentTimeMillis() + cooldown;
 	}
 
-	public long getLastTime () {
+	public long getLastTime() {
 		return this.lastTime;
 	}
 
-	public void delete () {
+	public void delete() {
 		Bending.database.remove(this.player);
 	}
 
 	@Override
-	public String toString () {
+	public String toString() {
 		String string = "BendingPlayer{";
 		string += "Player=" + this.player.toString();
 		string += ", ";
@@ -355,7 +352,7 @@ public class BendingPlayer {
 		return this.paths;
 	}
 
-	public BendingPlayerData serialize () {
+	public BendingPlayerData serialize() {
 		BendingPlayerData result = new BendingPlayerData();
 		result.setBendings(this.bendings);
 		result.setLastTime(this.lastTime);

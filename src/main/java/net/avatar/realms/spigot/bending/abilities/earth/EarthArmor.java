@@ -26,7 +26,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Earth Armor", element = BendingElement.Earth)
+@BendingAbility(name = "Earth Armor", bind = BendingAbilities.EarthArmor, element = BendingElement.Earth)
 public class EarthArmor extends BendingActiveAbility {
 	@ConfigurationParameter("Duration")
 	private static long DURATION = 60000;
@@ -55,15 +55,15 @@ public class EarthArmor extends BendingActiveAbility {
 	public EarthArmor(Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean swing() {
 		// EarthArmor
-		
-		if(state != BendingAbilityState.CanStart) {
+
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		
+
 		if (bender.isOnCooldown(BendingAbilities.EarthArmor)) {
 			return false;
 		}
@@ -95,21 +95,21 @@ public class EarthArmor extends BendingActiveAbility {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean sneak() {
-		//EarthShield
-		
-		if(state != BendingAbilityState.CanStart) {
+		// EarthShield
+
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		
+
 		if (bender.isOnCooldown(BendingAbilities.EarthArmor)) {
 			return false;
 		}
 
 		Block base = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
-		
+
 		ArrayList<Block> blocks = new ArrayList<Block>();
 		Location location = base.getLocation();
 		Location loc1 = location.clone();
@@ -120,12 +120,8 @@ public class EarthArmor extends BendingActiveAbility {
 		int height1 = 3;
 		int height2 = 2;
 		for (double angle = 0; angle <= 360; angle += 20) {
-			testloc = loc1.clone().add(
-					factor * Math.cos(Math.toRadians(angle)), 1,
-					factor * Math.sin(Math.toRadians(angle)));
-			testloc2 = loc2.clone().add(
-					factor2 * Math.cos(Math.toRadians(angle)), 1,
-					factor2 * Math.sin(Math.toRadians(angle)));
+			testloc = loc1.clone().add(factor * Math.cos(Math.toRadians(angle)), 1, factor * Math.sin(Math.toRadians(angle)));
+			testloc2 = loc2.clone().add(factor2 * Math.cos(Math.toRadians(angle)), 1, factor2 * Math.sin(Math.toRadians(angle)));
 			for (int y = 0; y < EarthColumn.HEIGHT - height1; y++) {
 				testloc = testloc.clone().add(0, -1, 0);
 				if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
@@ -153,7 +149,7 @@ public class EarthArmor extends BendingActiveAbility {
 			AbilityManager.getManager().addInstance(this);
 			state = BendingAbilityState.Progressing;
 		}
-		
+
 		return false;
 	}
 
@@ -341,10 +337,5 @@ public class EarthArmor extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.EarthArmor;
 	}
 }

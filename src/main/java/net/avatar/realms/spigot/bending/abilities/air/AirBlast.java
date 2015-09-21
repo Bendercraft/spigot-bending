@@ -28,10 +28,9 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
- * Preparing state = Origin set
- * Progressing state = Airblast thrown
+ * Preparing state = Origin set Progressing state = Airblast thrown
  */
-@BendingAbility(name="Air Blast", element=BendingElement.Air)
+@BendingAbility(name = "Air Blast", bind = BendingAbilities.AirBlast, element = BendingElement.Air)
 public class AirBlast extends BendingActiveAbility {
 	private static int ID = Integer.MIN_VALUE;
 
@@ -68,7 +67,7 @@ public class AirBlast extends BendingActiveAbility {
 	private List<Block> affectedlevers = new ArrayList<Block>();
 
 	public AirBlast(Player player) {
-		super (player, null);
+		super(player, null);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
@@ -79,14 +78,13 @@ public class AirBlast extends BendingActiveAbility {
 		}
 
 		this.id = ID++;
-		
-		if(this.bender.hasPath(BendingPath.Renegade)) {
+
+		if (this.bender.hasPath(BendingPath.Renegade)) {
 			this.range = this.range * 0.6;
 		}
 	}
 
-	public AirBlast(Location location, Vector direction, Player player,
-			double factorpush, BendingActiveAbility parent) {
+	public AirBlast(Location location, Vector direction, Player player, double factorpush, BendingActiveAbility parent) {
 		super(player, parent);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
@@ -106,8 +104,8 @@ public class AirBlast extends BendingActiveAbility {
 
 		setState(BendingAbilityState.Progressing);
 		AbilityManager.getManager().addInstance(this);
-		
-		if(this.bender.hasPath(BendingPath.Renegade)) {
+
+		if (this.bender.hasPath(BendingPath.Renegade)) {
 			this.range = this.range * 0.6;
 		}
 	}
@@ -119,8 +117,7 @@ public class AirBlast extends BendingActiveAbility {
 			return;
 		}
 
-		if ((location == null) || ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirBlast, location))
-		{
+		if ((location == null) || ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirBlast, location)) {
 			setState(BendingAbilityState.CannotStart);
 			return;
 		}
@@ -134,54 +131,54 @@ public class AirBlast extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-			case None :
-			case CannotStart:
-				return true;
-			case CanStart:
-				this.origin = this.player.getEyeLocation();
-				AbilityManager.getManager().addInstance(this);
-				setState(BendingAbilityState.Preparing);
-			case Preparing:
-				Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
-				if(this.bender.hasPath(BendingPath.Mobile)) {
-					entity = null;
-				}
-				if (entity != null) {
-					this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
-				} else {
-					this.direction = Tools.getDirection(this.origin, EntityTools.getTargetedLocation(this.player, this.range)).normalize();
-				}
-				this.location = this.origin.clone();
-				long cooldown = COOLDOWN;
-				if(this.bender.hasPath(BendingPath.Renegade)) {
-					cooldown *= 1.2;
-				}
-				if(this.bender.hasPath(BendingPath.Mobile)) {
-					cooldown *= 0.8;
-				}
-				this.bender.cooldown(BendingAbilities.AirBlast, cooldown);
-				setState(BendingAbilityState.Progressing);
-				return false;
-			default:
-				return true;
+		case None:
+		case CannotStart:
+			return true;
+		case CanStart:
+			this.origin = this.player.getEyeLocation();
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Preparing);
+		case Preparing:
+			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
+			if (this.bender.hasPath(BendingPath.Mobile)) {
+				entity = null;
+			}
+			if (entity != null) {
+				this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
+			} else {
+				this.direction = Tools.getDirection(this.origin, EntityTools.getTargetedLocation(this.player, this.range)).normalize();
+			}
+			this.location = this.origin.clone();
+			long cooldown = COOLDOWN;
+			if (this.bender.hasPath(BendingPath.Renegade)) {
+				cooldown *= 1.2;
+			}
+			if (this.bender.hasPath(BendingPath.Mobile)) {
+				cooldown *= 0.8;
+			}
+			this.bender.cooldown(BendingAbilities.AirBlast, cooldown);
+			setState(BendingAbilityState.Progressing);
+			return false;
+		default:
+			return true;
 		}
 	}
 
 	@Override
 	public boolean sneak() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
-				return true;
-			case CanStart:
-				setOtherOrigin(this.player);
-				AbilityManager.getManager().addInstance(this);
-				return false;
-			case Preparing:
-				setOtherOrigin(this.player);
-				return false;
-			default :
-				return true;
+		case None:
+		case CannotStart:
+			return true;
+		case CanStart:
+			setOtherOrigin(this.player);
+			AbilityManager.getManager().addInstance(this);
+			return false;
+		case Preparing:
+			setOtherOrigin(this.player);
+			return false;
+		default:
+			return true;
 		}
 	}
 
@@ -193,8 +190,7 @@ public class AirBlast extends BendingActiveAbility {
 		}
 
 		if (this.state == BendingAbilityState.Preparing) {
-			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4,
-					(int) SELECT_RANGE);
+			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) SELECT_RANGE);
 			return true;
 		}
 
@@ -205,18 +201,14 @@ public class AirBlast extends BendingActiveAbility {
 		this.speedfactor = SPEED * (Bending.time_step / 1000.);
 
 		Block block = this.location.getBlock();
-		for (Block testblock : BlockTools.getBlocksAroundPoint(this.location,
-				AFFECT_RADIUS)) {
+		for (Block testblock : BlockTools.getBlocksAroundPoint(this.location, AFFECT_RADIUS)) {
 			if (testblock.getType() == Material.FIRE) {
 				testblock.setType(Material.AIR);
-				testblock.getWorld().playEffect(testblock.getLocation(),
-						Effect.EXTINGUISH, 0);
+				testblock.getWorld().playEffect(testblock.getLocation(), Effect.EXTINGUISH, 0);
 			}
 		}
-		if ((BlockTools.isSolid(block) || block.isLiquid())
-				&& !this.affectedlevers.contains(block)) {
-			if ((block.getType() == Material.LAVA)
-					|| ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
+		if ((BlockTools.isSolid(block) || block.isLiquid()) && !this.affectedlevers.contains(block)) {
+			if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
 				if (block.getData() == full) {
 					block.setType(Material.OBSIDIAN);
 				} else {
@@ -230,8 +222,7 @@ public class AirBlast extends BendingActiveAbility {
 			return false;
 		}
 
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location,
-				AFFECT_RADIUS)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, AFFECT_RADIUS)) {
 			if (((entity.getEntityId() != this.player.getEntityId()) || this.otherOrigin)) {
 				affect(entity);
 			}
@@ -246,7 +237,7 @@ public class AirBlast extends BendingActiveAbility {
 	}
 
 	private void affect(Entity entity) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
 
@@ -272,50 +263,38 @@ public class AirBlast extends BendingActiveAbility {
 		if ((Math.abs(push.getY()) > max) && !isUser) {
 			if (push.getY() < 0) {
 				push.setY(-max);
-			}
-			else {
+			} else {
 				push.setY(max);
 			}
 		}
 
 		factor *= 1 - (this.location.distance(this.origin) / (2 * this.range));
 
-		if (isUser
-				&& BlockTools.isSolid(this.player.getLocation().add(0, -.5, 0)
-						.getBlock())) {
+		if (isUser && BlockTools.isSolid(this.player.getLocation().add(0, -.5, 0).getBlock())) {
 			factor *= .5;
 		}
 
 		double comp = velocity.dot(push.clone().normalize());
 		if (comp > factor) {
 			velocity.multiply(.5);
-			velocity.add(push
-					.clone()
-					.normalize()
-					.multiply(
-							velocity.clone().dot(push.clone().normalize())));
+			velocity.add(push.clone().normalize().multiply(velocity.clone().dot(push.clone().normalize())));
 		} else if ((comp + (factor * .5)) > factor) {
 			velocity.add(push.clone().multiply(factor - comp));
 		} else {
 			velocity.add(push.clone().multiply(factor * .5));
 		}
 		if (isUser) {
-			velocity.multiply(1.0/2.2);
+			velocity.multiply(1.0 / 2.2);
 		}
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);
-		
-		if(this.bender.hasPath(BendingPath.Renegade)) {
+
+		if (this.bender.hasPath(BendingPath.Renegade)) {
 			EntityTools.damageEntity(this.player, entity, 0.5);
 		}
-		//		if (!isUser && (entity instanceof Player)) {
-		//			new Flight((Player) entity, this.player);
-		//		}
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.AirBlast;
+		// if (!isUser && (entity instanceof Player)) {
+		// new Flight((Player) entity, this.player);
+		// }
 	}
 
 	@Override

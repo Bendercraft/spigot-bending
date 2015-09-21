@@ -24,12 +24,12 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 /**
- * State Preparing : The lava train is growing
- * State Progressing : The lava train has finished growing and is now continuing until the end of
- * the duration
+ * State Preparing : The lava train is growing State Progressing : The lava
+ * train has finished growing and is now continuing until the end of the
+ * duration
  */
 
-@BendingAbility(name="Lavatrain", element=BendingElement.Earth, affinity=BendingAffinity.Lavabend)
+@BendingAbility(name = "Lavatrain", bind = BendingAbilities.LavaTrain, element = BendingElement.Earth, affinity = BendingAffinity.Lavabend)
 public class LavaTrain extends BendingActiveAbility {
 	public static double speed = 5;
 	private static long interval = (long) (1000. / speed);
@@ -50,7 +50,7 @@ public class LavaTrain extends BendingActiveAbility {
 	public static int REACH_WIDTH = 3;
 
 	@ConfigurationParameter("Max-Duration")
-	public static long DURATION = 20000; //ms
+	public static long DURATION = 20000; // ms
 
 	@ConfigurationParameter("Cooldown-Factor")
 	public static int COOLDOWN_FACTOR = 2;
@@ -61,45 +61,44 @@ public class LavaTrain extends BendingActiveAbility {
 	private Vector direction;
 
 	private Map<Block, BlockState> affecteds = new HashMap<Block, BlockState>();
-	
+
 	private long time;
 
-	public LavaTrain (Player player) {
+	public LavaTrain(Player player) {
 		super(player, null);
 	}
 
 	@Override
-	public boolean swing () {
+	public boolean swing() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
+		case None:
+		case CannotStart:
+			return false;
+		case CanStart:
+			if (!this.player.isSneaking()) {
 				return false;
-			case CanStart:
-				if (!this.player.isSneaking()) {
-					return false;
-				}
-				this.safePoint = this.player.getLocation().getBlock();
-				this.time = this.startedTime;
+			}
+			this.safePoint = this.player.getLocation().getBlock();
+			this.time = this.startedTime;
 
-				this.direction = this.player.getEyeLocation().getDirection().clone();
-				this.direction.setY(0);
-				this.direction = this.direction.normalize();
-				this.origin = this.player.getLocation().clone()
-						.add(this.direction.clone().multiply(TRAIN_WIDTH + 1 + RANDOM_WIDTH));
-				this.origin.setY(this.origin.getY() - 1);
-				this.current = this.origin.clone();
+			this.direction = this.player.getEyeLocation().getDirection().clone();
+			this.direction.setY(0);
+			this.direction = this.direction.normalize();
+			this.origin = this.player.getLocation().clone().add(this.direction.clone().multiply(TRAIN_WIDTH + 1 + RANDOM_WIDTH));
+			this.origin.setY(this.origin.getY() - 1);
+			this.current = this.origin.clone();
 
-				setState(BendingAbilityState.Preparing);
-				AbilityManager.getManager().addInstance(this);
-				return false;
-			case Preparing:
-			case Prepared:
-			case Progressing:
-			case Ending:
-			case Ended:
-			case Removed:
-			default:
-				return false;
+			setState(BendingAbilityState.Preparing);
+			AbilityManager.getManager().addInstance(this);
+			return false;
+		case Preparing:
+		case Prepared:
+		case Progressing:
+		case Ending:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
 
@@ -113,7 +112,7 @@ public class LavaTrain extends BendingActiveAbility {
 			return false;
 		}
 
-		if((this.direction.getX() == 0) && (this.direction.getZ() == 0)) {
+		if ((this.direction.getX() == 0) && (this.direction.getZ() == 0)) {
 			if (!this.state.equals(BendingAbilityState.Progressing)) {
 				this.affectBlocks(this.current, REACH_WIDTH);
 				setState(BendingAbilityState.Progressing);
@@ -125,7 +124,7 @@ public class LavaTrain extends BendingActiveAbility {
 			}
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
-			if(this.origin.distance(this.current) >= RANGE) {
+			if (this.origin.distance(this.current) >= RANGE) {
 				if (!this.state.equals(BendingAbilityState.Progressing)) {
 					this.affectBlocks(this.current, REACH_WIDTH);
 					setState(BendingAbilityState.Progressing);
@@ -139,7 +138,7 @@ public class LavaTrain extends BendingActiveAbility {
 				this.affectBlocks(this.current, TRAIN_WIDTH);
 			}
 
-			if(this.affecteds.isEmpty()) {
+			if (this.affecteds.isEmpty()) {
 				return false;
 			}
 
@@ -151,8 +150,13 @@ public class LavaTrain extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove () {
-		this.bender.cooldown(BendingAbilities.LavaTrain, DURATION * COOLDOWN_FACTOR); //TODO : Real duration * COOLDOWN_FACTOR
+	public void remove() {
+		this.bender.cooldown(BendingAbilities.LavaTrain, DURATION * COOLDOWN_FACTOR); // TODO
+																						// :
+																						// Real
+																						// duration
+																						// *
+																						// COOLDOWN_FACTOR
 		super.remove();
 	}
 
@@ -160,23 +164,23 @@ public class LavaTrain extends BendingActiveAbility {
 		List<Block> safe = BlockTools.getBlocksOnPlane(this.safePoint.getLocation(), 1);
 		safe.add(this.safePoint);
 
-		for(int i=-1; i <= 2 ; i++) {
+		for (int i = -1; i <= 2; i++) {
 			Location tmp = current.clone();
-			tmp.setY(current.getY()+i);
+			tmp.setY(current.getY() + i);
 			List<Block> potentialsBlocks = BlockTools.getBlocksOnPlane(tmp, width);
-			//Add small random in generation
-			List<Block> potentialsAddsBlocks = BlockTools.getBlocksOnPlane(tmp, width+RANDOM_WIDTH);
-			for(Block potentialsBlock : potentialsAddsBlocks) {
-				if(Math.random() < RANDOM_CHANCE) {
+			// Add small random in generation
+			List<Block> potentialsAddsBlocks = BlockTools.getBlocksOnPlane(tmp, width + RANDOM_WIDTH);
+			for (Block potentialsBlock : potentialsAddsBlocks) {
+				if (Math.random() < RANDOM_CHANCE) {
 					potentialsBlocks.add(potentialsBlock);
 				}
 			}
 
-			for(Block potentialsBlock : potentialsBlocks) {
-				if (BlockTools.isEarthbendable(this.player, BendingAbilities.LavaTrain, potentialsBlock)
-						&& !BlockTools.isTempBlock(potentialsBlock)) {
-					//Do not let block behind bender to be bend, this whill be stupid
-					if(!safe.contains(potentialsBlock)) {
+			for (Block potentialsBlock : potentialsBlocks) {
+				if (BlockTools.isEarthbendable(this.player, BendingAbilities.LavaTrain, potentialsBlock) && !BlockTools.isTempBlock(potentialsBlock)) {
+					// Do not let block behind bender to be bend, this whill be
+					// stupid
+					if (!safe.contains(potentialsBlock)) {
 						this.affecteds.put(potentialsBlock, potentialsBlock.getState());
 						potentialsBlock.setType(Material.LAVA);
 					}
@@ -185,9 +189,8 @@ public class LavaTrain extends BendingActiveAbility {
 		}
 	}
 
-
 	@Override
-	public void stop () {
+	public void stop() {
 		for (BlockState affected : this.affecteds.values()) {
 			affected.update(true);
 		}
@@ -224,7 +227,7 @@ public class LavaTrain extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
@@ -233,17 +236,12 @@ public class LavaTrain extends BendingActiveAbility {
 		if (instances == null) {
 			return true;
 		}
-		
+
 		return !instances.containsKey(this.player);
 	}
-	
+
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
-	}
-	
-	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.LavaTrain;
 	}
 }

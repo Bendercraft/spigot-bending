@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 import org.bukkit.Location;
@@ -14,14 +12,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Collapse", element=BendingElement.Earth)
 public class CompactColumn {
 	private static Map<Integer, CompactColumn> instances = new HashMap<Integer, CompactColumn>();
 
 	private static int ID = Integer.MIN_VALUE;
 
 	private static int depth = Collapse.DEPTH;
-	
+
 	private static final Vector direction = new Vector(0, -1, 0);
 
 	private static long interval = (long) (1000. / Collapse.SPEED);
@@ -45,12 +42,11 @@ public class CompactColumn {
 		if (block == null) {
 			return;
 		}
-			
+
 		origin = block.getLocation();
 		location = origin.clone();
 		this.player = player;
-		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
-				.clone().multiply(-1), depth);
+		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), depth);
 
 		loadAffectedBlocks();
 
@@ -76,8 +72,7 @@ public class CompactColumn {
 		// Tools.verbose(block);
 		// Tools.verbose(origin);
 		location = origin.clone();
-		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
-				.clone().multiply(-1), depth);
+		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), depth);
 
 		loadAffectedBlocks();
 
@@ -101,8 +96,7 @@ public class CompactColumn {
 		affectedblocks.clear();
 		Block thisblock;
 		for (int i = 0; i <= distance; i++) {
-			thisblock = block.getWorld().getBlockAt(
-					location.clone().add(direction.clone().multiply(-i)));
+			thisblock = block.getWorld().getBlockAt(location.clone().add(direction.clone().multiply(-i)));
 			affectedblocks.put(thisblock, thisblock);
 			if (EarthColumn.blockInAllAffectedBlocks(thisblock))
 				EarthColumn.revertBlock(thisblock);
@@ -175,10 +169,6 @@ public class CompactColumn {
 	}
 
 	public static String getDescription() {
-		return " To use, simply left-click on an earthbendable block. "
-				+ "That block and the earthbendable blocks above it will be shoved "
-				+ "back into the earth below them, if they can. "
-				+ "This ability does have the capacity to trap something inside of it, "
-				+ "although it is incredibly difficult to do so. ";
+		return " To use, simply left-click on an earthbendable block. " + "That block and the earthbendable blocks above it will be shoved " + "back into the earth below them, if they can. " + "This ability does have the capacity to trap something inside of it, " + "although it is incredibly difficult to do so. ";
 	}
 }

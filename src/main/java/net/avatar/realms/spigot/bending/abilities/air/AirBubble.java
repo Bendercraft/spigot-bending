@@ -12,7 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.multi.Bubble;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@BendingAbility(name="Air Bubble", element=BendingElement.Air)
+@BendingAbility(name = "Air Bubble", bind = BendingAbilities.AirBubble, element = BendingElement.Air)
 public class AirBubble extends Bubble {
 
 	@ConfigurationParameter("Radius")
@@ -21,11 +21,11 @@ public class AirBubble extends Bubble {
 	@ConfigurationParameter("Max-Duration")
 	private static long MAX_DURATION = 60 * 10 * 1000;
 
-	public AirBubble (Player player) {
+	public AirBubble(Player player) {
 		this(player, null);
 	}
 
-	public AirBubble (Player player, BendingActiveAbility parent) {
+	public AirBubble(Player player, BendingActiveAbility parent) {
 		super(player, parent);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
@@ -43,12 +43,7 @@ public class AirBubble extends Bubble {
 	}
 
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.AirBubble;
-	}
-
-	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return MAX_DURATION;
 	}
 

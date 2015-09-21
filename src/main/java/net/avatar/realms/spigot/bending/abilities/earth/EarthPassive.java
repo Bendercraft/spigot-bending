@@ -20,28 +20,27 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Earth Passive", element=BendingElement.Earth)
+@BendingAbility(name = "Earth Passive", bind = BendingAbilities.EarthPassive, element = BendingElement.Earth)
 public class EarthPassive extends BendingPassiveAbility {
 
 	@ConfigurationParameter("Time-Before-Reverse")
 	private static long DURATION = 2500;
-	
+
 	private Map<Block, BlockState> blocks = new HashMap<Block, BlockState>();
-	
+
 	public EarthPassive(Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean start() {
 		if (state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
-		
+
 		Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
-		
-		if (BlockTools.isEarthbendable(player, BendingAbilities.EarthPassive, block)
-				|| BlockTools.isTransparentToEarthbending(player, BendingAbilities.EarthPassive, block)) {
+
+		if (BlockTools.isEarthbendable(player, BendingAbilities.EarthPassive, block) || BlockTools.isTransparentToEarthbending(player, BendingAbilities.EarthPassive, block)) {
 
 			if (!BlockTools.isTransparentToEarthbending(player, block)) {
 				if (BlockTools.isSolid(block.getRelative(BlockFace.DOWN))) {
@@ -53,8 +52,7 @@ public class EarthPassive extends BendingPassiveAbility {
 			}
 
 			for (Block affectedblock : BlockTools.getBlocksAroundPoint(block.getLocation(), 2)) {
-				if (BlockTools.isEarthbendable(player, affectedblock)
-						&& !BlockTools.isIronBendable(player,affectedblock.getType())) {
+				if (BlockTools.isEarthbendable(player, affectedblock) && !BlockTools.isIronBendable(player, affectedblock.getType())) {
 					if (BlockTools.isSolid(affectedblock.getRelative(BlockFace.DOWN))) {
 						if (!isPassiveSand(affectedblock) && !block.getLocation().equals(affectedblock.getLocation())) {
 							blocks.put(affectedblock, affectedblock.getState());
@@ -70,7 +68,7 @@ public class EarthPassive extends BendingPassiveAbility {
 
 		return false;
 	}
-	
+
 	@Override
 	protected long getMaxMillis() {
 		return DURATION;
@@ -90,7 +88,7 @@ public class EarthPassive extends BendingPassiveAbility {
 			return false;
 		}
 		for (IBendingAbility passive : instances.values()) {
-			if (((EarthPassive)passive).blocks.containsKey(block)) {
+			if (((EarthPassive) passive).blocks.containsKey(block)) {
 				return true;
 			}
 		}
@@ -100,8 +98,8 @@ public class EarthPassive extends BendingPassiveAbility {
 	public static void revertSand(Block block) {
 		EarthPassive passive = null;
 		for (IBendingAbility abil : AbilityManager.getManager().getInstances(BendingAbilities.EarthPassive).values()) {
-			if (((EarthPassive)abil).blocks.containsKey(block)) {
-				passive = ((EarthPassive)abil);
+			if (((EarthPassive) abil).blocks.containsKey(block)) {
+				passive = ((EarthPassive) abil);
 				break;
 			}
 		}
@@ -111,36 +109,31 @@ public class EarthPassive extends BendingPassiveAbility {
 		passive.blocks.get(block).update(true);
 		passive.blocks.remove(block);
 	}
-	
+
 	@Override
 	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		if (!bender.isBender(BendingElement.Earth)) {
 			return false;
 		}
-		
+
 		if (!EntityTools.canBendPassive(player, BendingElement.Earth)) {
 			return false;
 		}
-		
+
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.EarthPassive);
 		if (instances == null) {
 			return true;
 		}
-		
+
 		return !instances.containsKey(player);
 	}
 
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.EarthPassive;
 	}
 }

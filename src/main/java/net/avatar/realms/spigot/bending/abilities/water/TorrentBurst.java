@@ -111,7 +111,7 @@ public class TorrentBurst {
 		if (indexlist.contains(player)) {
 			indexlist.remove(player);
 		}
-			
+
 		List<Integer> toRemoveHeights = new LinkedList<Integer>();
 		for (Entry<Integer, Map<Integer, Double>> entry : heights.entrySet()) {
 			int id = entry.getKey();
@@ -128,8 +128,7 @@ public class TorrentBurst {
 				Block block = location.getBlock();
 				if (torrentblocks.contains(block))
 					continue;
-				if (BlockTools.isTransparentToEarthbending(player,
-						BendingAbilities.Torrent, block)) {
+				if (BlockTools.isTransparentToEarthbending(player, BendingAbilities.Torrent, block)) {
 					TempBlock tempBlock = new TempBlock(block, Material.WATER, full);
 					blocks.add(tempBlock);
 					torrentblocks.add(block);
@@ -138,7 +137,7 @@ public class TorrentBurst {
 					continue;
 				}
 				for (Entity entity : indexlist) {
-					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}
 					if (!affectedentities.contains(entity)) {
@@ -149,35 +148,34 @@ public class TorrentBurst {
 					}
 				}
 			}
-			for(int angle : toRemoveAngles) {
+			for (int angle : toRemoveAngles) {
 				angles.remove(angle);
 			}
-			
+
 			if (angles.isEmpty())
 				toRemoveHeights.add(id);
 		}
-		
-		for(int id : toRemoveHeights) {
+
+		for (int id : toRemoveHeights) {
 			heights.remove(id);
 		}
-		
+
 		if (heights.isEmpty())
 			return false;
-		
+
 		return true;
 	}
 
 	private void affect(Entity entity) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
 		Vector direction = Tools.getDirection(origin, entity.getLocation());
 		direction.setY(0);
 		direction.normalize();
-		entity.setVelocity(entity.getVelocity().clone()
-				.add(direction.multiply(factor)));
+		entity.setVelocity(entity.getVelocity().clone().add(direction.multiply(factor)));
 	}
-	
+
 	private void clear() {
 		for (TempBlock block : blocks) {
 			block.revertBlock();

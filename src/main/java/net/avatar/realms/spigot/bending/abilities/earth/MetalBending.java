@@ -21,7 +21,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@BendingAbility(name="Metalbending", element=BendingElement.Earth, affinity=BendingAffinity.Metalbend)
+@BendingAbility(name = "Metalbending", bind = BendingAbilities.MetalBending, element = BendingElement.Earth, affinity = BendingAffinity.Metalbend)
 public class MetalBending extends BendingActiveAbility {
 	@ConfigurationParameter("Melt-Time")
 	private static long MELT_TIME = 2000;
@@ -55,16 +55,16 @@ public class MetalBending extends BendingActiveAbility {
 	public MetalBending(Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean sneak() {
-		if(state != BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		
+
 		this.time = System.currentTimeMillis();
 		this.items = player.getItemInHand();
-		if(isMeltable(this.items.getType())) {
+		if (isMeltable(this.items.getType())) {
 			AbilityManager.getManager().addInstance(this);
 			state = BendingAbilityState.Progressing;
 		}
@@ -74,24 +74,20 @@ public class MetalBending extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	public static void use(Player pl, Block bl) {
 		// Don't really like it, magic value
-		if (EntityTools.isBender(pl, BendingElement.Earth)
-				&& EntityTools.getBendingAbility(pl) == BendingAbilities.MetalBending) {
+		if (EntityTools.isBender(pl, BendingElement.Earth) && EntityTools.getBendingAbility(pl) == BendingAbilities.MetalBending) {
 			if (EntityTools.canBend(pl, BendingAbilities.MetalBending)) {
 				if (bl.getType() == Material.IRON_DOOR_BLOCK) {
 					if (bl.getData() >= 8) {
 						bl = bl.getRelative(BlockFace.DOWN);
 					}
 					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
-						if (!ProtectionManager.isRegionProtectedFromBending(pl,
-								BendingAbilities.MetalBending, bl.getLocation())) {
+						if (!ProtectionManager.isRegionProtectedFromBending(pl, BendingAbilities.MetalBending, bl.getLocation())) {
 							if (bl.getData() < 4) {
 								bl.setData((byte) (bl.getData() + 4));
-								bl.getWorld().playEffect(bl.getLocation(),
-										Effect.DOOR_TOGGLE, 0);
+								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);
 							} else {
 								bl.setData((byte) (bl.getData() - 4));
-								bl.getWorld().playEffect(bl.getLocation(),
-										Effect.DOOR_TOGGLE, 0);
+								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);
 							}
 						}
 					}
@@ -108,8 +104,7 @@ public class MetalBending extends BendingActiveAbility {
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
-		if (!player.isSneaking()
-				|| EntityTools.getBendingAbility(player) != BendingAbilities.MetalBending) {
+		if (!player.isSneaking() || EntityTools.getBendingAbility(player) != BendingAbilities.MetalBending) {
 			return false;
 		}
 
@@ -148,16 +143,13 @@ public class MetalBending extends BendingActiveAbility {
 
 		player.sendMessage("" + nb);
 		newItem.setAmount(nb);
-		HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(
-				newItem);
+		HashMap<Integer, ItemStack> cantfit = player.getInventory().addItem(newItem);
 		for (int id : cantfit.keySet()) {
-			player.getWorld()
-					.dropItem(player.getEyeLocation(), cantfit.get(id));
+			player.getWorld().dropItem(player.getEyeLocation(), cantfit.get(id));
 		}
 		int amount = items.getAmount();
 		if (amount == 1) {
-			player.getInventory()
-					.clear(player.getInventory().getHeldItemSlot());
+			player.getInventory().clear(player.getInventory().getHeldItemSlot());
 		} else {
 			items.setAmount(amount - 1);
 		}
@@ -167,11 +159,6 @@ public class MetalBending extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.MetalBending;
 	}
 
 }

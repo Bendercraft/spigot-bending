@@ -44,8 +44,7 @@ public class AddExecution extends BendingCommand {
 				return true;
 			}
 			player = getPlayer(args.remove(0));
-		}
-		else {
+		} else {
 			player = (Player) sender;
 		}
 

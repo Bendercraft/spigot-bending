@@ -12,7 +12,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-
 public class Language {
 
 	private HashMap<String, HashMap<String, String>> descriptions = new HashMap<String, HashMap<String, String>>();
@@ -26,16 +25,14 @@ public class Language {
 	private String defaultlanguage = "en"; //$NON-NLS-1$
 	FileConfiguration config = new YamlConfiguration();
 
-	public void load (File file) {
+	public void load(File file) {
 		try {
 			if (file.exists()) {
 				this.config.load(file);
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		catch (InvalidConfigurationException e) {
+		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
 		this.supportedlanguages.add(this.defaultlanguage);
@@ -53,7 +50,7 @@ public class Language {
 		this.defaultdescriptions.put("WaterChoose", on_water_choose); //$NON-NLS-1$
 	}
 
-	public String getMessage (String language, String key) {
+	public String getMessage(String language, String key) {
 		String index = language.toLowerCase() + "." + key; //$NON-NLS-1$
 		if (!this.descriptions.containsKey(language)) {
 			PluginTools.verbose("Language '" + language + "' not supported!"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -66,11 +63,11 @@ public class Language {
 		return this.descriptions.get(language).get(index);
 	}
 
-	public List<String> getSupportedLanguages () {
+	public List<String> getSupportedLanguages() {
 		return this.supportedlanguages;
 	}
 
-	public String getDefaultLanguage () {
+	public String getDefaultLanguage() {
 		return this.defaultlanguage;
 	}
 }

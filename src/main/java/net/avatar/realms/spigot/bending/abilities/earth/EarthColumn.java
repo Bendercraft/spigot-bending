@@ -2,7 +2,6 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,25 +18,25 @@ import org.bukkit.util.Vector;
 
 public class EarthColumn {
 	private static Map<Integer, EarthColumn> instances = new HashMap<Integer, EarthColumn>();
-	
+
 	@ConfigurationParameter("Height")
 	public static int HEIGHT = 6;
-	
+
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 1000;
 
 	@ConfigurationParameter("Range")
 	private static double RANGE = 20;
-	
+
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 8;
-	
+
 	private static final Vector direction = new Vector(0, 1, 0);
 
 	private static long interval = (long) (1000. / SPEED);
-	
+
 	private static int ID = Integer.MIN_VALUE;
-	
+
 	private static Map<Block, Block> alreadydoneblocks = new HashMap<Block, Block>();
 	private static Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 
@@ -58,15 +57,14 @@ public class EarthColumn {
 		if (bPlayer.isOnCooldown(BendingAbilities.RaiseEarth)) {
 			return;
 		}
-			
+
 		try {
 			block = BlockTools.getEarthSourceBlock(player, BendingAbilities.RaiseEarth, RANGE);
 			if (block == null)
 				return;
 			origin = block.getLocation();
 			location = origin.clone();
-			distance = BlockTools.getEarthbendableBlocksLength(player, block,
-					direction.clone().multiply(-1), height);
+			distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), height);
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -94,8 +92,7 @@ public class EarthColumn {
 		location = origin.clone();
 		block = location.getBlock();
 		this.player = player;
-		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
-				.clone().multiply(-1), height);
+		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), height);
 
 		loadAffectedBlocks();
 
@@ -118,8 +115,7 @@ public class EarthColumn {
 		location = origin.clone();
 		block = location.getBlock();
 		this.player = player;
-		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction
-				.clone().multiply(-1), height);
+		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), height);
 
 		loadAffectedBlocks();
 
@@ -135,12 +131,12 @@ public class EarthColumn {
 			}
 		}
 	}
-	
-	public EarthColumn(Player player, Location origin,int height, EarthGrab grab) {
-		this(player,origin, height);
+
+	public EarthColumn(Player player, Location origin, int height, EarthGrab grab) {
+		this(player, origin, height);
 		this.earthGrab = grab;
 	}
-	
+
 	public EarthGrab getEarthGrab() {
 		return earthGrab;
 	}
@@ -149,11 +145,10 @@ public class EarthColumn {
 		affectedBlocks.clear();
 		Block thisblock;
 		for (int i = 0; i <= distance; i++) {
-			thisblock = block.getWorld().getBlockAt(
-					location.clone().add(direction.clone().multiply(-i)));
+			thisblock = block.getWorld().getBlockAt(location.clone().add(direction.clone().multiply(-i)));
 			if (thisblock.getType() != Material.ANVIL) {
 				affectedBlocks.add(thisblock);
-			}	
+			}
 			if (CompactColumn.blockInAllAffectedBlocks(thisblock))
 				CompactColumn.revertBlock(thisblock);
 		}
@@ -184,8 +179,7 @@ public class EarthColumn {
 
 	private boolean canInstantiate() {
 		for (Block block : affectedBlocks) {
-			if (blockInAllAffectedBlocks(block)
-					|| alreadydoneblocks.containsKey(block)) {
+			if (blockInAllAffectedBlocks(block) || alreadydoneblocks.containsKey(block)) {
 				return false;
 			}
 		}
@@ -199,11 +193,7 @@ public class EarthColumn {
 				for (Block block : affectedBlocks) {
 					alreadydoneblocks.put(block, block);
 				}
-				baseblocks.put(
-						location.clone()
-								.add(direction.clone().multiply(
-										-1 * (distance - 1))).getBlock(),
-						(distance - 1));
+				baseblocks.put(location.clone().add(direction.clone().multiply(-1 * (distance - 1))).getBlock(), (distance - 1));
 
 				return false;
 			}
@@ -246,8 +236,8 @@ public class EarthColumn {
 			alreadydoneblocks.remove(block);
 		}
 	}
-	
-	public  List<Block> getAffectedBlocks() {
+
+	public List<Block> getAffectedBlocks() {
 		return affectedBlocks;
 	}
 }

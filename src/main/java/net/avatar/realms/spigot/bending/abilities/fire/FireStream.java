@@ -8,9 +8,6 @@ import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -24,26 +21,17 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Blaze", element = BendingElement.Fire)
-public class FireStream extends BendingActiveAbility {
+public class FireStream {
 	private static Map<Block, Player> ignitedblocks = new HashMap<Block, Player>();
 	private static Map<Block, Long> ignitedtimes = new HashMap<Block, Long>();
 	static final long soonesttime = Tools.timeinterval;
 
-	private static final Material[] overwriteable = { Material.SAPLING, Material.LONG_GRASS, Material.DEAD_BUSH, Material.YELLOW_FLOWER,
-			Material.RED_ROSE, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.FIRE, Material.SNOW, Material.TORCH };
+	private static final Material[] overwriteable = { Material.SAPLING, Material.LONG_GRASS, Material.DEAD_BUSH, Material.YELLOW_FLOWER, Material.RED_ROSE, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.FIRE, Material.SNOW, Material.TORCH };
 
-	private static final Material[] ignitables = { Material.BEDROCK, Material.BOOKSHELF, Material.BRICK, Material.CLAY, Material.CLAY_BRICK,
-			Material.COAL_ORE, Material.COBBLESTONE, Material.DIAMOND_ORE, Material.DIAMOND_BLOCK, Material.DIRT, Material.ENDER_STONE,
-			Material.GLOWING_REDSTONE_ORE, Material.GOLD_BLOCK, Material.GRAVEL, Material.GRASS, Material.HUGE_MUSHROOM_1, Material.HUGE_MUSHROOM_2,
-			Material.LAPIS_BLOCK, Material.LAPIS_ORE, Material.LOG, Material.MOSSY_COBBLESTONE, Material.MYCEL, Material.NETHER_BRICK,
-			Material.NETHERRACK, Material.OBSIDIAN, Material.REDSTONE_ORE, Material.SAND, Material.SANDSTONE, Material.SMOOTH_BRICK, Material.STONE,
-			Material.SOUL_SAND, Material.SNOW_BLOCK, Material.WOOD, Material.WOOL, Material.LEAVES };
+	private static final Material[] ignitables = { Material.BEDROCK, Material.BOOKSHELF, Material.BRICK, Material.CLAY, Material.CLAY_BRICK, Material.COAL_ORE, Material.COBBLESTONE, Material.DIAMOND_ORE, Material.DIAMOND_BLOCK, Material.DIRT, Material.ENDER_STONE, Material.GLOWING_REDSTONE_ORE, Material.GOLD_BLOCK, Material.GRAVEL, Material.GRASS, Material.HUGE_MUSHROOM_1, Material.HUGE_MUSHROOM_2, Material.LAPIS_BLOCK, Material.LAPIS_ORE, Material.LOG, Material.MOSSY_COBBLESTONE, Material.MYCEL, Material.NETHER_BRICK, Material.NETHERRACK, Material.OBSIDIAN, Material.REDSTONE_ORE, Material.SAND, Material.SANDSTONE, Material.SMOOTH_BRICK, Material.STONE, Material.SOUL_SAND, Material.SNOW_BLOCK, Material.WOOD, Material.WOOL, Material.LEAVES };
 
 	public static int firedamage = 3;
 	public static int tickdamage = 2;
-
-	private static int ID = Integer.MIN_VALUE;
 
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 15;
@@ -55,12 +43,11 @@ public class FireStream extends BendingActiveAbility {
 	private Location origin;
 	private Location location;
 	private Vector direction;
-	private int id;
 	private long time;
 	private double range;
+	private Player player;
 
-	public FireStream(Location location, Vector direction, Player player, int range, IBendingAbility parent) {
-		super(player, parent);
+	public FireStream(Location location, Vector direction, Player player, int range) {
 		this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		this.player = player;
 		this.origin = location.clone();
@@ -69,16 +56,10 @@ public class FireStream extends BendingActiveAbility {
 		this.direction.setY(0);
 		this.direction = this.direction.clone().normalize();
 		this.location = this.location.clone().add(this.direction);
-		this.id = ID++;
-		this.time = this.startedTime;
-		AbilityManager.getManager().addInstance(this);
+		this.time = System.currentTimeMillis();
 	}
 
-	@Override
 	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.FireStream, this.location)) {
 			return false;
 		}
@@ -188,7 +169,7 @@ public class FireStream extends BendingActiveAbility {
 			}
 		}
 		for (FireStream stream : toRemove) {
-			stream.remove();
+			//stream.remove();
 		}
 	}
 
@@ -203,15 +184,5 @@ public class FireStream extends BendingActiveAbility {
 
 	public static Player getIgnited(Block block) {
 		return ignitedblocks.get(block);
-	}
-
-	@Override
-	public Object getIdentifier() {
-		return this.id;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.FireStream;
 	}
 }

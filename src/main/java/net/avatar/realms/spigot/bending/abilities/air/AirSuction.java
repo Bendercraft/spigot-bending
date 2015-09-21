@@ -23,10 +23,9 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
- * State Preparing = Origin Set
- * State Progressing = AirSuction thrown
+ * State Preparing = Origin Set State Progressing = AirSuction thrown
  */
-@BendingAbility(name="Air Suction", element=BendingElement.Air)
+@BendingAbility(name = "Air Suction", bind = BendingAbilities.AirSuction, element = BendingElement.Air)
 public class AirSuction extends BendingActiveAbility {
 
 	static final long soonesttime = Tools.timeinterval;
@@ -61,7 +60,7 @@ public class AirSuction extends BendingActiveAbility {
 
 	private double speedfactor;
 
-	public AirSuction (Player player) {
+	public AirSuction(Player player) {
 		super(player, null);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
@@ -72,13 +71,13 @@ public class AirSuction extends BendingActiveAbility {
 
 		this.id = ID++;
 
-		if(this.bender.hasPath(BendingPath.Renegade)) {
+		if (this.bender.hasPath(BendingPath.Renegade)) {
 			this.range *= 0.6;
 		}
 	}
 
 	@Override
-	public boolean sneak () {
+	public boolean sneak() {
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
@@ -107,7 +106,7 @@ public class AirSuction extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean swing () {
+	public boolean swing() {
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
@@ -125,8 +124,7 @@ public class AirSuction extends BendingActiveAbility {
 			if (entity != null) {
 				this.direction = Tools.getDirection(entity.getLocation(), this.origin).normalize();
 				this.location = getLocation(this.origin, this.direction.clone().multiply(-1));
-			}
-			else {
+			} else {
 				this.location = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.nonOpaque);
 				this.direction = Tools.getDirection(this.location, this.origin).normalize();
 			}
@@ -142,25 +140,20 @@ public class AirSuction extends BendingActiveAbility {
 		Location location = origin.clone();
 		for (double i = 1; i <= this.range; i++) {
 			location = origin.clone().add(direction.clone().multiply(i));
-			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock())
-					|| ProtectionManager.isRegionProtectedFromBending(this.player,
-							BendingAbilities.AirSuction, location)) {
+			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction, location)) {
 				return origin.clone().add(direction.clone().multiply(i - 1));
 			}
 		}
 		return location;
 	}
 
-	public static Location getNewOriginLocation (Player player) {
-		Location location = EntityTools.getTargetedLocation(player,
-				SELECT_RANGE, BlockTools.nonOpaque);
-		if (location.getBlock().isLiquid()
-				|| BlockTools.isSolid(location.getBlock())) {
+	public static Location getNewOriginLocation(Player player) {
+		Location location = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.nonOpaque);
+		if (location.getBlock().isLiquid() || BlockTools.isSolid(location.getBlock())) {
 			return null;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirSuction,
-				location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirSuction, location)) {
 			return null;
 		}
 
@@ -192,21 +185,18 @@ public class AirSuction extends BendingActiveAbility {
 			return false;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction,
-				this.location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction, this.location)) {
 			// Info : This is checking the position of the suction and not the
 			// position of the bender
 			return false;
 		}
 
-		if ((this.location.distance(this.origin) > this.range)
-				|| (this.location.distance(this.origin) <= 1)) {
+		if ((this.location.distance(this.origin) > this.range) || (this.location.distance(this.origin) <= 1)) {
 			return false;
 		}
 
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location,
-				affectingradius)) {
-			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, affectingradius)) {
+			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
 			}
 
@@ -230,12 +220,10 @@ public class AirSuction extends BendingActiveAbility {
 			}
 
 			Vector push = this.direction.clone();
-			if ((Math.abs(push.getY()) > max)
-					&& (entity.getEntityId() != this.player.getEntityId())) {
+			if ((Math.abs(push.getY()) > max) && (entity.getEntityId() != this.player.getEntityId())) {
 				if (push.getY() < 0) {
 					push.setY(-max);
-				}
-				else {
+				} else {
 					push.setY(max);
 				}
 			}
@@ -245,26 +233,21 @@ public class AirSuction extends BendingActiveAbility {
 			double comp = velocity.dot(push.clone().normalize());
 			if (comp > factor) {
 				velocity.multiply(.5);
-				velocity.add(push
-						.clone()
-						.normalize()
-						.multiply(
-								velocity.clone().dot(
-										push.clone().normalize())));
+				velocity.add(push.clone().normalize().multiply(velocity.clone().dot(push.clone().normalize())));
 			} else if ((comp + (factor * .5)) > factor) {
 				velocity.add(push.clone().multiply(factor - comp));
 			} else {
 				velocity.add(push.clone().multiply(factor * .5));
 			}
 			if (entity.getEntityId() == this.player.getEntityId()) {
-				velocity.multiply(1.0/1.85);
+				velocity.multiply(1.0 / 1.85);
 			}
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);
-			//			if ((entity.getEntityId() != this.player.getEntityId())
-			//					&& (entity instanceof Player)) {
-			//				FlyingPlayer.addFlyingPlayer(this.player, this, 2000L);
-			//			}
+			// if ((entity.getEntityId() != this.player.getEntityId())
+			// && (entity instanceof Player)) {
+			// FlyingPlayer.addFlyingPlayer(this.player, this, 2000L);
+			// }
 
 		}
 		advanceLocation();
@@ -272,7 +255,7 @@ public class AirSuction extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove () {
+	public void remove() {
 		this.bender.cooldown(BendingAbilities.AirSuction, COOLDOWN);
 		super.remove();
 	}
@@ -283,12 +266,12 @@ public class AirSuction extends BendingActiveAbility {
 	}
 
 	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return 1000 * 60 * 2;
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
@@ -301,12 +284,7 @@ public class AirSuction extends BendingActiveAbility {
 	}
 
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.AirSuction;
-	}
-
-	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.id;
 	}
 

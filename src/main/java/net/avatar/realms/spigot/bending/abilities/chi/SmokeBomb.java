@@ -23,7 +23,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "Smoke Bomb", element = BendingElement.ChiBlocker)
+@BendingAbility(name = "Smoke Bomb", bind = BendingAbilities.SmokeBomb, element = BendingElement.ChiBlocker)
 public class SmokeBomb extends BendingActiveAbility {
 
 	@ConfigurationParameter("Radius")
@@ -109,8 +109,7 @@ public class SmokeBomb extends BendingActiveAbility {
 			if (!newTargets.contains(targ)) {
 				if (targ.getEntityId() != this.player.getEntityId()) {
 					targ.removePotionEffect(PotionEffectType.BLINDNESS);
-				}
-				else {
+				} else {
 					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
 				}
 			}
@@ -121,8 +120,7 @@ public class SmokeBomb extends BendingActiveAbility {
 		for (LivingEntity targ : newTargets) {
 			if (targ.getEntityId() != this.player.getEntityId()) {
 				targ.addPotionEffect(this.blindnessTarget);
-			}
-			else {
+			} else {
 				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
 				targ.addPotionEffect(invisibilityLauncher);
 			}
@@ -140,8 +138,7 @@ public class SmokeBomb extends BendingActiveAbility {
 		if (this.ticksRemaining <= 0) {
 			setState(BendingAbilityState.Ended);
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
@@ -149,11 +146,6 @@ public class SmokeBomb extends BendingActiveAbility {
 	@Override
 	protected long getMaxMillis() {
 		return (DURATION * 1000) + 1;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.SmokeBomb;
 	}
 
 	@Override
