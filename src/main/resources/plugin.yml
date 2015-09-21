@@ -360,9 +360,6 @@ permissions:
   bending.command.reload:
     description: Allows the use of /bending reload
     default: op
-  bending.admin.permaremove:
-    description: Allows the use of /bending  permaremove <player>
-    default: op
   bending.command.choose:
     description: Allows the use of /bending choose <element>
     default: true
@@ -383,7 +380,7 @@ permissions:
   bending.command.language:
     description: Allows the use of /bending language
     default: true
-  bending.command.displayelement: 
+  bending.command.display: 
     description: Allows the use of /bending display <element>
     default: true
   bending.command.clear: 
@@ -416,8 +413,11 @@ permissions:
   bending.command.path.choose:
     description: Allows to choose a path
     default: op
-  bending.command.specialization:
-    description: Allows to choose a specialization
+  bending.command.affinity:
+    description: Allows to choose an affinity
+    default: op
+  bending.command.affinity.other:
+    description: Allows to use affinity command on other people
     default: op
     
   bending.message.daymessage:

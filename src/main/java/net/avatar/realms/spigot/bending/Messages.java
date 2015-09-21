@@ -106,6 +106,36 @@ public class Messages {
 	@LanguageParameter("command.nothing_bound")
 	public static String NOTHING_BOUND = "Nothing bound";
 
+	@LanguageParameter("command.invalid_affinity")
+	public static String INVALID_AFFINITY = "This affinity does not exist.";
+
+	@LanguageParameter("command.invalid_affinity_element")
+	public static String INVALID_AFFINITY_ELEMENT = "Target does not have the required element for this affinity.";
+
+	@LanguageParameter("command.affinity_added")
+	public static String AFFINITY_ADDED = "You were added a new affinity : {0}.";
+
+	@LanguageParameter("command.you_added_affinity")
+	public static String YOU_ADDED_AFFINITY = "You added {0} to {1}.";
+
+	@LanguageParameter("command.affinity_set")
+	public static String AFFINITY_SET = "You were set the affinity : {0}.";
+
+	@LanguageParameter("command.you_set_affinity")
+	public static String YOU_SET_AFFINITY = "You set {0} as the affinity of {1}.";
+
+	@LanguageParameter("command.affinity_removed")
+	public static String AFFINITY_REMOVED = "You were removed the affinity : {0}.";
+
+	@LanguageParameter("command.you_removed_affinity")
+	public static String YOU_REMOVED_AFFINITY = "You removed {0} from the affinities of {1}.";
+
+	@LanguageParameter("command.affinity_cleared")
+	public static String AFFINITY_CLEARED = "Your affinities have been cleared.";
+
+	@LanguageParameter("command.you_clear_affinity")
+	public static String YOU_CLEARED_AFFINITY = "You cleared the affinities of {0}.";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;
