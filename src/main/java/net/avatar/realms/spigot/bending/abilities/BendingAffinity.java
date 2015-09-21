@@ -29,14 +29,15 @@ public enum BendingAffinity {
 
 	public static BendingAffinity getType(String string) {
 		for (BendingAffinity type : BendingAffinity.values()) {
-			if (type.toString().equalsIgnoreCase(string))
+			if (type.toString().equalsIgnoreCase(string)) {
 				return type;
+			}
 		}
 		return null;
 	}
 
 	public BendingElement getElement() {
-		return element;
+		return this.element;
 	}
 
 }
