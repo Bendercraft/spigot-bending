@@ -71,10 +71,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthWall;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalWire;
-import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
-import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveArea;
-import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveCone;
-import net.avatar.realms.spigot.bending.abilities.earth.ShockwaveFall;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
@@ -310,11 +306,6 @@ public class BendingPlayerListener implements Listener{
 				return;
 			}
 			
-			if (ability == Abilities.Shockwave) {
-				new ShockwaveCone(player, null);
-				return;
-			}
-			
 			if (ability == Abilities.FireBlade) {
 				new FireBlade(player);
 				return;
@@ -351,23 +342,12 @@ public class BendingPlayerListener implements Listener{
 		}
 		
 		if (EntityTools.canBend(player, ability)) {
-			// If the player unsneaks
-			if (player.isSneaking()) {
-				if (ability == Abilities.Shockwave) {
-					new ShockwaveArea(player, null);
-				}
-			}
-			
 			if (!player.isSneaking()) {
 				// If the player sneaks
 				
 				if (ability == Abilities.EarthGrab) {
 					new EarthGrab(player, true, null);
 					return;
-				}
-				
-				if (ability == Abilities.Shockwave) {
-					new Shockwave(player, null);
 				}
 				
 				if (ability == Abilities.Tremorsense) {
@@ -469,11 +449,6 @@ public class BendingPlayerListener implements Listener{
 			if (event.getCause() == DamageCause.FALL) {
 				PassiveAbility ab = null;
 				if (EntityTools.isBender(player, BendingType.Earth)) {
-					
-					if (ability == Abilities.Shockwave) {
-						new ShockwaveFall(player, null);
-					}
-					
 					ab = new EarthPassive (player);
 					if (ab.start()) {
 						//						new Flight(player);

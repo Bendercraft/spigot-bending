@@ -5,11 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -24,18 +21,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Shockwave", element=BendingType.Earth)
-public class Ripple implements IAbility {
-	private static Map<Integer, Ripple> instances = new HashMap<Integer, Ripple>();
-	private static Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
-
+public class Ripple {
 	@ConfigurationParameter("Radius")
 	static double RADIUS = 15;
 	
 	@ConfigurationParameter("Damage")
 	private final int DAMAGE = 5;
-
-	private static int ID = Integer.MIN_VALUE;
 
 	private Player player;
 	private BendingPlayer bender;
@@ -47,17 +38,16 @@ public class Ripple implements IAbility {
 	private List<Entity> entities = new LinkedList<Entity>();
 
 	private Block block1, block2, block3, block4;
-	private int id;
 	private int step = 0;
 	private int maxstep;
-	private IAbility parent;
+	
+	private Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
 
-	public Ripple(Player player, Vector direction, IAbility parent) {
-		this(player, getInitialLocation(player, direction), direction, parent);
+	public Ripple(Player player, Vector direction) {
+		this(player, getInitialLocation(player, direction), direction);
 	}
 
-	public Ripple(Player player, Location origin, Vector direction, IAbility parent) {
-		this.parent = parent;
+	public Ripple(Player player, Location origin, Vector direction) {
 		this.player = player;
 		if (origin == null)
 			return;
@@ -67,13 +57,6 @@ public class Ripple implements IAbility {
 
 		initializeLocations();
 		maxstep = locations.size();
-
-		if (BlockTools.isEarthbendable(player, origin.getBlock())) {
-			id = ID++;
-			if (ID >= Integer.MAX_VALUE)
-				ID = Integer.MIN_VALUE;
-			instances.put(id, this);
-		}
 
 		bender = BendingPlayer.getBendingPlayer(player);
 	}
@@ -101,8 +84,12 @@ public class Ripple implements IAbility {
 		return null;
 	}
 
-	private boolean progress() {
+	public boolean progress() {
 		boolean result = true;
+		if (!BlockTools.isEarthbendable(player, origin.getBlock())) {
+			return false;
+		}
+		blocks.clear();
 		if (step < maxstep) {
 			Location newlocation = locations.get(step);
 			Block block = location.getBlock();
@@ -202,10 +189,6 @@ public class Ripple implements IAbility {
 		return result;
 	}
 
-	private void remove() {
-		instances.remove(id);
-	}
-
 	private void initializeLocations() {
 		Location location = origin.clone();
 		locations.add(location);
@@ -296,14 +279,14 @@ public class Ripple implements IAbility {
 
 	}
 
-	private static void setMoved(Block block) {
+	private void setMoved(Block block) {
 		int x = block.getX();
 		int z = block.getZ();
 		Integer[] pair = new Integer[] { x, z };
 		blocks.put(pair, block);
 	}
 
-	private static boolean hasAnyMoved(Block block) {
+	private boolean hasAnyMoved(Block block) {
 		int x = block.getX();
 		int z = block.getZ();
 		Integer[] pair = new Integer[] { x, z };
@@ -311,28 +294,4 @@ public class Ripple implements IAbility {
 			return true;
 		return false;
 	}
-
-	public static void progressAll() {
-		blocks.clear();
-		List<Ripple> toRemove = new LinkedList<Ripple>();
-		for (Ripple ripple : instances.values()) {
-			boolean keep = ripple.progress();
-			if(!keep) {
-				toRemove.add(ripple);
-			}
-		}
-		for (Ripple ripple : toRemove) {
-			ripple.remove();
-		}
-	}
-
-	public static void removeAll() {
-		instances.clear();
-	}
-
-	@Override
-	public IAbility getParent() {
-		return parent;
-	}
-
 }

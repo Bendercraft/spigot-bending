@@ -18,7 +18,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
-import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -106,7 +105,6 @@ public class PluginTools {
 		EarthColumn.removeAll();
 		EarthArmor.removeAll();
 		EarthTunnel.removeAll();
-		Shockwave.removeAll();
 
 		FireStream.removeAll();
 		
