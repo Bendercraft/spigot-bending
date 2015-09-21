@@ -124,12 +124,10 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		if (start == null || start.isEmpty()) {
 			return " ";
 		}
-		int length = start.length();
 
 		List<String> valids = new LinkedList<String>();
 		for (String value : values) {
-			String temp = value.substring(0, length);
-			if (temp.equalsIgnoreCase(start)) {
+			if (value.toLowerCase().startsWith(start.toLowerCase())) {
 				valids.add(value);
 			}
 		}

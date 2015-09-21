@@ -603,10 +603,6 @@ public class BendingCommand {
 		Messages.sendMessage(player, "General.ability_list", ChatColor.RED);
 	}
 
-	private void sendNoCommandPermissionMessage(final Player player, final String command) {
-		sendMessage(player, Messages.getString("general.no_use_perms") + " /bending " + command + ".");
-	}
-
 	private void printCommands(final Player player) {
 		sendMessage(player, "Bending aliases: bending bend b mtla tla");
 		String slot = Messages.getString("general.slot") + "#";
