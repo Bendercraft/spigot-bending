@@ -98,7 +98,7 @@ public class EntityTools {
 
 	public static boolean hasPermission(Player player, BendingAbilities ability) {
 
-		if (ability.isSpecialization() && !EntityTools.isSpecialized(player, ability.getSpecialization())) {
+		if (ability.isAffinity() && !EntityTools.isSpecialized(player, ability.getAffinity())) {
 			return false;
 		}
 
@@ -150,8 +150,8 @@ public class EntityTools {
 			return false;
 		}
 
-		if (ability.isSpecialization()) {
-			if (!isSpecialized(player, ability.getSpecialization())) {
+		if (ability.isAffinity()) {
+			if (!isSpecialized(player, ability.getAffinity())) {
 				return false;
 			}
 			if (speToggled(player)) {

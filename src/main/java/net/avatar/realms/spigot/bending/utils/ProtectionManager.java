@@ -179,7 +179,7 @@ public class ProtectionManager {
 			return true;
 		}
 
-		if (ability.isSpecialization() && !query.testState(loc, localPlayer, BENDING_SPE)) {
+		if (ability.isAffinity() && !query.testState(loc, localPlayer, BENDING_SPE)) {
 			return true;
 		}
 

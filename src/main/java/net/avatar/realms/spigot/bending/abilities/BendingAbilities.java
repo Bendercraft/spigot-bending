@@ -60,18 +60,18 @@ public enum BendingAbilities {
 	 */
 
 	private BendingElement element;
-	private BendingAffinity specialization;
+	private BendingAffinity affinity;
 	private boolean shift;
 
 	BendingAbilities(BendingElement element, boolean shift) {
 		this.element = element;
-		this.specialization = null;
+		this.affinity = null;
 		this.shift = shift;
 	}
 
 	BendingAbilities(BendingAffinity specialization, boolean shift) {
 		this.element = specialization.getElement();
-		this.specialization = specialization;
+		this.affinity = specialization;
 		this.shift = shift;
 	}
 
@@ -79,12 +79,12 @@ public enum BendingAbilities {
 		return this.element;
 	}
 
-	public BendingAffinity getSpecialization() {
-		return this.specialization;
+	public BendingAffinity getAffinity() {
+		return this.affinity;
 	}
 
-	public boolean isSpecialization() {
-		if (this.specialization != null) {
+	public boolean isAffinity() {
+		if (this.affinity != null) {
 			return true;
 		}
 		return false;

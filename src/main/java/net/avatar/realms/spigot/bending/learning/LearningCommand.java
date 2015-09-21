@@ -84,7 +84,7 @@ public class LearningCommand {
 					return;
 				}
 				for (BendingAbilities ability : BendingAbilities.values()) {
-					if ((ability.getSpecialization() != null) && ability.getSpecialization().equals(spe)) {
+					if ((ability.getAffinity() != null) && ability.getAffinity().equals(spe)) {
 						this.plugin.removePermission(target.getPlayer(), ability);
 					}
 				}
@@ -138,7 +138,7 @@ public class LearningCommand {
 		target.setBender(type);
 		// Ensure it keeps all previous
 		for (BendingAbilities ability : BendingAbilities.values()) {
-			if (ability.getElement().equals(type) && !ability.isSpecialization()) {
+			if (ability.getElement().equals(type) && !ability.isAffinity()) {
 				this.plugin.addPermission(target.getPlayer(), ability);
 			}
 		}
@@ -177,7 +177,7 @@ public class LearningCommand {
 			String message = "Congratulations, you can now bend " + type.name();
 			target.getPlayer().sendMessage(color + message);
 			for (BendingAbilities ability : BendingAbilities.values()) {
-				if (ability.getElement().equals(type) && !ability.isSpecialization()) {
+				if (ability.getElement().equals(type) && !ability.isAffinity()) {
 					this.plugin.addPermission(target.getPlayer(), ability);
 					message = "You can now use " + ability.name();
 					target.getPlayer().sendMessage(color + message);
@@ -270,7 +270,7 @@ public class LearningCommand {
 							String message = "Congratulations, you can now use " + spe.name();
 							target.getPlayer().sendMessage(color + message);
 							for (BendingAbilities ability : BendingAbilities.values()) {
-								if (ability.isSpecialization() && ability.getSpecialization().equals(spe)) {
+								if (ability.isAffinity() && ability.getAffinity().equals(spe)) {
 									this.plugin.addPermission(target.getPlayer(), ability);
 									message = "You can now use " + ability.name();
 									target.getPlayer().sendMessage(color + message);
@@ -312,7 +312,7 @@ public class LearningCommand {
 						String message = "Congratulations, you can now use " + spe.name();
 						target.getPlayer().sendMessage(color + message);
 						for (BendingAbilities ability : BendingAbilities.values()) {
-							if (ability.isSpecialization() && ability.getSpecialization().equals(spe)) {
+							if (ability.isAffinity() && ability.getAffinity().equals(spe)) {
 								this.plugin.addPermission(target.getPlayer(), ability);
 								message = "You can now use " + ability.name();
 								target.getPlayer().sendMessage(color + message);
