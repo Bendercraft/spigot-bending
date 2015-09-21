@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.bending.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -107,9 +108,19 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+		List<String> result = new ArrayList<String>();
+		if (args.length == 0) {
+			result.add("bending");
+		}
+		else if (args.length == 1) {
+			List<String> values = new LinkedList<String>();
+			for (IBendingCommand command : this.commands) {
+				values.add(command.getCommand());
+			}
+			result.add(autoCompleteParameter(args[0], values));
+		}
+		return result;
 	}
 
 	private String autoCompleteParameter(String start, BendingAbilities[] abilities) {
