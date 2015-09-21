@@ -96,7 +96,7 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 			return false;
 		}
 
-		List<String> argList = Arrays.asList(args);
+		List<String> argList = new LinkedList<>(Arrays.asList(args));
 		String subCommand = argList.remove(0);
 
 		for (IBendingCommand command : this.commands) {
