@@ -13,26 +13,34 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.db.DBUtils;
-import net.avatar.realms.spigot.bending.db.IBendingDB;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 @Deprecated
 public class BendingCommand {
 
-	private static final String[] clearAliases = { "clear", "cl" };
-	private static final String[] specializeAliases = { "specialize", "spe" };
-	private static final String[] pathAliases = { "path", "p" };
-	private static final String[] displayAliases = { "display", "disp", "dis", "d" };
-	private static final String[] reloadAliases = { "reload" };
-	private static final String[] helpAliases = { "help", "h", "?" };
-	private static final String[] airbendingAliases = { "air", "a", "airbender", "airbending", "airbend" };
-	private static final String[] earthbendingAliases = { "earth", "e", "earthbender", "earthbending", "earthbend", "terre" };
-	private static final String[] firebendingAliases = { "fire", "f", "firebender", "firebending", "firebend", "feu" };
-	private static final String[] waterbendingAliases = { "water", "w", "waterbender", "waterbending", "waterbend", "eau" };
-	private static final String[] chiblockingAliases = { "chi", "c", "chiblock", "chiblocker", "chiblocking" };
-	private static final String[] dbAlias = { "db" };
+	private static final String[] clearAliases = {
+			"clear", "cl" };
+	private static final String[] specializeAliases = {
+			"specialize", "spe" };
+	private static final String[] pathAliases = {
+			"path", "p" };
+	private static final String[] displayAliases = {
+			"display", "disp", "dis", "d" };
+	private static final String[] reloadAliases = {
+			"reload" };
+	private static final String[] helpAliases = {
+			"help", "h", "?" };
+	private static final String[] airbendingAliases = {
+			"air", "a", "airbender", "airbending", "airbend" };
+	private static final String[] earthbendingAliases = {
+			"earth", "e", "earthbender", "earthbending", "earthbend", "terre" };
+	private static final String[] firebendingAliases = {
+			"fire", "f", "firebender", "firebending", "firebend", "feu" };
+	private static final String[] waterbendingAliases = {
+			"water", "w", "waterbender", "waterbending", "waterbend", "eau" };
+	private static final String[] chiblockingAliases = {
+			"chi", "c", "chiblock", "chiblocker", "chiblocking" };
 	private final Server server;
 	private boolean verbose = true;
 	private BendingPlayer bPlayer;
@@ -72,9 +80,6 @@ public class BendingCommand {
 			}
 			else if (Arrays.asList(helpAliases).contains(arg)) {
 				help(player, args);
-			}
-			else if (Arrays.asList(dbAlias).contains(arg)) {
-				db(player, args);
 			}
 			else {
 				printHelpDialogue(player);
@@ -140,48 +145,6 @@ public class BendingCommand {
 			return;
 		}
 		printPathUsage(player);
-	}
-
-	private void db(final Player player, final String[] args) {
-		if (!player.hasPermission("bending.admin")) {
-			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
-			return;
-		}
-		if (args.length >= 2) {
-			final String routingKey = args[1];
-			if (routingKey.equals("convert")) {
-				if (args.length == 4) {
-					final IBendingDB src = DBUtils.choose(args[2]);
-					final IBendingDB dest = DBUtils.choose(args[3]);
-					if (src != null) {
-						if (dest != null) {
-							src.init(Bending.plugin);
-							dest.init(Bending.plugin);
-							DBUtils.convert(src, dest);
-							sendMessage(player, "Success !");
-							return;
-						}
-						else {
-							sendMessage(player, "Unknown DB implementation : " + args[3]);
-						}
-					}
-					else {
-						sendMessage(player, "Unknown DB implmentation : " + args[2]);
-					}
-				}
-				else {
-					sendMessage(player, "Invalid args number");
-				}
-			}
-			else {
-				sendMessage(player, "Invalid routing key : " + routingKey);
-			}
-		}
-		else {
-			sendMessage(player, "Invalid args number");
-		}
-		sendMessage(player, "Must be used /db convert <flatfile|mongodb> <flatfile|mongodb>");
-		sendMessage(player, "Where the first one is the source, and the second destination");
 	}
 
 	private void printUsageMessage(final Player player, final String command, final String key) {
