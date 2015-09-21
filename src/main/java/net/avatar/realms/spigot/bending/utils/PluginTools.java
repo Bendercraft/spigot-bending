@@ -15,7 +15,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -99,7 +98,6 @@ public class PluginTools {
 	public static void stopAllBending() {
 		CompactColumn.removeAll();
 		EarthColumn.removeAll();
-		EarthTunnel.removeAll();
 
 		FireStream.removeAll();
 		

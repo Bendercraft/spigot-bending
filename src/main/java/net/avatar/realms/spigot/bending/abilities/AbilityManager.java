@@ -39,6 +39,7 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
@@ -305,7 +306,7 @@ public class AbilityManager {
 		// register(EarthColumn.class);
 		register(EarthGrab.class);
 		register(EarthPassive.class);
-		// register(EarthTunnel.class);
+		register(EarthTunnel.class);
 		// register(EarthWall.class);
 		register(LavaTrain.class);
 		register(MetalBending.class);

@@ -324,10 +324,6 @@ public class BendingPlayerListener implements Listener {
 //				if (ability == Abilities.HealingWaters) {
 //					new HealingWaters(player);
 //				}
-//
-//				if (ability == Abilities.EarthTunnel) {
-//					new EarthTunnel(player, null);
-//				}
 //				
 //				if (ability == Abilities.RaiseEarth) {
 //					new EarthWall(player, null);
