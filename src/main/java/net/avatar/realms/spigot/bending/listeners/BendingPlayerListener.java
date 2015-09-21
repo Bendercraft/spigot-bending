@@ -58,16 +58,8 @@ import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
-import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
-import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
-import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthShield;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthWall;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalWire;
@@ -77,12 +69,8 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
-import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
-import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
-import net.avatar.realms.spigot.bending.abilities.water.Melt;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
-import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -255,71 +243,66 @@ public class BendingPlayerListener implements Listener{
 		}
 		
 		if (EntityTools.canBend(player, ability)) {
-			if (ability.isAirbending() || ability.isChiblocking() || ability.isWaterbending() || ability.isFirebending()
-					|| (ability == Abilities.AvatarState)
-					|| (ability == Abilities.EarthBlast)) {
-				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
-				
-				if ((abilities == null) || abilities.isEmpty()) {
-					ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-					ab.swing();
-					return;
-				}
-				
-				boolean shouldCreateNew = false;
-				for (IAbility a : abilities.values()) {
-					if (a.getPlayer().equals(player)) {
-						if (((ActiveAbility)a).swing()) {
-							shouldCreateNew = true;
-						}
+			Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
+			
+			if ((abilities == null) || abilities.isEmpty()) {
+				ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+				ab.swing();
+				return;
+			}
+			
+			boolean shouldCreateNew = false;
+			for (IAbility a : abilities.values()) {
+				if (a.getPlayer().equals(player)) {
+					if (((ActiveAbility)a).swing()) {
+						shouldCreateNew = true;
 					}
 				}
-				if (shouldCreateNew) {
-					ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-					ab.swing();
-				}
-				return;
+			}
+			if (shouldCreateNew) {
+				ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+				ab.swing();
 			}
 			
-			if (ability == Abilities.Catapult) {
-				new Catapult(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.RaiseEarth) {
-				new EarthColumn(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.Collapse) {
-				new CompactColumn(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.EarthGrab) {
-				new EarthGrab(player, false, null);
-				return;
-			}
-			
-			if (ability == Abilities.EarthArmor) {
-				new EarthArmor(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.FireBlade) {
-				new FireBlade(player);
-				return;
-			}
-			
-			if (ability == Abilities.PhaseChange) {
-				new FreezeMelt(player, null);
-				return;
-			}
-			
-			if (ability == Abilities.Surge) {
-				new WaterWall(player, null);
-				return;
-			}
+//			if (ability == Abilities.Catapult) {
+//				new Catapult(player, null);
+//				return;
+//			}
+//			
+//			if (ability == Abilities.RaiseEarth) {
+//				new EarthColumn(player, null);
+//				return;
+//			}
+//			
+//			if (ability == Abilities.Collapse) {
+//				new CompactColumn(player, null);
+//				return;
+//			}
+//			
+//			if (ability == Abilities.EarthGrab) {
+//				new EarthGrab(player, false, null);
+//				return;
+//			}
+//			
+//			if (ability == Abilities.EarthArmor) {
+//				new EarthArmor(player, null);
+//				return;
+//			}
+//			
+//			if (ability == Abilities.FireBlade) {
+//				new FireBlade(player);
+//				return;
+//			}
+//			
+//			if (ability == Abilities.PhaseChange) {
+//				new FreezeMelt(player, null);
+//				return;
+//			}
+//			
+//			if (ability == Abilities.Surge) {
+//				new WaterWall(player, null);
+//				return;
+//			}
 		}
 	}
 	
@@ -345,68 +328,64 @@ public class BendingPlayerListener implements Listener{
 			if (!player.isSneaking()) {
 				// If the player sneaks
 				
-				if (ability == Abilities.EarthGrab) {
-					new EarthGrab(player, true, null);
+//				if (ability == Abilities.EarthGrab) {
+//					new EarthGrab(player, true, null);
+//					return;
+//				}
+//				
+//				if (ability == Abilities.Tremorsense) {
+//					BendingPlayer.getBendingPlayer(player).toggleTremorsense();
+//				}
+//				
+//				if (ability == Abilities.Collapse) {
+//					new Collapse(player, null);
+//				}
+//				
+//				if (ability == Abilities.EarthArmor) {
+//					new EarthShield(player, null);
+//				}
+//				
+//				if (ability == Abilities.HealingWaters) {
+//					new HealingWaters(player);
+//				}
+//
+//				if (ability == Abilities.EarthTunnel) {
+//					new EarthTunnel(player, null);
+//				}
+//				
+//				if (ability == Abilities.RaiseEarth) {
+//					new EarthWall(player, null);
+//				}
+//				
+//				if (ability == Abilities.PhaseChange) {
+//					new Melt(player, null);
+//				}
+//				
+//				if (ability == Abilities.MetalBending) {
+//					MetalBending.metalMelt(player);
+//				}
+
+				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
+				
+				if ((abilities == null) || abilities.isEmpty()) {
+					ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+					Bending.log.info("I created proudly (and fresh) "+ab);
+					ab.sneak();
 					return;
 				}
 				
-				if (ability == Abilities.Tremorsense) {
-					BendingPlayer.getBendingPlayer(player).toggleTremorsense();
-				}
-				
-				if (ability == Abilities.Collapse) {
-					new Collapse(player, null);
-				}
-				
-				if (ability == Abilities.EarthArmor) {
-					new EarthShield(player, null);
-				}
-				
-				if (ability == Abilities.HealingWaters) {
-					new HealingWaters(player);
-				}
-
-				if (ability == Abilities.EarthTunnel) {
-					new EarthTunnel(player, null);
-				}
-				
-				if (ability == Abilities.RaiseEarth) {
-					new EarthWall(player, null);
-				}
-				
-				if (ability == Abilities.PhaseChange) {
-					new Melt(player, null);
-				}
-				
-				if (ability == Abilities.MetalBending) {
-					MetalBending.metalMelt(player);
-				}
-
-				if ( ability.isAirbending() || (ability.isChiblocking()) || ability.isWaterbending() || ability.isFirebending()
-						|| (ability == Abilities.EarthBlast)) {
-					Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
-					
-					if ((abilities == null) || abilities.isEmpty()) {
-						ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-						Bending.log.info("I created proudly (and fresh) "+ab);
-						ab.sneak();
-						return;
-					}
-					
-					boolean shouldCreateNew = false;
-					for (IAbility a : abilities.values()) {
-						if (a.getPlayer().equals(player)) {
-							if (((ActiveAbility)a).sneak()) {
-								shouldCreateNew = true;
-							}
+				boolean shouldCreateNew = false;
+				for (IAbility a : abilities.values()) {
+					if (a.getPlayer().equals(player)) {
+						if (((ActiveAbility)a).sneak()) {
+							shouldCreateNew = true;
 						}
 					}
-					if (shouldCreateNew) {
-						ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-						Bending.log.info("I created proudly (because I was not satisfied) "+ab);
-						ab.sneak();
-					}
-					return;
+				}
+				if (shouldCreateNew) {
+					ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+					Bending.log.info("I created proudly (because I was not satisfied) "+ab);
+					ab.sneak();
 				}
 			}
 		}
