@@ -1,16 +1,16 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -28,10 +28,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 @BendingAbility(name="Earth Grab", element=BendingType.Earth)
-public class EarthGrab implements IAbility {
-
-	private static Map<Integer, EarthGrab> instances = new HashMap<Integer, EarthGrab>();
-	
+public class EarthGrab extends ActiveAbility {
 	@ConfigurationParameter("Range")
 	private static double range = 15;
 	
@@ -49,8 +46,6 @@ public class EarthGrab implements IAbility {
 	private static Integer ID = Integer.MIN_VALUE;
 	private int id;
 	private boolean self;
-	private BendingPlayer bPlayer;
-	private Player bender;
 	private LivingEntity target;
 	private IAbility parent;
 	private Location origin;
@@ -58,29 +53,51 @@ public class EarthGrab implements IAbility {
 	private boolean toKeep = true;
 	private List<TempBlock> affectedBlocks = new ArrayList<TempBlock>(8);
 
-	public EarthGrab(Player player, boolean self, IAbility parent) {
-		this.parent = parent;
-		this.self = self;
-		this.bender = player;
-		bPlayer = BendingPlayer.getBendingPlayer(bender);
-		if (bPlayer.isOnCooldown(Abilities.EarthGrab)) {
-			return;
-		}		
-		boolean done;
-		if (self) {
-			done = grabEntity(bender, bender);
-		} else {
-			Entity closestentity = EntityTools.getTargettedEntity(player, range);
-			done = grabEntity(bender, closestentity);
+	public EarthGrab(Player player) {
+		super(player, null);
+	}
+	
+	@Override
+	public boolean swing() {
+		if(state != AbilityState.CanStart) {
+			return false;
 		}
+		if (bender.isOnCooldown(Abilities.EarthGrab)) {
+			return false;
+		}
+		this.self = false;
+		Entity closestentity = EntityTools.getTargettedEntity(player, range);
+		boolean done = grabEntity(player, closestentity);
 		if (target != null && done == true) {
 			if (ID == Integer.MAX_VALUE) {
 				ID = Integer.MIN_VALUE;
 			}
 			id = ID++;
-			instances.put(id, this);
+			AbilityManager.getManager().addInstance(this);
+			state = AbilityState.Progressing;
 		}
-
+		return false;
+	}
+	
+	@Override
+	public boolean sneak() {
+		if(state != AbilityState.CanStart) {
+			return false;
+		}
+		if (bender.isOnCooldown(Abilities.EarthGrab)) {
+			return false;
+		}
+		this.self = true;
+		boolean done = grabEntity(player, player);
+		if (target != null && done == true) {
+			if (ID == Integer.MAX_VALUE) {
+				ID = Integer.MIN_VALUE;
+			}
+			id = ID++;
+			AbilityManager.getManager().addInstance(this);
+			state = AbilityState.Progressing;
+		}
+		return false;
 	}
 
 	public boolean grabEntity(Player player, Entity entity) {
@@ -188,18 +205,14 @@ public class EarthGrab implements IAbility {
 					}
 
 					if (target instanceof Player
-							&& target.getEntityId() != bender.getEntityId()) {
+							&& target.getEntityId() != player.getEntityId()) {
 						EntityTools.grab((Player) target, time);
 					}
-					bPlayer.cooldown(Abilities.EarthGrab, COOLDOWN);
+					bender.cooldown(Abilities.EarthGrab, COOLDOWN);
 				}
 			}
 		}
 		return true;
-	}
-	
-	public Player getBender() {
-		return bender;
 	}
 
 	public void setToKeep(boolean k) {
@@ -216,7 +229,7 @@ public class EarthGrab implements IAbility {
 		if (target == null) {
 			return false;
 		}
-		if (bender.getEntityId() == target.getEntityId()) {
+		if (player.getEntityId() == target.getEntityId()) {
 			if (System.currentTimeMillis() > time
 					+ (SELF_DURATION * 1000)) {
 				return false;
@@ -236,35 +249,19 @@ public class EarthGrab implements IAbility {
 			return false;
 		}
 
-		if (!BlockTools.isEarthbendable(bender, loc.add(0, 0, -1).getBlock())) {
+		if (!BlockTools.isEarthbendable(player, loc.add(0, 0, -1).getBlock())) {
 			return false;
 		}
-		if (!BlockTools.isEarthbendable(bender, loc.add(0, 0, +2).getBlock())) {
+		if (!BlockTools.isEarthbendable(player, loc.add(0, 0, +2).getBlock())) {
 			return false;
 		}
-		if (!BlockTools.isEarthbendable(bender, loc.add(-1, 0, -1).getBlock())) {
+		if (!BlockTools.isEarthbendable(player, loc.add(-1, 0, -1).getBlock())) {
 			return false;
 		}
-		if (!BlockTools.isEarthbendable(bender, loc.add(+2, 0, 0).getBlock())) {
+		if (!BlockTools.isEarthbendable(player, loc.add(+2, 0, 0).getBlock())) {
 			return false;
 		}
 		return true;
-	}
-
-	public static void progressAll() {
-		List<Integer> toRemove = new LinkedList<Integer>();
-		boolean keep;
-		for (Integer iD : instances.keySet()) {
-			keep = instances.get(iD).progress();
-			if (!keep) {
-				toRemove.add(iD);
-			}
-		}
-
-		for (Integer iD : toRemove) {
-			instances.get(iD).revertEarthGrab();
-			instances.remove(iD);
-		}
 	}
 
 	public boolean revertEarthGrab() {
@@ -283,7 +280,8 @@ public class EarthGrab implements IAbility {
 	}
 
 	public static EarthGrab blockInEarthGrab(Block block) {
-		for (EarthGrab grab : instances.values()) {
+		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.EarthGrab).values()) {
+			EarthGrab grab = (EarthGrab) ab;
 			if (grab.locInEarthGrab(block.getLocation())) {
 				return grab;
 			}
@@ -334,7 +332,12 @@ public class EarthGrab implements IAbility {
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Object getIdentifier() {
+		return id;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.EarthGrab;
 	}
 }

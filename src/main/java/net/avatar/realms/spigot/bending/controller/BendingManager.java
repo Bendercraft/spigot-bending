@@ -20,7 +20,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
@@ -67,7 +66,6 @@ public class BendingManager implements Runnable {
 	private void manageEarthbending() {
 		EarthColumn.progressAll();
 		CompactColumn.progressAll();
-		EarthGrab.progressAll();
 		EarthTunnel.progressAll();
 		MetalBending.progressAll();
 

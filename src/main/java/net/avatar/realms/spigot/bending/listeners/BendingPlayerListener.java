@@ -274,11 +274,6 @@ public class BendingPlayerListener implements Listener {
 //				return;
 //			}
 //			
-//			if (ability == Abilities.EarthGrab) {
-//				new EarthGrab(player, false, null);
-//				return;
-//			}
-//			
 //			if (ability == Abilities.FireBlade) {
 //				new FireBlade(player);
 //				return;
@@ -317,11 +312,6 @@ public class BendingPlayerListener implements Listener {
 		if (EntityTools.canBend(player, ability)) {
 			if (!player.isSneaking()) {
 				// If the player sneaks
-				
-//				if (ability == Abilities.EarthGrab) {
-//					new EarthGrab(player, true, null);
-//					return;
-//				}
 //				
 //				if (ability == Abilities.Tremorsense) {
 //					BendingPlayer.getBendingPlayer(player).toggleTremorsense();
