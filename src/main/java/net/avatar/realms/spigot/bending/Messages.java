@@ -100,6 +100,12 @@ public class Messages {
 	@LanguageParameter("command.you_added")
 	public static String YOU_ADDED = "You added {0} to {1}.";
 
+	@LanguageParameter("command.reloaded")
+	public static String RELOADED = "Reload done";
+
+	@LanguageParameter("command.nothing_bound")
+	public static String NOTHING_BOUND = "Nothing bound";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;
@@ -156,7 +162,6 @@ public class Messages {
 		}
 	}
 
-	// These one are not used yet, but we should.
 	public static void sendMessage(Player player, String key, Map<String, String> params) {
 		sendMessage(player, key, ChatColor.WHITE, params);
 	}

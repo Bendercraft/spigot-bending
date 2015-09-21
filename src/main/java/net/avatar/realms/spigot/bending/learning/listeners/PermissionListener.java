@@ -38,7 +38,7 @@ public class PermissionListener implements Listener {
 		this.plugin.addPermission(event.getPlayer(), Abilities.Collapse);
 		
 		this.plugin.addPermission(event.getPlayer(), Abilities.RapidPunch);
-		this.plugin.addPermission(event.getPlayer(), Abilities.Paralyze);
+		this.plugin.addPermission(event.getPlayer(), Abilities.VitalPoint);
 		this.plugin.addPermission(event.getPlayer(), Abilities.HighJump);
 	}
 	

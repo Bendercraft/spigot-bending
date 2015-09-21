@@ -157,7 +157,7 @@ public class VitalPoint extends ActiveAbility {
 
 	@Override
 	public void remove() {
-		this.bender.cooldown(Abilities.Paralyze, COOLDOWN);
+		this.bender.cooldown(Abilities.VitalPoint, COOLDOWN);
 		super.remove();
 	}
 
@@ -171,7 +171,7 @@ public class VitalPoint extends ActiveAbility {
 			return false;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Paralyze);
+		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.VitalPoint);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
@@ -187,7 +187,7 @@ public class VitalPoint extends ActiveAbility {
 
 	@Override
 	public Abilities getAbilityType () {
-		return Abilities.Paralyze;
+		return Abilities.VitalPoint;
 	}
 
 	@Override

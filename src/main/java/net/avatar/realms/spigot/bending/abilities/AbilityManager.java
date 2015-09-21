@@ -143,7 +143,7 @@ public class AbilityManager {
 			return new PowerfulHit(player);
 		case Dash:
 			return new Dash(player);
-		case Paralyze:
+		case VitalPoint:
 			return new VitalPoint(player);
 		case RapidPunch:
 			return new RapidPunch(player);

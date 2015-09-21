@@ -4,7 +4,11 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 
+import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.Messages;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
+import net.md_5.bungee.api.ChatColor;
 
 public class ReloadExecution extends BendingCommand {
 
@@ -15,14 +19,18 @@ public class ReloadExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		// TODO Auto-generated method stub
-		return false;
+		if (sender.hasPermission("bending.command.reload")) {
+			AbilityManager.getManager().stopAllAbilities();
+			AbilityManager.getManager().applyConfiguration(Bending.plugin.getDataFolder());
+			sender.sendMessage(ChatColor.GREEN + Messages.RELOADED);
+		}
+		return true;
 	}
 
 	@Override
 	public void printUsage(CommandSender sender) {
-		// TODO Auto-generated method stub
-
+		if (!sender.hasPermission("bending.command.reload")) {
+			sender.sendMessage("/bending reload");
+		}
 	}
-
 }

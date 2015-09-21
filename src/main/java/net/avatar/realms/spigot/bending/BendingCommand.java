@@ -1,7 +1,6 @@
 package net.avatar.realms.spigot.bending;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -11,28 +10,21 @@ import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPathType;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.db.DBUtils;
-import net.avatar.realms.spigot.bending.db.IBendingDB;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 @Deprecated
 public class BendingCommand {
 
-	private static final String[] clearAliases = { "clear", "cl" };
-	private static final String[] specializeAliases = { "specialize", "spe" };
-	private static final String[] pathAliases = { "path", "p" };
-	private static final String[] displayAliases = { "display", "disp", "dis", "d" };
-	private static final String[] reloadAliases = { "reload" };
-	private static final String[] helpAliases = { "help", "h", "?" };
-	private static final String[] airbendingAliases = { "air", "a", "airbender", "airbending", "airbend" };
-	private static final String[] earthbendingAliases = { "earth", "e", "earthbender", "earthbending", "earthbend", "terre" };
-	private static final String[] firebendingAliases = { "fire", "f", "firebender", "firebending", "firebend", "feu" };
-	private static final String[] waterbendingAliases = { "water", "w", "waterbender", "waterbending", "waterbend", "eau" };
-	private static final String[] chiblockingAliases = { "chi", "c", "chiblock", "chiblocker", "chiblocking" };
-	private static final String[] dbAlias = { "db" };
+	private static final String[] clearAliases = {
+			"clear", "cl" };
+	private static final String[] specializeAliases = {
+			"specialize", "spe" };
+	private static final String[] pathAliases = {
+			"path", "p" };
+	private static final String[] helpAliases = {
+			"help", "h", "?" };
 	private final Server server;
 	private boolean verbose = true;
 	private BendingPlayer bPlayer;
@@ -64,17 +56,8 @@ public class BendingCommand {
 			else if (Arrays.asList(pathAliases).contains(arg)) {
 				path(player, args);
 			}
-			else if (Arrays.asList(displayAliases).contains(arg)) {
-				display(player, args);
-			}
-			else if (Arrays.asList(reloadAliases).contains(arg)) {
-				reload(player, args);
-			}
 			else if (Arrays.asList(helpAliases).contains(arg)) {
 				help(player, args);
-			}
-			else if (Arrays.asList(dbAlias).contains(arg)) {
-				db(player, args);
 			}
 			else {
 				printHelpDialogue(player);
@@ -140,48 +123,6 @@ public class BendingCommand {
 			return;
 		}
 		printPathUsage(player);
-	}
-
-	private void db(final Player player, final String[] args) {
-		if (!player.hasPermission("bending.admin")) {
-			player.sendMessage(ChatColor.RED + "You're not allowed to do that.");
-			return;
-		}
-		if (args.length >= 2) {
-			final String routingKey = args[1];
-			if (routingKey.equals("convert")) {
-				if (args.length == 4) {
-					final IBendingDB src = DBUtils.choose(args[2]);
-					final IBendingDB dest = DBUtils.choose(args[3]);
-					if (src != null) {
-						if (dest != null) {
-							src.init(Bending.plugin);
-							dest.init(Bending.plugin);
-							DBUtils.convert(src, dest);
-							sendMessage(player, "Success !");
-							return;
-						}
-						else {
-							sendMessage(player, "Unknown DB implementation : " + args[3]);
-						}
-					}
-					else {
-						sendMessage(player, "Unknown DB implmentation : " + args[2]);
-					}
-				}
-				else {
-					sendMessage(player, "Invalid args number");
-				}
-			}
-			else {
-				sendMessage(player, "Invalid routing key : " + routingKey);
-			}
-		}
-		else {
-			sendMessage(player, "Invalid args number");
-		}
-		sendMessage(player, "Must be used /db convert <flatfile|mongodb> <flatfile|mongodb>");
-		sendMessage(player, "Where the first one is the source, and the second destination");
 	}
 
 	private void printUsageMessage(final Player player, final String command, final String key) {
@@ -430,104 +371,6 @@ public class BendingCommand {
 	// printUsageMessage(player, "/bending reload", "General.reload_usage");
 	// }
 	// }
-
-	private void reload(final Player player, final String[] args) {
-		if (!hasPermission(player, "bending.admin.reload")) {
-			return;
-		}
-		PluginTools.stopAllBending();
-		sendMessage(player, ChatColor.AQUA + "Bending " + Messages.getString("general.reload_success"));
-	}
-
-	private void printDisplayUsage(final Player player) {
-		if (!hasHelpPermission(player, "bending.command.display")) {
-			sendNoCommandPermissionMessage(player, "display");
-			return;
-		}
-		if (player != null) {
-			printUsageMessage(player, "/bending display", "General.display_usage");
-		}
-		printUsageMessage(player, "/bending display <element>", "General.display_element_usage");
-	}
-
-	private void display(final Player player, final String[] args) {
-		if (args.length > 2) {
-			printDisplayUsage(player);
-			return;
-		}
-		for (final BendingType type : this.bPlayer.getBendingTypes()) {
-			final ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
-			String msg = "You're a " + type.name();
-			if (type != BendingType.ChiBlocker) {
-				msg += " bender.";
-			}
-			sendMessage(player, color + msg);
-		}
-		for (final BendingSpecializationType spe : this.bPlayer.getSpecializations()) {
-			sendMessage(player, "You have specialization " + spe.name() + " for element " + spe.getElement().name());
-		}
-		if (args.length == 1) {
-			if (player == null) {
-				printNotFromConsole();
-				return;
-			}
-
-			boolean none = true;
-
-			for (int i = 0; i <= 8; i++) {
-				final Abilities a = this.bPlayer.getAbility(i);
-				if (a != null) {
-					none = false;
-					ChatColor color = ChatColor.WHITE;
-					color = PluginTools.getColor(Settings.getColorString(a.getElement().name()));
-					final String ability = a.name();
-					sendMessage(player, Messages.getString("general.slot") + " " + (i + 1) + ": " + color + ability);
-				}
-			}
-
-			if (none) {
-				sendMessage(player, Messages.getString("general.display_no_abilities"));
-			}
-		}
-		if (args.length == 2) {
-			List<Abilities> abilitylist = null;
-			final String choice = args[1].toLowerCase();
-			ChatColor color = ChatColor.WHITE;
-			if (Arrays.asList(airbendingAliases).contains(choice)) {
-				abilitylist = Abilities.getAirbendingAbilities();
-				color = PluginTools.getColor(Settings.getColorString("Air"));
-			}
-			else if (Arrays.asList(waterbendingAliases).contains(choice)) {
-				abilitylist = Abilities.getWaterbendingAbilities();
-				color = PluginTools.getColor(Settings.getColorString("Water"));
-			}
-			else if (Arrays.asList(earthbendingAliases).contains(choice)) {
-				abilitylist = Abilities.getEarthbendingAbilities();
-				color = PluginTools.getColor(Settings.getColorString("Earth"));
-			}
-			else if (Arrays.asList(firebendingAliases).contains(choice)) {
-				abilitylist = Abilities.getFirebendingAbilities();
-				color = PluginTools.getColor(Settings.getColorString("Fire"));
-			}
-			else if (Arrays.asList(chiblockingAliases).contains(choice)) {
-				abilitylist = Abilities.getChiBlockingAbilities();
-				color = PluginTools.getColor(Settings.getColorString("ChiBlocker"));
-			}
-			else {
-				sendMessage(player, ChatColor.RED + "Element " + choice + " is unknown.");
-			}
-			if (abilitylist != null) {
-				for (Abilities ability : abilitylist) {
-					if (EntityTools.canBend(player, ability)) {
-						sendMessage(player, color + ability.name());
-					}
-				}
-			}
-			else {
-				printDisplayUsage(player);
-			}
-		}
-	}
 
 	private void printNotFromConsole() {
 		Messages.sendMessage(null, "General.not_from_console");
