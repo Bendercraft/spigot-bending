@@ -14,8 +14,12 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
-import net.avatar.realms.spigot.bending.abilities.water.Melt;
+import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
+import net.avatar.realms.spigot.bending.abilities.water.Torrent;
+import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
+import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -92,7 +96,7 @@ public class HeatControl extends BendingActiveAbility {
 		for (Block block : BlockTools.getBlocksAroundPoint(location,
 				(int) PluginTools.firebendingDayAugment(MELT_RADIUS, this.player.getWorld()))) {
 			if (BlockTools.isMeltable(block)) {
-				Melt.melt(this.player, block); // Don't really like the idea
+				melt(this.player, block); // Don't really like the idea
 			}
 		}
 	}
@@ -246,5 +250,49 @@ public class HeatControl extends BendingActiveAbility {
 	@Override
 	public BendingAbilities getAbilityType () {
 		return BendingAbilities.HeatControl;
+	}
+	
+	
+
+	// Copy from Melt (now deleted)
+	@SuppressWarnings("deprecation")
+	public static void melt(Player player, Block block) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange, block.getLocation())) {
+			return;
+		}
+		
+		if (!Wave.canThaw(block)) {
+			Wave.thaw(block);
+			return;
+		}
+		if (!Torrent.canThaw(block)) {
+			Torrent.thaw(block);
+			return;
+		}
+		if (BlockTools.isMeltable(block) && !TempBlock.isTempBlock(block)
+				&& WaterManipulation.canPhysicsChange(block)) {
+			if (block.getType() == Material.SNOW) {
+				block.setType(Material.AIR);
+				return;
+			}
+			if (FreezeMelt.isFrozen(block)) {
+				FreezeMelt.thawThenRemove(block);
+			} else {
+				block.setType(Material.WATER);
+				block.setData(FULL);
+			}
+		}
+	}
+	
+	public static void evaporate(Player player, Block block) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange,
+				block.getLocation())) {
+			return;
+		}
+		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block)
+				&& WaterManipulation.canPhysicsChange(block)) {
+			block.setType(Material.AIR);
+			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1);
+		}
 	}
 }

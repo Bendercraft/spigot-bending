@@ -228,6 +228,4 @@ public class FreezeMelt extends BendingActiveAbility {
 	public BendingAbilities getAbilityType() {
 		return BendingAbilities.PhaseChange;
 	}
-
-
 }
