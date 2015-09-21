@@ -19,7 +19,6 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.earth.CompactColumn;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
@@ -70,7 +69,6 @@ public class BendingManager implements Runnable {
 		CompactColumn.progressAll();
 		EarthGrab.progressAll();
 		EarthTunnel.progressAll();
-		EarthArmor.progressAll();
 		MetalBending.progressAll();
 
 		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());

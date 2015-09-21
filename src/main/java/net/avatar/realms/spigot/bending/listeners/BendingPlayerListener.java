@@ -76,7 +76,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-public class BendingPlayerListener implements Listener{
+public class BendingPlayerListener implements Listener {
 	
 	public Bending plugin;
 	
@@ -279,11 +279,6 @@ public class BendingPlayerListener implements Listener{
 //				return;
 //			}
 //			
-//			if (ability == Abilities.EarthArmor) {
-//				new EarthArmor(player, null);
-//				return;
-//			}
-//			
 //			if (ability == Abilities.FireBlade) {
 //				new FireBlade(player);
 //				return;
@@ -334,10 +329,6 @@ public class BendingPlayerListener implements Listener{
 //				
 //				if (ability == Abilities.Collapse) {
 //					new Collapse(player, null);
-//				}
-//				
-//				if (ability == Abilities.EarthArmor) {
-//					new EarthShield(player, null);
 //				}
 //				
 //				if (ability == Abilities.HealingWaters) {

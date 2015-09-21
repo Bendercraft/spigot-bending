@@ -35,6 +35,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
@@ -214,6 +215,8 @@ public class AbilityManager {
 			return new Shockwave(player);
 		case Catapult:
 			return new Catapult(player);
+		case EarthArmor:
+			return new EarthArmor(player);
 		case LavaTrain:
 			return new LavaTrain(player);
 
@@ -291,12 +294,11 @@ public class AbilityManager {
 		register(Catapult.class);
 		// register(Collapse.class);
 		// register(CompactColumn.class);
-		// register(EarthArmor.class);
+		register(EarthArmor.class);
 		register(EarthBlast.class);
 		// register(EarthColumn.class);
 		// register(EarthGrab.class);
 		register(EarthPassive.class);
-		// register(EarthShield.class);
 		// register(EarthTunnel.class);
 		// register(EarthWall.class);
 		register(LavaTrain.class);
@@ -319,7 +321,6 @@ public class AbilityManager {
 		register(WallOfFire.class);
 
 		register(Bloodbending.class);
-		// register(Drainbending.class);
 		// register(FastSwmimming.class);
 		// register(FreezeMelt.class);
 		register(HealingWaters.class);
