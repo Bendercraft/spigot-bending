@@ -54,8 +54,7 @@ public class BendingManager implements Runnable {
 			TempPotionEffect.progressAll();
 			FlyingPlayer.handleAll();
 			handleDayNight();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			AbilityManager.getManager().stopAllAbilities();
 			PluginTools.stopAllBending();
 			this.plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
@@ -67,7 +66,6 @@ public class BendingManager implements Runnable {
 		EarthColumn.progressAll();
 		CompactColumn.progressAll();
 		EarthTunnel.progressAll();
-		MetalBending.progressAll();
 
 		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());
 		for (Block block : copy) {
@@ -91,8 +89,7 @@ public class BendingManager implements Runnable {
 
 	private void handleDayNight() {
 		for (World world : this.plugin.getServer().getWorlds()) {
-			if ((world.getWorldType() == WorldType.NORMAL)
-					&& !this.worlds.contains(world)) {
+			if ((world.getWorldType() == WorldType.NORMAL) && !this.worlds.contains(world)) {
 				this.worlds.add(world);
 				this.nights.put(world, false);
 				this.days.put(world, false);
@@ -109,13 +106,10 @@ public class BendingManager implements Runnable {
 			boolean day = this.days.get(world);
 			if (Tools.isDay(world) && !day) {
 				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingType.Fire)
-							&& player
-							.hasPermission("bending.message.daymessage")) {
+					if (EntityTools.isBender(player, BendingType.Fire) && player.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Fire"));
-						player.sendMessage(color
-								+ "You feel the strength of the rising sun empowering your firebending.");
+						player.sendMessage(color + "You feel the strength of the rising sun empowering your firebending.");
 					}
 				}
 				this.days.put(world, true);
@@ -123,13 +117,10 @@ public class BendingManager implements Runnable {
 
 			if (!Tools.isDay(world) && day) {
 				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingType.Fire)
-							&& player
-							.hasPermission("bending.message.daymessage")) {
+					if (EntityTools.isBender(player, BendingType.Fire) && player.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Fire"));
-						player.sendMessage(color
-								+ "You feel the empowering of your firebending subside as the sun sets.");
+						player.sendMessage(color + "You feel the empowering of your firebending subside as the sun sets.");
 					}
 				}
 				this.days.put(world, false);
@@ -137,13 +128,10 @@ public class BendingManager implements Runnable {
 
 			if (Tools.isNight(world) && !night) {
 				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingType.Water)
-							&& player
-							.hasPermission("bending.message.nightmessage")) {
+					if (EntityTools.isBender(player, BendingType.Water) && player.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Water"));
-						player.sendMessage(color
-								+ "You feel the strength of the rising moon empowering your waterbending.");
+						player.sendMessage(color + "You feel the strength of the rising moon empowering your waterbending.");
 					}
 				}
 				this.nights.put(world, true);
@@ -151,13 +139,10 @@ public class BendingManager implements Runnable {
 
 			if (!Tools.isNight(world) && night) {
 				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingType.Water)
-							&& player
-							.hasPermission("bending.message.nightmessage")) {
+					if (EntityTools.isBender(player, BendingType.Water) && player.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Water"));
-						player.sendMessage(color
-								+ "You feel the empowering of your waterbending subside as the moon sets.");
+						player.sendMessage(color + "You feel the empowering of your waterbending subside as the moon sets.");
 					}
 				}
 				this.nights.put(world, false);

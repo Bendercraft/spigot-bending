@@ -40,6 +40,7 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
+import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -222,6 +223,8 @@ public class AbilityManager {
 			return new EarthGrab(player);
 		case LavaTrain:
 			return new LavaTrain(player);
+		case MetalBending:
+			return new MetalBending(player);
 
 		default:
 			return null;
@@ -305,7 +308,7 @@ public class AbilityManager {
 		// register(EarthTunnel.class);
 		// register(EarthWall.class);
 		register(LavaTrain.class);
-		// register(MetalBending.class);
+		register(MetalBending.class);
 		register(Shockwave.class);
 		register(Tremorsense.class);
 

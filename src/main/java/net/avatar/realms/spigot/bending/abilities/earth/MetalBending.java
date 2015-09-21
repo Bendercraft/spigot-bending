@@ -1,14 +1,15 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -21,11 +22,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 @BendingAbility(name="Metalbending", element=BendingType.Earth, specialization=BendingSpecializationType.Metalbend)
-public class MetalBending {
-
+public class MetalBending extends ActiveAbility {
 	@ConfigurationParameter("Melt-Time")
 	private static long MELT_TIME = 2000;
-	private static Map<Player, MetalBending> instances = new HashMap<Player, MetalBending>();
 
 	private static Map<Material, Integer> metals = new HashMap<Material, Integer>();
 	static {
@@ -51,14 +50,25 @@ public class MetalBending {
 	}
 
 	private long time;
-	private Player player;
 	private ItemStack items;
 
-	private MetalBending(Player player, ItemStack i) {
-		this.player = player;
+	public MetalBending(Player player) {
+		super(player, null);
+	}
+	
+	@Override
+	public boolean sneak() {
+		if(state != AbilityState.CanStart) {
+			return false;
+		}
+		
 		this.time = System.currentTimeMillis();
-		this.items = i;
-		instances.put(player, this);
+		this.items = player.getItemInHand();
+		if(isMeltable(this.items.getType())) {
+			AbilityManager.getManager().addInstance(this);
+			state = AbilityState.Progressing;
+		}
+		return false;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -90,30 +100,8 @@ public class MetalBending {
 		}
 	}
 
-	public static void metalMelt(Player player) {
-		ItemStack is = player.getItemInHand();
-		if (isMeltable(is.getType())) {
-			new MetalBending(player, is);
-		}
-	}
-
 	public static boolean isMeltable(Material m) {
 		return metals.containsKey(m);
-	}
-
-	public static void progressAll() {
-		List<Player> toRemove = new LinkedList<Player>();
-		for (Player p : instances.keySet()) {
-			boolean keep = instances.get(p).progress();
-			if (!keep) {
-				toRemove.add(p);
-			}
-		}
-
-		for (Player p : toRemove) {
-			instances.remove(p);
-		}
-
 	}
 
 	public boolean progress() {
@@ -176,8 +164,14 @@ public class MetalBending {
 		player.sendMessage("melted");
 	}
 
-	public static void removeAll() {
-		instances.clear();
+	@Override
+	public Object getIdentifier() {
+		return player;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.MetalBending;
 	}
 
 }
