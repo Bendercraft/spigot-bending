@@ -12,9 +12,8 @@ import org.bukkit.util.Vector;
 
 public class Tools {
 	public static final long timeinterval = Settings.GLOBAL_COOLDOWN;
-	
-	public static double getDistanceFromLine(Vector line, Location pointonline,
-			Location point) {
+
+	public static double getDistanceFromLine(Vector line, Location pointonline, Location point) {
 		Vector AP = new Vector();
 		double Ax, Ay, Az;
 		Ax = pointonline.getX();
@@ -33,22 +32,18 @@ public class Tools {
 		return (AP.crossProduct(line).length()) / (line.length());
 	}
 
-	public static Vector rotateVectorAroundVector(Vector axis, Vector rotator,
-			double degrees) {
+	public static Vector rotateVectorAroundVector(Vector axis, Vector rotator, double degrees) {
 		double angle = Math.toRadians(degrees);
 		Vector rotation = axis.clone();
 		Vector rotate = rotator.clone();
 		rotation = rotation.normalize();
 
-		Vector thirdaxis = rotation.crossProduct(rotate).normalize()
-				.multiply(rotate.length());
+		Vector thirdaxis = rotation.crossProduct(rotate).normalize().multiply(rotate.length());
 
-		return rotate.multiply(Math.cos(angle)).add(
-				thirdaxis.multiply(Math.sin(angle)));
+		return rotate.multiply(Math.cos(angle)).add(thirdaxis.multiply(Math.sin(angle)));
 	}
 
-	public static Vector getOrthogonalVector(Vector axis, double degrees,
-			double length) {
+	public static Vector getOrthogonalVector(Vector axis, double degrees, double length) {
 
 		Vector ortho = new Vector(axis.getY(), -axis.getX(), 0);
 		ortho = ortho.normalize();
@@ -57,10 +52,8 @@ public class Tools {
 		return rotateVectorAroundVector(axis, ortho, degrees);
 	}
 
-	public static Location getPointOnLine(Location origin, Location target,
-			double distance) {
-		return origin.clone().add(
-				getDirection(origin, target).normalize().multiply(distance));
+	public static Location getPointOnLine(Location origin, Location target, double distance) {
+		return origin.clone().add(getDirection(origin, target).normalize().multiply(distance));
 
 	}
 
@@ -84,20 +77,17 @@ public class Tools {
 		double d = target.distance(origin);
 		double t = d;
 		double vX = (1.0 + 0.07 * t) * (target.getX() - origin.getX()) / t;
-		double vY = (1.0 + 0.03 * t) * (target.getY() - origin.getY()) / t - 0.5 * g
-				* t;
+		double vY = (1.0 + 0.03 * t) * (target.getY() - origin.getY()) / t - 0.5 * g * t;
 		double vZ = (1.0 + 0.07 * t) * (target.getZ() - origin.getZ()) / t;
 		return new Vector(vX, vY, vZ);
 	}
-	
+
 	public static void playFocusWaterEffect(Block block) {
 		block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 4, 20);
 	}
 
 	public static BlockFace getCardinalDirection(Vector vector) {
-		BlockFace[] faces = { BlockFace.NORTH, BlockFace.NORTH_EAST,
-				BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH,
-				BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
+		BlockFace[] faces = { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
 		Vector n, ne, e, se, s, sw, w, nw;
 		w = new Vector(-1, 0, 0);
 		n = new Vector(0, 0, -1);
@@ -146,7 +136,7 @@ public class Tools {
 		}
 		return 4;
 	}
-	
+
 	public static boolean isDay(World world) {
 		long time = world.getTime();
 		if (time >= 23500 || time <= 12500) {
@@ -156,8 +146,7 @@ public class Tools {
 	}
 
 	public static boolean isNight(World world) {
-		if (world.getEnvironment() == Environment.NETHER
-				|| world.getEnvironment() == Environment.THE_END) {
+		if (world.getEnvironment() == Environment.NETHER || world.getEnvironment() == Environment.THE_END) {
 			return false;
 		}
 		long time = world.getTime();

@@ -23,16 +23,16 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Healing Waters", element=BendingElement.Water)
+@BendingAbility(name = "Healing Waters", bind = BendingAbilities.HealingWaters, element = BendingElement.Water)
 public class HealingWaters extends BendingActiveAbility {
-	
+
 	@ConfigurationParameter("Range")
 	private static double RANGE = 5.0;
 
 	private long time = 0;
 	private LivingEntity target;
-	
-	public HealingWaters (final Player player) {
+
+	public HealingWaters(final Player player) {
 		super(player, null);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
@@ -42,32 +42,32 @@ public class HealingWaters extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean sneak () {
+	public boolean sneak() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
-				return false;
-			case CanStart:
-				LivingEntity temp = EntityTools.getTargettedEntity(this.player, RANGE);
-				if (temp == null) {
-					temp = this.player;
-				}
-				this.target = temp;
-				setState(BendingAbilityState.Progressing);
-				AbilityManager.getManager().addInstance(this);
-				return false;
-			case Preparing:
-			case Prepared:
-			case Progressing:
-			case Ended:
-			case Removed:
-			default:
-				return false;
+		case None:
+		case CannotStart:
+			return false;
+		case CanStart:
+			LivingEntity temp = EntityTools.getTargettedEntity(this.player, RANGE);
+			if (temp == null) {
+				temp = this.player;
+			}
+			this.target = temp;
+			setState(BendingAbilityState.Progressing);
+			AbilityManager.getManager().addInstance(this);
+			return false;
+		case Preparing:
+		case Prepared:
+		case Progressing:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
-	
+
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
@@ -81,13 +81,13 @@ public class HealingWaters extends BendingActiveAbility {
 		if (entity == null) {
 			entity = this.player;
 		}
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return false;
 		}
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.HealingWaters, entity.getLocation())) {
 			return false;
 		}
-		
+
 		final long now = System.currentTimeMillis();
 		if (entity.getEntityId() != this.target.getEntityId()) {
 			this.time = now;
@@ -96,8 +96,7 @@ public class HealingWaters extends BendingActiveAbility {
 		this.target = entity;
 		if (isWaterPotion(this.player.getItemInHand())) {
 			giveHPToEntity(this.target);
-		}
-		else if (inWater(this.player)) {
+		} else if (inWater(this.player)) {
 			if (!inWater(this.target)) {
 				return true;
 			}
@@ -118,8 +117,8 @@ public class HealingWaters extends BendingActiveAbility {
 		}
 		return true;
 	}
-	
-	public static boolean isNegativePotionEffect (final PotionEffectType peType) {
+
+	public static boolean isNegativePotionEffect(final PotionEffectType peType) {
 		if (peType.equals(PotionEffectType.BLINDNESS)) {
 			return true;
 		}
@@ -143,15 +142,15 @@ public class HealingWaters extends BendingActiveAbility {
 		}
 		return false;
 	}
-	
-	private static boolean isWaterPotion (final ItemStack item) {
+
+	private static boolean isWaterPotion(final ItemStack item) {
 		if ((item.getType() == Material.POTION) && (item.getDurability() == 0)) {
 			return true;
 		}
 		return false;
 	}
-	
-	private static void giveHPToEntity (LivingEntity le) {
+
+	private static void giveHPToEntity(LivingEntity le) {
 		if (le.isDead()) {
 			return;
 		}
@@ -161,31 +160,26 @@ public class HealingWaters extends BendingActiveAbility {
 			applyHealingToEntity(le);
 		}
 	}
-	
-	private static boolean inWater (final Entity entity) {
+
+	private static boolean inWater(final Entity entity) {
 		final Block block = entity.getLocation().getBlock();
 		if (BlockTools.isWater(block) && !BlockTools.isTempBlock(block)) {
 			return true;
 		}
 		return false;
 	}
-	
-	private static void applyHealingToEntity (final LivingEntity le) {
+
+	private static void applyHealingToEntity(final LivingEntity le) {
 		le.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 70, 1));
 	}
 
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.HealingWaters;
-	}
-	
-	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
@@ -193,9 +187,9 @@ public class HealingWaters extends BendingActiveAbility {
 		if (!inWater(this.player) && !(isWaterPotion(this.player.getItemInHand()))) {
 			return false;
 		}
-		
+
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.HealingWaters);
-		if (instances ==  null) {
+		if (instances == null) {
 			return true;
 		}
 		return !instances.containsKey(this.player);

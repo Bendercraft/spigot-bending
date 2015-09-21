@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
-
 import java.util.Map;
 
 import org.bukkit.Effect;
@@ -21,12 +20,12 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
  * 
- * This ability will be modified :
- * When you hit an entity, you deal a small amount of damage to it and it gets slown.
- * The more you hit it, the more it get slown.
+ * This ability will be modified : When you hit an entity, you deal a small
+ * amount of damage to it and it gets slown. The more you hit it, the more it
+ * get slown.
  *
  */
-@BendingAbility(name="Vital Point", element=BendingElement.ChiBlocker)
+@BendingAbility(name = "Vital Point", bind = BendingAbilities.VitalPoint, element = BendingElement.ChiBlocker)
 public class VitalPoint extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
@@ -80,64 +79,64 @@ public class VitalPoint extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
+		case None:
+		case CannotStart:
+			return false;
+
+		case CanStart:
+			this.target = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
+			if (this.target == null) {
 				return false;
+			}
+			setState(BendingAbilityState.Progressing);
+			AbilityManager.getManager().addInstance(this);
 
-			case CanStart:
-				this.target = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
-				if (this.target == null) {
-					return false;
-				}
-				setState(BendingAbilityState.Progressing);
-				AbilityManager.getManager().addInstance(this);
+		case Preparing:
+		case Prepared:
+		case Progressing:
+			long now = System.currentTimeMillis();
+			if (((now - this.time) < INTERVAL) && (this.cptPunches > 0)) {
+				return false;
+			}
 
-			case Preparing:
-			case Prepared:
-			case Progressing:
-				long now = System.currentTimeMillis();
-				if (((now - this.time) < INTERVAL) && (this.cptPunches > 0)) {
-					return false;
-				}
+			LivingEntity temp = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
+			if (!temp.equals(this.target)) {
+				this.cptPunches = 0;
+				this.amplifier = 0;
+				this.target = temp;
+			}
 
-				LivingEntity temp = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
-				if (!temp.equals(this.target)) {
-					this.cptPunches = 0;
-					this.amplifier = 0;
-					this.target = temp;
-				}
+			this.cptPunches++;
+			if ((this.cptPunches % PUNCH_INTERVAL) == 0) {
+				this.amplifier++;
+			}
 
-				this.cptPunches++;
-				if ((this.cptPunches % PUNCH_INTERVAL) == 0)  {
-					this.amplifier ++;
-				}
-
-				this.target.damage(this.damage, this.player);
-				boolean isSlown = false;
-				for (PotionEffect pe : this.target.getActivePotionEffects()) {
-					if (pe.getType().equals(TYPE)) {
-						if ((pe.getDuration() < SLOW_DURATION) || (pe.getAmplifier() < this.amplifier)) {
-							isSlown = true;
-						}
+			this.target.damage(this.damage, this.player);
+			boolean isSlown = false;
+			for (PotionEffect pe : this.target.getActivePotionEffects()) {
+				if (pe.getType().equals(TYPE)) {
+					if ((pe.getDuration() < SLOW_DURATION) || (pe.getAmplifier() < this.amplifier)) {
+						isSlown = true;
 					}
 				}
-				if (isSlown) {
-					// We have to remove it first, else it will not be added
-					this.target.removePotionEffect(TYPE);
-				}
-				this.target.addPotionEffect(new PotionEffect(TYPE, SLOW_DURATION, this.amplifier));
-				if (this.target instanceof Player) {
-					EntityTools.blockChi((Player) this.target, now + CHIBLOCK_DURATION);
-					((Player)this.target).playEffect(this.player.getLocation(), Effect.GHAST_SHRIEK, null);
-				}
-				this.time = System.currentTimeMillis();
-				return false;
+			}
+			if (isSlown) {
+				// We have to remove it first, else it will not be added
+				this.target.removePotionEffect(TYPE);
+			}
+			this.target.addPotionEffect(new PotionEffect(TYPE, SLOW_DURATION, this.amplifier));
+			if (this.target instanceof Player) {
+				EntityTools.blockChi((Player) this.target, now + CHIBLOCK_DURATION);
+				((Player) this.target).playEffect(this.player.getLocation(), Effect.GHAST_SHRIEK, null);
+			}
+			this.time = System.currentTimeMillis();
+			return false;
 
-			case Ending:
-			case Ended:
-			case Removed:
-			default:
-				return true;
+		case Ending:
+		case Ended:
+		case Removed:
+		default:
+			return true;
 		}
 	}
 
@@ -162,7 +161,7 @@ public class VitalPoint extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
@@ -181,17 +180,12 @@ public class VitalPoint extends BendingActiveAbility {
 	}
 
 	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return MAX_DURATION;
 	}
 
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.VitalPoint;
-	}
-
-	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 }

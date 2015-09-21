@@ -22,68 +22,67 @@ import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Fire Blade", element=BendingElement.Fire)
-public class FireBlade extends BendingActiveAbility{
+@BendingAbility(name = "Fire Blade", bind = BendingAbilities.FireBlade, element = BendingElement.Fire)
+public class FireBlade extends BendingActiveAbility {
 	private static String LORE_NAME = "FireBlade";
-	
+
 	private static final Enchantment SHARP = Enchantment.DAMAGE_ALL;
 	private static final Enchantment DURA = Enchantment.DURABILITY;
 	private static final Enchantment KNOCKBACK = Enchantment.KNOCKBACK;
-	
+
 	@ConfigurationParameter("Sharpness-Level")
 	private static int SHARPNESS_LEVEL = 1;
-	
+
 	@ConfigurationParameter("Durability-Level")
 	private static int DURABILITY_LEVEL = 3;
-	
+
 	@ConfigurationParameter("Duration")
 	private static int DURATION = 40000;
-	
+
 	@ConfigurationParameter("Cooldown-Factor")
 	public static float COOLDOWN_FACTOR = 0.75f;
 
-	
 	private ItemStack blade;
-	
-	public FireBlade (Player player) {
+
+	public FireBlade(Player player) {
 		super(player, null);
 	}
 
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
-				return false;
-			case CanStart:
-				giveFireBlade();
-				AbilityManager.getManager().addInstance(this);
-				setState(BendingAbilityState.Progressing);
-			case Preparing:
-			case Prepared:
-			case Progressing:
-			case Ending:
-			case Ended:
-			case Removed:
-			default :
-				return false;
+		case None:
+		case CannotStart:
+			return false;
+		case CanStart:
+			giveFireBlade();
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Progressing);
+		case Preparing:
+		case Prepared:
+		case Progressing:
+		case Ending:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
-	
+
 	@Override
 	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		
-		if(this.blade == null) {
+
+		if (this.blade == null) {
 			return false;
 		}
-		
-		if(!isFireBlade(this.player.getItemInHand())) {
+
+		if (!isFireBlade(this.player.getItemInHand())) {
 			return false;
 		}
-		
+
 		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.FireBlade) {
 			return false;
 		}
@@ -104,7 +103,7 @@ public class FireBlade extends BendingActiveAbility{
 		}
 		this.player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
 	}
-	
+
 	@Override
 	public void remove() {
 		long now = System.currentTimeMillis();
@@ -112,7 +111,7 @@ public class FireBlade extends BendingActiveAbility{
 		this.bender.cooldown(BendingAbilities.FireBlade, (long) (realDuration * COOLDOWN_FACTOR));
 		super.remove();
 	}
-	
+
 	public static void removeFireBlade(ItemStack is) {
 		FireBlade toRemove = null;
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
@@ -120,41 +119,39 @@ public class FireBlade extends BendingActiveAbility{
 			return;
 		}
 		for (IBendingAbility ab : instances.values()) {
-			FireBlade blade = (FireBlade)ab;
-			if((blade.getBlade() != null) && isFireBlade(blade.getBlade())) {
+			FireBlade blade = (FireBlade) ab;
+			if ((blade.getBlade() != null) && isFireBlade(blade.getBlade())) {
 				toRemove = blade;
 			}
 		}
-		
-		if(toRemove != null) {
+
+		if (toRemove != null) {
 			toRemove.remove();
 		}
 	}
-	
+
 	public ItemStack getBlade() {
 		return this.blade;
 	}
-	
+
 	public static boolean isFireBlade(ItemStack is) {
-		if(is == null) {
+		if (is == null) {
 			return false;
 		}
-		if((is.getItemMeta() != null)
-				&& (is.getItemMeta().getLore() != null)
-				&& is.getItemMeta().getLore().contains(LORE_NAME)) {
+		if ((is.getItemMeta() != null) && (is.getItemMeta().getLore() != null) && is.getItemMeta().getLore().contains(LORE_NAME)) {
 			return true;
 		}
 		return false;
 	}
-	
-	public static boolean isFireBlading(Player p)  {
+
+	public static boolean isFireBlading(Player p) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
 		if (instances == null) {
 			return false;
 		}
 		return instances.containsKey(p);
 	}
-	
+
 	public static FireBlade getFireBlading(Player p) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
 		if (instances == null) {
@@ -165,7 +162,7 @@ public class FireBlade extends BendingActiveAbility{
 		}
 		return (FireBlade) instances.get(p);
 	}
-	
+
 	public void giveFireBlade() {
 		ItemStack fireB = new ItemStack(Material.GOLD_SWORD);
 		if (SHARPNESS_LEVEL > 0) {
@@ -180,27 +177,22 @@ public class FireBlade extends BendingActiveAbility{
 		ItemMeta meta = fireB.getItemMeta();
 		meta.setLore(lore);
 		fireB.setItemMeta(meta);
-		
+
 		int slot = this.player.getInventory().getHeldItemSlot();
 		ItemStack hand = this.player.getInventory().getItem(slot);
 		if (hand != null) {
 			int i = this.player.getInventory().firstEmpty();
 			if (i != -1) {
-				//else the player will loose his hand item, his bad
-				this.player.getInventory().setItem(i,hand);
+				// else the player will loose his hand item, his bad
+				this.player.getInventory().setItem(i, hand);
 			}
 		}
-		this.player.getInventory().setItem(slot,fireB);
+		this.player.getInventory().setItem(slot, fireB);
 		this.blade = fireB;
 	}
 
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.FireBlade;
 	}
 }

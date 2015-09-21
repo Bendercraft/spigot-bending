@@ -10,6 +10,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BendingAbility {
 	public String name();
+
+	public BendingAbilities bind();
+
 	public BendingElement element();
+
 	public BendingAffinity affinity() default BendingAffinity.None;
 }

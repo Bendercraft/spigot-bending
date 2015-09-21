@@ -40,8 +40,7 @@ public class ChooseExecution extends BendingCommand {
 				return true;
 			}
 			target = (Player) sender;
-		}
-		else {
+		} else {
 			if (!sender.hasPermission("bending.command.choose.other")) {
 				sender.sendMessage(ChatColor.RED + Messages.ERROR_CHOOSE_OTHER);
 				return true;
@@ -84,8 +83,7 @@ public class ChooseExecution extends BendingCommand {
 			msg = Messages.OTHER_CHANGE_YOU;
 			msg = msg.replaceAll("{0}", element.name());
 			target.sendMessage(color + msg);
-		}
-		else {
+		} else {
 			String msg = Messages.SET_ELEMENT;
 			msg = msg.replaceAll("{0}", element.name());
 			target.sendMessage(color + msg);
@@ -98,11 +96,9 @@ public class ChooseExecution extends BendingCommand {
 	public void printUsage(CommandSender sender) {
 		if (sender.hasPermission("bending.admin.choose") || sender.hasPermission("bending.admin.rechoose")) {
 			sender.sendMessage("/bending choose [player] <element>");
-		}
-		else if (sender.hasPermission("bending.command.choose")) {
+		} else if (sender.hasPermission("bending.command.choose")) {
 			sender.sendMessage("/bending choose <element>");
-		}
-		else {
+		} else {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}

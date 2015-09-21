@@ -24,13 +24,13 @@ import org.bukkit.util.Vector;
 public class Ripple {
 	@ConfigurationParameter("Radius")
 	static double RADIUS = 15;
-	
+
 	@ConfigurationParameter("Damage")
 	private final int DAMAGE = 5;
 
 	private Player player;
 	private BendingPlayer bender;
-	
+
 	private Vector direction;
 	private Location origin, location;
 
@@ -40,7 +40,7 @@ public class Ripple {
 	private Block block1, block2, block3, block4;
 	private int step = 0;
 	private int maxstep;
-	
+
 	private Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
 
 	public Ripple(Player player, Vector direction) {
@@ -74,8 +74,7 @@ public class Ripple {
 			loc = location.clone().add(0, i, 0);
 			Block topblock = loc.getBlock();
 			Block botblock = loc.clone().add(0, -1, 0).getBlock();
-			if (BlockTools.isTransparentToEarthbending(player, topblock)
-					&& BlockTools.isEarthbendable(player, botblock)) {
+			if (BlockTools.isTransparentToEarthbending(player, topblock) && BlockTools.isEarthbendable(player, botblock)) {
 				location = loc.clone().add(0, -1, 0);
 				return location;
 			}
@@ -200,9 +199,7 @@ public class Ripple {
 				loc = location.clone().add(0, i, 0);
 				Block topblock = loc.getBlock();
 				Block botblock = loc.clone().add(0, -1, 0).getBlock();
-				if (BlockTools.isTransparentToEarthbending(player, topblock)
-						&& !topblock.isLiquid()
-						&& BlockTools.isEarthbendable(player, botblock)) {
+				if (BlockTools.isTransparentToEarthbending(player, topblock) && !topblock.isLiquid() && BlockTools.isEarthbendable(player, botblock)) {
 					location = loc.clone().add(0, -1, 0);
 					locations.add(location);
 					break;
@@ -225,8 +222,7 @@ public class Ripple {
 			length = 2;
 			block = botblock;
 		}
-		return BlockTools.moveEarth(player, block, new Vector(0, -1, 0), length,
-				false);
+		return BlockTools.moveEarth(player, block, new Vector(0, -1, 0), length, false);
 	}
 
 	private boolean increase(Block block) {
@@ -241,12 +237,10 @@ public class Ripple {
 			length = 2;
 		}
 		if (BlockTools.moveEarth(player, block, new Vector(0, 1, 0), length, false)) {
-			for (Entity entity : EntityTools.getEntitiesAroundPoint(block
-					.getLocation().clone().add(0, 1, 0), 2)) {
-				if (entity.getEntityId() != player.getEntityId()
-						&& !entities.contains(entity)) {
-					if (!(entity instanceof FallingBlock)){
-						entities.add(entity); 
+			for (Entity entity : EntityTools.getEntitiesAroundPoint(block.getLocation().clone().add(0, 1, 0), 2)) {
+				if (entity.getEntityId() != player.getEntityId() && !entities.contains(entity)) {
+					if (!(entity instanceof FallingBlock)) {
+						entities.add(entity);
 					}
 				}
 			}
@@ -256,19 +250,19 @@ public class Ripple {
 	}
 
 	private void affect(Entity entity) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
-		
+
 		double damage = DAMAGE;
-		if(bender.hasPath(BendingPath.Tough)) {
+		if (bender.hasPath(BendingPath.Tough)) {
 			damage *= 0.85;
 		}
-		
-		if(bender.hasPath(BendingPath.Reckless)) {
+
+		if (bender.hasPath(BendingPath.Reckless)) {
 			damage *= 1.15;
 		}
-		
+
 		if (entity instanceof LivingEntity) {
 			EntityTools.damageEntity(player, entity, damage);
 		}

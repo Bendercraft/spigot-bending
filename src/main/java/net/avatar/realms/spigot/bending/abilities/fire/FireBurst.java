@@ -24,12 +24,12 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
- * State Preparing : Player is sneaking but burst is not ready yet
- * State Prepared : Player is sneaking and burst is ready
+ * State Preparing : Player is sneaking but burst is not ready yet State
+ * Prepared : Player is sneaking and burst is ready
  *
  * @author Noko
  */
-@BendingAbility(name="Fire Burst", element=BendingElement.Fire)
+@BendingAbility(name = "Fire Burst", bind = BendingAbilities.FireBurst, element = BendingElement.Fire)
 public class FireBurst extends BendingActiveAbility {
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 2500;
@@ -43,15 +43,15 @@ public class FireBurst extends BendingActiveAbility {
 	@ConfigurationParameter("Del-Phi")
 	static double DELPHI = 10;
 
-	@ConfigurationParameter ("Cooldown")
+	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2500;
-	
+
 	private long chargetime = CHARGE_TIME;
 	private int damage = DAMAGE;
-	
-	public FireBurst (Player player) {
+
+	public FireBurst(Player player) {
 		super(player, null);
-		
+
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
@@ -63,9 +63,9 @@ public class FireBurst extends BendingActiveAbility {
 			this.chargetime = 0;
 		}
 	}
-	
+
 	@Override
-	public boolean sneak () {
+	public boolean sneak() {
 		if (this.state.equals(BendingAbilityState.CanStart)) {
 			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Preparing);
@@ -76,7 +76,7 @@ public class FireBurst extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean swing () {
+	public boolean swing() {
 		if (this.state == BendingAbilityState.Prepared) {
 			coneBurst();
 			return false;
@@ -84,8 +84,8 @@ public class FireBurst extends BendingActiveAbility {
 
 		return true;
 	}
-	
-	private void coneBurst () {
+
+	private void coneBurst() {
 		Location location = this.player.getEyeLocation();
 		List<Block> safeblocks = BlockTools.getBlocksAroundPoint(this.player.getLocation(), 2);
 		Vector vector = location.getDirection();
@@ -110,11 +110,11 @@ public class FireBurst extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		
+
 		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.FireBurst)) {
 			return false;
 		}
@@ -136,11 +136,11 @@ public class FireBurst extends BendingActiveAbility {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
 		}
-		
+
 		return true;
 	}
-	
-	private void sphereBurst () {
+
+	private void sphereBurst() {
 		Location location = this.player.getEyeLocation();
 		List<Block> safeblocks = BlockTools.getBlocksAroundPoint(this.player.getLocation(), 2);
 
@@ -162,7 +162,7 @@ public class FireBurst extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove () {
+	public void remove() {
 		this.bender.cooldown(BendingAbilities.FireBurst, COOLDOWN);
 		super.remove();
 	}
@@ -175,32 +175,28 @@ public class FireBurst extends BendingActiveAbility {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		return instances.containsKey(player);
 	}
+
 	public static FireBurst getFireBurst(Player player) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		return (FireBurst) instances.get(player);
 	}
-	
+
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		if (instances.containsKey(this.player)) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.FireBurst;
 	}
 }

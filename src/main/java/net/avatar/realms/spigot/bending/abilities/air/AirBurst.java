@@ -20,13 +20,13 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
- * State Preparing : Player is sneaking but the Burst is not ready
- * State Prepared : Player is sneaking and the burst is ready
+ * State Preparing : Player is sneaking but the Burst is not ready State
+ * Prepared : Player is sneaking and the burst is ready
  *
  * @author Koudja
  */
 
-@BendingAbility(name="Air Burst", element=BendingElement.Air)
+@BendingAbility(name = "Air Burst", bind = BendingAbilities.AirBurst, element = BendingElement.Air)
 public class AirBurst extends BendingActiveAbility {
 
 	@ConfigurationParameter("Charge-Time")
@@ -43,13 +43,13 @@ public class AirBurst extends BendingActiveAbility {
 
 	@ConfigurationParameter("Del-Phi")
 	public static double DELPHI = 10;
-	
-	@ConfigurationParameter ("Fall-Threshold")
+
+	@ConfigurationParameter("Fall-Threshold")
 	private static double THRESHOLD = 10;
 
 	private long chargetime = DEFAULT_CHARGETIME;
 
-	public AirBurst (Player player) {
+	public AirBurst(Player player) {
 		super(player, null);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
@@ -62,7 +62,7 @@ public class AirBurst extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean sneak () {
+	public boolean sneak() {
 		if (this.state.equals(BendingAbilityState.CanStart)) {
 			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Preparing);
@@ -73,7 +73,7 @@ public class AirBurst extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean swing () {
+	public boolean swing() {
 		if (this.state == BendingAbilityState.Prepared) {
 			coneBurst();
 			return false;
@@ -81,20 +81,20 @@ public class AirBurst extends BendingActiveAbility {
 
 		return true;
 	}
-	
+
 	@Override
-	public boolean fall () {
+	public boolean fall() {
 		if (this.player.getFallDistance() < THRESHOLD) {
 			return false;
 		}
 
 		fallBurst();
-		
+
 		return true;
 	}
 
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
@@ -121,7 +121,7 @@ public class AirBurst extends BendingActiveAbility {
 		return true;
 	}
 
-	public static boolean isAirBursting (Player player) {
+	public static boolean isAirBursting(Player player) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBurst);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
@@ -133,7 +133,7 @@ public class AirBurst extends BendingActiveAbility {
 		return (this.state == BendingAbilityState.Prepared);
 	}
 
-	public static AirBurst getAirBurst (Player player) {
+	public static AirBurst getAirBurst(Player player) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBurst);
 		if ((instances == null) || instances.isEmpty()) {
 			return null;
@@ -144,7 +144,7 @@ public class AirBurst extends BendingActiveAbility {
 		return (AirBurst) instances.get(player);
 	}
 
-	private void sphereBurst () {
+	private void sphereBurst() {
 		Location location = this.player.getEyeLocation();
 		double x, y, z;
 		double r = 1;
@@ -162,8 +162,8 @@ public class AirBurst extends BendingActiveAbility {
 		}
 		setState(BendingAbilityState.Ended);
 	}
-	
-	private void coneBurst () {
+
+	private void coneBurst() {
 		Location location = this.player.getEyeLocation();
 		Vector vector = location.getDirection();
 		double angle = Math.toRadians(30);
@@ -185,8 +185,8 @@ public class AirBurst extends BendingActiveAbility {
 		}
 		setState(BendingAbilityState.Ended);
 	}
-	
-	private void fallBurst () {
+
+	private void fallBurst() {
 		Location location = this.player.getLocation();
 		double x, y, z;
 		double r = 1;
@@ -205,17 +205,12 @@ public class AirBurst extends BendingActiveAbility {
 	}
 
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.AirBurst;
-	}
-
-	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return 60 * 10 * 1000;
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
@@ -228,7 +223,7 @@ public class AirBurst extends BendingActiveAbility {
 	}
 
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 }

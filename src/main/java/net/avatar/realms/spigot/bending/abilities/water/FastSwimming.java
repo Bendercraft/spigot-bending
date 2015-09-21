@@ -13,78 +13,71 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Dolphin", element=BendingElement.Water)
+@BendingAbility(name = "Dolphin", bind = BendingAbilities.FastSwimming, element = BendingElement.Water)
 public class FastSwimming extends BendingPassiveAbility {
-	
+
 	@ConfigurationParameter("Speed-Factor")
 	private static double FACTOR = 0.7;
-	
-	public FastSwimming (Player player) {
-		super (player, null);
+
+	public FastSwimming(Player player) {
+		super(player, null);
 	}
-	
+
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+
 		if (this.player.isSneaking()) {
 			return false;
 		}
-		
+
 		if (!EntityTools.canBendPassive(this.player, BendingElement.Water)) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
-	public boolean start () {
+	public boolean start() {
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
-		
+
 		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
 
 		return true;
 	}
-	
+
 	@Override
 	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
-		
-		if (!(EntityTools.canBendPassive(this.player, BendingElement.Water)
-				&& this.player.isSneaking())){
+
+		if (!(EntityTools.canBendPassive(this.player, BendingElement.Water) && this.player.isSneaking())) {
 			return false;
 		}
 		BendingAbilities ability = EntityTools.getBendingAbility(this.player);
 		if ((ability != null) && ability.isShiftAbility() && (ability != BendingAbilities.WaterSpout)) {
 			return false;
 		}
-		if (BlockTools.isWater(this.player.getLocation().getBlock())
-				&& !BlockTools.isTempBlock(this.player.getLocation().getBlock())) {
+		if (BlockTools.isWater(this.player.getLocation().getBlock()) && !BlockTools.isTempBlock(this.player.getLocation().getBlock())) {
 			swimFast();
 		}
 		return true;
 	}
-	
+
 	private void swimFast() {
 		Vector dir = this.player.getEyeLocation().getDirection().clone();
 		this.player.setVelocity(dir.normalize().multiply(FACTOR));
 	}
-	
+
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
-	}
-	
-	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.WaterPassive;
 	}
 }

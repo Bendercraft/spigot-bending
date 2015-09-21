@@ -58,13 +58,11 @@ public class BindExecution extends BendingCommand {
 			try {
 				slot = Integer.parseInt(args.get(1));
 				slot--;
-			}
-			catch (final NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				printUsage(player);
 				return true;
 			}
-		}
-		else {
+		} else {
 			slot = player.getInventory().getHeldItemSlot();
 		}
 		if ((slot < 0) || (slot > 8)) {

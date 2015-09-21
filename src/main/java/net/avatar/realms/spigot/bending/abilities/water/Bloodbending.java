@@ -32,7 +32,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Blood Bending", element=BendingElement.Water, affinity=BendingAffinity.Bloodbend)
+@BendingAbility(name = "Blood Bending", bind = BendingAbilities.Bloodbending, element = BendingElement.Water, affinity = BendingAffinity.Bloodbend)
 public class Bloodbending extends BendingActiveAbility {
 	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
 
@@ -43,7 +43,7 @@ public class Bloodbending extends BendingActiveAbility {
 	private static int MAX_DURATION = 10000;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN =  6000;
+	public static long COOLDOWN = 6000;
 
 	@ConfigurationParameter("Range")
 	public static int RANGE = 8;
@@ -53,29 +53,22 @@ public class Bloodbending extends BendingActiveAbility {
 
 	public Bloodbending(Player player) {
 		super(player, null);
-		
-		this.range = (int) PluginTools.waterbendingNightAugment(RANGE,
-				player.getWorld());
+
+		this.range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			this.range = AvatarState.getValue(this.range);
 		}
 	}
-	
+
 	@Override
 	public boolean sneak() {
 		if (AvatarState.isAvatarState(player)) {
-			for (LivingEntity entity : EntityTools
-					.getLivingEntitiesAroundPoint(player.getLocation(), this.range)) {
-				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), this.range)) {
+				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 					continue;
 				}
 				if (entity instanceof Player) {
-					if (ProtectionManager.isRegionProtectedFromBending(player,
-							BendingAbilities.Bloodbending, entity.getLocation())
-							|| AvatarState.isAvatarState((Player) entity)
-							|| (entity.getEntityId() == player.getEntityId())
-							|| EntityTools.canBend((Player) entity,
-									BendingAbilities.Bloodbending)) {
+					if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Bloodbending, entity.getLocation()) || AvatarState.isAvatarState((Player) entity) || (entity.getEntityId() == player.getEntityId()) || EntityTools.canBend((Player) entity, BendingAbilities.Bloodbending)) {
 						continue;
 					}
 				}
@@ -87,22 +80,17 @@ public class Bloodbending extends BendingActiveAbility {
 				return false;
 			}
 			Entity target = EntityTools.getTargettedEntity(player, this.range);
-			if(ProtectionManager.isEntityProtectedByCitizens(target)) {
+			if (ProtectionManager.isEntityProtectedByCitizens(target)) {
 				return false;
 			}
 			if (target == null) {
 				return false;
-			}		
-			if (!(target instanceof LivingEntity)
-					|| ProtectionManager.isRegionProtectedFromBending(player,
-							BendingAbilities.Bloodbending, target.getLocation())) {
+			}
+			if (!(target instanceof LivingEntity) || ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Bloodbending, target.getLocation())) {
 				return false;
 			}
 			if (target instanceof Player) {
-				if (EntityTools
-						.canBend((Player) target, BendingAbilities.Bloodbending)
-						|| AvatarState.isAvatarState((Player) target)
-						|| ((Player) target).isOp()) {
+				if (EntityTools.canBend((Player) target, BendingAbilities.Bloodbending) || AvatarState.isAvatarState((Player) target) || ((Player) target).isOp()) {
 					return false;
 				}
 
@@ -137,9 +125,7 @@ public class Bloodbending extends BendingActiveAbility {
 	public boolean progress() {
 		PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 60, 1);
 
-		if (!this.player.isSneaking()
-				|| (EntityTools.getBendingAbility(this.player) != BendingAbilities.Bloodbending)
-				|| !EntityTools.canBend(this.player, BendingAbilities.Bloodbending)) {
+		if (!this.player.isSneaking() || (EntityTools.getBendingAbility(this.player) != BendingAbilities.Bloodbending) || !EntityTools.canBend(this.player, BendingAbilities.Bloodbending)) {
 			return false;
 		}
 
@@ -149,13 +135,11 @@ public class Bloodbending extends BendingActiveAbility {
 
 		if (AvatarState.isAvatarState(this.player)) {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
-			for (LivingEntity entity : EntityTools
-					.getLivingEntitiesAroundPoint(this.player.getLocation(), this.range)) {
-				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.player.getLocation(), this.range)) {
+				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 					continue;
 				}
-				if (ProtectionManager.isRegionProtectedFromBending(this.player,
-						BendingAbilities.Bloodbending, entity.getLocation())) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Bloodbending, entity.getLocation())) {
 					continue;
 				}
 				if (entity instanceof Player) {
@@ -208,14 +192,13 @@ public class Bloodbending extends BendingActiveAbility {
 					}
 				}
 				Location newlocation = entity.getLocation();
-				Location location = EntityTools.getTargetedLocation(this.player,
-						(int) entry.getValue().distance(this.player.getLocation()));
+				Location location = EntityTools.getTargetedLocation(this.player, (int) entry.getValue().distance(this.player.getLocation()));
 				double distance = location.distance(newlocation);
 				double dx, dy, dz;
 				dx = location.getX() - newlocation.getX();
 				dy = location.getY() - newlocation.getY();
 				dz = location.getZ() - newlocation.getZ();
-				Vector vector = new Vector(dx, dy/3, dz);
+				Vector vector = new Vector(dx, dy / 3, dz);
 				if (distance > .5) {
 					entity.setVelocity(vector.normalize().multiply(.5));
 				} else {
@@ -262,10 +245,4 @@ public class Bloodbending extends BendingActiveAbility {
 	public Object getIdentifier() {
 		return player;
 	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.Bloodbending;
-	}
-
 }

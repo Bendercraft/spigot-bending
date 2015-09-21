@@ -23,7 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Fire Jet", element = BendingElement.Fire)
+@BendingAbility(name = "Fire Jet", bind = BendingAbilities.FireJet, element = BendingElement.Fire)
 public class FireJet extends BendingActiveAbility {
 
 	@ConfigurationParameter("Speed")
@@ -88,8 +88,7 @@ public class FireJet extends BendingActiveAbility {
 		}
 
 		long now = System.currentTimeMillis();
-		if ((BlockTools.isWater(this.player.getLocation().getBlock()) || (now > (this.startedTime + this.duration)))
-				&& !AvatarState.isAvatarState(this.player)) {
+		if ((BlockTools.isWater(this.player.getLocation().getBlock()) || (now > (this.startedTime + this.duration))) && !AvatarState.isAvatarState(this.player)) {
 			return false;
 		} else {
 			this.player.getWorld().playEffect(this.player.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
@@ -134,11 +133,6 @@ public class FireJet extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.FireJet;
 	}
 
 }

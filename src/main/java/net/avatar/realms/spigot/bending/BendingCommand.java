@@ -17,14 +17,10 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 @Deprecated
 public class BendingCommand {
 
-	private static final String[] clearAliases = {
-			"clear", "cl" };
-	private static final String[] specializeAliases = {
-			"specialize", "spe" };
-	private static final String[] pathAliases = {
-			"path", "p" };
-	private static final String[] helpAliases = {
-			"help", "h", "?" };
+	private static final String[] clearAliases = { "clear", "cl" };
+	private static final String[] specializeAliases = { "specialize", "spe" };
+	private static final String[] pathAliases = { "path", "p" };
+	private static final String[] helpAliases = { "help", "h", "?" };
 	private final Server server;
 	private boolean verbose = true;
 	private BendingPlayer bPlayer;
@@ -49,21 +45,16 @@ public class BendingCommand {
 			final String arg = args[0];
 			if (Arrays.asList(clearAliases).contains(arg)) {
 				clear(player, args);
-			}
-			else if (Arrays.asList(specializeAliases).contains(arg)) {
+			} else if (Arrays.asList(specializeAliases).contains(arg)) {
 				specialize(player, args);
-			}
-			else if (Arrays.asList(pathAliases).contains(arg)) {
+			} else if (Arrays.asList(pathAliases).contains(arg)) {
 				path(player, args);
-			}
-			else if (Arrays.asList(helpAliases).contains(arg)) {
+			} else if (Arrays.asList(helpAliases).contains(arg)) {
 				help(player, args);
-			}
-			else {
+			} else {
 				printHelpDialogue(player);
 			}
-		}
-		else {
+		} else {
 			printHelpDialogue(player);
 		}
 	}
@@ -100,8 +91,7 @@ public class BendingCommand {
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
-			}
-			else {
+			} else {
 				bPlayer = BendingPlayer.getBendingPlayer(player);
 			}
 			if (bPlayer == null) {
@@ -114,8 +104,7 @@ public class BendingCommand {
 			}
 			bPlayer.setPath(path);
 			return;
-		}
-		else if (subAction.equals("list")) {
+		} else if (subAction.equals("list")) {
 			for (final BendingPath path : BendingPath.values()) {
 				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
 				sendMessage(player, color + path.name());
@@ -139,8 +128,7 @@ public class BendingCommand {
 		}
 		if (player == null) {
 			Bending.log.info(message);
-		}
-		else {
+		} else {
 			player.sendMessage(message);
 		}
 	}
@@ -162,13 +150,11 @@ public class BendingCommand {
 					sendMessage(player, ("                                                " + cc + ability.name()));
 					player.sendMessage(cc + msg);
 					return;
-				}
-				else {
+				} else {
 					sendMessage(player, Messages.getString("general.no_bind_perms") + " " + cc + ability + ChatColor.WHITE + ".");
 				}
 			}
-		}
-		else {
+		} else {
 			printCommands(player);
 		}
 	}
@@ -383,8 +369,7 @@ public class BendingCommand {
 			printUsageMessage(player, "/bending spe add <specialization>", "General.spe_add_self");
 			printUsageMessage(player, "/bending spe remove <specialization>", "General.spe_remove_self");
 			printUsageMessage(player, "/bending spe clear", "General.spe_clear_self");
-		}
-		else {
+		} else {
 			printUsageMessage(player, "/bending spe set <specialization> <player>", "General.spe_set_other");
 			printUsageMessage(player, "/bending spe add <specialization> <player>", "General.spe_add_other");
 			printUsageMessage(player, "/bending spe remove <specialization> <player>", "General.spe_remove_self");
@@ -396,8 +381,7 @@ public class BendingCommand {
 		printUsageMessage(player, "/bending path", "General.path_list");
 		if (player != null) {
 			printUsageMessage(player, "/bending path set <path>", "General.path_set_self");
-		}
-		else {
+		} else {
 			printUsageMessage(player, "/bending path set <path> <player>", "General.path_set_other");
 		}
 	}
@@ -435,8 +419,7 @@ public class BendingCommand {
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
-			}
-			else {
+			} else {
 				bPlayer = BendingPlayer.getBendingPlayer(player);
 			}
 			if (bPlayer == null) {
@@ -449,8 +432,7 @@ public class BendingCommand {
 			}
 			bPlayer.setSpecialization(spe);
 			return;
-		}
-		else if (subAction.equals("remove")) {
+		} else if (subAction.equals("remove")) {
 			if (args.length < 3) {
 				printSpecializationUsage(player);
 			}
@@ -469,8 +451,7 @@ public class BendingCommand {
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
-			}
-			else {
+			} else {
 				bPlayer = BendingPlayer.getBendingPlayer(player);
 			}
 			if (bPlayer == null) {
@@ -479,8 +460,7 @@ public class BendingCommand {
 			}
 			bPlayer.removeSpecialization(spe);
 			return;
-		}
-		else if (subAction.equals("add")) {
+		} else if (subAction.equals("add")) {
 			if (args.length < 3) {
 				printSpecializationUsage(player);
 			}
@@ -499,8 +479,7 @@ public class BendingCommand {
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
-			}
-			else {
+			} else {
 				bPlayer = BendingPlayer.getBendingPlayer(player);
 			}
 			if (bPlayer == null) {
@@ -513,8 +492,7 @@ public class BendingCommand {
 			}
 			bPlayer.addSpecialization(spe);
 			return;
-		}
-		else if (subAction.equals("clear")) {
+		} else if (subAction.equals("clear")) {
 			BendingPlayer bPlayer = null;
 			if (args.length == 3) {
 				final String playername = args[2];
@@ -524,8 +502,7 @@ public class BendingCommand {
 					return;
 				}
 				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
-			}
-			else {
+			} else {
 				bPlayer = BendingPlayer.getBendingPlayer(player);
 			}
 			if (bPlayer == null) {
@@ -558,8 +535,7 @@ public class BendingCommand {
 		if (args.length == 1) {
 			BendingPlayer.getBendingPlayer(player).clearAbilities();
 			Messages.sendMessage(player, "General.cleared_message");
-		}
-		else if (args.length == 2) {
+		} else if (args.length == 2) {
 			try {
 				final int slot = Integer.parseInt(args[1]);
 				if ((slot > 0) && (slot < 10)) {
@@ -569,8 +545,7 @@ public class BendingCommand {
 				}
 				printClearUsage(player);
 				return;
-			}
-			catch (final NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 
 			}
 		}
@@ -614,8 +589,7 @@ public class BendingCommand {
 		}
 		if (hasHelpPermission(player, "bending.admin.choose")) {
 			sendMessage(player, "/bending choose [player] <element>");
-		}
-		else if (hasHelpPermission(player, "bending.command.choose") || hasHelpPermission(player, "bending.admin.rechoose")) {
+		} else if (hasHelpPermission(player, "bending.command.choose") || hasHelpPermission(player, "bending.admin.rechoose")) {
 			sendMessage(player, "/bending choose <element>");
 		}
 		if (hasHelpPermission(player, "bending.admin.add")) {
@@ -629,8 +603,7 @@ public class BendingCommand {
 		}
 		if (hasHelpPermission(player, "bending.admin.toggle")) {
 			sendMessage(player, "/bending toggle [player]");
-		}
-		else if (hasHelpPermission(player, "bending.command.toggle")) {
+		} else if (hasHelpPermission(player, "bending.command.toggle")) {
 			sendMessage(player, "/bending toggle");
 		}
 		if (hasHelpPermission(player, "bending.command.display")) {

@@ -33,7 +33,7 @@ public abstract class Bubble extends BendingActiveAbility {
 
 	protected Set<Material> pushedMaterials;
 
-	public Bubble (Player player, BendingActiveAbility parent) {
+	public Bubble(Player player, BendingActiveAbility parent) {
 		super(player, parent);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
@@ -46,13 +46,13 @@ public abstract class Bubble extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 
 		if (!super.progress()) {
 			return false;
 		}
 
-		if (EntityTools.getBendingAbility(this.player) == this.getAbilityType()) {
+		if (EntityTools.getBendingAbility(this.player) == AbilityManager.getManager().getAbilityType(this)) {
 			pushWater();
 			return true;
 		}
@@ -60,7 +60,7 @@ public abstract class Bubble extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean sneak () {
+	public boolean sneak() {
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return true;
@@ -81,7 +81,7 @@ public abstract class Bubble extends BendingActiveAbility {
 		return false;
 	}
 
-	public boolean blockInBubble (Block block) {
+	public boolean blockInBubble(Block block) {
 		if (block.getWorld() != this.player.getWorld()) {
 			return false;
 		}
@@ -91,7 +91,7 @@ public abstract class Bubble extends BendingActiveAbility {
 		return false;
 	}
 
-	private void pushWater () {
+	private void pushWater() {
 		Location location = this.player.getLocation();
 
 		// Do not bother entering this loop if player location has not been
@@ -102,8 +102,7 @@ public abstract class Bubble extends BendingActiveAbility {
 			for (Entry<Block, BlockState> entry : this.origins.entrySet()) {
 				if (entry.getKey().getWorld() != location.getWorld()) {
 					toRemove.add(entry.getKey());
-				}
-				else if (entry.getKey().getLocation().distance(location) > this.radius) {
+				} else if (entry.getKey().getLocation().distance(location) > this.radius) {
 					toRemove.add(entry.getKey());
 				}
 			}
@@ -119,7 +118,7 @@ public abstract class Bubble extends BendingActiveAbility {
 				if (this.origins.containsKey(block)) {
 					continue;
 				}
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, this.getAbilityType(), block.getLocation())) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, AbilityManager.getManager().getAbilityType(this), block.getLocation())) {
 					continue;
 				}
 				if (this.pushedMaterials.contains(block.getType())) {
@@ -133,7 +132,7 @@ public abstract class Bubble extends BendingActiveAbility {
 		}
 	}
 
-	public static boolean canFlowTo (Block block) {
+	public static boolean canFlowTo(Block block) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBubble);
 		if (instances == null) {
 			instances = new HashMap<Object, IBendingAbility>();
@@ -158,7 +157,7 @@ public abstract class Bubble extends BendingActiveAbility {
 	}
 
 	@Override
-	public void stop () {
+	public void stop() {
 		for (Entry<Block, BlockState> entry : this.origins.entrySet()) {
 			if ((entry.getKey().getType() == Material.AIR) || entry.getKey().isLiquid()) {
 				entry.getValue().update(true);
@@ -167,7 +166,7 @@ public abstract class Bubble extends BendingActiveAbility {
 	}
 
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 }

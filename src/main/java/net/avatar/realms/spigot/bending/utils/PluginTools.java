@@ -96,15 +96,14 @@ public class PluginTools {
 	public static void stopAllBending() {
 
 		FireStream.removeAll();
-		
+
 		// BendingManager.removeFlyers();
 		TempBlock.removeAll();
-		
+
 		BlockTools.removeAllEarthbendedBlocks();
 	}
 
-	public static void removeSpouts(Location location, double radius,
-			Player sourceplayer) {
+	public static void removeSpouts(Location location, double radius, Player sourceplayer) {
 		WaterSpout.removeSpouts(location, radius, sourceplayer);
 		AirSpout.removeSpouts(location, radius, sourceplayer);
 	}
@@ -141,8 +140,7 @@ public class PluginTools {
 	}
 
 	public static boolean isLanguageSupported(String language) {
-		return (Bending.language.getSupportedLanguages().contains(language
-				.toLowerCase()));
+		return (Bending.language.getSupportedLanguages().contains(language.toLowerCase()));
 	}
 
 	public static double firebendingDayAugment(double value, World world) {

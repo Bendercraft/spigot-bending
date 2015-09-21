@@ -27,7 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Ice Spikes", element=BendingElement.Water)
+@BendingAbility(name = "Ice Spikes", bind = BendingAbilities.IceSpike, element = BendingElement.Water)
 public class IceSpike extends BendingActiveAbility {
 	private static double defaultrange = 20;
 	private static int defaultdamage = 1;
@@ -53,35 +53,33 @@ public class IceSpike extends BendingActiveAbility {
 	private Location location;
 	private Location firstdestination;
 	private Location destination;
-	
+
 	private SpikeField field = null;
 	private WaterReturn waterReturn;
 
-	public IceSpike(Player player, IBendingAbility parent) {
-		super(player, parent);
+	public IceSpike(Player player) {
+		super(player, null);
 		block(player);
 		if (EntityTools.canPlantbend(player))
 			plantbending = true;
-		range = PluginTools.waterbendingNightAugment(defaultrange,
-				player.getWorld());
-		
+		range = PluginTools.waterbendingNightAugment(defaultrange, player.getWorld());
+
 	}
 
-	//SNEAK
+	// SNEAK
 	@Override
 	public boolean sneak() {
-		if(field != null) {
+		if (field != null) {
 			return false;
 		}
-		sourceblock = BlockTools.getWaterSourceBlock(player, range,
-				plantbending);
+		sourceblock = BlockTools.getWaterSourceBlock(player, range, plantbending);
 		if (sourceblock == null) {
 			field = new SpikeField(player, this);
 			AbilityManager.getManager().addInstance(this);
 			return false;
 		}
-		
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(this.getAbilityType()).values()) {
+
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this)).values()) {
 			IceSpike ice = (IceSpike) ab;
 			if (ice.prepared && ice.player == player) {
 				ice.remove();
@@ -98,20 +96,19 @@ public class IceSpike extends BendingActiveAbility {
 		return false;
 	}
 
-	//SWING
+	// SWING
 	@Override
 	public boolean swing() {
-		if(field != null) {
+		if (field != null) {
 			return false;
 		}
 		redirect(player);
 		boolean activate = false;
 
-		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
-				BendingAbilities.IceSpike)){
+		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(BendingAbilities.IceSpike)) {
 			return false;
 		}
-			
+
 		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
 			IceSpike ice = (IceSpike) ab;
 			if (ice.prepared && ice.player == player) {
@@ -121,24 +118,18 @@ public class IceSpike extends BendingActiveAbility {
 		}
 
 		if (!activate) {
-			IceSpike spike = new IceSpike(player, null);
+			IceSpike spike = new IceSpike(player);
 			if (spike.id == 0 && WaterReturn.hasWaterBottle(player)) {
 				Location eyeloc = player.getEyeLocation();
-				Block block = eyeloc.add(eyeloc.getDirection().normalize())
-						.getBlock();
-				if (BlockTools.isTransparentToEarthbending(player, block)
-						&& BlockTools.isTransparentToEarthbending(player,
-								eyeloc.getBlock())) {
+				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
+				if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
 
-					LivingEntity target = (LivingEntity) EntityTools
-							.getTargettedEntity(player, defaultrange);
+					LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(player, defaultrange);
 					Location destination;
 					if (target == null) {
-						destination = EntityTools.getTargetedLocation(player,
-								defaultrange, BlockTools.transparentEarthbending);
+						destination = EntityTools.getTargetedLocation(player, defaultrange, BlockTools.transparentEarthbending);
 					} else {
-						destination = Tools.getPointOnLine(player.getEyeLocation(),
-								target.getEyeLocation(), defaultrange);
+						destination = Tools.getPointOnLine(player.getEyeLocation(), target.getEyeLocation(), defaultrange);
 					}
 
 					if (destination.distance(block.getLocation()) < 1)
@@ -156,22 +147,20 @@ public class IceSpike extends BendingActiveAbility {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
 	private void throwIce() {
 		if (!prepared)
 			return;
-		LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(
-				player, range);
+		LivingEntity target = (LivingEntity) EntityTools.getTargettedEntity(player, range);
 		if (target == null) {
-			destination = EntityTools.getTargetedLocation(player, range,
-					BlockTools.transparentEarthbending);
+			destination = EntityTools.getTargetedLocation(player, range, BlockTools.transparentEarthbending);
 		} else {
 			destination = target.getEyeLocation();
 		}
-	
+
 		location = sourceblock.getLocation();
 		if (destination.distance(location) < 1)
 			return;
@@ -181,8 +170,7 @@ public class IceSpike extends BendingActiveAbility {
 		} else {
 			firstdestination.add(0, 2, 0);
 		}
-		destination = Tools
-				.getPointOnLine(firstdestination, destination, range);
+		destination = Tools.getPointOnLine(firstdestination, destination, range);
 		progressing = true;
 		settingup = true;
 		prepared = false;
@@ -198,16 +186,15 @@ public class IceSpike extends BendingActiveAbility {
 
 	@Override
 	public boolean progress() {
-		if(waterReturn != null) {
+		if (waterReturn != null) {
 			return waterReturn.progress();
 		}
-		
-		if(field != null) {
+
+		if (field != null) {
 			return field.progress();
 		}
-		
-		if (player.isDead() || !player.isOnline()
-				|| !EntityTools.canBend(player, BendingAbilities.IceSpike)) {
+
+		if (player.isDead() || !player.isOnline() || !EntityTools.canBend(player, BendingAbilities.IceSpike)) {
 			return false;
 		}
 
@@ -222,8 +209,7 @@ public class IceSpike extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.getBendingAbility(player) != BendingAbilities.IceSpike
-				&& prepared) {
+		if (EntityTools.getBendingAbility(player) != BendingAbilities.IceSpike && prepared) {
 			return false;
 		}
 
@@ -247,11 +233,9 @@ public class IceSpike extends BendingActiveAbility {
 			}
 
 			if (settingup) {
-				direction = Tools.getDirection(location, firstdestination)
-						.normalize();
+				direction = Tools.getDirection(location, firstdestination).normalize();
 			} else {
-				direction = Tools.getDirection(location, destination)
-						.normalize();
+				direction = Tools.getDirection(location, destination).normalize();
 			}
 
 			location.add(direction);
@@ -265,23 +249,20 @@ public class IceSpike extends BendingActiveAbility {
 			source.revertBlock();
 			source = null;
 
-			if (BlockTools.isTransparentToEarthbending(player, block)
-					&& !block.isLiquid()) {
+			if (BlockTools.isTransparentToEarthbending(player, block) && !block.isLiquid()) {
 				BlockTools.breakBlock(block);
 			} else if (!BlockTools.isWater(block)) {
 				returnWater();
 				return false;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike,
-					location)) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike, location)) {
 				returnWater();
 				return false;
 			}
 
-			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location,
-					affectingradius)) {
-				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, affectingradius)) {
+				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 					continue;
 				}
 				if (entity.getEntityId() != player.getEntityId()) {
@@ -301,34 +282,30 @@ public class IceSpike extends BendingActiveAbility {
 		} else if (prepared) {
 			Tools.playFocusWaterEffect(sourceblock);
 		}
-		
-		if(field != null) {
+
+		if (field != null) {
 			return field.progress();
 		}
-		
+
 		return true;
 	}
 
 	private void affect(LivingEntity entity) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		int mod = (int) PluginTools.waterbendingNightAugment(defaultmod,
-				player.getWorld());
-		double damage = (int) PluginTools.waterbendingNightAugment(
-				defaultdamage, player.getWorld());
+		int mod = (int) PluginTools.waterbendingNightAugment(defaultmod, player.getWorld());
+		double damage = (int) PluginTools.waterbendingNightAugment(defaultdamage, player.getWorld());
 		if (entity instanceof Player) {
 			if (bPlayer.canBeSlowed()) {
-				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW,
-						70, mod);
+				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
 				new TempPotionEffect(entity, effect);
 				bPlayer.slow(slowCooldown);
 				entity.damage(damage, player);
 			}
 		} else {
-			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70,
-					mod);
+			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
 			new TempPotionEffect(entity, effect);
 			entity.damage(damage, player);
 		}
@@ -338,7 +315,7 @@ public class IceSpike extends BendingActiveAbility {
 	private static void redirect(Player player) {
 		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
 			IceSpike ice = (IceSpike) ab;
-			
+
 			if (!ice.progressing)
 				continue;
 
@@ -347,33 +324,24 @@ public class IceSpike extends BendingActiveAbility {
 
 			if (ice.player.equals(player)) {
 				Location location;
-				Entity target = EntityTools.getTargettedEntity(player,
-						defaultrange);
+				Entity target = EntityTools.getTargettedEntity(player, defaultrange);
 				if (target == null) {
-					location = EntityTools.getTargetedLocation(player,
-							defaultrange);
+					location = EntityTools.getTargetedLocation(player, defaultrange);
 				} else {
 					location = ((LivingEntity) target).getEyeLocation();
 				}
-				location = Tools.getPointOnLine(ice.location, location,
-						defaultrange * 2);
+				location = Tools.getPointOnLine(ice.location, location, defaultrange * 2);
 				ice.redirect(location, player);
 			}
 
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = ice.location;
-			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike,
-					mloc))
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike, mloc))
 				continue;
-			if (mloc.distance(location) <= defaultrange
-					&& Tools.getDistanceFromLine(vector, location, ice.location) < deflectrange
-					&& mloc.distance(location.clone().add(vector)) < mloc
-							.distance(location.clone().add(
-									vector.clone().multiply(-1)))) {
+			if (mloc.distance(location) <= defaultrange && Tools.getDistanceFromLine(vector, location, ice.location) < deflectrange && mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1)))) {
 				Location loc;
-				Entity target = EntityTools.getTargettedEntity(player,
-						defaultrange);
+				Entity target = EntityTools.getTargettedEntity(player, defaultrange);
 				if (target == null) {
 					loc = EntityTools.getTargetedLocation(player, defaultrange);
 				} else {
@@ -402,8 +370,7 @@ public class IceSpike extends BendingActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike,
-					ice.location)) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike, ice.location)) {
 				continue;
 			}
 
@@ -411,12 +378,7 @@ public class IceSpike extends BendingActiveAbility {
 				Location location = player.getEyeLocation();
 				Vector vector = location.getDirection();
 				Location mloc = ice.location;
-				if (mloc.distance(location) <= defaultrange
-						&& Tools.getDistanceFromLine(vector, location,
-								ice.location) < deflectrange
-						&& mloc.distance(location.clone().add(vector)) < mloc
-								.distance(location.clone().add(
-										vector.clone().multiply(-1)))) {
+				if (mloc.distance(location) <= defaultrange && Tools.getDistanceFromLine(vector, location, ice.location) < deflectrange && mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1)))) {
 					ice.state = BendingAbilityState.Ended;
 				}
 			}
@@ -442,7 +404,7 @@ public class IceSpike extends BendingActiveAbility {
 
 	@Override
 	public void remove() {
-		if(waterReturn != null) {
+		if (waterReturn != null) {
 			waterReturn.remove();
 		}
 		this.clear();
@@ -467,8 +429,4 @@ public class IceSpike extends BendingActiveAbility {
 		return id;
 	}
 
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.IceSpike;
-	}
 }

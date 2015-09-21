@@ -20,39 +20,38 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Collapse", element=BendingElement.Earth)
-public class Collapse extends BendingActiveAbility {	
+@BendingAbility(name = "Collapse", bind = BendingAbilities.Collapse, element = BendingElement.Earth)
+public class Collapse extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	public static int RANGE = 20;
-	
+
 	@ConfigurationParameter("Radius")
 	private static double RADIUS = 7;
-	
+
 	@ConfigurationParameter("Depth")
 	public static int DEPTH = 6;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 3000;
-	
+
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 8;
 
-	//TODO : This map is never cleared of any of its item, strange
+	// TODO : This map is never cleared of any of its item, strange
 	private Map<Block, Block> blocks = new HashMap<Block, Block>();
 	private Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 	private double radius = RADIUS;
-	
+
 	private List<CompactColumn> columns = new LinkedList<CompactColumn>();
 
 	public Collapse(Player player) {
 		super(player, null);
 
-		
 	}
 
 	@Override
 	public boolean swing() {
-		if(state != BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		if (bender.isOnCooldown(BendingAbilities.Collapse)) {
@@ -65,12 +64,12 @@ public class Collapse extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(state != BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		if (bender.isOnCooldown(BendingAbilities.Collapse)) {
 			return false;
-		}	
+		}
 
 		Block sblock = BlockTools.getEarthSourceBlock(player, BendingAbilities.Collapse, RANGE);
 		Location location;
@@ -80,9 +79,7 @@ public class Collapse extends BendingActiveAbility {
 			location = sblock.getLocation();
 		}
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-			if (BlockTools.isEarthbendable(player, BendingAbilities.Collapse, block)
-					&& !blocks.containsKey(block)
-					&& block.getY() >= location.getBlockY()) {
+			if (BlockTools.isEarthbendable(player, BendingAbilities.Collapse, block) && !blocks.containsKey(block) && block.getY() >= location.getBlockY()) {
 				getAffectedBlocks(block);
 			}
 		}
@@ -100,14 +97,14 @@ public class Collapse extends BendingActiveAbility {
 
 	@Override
 	public boolean progress() {
-		if(!super.progress()) {
+		if (!super.progress()) {
 			return false;
 		}
-		if(state == BendingAbilityState.Progressing && columns.isEmpty()) {
+		if (state == BendingAbilityState.Progressing && columns.isEmpty()) {
 			return false;
 		}
-		for(CompactColumn column : columns) {
-			if(!column.progress()) {
+		for (CompactColumn column : columns) {
+			if (!column.progress()) {
 				return false;
 			}
 		}
@@ -116,7 +113,7 @@ public class Collapse extends BendingActiveAbility {
 
 	@Override
 	public void remove() {
-		for(CompactColumn column : columns) {
+		for (CompactColumn column : columns) {
 			column.remove();
 		}
 		super.remove();
@@ -147,10 +144,5 @@ public class Collapse extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.Collapse;
 	}
 }

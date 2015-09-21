@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@BendingAbility(name = "Dash", element = BendingElement.ChiBlocker)
+@BendingAbility(name = "Dash", bind = BendingAbilities.Dash, element = BendingElement.ChiBlocker)
 public class Dash extends BendingActiveAbility {
 
 	@ConfigurationParameter("Length")
@@ -85,8 +85,7 @@ public class Dash extends BendingActiveAbility {
 		if (this.state != BendingAbilityState.Preparing) {
 			return;
 		}
-		if (Double.isNaN(d.getX()) || Double.isNaN(d.getY()) || Double.isNaN(d.getZ())
-				|| (((d.getX() < 0.005) && (d.getX() > -0.005)) && ((d.getZ() < 0.005) && (d.getZ() > -0.005)))) {
+		if (Double.isNaN(d.getX()) || Double.isNaN(d.getY()) || Double.isNaN(d.getZ()) || (((d.getX() < 0.005) && (d.getX() > -0.005)) && ((d.getZ() < 0.005) && (d.getZ() > -0.005)))) {
 			this.direction = this.player.getLocation().getDirection().clone().normalize();
 		} else {
 			this.direction = d.normalize();
@@ -105,11 +104,6 @@ public class Dash extends BendingActiveAbility {
 		}
 		this.bender.cooldown(BendingAbilities.Dash, cd);
 		super.remove();
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.Dash;
 	}
 
 	@Override

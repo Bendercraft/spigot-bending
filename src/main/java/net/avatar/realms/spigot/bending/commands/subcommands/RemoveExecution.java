@@ -55,8 +55,7 @@ public class RemoveExecution extends BendingCommand {
 	public void printUsage(CommandSender sender) {
 		if (sender.hasPermission("bending.command.remove")) {
 			sender.sendMessage(ChatColor.RED + "/bending remove <player>");
-		}
-		else {
+		} else {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}

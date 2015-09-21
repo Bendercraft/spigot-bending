@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.abilities.base;
 
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -11,18 +12,17 @@ public abstract class BendingActiveAbility extends BendingAbility {
 	 * Construct the bases of a new active ability instance
 	 *
 	 * @param player
-	 *        The player that launches this ability
+	 *            The player that launches this ability
 	 * @param parent
-	 *        The ability that generates this ability. null if none
+	 *            The ability that generates this ability. null if none
 	 */
-	public BendingActiveAbility (Player player, IBendingAbility parent) {
+	public BendingActiveAbility(Player player, IBendingAbility parent) {
 		super(player, parent);
 
 		if (canBeInitialized()) {
 			this.startedTime = System.currentTimeMillis();
 			setState(BendingAbilityState.CanStart);
-		}
-		else {
+		} else {
 			setState(BendingAbilityState.CannotStart);
 		}
 	}
@@ -33,7 +33,7 @@ public abstract class BendingActiveAbility extends BendingAbility {
 	 * @return <code>true</code> if we should create a new version of the
 	 *         ability <code>false</code> otherwise
 	 */
-	public boolean swing () {
+	public boolean swing() {
 		return false;
 	}
 
@@ -44,7 +44,7 @@ public abstract class BendingActiveAbility extends BendingAbility {
 	 * @return <code>true</code> if we should create a new version of the
 	 *         ability <code>false</code> otherwise
 	 */
-	public boolean jump () {
+	public boolean jump() {
 		return false;
 	}
 
@@ -54,7 +54,7 @@ public abstract class BendingActiveAbility extends BendingAbility {
 	 * @return <code>true</code> if we should create a new version of the
 	 *         ability <code>false</code> otherwise
 	 */
-	public boolean sneak () {
+	public boolean sneak() {
 		return false;
 	}
 
@@ -64,17 +64,17 @@ public abstract class BendingActiveAbility extends BendingAbility {
 	 * @return <code>true</code> if we should create a new version of the
 	 *         ability <code>false</code> otherwise
 	 */
-	public boolean fall () {
+	public boolean fall() {
 		return false;
 	}
 
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
 
-		if (this.bender.isOnCooldown(this.getAbilityType())) {
+		if (this.bender.isOnCooldown(AbilityManager.getManager().getAbilityType(this))) {
 			return false;
 		}
 
@@ -82,12 +82,12 @@ public abstract class BendingActiveAbility extends BendingAbility {
 	}
 
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, this.getAbilityType(), this.player.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, AbilityManager.getManager().getAbilityType(this), this.player.getLocation())) {
 			return false;
 		}
 
@@ -95,7 +95,7 @@ public abstract class BendingActiveAbility extends BendingAbility {
 	}
 
 	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return 60000;
 	}
 }

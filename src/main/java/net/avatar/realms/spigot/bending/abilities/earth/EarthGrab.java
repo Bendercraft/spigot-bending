@@ -27,17 +27,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-@BendingAbility(name="Earth Grab", element=BendingElement.Earth)
+@BendingAbility(name = "Earth Grab", bind = BendingAbilities.EarthGrab, element = BendingElement.Earth)
 public class EarthGrab extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	private static double range = 15;
-	
+
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 15000;
-	
+
 	@ConfigurationParameter("Other-Duration")
 	public static int OTHER_DURATION = 300;
-	
+
 	@ConfigurationParameter("Self-Duration")
 	private static int SELF_DURATION = 5;
 
@@ -56,10 +56,10 @@ public class EarthGrab extends BendingActiveAbility {
 	public EarthGrab(Player player) {
 		super(player, null);
 	}
-	
+
 	@Override
 	public boolean swing() {
-		if(state != BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		if (bender.isOnCooldown(BendingAbilities.EarthGrab)) {
@@ -78,10 +78,10 @@ public class EarthGrab extends BendingActiveAbility {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean sneak() {
-		if(state != BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		if (bender.isOnCooldown(BendingAbilities.EarthGrab)) {
@@ -103,10 +103,10 @@ public class EarthGrab extends BendingActiveAbility {
 	public boolean grabEntity(Player player, Entity entity) {
 		if (entity != null) {
 			if (entity instanceof LivingEntity) {
-				if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 					return false;
 				}
-				
+
 				target = (LivingEntity) entity;
 				time = System.currentTimeMillis();
 				toKeep = true;
@@ -118,10 +118,8 @@ public class EarthGrab extends BendingActiveAbility {
 				x = (x < 0) ? x - 0.5 : x + 0.5;
 				z = (z < 0) ? z - 0.5 : z + 0.5;
 
-				origin = new Location(entity.getLocation().getWorld(), x, y, z,
-						entity.getLocation().getYaw(),
-						entity.getLocation().getPitch());
-				
+				origin = new Location(entity.getLocation().getWorld(), x, y, z, entity.getLocation().getYaw(), entity.getLocation().getPitch());
+
 				if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.RaiseEarth, origin)) {
 					return false;
 				}
@@ -135,64 +133,57 @@ public class EarthGrab extends BendingActiveAbility {
 				locs.add(origin.clone().add(1, 0, 0));
 
 				int cpt = 0;
-				
+
 				for (Location loc : locs) {
-					if (BlockTools.isFluid(loc.getBlock())
-							|| BlockTools.isPlant(loc.getBlock())) {
-						
-						loc.add(0 ,-1, 0);
-						if (BlockTools.isEarthbendable(player,loc.getBlock())) {
+					if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
+
+						loc.add(0, -1, 0);
+						if (BlockTools.isEarthbendable(player, loc.getBlock())) {
 							cpt++;
-						}
-						else if (BlockTools.isFluid(loc.getBlock()) 
-								|| BlockTools.isPlant(loc.getBlock())){
-							
+						} else if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
+
 							loc.add(0, -1, 0);
-							if (BlockTools.isEarthbendable(player,loc.getBlock())) {	
+							if (BlockTools.isEarthbendable(player, loc.getBlock())) {
 								cpt++;
-							}
-							else {
+							} else {
 								return false;
-							}				
-						}
-						else {
+							}
+						} else {
 							return false;
-						}	
-					}
-					else if (BlockTools.isEarthbendable(player, loc.getBlock())) {
-						cpt ++;
-						toRemove.add(loc);			
-					}
-					else {
+						}
+					} else if (BlockTools.isEarthbendable(player, loc.getBlock())) {
+						cpt++;
+						toRemove.add(loc);
+					} else {
 						return false;
 					}
 				}
-				
+
 				for (Location tr : toRemove) {
 					locs.remove(tr);
 				}
 
-				if (cpt >= 4) {			
+				if (cpt >= 4) {
 					target.teleport(origin);
 					// To be sure the guy is locked in the grab
-					
+
 					int duration;
 					if (self) {
 						duration = SELF_DURATION * 20;
 					} else {
 						duration = OTHER_DURATION * 20;
 					}
-					PotionEffect slowness = new PotionEffect(
-							PotionEffectType.SLOW, duration, 150); // The entity
-																	// cannot
-																	// move
-					PotionEffect jumpless = new PotionEffect(
-							PotionEffectType.JUMP, duration, 150); // The entity
-																	// cannot
-																	// jump
+					PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, duration, 150); // The
+																									// entity
+																									// cannot
+																									// move
+					PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, duration, 150); // The
+																									// entity
+																									// cannot
+																									// jump
 					target.addPotionEffect(slowness);
 					target.addPotionEffect(jumpless);
-					target.getWorld().playEffect(target.getLocation(),Effect.GHAST_SHOOT, 0, 4);
+					target.getWorld().playEffect(target.getLocation(), Effect.GHAST_SHOOT, 0, 4);
 					for (Location loc : locs) {
 						int h = 1;
 						if (origin.getY() - loc.getY() >= 2) {
@@ -200,12 +191,11 @@ public class EarthGrab extends BendingActiveAbility {
 						}
 						Material t = loc.getBlock().getType();
 						for (int i = 0; i < h; i++) {
-							affectedBlocks.add(new TempBlock(loc.add(0,1,0).getBlock(), t, full));
+							affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
 						}
 					}
 
-					if (target instanceof Player
-							&& target.getEntityId() != player.getEntityId()) {
+					if (target instanceof Player && target.getEntityId() != player.getEntityId()) {
 						EntityTools.grab((Player) target, time);
 					}
 					bender.cooldown(BendingAbilities.EarthGrab, COOLDOWN);
@@ -230,8 +220,7 @@ public class EarthGrab extends BendingActiveAbility {
 			return false;
 		}
 		if (player.getEntityId() == target.getEntityId()) {
-			if (System.currentTimeMillis() > time
-					+ (SELF_DURATION * 1000)) {
+			if (System.currentTimeMillis() > time + (SELF_DURATION * 1000)) {
 				return false;
 			}
 		}
@@ -265,10 +254,10 @@ public class EarthGrab extends BendingActiveAbility {
 	}
 
 	public boolean revertEarthGrab() {
-		for (TempBlock tb : affectedBlocks)  {
+		for (TempBlock tb : affectedBlocks) {
 			tb.revertBlock();
 		}
-		
+
 		if (target != null) {
 			target.removePotionEffect(PotionEffectType.SLOW);
 			target.removePotionEffect(PotionEffectType.JUMP);
@@ -334,10 +323,5 @@ public class EarthGrab extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return id;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.EarthGrab;
 	}
 }

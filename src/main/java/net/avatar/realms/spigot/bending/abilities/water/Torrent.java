@@ -31,7 +31,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name="Torrent", element=BendingElement.Water)
+@BendingAbility(name = "Torrent", bind = BendingAbilities.Torrent, element = BendingElement.Water)
 public class Torrent extends BendingActiveAbility {
 	private static Map<TempBlock, Player> frozenblocks = new HashMap<TempBlock, Player>();
 
@@ -73,7 +73,7 @@ public class Torrent extends BendingActiveAbility {
 	private boolean launch = false;
 	private boolean launching = false;
 	private boolean freeze = false;
-	
+
 	private double damage;
 	private double range;
 
@@ -83,42 +83,38 @@ public class Torrent extends BendingActiveAbility {
 
 	public Torrent(Player player) {
 		super(player, null);
-		
+
 		damage = DAMAGE;
 		range = RANGE;
 		bender = BendingPlayer.getBendingPlayer(player);
-		if(bender.hasPath(BendingPath.Marksman)) {
+		if (bender.hasPath(BendingPath.Marksman)) {
 			range *= 1.4;
 			damage *= 0.8;
 		}
-		
-		if(bender.hasPath(BendingPath.Flowless)) {
+
+		if (bender.hasPath(BendingPath.Flowless)) {
 			damage *= 1.2;
 		}
 	}
-	
+
 	@Override
 	public boolean sneak() {
 		this.time = System.currentTimeMillis();
-		this.sourceblock = BlockTools.getWaterSourceBlock(player, selectrange,
-				EntityTools.canPlantbend(player));
-		
+		this.sourceblock = BlockTools.getWaterSourceBlock(player, selectrange, EntityTools.canPlantbend(player));
+
 		if (this.sourceblock == null && WaterReturn.hasWaterBottle(player)) {
 			Location eyeloc = player.getEyeLocation();
-			Block block = eyeloc.add(eyeloc.getDirection().normalize())
-					.getBlock();
-			if (BlockTools.isTransparentToEarthbending(player, block)
-					&& BlockTools.isTransparentToEarthbending(player,
-							eyeloc.getBlock())) {
+			Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
+			if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
 				WaterReturn.emptyWaterBottle(player);
 			}
 		}
-		
+
 		if (this.sourceblock != null) {
 			this.sourceselected = true;
 			AbilityManager.getManager().addInstance(this);
 		}
-		
+
 		return false;
 	}
 
@@ -131,26 +127,25 @@ public class Torrent extends BendingActiveAbility {
 		}
 		List<Block> ice = BlockTools.getBlocksAroundPoint(this.location, this.layer);
 		for (Block block : ice) {
-			if (BlockTools.isTransparentToEarthbending(this.player, block)
-					&& (block.getType() != Material.ICE)) {
+			if (BlockTools.isTransparentToEarthbending(this.player, block) && (block.getType() != Material.ICE)) {
 				TempBlock tblock = new TempBlock(block, Material.ICE, (byte) 0);
 				frozenblocks.put(tblock, this.player);
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean swing() {
 		launch = true;
 		if (launching)
 			freeze = true;
-		
+
 		return false;
 	}
 
 	@Override
 	public boolean progress() {
-		if(!super.progress()) {
+		if (!super.progress()) {
 			return false;
 		}
 
@@ -160,13 +155,13 @@ public class Torrent extends BendingActiveAbility {
 			}
 			return false;
 		}
-		
-		if(waterReturn != null) {
+
+		if (waterReturn != null) {
 			return waterReturn.progress();
 		}
-		
-		if(burst != null) {
-			if(!burst.progress()) {
+
+		if (burst != null) {
+			if (!burst.progress()) {
 				returnWater(location);
 				return false;
 			}
@@ -187,12 +182,11 @@ public class Torrent extends BendingActiveAbility {
 
 				if (this.player.isSneaking()) {
 					this.sourceselected = false;
-					this.settingup = true;				
+					this.settingup = true;
 
 					if (BlockTools.isPlant(this.sourceblock)) {
 						this.sourceblock.setType(Material.AIR);
-					} else if (!BlockTools
-							.adjacentToThreeOrMoreSources(this.sourceblock)) {
+					} else if (!BlockTools.adjacentToThreeOrMoreSources(this.sourceblock)) {
 						this.sourceblock.setType(Material.AIR);
 					}
 					this.source = new TempBlock(this.sourceblock, Material.WATER, full);
@@ -209,8 +203,7 @@ public class Torrent extends BendingActiveAbility {
 					return false;
 				}
 				Location eyeloc = this.player.getEyeLocation();
-				double startangle = this.player.getEyeLocation().getDirection()
-						.angle(new Vector(1, 0, 0));
+				double startangle = this.player.getEyeLocation().getDirection().angle(new Vector(1, 0, 0));
 				double dx = radius * Math.cos(startangle);
 				double dy = 0;
 				double dz = radius * Math.sin(startangle);
@@ -231,8 +224,7 @@ public class Torrent extends BendingActiveAbility {
 					Vector direction = new Vector(0, 1, 0);
 					this.location = this.location.clone().add(direction);
 				} else {
-					Vector direction = Tools.getDirection(this.location, setup)
-							.normalize();
+					Vector direction = Tools.getDirection(this.location, setup).normalize();
 					this.location = this.location.clone().add(direction);
 				}
 
@@ -242,17 +234,14 @@ public class Torrent extends BendingActiveAbility {
 					this.source = null;
 					this.forming = true;
 				} else {
-					if (!this.location.getBlock().equals(
-							this.source.getLocation().getBlock())) {
+					if (!this.location.getBlock().equals(this.source.getLocation().getBlock())) {
 						this.source.revertBlock();
 						this.source = null;
 						Block block = this.location.getBlock();
-						if (!BlockTools.isTransparentToEarthbending(this.player,
-								block) || block.isLiquid()) {
+						if (!BlockTools.isTransparentToEarthbending(this.player, block) || block.isLiquid()) {
 							return false;
 						}
-						this.source = new TempBlock(this.location.getBlock(),
-								Material.WATER, full);
+						this.source = new TempBlock(this.location.getBlock(), Material.WATER, full);
 					}
 				}
 			}
@@ -321,18 +310,13 @@ public class Torrent extends BendingActiveAbility {
 					this.location = blockloc.clone();
 				}
 				Block block = blockloc.getBlock();
-				if (!doneblocks.contains(block)
-						&& !ProtectionManager.isRegionProtectedFromBending(this.player,
-								BendingAbilities.Torrent, blockloc)) {
-					if (BlockTools.isTransparentToEarthbending(this.player, block)
-							&& !block.isLiquid()) {
-						this.launchblocks.add(new TempBlock(block, Material.WATER,
-								full));
+				if (!doneblocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, blockloc)) {
+					if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
+						this.launchblocks.add(new TempBlock(block, Material.WATER, full));
 						doneblocks.add(block);
-					} else if (!BlockTools.isTransparentToEarthbending(this.player,
-							block)) {
+					} else if (!BlockTools.isTransparentToEarthbending(this.player, block)) {
 						break;
-					}						
+					}
 				}
 			}
 			if (this.launchblocks.isEmpty()) {
@@ -343,12 +327,10 @@ public class Torrent extends BendingActiveAbility {
 		}
 
 		Entity target = null;
-		if(!bender.hasPath(BendingPath.Flowless)) {
-			target = EntityTools.getTargettedEntity(this.player, range,
-					this.hurtentities);
+		if (!bender.hasPath(BendingPath.Flowless)) {
+			target = EntityTools.getTargettedEntity(this.player, range, this.hurtentities);
 		}
-		Location targetloc = EntityTools.getTargetBlock(this.player, range,
-				BlockTools.getTransparentEarthbending()).getLocation();
+		Location targetloc = EntityTools.getTargetBlock(this.player, range, BlockTools.getTransparentEarthbending()).getLocation();
 
 		if ((target != null) && !ProtectionManager.isEntityProtectedByCitizens(target)) {
 			targetloc = target.getLocation();
@@ -356,8 +338,7 @@ public class Torrent extends BendingActiveAbility {
 
 		ArrayList<TempBlock> newblocks = new ArrayList<TempBlock>();
 
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(
-				this.player.getLocation(), range + 5);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(this.player.getLocation(), range + 5);
 		List<Entity> affectedentities = new ArrayList<Entity>();
 
 		Block realblock = this.launchblocks.get(0).getBlock();
@@ -377,9 +358,7 @@ public class Torrent extends BendingActiveAbility {
 
 		// player.sendBlockChange(location, 20, (byte) 0);
 
-		if ((this.location.distance(this.player.getLocation()) > range)
-				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent,
-						this.location)) {
+		if ((this.location.distance(this.player.getLocation()) > range) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, this.location)) {
 			if (this.layer < maxlayer) {
 				if (this.freeze || (this.layer < 1)) {
 					this.layer++;
@@ -435,22 +414,17 @@ public class Torrent extends BendingActiveAbility {
 			} else {
 				newblocks.add(block);
 				for (LivingEntity entity : entities) {
-					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}
 					if (entity.getWorld() != block.getBlock().getWorld()) {
 						continue;
 					}
-					if ((entity.getLocation().distance(block.getLocation()) <= 1.5)
-							&& !affectedentities.contains(entity)) {
+					if ((entity.getLocation().distance(block.getLocation()) <= 1.5) && !affectedentities.contains(entity)) {
 						if (i == 0) {
 							affect(entity, dir);
 						} else {
-							affect(entity,
-									Tools.getDirection(
-											block.getLocation(),
-											this.launchblocks.get(i - 1)
-											.getLocation()).normalize());
+							affect(entity, Tools.getDirection(block.getLocation(), this.launchblocks.get(i - 1).getLocation()).normalize());
 						}
 						affectedentities.add(entity);
 					}
@@ -473,8 +447,7 @@ public class Torrent extends BendingActiveAbility {
 		this.startangle += 30;
 		Location loc = this.player.getEyeLocation();
 		ArrayList<Block> doneblocks = new ArrayList<Block>();
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(
-				loc, radius + 2);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(loc, radius + 2);
 		List<Entity> affectedentities = new ArrayList<Entity>();
 		for (double theta = this.startangle; theta < (this.angle + this.startangle); theta += 20) {
 			double phi = Math.toRadians(theta);
@@ -483,22 +456,18 @@ public class Torrent extends BendingActiveAbility {
 			double dz = Math.sin(phi) * radius;
 			Location blockloc = loc.clone().add(dx, dy, dz);
 			Block block = blockloc.getBlock();
-			if (!doneblocks.contains(block)
-					&& !ProtectionManager.isRegionProtectedFromBending(this.player,
-							BendingAbilities.Torrent, blockloc)) {
-				if (BlockTools.isTransparentToEarthbending(this.player, block)
-						&& !block.isLiquid()) {
+			if (!doneblocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, blockloc)) {
+				if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
 					this.blocks.add(new TempBlock(block, Material.WATER, full));
 					doneblocks.add(block);
 					for (LivingEntity entity : entities) {
-						if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+						if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 							continue;
 						}
 						if (entity.getWorld() != blockloc.getWorld()) {
 							continue;
 						}
-						if (!affectedentities.contains(entity)
-								&& (entity.getLocation().distance(blockloc) <= 1.5)) {
+						if (!affectedentities.contains(entity) && (entity.getLocation().distance(blockloc) <= 1.5)) {
 							deflect(entity);
 						}
 					}
@@ -532,10 +501,10 @@ public class Torrent extends BendingActiveAbility {
 	@Override
 	public void remove() {
 		this.clear();
-		if(waterReturn != null) {
+		if (waterReturn != null) {
 			waterReturn.remove();
 		}
-		if(burst != null) {
+		if (burst != null) {
 			burst.remove();
 		}
 		super.remove();
@@ -547,7 +516,7 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	private void deflect(LivingEntity entity) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
 		if (entity.getEntityId() == this.player.getEntityId()) {
@@ -576,15 +545,15 @@ public class Torrent extends BendingActiveAbility {
 			velocity.setZ(vec.getY());
 		}
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-		if(bender.hasPath(BendingPath.Marksman)) {
+		if (bender.hasPath(BendingPath.Marksman)) {
 			velocity = velocity.multiply(1.5);
 		}
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);
 
 		World world = this.player.getWorld();
-		
-		if(!bender.hasPath(BendingPath.Marksman)) {
+
+		if (!bender.hasPath(BendingPath.Marksman)) {
 			double damagedealt = DEFLECT_DAMAGE;
 			if (Tools.isNight(world)) {
 				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * DEFLECT_DAMAGE);
@@ -595,7 +564,7 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	private void affect(LivingEntity entity, Vector direction) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
 		if (entity.getEntityId() == this.player.getEntityId()) {
@@ -613,8 +582,7 @@ public class Torrent extends BendingActiveAbility {
 			World world = this.player.getWorld();
 			double damagedealt = damage;
 			if (Tools.isNight(world)) {
-				damagedealt = (PluginTools
-						.getWaterbendingNightAugment(world) * damage);
+				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * damage);
 			}
 
 			EntityTools.damageEntity(this.player, entity, damagedealt);
@@ -662,11 +630,6 @@ public class Torrent extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.Torrent;
 	}
 
 }

@@ -27,47 +27,47 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name="Wall of Fire", element=BendingElement.Fire)
+@BendingAbility(name = "Wall of Fire", bind = BendingAbilities.WallOfFire, element = BendingElement.Fire)
 public class WallOfFire extends BendingActiveAbility {
 
 	private static double maxangle = 50;
 	private static long interval = 250;
-	
+
 	@ConfigurationParameter("Range")
 	private static int RANGE = 4;
-	
+
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 7500;
-	
+
 	@ConfigurationParameter("Interval")
 	private static long DAMAGE_INTERVAL = 500;
 
 	@ConfigurationParameter("Height")
 	private static int HEIGHT = 4;
-	
+
 	@ConfigurationParameter("Width")
 	private static int WIDTH = 4;
-	
+
 	@ConfigurationParameter("Duration")
 	private static long DURATION = 5000;
-	
+
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 9;
-	
+
 	private Location origin;
 	private long time;
 	private boolean active = true;
 	private int damagetick = 0, intervaltick = 0;
 	private List<Block> blocks = new LinkedList<Block>();
-	
+
 	private int damage;
 	private int width;
 	private int height;
 	private long duration;
 
 	public WallOfFire(Player player) {
-		super (player, null);
-		
+		super(player, null);
+
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
@@ -81,53 +81,53 @@ public class WallOfFire extends BendingActiveAbility {
 			return;
 		}
 	}
-	
+
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
+		case None:
+		case CannotStart:
+			return false;
+		case CanStart:
+			World world = this.player.getWorld();
+
+			if (Tools.isDay(this.player.getWorld())) {
+				this.width = (int) PluginTools.firebendingDayAugment(WIDTH, world);
+				this.height = (int) PluginTools.firebendingDayAugment(HEIGHT, world);
+				this.duration = (long) PluginTools.firebendingDayAugment(DURATION, world);
+				this.damage = (int) PluginTools.firebendingDayAugment(DAMAGE, world);
+			}
+
+			if (this.bender.hasPath(BendingPath.Nurture)) {
+				this.damage *= 0.8;
+			}
+			if (this.bender.hasPath(BendingPath.Lifeless)) {
+				this.damage *= 1.1;
+			}
+
+			this.time = this.startedTime;
+
+			Vector direction = this.player.getEyeLocation().getDirection();
+			Vector compare = direction.clone();
+			compare.setY(0);
+
+			if (Math.abs(direction.angle(compare)) > Math.toRadians(maxangle)) {
 				return false;
-			case CanStart:
-				World world = this.player.getWorld();
+			}
 
-				if (Tools.isDay(this.player.getWorld())) {
-					this.width = (int) PluginTools.firebendingDayAugment(WIDTH, world);
-					this.height = (int) PluginTools.firebendingDayAugment(HEIGHT, world);
-					this.duration = (long) PluginTools.firebendingDayAugment(DURATION, world);
-					this.damage = (int) PluginTools.firebendingDayAugment(DAMAGE, world);
-				}
-				
-				if(this.bender.hasPath(BendingPath.Nurture)) {
-					this.damage *= 0.8;
-				}
-				if(this.bender.hasPath(BendingPath.Lifeless)) {
-					this.damage *= 1.1;
-				}
+			initializeBlocks();
+			setState(BendingAbilityState.Progressing);
+			AbilityManager.getManager().addInstance(this);
 
-				this.time = this.startedTime;
-
-				Vector direction = this.player.getEyeLocation().getDirection();
-				Vector compare = direction.clone();
-				compare.setY(0);
-
-				if (Math.abs(direction.angle(compare)) > Math.toRadians(maxangle)) {
-					return false;
-				}
-
-				initializeBlocks();
-				setState(BendingAbilityState.Progressing);
-				AbilityManager.getManager().addInstance(this);
-				
-				return false;
-			case Preparing:
-			case Prepared:
-			case Progressing:
-			case Ending:
-			case Ended:
-			case Removed:
-			default:
-				return false;
+			return false;
+		case Preparing:
+		case Prepared:
+		case Progressing:
+		case Ending:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
 
@@ -176,14 +176,12 @@ public class WallOfFire extends BendingActiveAbility {
 
 		double w = this.width;
 		double h = this.height;
-		//TODO : Make it no longer pass through the walls
+		// TODO : Make it no longer pass through the walls
 		for (double i = -w; i <= w; i++) {
 			for (double j = -h; j <= h; j++) {
-				Location location = this.origin.clone().add(
-						orthoud.clone().multiply(j));
+				Location location = this.origin.clone().add(orthoud.clone().multiply(j));
 				location = location.add(ortholr.clone().multiply(i));
-				if (ProtectionManager.isRegionProtectedFromBending(this.player,
-						BendingAbilities.WallOfFire, location)) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.WallOfFire, location)) {
 					continue;
 				}
 				Block block = location.getBlock();
@@ -196,8 +194,7 @@ public class WallOfFire extends BendingActiveAbility {
 
 	private void display() {
 		for (Block block : this.blocks) {
-			block.getWorld().playEffect(block.getLocation(),
-					Effect.MOBSPAWNER_FLAMES, 0, 15);
+			block.getWorld().playEffect(block.getLocation(), Effect.MOBSPAWNER_FLAMES, 0, 15);
 		}
 	}
 
@@ -207,18 +204,16 @@ public class WallOfFire extends BendingActiveAbility {
 			radius = this.width;
 		}
 		radius = radius + 1;
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(
-				this.origin, radius);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(this.origin, radius);
 		if (entities.contains(this.player)) {
 			entities.remove(this.player);
 		}
 
 		for (LivingEntity entity : entities) {
-			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
 			}
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.WallOfFire,
-					entity.getLocation())) {
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.WallOfFire, entity.getLocation())) {
 				continue;
 			}
 			for (Block block : this.blocks) {
@@ -231,7 +226,7 @@ public class WallOfFire extends BendingActiveAbility {
 	}
 
 	private void affect(LivingEntity entity) {
-		if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
 		entity.setVelocity(new Vector(0, 0, 0));
@@ -239,9 +234,9 @@ public class WallOfFire extends BendingActiveAbility {
 		new Enflamed(this.player, entity, 1, this);
 
 	}
-	
+
 	@Override
-	public boolean canBeInitialized () {
+	public boolean canBeInitialized() {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
@@ -250,19 +245,13 @@ public class WallOfFire extends BendingActiveAbility {
 		if (instances == null) {
 			return true;
 		}
-		
+
 		return !instances.containsKey(this.player);
 	}
 
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
 
-	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.WallOfFire;
-	}
-
-	
 }

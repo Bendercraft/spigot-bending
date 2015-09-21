@@ -36,7 +36,7 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
-@BendingAbility(name = "Plastic Bomb", element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
+@BendingAbility(name = "Plastic Bomb", bind = BendingAbilities.PlasticBomb, element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
 public class C4 extends BendingActiveAbility {
 
 	private static int ID = Integer.MIN_VALUE;
@@ -252,21 +252,21 @@ public class C4 extends BendingActiveAbility {
 		this.bomb = block;
 		byte facing = 0x1;
 		switch (face) {
-			case SOUTH:
-				facing = 0x3;
-				break;
-			case NORTH:
-				facing = 0x2;
-				break;
-			case WEST:
-				facing = 0x4;
-				break;
-			case EAST:
-				facing = 0x5;
-				break;
-			default:
-				facing = 0x1;
-				break;
+		case SOUTH:
+			facing = 0x3;
+			break;
+		case NORTH:
+			facing = 0x2;
+			break;
+		case WEST:
+			facing = 0x4;
+			break;
+		case EAST:
+			facing = 0x5;
+			break;
+		default:
+			facing = 0x1;
+			break;
 		}
 		this.bomb.setTypeIdAndData(Material.SKULL.getId(), facing, true);
 		Skull skull = (Skull) this.bomb.getState();
@@ -286,8 +286,7 @@ public class C4 extends BendingActiveAbility {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && (this.location.distance(block.getLocation()) < (RADIUS / 2.0)))) {
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.PlasticBomb, block.getLocation())
-						&& !ProtectionManager.isRegionProtectedFromExplosion(this.player, BendingAbilities.PlasticBomb, block.getLocation())) {
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.PlasticBomb, block.getLocation()) && !ProtectionManager.isRegionProtectedFromExplosion(this.player, BendingAbilities.PlasticBomb, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}
@@ -392,11 +391,6 @@ public class C4 extends BendingActiveAbility {
 	public void cancel() {
 		this.bomb.setType(this.previousType);
 		remove();
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.PlasticBomb;
 	}
 
 	@Override

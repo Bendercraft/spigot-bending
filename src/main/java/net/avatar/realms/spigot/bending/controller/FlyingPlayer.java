@@ -17,53 +17,53 @@ import net.avatar.realms.spigot.bending.abilities.base.BendingAbility;
 public class FlyingPlayer {
 
 	private static Map<UUID, FlyingPlayer> flyingPlayers = new HashMap<UUID, FlyingPlayer>();
-	
+
 	private Player player;
 	private boolean couldFly;
 	private boolean wasFlying;
 	private Map<BendingAbility, Long> causes;
 
-	private FlyingPlayer (Player player) {
-		
+	private FlyingPlayer(Player player) {
+
 		this.player = player;
 		this.couldFly = (player.getAllowFlight());
 		this.wasFlying = player.isFlying();
 		this.causes = new HashMap<BendingAbility, Long>();
 	}
 
-	public void fly () {
-		
+	public void fly() {
+
 		this.player.setAllowFlight(true);
 		this.player.setFlying(true);
 	}
 
-	public void resetState () {
-		
+	public void resetState() {
+
 		this.player.setAllowFlight(this.couldFly);
 		this.player.setFlying(this.wasFlying);
 	}
 
-	private boolean addCause (BendingAbility cause, Long maxDuration) {
-		
+	private boolean addCause(BendingAbility cause, Long maxDuration) {
+
 		if (this.causes == null) {
 			return false;
 		}
-		
+
 		this.causes.put(cause, maxDuration);
 		return true;
 	}
 
-	public boolean hasCauses () {
-		
+	public boolean hasCauses() {
+
 		if (this.causes == null) {
 			return false;
 		}
 
 		return !this.causes.isEmpty();
 	}
-	
-	public boolean hasCause (BendingAbility cause) {
-		
+
+	public boolean hasCause(BendingAbility cause) {
+
 		if (this.causes == null) {
 			return false;
 		}
@@ -71,38 +71,37 @@ public class FlyingPlayer {
 		if (this.causes.isEmpty()) {
 			return false;
 		}
-		
+
 		return this.causes.containsKey(cause);
 	}
-	
-	private void removeCause (BendingAbility cause) {
-		
+
+	private void removeCause(BendingAbility cause) {
+
 		if (this.causes == null) {
 			return;
 		}
-		
+
 		if (this.causes.containsKey(cause)) {
 			this.causes.remove(cause);
 		}
 	}
 
-	public static FlyingPlayer addFlyingPlayer (Player player, BendingAbility cause, Long maxDuration) {
-		
+	public static FlyingPlayer addFlyingPlayer(Player player, BendingAbility cause, Long maxDuration) {
+
 		if ((player == null) || (cause == null)) {
 			return null;
 		}
-		
+
 		FlyingPlayer flying = null;
 		if (flyingPlayers.containsKey(player.getUniqueId())) {
 			flying = flyingPlayers.get(player.getUniqueId());
 			if (flying == null) {
 				flying = new FlyingPlayer(player);
 			}
-		}
-		else {
+		} else {
 			flying = new FlyingPlayer(player);
 		}
-		
+
 		flying.addCause(cause, System.currentTimeMillis() + maxDuration);
 		if (flying.hasCauses()) {
 			flyingPlayers.put(player.getUniqueId(), flying);
@@ -111,18 +110,18 @@ public class FlyingPlayer {
 		return flying;
 	}
 
-	public static void removeFlyingPlayer (Player player, BendingAbility cause) {
-		
+	public static void removeFlyingPlayer(Player player, BendingAbility cause) {
+
 		if (!flyingPlayers.containsKey(player.getUniqueId())) {
 			return;
 		}
-		
+
 		FlyingPlayer flying = flyingPlayers.get(player.getUniqueId());
 		if (flying == null) {
 			flyingPlayers.remove(player.getUniqueId());
 			return;
 		}
-		
+
 		if (flying.hasCause(cause)) {
 			flying.removeCause(cause);
 			if (!flying.hasCauses()) {
@@ -131,9 +130,9 @@ public class FlyingPlayer {
 			}
 		}
 	}
-	
-	private boolean handle () {
-		
+
+	private boolean handle() {
+
 		long now = System.currentTimeMillis();
 		List<BendingAbility> toRemove = new LinkedList<BendingAbility>();
 		for (BendingAbility ab : this.causes.keySet()) {
@@ -141,7 +140,7 @@ public class FlyingPlayer {
 				toRemove.add(ab);
 			}
 		}
-		
+
 		for (BendingAbility ab : toRemove) {
 			this.causes.remove(ab);
 		}
@@ -149,8 +148,8 @@ public class FlyingPlayer {
 		return hasCauses();
 	}
 
-	public static void handleAll () {
-		
+	public static void handleAll() {
+
 		List<UUID> toRemove = new LinkedList<UUID>();
 		for (UUID id : flyingPlayers.keySet()) {
 			if (!flyingPlayers.get(id).handle()) {

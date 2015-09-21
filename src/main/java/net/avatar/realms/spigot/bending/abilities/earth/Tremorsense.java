@@ -7,26 +7,21 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 
-@BendingAbility(name="Tremor Sense", element=BendingElement.Earth)
+@BendingAbility(name = "Tremor Sense", bind = BendingAbilities.Tremorsense, element = BendingElement.Earth)
 public class Tremorsense extends BendingActiveAbility {
-	
-	public Tremorsense (Player player) {
+
+	public Tremorsense(Player player) {
 		super(player, null);
 	}
 
 	@Override
-	public boolean sneak () {
+	public boolean sneak() {
 		return false;
 	}
-	
+
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.Tremorsense;
-	}
-	
-	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
 	}
-	
+
 }

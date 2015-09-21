@@ -19,7 +19,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@BendingAbility(name="Illumination", element=BendingElement.Fire)
+@BendingAbility(name = "Illumination", bind = BendingAbilities.Illumination, element = BendingElement.Fire)
 public class Illumination extends BendingActiveAbility {
 
 	@ConfigurationParameter("Range")
@@ -31,63 +31,56 @@ public class Illumination extends BendingActiveAbility {
 	private Block block;
 	private BlockState blockState;
 
-	public Illumination (Player player) {
+	public Illumination(Player player) {
 		super(player, null);
 	}
 
 	@Override
-	public boolean sneak () {
+	public boolean sneak() {
 		switch (this.state) {
-			case None:
-			case CannotStart:
-				return false;
-			case CanStart:
-				AbilityManager.getManager().addInstance(this);
-				setState(BendingAbilityState.Progressing);
-				return false;
-			case Preparing:
-			case Prepared:
-			case Progressing:
-				setState(BendingAbilityState.Ended);
-				return false;
-			case Ending:
-			case Ended:
-			case Removed:
-			default:
-				return false;
+		case None:
+		case CannotStart:
+			return false;
+		case CanStart:
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Progressing);
+			return false;
+		case Preparing:
+		case Prepared:
+		case Progressing:
+			setState(BendingAbilityState.Ended);
+			return false;
+		case Ending:
+		case Ended:
+		case Removed:
+		default:
+			return false;
 		}
 	}
 
 	private void set() {
 		Block standingblock = this.player.getLocation().getBlock();
 		Block standblock = standingblock.getRelative(BlockFace.DOWN);
-		if ((FireStream.isIgnitable(this.player, standingblock) && (standblock.getType() != Material.LEAVES))
-				&& (this.block == null) && !isIlluminated(standblock)) {
+		if ((FireStream.isIgnitable(this.player, standingblock) && (standblock.getType() != Material.LEAVES)) && (this.block == null) && !isIlluminated(standblock)) {
 			this.block = standingblock;
 			this.blockState = this.block.getState();
 			this.block.setType(Material.TORCH);
-		}
-		else if ((FireStream.isIgnitable(this.player, standingblock) && (standblock.getType() != Material.LEAVES))
-				&& !this.block.equals(standblock) && !isIlluminated(standblock) && BlockTools.isSolid(standblock)) {
+		} else if ((FireStream.isIgnitable(this.player, standingblock) && (standblock.getType() != Material.LEAVES)) && !this.block.equals(standblock) && !isIlluminated(standblock) && BlockTools.isSolid(standblock)) {
 			revert();
 			this.block = standingblock;
 			this.blockState = this.block.getState();
 			this.block.setType(Material.TORCH);
-		}
-		else if (this.block == null) {
+		} else if (this.block == null) {
 			return;
-		}
-		else if (this.player.getWorld() != this.block.getWorld()) {
+		} else if (this.player.getWorld() != this.block.getWorld()) {
 			revert();
-		}
-		else if (this.player.getLocation().distance(this.block.getLocation()) >
-		PluginTools.firebendingDayAugment(RANGE, this.player.getWorld())) {
+		} else if (this.player.getLocation().distance(this.block.getLocation()) > PluginTools.firebendingDayAugment(RANGE, this.player.getWorld())) {
 			revert();
 		}
 	}
-	
+
 	@Override
-	public boolean progress () {
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
@@ -98,7 +91,7 @@ public class Illumination extends BendingActiveAbility {
 	}
 
 	@Override
-	public void stop () {
+	public void stop() {
 		revert();
 	}
 
@@ -109,17 +102,17 @@ public class Illumination extends BendingActiveAbility {
 	}
 
 	@Override
-	protected long getMaxMillis () {
+	protected long getMaxMillis() {
 		return 1000 * 60 * 15;
 	}
-	
+
 	@Override
-	public void remove () {
+	public void remove() {
 		this.bender.cooldown(BendingAbilities.Illumination, COOLDOWN);
 		super.remove();
 	}
 
-	public static boolean isIlluminated (Block block) {
+	public static boolean isIlluminated(Block block) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Illumination);
 		if (instances == null) {
 			return false;
@@ -132,15 +125,10 @@ public class Illumination extends BendingActiveAbility {
 		}
 		return false;
 	}
-	
+
 	@Override
-	public Object getIdentifier () {
+	public Object getIdentifier() {
 		return this.player;
-	}
-	
-	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.FireBlast;
 	}
 
 }

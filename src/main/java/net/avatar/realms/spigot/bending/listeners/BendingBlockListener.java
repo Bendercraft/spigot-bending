@@ -26,7 +26,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
-import net.avatar.realms.spigot.bending.abilities.water.FreezeMelt;
+import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
@@ -35,14 +35,14 @@ import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
-public class BendingBlockListener implements Listener{
-	
+public class BendingBlockListener implements Listener {
+
 	public Bending plugin;
-	
+
 	public BendingBlockListener(Bending bending) {
 		this.plugin = bending;
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
@@ -51,7 +51,7 @@ public class BendingBlockListener implements Listener{
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		if (event.getCause() == IgniteCause.LIGHTNING) {
@@ -61,7 +61,7 @@ public class BendingBlockListener implements Listener{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockFlowTo(BlockFromToEvent event) {
 		Block toblock = event.getToBlock();
@@ -69,8 +69,7 @@ public class BendingBlockListener implements Listener{
 		if (BlockTools.isWater(fromblock)) {
 			event.setCancelled(!AirBubble.canFlowTo(toblock));
 			if (!event.isCancelled()) {
-				event.setCancelled(!WaterManipulation.canFlowFromTo(fromblock,
-						toblock));
+				event.setCancelled(!WaterManipulation.canFlowFromTo(fromblock, toblock));
 			}
 			if (!event.isCancelled()) {
 				if (Illumination.isIlluminated(toblock)) {
@@ -78,13 +77,13 @@ public class BendingBlockListener implements Listener{
 				}
 			}
 		}
-		if(BlockTools.isLava(fromblock)) {
-			if(LavaTrain.isLavaPart(fromblock)) {
+		if (BlockTools.isLava(fromblock)) {
+			if (LavaTrain.isLavaPart(fromblock)) {
 				event.setCancelled(true);
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockMeltEvent(BlockFadeEvent event) {
 		Block block = event.getBlock();
@@ -96,7 +95,7 @@ public class BendingBlockListener implements Listener{
 			event.setCancelled(!WaterManipulation.canPhysicsChange(block));
 		}
 		if (!event.isCancelled()) {
-			event.setCancelled(FreezeMelt.isFrozen(block));
+			event.setCancelled(PhaseChange.isFrozen(block));
 		}
 		if (!event.isCancelled()) {
 			event.setCancelled(!Wave.canThaw(block));
@@ -108,7 +107,7 @@ public class BendingBlockListener implements Listener{
 			FireStream.remove(block);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
@@ -120,14 +119,12 @@ public class BendingBlockListener implements Listener{
 			event.setCancelled(BlockTools.tempnophysics.contains(block));
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
-		if (WaterWall.wasBrokenFor(player, block)
-				|| OctopusForm.wasBrokenFor(player, block)
-				|| Torrent.wasBrokenFor(player, block)) {
+		if (WaterWall.wasBrokenFor(player, block) || OctopusForm.wasBrokenFor(player, block) || Torrent.wasBrokenFor(player, block)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -135,22 +132,21 @@ public class BendingBlockListener implements Listener{
 		if (blast != null) {
 			blast.cancel();
 		}
-		
+
 		Object bomber = C4.isCFour(block);
 		if (bomber != null) {
 			block.getDrops().clear();
 			C4.getCFour(bomber).cancel();
 		}
-		
-		
+
 		EarthGrab grab = EarthGrab.blockInEarthGrab(block);
 		if (grab != null) {
 			grab.setToKeep(false);
 			event.setCancelled(true);
 		}
-		
-		if (FreezeMelt.isFrozen(block)) {
-			FreezeMelt.thawThenRemove(block);
+
+		if (PhaseChange.isFrozen(block)) {
+			PhaseChange.thawThenRemove(block);
 			event.setCancelled(true);
 		} else if (WaterWall.isWaterWallPart(block)) {
 			WaterWall.thaw(block);
@@ -165,7 +161,7 @@ public class BendingBlockListener implements Listener{
 		}
 		TempBlock.revertBlock(block);
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockForm(BlockFormEvent event) {
 		if (BlockTools.isTempBlock(event.getBlock())) {

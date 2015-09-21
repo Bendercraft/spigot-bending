@@ -31,14 +31,14 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 /**
  * 
- * This ability throws a poisonned dart to straight foward.
- * If the darth hit an entity, this entity gets poisonned.
- * The type of poisonned can change if specifics items are hold in hand.
+ * This ability throws a poisonned dart to straight foward. If the darth hit an
+ * entity, this entity gets poisonned. The type of poisonned can change if
+ * specifics items are hold in hand.
  *
  */
 
-@BendingAbility(name="Poisonned Dart", element=BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
-public class PoisonnedDart extends BendingActiveAbility{
+@BendingAbility(name = "Poisonned Dart", bind = BendingAbilities.PoisonnedDart, element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
+public class PoisonnedDart extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 2;
@@ -70,7 +70,7 @@ public class PoisonnedDart extends BendingActiveAbility{
 		if (this.state.equals(BendingAbilityState.CannotStart) || this.state.equals(BendingAbilityState.Preparing)) {
 			return true;
 		}
-		
+
 		if (!this.state.equals(BendingAbilityState.CanStart)) {
 			return false;
 		}
@@ -87,48 +87,46 @@ public class PoisonnedDart extends BendingActiveAbility{
 		this.effects = new LinkedList<PotionEffect>();
 		System.out.println(is.toString());
 		switch (is.getType()) {
-			case MILK_BUCKET:
-				this.effects = null;
-				is.setType(Material.BUCKET);
-				is.setAmount(1);
-				break;
-			case POTION:
-				Potion potion = Potion.fromItemStack(is);
-				this.effects.addAll(potion.getEffects());
+		case MILK_BUCKET:
+			this.effects = null;
+			is.setType(Material.BUCKET);
+			is.setAmount(1);
+			break;
+		case POTION:
+			Potion potion = Potion.fromItemStack(is);
+			this.effects.addAll(potion.getEffects());
+			this.player.getInventory().removeItem(is);
+			this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
+			break;
+		case EYE_OF_ENDER:
+			this.effects.add(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 10, 1));
+			if (is.getAmount() == 1) {
 				this.player.getInventory().removeItem(is);
-				this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
-				break;
-			case EYE_OF_ENDER:
-				this.effects.add(new PotionEffect(PotionEffectType.BLINDNESS,20*10,1));
+			} else {
+				is.setAmount(is.getAmount() - 1);
+			}
+			break;
+		case MUSHROOM_SOUP:
+			this.effects.add(new PotionEffect(PotionEffectType.CONFUSION, 20 * 12, 1));
+			is.setType(Material.BOWL);
+			is.setAmount(1);
+			break;
+		case SKULL_ITEM:
+			@SuppressWarnings("deprecation")
+			byte data = is.getData().getData();
+			// If this is a wither skull
+			if (data == 1) {
+				this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 60, 0));
 				if (is.getAmount() == 1) {
 					this.player.getInventory().removeItem(is);
-				}
-				else {
+				} else {
 					is.setAmount(is.getAmount() - 1);
 				}
-				break;
-			case MUSHROOM_SOUP:
-				this.effects.add(new PotionEffect(PotionEffectType.CONFUSION,20*12,1));
-				is.setType(Material.BOWL);
-				is.setAmount(1);
-				break;
-			case SKULL_ITEM:
-				@SuppressWarnings("deprecation")
-				byte data = is.getData().getData();
-				// If this is a wither skull
-				if (data == 1) {
-					this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 60, 0));
-					if (is.getAmount() == 1) {
-						this.player.getInventory().removeItem(is);
-					}
-					else {
-						is.setAmount(is.getAmount() - 1);
-					}
-				}
-				break;
-			default : 
-				this.effects.add(new PotionEffect(PotionEffectType.POISON, 20*1, 0));
-				break;
+			}
+			break;
+		default:
+			this.effects.add(new PotionEffect(PotionEffectType.POISON, 20 * 1, 0));
+			break;
 		}
 
 		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
@@ -138,7 +136,7 @@ public class PoisonnedDart extends BendingActiveAbility{
 	}
 
 	@Override
-	public boolean progress() {	
+	public boolean progress() {
 		if (!super.progress()) {
 			return false;
 		}
@@ -147,7 +145,7 @@ public class PoisonnedDart extends BendingActiveAbility{
 			setState(BendingAbilityState.Progressing);
 		}
 
-		if (this.state != BendingAbilityState.Progressing){
+		if (this.state != BendingAbilityState.Progressing) {
 			return true;
 		}
 
@@ -172,7 +170,7 @@ public class PoisonnedDart extends BendingActiveAbility{
 	private boolean affectAround() {
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.PoisonnedDart, this.location)) {
 			return false;
-		}		
+		}
 		int cptEnt = 0;
 		boolean health = areHealthEffects();
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, 2.1)) {
@@ -185,10 +183,9 @@ public class PoisonnedDart extends BendingActiveAbility{
 					entity.removePotionEffect(effect.getType());
 				}
 				entity.getActivePotionEffects().clear();
-			}
-			else {
+			} else {
 				for (PotionEffect effect : this.effects) {
-					entity.addPotionEffect(effect);	
+					entity.addPotionEffect(effect);
 				}
 			}
 			if (!health && (this.effects != null)) {
@@ -210,15 +207,14 @@ public class PoisonnedDart extends BendingActiveAbility{
 		}
 		LinkedList<PotionEffect> healthEffects = new LinkedList<PotionEffect>();
 		for (PotionEffect effect : this.effects) {
-			if (effect.getType().equals(PotionEffectType.HEAL)
-					|| effect.getType().equals(PotionEffectType.HEALTH_BOOST)
-					|| effect.getType().equals(PotionEffectType.REGENERATION)) {
+			if (effect.getType().equals(PotionEffectType.HEAL) || effect.getType().equals(PotionEffectType.HEALTH_BOOST) || effect.getType().equals(PotionEffectType.REGENERATION)) {
 				healthEffects.add(effect);
 			}
 		}
 
 		return !healthEffects.isEmpty();
 	}
+
 	private void advanceLocation() {
 		VISUAL.display(0, 0, 0, 1, 1, this.location, 20);
 		this.location = this.location.add(this.direction.clone().multiply(1.5));
@@ -244,11 +240,6 @@ public class PoisonnedDart extends BendingActiveAbility{
 		}
 
 		return true;
-	}
-
-	@Override
-	public BendingAbilities getAbilityType() {
-		return BendingAbilities.PoisonnedDart;
 	}
 
 	@Override

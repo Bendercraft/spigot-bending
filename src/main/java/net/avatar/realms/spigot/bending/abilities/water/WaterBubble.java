@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name="Water Bubble", element=BendingElement.Water)
+@BendingAbility(name = "Water Bubble", bind = BendingAbilities.WaterBubble, element = BendingElement.Water)
 public class WaterBubble extends Bubble {
 
 	@ConfigurationParameter("Radius")
@@ -22,7 +22,7 @@ public class WaterBubble extends Bubble {
 	@ConfigurationParameter("Max-Duration")
 	private static long MAX_DURATION = 60 * 10 * 1000;
 
-	public WaterBubble (Player player) {
+	public WaterBubble(Player player) {
 		super(player, null);
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
@@ -31,8 +31,7 @@ public class WaterBubble extends Bubble {
 
 		if (Tools.isNight(this.player.getWorld())) {
 			this.radius = PluginTools.waterbendingNightAugment(WaterBubble.DEFAULT_RADIUS, this.player.getWorld());
-		}
-		else {
+		} else {
 			this.radius = DEFAULT_RADIUS;
 		}
 
@@ -46,12 +45,7 @@ public class WaterBubble extends Bubble {
 	}
 
 	@Override
-	public BendingAbilities getAbilityType () {
-		return BendingAbilities.WaterBubble;
-	}
-
-	@Override
-	public long getMaxMillis () {
+	public long getMaxMillis() {
 		return MAX_DURATION;
 	}
 }

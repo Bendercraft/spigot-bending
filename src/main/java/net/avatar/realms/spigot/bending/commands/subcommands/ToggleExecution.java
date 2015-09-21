@@ -36,18 +36,15 @@ public class ToggleExecution extends BendingCommand {
 			if (EntityTools.speToggledBenders.contains(player.getUniqueId())) {
 				EntityTools.speToggledBenders.remove(player.getUniqueId());
 				player.sendMessage("You toggled back your specialization");
-			}
-			else {
+			} else {
 				EntityTools.speToggledBenders.add(player.getUniqueId());
 				player.sendMessage("You toggled your specialization");
 			}
-		}
-		else {
+		} else {
 			if (!EntityTools.toggledBending.contains(player.getUniqueId())) {
 				EntityTools.toggledBending.add(player.getUniqueId());
 				Messages.sendMessage(player, "general.toggle_off", ChatColor.AQUA);
-			}
-			else {
+			} else {
 				EntityTools.toggledBending.remove(player.getUniqueId());
 				Messages.sendMessage(player, "general.toggle_on", ChatColor.AQUA);
 			}

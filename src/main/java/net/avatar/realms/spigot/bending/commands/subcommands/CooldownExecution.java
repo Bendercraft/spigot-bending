@@ -48,8 +48,7 @@ public class CooldownExecution extends BendingCommand {
 		player.sendMessage("-Cooldowns :");
 		if ((cooldowns == null) || cooldowns.isEmpty()) {
 			player.sendMessage("--- None");
-		}
-		else {
+		} else {
 			for (BendingAbilities ab : cooldowns.keySet()) {
 				ChatColor col = ChatColor.WHITE;
 				int min = (int) ((cooldowns.get(ab) / 1000) / 60);
@@ -67,8 +66,7 @@ public class CooldownExecution extends BendingCommand {
 	public void printUsage(CommandSender sender) {
 		if (sender.hasPermission("bending.command.cooldown")) {
 			sender.sendMessage("/bending cooldown");
-		}
-		else {
+		} else {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
