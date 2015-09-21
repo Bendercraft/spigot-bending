@@ -3,10 +3,10 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 import org.bukkit.Location;
@@ -14,7 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Collapse", element=BendingType.Earth)
+@BendingAbility(name="Collapse", element=BendingElement.Earth)
 public class CompactColumn {
 	private static Map<Integer, CompactColumn> instances = new HashMap<Integer, CompactColumn>();
 
@@ -38,10 +38,10 @@ public class CompactColumn {
 	public CompactColumn(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(Abilities.Collapse))
+		if (bPlayer.isOnCooldown(BendingAbilities.Collapse))
 			return;
 
-		block = BlockTools.getEarthSourceBlock(player, Abilities.Collapse, Collapse.RANGE);
+		block = BlockTools.getEarthSourceBlock(player, BendingAbilities.Collapse, Collapse.RANGE);
 		if (block == null) {
 			return;
 		}
@@ -58,7 +58,7 @@ public class CompactColumn {
 			if (canInstantiate()) {
 				id = ID;
 				instances.put(id, this);
-				bPlayer.cooldown(Abilities.Collapse, Collapse.COOLDOWN);
+				bPlayer.cooldown(BendingAbilities.Collapse, Collapse.COOLDOWN);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}

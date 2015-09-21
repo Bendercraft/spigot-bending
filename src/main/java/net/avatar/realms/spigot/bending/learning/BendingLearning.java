@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.learning.listeners.AirListener;
 import net.avatar.realms.spigot.bending.learning.listeners.ChiListener;
 import net.avatar.realms.spigot.bending.learning.listeners.EarthListener;
@@ -62,7 +62,7 @@ public class BendingLearning {
 		}
 	}
 	
-	public boolean addPermission(Player player, Abilities ability) {
+	public boolean addPermission(Player player, BendingAbilities ability) {
 		if(!EntityTools.hasPermission(player, ability)) {
 			//Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
@@ -82,7 +82,7 @@ public class BendingLearning {
 		return false;
 	}
 	
-	public boolean removePermission(Player player, Abilities ability) {
+	public boolean removePermission(Player player, BendingAbilities ability) {
 		if(EntityTools.hasPermission(player, ability)) {
 			//Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
@@ -152,7 +152,7 @@ public class BendingLearning {
 		actuals.remove(p);
 	}
 	
-	public boolean isBasicBendingAbility(Abilities ability) {
+	public boolean isBasicBendingAbility(BendingAbilities ability) {
 		switch (ability) {
 		case AirBlast:
 		case AirSpout:

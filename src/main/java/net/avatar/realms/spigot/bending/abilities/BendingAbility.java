@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 public @interface BendingAbility {
 
 	public String name();
-	public BendingType element();
-	public BendingSpecializationType specialization() default BendingSpecializationType.None;
+	public BendingElement element();
+	public BendingAffinity specialization() default BendingAffinity.None;
 }

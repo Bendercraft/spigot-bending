@@ -6,16 +6,16 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Water Passive", element=BendingType.Water)
-public class WaterPassive extends PassiveAbility{
+@BendingAbility(name="Water Passive", element=BendingElement.Water)
+public class WaterPassive extends BendingPassiveAbility{
 	
 	public WaterPassive(Player player) {
 		super(player, null);
@@ -28,7 +28,7 @@ public class WaterPassive extends PassiveAbility{
 	
 	@Override
 	public boolean start() {
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
 		
@@ -57,8 +57,8 @@ public class WaterPassive extends PassiveAbility{
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.FastSwimming;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.FastSwimming;
 	}
 
 	@Override
@@ -67,11 +67,11 @@ public class WaterPassive extends PassiveAbility{
 			return false;
 		}
 		
-		if (!this.bender.isBender(BendingType.Water)) {
+		if (!this.bender.isBender(BendingElement.Water)) {
 			return false;
 		}
 		
-		if (!EntityTools.canBendPassive(this.player, BendingType.Water)) {
+		if (!EntityTools.canBendPassive(this.player, BendingElement.Water)) {
 			return false;
 		}
 		

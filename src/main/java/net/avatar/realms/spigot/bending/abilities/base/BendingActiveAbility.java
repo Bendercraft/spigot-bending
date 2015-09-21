@@ -2,10 +2,10 @@ package net.avatar.realms.spigot.bending.abilities.base;
 
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-public abstract class ActiveAbility extends Ability {
+public abstract class BendingActiveAbility extends BendingAbility {
 
 	/**
 	 * Construct the bases of a new active ability instance
@@ -15,15 +15,15 @@ public abstract class ActiveAbility extends Ability {
 	 * @param parent
 	 *        The ability that generates this ability. null if none
 	 */
-	public ActiveAbility (Player player, IAbility parent) {
+	public BendingActiveAbility (Player player, IBendingAbility parent) {
 		super(player, parent);
 
 		if (canBeInitialized()) {
 			this.startedTime = System.currentTimeMillis();
-			setState(AbilityState.CanStart);
+			setState(BendingAbilityState.CanStart);
 		}
 		else {
-			setState(AbilityState.CannotStart);
+			setState(BendingAbilityState.CannotStart);
 		}
 	}
 

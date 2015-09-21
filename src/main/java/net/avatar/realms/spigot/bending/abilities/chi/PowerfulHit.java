@@ -2,10 +2,10 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -15,8 +15,8 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * You must be sneaking when clicking to activate this technique.
  *
  */
-@BendingAbility(name="Powerful Hit", element=BendingType.ChiBlocker)
-public class PowerfulHit extends ActiveAbility{
+@BendingAbility(name="Powerful Hit", element=BendingElement.ChiBlocker)
+public class PowerfulHit extends BendingActiveAbility{
 
 	@ConfigurationParameter("Damage")
 	public static long DAMAGE = 5;
@@ -57,8 +57,8 @@ public class PowerfulHit extends ActiveAbility{
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.PowerfulHit;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.PowerfulHit;
 	}
 
 	@Override

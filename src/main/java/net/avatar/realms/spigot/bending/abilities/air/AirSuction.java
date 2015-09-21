@@ -8,13 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -26,8 +26,8 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  * State Preparing = Origin Set
  * State Progressing = AirSuction thrown
  */
-@BendingAbility(name="Air Suction", element=BendingType.Air)
-public class AirSuction extends ActiveAbility {
+@BendingAbility(name="Air Suction", element=BendingElement.Air)
+public class AirSuction extends BendingActiveAbility {
 
 	static final long soonesttime = Tools.timeinterval;
 
@@ -64,7 +64,7 @@ public class AirSuction extends ActiveAbility {
 	public AirSuction (Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
@@ -72,30 +72,30 @@ public class AirSuction extends ActiveAbility {
 
 		this.id = ID++;
 
-		if(this.bender.hasPath(BendingPathType.Renegade)) {
+		if(this.bender.hasPath(BendingPath.Renegade)) {
 			this.range *= 0.6;
 		}
 	}
 
 	@Override
 	public boolean sneak () {
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
 
-		if (this.state == AbilityState.CanStart) {
+		if (this.state == BendingAbilityState.CanStart) {
 			Location loc = getNewOriginLocation(this.player);
 			if (loc == null) {
 				return false;
 			}
 			this.origin = loc;
-			setState(AbilityState.Preparing);
+			setState(BendingAbilityState.Preparing);
 			AbilityManager.getManager().addInstance(this);
 			this.otherorigin = true;
 			return false;
 		}
 
-		if (this.state == AbilityState.Preparing) {
+		if (this.state == BendingAbilityState.Preparing) {
 			Location loc = getNewOriginLocation(this.player);
 			if (loc != null) {
 				this.origin = loc;
@@ -109,17 +109,17 @@ public class AirSuction extends ActiveAbility {
 	@Override
 	public boolean swing () {
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
 
-		if (this.state == AbilityState.CanStart) {
+		if (this.state == BendingAbilityState.CanStart) {
 			this.origin = this.player.getEyeLocation();
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Preparing);
+			setState(BendingAbilityState.Preparing);
 		}
 
-		if (this.state == AbilityState.Preparing) {
+		if (this.state == BendingAbilityState.Preparing) {
 
 			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
 			if (entity != null) {
@@ -131,7 +131,7 @@ public class AirSuction extends ActiveAbility {
 				this.direction = Tools.getDirection(this.location, this.origin).normalize();
 			}
 
-			setState(AbilityState.Progressing);
+			setState(BendingAbilityState.Progressing);
 			return false;
 		}
 
@@ -144,7 +144,7 @@ public class AirSuction extends ActiveAbility {
 			location = origin.clone().add(direction.clone().multiply(i));
 			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock())
 					|| ProtectionManager.isRegionProtectedFromBending(this.player,
-							Abilities.AirSuction, location)) {
+							BendingAbilities.AirSuction, location)) {
 				return origin.clone().add(direction.clone().multiply(i - 1));
 			}
 		}
@@ -159,7 +159,7 @@ public class AirSuction extends ActiveAbility {
 			return null;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.AirSuction,
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirSuction,
 				location)) {
 			return null;
 		}
@@ -173,11 +173,11 @@ public class AirSuction extends ActiveAbility {
 			return false;
 		}
 
-		if ((EntityTools.getBendingAbility(this.player) != Abilities.AirSuction)) {
+		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSuction)) {
 			return false;
 		}
 
-		if (this.state.equals(AbilityState.Preparing)) {
+		if (this.state.equals(BendingAbilityState.Preparing)) {
 			if (!this.origin.getWorld().equals(this.player.getWorld())) {
 				return false;
 			}
@@ -188,11 +188,11 @@ public class AirSuction extends ActiveAbility {
 			return true;
 		}
 
-		if (!this.state.equals(AbilityState.Progressing)) {
+		if (!this.state.equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AirSuction,
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction,
 				this.location)) {
 			// Info : This is checking the position of the suction and not the
 			// position of the bender
@@ -273,7 +273,7 @@ public class AirSuction extends ActiveAbility {
 
 	@Override
 	public void remove () {
-		this.bender.cooldown(Abilities.AirSuction, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.AirSuction, COOLDOWN);
 		super.remove();
 	}
 
@@ -301,8 +301,8 @@ public class AirSuction extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.AirSuction;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.AirSuction;
 	}
 
 	@Override

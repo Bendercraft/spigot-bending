@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -42,7 +42,7 @@ public class BindExecution extends BendingCommand {
 		}
 
 		final String a = args.get(0);
-		final Abilities ability = Abilities.getAbility(a);
+		final BendingAbilities ability = BendingAbilities.getAbility(a);
 		if ((ability == null) || ability.isPassiveAbility()) {
 			player.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
 			return true;

@@ -3,18 +3,18 @@ package net.avatar.realms.spigot.bending.abilities.water;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Dolphin", element=BendingType.Water)
-public class FastSwimming extends PassiveAbility {
+@BendingAbility(name="Dolphin", element=BendingElement.Water)
+public class FastSwimming extends BendingPassiveAbility {
 	
 	@ConfigurationParameter("Speed-Factor")
 	private static double FACTOR = 0.7;
@@ -33,7 +33,7 @@ public class FastSwimming extends PassiveAbility {
 			return false;
 		}
 		
-		if (!EntityTools.canBendPassive(this.player, BendingType.Water)) {
+		if (!EntityTools.canBendPassive(this.player, BendingElement.Water)) {
 			return false;
 		}
 		
@@ -42,12 +42,12 @@ public class FastSwimming extends PassiveAbility {
 	
 	@Override
 	public boolean start () {
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
 		
 		AbilityManager.getManager().addInstance(this);
-		setState(AbilityState.Progressing);
+		setState(BendingAbilityState.Progressing);
 
 		return true;
 	}
@@ -58,12 +58,12 @@ public class FastSwimming extends PassiveAbility {
 			return false;
 		}
 		
-		if (!(EntityTools.canBendPassive(this.player, BendingType.Water)
+		if (!(EntityTools.canBendPassive(this.player, BendingElement.Water)
 				&& this.player.isSneaking())){
 			return false;
 		}
-		Abilities ability = EntityTools.getBendingAbility(this.player);
-		if ((ability != null) && ability.isShiftAbility() && (ability != Abilities.WaterSpout)) {
+		BendingAbilities ability = EntityTools.getBendingAbility(this.player);
+		if ((ability != null) && ability.isShiftAbility() && (ability != BendingAbilities.WaterSpout)) {
 			return false;
 		}
 		if (BlockTools.isWater(this.player.getLocation().getBlock())
@@ -84,7 +84,7 @@ public class FastSwimming extends PassiveAbility {
 	}
 	
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.WaterPassive;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.WaterPassive;
 	}
 }

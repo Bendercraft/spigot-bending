@@ -1,11 +1,11 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -16,8 +16,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Earth Tunnel", element=BendingType.Earth)
-public class EarthTunnel extends ActiveAbility {
+@BendingAbility(name="Earth Tunnel", element=BendingElement.Earth)
+public class EarthTunnel extends BendingActiveAbility {
 	@ConfigurationParameter("Max-Radius")
 	private static double RADIUS = 1.0;
 	
@@ -45,7 +45,7 @@ public class EarthTunnel extends ActiveAbility {
 	
 	@Override
 	public boolean sneak() {
-		if(state == AbilityState.CanStart) {
+		if(state == BendingAbilityState.CanStart) {
 			return false;
 		}
 		location = player.getEyeLocation().clone();
@@ -60,7 +60,7 @@ public class EarthTunnel extends ActiveAbility {
 		time = System.currentTimeMillis();
 		
 		AbilityManager.getManager().addInstance(this);
-		state = AbilityState.Progressing;
+		state = BendingAbilityState.Progressing;
 		return false;
 	}
 
@@ -122,8 +122,8 @@ public class EarthTunnel extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.EarthTunnel;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.EarthTunnel;
 	}
 
 }

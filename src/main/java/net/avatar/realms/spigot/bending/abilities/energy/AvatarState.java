@@ -8,18 +8,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 
-@BendingAbility(name="Avatar State", element=BendingType.Energy)
-public class AvatarState extends ActiveAbility{
+@BendingAbility(name="Avatar State", element=BendingElement.Energy)
+public class AvatarState extends BendingActiveAbility{
 
 	@ConfigurationParameter("Factor")
 	public static double FACTOR = 4.5;
@@ -39,19 +39,19 @@ public class AvatarState extends ActiveAbility{
 	@Override
 	public boolean swing() {
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return true;
 		}
 
-		if (this.state == AbilityState.Progressing) {
-			setState(AbilityState.Ended);
+		if (this.state == BendingAbilityState.Progressing) {
+			setState(BendingAbilityState.Ended);
 			return false;
 		}
 
-		if (this.state == AbilityState.CanStart) {
+		if (this.state == BendingAbilityState.CanStart) {
 			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Progressing);
+			setState(BendingAbilityState.Progressing);
 		}
 
 		return false;
@@ -64,7 +64,7 @@ public class AvatarState extends ActiveAbility{
 			return false;
 		}
 
-		if (this.state == AbilityState.Progressing) {
+		if (this.state == BendingAbilityState.Progressing) {
 			addPotionEffects();
 			return true;
 		}
@@ -81,7 +81,7 @@ public class AvatarState extends ActiveAbility{
 	}
 
 	public static boolean isAvatarState (Player player) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AvatarState);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
@@ -102,7 +102,7 @@ public class AvatarState extends ActiveAbility{
 	}
 
 	public static List<Player> getPlayers() {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AvatarState);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AvatarState);
 		LinkedList<Player> players = new LinkedList<Player>();
 		if ((instances == null) || instances.isEmpty()) {
 			return players;
@@ -119,7 +119,7 @@ public class AvatarState extends ActiveAbility{
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 		long now = System.currentTimeMillis();
 		this.realDuration = now - this.startedTime;
-		this.bender.cooldown(Abilities.AvatarState, this.realDuration * COOLDOWN_FACTOR);
+		this.bender.cooldown(BendingAbilities.AvatarState, this.realDuration * COOLDOWN_FACTOR);
 	}
 
 	@Override
@@ -128,8 +128,8 @@ public class AvatarState extends ActiveAbility{
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.AvatarState;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.AvatarState;
 	}
 
 	@Override

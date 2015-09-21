@@ -5,10 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -20,8 +20,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-@BendingAbility(name = "Ice Swipe", element = BendingType.Water)
-public class IceSwipe extends ActiveAbility {
+@BendingAbility(name = "Ice Swipe", element = BendingElement.Water)
+public class IceSwipe extends BendingActiveAbility {
 
 	@ConfigurationParameter("Range")
 	private static int RANGE = 25;
@@ -98,7 +98,7 @@ public class IceSwipe extends ActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSwipe, block.getLocation())) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSwipe, block.getLocation())) {
 				blocksToRemove.add(block);
 				continue;
 			}
@@ -145,7 +145,7 @@ public class IceSwipe extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.IceSwipe;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.IceSwipe;
 	}
 }

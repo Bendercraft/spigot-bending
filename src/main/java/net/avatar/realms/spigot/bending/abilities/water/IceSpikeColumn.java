@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -64,7 +64,7 @@ public class IceSpikeColumn {
 	private List<LivingEntity> damaged = new ArrayList<LivingEntity>();
 	private Player player;
 
-	public IceSpikeColumn(Player player, IAbility parent) {
+	public IceSpikeColumn(Player player, IBendingAbility parent) {
 		this.player = player;
 		if (cooldowns.containsKey(player))
 			if (cooldowns.get(player) + COOLDOWN >= System.currentTimeMillis())
@@ -209,7 +209,7 @@ public class IceSpikeColumn {
 		progress++;
 		Block affectedblock = location.clone().add(direction).getBlock();
 		location = location.add(direction);
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike,
 				location))
 			return false;
 		for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(location, 1.4)) {

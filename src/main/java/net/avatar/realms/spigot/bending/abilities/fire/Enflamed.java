@@ -8,16 +8,16 @@ import java.util.Map;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Enflamed", element=BendingType.Fire)
+@BendingAbility(name="Enflamed", element=BendingElement.Fire)
 public class Enflamed {
 	private static Map<Entity, Enflamed> instances = new HashMap<Entity, Enflamed>();
 
@@ -27,13 +27,13 @@ public class Enflamed {
 	private Player source;
 	private Entity target;
 	@SuppressWarnings ("unused")
-	private IAbility parent;
+	private IBendingAbility parent;
 	
 	private long time;
 	private BendingPlayer bender;
 	
 
-	public Enflamed(Player source, Entity entity, int seconds, IAbility parent) {
+	public Enflamed(Player source, Entity entity, int seconds, IBendingAbility parent) {
 		if (entity.getEntityId() == source.getEntityId()) {
 			return;
 		}
@@ -46,11 +46,11 @@ public class Enflamed {
 			return;
 		}
 		this.bender = BendingPlayer.getBendingPlayer(source);
-		if(this.bender.hasPath(BendingPathType.Lifeless)) {
+		if(this.bender.hasPath(BendingPath.Lifeless)) {
 			return;
 		}
 		
-		if(this.bender.hasPath(BendingPathType.Nurture)) {
+		if(this.bender.hasPath(BendingPath.Nurture)) {
 			if(instances.containsKey(this.target)) {
 				instances.get(this.target).addSeconds(seconds);
 				return;
@@ -75,7 +75,7 @@ public class Enflamed {
 		}
 		
 		if (this.target.getFireTicks() == 0) {
-			if(this.bender.hasPath(BendingPathType.Nurture)) {
+			if(this.bender.hasPath(BendingPath.Nurture)) {
 				this.target.setFireTicks(this.secondsLeft*50);
 			} else {
 				return false;
@@ -93,12 +93,12 @@ public class Enflamed {
 	}
 
 	public static boolean canBurn (Player player) {
-		if ((EntityTools.getBendingAbility(player) == Abilities.HeatControl) || FireJet.checkTemporaryImmunity(player)) {
+		if ((EntityTools.getBendingAbility(player) == BendingAbilities.HeatControl) || FireJet.checkTemporaryImmunity(player)) {
 			player.setFireTicks(0);
 			return false;
 		}
 
-		if ((player.getFireTicks() > 80) && EntityTools.canBendPassive(player, BendingType.Fire)) {
+		if ((player.getFireTicks() > 80) && EntityTools.canBendPassive(player, BendingElement.Fire)) {
 			player.setFireTicks(80);
 		}
 

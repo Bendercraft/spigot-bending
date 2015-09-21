@@ -19,13 +19,13 @@ public class BendingPlayer {
 
 	private UUID player;
 
-	private Map<Integer, Abilities> slotAbilities = new HashMap<Integer, Abilities>();
+	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
 
-	private List<BendingType> bendings = new LinkedList<BendingType>();
-	private List<BendingSpecializationType> specializations = new LinkedList<BendingSpecializationType>();
-	private List<BendingPathType> paths = new LinkedList<BendingPathType>();
+	private List<BendingElement> bendings = new LinkedList<BendingElement>();
+	private List<BendingAffinity> specializations = new LinkedList<BendingAffinity>();
+	private List<BendingPath> paths = new LinkedList<BendingPath>();
 
-	private Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
+	private Map<BendingAbilities, Long> cooldowns = new HashMap<BendingAbilities, Long>();
 
 	private long paralyzeTime = 0;
 	private long slowTime = 0;
@@ -48,7 +48,7 @@ public class BendingPlayer {
 		this.specializations = data.getSpecialization();
 		this.paths = data.getPaths();
 		if(this.paths == null) {
-			this.paths = new LinkedList<BendingPathType>();
+			this.paths = new LinkedList<BendingPath>();
 		}
 
 		this.lastTime = data.getLastTime();
@@ -62,7 +62,7 @@ public class BendingPlayer {
 		return (System.currentTimeMillis() <= (this.lastTime + Settings.GLOBAL_COOLDOWN));
 	}
 
-	public boolean isOnCooldown (Abilities ability) {
+	public boolean isOnCooldown (BendingAbilities ability) {
 
 		if (isOnGlobalCooldown()) {
 			return true;
@@ -90,7 +90,7 @@ public class BendingPlayer {
 		cooldown(null, 0);
 	}
 
-	public void cooldown (Abilities ability, long cooldownTime) {
+	public void cooldown (BendingAbilities ability, long cooldownTime) {
 		long time = System.currentTimeMillis();
 		if (ability != null) {
 			this.cooldowns.put(ability, time + cooldownTime);
@@ -101,11 +101,11 @@ public class BendingPlayer {
 		}
 	}
 
-	public Map<Abilities, Long> getCooldowns() {
-		Map<Abilities, Long> cooldowns = new HashMap<Abilities, Long>();
+	public Map<BendingAbilities, Long> getCooldowns() {
+		Map<BendingAbilities, Long> cooldowns = new HashMap<BendingAbilities, Long>();
 		long now = System.currentTimeMillis();
-		List<Abilities> toRemove = new LinkedList<Abilities>();
-		for (Abilities ab : this.cooldowns.keySet()) {
+		List<BendingAbilities> toRemove = new LinkedList<BendingAbilities>();
+		for (BendingAbilities ab : this.cooldowns.keySet()) {
 			long remain = this.cooldowns.get(ab) - now;
 			if (remain <= 0) {
 				toRemove.add(ab);
@@ -115,7 +115,7 @@ public class BendingPlayer {
 			}
 		}
 
-		for (Abilities ab : toRemove) {
+		for (BendingAbilities ab : toRemove) {
 			cooldowns.remove(ab);
 		}
 
@@ -130,19 +130,19 @@ public class BendingPlayer {
 		return !this.bendings.isEmpty();
 	}
 
-	public boolean isBender (BendingType type) {
+	public boolean isBender (BendingElement type) {
 		return this.bendings.contains(type);
 	}
 
-	public boolean isSpecialized (BendingSpecializationType specialization) {
+	public boolean isSpecialized (BendingAffinity specialization) {
 		return this.specializations.contains(specialization);
 	}
 
-	public boolean hasPath(BendingType type) {
+	public boolean hasPath(BendingElement type) {
 		if(this.paths == null) {
 			return false;
 		}
-		for(BendingPathType path : this.paths) {
+		for(BendingPath path : this.paths) {
 			if(path.getElement() == type) {
 				return true;
 			}
@@ -150,73 +150,73 @@ public class BendingPlayer {
 		return false;
 	}
 
-	public boolean hasPath(BendingPathType path) {
+	public boolean hasPath(BendingPath path) {
 		if(this.paths == null) {
 			return false;
 		}
 		return this.paths.contains(path);
 	}
 
-	public void setBender (BendingType type) {
+	public void setBender (BendingElement type) {
 		removeBender();
 		this.bendings.add(type);
 		Bending.database.save(this.player);
 	}
 
-	public void addBender (BendingType type) {
+	public void addBender (BendingElement type) {
 		if (!this.bendings.contains(type)) {
 			this.bendings.add(type);
 			Bending.database.save(this.player);
 		}
 	}
 
-	public void setSpecialization (BendingSpecializationType specialization) {
+	public void setSpecialization (BendingAffinity specialization) {
 		this.clearSpecialization(specialization.getElement());
 		this.specializations.add(specialization);
 		Bending.database.save(this.player);
 	}
 
-	public void setPath(BendingPathType path) {
+	public void setPath(BendingPath path) {
 		this.clearPath(path.getElement());
 		this.paths.add(path);
 		Bending.database.save(this.player);
 	}
 
-	public void addSpecialization (BendingSpecializationType specialization) {
+	public void addSpecialization (BendingAffinity specialization) {
 		if (!this.specializations.contains(specialization)) {
 			this.specializations.add(specialization);
 			Bending.database.save(this.player);
 		}
 	}
 
-	public void removeSpecialization (BendingSpecializationType specialization) {
+	public void removeSpecialization (BendingAffinity specialization) {
 		this.specializations.remove(specialization);
 		clearAbilities();
 		// clear abilities will save for us
 	}
 
-	public void clearSpecialization (BendingType element) {
-		List<BendingSpecializationType> toRemove = new LinkedList<BendingSpecializationType>();
-		for (BendingSpecializationType spe : this.specializations) {
+	public void clearSpecialization (BendingElement element) {
+		List<BendingAffinity> toRemove = new LinkedList<BendingAffinity>();
+		for (BendingAffinity spe : this.specializations) {
 			if (spe.getElement().equals(element)) {
 				toRemove.add(spe);
 			}
 		}
-		for (BendingSpecializationType spe : toRemove) {
+		for (BendingAffinity spe : toRemove) {
 			removeSpecialization(spe);
 		}
 		// clear abilities will save for us
 		clearAbilities();
 	}
 
-	public void clearPath(BendingType element) {
-		List<BendingPathType> toRemove = new LinkedList<BendingPathType>();
-		for (BendingPathType path : this.paths) {
+	public void clearPath(BendingElement element) {
+		List<BendingPath> toRemove = new LinkedList<BendingPath>();
+		for (BendingPath path : this.paths) {
 			if (path.getElement().equals(element)) {
 				toRemove.add(path);
 			}
 		}
-		for (BendingPathType path : toRemove) {
+		for (BendingPath path : toRemove) {
 			this.paths.remove(path);
 		}
 	}
@@ -227,7 +227,7 @@ public class BendingPlayer {
 	}
 
 	public void clearAbilities () {
-		this.slotAbilities = new HashMap<Integer, Abilities>();
+		this.slotAbilities = new HashMap<Integer, BendingAbilities>();
 		Bending.database.save(this.player);
 	}
 
@@ -239,7 +239,7 @@ public class BendingPlayer {
 		Bending.database.save(this.player);
 	}
 
-	public Abilities getAbility () {
+	public BendingAbilities getAbility () {
 		Player player = getPlayer();
 		if (player == null) {
 			return null;
@@ -252,15 +252,15 @@ public class BendingPlayer {
 		return getAbility(slot);
 	}
 
-	public Map<Integer, Abilities> getAbilities() {
+	public Map<Integer, BendingAbilities> getAbilities() {
 		return this.slotAbilities;
 	}
 
-	public Abilities getAbility (int slot) {
+	public BendingAbilities getAbility (int slot) {
 		return this.slotAbilities.get(slot);
 	}
 
-	public void setAbility (int slot, Abilities ability) {
+	public void setAbility (int slot, BendingAbilities ability) {
 		this.slotAbilities.put(slot, ability);
 		Bending.database.save(this.player);
 	}
@@ -289,9 +289,9 @@ public class BendingPlayer {
 		return Bukkit.getServer().getPlayer(this.player);
 	}
 
-	public List<BendingType> getBendingTypes () {
-		List<BendingType> list = new ArrayList<BendingType>();
-		for (BendingType index : this.bendings) {
+	public List<BendingElement> getBendingTypes () {
+		List<BendingElement> list = new ArrayList<BendingElement>();
+		for (BendingElement index : this.bendings) {
 			list.add(index);
 		}
 		return list;
@@ -302,7 +302,7 @@ public class BendingPlayer {
 		Player pl = getPlayer();
 		if (pl != null) {
 			String str = pl.getName() + " : \n";
-			for (BendingType type : this.bendings) {
+			for (BendingElement type : this.bendings) {
 				str += type.toString() + "\n";
 			}
 			return str;
@@ -347,11 +347,11 @@ public class BendingPlayer {
 		return string;
 	}
 
-	public List<BendingSpecializationType> getSpecializations() {
+	public List<BendingAffinity> getSpecializations() {
 		return this.specializations;
 	}
 
-	public List<BendingPathType> getPath() {
+	public List<BendingPath> getPath() {
 		return this.paths;
 	}
 

@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.commands.subcommands.AddExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.AffinityExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.AvailableExecution;
@@ -112,9 +112,9 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		return null;
 	}
 
-	private String autoCompleteParameter(String start, Abilities[] abilities) {
+	private String autoCompleteParameter(String start, BendingAbilities[] abilities) {
 		List<String> values = new LinkedList<String>();
-		for (Abilities ability : abilities) {
+		for (BendingAbilities ability : abilities) {
 			values.add(ability.name());
 		}
 		return autoCompleteParameter(start, values);

@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
@@ -53,8 +53,8 @@ public class EarthListener implements Listener {
 	public void unlockEarthGrab(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingType.Earth) && !bPlayer.isBender(BendingType.ChiBlocker)) {
-				if (event.getAbility().equals(Abilities.RaiseEarth)) {
+			if (bPlayer.isBender(BendingElement.Earth) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
+				if (event.getAbility().equals(BendingAbilities.RaiseEarth)) {
 					int raised = 0;
 					Player p = bPlayer.getPlayer();
 					UUID id = p.getUniqueId();
@@ -63,11 +63,11 @@ public class EarthListener implements Listener {
 					}
 					raised++;
 					if (raised >= raiseNeededGrab) {
-						if(plugin.addPermission(p, Abilities.EarthGrab)) {
+						if(plugin.addPermission(p, BendingAbilities.EarthGrab)) {
 							
 							String message = "By raising multiple earth, you somehow learned to do it on a human, grabing it and making him useless";
 							p.sendMessage(color+message);
-							message = "Congratulations, you have unlocked "+Abilities.EarthGrab.name();
+							message = "Congratulations, you have unlocked "+BendingAbilities.EarthGrab.name();
 							p.sendMessage(color+message);
 						} 
 
@@ -75,7 +75,7 @@ public class EarthListener implements Listener {
 					} else {
 						raiseAmountGrab.put(id, raised);
 					}
-				} else if (event.getAbility().equals(Abilities.EarthGrab)) {
+				} else if (event.getAbility().equals(BendingAbilities.EarthGrab)) {
 					List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(
 							bPlayer.getPlayer().getLocation(), 10);
 
@@ -85,7 +85,7 @@ public class EarthListener implements Listener {
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
 								BendingPlayer bSeen = BendingPlayer
 										.getBendingPlayer(p);
-								if (bSeen.isBender(BendingType.Earth) && !bSeen.isBender(BendingType.ChiBlocker)) {
+								if (bSeen.isBender(BendingElement.Earth) && !bSeen.isBender(BendingElement.ChiBlocker)) {
 									int raised = 0;
 									UUID id = bSeen.getPlayer().getUniqueId();
 									if (raiseAmountGrab.containsKey(id)) {
@@ -93,10 +93,10 @@ public class EarthListener implements Listener {
 									}
 									raised += raiseNeededGrab / 8;
 									if (raised >= raiseNeededGrab) {
-										if(plugin.addPermission(p, Abilities.EarthGrab)) {
+										if(plugin.addPermission(p, BendingAbilities.EarthGrab)) {
 											String message = "You saw "+bPlayer.getPlayer().getName()+" grabing a human with his earthbending, you think you should be able to do the same";
 											p.sendMessage(color+message);
-											message = "Congratulations, you have unlocked "+Abilities.EarthGrab.name();
+											message = "Congratulations, you have unlocked "+BendingAbilities.EarthGrab.name();
 											p.sendMessage(color+message);
 										} 
 										raiseAmountGrab.remove(id);
@@ -116,8 +116,8 @@ public class EarthListener implements Listener {
 	public void unlockEarthArmor(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingType.Earth) && !bPlayer.isBender(BendingType.ChiBlocker)
-					&& event.getAbility().equals(Abilities.EarthGrab)) {
+			if (bPlayer.isBender(BendingElement.Earth) && !bPlayer.isBender(BendingElement.ChiBlocker)
+					&& event.getAbility().equals(BendingAbilities.EarthGrab)) {
 				int grabs = 0;
 				Player p = bPlayer.getPlayer();
 				UUID id = p.getUniqueId();
@@ -126,10 +126,10 @@ public class EarthListener implements Listener {
 				}
 				grabs++;
 				if (grabs >= grabNeededArmor) {
-					if(plugin.addPermission(p, Abilities.EarthArmor)) {
+					if(plugin.addPermission(p, BendingAbilities.EarthArmor)) {
 						String message = "Your earth grab is now powerfull enough to control it and apply it to yourself without restraining your mouvement.";
 						p.sendMessage(color+message);
-						message = "Congratulations, you have unlocked "+Abilities.EarthArmor.name();
+						message = "Congratulations, you have unlocked "+BendingAbilities.EarthArmor.name();
 						p.sendMessage(color+message);
 					} 
 					grabAmountArmor.remove(id);
@@ -144,8 +144,8 @@ public class EarthListener implements Listener {
 	public void unlockEarthTunel(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingType.Earth) && !bPlayer.isBender(BendingType.ChiBlocker)) {
-				if (event.getAbility().equals(Abilities.Collapse)) {
+			if (bPlayer.isBender(BendingElement.Earth) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
+				if (event.getAbility().equals(BendingAbilities.Collapse)) {
 					int comps = 0;
 					Player p = bPlayer.getPlayer();
 					UUID id = p.getUniqueId();
@@ -156,10 +156,10 @@ public class EarthListener implements Listener {
 					if (comps >= compactNeededTunnel 
 							&& dirtAmountTunnel.containsKey(id)
 							&& dirtAmountTunnel.get(id) >= dirtDugNeededTunnel) {
-						if(plugin.addPermission(p, Abilities.EarthTunnel)) {
+						if(plugin.addPermission(p, BendingAbilities.EarthTunnel)) {
 							String message = "Your skill at digging tunnel is improving, and your bending has been enhanced";
 							p.sendMessage(color+message);
-							message = "Congratulations, you have unlocked "+Abilities.EarthTunnel.name();
+							message = "Congratulations, you have unlocked "+BendingAbilities.EarthTunnel.name();
 							p.sendMessage(color+message);
 						} 
 						dirtAmountTunnel.remove(id);
@@ -177,7 +177,7 @@ public class EarthListener implements Listener {
 	public void unlockEarthTunnel(BlockBreakEvent event) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingType.Earth) && !bPlayer.isBender(BendingType.ChiBlocker)) {
+			if (bPlayer.isBender(BendingElement.Earth) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
 				if (event.getBlock().getType().equals(Material.DIRT)
 						|| event.getBlock().getType().equals(Material.GRASS)
 						|| event.getBlock().getType().equals(Material.STONE)
@@ -192,10 +192,10 @@ public class EarthListener implements Listener {
 					if (dug >= dirtDugNeededTunnel 
 							&& compactAmountTunnel.containsKey(id)
 							&& compactAmountTunnel.get(id) >= compactNeededTunnel) {
-						if(plugin.addPermission(p, Abilities.EarthTunnel)) {
+						if(plugin.addPermission(p, BendingAbilities.EarthTunnel)) {
 							String message = "Your skill at digging tunnel is improving, and your bending has been enhanced";
 							p.sendMessage(color+message);
-							message = "Congratulations, you have unlocked "+Abilities.EarthTunnel.name();
+							message = "Congratulations, you have unlocked "+BendingAbilities.EarthTunnel.name();
 							p.sendMessage(color+message);
 						}
 						compactAmountTunnel.remove(id);
@@ -213,8 +213,8 @@ public class EarthListener implements Listener {
 	public void unlockCatapult(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingType.Earth) && !bPlayer.isBender(BendingType.ChiBlocker) &&
-					event.getAbility().equals(Abilities.RaiseEarth)) {
+			if (bPlayer.isBender(BendingElement.Earth) && !bPlayer.isBender(BendingElement.ChiBlocker) &&
+					event.getAbility().equals(BendingAbilities.RaiseEarth)) {
 				int raised = 0;
 				Player p = bPlayer.getPlayer();
 				UUID id = p.getUniqueId();
@@ -225,10 +225,10 @@ public class EarthListener implements Listener {
 				if (raised >= raiseNeededCatapult 
 						&& jumpAmountCatapult.containsKey(id)
 						&& jumpAmountCatapult.get(id) > jumpNeededCatapult) {
-					if(plugin.addPermission(p, Abilities.Catapult)) {
+					if(plugin.addPermission(p, BendingAbilities.Catapult)) {
 						String message = "By raising earth and jumping at the same time, you now know how to bend a human catapult";
 						p.sendMessage(color+message);
-						message = "Congratulations, you have unlocked "+Abilities.Catapult.name();
+						message = "Congratulations, you have unlocked "+BendingAbilities.Catapult.name();
 						p.sendMessage(color+message);
 					}
 					jumpAmountCatapult.remove(id);
@@ -245,7 +245,7 @@ public class EarthListener implements Listener {
 	public void unlockCatapult(PlayerVelocityEvent event) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getPlayer());
 		if(bPlayer != null) {
-			if(bPlayer.isBender(BendingType.Earth) && !bPlayer.isBender(BendingType.ChiBlocker)) {
+			if(bPlayer.isBender(BendingElement.Earth) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
 				Vector down = new Vector(0, 1, 0);
 				float angleToDirectFall = event.getVelocity().angle(down);
 				if(-Math.PI/2 < angleToDirectFall && angleToDirectFall < Math.PI/2) {
@@ -261,10 +261,10 @@ public class EarthListener implements Listener {
 					if(jumped >= jumpNeededCatapult 
 							&& raiseAmountCatapult.containsKey(id)
 							&& raiseAmountCatapult.get(id) >= raiseNeededCatapult) {
-						if(plugin.addPermission(p, Abilities.Catapult)) {
+						if(plugin.addPermission(p, BendingAbilities.Catapult)) {
 							String message = "By raising earth and jumping at the same time, you now know how to bend a human catapult";
 							p.sendMessage(color+message);
-							message = "Congratulations, you have unlocked "+Abilities.Catapult.name();
+							message = "Congratulations, you have unlocked "+BendingAbilities.Catapult.name();
 							p.sendMessage(color+message);
 						}
 						jumpAmountCatapult.remove(id);

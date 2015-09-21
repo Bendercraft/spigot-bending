@@ -5,12 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -36,12 +36,12 @@ public class WaterReturn {
 	private long time;
 	private Player player;
 
-	public WaterReturn(Player player, Block block, IAbility parent) {
+	public WaterReturn(Player player, Block block, IBendingAbility parent) {
 		location = block.getLocation();
 		this.player = player;
 		if (!ProtectionManager.isRegionProtectedFromBending(player,
-				Abilities.WaterManipulation, location)
-				&& EntityTools.canBend(player, Abilities.WaterManipulation)) {
+				BendingAbilities.WaterManipulation, location)
+				&& EntityTools.canBend(player, BendingAbilities.WaterManipulation)) {
 			if (BlockTools.isTransparentToEarthbending(player, block)
 					&& !block.isLiquid()) {
 				this.block = new TempBlock(block, Material.WATER, full);
@@ -79,7 +79,7 @@ public class WaterReturn {
 			return true;
 
 		if (ProtectionManager.isRegionProtectedFromBending(player,
-				Abilities.WaterManipulation, location)) {
+				BendingAbilities.WaterManipulation, location)) {
 			return false;
 		}
 

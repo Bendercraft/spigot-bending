@@ -6,10 +6,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -18,7 +18,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Phase Change", element=BendingType.Water)
+@BendingAbility(name="Phase Change", element=BendingElement.Water)
 public class Melt implements IAbility {
 
 
@@ -32,7 +32,7 @@ public class Melt implements IAbility {
 		this.parent = parent;
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		
-		if (bPlayer.isOnCooldown(Abilities.PhaseChange)) {
+		if (bPlayer.isOnCooldown(BendingAbilities.PhaseChange)) {
 			return;
 		}
 		
@@ -50,12 +50,12 @@ public class Melt implements IAbility {
 			melt(player, block);
 		}
 		
-		bPlayer.cooldown(Abilities.PhaseChange, FreezeMelt.COOLDOWN);
+		bPlayer.cooldown(BendingAbilities.PhaseChange, FreezeMelt.COOLDOWN);
 	}
 	
 	@SuppressWarnings("deprecation")
 	public static void melt(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PhaseChange, block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange, block.getLocation())) {
 			return;
 		}
 		
@@ -83,7 +83,7 @@ public class Melt implements IAbility {
 	}
 	
 	public static void evaporate(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PhaseChange,
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange,
 				block.getLocation())) {
 			return;
 		}

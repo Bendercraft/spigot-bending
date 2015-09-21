@@ -3,13 +3,13 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -26,8 +26,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Earth Armor", element = BendingType.Earth)
-public class EarthArmor extends ActiveAbility {
+@BendingAbility(name = "Earth Armor", element = BendingElement.Earth)
+public class EarthArmor extends BendingActiveAbility {
 	@ConfigurationParameter("Duration")
 	private static long DURATION = 60000;
 
@@ -60,11 +60,11 @@ public class EarthArmor extends ActiveAbility {
 	public boolean swing() {
 		// EarthArmor
 		
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		
-		if (bender.isOnCooldown(Abilities.EarthArmor)) {
+		if (bender.isOnCooldown(BendingAbilities.EarthArmor)) {
 			return false;
 		}
 
@@ -91,7 +91,7 @@ public class EarthArmor extends ActiveAbility {
 				BlockTools.removeBlock(oldlegsblock);
 			}
 			AbilityManager.getManager().addInstance(this);
-			state = AbilityState.Progressing;
+			state = BendingAbilityState.Progressing;
 		}
 		return false;
 	}
@@ -100,11 +100,11 @@ public class EarthArmor extends ActiveAbility {
 	public boolean sneak() {
 		//EarthShield
 		
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		
-		if (bender.isOnCooldown(Abilities.EarthArmor)) {
+		if (bender.isOnCooldown(BendingAbilities.EarthArmor)) {
 			return false;
 		}
 
@@ -149,9 +149,9 @@ public class EarthArmor extends ActiveAbility {
 		}
 
 		if (!blocks.isEmpty()) {
-			bender.cooldown(Abilities.EarthArmor, COOLDOWN);
+			bender.cooldown(BendingAbilities.EarthArmor, COOLDOWN);
 			AbilityManager.getManager().addInstance(this);
-			state = AbilityState.Progressing;
+			state = BendingAbilityState.Progressing;
 		}
 		
 		return false;
@@ -182,14 +182,14 @@ public class EarthArmor extends ActiveAbility {
 
 		if (BlockTools.isTransparentToEarthbending(this.player, newheadblock) && !newheadblock.isLiquid()) {
 			BlockTools.breakBlock(newheadblock);
-		} else if (!BlockTools.isEarthbendable(this.player, Abilities.EarthArmor, newheadblock) && !newheadblock.isLiquid() && (newheadblock.getType() != Material.AIR)) {
+		} else if (!BlockTools.isEarthbendable(this.player, BendingAbilities.EarthArmor, newheadblock) && !newheadblock.isLiquid() && (newheadblock.getType() != Material.AIR)) {
 			cancel();
 			return false;
 		}
 
 		if (BlockTools.isTransparentToEarthbending(this.player, newlegsblock) && !newlegsblock.isLiquid()) {
 			BlockTools.breakBlock(newlegsblock);
-		} else if (!BlockTools.isEarthbendable(this.player, Abilities.EarthArmor, newlegsblock) && !newlegsblock.isLiquid() && (newlegsblock.getType() != Material.AIR)) {
+		} else if (!BlockTools.isEarthbendable(this.player, BendingAbilities.EarthArmor, newlegsblock) && !newlegsblock.isLiquid() && (newlegsblock.getType() != Material.AIR)) {
 			cancel();
 			return false;
 		}
@@ -300,11 +300,11 @@ public class EarthArmor extends ActiveAbility {
 	}
 
 	public static boolean hasEarthArmor(Player player) {
-		return AbilityManager.getManager().getInstances(Abilities.EarthArmor).containsKey(player);
+		return AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor).containsKey(player);
 	}
 
 	public static EarthArmor getEarthArmor(Player pl) {
-		return (EarthArmor) AbilityManager.getManager().getInstances(Abilities.EarthArmor).get(pl);
+		return (EarthArmor) AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor).get(pl);
 	}
 
 	public boolean isArmor(ItemStack is) {
@@ -321,16 +321,16 @@ public class EarthArmor extends ActiveAbility {
 	}
 
 	public static void removeEffect(Player player) {
-		if (!AbilityManager.getManager().getInstances(Abilities.EarthArmor).containsKey(player)) {
+		if (!AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor).containsKey(player)) {
 			return;
 		}
-		EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(Abilities.EarthArmor);
+		EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor);
 		earthArmor.removeEffect();
 	}
 
 	public static boolean canRemoveArmor(Player player) {
-		if (AbilityManager.getManager().getInstances(Abilities.EarthArmor).containsKey(player)) {
-			EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(Abilities.EarthArmor).get(player);
+		if (AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor).containsKey(player)) {
+			EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor).get(player);
 			if (System.currentTimeMillis() < (earthArmor.starttime + DURATION)) {
 				return false;
 			}
@@ -344,7 +344,7 @@ public class EarthArmor extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.EarthArmor;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.EarthArmor;
 	}
 }

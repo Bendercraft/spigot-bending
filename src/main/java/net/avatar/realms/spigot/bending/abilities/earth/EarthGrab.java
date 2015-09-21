@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -27,8 +27,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-@BendingAbility(name="Earth Grab", element=BendingType.Earth)
-public class EarthGrab extends ActiveAbility {
+@BendingAbility(name="Earth Grab", element=BendingElement.Earth)
+public class EarthGrab extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	private static double range = 15;
 	
@@ -47,7 +47,7 @@ public class EarthGrab extends ActiveAbility {
 	private int id;
 	private boolean self;
 	private LivingEntity target;
-	private IAbility parent;
+	private IBendingAbility parent;
 	private Location origin;
 	private long time = 0;
 	private boolean toKeep = true;
@@ -59,10 +59,10 @@ public class EarthGrab extends ActiveAbility {
 	
 	@Override
 	public boolean swing() {
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		if (bender.isOnCooldown(Abilities.EarthGrab)) {
+		if (bender.isOnCooldown(BendingAbilities.EarthGrab)) {
 			return false;
 		}
 		this.self = false;
@@ -74,17 +74,17 @@ public class EarthGrab extends ActiveAbility {
 			}
 			id = ID++;
 			AbilityManager.getManager().addInstance(this);
-			state = AbilityState.Progressing;
+			state = BendingAbilityState.Progressing;
 		}
 		return false;
 	}
 	
 	@Override
 	public boolean sneak() {
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		if (bender.isOnCooldown(Abilities.EarthGrab)) {
+		if (bender.isOnCooldown(BendingAbilities.EarthGrab)) {
 			return false;
 		}
 		this.self = true;
@@ -95,7 +95,7 @@ public class EarthGrab extends ActiveAbility {
 			}
 			id = ID++;
 			AbilityManager.getManager().addInstance(this);
-			state = AbilityState.Progressing;
+			state = BendingAbilityState.Progressing;
 		}
 		return false;
 	}
@@ -122,7 +122,7 @@ public class EarthGrab extends ActiveAbility {
 						entity.getLocation().getYaw(),
 						entity.getLocation().getPitch());
 				
-				if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.RaiseEarth, origin)) {
+				if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.RaiseEarth, origin)) {
 					return false;
 				}
 
@@ -208,7 +208,7 @@ public class EarthGrab extends ActiveAbility {
 							&& target.getEntityId() != player.getEntityId()) {
 						EntityTools.grab((Player) target, time);
 					}
-					bender.cooldown(Abilities.EarthGrab, COOLDOWN);
+					bender.cooldown(BendingAbilities.EarthGrab, COOLDOWN);
 				}
 			}
 		}
@@ -280,7 +280,7 @@ public class EarthGrab extends ActiveAbility {
 	}
 
 	public static EarthGrab blockInEarthGrab(Block block) {
-		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.EarthGrab).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.EarthGrab).values()) {
 			EarthGrab grab = (EarthGrab) ab;
 			if (grab.locInEarthGrab(block.getLocation())) {
 				return grab;
@@ -337,7 +337,7 @@ public class EarthGrab extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.EarthGrab;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.EarthGrab;
 	}
 }

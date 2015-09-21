@@ -2,10 +2,10 @@ package net.avatar.realms.spigot.bending.abilities.base;
 
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 
-public interface IAbility {
+public interface IBendingAbility {
 	
 	/**
 	 * The logic that the ability must follow over the time.
@@ -34,7 +34,7 @@ public interface IAbility {
 	 * 
 	 * @return The ability that generated this ability
 	 */
-	public IAbility getParent ();
+	public IBendingAbility getParent ();
 	
 	/**
 	 * @return The player that launch this ability
@@ -59,5 +59,5 @@ public interface IAbility {
 	/**
 	 * @return The Abilities enum that matches this instance
 	 */
-	public Abilities getAbilityType ();
+	public BendingAbilities getAbilityType ();
 }

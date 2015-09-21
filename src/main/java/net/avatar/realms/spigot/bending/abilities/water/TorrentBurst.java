@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -44,7 +44,7 @@ public class TorrentBurst {
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private List<Entity> affectedentities = new LinkedList<Entity>();
 
-	public TorrentBurst(Player player, double radius, IAbility parent) {
+	public TorrentBurst(Player player, double radius, IBendingAbility parent) {
 		this.player = player;
 		World world = player.getWorld();
 		origin = player.getEyeLocation().clone();
@@ -77,7 +77,7 @@ public class TorrentBurst {
 			return false;
 		}
 
-		if (!EntityTools.canBend(player, Abilities.Torrent)) {
+		if (!EntityTools.canBend(player, BendingAbilities.Torrent)) {
 			return false;
 		}
 
@@ -129,7 +129,7 @@ public class TorrentBurst {
 				if (torrentblocks.contains(block))
 					continue;
 				if (BlockTools.isTransparentToEarthbending(player,
-						Abilities.Torrent, block)) {
+						BendingAbilities.Torrent, block)) {
 					TempBlock tempBlock = new TempBlock(block, Material.WATER, full);
 					blocks.add(tempBlock);
 					torrentblocks.add(block);

@@ -11,17 +11,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Collapse", element=BendingType.Earth)
-public class Collapse extends ActiveAbility {	
+@BendingAbility(name="Collapse", element=BendingElement.Earth)
+public class Collapse extends BendingActiveAbility {	
 	@ConfigurationParameter("Range")
 	public static int RANGE = 20;
 	
@@ -52,27 +52,27 @@ public class Collapse extends ActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		if (bender.isOnCooldown(Abilities.Collapse)) {
+		if (bender.isOnCooldown(BendingAbilities.Collapse)) {
 			return false;
 		}
-		bender.cooldown(Abilities.Collapse, COOLDOWN);
+		bender.cooldown(BendingAbilities.Collapse, COOLDOWN);
 		columns.add(new CompactColumn(player));
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		if (bender.isOnCooldown(Abilities.Collapse)) {
+		if (bender.isOnCooldown(BendingAbilities.Collapse)) {
 			return false;
 		}	
 
-		Block sblock = BlockTools.getEarthSourceBlock(player, Abilities.Collapse, RANGE);
+		Block sblock = BlockTools.getEarthSourceBlock(player, BendingAbilities.Collapse, RANGE);
 		Location location;
 		if (sblock == null) {
 			location = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
@@ -80,7 +80,7 @@ public class Collapse extends ActiveAbility {
 			location = sblock.getLocation();
 		}
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-			if (BlockTools.isEarthbendable(player, Abilities.Collapse, block)
+			if (BlockTools.isEarthbendable(player, BendingAbilities.Collapse, block)
 					&& !blocks.containsKey(block)
 					&& block.getY() >= location.getBlockY()) {
 				getAffectedBlocks(block);
@@ -88,13 +88,13 @@ public class Collapse extends ActiveAbility {
 		}
 
 		if (!baseblocks.isEmpty()) {
-			bender.cooldown(Abilities.Collapse, COOLDOWN);
+			bender.cooldown(BendingAbilities.Collapse, COOLDOWN);
 		}
 
 		for (Block block : baseblocks.keySet()) {
 			columns.add(new CompactColumn(player, block.getLocation()));
 		}
-		state = AbilityState.Progressing;
+		state = BendingAbilityState.Progressing;
 		return false;
 	}
 
@@ -103,7 +103,7 @@ public class Collapse extends ActiveAbility {
 		if(!super.progress()) {
 			return false;
 		}
-		if(state == AbilityState.Progressing && columns.isEmpty()) {
+		if(state == BendingAbilityState.Progressing && columns.isEmpty()) {
 			return false;
 		}
 		for(CompactColumn column : columns) {
@@ -129,7 +129,7 @@ public class Collapse extends ActiveAbility {
 		bendableblocks.add(block);
 		for (int i = 1; i <= DEPTH; i++) {
 			Block blocki = block.getRelative(BlockFace.DOWN, i);
-			if (BlockTools.isEarthbendable(player, Abilities.Collapse, blocki)) {
+			if (BlockTools.isEarthbendable(player, BendingAbilities.Collapse, blocki)) {
 				baseblock = blocki;
 				bendableblocks.add(blocki);
 				tall++;
@@ -150,7 +150,7 @@ public class Collapse extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.Collapse;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.Collapse;
 	}
 }

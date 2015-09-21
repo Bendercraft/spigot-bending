@@ -43,19 +43,19 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
-import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
@@ -100,7 +100,7 @@ public class BendingPlayerListener implements Listener {
 					color = PluginTools.getColor(Settings.getColorString("Energy"));
 				} else {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-					List<BendingType> els = bender.getBendingTypes();
+					List<BendingElement> els = bender.getBendingTypes();
 					if ((els != null) && !els.isEmpty()) {
 						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
 					}
@@ -178,14 +178,14 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerFish(PlayerFishEvent event) {
 		Player player = event.getPlayer();
 		
-		Abilities ability = EntityTools.getBendingAbility(player);
+		BendingAbilities ability = EntityTools.getBendingAbility(player);
 		
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 			return;
 		}
 		
-		if ((ability == Abilities.MetalBending)
+		if ((ability == BendingAbilities.MetalBending)
 				&& EntityTools.canBend(player, ability)) {
 			MetalWire.pull(player, event.getHook());
 		}
@@ -194,8 +194,8 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerChangeVelocity(PlayerVelocityEvent event) {
 		Player player = event.getPlayer();
-		if (EntityTools.isBender(player, BendingType.Water)
-				&& EntityTools.canBendPassive(player, BendingType.Water)) {
+		if (EntityTools.isBender(player, BendingElement.Water)
+				&& EntityTools.canBendPassive(player, BendingElement.Water)) {
 			
 			event.setVelocity(WaterPassive.handle(player, event.getVelocity()));
 		}
@@ -216,7 +216,7 @@ public class BendingPlayerListener implements Listener {
 					color = PluginTools.getColor(Settings.getColorString("Energy"));
 				} else {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-					List<BendingType> els = bender.getBendingTypes();
+					List<BendingElement> els = bender.getBendingTypes();
 					if ((els != null) && els.isEmpty()) {
 						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
 					}
@@ -237,30 +237,30 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 		}
 		
-		Abilities ability = EntityTools.getBendingAbility(player);
+		BendingAbilities ability = EntityTools.getBendingAbility(player);
 		if (ability == null) {
 			return;
 		}
 		
 		if (EntityTools.canBend(player, ability)) {
-			Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
+			Map<Object, IBendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			
 			if ((abilities == null) || abilities.isEmpty()) {
-				ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 				ab.swing();
 				return;
 			}
 			
 			boolean shouldCreateNew = false;
-			for (IAbility a : abilities.values()) {
+			for (IBendingAbility a : abilities.values()) {
 				if (a.getPlayer().equals(player)) {
-					if (((ActiveAbility)a).swing()) {
+					if (((BendingActiveAbility)a).swing()) {
 						shouldCreateNew = true;
 					}
 				}
 			}
 			if (shouldCreateNew) {
-				ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 				ab.swing();
 			}
 //			
@@ -279,10 +279,10 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 		}
 		
-		Abilities ability = EntityTools.getBendingAbility(player);
+		BendingAbilities ability = EntityTools.getBendingAbility(player);
 		if ((ability == null) || !ability.isShiftAbility() || !player.isSneaking()) {
-			if (EntityTools.isBender(player,BendingType.Water)
-					&& EntityTools.canBendPassive(player, BendingType.Water)){
+			if (EntityTools.isBender(player,BendingElement.Water)
+					&& EntityTools.canBendPassive(player, BendingElement.Water)){
 				FastSwimming ab = new FastSwimming(player);
 				ab.start();
 				//return;
@@ -301,25 +301,25 @@ public class BendingPlayerListener implements Listener {
 //					new HealingWaters(player);
 //				}
 
-				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
+				Map<Object, IBendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 				
 				if ((abilities == null) || abilities.isEmpty()) {
-					ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 					Bending.log.info("I created proudly (and fresh) "+ab);
 					ab.sneak();
 					return;
 				}
 				
 				boolean shouldCreateNew = false;
-				for (IAbility a : abilities.values()) {
+				for (IBendingAbility a : abilities.values()) {
 					if (a.getPlayer().equals(player)) {
-						if (((ActiveAbility)a).sneak()) {
+						if (((BendingActiveAbility)a).sneak()) {
 							shouldCreateNew = true;
 						}
 					}
 				}
 				if (shouldCreateNew) {
-					ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 					Bending.log.info("I created proudly (because I was not satisfied) "+ab);
 					ab.sneak();
 				}
@@ -332,16 +332,16 @@ public class BendingPlayerListener implements Listener {
 		Player player = event.getPlayer();
 		if (!player.isSprinting()) {
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-			if (bender.isBender(BendingType.Air)) {
-				if (EntityTools.canBendPassive(player, BendingType.Air)) {
+			if (bender.isBender(BendingElement.Air)) {
+				if (EntityTools.canBendPassive(player, BendingElement.Air)) {
 					AirSpeed sp = new AirSpeed(player);
 					sp.start();
 				}
 				
 			}
 			
-			if (bender.isBender(BendingType.ChiBlocker)) {
-				if (EntityTools.canBendPassive(player, BendingType.ChiBlocker)) {
+			if (bender.isBender(BendingElement.ChiBlocker)) {
+				if (EntityTools.canBendPassive(player, BendingElement.ChiBlocker)) {
 					ChiSpeed sp = new ChiSpeed(player);
 					sp.start();
 				}
@@ -353,17 +353,17 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			Abilities ability = EntityTools.getBendingAbility(player);
+			BendingAbilities ability = EntityTools.getBendingAbility(player);
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 			if(bender != null) {
-				if(bender.hasPath(BendingPathType.Tough)) {
+				if(bender.hasPath(BendingPath.Tough)) {
 					event.setDamage(event.getDamage()*0.8);
 				}
 			}
 
 			if (event.getCause() == DamageCause.FALL) {
-				PassiveAbility ab = null;
-				if (EntityTools.isBender(player, BendingType.Earth)) {
+				BendingPassiveAbility ab = null;
+				if (EntityTools.isBender(player, BendingElement.Earth)) {
 					ab = new EarthPassive (player);
 					if (ab.start()) {
 						//						new Flight(player);
@@ -380,12 +380,12 @@ public class BendingPlayerListener implements Listener {
 					}
 				}
 				
-				if (EntityTools.isBender(player, BendingType.Air)
-						&& EntityTools.canBendPassive(player, BendingType.Air)) {
+				if (EntityTools.isBender(player, BendingElement.Air)
+						&& EntityTools.canBendPassive(player, BendingElement.Air)) {
 					//					new Flight(player);
 					//					player.setAllowFlight(true);
-					if (ability == Abilities.AirBurst) {
-						ActiveAbility burst = new AirBurst(player);
+					if (ability == BendingAbilities.AirBurst) {
+						BendingActiveAbility burst = new AirBurst(player);
 						burst.fall();
 					}
 					player.setFallDistance(0);
@@ -394,7 +394,7 @@ public class BendingPlayerListener implements Listener {
 				}
 				
 				if (!event.isCancelled()
-						&& EntityTools.isBender(player, BendingType.Water)) {
+						&& EntityTools.isBender(player, BendingElement.Water)) {
 					ab = new WaterPassive (player);
 					if (ab.start()) {
 						//new Flight(player);
@@ -406,9 +406,9 @@ public class BendingPlayerListener implements Listener {
 				}
 				
 				if (!event.isCancelled()
-						&& EntityTools.isBender(player, BendingType.ChiBlocker)) {
+						&& EntityTools.isBender(player, BendingElement.ChiBlocker)) {
 					if (EntityTools.canBendPassive(player,
-							BendingType.ChiBlocker)) {
+							BendingElement.ChiBlocker)) {
 						event.setDamage((int) (event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
 						if (event.getEntity().getFallDistance() < 10) {
 							event.setCancelled(true);
@@ -431,14 +431,14 @@ public class BendingPlayerListener implements Listener {
 			//				}
 			//			}
 			
-			if (EntityTools.canBendPassive(player, BendingType.Fire)
-					&& EntityTools.isBender(player, BendingType.Fire)
+			if (EntityTools.canBendPassive(player, BendingElement.Fire)
+					&& EntityTools.isBender(player, BendingElement.Fire)
 					&& ((event.getCause() == DamageCause.FIRE) || (event
 							.getCause() == DamageCause.FIRE_TICK))) {
 				event.setCancelled(!Enflamed.canBurn(player));
 			}
 			
-			if (EntityTools.isBender(player, BendingType.Earth)
+			if (EntityTools.isBender(player, BendingElement.Earth)
 					&& ((event.getCause() == DamageCause.SUFFOCATION)
 							&& BlockTools.isTempBlock(player.getEyeLocation().getBlock()))) {
 				event.setDamage(0);

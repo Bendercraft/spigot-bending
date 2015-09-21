@@ -28,9 +28,9 @@ import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
@@ -97,8 +97,8 @@ public class BendingEntityListener implements Listener {
 		if ((source instanceof Player) && (entity instanceof Player)) {
 			Player sourceplayer = (Player)source;
 			Player targetplayer = (Player)entity;
-			if (EntityTools.canBendPassive(sourceplayer, BendingType.ChiBlocker)
-					&& EntityTools.isBender(sourceplayer, BendingType.ChiBlocker)
+			if (EntityTools.canBendPassive(sourceplayer, BendingElement.ChiBlocker)
+					&& EntityTools.isBender(sourceplayer, BendingElement.ChiBlocker)
 					&& (event.getCause() == DamageCause.ENTITY_ATTACK)
 					&& (event.getDamage() == 1)
 					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= RapidPunch.RANGE)) {
@@ -108,8 +108,8 @@ public class BendingEntityListener implements Listener {
 		if (entity instanceof Player) {
 			if (((event.getCause() == DamageCause.ENTITY_ATTACK) || (event.getCause() == DamageCause.ENTITY_EXPLOSION) || (event
 					.getCause() == DamageCause.PROJECTILE))
-					&& EntityTools.isBender(((Player)event.getEntity()), BendingType.ChiBlocker)
-					&& EntityTools.canBendPassive((Player)event.getEntity(), BendingType.ChiBlocker)) {
+					&& EntityTools.isBender(((Player)event.getEntity()), BendingElement.ChiBlocker)
+					&& EntityTools.canBendPassive((Player)event.getEntity(), BendingElement.ChiBlocker)) {
 				double rand = Math.random();
 
 				if (rand <= (Settings.CHI_DODGE_CHANCE / 100.)) {
@@ -121,7 +121,7 @@ public class BendingEntityListener implements Listener {
 		if (source instanceof Player) {
 			if (event.getCause().equals(DamageCause.ENTITY_ATTACK)) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player)source);
-				if ((bPlayer.getAbility() != null) && bPlayer.getAbility().equals(Abilities.FireBlade)) {
+				if ((bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.FireBlade)) {
 					// 20ticks per seconds
 					entity.setFireTicks(20 * 3);
 				}
@@ -228,8 +228,8 @@ public class BendingEntityListener implements Listener {
 			Player p = (Player)entity;
 			if (pr instanceof Arrow) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
-				if (bPlayer.isBender(BendingType.Fire)) {
-					if (p.isSneaking() && (bPlayer.getAbility() == Abilities.HeatControl)) {
+				if (bPlayer.isBender(BendingElement.Fire)) {
+					if (p.isSneaking() && (bPlayer.getAbility() == BendingAbilities.HeatControl)) {
 						pr.setFireTicks(200);
 					}
 				}
@@ -249,8 +249,8 @@ public class BendingEntityListener implements Listener {
 				if (bPlayer == null) {
 					return;
 				}
-				Abilities ability = bPlayer.getAbility();
-				if ((ability == Abilities.PlasticBomb) && EntityTools.canBend(player, ability)) {
+				BendingAbilities ability = bPlayer.getAbility();
+				if ((ability == BendingAbilities.PlasticBomb) && EntityTools.canBend(player, ability)) {
 					C4 bomb = new C4(player, arrow);
 					bomb.swing();
 				}

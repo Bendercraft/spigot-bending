@@ -7,13 +7,13 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -26,8 +26,8 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  * @author Koudja
  */
 
-@BendingAbility(name="Air Burst", element=BendingType.Air)
-public class AirBurst extends ActiveAbility {
+@BendingAbility(name="Air Burst", element=BendingElement.Air)
+public class AirBurst extends BendingActiveAbility {
 
 	@ConfigurationParameter("Charge-Time")
 	public static long DEFAULT_CHARGETIME = 1750;
@@ -52,7 +52,7 @@ public class AirBurst extends ActiveAbility {
 	public AirBurst (Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
@@ -63,9 +63,9 @@ public class AirBurst extends ActiveAbility {
 
 	@Override
 	public boolean sneak () {
-		if (this.state.equals(AbilityState.CanStart)) {
+		if (this.state.equals(BendingAbilityState.CanStart)) {
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Preparing);
+			setState(BendingAbilityState.Preparing);
 			return false;
 		}
 
@@ -74,7 +74,7 @@ public class AirBurst extends ActiveAbility {
 
 	@Override
 	public boolean swing () {
-		if (this.state == AbilityState.Prepared) {
+		if (this.state == BendingAbilityState.Prepared) {
 			coneBurst();
 			return false;
 		}
@@ -99,22 +99,22 @@ public class AirBurst extends ActiveAbility {
 			return false;
 		}
 
-		if ((EntityTools.getBendingAbility(this.player) != Abilities.AirBurst)) {
+		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirBurst)) {
 			return false;
 		}
 
 		if (!this.player.isSneaking()) {
-			if (this.state.equals(AbilityState.Prepared)) {
+			if (this.state.equals(BendingAbilityState.Prepared)) {
 				sphereBurst();
 			}
 			return false;
 		}
 
-		if (!this.state.equals(AbilityState.Prepared) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
-			setState(AbilityState.Prepared);
+		if (!this.state.equals(BendingAbilityState.Prepared) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
+			setState(BendingAbilityState.Prepared);
 		}
 
-		if (this.state == AbilityState.Prepared) {
+		if (this.state == BendingAbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.SMOKE, Tools.getIntCardinalDirection(location.getDirection()), 3);
 		}
@@ -122,7 +122,7 @@ public class AirBurst extends ActiveAbility {
 	}
 
 	public static boolean isAirBursting (Player player) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirBurst);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBurst);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
@@ -130,11 +130,11 @@ public class AirBurst extends ActiveAbility {
 	}
 
 	public boolean isCharged() {
-		return (this.state == AbilityState.Prepared);
+		return (this.state == BendingAbilityState.Prepared);
 	}
 
 	public static AirBurst getAirBurst (Player player) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirBurst);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBurst);
 		if ((instances == null) || instances.isEmpty()) {
 			return null;
 		}
@@ -160,7 +160,7 @@ public class AirBurst extends ActiveAbility {
 				new AirBlast(location, direction.normalize(), this.player, AirBurst.PUSHFACTOR, this);
 			}
 		}
-		setState(AbilityState.Ended);
+		setState(BendingAbilityState.Ended);
 	}
 	
 	private void coneBurst () {
@@ -183,7 +183,7 @@ public class AirBurst extends ActiveAbility {
 				}
 			}
 		}
-		setState(AbilityState.Ended);
+		setState(BendingAbilityState.Ended);
 	}
 	
 	private void fallBurst () {
@@ -205,8 +205,8 @@ public class AirBurst extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.AirBurst;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.AirBurst;
 	}
 
 	@Override

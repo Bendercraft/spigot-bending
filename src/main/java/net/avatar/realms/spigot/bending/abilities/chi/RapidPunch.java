@@ -5,13 +5,13 @@ import java.util.Map;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -22,8 +22,8 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * The more you hit, the more you deal damage. (But the more big the cooldown will be)
  *
  */
-@BendingAbility(name="Rapid Punch", element=BendingType.ChiBlocker)
-public class RapidPunch extends ActiveAbility {
+@BendingAbility(name="Rapid Punch", element=BendingElement.ChiBlocker)
+public class RapidPunch extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 7;
@@ -43,14 +43,14 @@ public class RapidPunch extends ActiveAbility {
 	public RapidPunch(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
 		Entity t = EntityTools.getTargettedEntity(player, RANGE);
 
 		if (t == null) {
-			setState(AbilityState.CannotStart);
+			setState(BendingAbilityState.CannotStart);
 			return;
 		}
 	}
@@ -75,14 +75,14 @@ public class RapidPunch extends ActiveAbility {
 
 	@Override
 	public void remove() {
-		this.bender.cooldown(Abilities.RapidPunch, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.RapidPunch, COOLDOWN);
 		super.remove();
 	}
 
 
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.RapidPunch;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.RapidPunch;
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class RapidPunch extends ActiveAbility {
 			return false;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.RapidPunch);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.RapidPunch);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}

@@ -14,10 +14,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
@@ -100,7 +100,7 @@ public class Wave {
 			return false;
 		}
 		//If no block available, check if bender can drainbend !
-		if(Drainbending.canDrainBend(this.player) && !bPlayer.isOnCooldown(Abilities.Drainbending)) {
+		if(Drainbending.canDrainBend(this.player) && !bPlayer.isOnCooldown(BendingAbilities.Drainbending)) {
 			Location location = this.player.getEyeLocation();
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
@@ -111,7 +111,7 @@ public class Wave {
 				//Range and max radius is halfed for Drainbending
 				this.range = this.range/2;
 				this.maxradius = this.maxradius/2;
-				bPlayer.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
+				bPlayer.cooldown(BendingAbilities.Drainbending, Drainbending.COOLDOWN);
 				return true;
 			}
 		}
@@ -135,11 +135,11 @@ public class Wave {
 	public void moveWater() {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);
 
-		if (bPlayer.isOnCooldown(Abilities.Surge)) {
+		if (bPlayer.isOnCooldown(BendingAbilities.Surge)) {
 			return;
 		}
 
-		bPlayer.cooldown(Abilities.Surge, COOLDOWN);
+		bPlayer.cooldown(BendingAbilities.Surge, COOLDOWN);
 		if (this.sourceblock == null) {
 			return;
 		}
@@ -194,7 +194,7 @@ public class Wave {
 			return waterReturn.progress();
 		}
 		if (this.player.isDead() || !this.player.isOnline()
-				|| !EntityTools.canBend(this.player, Abilities.Surge)) {
+				|| !EntityTools.canBend(this.player, BendingAbilities.Surge)) {
 			breakBlock();
 			thaw();
 			return false;
@@ -203,7 +203,7 @@ public class Wave {
 			this.time = System.currentTimeMillis();
 
 			if (!this.progressing
-					&& (EntityTools.getBendingAbility(this.player) != Abilities.Surge)) {
+					&& (EntityTools.getBendingAbility(this.player) != BendingAbilities.Surge)) {
 				return false;
 			}
 
@@ -226,15 +226,15 @@ public class Wave {
 					breakBlock();
 					return false;
 				}
-				if (!EntityTools.canBend(this.player, Abilities.PhaseChange)
-						&& (EntityTools.getBendingAbility(this.player) != Abilities.Surge)) {
+				if (!EntityTools.canBend(this.player, BendingAbilities.PhaseChange)
+						&& (EntityTools.getBendingAbility(this.player) != BendingAbilities.Surge)) {
 					this.progressing = false;
 					thaw();
 					breakBlock();
 					returnWater();
 					return false;
 				}
-				if (!EntityTools.canBend(this.player, Abilities.Surge)) {
+				if (!EntityTools.canBend(this.player, BendingAbilities.Surge)) {
 					this.progressing = false;
 					thaw();
 					breakBlock();
@@ -251,7 +251,7 @@ public class Wave {
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Surge,
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge,
 						this.location)
 						&& ((((blockl.getType() == Material.AIR)
 								|| (blockl.getType() == Material.FIRE)
@@ -381,7 +381,7 @@ public class Wave {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Surge,
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge,
 				block.getLocation())) {
 			return;
 		}
@@ -400,7 +400,7 @@ public class Wave {
 	}
 
 	public static boolean isBlockWave(Block block) {
-		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.Surge).values()) {
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
 			if(wall.getWave() != null) {
 				if(wall.getWave().wave.containsKey(block)) {
@@ -421,10 +421,10 @@ public class Wave {
 
 		for (Block block : BlockTools.getBlocksAroundPoint(this.frozenlocation,
 				freezeradius)) {
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Surge,
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Surge,
 					block.getLocation())
 					|| ProtectionManager.isRegionProtectedFromBending(this.player,
-							Abilities.PhaseChange, block.getLocation())){
+							BendingAbilities.PhaseChange, block.getLocation())){
 				continue;
 			}			
 			if (TempBlock.isTempBlock(block)){
@@ -456,7 +456,7 @@ public class Wave {
 	}
 
 	public static void thaw(Block block) {
-		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.Surge).values()) {
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
 			if(wall.getWave() != null) {
 				if (wall.getWave().frozenblocks.containsKey(block)) {
@@ -468,7 +468,7 @@ public class Wave {
 	}
 
 	public static boolean canThaw(Block block) {
-		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.Surge).values()) {
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
 			if(wall.getWave() != null) {
 				if (wall.getWave().frozenblocks.containsKey(block)) {
@@ -486,7 +486,7 @@ public class Wave {
 	}
 
 	public static boolean isWaving(Player player) {
-		WaterWall wall = (WaterWall) AbilityManager.getManager().getInstances(Abilities.Surge).get(player);
+		WaterWall wall = (WaterWall) AbilityManager.getManager().getInstances(BendingAbilities.Surge).get(player);
 		if(wall != null && wall.getWave() != null) {
 			return true;
 		}

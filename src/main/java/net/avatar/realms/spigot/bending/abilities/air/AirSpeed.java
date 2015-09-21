@@ -4,17 +4,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.base.PassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility (name = "AirSpeed", element = BendingType.Air)
-public class AirSpeed extends PassiveAbility {
+@BendingAbility (name = "AirSpeed", element = BendingElement.Air)
+public class AirSpeed extends BendingPassiveAbility {
 	
 	public AirSpeed (Player player) {
 		super(player, null);
@@ -26,13 +26,13 @@ public class AirSpeed extends PassiveAbility {
 	}
 	
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.AirSpeed;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.AirSpeed;
 	}
 	
 	@Override
 	public boolean start () {
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
 		// I've separate it from constructor in case where a player bind Speed
@@ -40,7 +40,7 @@ public class AirSpeed extends PassiveAbility {
 		//new Flight(this.player);
 		//this.player.setAllowFlight(true);
 		AbilityManager.getManager().addInstance(this);
-		setState(AbilityState.Progressing);
+		setState(BendingAbilityState.Progressing);
 		return true;
 	}
 
@@ -51,8 +51,8 @@ public class AirSpeed extends PassiveAbility {
 		}
 		
 		if (this.player.isSprinting()) {
-			if (this.bender.isBender(BendingType.Air)) {
-				if (EntityTools.canBendPassive(this.player, BendingType.Air)) {
+			if (this.bender.isBender(BendingElement.Air)) {
+				if (EntityTools.canBendPassive(this.player, BendingElement.Air)) {
 					applySpeed();
 					return true;
 				}
@@ -67,7 +67,7 @@ public class AirSpeed extends PassiveAbility {
 		PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 2);
 		
 		new TempPotionEffect(this.player, speed);
-		if (EntityTools.getBendingAbility(this.player) != Abilities.AirScooter) {
+		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.AirScooter) {
 			new TempPotionEffect(this.player, jump);
 		}
 	}
@@ -78,7 +78,7 @@ public class AirSpeed extends PassiveAbility {
 			return false;
 		}
 		
-		if (!(this.bender.isBender(BendingType.Air))) {
+		if (!(this.bender.isBender(BendingElement.Air))) {
 			return false;
 		}
 		

@@ -19,7 +19,7 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.Trait;
@@ -27,9 +27,9 @@ import net.citizensnpcs.api.trait.Trait;
 
 public class ProtectionManager {
 	
-	private static Set<Abilities> allowedEverywhereAbilities = new HashSet<Abilities>();
+	private static Set<BendingAbilities> allowedEverywhereAbilities = new HashSet<BendingAbilities>();
 	static {
-		allowedEverywhereAbilities.add(Abilities.HealingWaters);
+		allowedEverywhereAbilities.add(BendingAbilities.HealingWaters);
 	}
 	
 	private static PluginManager pm;
@@ -131,7 +131,7 @@ public class ProtectionManager {
 		return false;
 	}
 	
-	public static boolean isRegionProtectedFromExplosion (Player player, Abilities ability, Location loc) {
+	public static boolean isRegionProtectedFromExplosion (Player player, BendingAbilities ability, Location loc) {
 		if (isRegionProtectedFromBending(player, ability, loc)) {
 			return true;
 		}
@@ -152,7 +152,7 @@ public class ProtectionManager {
 		return false;
 	}
 	
-	public static boolean isRegionProtectedFromBending (Player player, Abilities ability, Location loc) {
+	public static boolean isRegionProtectedFromBending (Player player, BendingAbilities ability, Location loc) {
 		if (!useWG) {
 			return false;
 		}
@@ -188,7 +188,7 @@ public class ProtectionManager {
 			return true;
 		}
 		
-		if ((ability == Abilities.AvatarState)
+		if ((ability == BendingAbilities.AvatarState)
 				&& !query.testState(loc, localPlayer, BENDING_ENERGY)) {
 			return true;
 		}
@@ -231,7 +231,7 @@ public class ProtectionManager {
 		return false;
 	}
 	
-	public static boolean isAllowedEverywhereAbility (Abilities ability) {
+	public static boolean isAllowedEverywhereAbility (BendingAbilities ability) {
 		return allowedEverywhereAbilities.contains(ability);
 	}
 }

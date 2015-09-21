@@ -23,8 +23,8 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
@@ -80,7 +80,7 @@ public class AbilityManager {
 	private static AbilityManager manager = null;
 
 	private Map<String, RegisteredAbility> availableAbilities;
-	private Map<Abilities, Map<Object, IAbility>> abilities;
+	private Map<BendingAbilities, Map<Object, IBendingAbility>> abilities;
 
 	public static AbilityManager getManager() {
 		if (manager == null) {
@@ -90,14 +90,14 @@ public class AbilityManager {
 	}
 
 	private AbilityManager() {
-		this.abilities = new HashMap<Abilities, Map<Object, IAbility>>();
+		this.abilities = new HashMap<BendingAbilities, Map<Object, IBendingAbility>>();
 		this.availableAbilities = new HashMap<String, RegisteredAbility>();
 	}
 
 	public void progressAllAbilities() {
-		List<IAbility> toRemove = new LinkedList<IAbility>();
-		for (Map<Object, IAbility> abilities : this.abilities.values()) {
-			for (IAbility ability : abilities.values()) {
+		List<IBendingAbility> toRemove = new LinkedList<IBendingAbility>();
+		for (Map<Object, IBendingAbility> abilities : this.abilities.values()) {
+			for (IBendingAbility ability : abilities.values()) {
 				boolean canKeep = ability.progress();
 				if (!canKeep) {
 					toRemove.add(ability);
@@ -105,15 +105,15 @@ public class AbilityManager {
 			}
 		}
 
-		for (IAbility ability : toRemove) {
+		for (IBendingAbility ability : toRemove) {
 			ability.stop();
 			ability.remove();
 		}
 	}
 
 	public void stopAllAbilities() {
-		for (Map<Object, IAbility> instances : this.abilities.values()) {
-			for (IAbility ability : instances.values()) {
+		for (Map<Object, IBendingAbility> instances : this.abilities.values()) {
+			for (IBendingAbility ability : instances.values()) {
 				ability.stop();
 			}
 		}
@@ -122,12 +122,12 @@ public class AbilityManager {
 	}
 
 	private void clearAllAbilities() {
-		for (Map<Object, IAbility> instances : this.abilities.values()) {
+		for (Map<Object, IBendingAbility> instances : this.abilities.values()) {
 			instances.clear();
 		}
 	}
 
-	public ActiveAbility buildAbility(Abilities abilityType, Player player) {
+	public BendingActiveAbility buildAbility(BendingAbilities abilityType, Player player) {
 		switch (abilityType) {
 		case AvatarState:
 			return new AvatarState(player);
@@ -238,23 +238,23 @@ public class AbilityManager {
 		}
 	}
 
-	public void addInstance(IAbility instance) {
-		Map<Object, IAbility> map = this.abilities.get(instance.getAbilityType());
+	public void addInstance(IBendingAbility instance) {
+		Map<Object, IBendingAbility> map = this.abilities.get(instance.getAbilityType());
 		if (map == null) {
-			map = new HashMap<Object, IAbility>();
+			map = new HashMap<Object, IBendingAbility>();
 			this.abilities.put(instance.getAbilityType(), map);
 		}
 		map.put(instance.getIdentifier(), instance);
 	}
 
-	public Map<Object, IAbility> getInstances(Abilities type) {
+	public Map<Object, IBendingAbility> getInstances(BendingAbilities type) {
 		if (this.abilities.containsKey(type)) {
 			return this.abilities.get(type);
 		}
 		return Collections.emptyMap();
 	}
 
-	public boolean isUsingAbility(Player player, Abilities ability) {
+	public boolean isUsingAbility(Player player, BendingAbilities ability) {
 		if (player == null) {
 			return false;
 		}
@@ -263,12 +263,12 @@ public class AbilityManager {
 			return false;
 		}
 
-		Map<Object, IAbility> instances = getInstances(ability);
+		Map<Object, IBendingAbility> instances = getInstances(ability);
 		if (instances == null) {
 			return false;
 		}
 
-		for (IAbility ab : instances.values()) {
+		for (IBendingAbility ab : instances.values()) {
 			if (ab.getPlayer().getUniqueId().equals(player.getUniqueId())) {
 				return true;
 			}
@@ -347,7 +347,7 @@ public class AbilityManager {
 		register(WaterWall.class);
 	}
 
-	protected void register(Class<? extends IAbility> ability) {
+	protected void register(Class<? extends IBendingAbility> ability) {
 		BendingAbility annotation = ability.getAnnotation(BendingAbility.class);
 		if (annotation == null) {
 			Bending.plugin.getLogger().severe("Trying to register ability : " + ability + " but not annoted ! Aborting this registration...");
@@ -358,10 +358,10 @@ public class AbilityManager {
 					"Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
 			return;
 		}
-		if (annotation.specialization() != BendingSpecializationType.None) {
+		if (annotation.specialization() != BendingAffinity.None) {
 			_register(annotation.name(), ability, annotation.specialization().getElement(), annotation.specialization());
 		} else {
-			if (annotation.element() == BendingType.None) {
+			if (annotation.element() == BendingElement.None) {
 				Bending.plugin.getLogger().severe(
 						"Trying to register ability : " + ability + " but element&specilization are not set ! Aborting this registration...");
 				return;
@@ -370,7 +370,7 @@ public class AbilityManager {
 		}
 	}
 
-	private void _register(String name, Class<? extends IAbility> ability, BendingType element, BendingSpecializationType specialization) {
+	private void _register(String name, Class<? extends IBendingAbility> ability, BendingElement element, BendingAffinity specialization) {
 		if (this.availableAbilities.containsKey(name)) {
 			// Nope !
 			Bending.plugin.getLogger().severe(

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -44,13 +44,13 @@ public class CooldownExecution extends BendingCommand {
 			return true;
 		}
 
-		Map<Abilities, Long> cooldowns = bender.getCooldowns();
+		Map<BendingAbilities, Long> cooldowns = bender.getCooldowns();
 		player.sendMessage("-Cooldowns :");
 		if ((cooldowns == null) || cooldowns.isEmpty()) {
 			player.sendMessage("--- None");
 		}
 		else {
-			for (Abilities ab : cooldowns.keySet()) {
+			for (BendingAbilities ab : cooldowns.keySet()) {
 				ChatColor col = ChatColor.WHITE;
 				int min = (int) ((cooldowns.get(ab) / 1000) / 60);
 				int sec = (int) ((((cooldowns.get(ab) / 1000.0) / 60.0) - min) * 60);

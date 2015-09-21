@@ -4,15 +4,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -34,8 +34,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Combustion", element=BendingType.Fire, specialization=BendingSpecializationType.Combustion)
-public class Combustion extends ActiveAbility {
+@BendingAbility(name="Combustion", element=BendingElement.Fire, specialization=BendingAffinity.Combustion)
+public class Combustion extends BendingActiveAbility {
 	private static long interval = 25;
 	
 	@ConfigurationParameter("Radius")
@@ -81,7 +81,7 @@ public class Combustion extends ActiveAbility {
 	public Combustion(Player player) {
 		super (player, null);
 		
-		if (state.isBefore(AbilityState.CanStart)) {
+		if (state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 		
@@ -101,7 +101,7 @@ public class Combustion extends ActiveAbility {
 				return false;
 			case CanStart:
 				if (!player.getEyeLocation().getBlock().isLiquid()) {
-					setState(AbilityState.Preparing);
+					setState(BendingAbilityState.Preparing);
 					AbilityManager.getManager().addInstance(this);
 				}
 				return false;
@@ -122,11 +122,11 @@ public class Combustion extends ActiveAbility {
 			return false;
 		}
 		
-		if ((EntityTools.getBendingAbility(player) != Abilities.Combustion)) {
+		if ((EntityTools.getBendingAbility(player) != BendingAbilities.Combustion)) {
 			return false;
 		}
 		
-		if(!state.isBefore(AbilityState.Prepared)) {
+		if(!state.isBefore(BendingAbilityState.Prepared)) {
 			if(!player.isSneaking()) {
 				return false;
 			}
@@ -139,13 +139,13 @@ public class Combustion extends ActiveAbility {
 				location = player.getEyeLocation();
 				origin = location.clone();
 				direction = location.getDirection().normalize().multiply(radius);
-				setState(AbilityState.Prepared);
+				setState(BendingAbilityState.Prepared);
 			}
 			return true;
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
-			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Combustion, location)) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Combustion, location)) {
 				return false;
 			}
 
@@ -233,9 +233,9 @@ public class Combustion extends ActiveAbility {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && location.distance(block.getLocation()) < explosionradius/2.0)) {
-				if (!ProtectionManager.isRegionProtectedFromBending(player, Abilities.Combustion,
+				if (!ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Combustion,
 						block.getLocation()) 
-						&& !ProtectionManager.isRegionProtectedFromExplosion(player, Abilities.Combustion, block.getLocation())) {
+						&& !ProtectionManager.isRegionProtectedFromExplosion(player, BendingAbilities.Combustion, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}
@@ -292,16 +292,16 @@ public class Combustion extends ActiveAbility {
 
 	@Override
 	public void remove() {
-		BendingPlayer.getBendingPlayer(player).cooldown(Abilities.Combustion, COOLDOWN);
+		BendingPlayer.getBendingPlayer(player).cooldown(BendingAbilities.Combustion, COOLDOWN);
 		super.remove();
 	}
 
 	public static void removeFireballsAroundPoint(Location location, double radius) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Combustion);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Combustion);
 		if (instances == null) {
 			return;
 		}
-		for (IAbility ab : instances.values()) {
+		for (IBendingAbility ab : instances.values()) {
 			Combustion fireball = ((Combustion)ab);
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld()) {
@@ -314,11 +314,11 @@ public class Combustion extends ActiveAbility {
 
 	public static boolean annihilateBlasts(Location location, double radius, Player source) {
 		boolean broke = false;
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Combustion);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Combustion);
 		if (instances == null) {
 			return broke;
 		}
-		for (IAbility ab : instances.values()) {
+		for (IBendingAbility ab : instances.values()) {
 			Combustion fireball = ((Combustion)ab);
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld()
@@ -340,8 +340,8 @@ public class Combustion extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.Combustion;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.Combustion;
 	}
 
 	@Override

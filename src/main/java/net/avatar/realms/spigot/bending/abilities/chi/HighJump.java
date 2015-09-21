@@ -1,10 +1,10 @@
 package net.avatar.realms.spigot.bending.abilities.chi;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
@@ -13,8 +13,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="High Jump", element=BendingType.ChiBlocker)
-public class HighJump extends ActiveAbility {
+@BendingAbility(name="High Jump", element=BendingElement.ChiBlocker)
+public class HighJump extends BendingActiveAbility {
 
 	@ConfigurationParameter("Height")
 	private static final int JUMP_HEIGHT = 7;
@@ -27,11 +27,11 @@ public class HighJump extends ActiveAbility {
 	}
 	
 	public boolean swing() {
-		if (state == AbilityState.CannotStart) {
+		if (state == BendingAbilityState.CannotStart) {
 			return true;
 		}
 		if (makeJump()) {
-			bender.cooldown(Abilities.HighJump, COOLDOWN);
+			bender.cooldown(BendingAbilities.HighJump, COOLDOWN);
 		}
 		return true;
 	}
@@ -46,8 +46,8 @@ public class HighJump extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.HighJump;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.HighJump;
 	}
 
 	@Override

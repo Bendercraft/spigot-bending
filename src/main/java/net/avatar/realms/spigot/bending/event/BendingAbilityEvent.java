@@ -2,18 +2,18 @@ package net.avatar.realms.spigot.bending.event;
 
 import org.bukkit.event.HandlerList;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 
 public class BendingAbilityEvent extends BendingEvent{
 	
-	protected Abilities ability;
+	protected BendingAbilities ability;
 	
-	public BendingAbilityEvent (Abilities ability) {
+	public BendingAbilityEvent (BendingAbilities ability) {
 		super();
 		this.ability = ability;
 	}
 	
-	public Abilities getAbility () {
+	public BendingAbilities getAbility () {
 		return this.ability;
 	}
 

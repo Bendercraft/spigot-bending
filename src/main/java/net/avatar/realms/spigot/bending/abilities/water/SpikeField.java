@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -43,7 +43,7 @@ public class SpikeField {
 	
 	private List<IceSpikeColumn> spikes = new LinkedList<IceSpikeColumn>();
 
-	public SpikeField(Player p, IAbility parent) {
+	public SpikeField(Player p, IBendingAbility parent) {
 		if (cooldowns.containsKey(p))
 			if (cooldowns.get(p) + COOLDOWN >= System.currentTimeMillis())
 				return;

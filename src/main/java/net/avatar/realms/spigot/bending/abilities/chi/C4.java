@@ -21,14 +21,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -36,8 +36,8 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
-@BendingAbility(name = "Plastic Bomb", element = BendingType.ChiBlocker, specialization = BendingSpecializationType.Inventor)
-public class C4 extends ActiveAbility {
+@BendingAbility(name = "Plastic Bomb", element = BendingElement.ChiBlocker, specialization = BendingAffinity.Inventor)
+public class C4 extends BendingActiveAbility {
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -74,22 +74,22 @@ public class C4 extends ActiveAbility {
 	public C4(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
 		if (!hasDetonator(this.player)) {
-			setState(AbilityState.CannotStart);
+			setState(BendingAbilityState.CannotStart);
 		}
 
 		loadBlockByDir(player.getEyeLocation(), player.getEyeLocation().getDirection());
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb, this.location)) {
-			setState(AbilityState.CannotStart);
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PlasticBomb, this.location)) {
+			setState(BendingAbilityState.CannotStart);
 			return;
 		}
 		if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
-			setState(AbilityState.CannotStart);
+			setState(BendingAbilityState.CannotStart);
 			return;
 		}
 		this.previousType = this.location.getBlock().getType();
@@ -98,18 +98,18 @@ public class C4 extends ActiveAbility {
 	public C4(Player player, Arrow arrow) {
 		super(player, null);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
 		loadBlockByDir(arrow.getLocation(), arrow.getVelocity().normalize());
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.PlasticBomb, this.location)) {
-			setState(AbilityState.CannotStart);
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PlasticBomb, this.location)) {
+			setState(BendingAbilityState.CannotStart);
 			return;
 		}
 		if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
-			setState(AbilityState.CannotStart);
+			setState(BendingAbilityState.CannotStart);
 			return;
 		}
 	}
@@ -120,12 +120,12 @@ public class C4 extends ActiveAbility {
 			return false;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
 		int cpt = 0;
-		for (IAbility ab : instances.values()) {
+		for (IBendingAbility ab : instances.values()) {
 			if (ab.getPlayer().equals(this.player)) {
 				cpt++;
 				if (cpt >= MAX_BOMBS) {
@@ -156,11 +156,11 @@ public class C4 extends ActiveAbility {
 	@Override
 	public boolean swing() {
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return true;
 		}
 
-		if (this.state.equals(AbilityState.Progressing)) {
+		if (this.state.equals(BendingAbilityState.Progressing)) {
 			// The block has already been posed
 
 			long now = System.currentTimeMillis();
@@ -175,14 +175,14 @@ public class C4 extends ActiveAbility {
 		this.id = ID++;
 		AbilityManager.getManager().addInstance(this);
 
-		setState(AbilityState.Progressing);
+		setState(BendingAbilityState.Progressing);
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
 
-		if (!this.state.equals(AbilityState.Progressing)) {
+		if (!this.state.equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
 
@@ -213,7 +213,7 @@ public class C4 extends ActiveAbility {
 			return false;
 		}
 
-		if (!this.state.equals(AbilityState.Progressing)) {
+		if (!this.state.equals(BendingAbilityState.Progressing)) {
 			return true;
 		}
 
@@ -242,9 +242,9 @@ public class C4 extends ActiveAbility {
 
 		explode();
 
-		this.bender.cooldown(Abilities.PlasticBomb, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.PlasticBomb, COOLDOWN);
 
-		setState(AbilityState.Ended);
+		setState(BendingAbilityState.Ended);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -286,8 +286,8 @@ public class C4 extends ActiveAbility {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && (this.location.distance(block.getLocation()) < (RADIUS / 2.0)))) {
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.PlasticBomb, block.getLocation())
-						&& !ProtectionManager.isRegionProtectedFromExplosion(this.player, Abilities.PlasticBomb, block.getLocation())) {
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.PlasticBomb, block.getLocation())
+						&& !ProtectionManager.isRegionProtectedFromExplosion(this.player, BendingAbilities.PlasticBomb, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}
@@ -380,7 +380,7 @@ public class C4 extends ActiveAbility {
 			return null;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
 		for (Object obj : instances.keySet()) {
 			if (((C4) instances.get(obj)).bomb.equals(block)) {
 				return obj;
@@ -395,8 +395,8 @@ public class C4 extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.PlasticBomb;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.PlasticBomb;
 	}
 
 	@Override
@@ -411,7 +411,7 @@ public class C4 extends ActiveAbility {
 
 	public static C4 getCFour(Object id) {
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PlasticBomb);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
 		if ((instances != null) && !instances.isEmpty()) {
 			return (C4) instances.get(id);
 		}

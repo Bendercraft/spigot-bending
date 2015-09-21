@@ -15,20 +15,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Suffocate", element=BendingType.Air, specialization=BendingSpecializationType.Suffocate)
-public class Suffocate extends ActiveAbility {
+@BendingAbility(name="Suffocate", element=BendingElement.Air, specialization=BendingAffinity.Suffocate)
+public class Suffocate extends BendingActiveAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	private static String LORE_NAME = "Suffocation";
 	//private int distance = ConfigManager.suffocateDistance;
@@ -56,7 +56,7 @@ public class Suffocate extends ActiveAbility {
 	public Suffocate(Player player) {
 		super (player, null);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
@@ -87,14 +87,14 @@ public class Suffocate extends ActiveAbility {
 				this.target = (Player) target;
 				this.targetLocation = this.target.getLocation().getBlock();
 
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Suffocate, this.target.getLocation())) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Suffocate, this.target.getLocation())) {
 					return false;
 				}
 
 				this.helmet = this.target.getInventory().getHelmet();
 				this.target.getInventory().setHelmet(this.temp);
 
-				setState(AbilityState.Progressing);
+				setState(BendingAbilityState.Progressing);
 				AbilityManager.getManager().addInstance(this);
 				return false;
 			case Preparing:
@@ -114,7 +114,7 @@ public class Suffocate extends ActiveAbility {
 			return false;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Suffocate, this.target.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Suffocate, this.target.getLocation())) {
 			return false;
 		}
 
@@ -126,7 +126,7 @@ public class Suffocate extends ActiveAbility {
 			return false;
 		}
 
-		if (!this.state.equals(AbilityState.Progressing)) {
+		if (!this.state.equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
 
@@ -186,7 +186,7 @@ public class Suffocate extends ActiveAbility {
 
 	@Override
 	public void remove() {
-		this.bender.cooldown(Abilities.Suffocate, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.Suffocate, COOLDOWN);
 		super.remove();
 	}
 
@@ -231,7 +231,7 @@ public class Suffocate extends ActiveAbility {
 			return false;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Suffocate);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Suffocate);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
@@ -240,8 +240,8 @@ public class Suffocate extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.Suffocate;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.Suffocate;
 	}
 
 	@Override

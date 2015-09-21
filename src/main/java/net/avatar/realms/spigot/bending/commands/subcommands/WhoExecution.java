@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -64,16 +64,16 @@ public class WhoExecution extends BendingCommand {
 
 		ChatColor color = ChatColor.WHITE;
 		if (bender.getBendingTypes().size() > 1) {
-			color = PluginTools.getColor(Settings.getColorString(BendingType.Energy.name()));
+			color = PluginTools.getColor(Settings.getColorString(BendingElement.Energy.name()));
 		}
 		else {
 			color = PluginTools.getColor(Settings.getColorString(bender.getBendingTypes().get(0).name()));
 		}
 		player.sendMessage(color + playerName);
-		for (BendingType element : bender.getBendingTypes()) {
+		for (BendingElement element : bender.getBendingTypes()) {
 			color = PluginTools.getColor(Settings.getColorString(element.name()));
 			String msg;
-			if (element == BendingType.ChiBlocker) {
+			if (element == BendingElement.ChiBlocker) {
 				msg = Messages.WHO_IS_CHI;
 			}
 			else {
@@ -84,7 +84,7 @@ public class WhoExecution extends BendingCommand {
 			msg = color + msg;
 			player.sendMessage(msg);
 
-			for (BendingSpecializationType aff : bender.getSpecializations()) {
+			for (BendingAffinity aff : bender.getSpecializations()) {
 				if (aff.getElement() == element) {
 					player.sendMessage(color + p.getName() + " has affinity : " + aff.name());
 					break;
@@ -99,7 +99,7 @@ public class WhoExecution extends BendingCommand {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 				ChatColor color;
 				if (bPlayer.getBendingTypes() != null && !bPlayer.getBendingTypes().isEmpty()) {
-					BendingType el = bPlayer.getBendingTypes().get(0);
+					BendingElement el = bPlayer.getBendingTypes().get(0);
 					color = PluginTools.getColor(Settings.getColorString(el.name()));
 				}
 				else {

@@ -20,10 +20,10 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
@@ -38,7 +38,7 @@ public class EntityTools {
 	// Tornados, Metalwire,...
 	public static final Map<UUID, Long> fallImmunity = new HashMap<UUID, Long>();
 
-	public static boolean isBender(Player player, BendingType type) {
+	public static boolean isBender(Player player, BendingElement type) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return false;
@@ -46,7 +46,7 @@ public class EntityTools {
 		return bPlayer.isBender(type);
 	}
 
-	public static boolean isSpecialized(Player player, BendingSpecializationType specialization) {
+	public static boolean isSpecialized(Player player, BendingAffinity specialization) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return false;
@@ -62,7 +62,7 @@ public class EntityTools {
 		return true;
 	}
 
-	public static List<BendingType> getBendingTypes(Player player) {
+	public static List<BendingElement> getBendingTypes(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return null;
@@ -70,7 +70,7 @@ public class EntityTools {
 		return bPlayer.getBendingTypes();
 	}
 
-	public static Abilities getBendingAbility(Player player) {
+	public static BendingAbilities getBendingAbility(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return null;
@@ -92,11 +92,11 @@ public class EntityTools {
 		return true;
 	}
 
-	public static String getPermissionKey(Abilities ability) {
+	public static String getPermissionKey(BendingAbilities ability) {
 		return "bending." + ability.getElement().name().toLowerCase() + "." + ability.name().toLowerCase();
 	}
 
-	public static boolean hasPermission(Player player, Abilities ability) {
+	public static boolean hasPermission(Player player, BendingAbilities ability) {
 
 		if (ability.isSpecialization() && !EntityTools.isSpecialized(player, ability.getSpecialization())) {
 			return false;
@@ -109,7 +109,7 @@ public class EntityTools {
 		return false;
 	}
 
-	public static boolean canBend(Player player, Abilities ability) {
+	public static boolean canBend(Player player, BendingAbilities ability) {
 		if (ability == null) {
 			return false;
 		}
@@ -122,7 +122,7 @@ public class EntityTools {
 			return false;
 		}
 
-		if (ability == Abilities.AvatarState) {
+		if (ability == BendingAbilities.AvatarState) {
 			return true;
 		}
 
@@ -134,19 +134,19 @@ public class EntityTools {
 			return false;
 		}
 
-		if (ability.isAirbending() && !isBender(player, BendingType.Air)) {
+		if (ability.isAirbending() && !isBender(player, BendingElement.Air)) {
 			return false;
 		}
-		if (ability.isChiblocking() && !isBender(player, BendingType.ChiBlocker)) {
+		if (ability.isChiblocking() && !isBender(player, BendingElement.ChiBlocker)) {
 			return false;
 		}
-		if (ability.isEarthbending() && !isBender(player, BendingType.Earth)) {
+		if (ability.isEarthbending() && !isBender(player, BendingElement.Earth)) {
 			return false;
 		}
-		if (ability.isFirebending() && !isBender(player, BendingType.Fire)) {
+		if (ability.isFirebending() && !isBender(player, BendingElement.Fire)) {
 			return false;
 		}
-		if (ability.isWaterbending() && !isBender(player, BendingType.Water)) {
+		if (ability.isWaterbending() && !isBender(player, BendingElement.Water)) {
 			return false;
 		}
 
@@ -166,7 +166,7 @@ public class EntityTools {
 		return !ProtectionManager.isRegionProtectedFromBending(player, ability, player.getLocation());
 	}
 
-	public static boolean canBendPassive(Player player, BendingType type) {
+	public static boolean canBendPassive(Player player, BendingElement type) {
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player)) && !AvatarState.isAvatarState(player)) {
 			return false;
 		}
@@ -184,7 +184,7 @@ public class EntityTools {
 		if (bPlayer == null) {
 			return false;
 		}
-		if (EntityTools.isSpecialized(player, BendingSpecializationType.DrainBend)) {
+		if (EntityTools.isSpecialized(player, BendingAffinity.DrainBend)) {
 			return true;
 		}
 		return false;
@@ -243,7 +243,7 @@ public class EntityTools {
 			return true;
 		}
 
-		if (canBend(player, Abilities.Bloodbending) && !toggledBending(player)) {
+		if (canBend(player, BendingAbilities.Bloodbending) && !toggledBending(player)) {
 			return false;
 		}
 

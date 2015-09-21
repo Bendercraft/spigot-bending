@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -66,7 +66,7 @@ public class ChooseExecution extends BendingCommand {
 		}
 
 		String choice = args.remove(0);
-		BendingType element = getElement(choice);
+		BendingElement element = getElement(choice);
 
 		if (element == null) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_ELEMENT);

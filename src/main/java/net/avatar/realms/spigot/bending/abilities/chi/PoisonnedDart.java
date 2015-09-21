@@ -15,14 +15,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -37,8 +37,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  *
  */
 
-@BendingAbility(name="Poisonned Dart", element=BendingType.ChiBlocker, specialization = BendingSpecializationType.Inventor)
-public class PoisonnedDart extends ActiveAbility{
+@BendingAbility(name="Poisonned Dart", element=BendingElement.ChiBlocker, specialization = BendingAffinity.Inventor)
+public class PoisonnedDart extends BendingActiveAbility{
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 2;
@@ -59,7 +59,7 @@ public class PoisonnedDart extends ActiveAbility{
 	public PoisonnedDart(Player player) {
 		super(player, null);
 
-		if (this.state.equals(AbilityState.CannotStart)) {
+		if (this.state.equals(BendingAbilityState.CannotStart)) {
 			return;
 		}
 	}
@@ -67,11 +67,11 @@ public class PoisonnedDart extends ActiveAbility{
 	@Override
 	public boolean swing() {
 
-		if (this.state.equals(AbilityState.CannotStart) || this.state.equals(AbilityState.Preparing)) {
+		if (this.state.equals(BendingAbilityState.CannotStart) || this.state.equals(BendingAbilityState.Preparing)) {
 			return true;
 		}
 		
-		if (!this.state.equals(AbilityState.CanStart)) {
+		if (!this.state.equals(BendingAbilityState.CanStart)) {
 			return false;
 		}
 
@@ -79,7 +79,7 @@ public class PoisonnedDart extends ActiveAbility{
 		this.location = this.origin.clone();
 		this.direction = this.origin.getDirection().normalize();
 
-		setState(AbilityState.Preparing);
+		setState(BendingAbilityState.Preparing);
 
 		AbilityManager.getManager().addInstance(this);
 
@@ -132,7 +132,7 @@ public class PoisonnedDart extends ActiveAbility{
 		}
 
 		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
-		this.bender.cooldown(Abilities.PoisonnedDart, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.PoisonnedDart, COOLDOWN);
 
 		return false;
 	}
@@ -143,11 +143,11 @@ public class PoisonnedDart extends ActiveAbility{
 			return false;
 		}
 
-		if (this.state == AbilityState.Preparing) {
-			setState(AbilityState.Progressing);
+		if (this.state == BendingAbilityState.Preparing) {
+			setState(BendingAbilityState.Progressing);
 		}
 
-		if (this.state != AbilityState.Progressing){
+		if (this.state != BendingAbilityState.Progressing){
 			return true;
 		}
 
@@ -170,7 +170,7 @@ public class PoisonnedDart extends ActiveAbility{
 	}
 
 	private boolean affectAround() {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.PoisonnedDart, this.location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.PoisonnedDart, this.location)) {
 			return false;
 		}		
 		int cptEnt = 0;
@@ -234,7 +234,7 @@ public class PoisonnedDart extends ActiveAbility{
 			return false;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.PoisonnedDart);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PoisonnedDart);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
@@ -247,8 +247,8 @@ public class PoisonnedDart extends ActiveAbility{
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.PoisonnedDart;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.PoisonnedDart;
 	}
 
 	@Override

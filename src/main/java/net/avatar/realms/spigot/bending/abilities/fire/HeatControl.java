@@ -10,10 +10,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.water.Melt;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -27,7 +27,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  *
  * @author Noko
  */
-public class HeatControl extends ActiveAbility {
+public class HeatControl extends BendingActiveAbility {
 	
 	@ConfigurationParameter ("Extinguish-Range")
 	private static double EXT_RANGE = 20;
@@ -81,7 +81,7 @@ public class HeatControl extends ActiveAbility {
 					extinguish(range);
 				}
 				
-				this.bender.cooldown(Abilities.HeatControl, EXT_COOLDOWN);
+				this.bender.cooldown(BendingAbilities.HeatControl, EXT_COOLDOWN);
 				return false;
 		}
 	}
@@ -103,7 +103,7 @@ public class HeatControl extends ActiveAbility {
 		
 		for (Block block : BlockTools.getBlocksAroundPoint(EntityTools.getTargetBlock(this.player, range).getLocation(),
 				radius)) {
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.Blaze, block.getLocation())) {
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Blaze, block.getLocation())) {
 				continue;
 			}
 			//Do not allow firebender to completly negate lavabend
@@ -141,7 +141,7 @@ public class HeatControl extends ActiveAbility {
 				if (isCookable(this.items.getType())) {
 					this.time = this.startedTime;
 					AbilityManager.getManager().addInstance(this);
-					setState(AbilityState.Progressing);
+					setState(BendingAbilityState.Progressing);
 				}
 				return false;
 			default:
@@ -244,7 +244,7 @@ public class HeatControl extends ActiveAbility {
 	}
 	
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.HeatControl;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.HeatControl;
 	}
 }

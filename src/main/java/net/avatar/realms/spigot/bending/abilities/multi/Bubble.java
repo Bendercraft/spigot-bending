@@ -14,17 +14,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-public abstract class Bubble extends ActiveAbility {
+public abstract class Bubble extends BendingActiveAbility {
 
 	protected double radius;
 	protected Location lastLocation;
@@ -33,10 +33,10 @@ public abstract class Bubble extends ActiveAbility {
 
 	protected Set<Material> pushedMaterials;
 
-	public Bubble (Player player, ActiveAbility parent) {
+	public Bubble (Player player, BendingActiveAbility parent) {
 		super(player, parent);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
@@ -62,21 +62,21 @@ public abstract class Bubble extends ActiveAbility {
 	@Override
 	public boolean sneak () {
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return true;
 		}
 
-		if (this.state.equals(AbilityState.CanStart)) {
+		if (this.state.equals(BendingAbilityState.CanStart)) {
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Progressing);
+			setState(BendingAbilityState.Progressing);
 			return false;
 		}
 
-		if (!this.state.equals(AbilityState.Progressing)) {
+		if (!this.state.equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
 
-		setState(AbilityState.Ended);
+		setState(BendingAbilityState.Ended);
 
 		return false;
 	}
@@ -134,11 +134,11 @@ public abstract class Bubble extends ActiveAbility {
 	}
 
 	public static boolean canFlowTo (Block block) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.AirBubble);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBubble);
 		if (instances == null) {
-			instances = new HashMap<Object, IAbility>();
+			instances = new HashMap<Object, IBendingAbility>();
 		}
-		Map<Object, IAbility> insts = AbilityManager.getManager().getInstances(Abilities.WaterBubble);
+		Map<Object, IBendingAbility> insts = AbilityManager.getManager().getInstances(BendingAbilities.WaterBubble);
 
 		if (insts != null) {
 			instances.putAll(insts);

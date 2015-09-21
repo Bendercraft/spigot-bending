@@ -5,17 +5,17 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@BendingAbility(name = "Dash", element = BendingType.ChiBlocker)
-public class Dash extends ActiveAbility {
+@BendingAbility(name = "Dash", element = BendingElement.ChiBlocker)
+public class Dash extends BendingActiveAbility {
 
 	@ConfigurationParameter("Length")
 	private static double LENGTH = 1.9;
@@ -34,20 +34,20 @@ public class Dash extends ActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return true;
 		}
 
-		if (this.state == AbilityState.CanStart) {
+		if (this.state == BendingAbilityState.CanStart) {
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Preparing);
+			setState(BendingAbilityState.Preparing);
 		}
 
 		return false;
 	}
 
 	public static boolean isDashing(Player player) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Dash);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Dash);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
@@ -55,7 +55,7 @@ public class Dash extends ActiveAbility {
 	}
 
 	public static Dash getDash(Player pl) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Dash);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Dash);
 		return (Dash) instances.get(pl);
 	}
 
@@ -65,7 +65,7 @@ public class Dash extends ActiveAbility {
 			return false;
 		}
 
-		if (this.state != AbilityState.Progressing) {
+		if (this.state != BendingAbilityState.Progressing) {
 			return true;
 		}
 		System.out.println(this.player.getLocation().toString());
@@ -76,13 +76,13 @@ public class Dash extends ActiveAbility {
 	public void dash() {
 		Vector dir = new Vector(this.direction.getX() * LENGTH, HEIGHT, this.direction.getZ() * LENGTH);
 		this.player.setVelocity(dir);
-		setState(AbilityState.Ended);
+		setState(BendingAbilityState.Ended);
 	}
 
 	// This should be called in OnMoveEvent to set the direction dash the same
 	// as the player
 	public void setDirection(Vector d) {
-		if (this.state != AbilityState.Preparing) {
+		if (this.state != BendingAbilityState.Preparing) {
 			return;
 		}
 		if (Double.isNaN(d.getX()) || Double.isNaN(d.getY()) || Double.isNaN(d.getZ())
@@ -92,7 +92,7 @@ public class Dash extends ActiveAbility {
 			this.direction = d.normalize();
 		}
 		System.out.println(this.player.getLocation().toString());
-		setState(AbilityState.Progressing);
+		setState(BendingAbilityState.Progressing);
 	}
 
 	@Override
@@ -103,13 +103,13 @@ public class Dash extends ActiveAbility {
 		} else {
 			cd *= 2;
 		}
-		this.bender.cooldown(Abilities.Dash, cd);
+		this.bender.cooldown(BendingAbilities.Dash, cd);
 		super.remove();
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.Dash;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.Dash;
 	}
 
 	@Override

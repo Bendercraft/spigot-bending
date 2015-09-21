@@ -4,23 +4,23 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
  * Represent the base class for bending abilities
  */
-public abstract class Ability implements IAbility {
+public abstract class BendingAbility implements IBendingAbility {
 	
-	private IAbility parent;
+	private IBendingAbility parent;
 	
 	protected BendingPlayer bender;
 	protected Player player;
 	
 	protected long startedTime;
 	
-	protected AbilityState state = AbilityState.None;
+	protected BendingAbilityState state = BendingAbilityState.None;
 	
 	/**
 	 * Construct the bases of a new ability instance
@@ -30,7 +30,7 @@ public abstract class Ability implements IAbility {
 	 * @param parent
 	 *        The ability that generates this ability. null if none
 	 */
-	public Ability (Player player, IAbility parent) {
+	public BendingAbility (Player player, IBendingAbility parent) {
 		this.player = player;
 		this.bender = BendingPlayer.getBendingPlayer(player);
 		this.parent = parent;
@@ -47,7 +47,7 @@ public abstract class Ability implements IAbility {
 	}
 	
 	@Override
-	public final IAbility getParent () {
+	public final IBendingAbility getParent () {
 		return this.parent;
 	}
 	
@@ -60,7 +60,7 @@ public abstract class Ability implements IAbility {
 	 * The new state
 	 *        </pre>
 	 */
-	protected final void setState (AbilityState newState) {
+	protected final void setState (BendingAbilityState newState) {
 		Bending.plugin.getLogger().info(newState.name());
 		this.state = newState;
 	}
@@ -100,11 +100,11 @@ public abstract class Ability implements IAbility {
 			return false;
 		}
 		
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
 		
-		if (this.state.equals(AbilityState.Ended) || this.state.equals(AbilityState.Removed)) {
+		if (this.state.equals(BendingAbilityState.Ended) || this.state.equals(BendingAbilityState.Removed)) {
 			return false;
 		}
 		
@@ -122,7 +122,7 @@ public abstract class Ability implements IAbility {
 	
 	@Override
 	public final void consume () {
-		this.setState(AbilityState.Ended);
+		this.setState(BendingAbilityState.Ended);
 	}
 	
 	@Override
@@ -145,7 +145,7 @@ public abstract class Ability implements IAbility {
 	@Override
 	public void remove () {
 		AbilityManager.getManager().getInstances(this.getAbilityType()).remove(this.getIdentifier());
-		setState(AbilityState.Removed);
+		setState(BendingAbilityState.Removed);
 	}
 	
 	@Override
@@ -163,7 +163,7 @@ public abstract class Ability implements IAbility {
 			return false;
 		}
 		
-		Ability ab = (Ability) object;
+		BendingAbility ab = (BendingAbility) object;
 		
 		if (this.getIdentifier().equals(ab.getIdentifier())) {
 			return true;

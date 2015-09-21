@@ -6,10 +6,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -74,7 +74,7 @@ public class BendingCommand {
 		}
 		// If no args, just list
 		if (args.length == 1) {
-			for (BendingPathType path : this.bPlayer.getPath()) {
+			for (BendingPath path : this.bPlayer.getPath()) {
 				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
 				sendMessage(player, color + "You are " + path.name() + " for element " + path.getElement().name() + ".");
 			}
@@ -86,7 +86,7 @@ public class BendingCommand {
 				printPathUsage(player);
 			}
 			final String choice = args[2].toLowerCase();
-			final BendingPathType path = BendingPathType.getType(choice);
+			final BendingPath path = BendingPath.getType(choice);
 			if (path == null) {
 				Messages.sendMessage(player, "general.bad_path");
 				return;
@@ -116,7 +116,7 @@ public class BendingCommand {
 			return;
 		}
 		else if (subAction.equals("list")) {
-			for (final BendingPathType path : BendingPathType.values()) {
+			for (final BendingPath path : BendingPath.values()) {
 				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
 				sendMessage(player, color + path.name());
 			}
@@ -153,7 +153,7 @@ public class BendingCommand {
 
 		if (args.length > 1) {
 			helpCommand(player, args);
-			final Abilities ability = Abilities.getAbility(args[1]);
+			final BendingAbilities ability = BendingAbilities.getAbility(args[1]);
 			if (ability != null) {
 				ChatColor cc = ChatColor.GOLD;
 				cc = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
@@ -409,7 +409,7 @@ public class BendingCommand {
 		}
 		// If no args, just list
 		if (args.length == 1) {
-			for (final BendingSpecializationType spe : BendingSpecializationType.values()) {
+			for (final BendingAffinity spe : BendingAffinity.values()) {
 				final ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
 				sendMessage(player, color + spe.name());
 			}
@@ -421,7 +421,7 @@ public class BendingCommand {
 				printSpecializationUsage(player);
 			}
 			final String choice = args[2].toLowerCase();
-			final BendingSpecializationType spe = BendingSpecializationType.getType(choice);
+			final BendingAffinity spe = BendingAffinity.getType(choice);
 			if (spe == null) {
 				Messages.sendMessage(player, "general.bad_specialization");
 				return;
@@ -455,7 +455,7 @@ public class BendingCommand {
 				printSpecializationUsage(player);
 			}
 			final String choice = args[2].toLowerCase();
-			final BendingSpecializationType spe = BendingSpecializationType.getType(choice);
+			final BendingAffinity spe = BendingAffinity.getType(choice);
 			if (spe == null) {
 				Messages.sendMessage(player, "general.bad_specialization");
 				return;
@@ -485,7 +485,7 @@ public class BendingCommand {
 				printSpecializationUsage(player);
 			}
 			final String choice = args[2].toLowerCase();
-			final BendingSpecializationType spe = BendingSpecializationType.getType(choice);
+			final BendingAffinity spe = BendingAffinity.getType(choice);
 			if (spe == null) {
 				Messages.sendMessage(player, "general.bad_specialization");
 				return;

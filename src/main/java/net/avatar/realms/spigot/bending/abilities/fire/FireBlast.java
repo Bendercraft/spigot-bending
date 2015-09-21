@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
@@ -36,8 +36,8 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Fire Blast", element = BendingType.Fire)
-public class FireBlast extends ActiveAbility {
+@BendingAbility(name = "Fire Blast", element = BendingElement.Fire)
+public class FireBlast extends BendingActiveAbility {
 	private static int ID = Integer.MIN_VALUE;
 
 	@ConfigurationParameter("Speed")
@@ -82,14 +82,14 @@ public class FireBlast extends ActiveAbility {
 	public FireBlast(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
-		if (this.bender.hasPath(BendingPathType.Nurture)) {
+		if (this.bender.hasPath(BendingPath.Nurture)) {
 			this.damage *= 0.8;
 		}
-		if (this.bender.hasPath(BendingPathType.Lifeless)) {
+		if (this.bender.hasPath(BendingPath.Lifeless)) {
 			this.damage *= 1.1;
 		}
 
@@ -99,7 +99,7 @@ public class FireBlast extends ActiveAbility {
 		this.id = ID++;
 	}
 
-	public FireBlast(Player player, IAbility parent, Location location, Vector direction, int damage, List<Block> safeblocks) {
+	public FireBlast(Player player, IBendingAbility parent, Location location, Vector direction, int damage, List<Block> safeblocks) {
 		super(player, parent);
 		if (location.getBlock().isLiquid()) {
 			return;
@@ -112,22 +112,22 @@ public class FireBlast extends ActiveAbility {
 		this.damage *= 1.5;
 		this.id = ID++;
 
-		if (this.bender.hasPath(BendingPathType.Nurture)) {
+		if (this.bender.hasPath(BendingPath.Nurture)) {
 			this.damage *= 0.8;
 		}
-		if (this.bender.hasPath(BendingPathType.Lifeless)) {
+		if (this.bender.hasPath(BendingPath.Lifeless)) {
 			this.damage *= 1.1;
 		}
 
 		AbilityManager.getManager().addInstance(this);
-		setState(AbilityState.Progressing);
+		setState(BendingAbilityState.Progressing);
 	}
 
 	@Override
 	public boolean sneak() {
-		if (this.state == AbilityState.CanStart) {
+		if (this.state == BendingAbilityState.CanStart) {
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Preparing);
+			setState(BendingAbilityState.Preparing);
 		}
 		return false;
 	}
@@ -142,12 +142,12 @@ public class FireBlast extends ActiveAbility {
 		case CanStart:
 			launchSingle();
 			AbilityManager.getManager().addInstance(this);
-			this.bender.cooldown(Abilities.FireBlast, COOLDOWN);
+			this.bender.cooldown(BendingAbilities.FireBlast, COOLDOWN);
 			return false;
 
 		case Preparing:
 			launchSingle();
-			this.bender.cooldown(Abilities.FireBlast, COOLDOWN);
+			this.bender.cooldown(BendingAbilities.FireBlast, COOLDOWN);
 			return false;
 
 		case Prepared:
@@ -160,7 +160,7 @@ public class FireBlast extends ActiveAbility {
 			List<Block> safes = new LinkedList<Block>();
 			new FireBlast(this.player, this, this.location.clone().add(perpDir), this.direction, this.damage, safes);
 			new FireBlast(this.player, this, this.location.clone().subtract(perpDir), this.direction, this.damage, safes);
-			this.bender.cooldown(Abilities.FireBlast, CHARGED_COOLDOWN);
+			this.bender.cooldown(BendingAbilities.FireBlast, CHARGED_COOLDOWN);
 			return false;
 		case Progressing:
 		case Ending:
@@ -176,7 +176,7 @@ public class FireBlast extends ActiveAbility {
 		this.origin = this.player.getEyeLocation();
 		this.direction = this.player.getEyeLocation().getDirection().normalize();
 		this.location = this.location.add(this.direction.clone());
-		setState(AbilityState.Progressing);
+		setState(BendingAbilityState.Progressing);
 	}
 
 	@Override
@@ -185,25 +185,25 @@ public class FireBlast extends ActiveAbility {
 			return false;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.FireBlast, this.location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.FireBlast, this.location)) {
 			return false;
 		}
 
 		long now = System.currentTimeMillis();
-		if (this.state == AbilityState.Preparing) {
+		if (this.state == BendingAbilityState.Preparing) {
 			if ((now - this.startedTime) > CHARGE_TIME) {
-				setState(AbilityState.Prepared);
+				setState(BendingAbilityState.Prepared);
 			} else {
 				return true;
 			}
 		}
 
-		if (this.state == AbilityState.Prepared) {
+		if (this.state == BendingAbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.FLAME, Tools.getIntCardinalDirection(location.getDirection()), 3);
 		}
 
-		if (this.state == AbilityState.Progressing) {
+		if (this.state == BendingAbilityState.Progressing) {
 			if (this.location.distance(this.origin) > this.range) {
 				return false;
 			}
@@ -286,8 +286,8 @@ public class FireBlast extends ActiveAbility {
 	}
 
 	public static void removeFireBlastsAroundPoint(Location location, double radius) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireBlast);
-		for (IAbility ability : instances.values()) {
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlast);
+		for (IBendingAbility ability : instances.values()) {
 			FireBlast blast = (FireBlast) ability;
 			Location loc = blast.location;
 			if (location.getWorld() == loc.getWorld()) {
@@ -300,8 +300,8 @@ public class FireBlast extends ActiveAbility {
 
 	private static boolean shouldAnnihilateBlasts(Location location, double radius, Player source, boolean remove) {
 		boolean broke = false;
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireBlast);
-		for (IAbility ability : instances.values()) {
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlast);
+		for (IBendingAbility ability : instances.values()) {
 			FireBlast blast = (FireBlast) ability;
 			Location loc = blast.location;
 			if ((location.getWorld() == loc.getWorld()) && !blast.player.equals(source)) {
@@ -337,8 +337,8 @@ public class FireBlast extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.FireBlast;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.FireBlast;
 	}
 
 }

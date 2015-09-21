@@ -11,14 +11,14 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -29,8 +29,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  * the duration
  */
 
-@BendingAbility(name="Lavatrain", element=BendingType.Earth, specialization=BendingSpecializationType.Lavabend)
-public class LavaTrain extends ActiveAbility {
+@BendingAbility(name="Lavatrain", element=BendingElement.Earth, specialization=BendingAffinity.Lavabend)
+public class LavaTrain extends BendingActiveAbility {
 	public static double speed = 5;
 	private static long interval = (long) (1000. / speed);
 
@@ -89,7 +89,7 @@ public class LavaTrain extends ActiveAbility {
 				this.origin.setY(this.origin.getY() - 1);
 				this.current = this.origin.clone();
 
-				setState(AbilityState.Preparing);
+				setState(BendingAbilityState.Preparing);
 				AbilityManager.getManager().addInstance(this);
 				return false;
 			case Preparing:
@@ -109,14 +109,14 @@ public class LavaTrain extends ActiveAbility {
 			return false;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.LavaTrain, this.current)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.LavaTrain, this.current)) {
 			return false;
 		}
 
 		if((this.direction.getX() == 0) && (this.direction.getZ() == 0)) {
-			if (!this.state.equals(AbilityState.Progressing)) {
+			if (!this.state.equals(BendingAbilityState.Progressing)) {
 				this.affectBlocks(this.current, REACH_WIDTH);
-				setState(AbilityState.Progressing);
+				setState(BendingAbilityState.Progressing);
 			} else {
 				if ((System.currentTimeMillis() - this.time) > DURATION) {
 					return false;
@@ -126,9 +126,9 @@ public class LavaTrain extends ActiveAbility {
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			if(this.origin.distance(this.current) >= RANGE) {
-				if (!this.state.equals(AbilityState.Progressing)) {
+				if (!this.state.equals(BendingAbilityState.Progressing)) {
 					this.affectBlocks(this.current, REACH_WIDTH);
-					setState(AbilityState.Progressing);
+					setState(BendingAbilityState.Progressing);
 				} else {
 					if ((System.currentTimeMillis() - this.time) > DURATION) {
 						return false;
@@ -152,7 +152,7 @@ public class LavaTrain extends ActiveAbility {
 
 	@Override
 	public void remove () {
-		this.bender.cooldown(Abilities.LavaTrain, DURATION * COOLDOWN_FACTOR); //TODO : Real duration * COOLDOWN_FACTOR
+		this.bender.cooldown(BendingAbilities.LavaTrain, DURATION * COOLDOWN_FACTOR); //TODO : Real duration * COOLDOWN_FACTOR
 		super.remove();
 	}
 
@@ -173,7 +173,7 @@ public class LavaTrain extends ActiveAbility {
 			}
 
 			for(Block potentialsBlock : potentialsBlocks) {
-				if (BlockTools.isEarthbendable(this.player, Abilities.LavaTrain, potentialsBlock)
+				if (BlockTools.isEarthbendable(this.player, BendingAbilities.LavaTrain, potentialsBlock)
 						&& !BlockTools.isTempBlock(potentialsBlock)) {
 					//Do not let block behind bender to be bend, this whill be stupid
 					if(!safe.contains(potentialsBlock)) {
@@ -195,11 +195,11 @@ public class LavaTrain extends ActiveAbility {
 	}
 
 	public static boolean isLavaPart(Block block) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.LavaTrain);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
 		if (instances == null) {
 			return false;
 		}
-		for (IAbility ab : instances.values()) {
+		for (IBendingAbility ab : instances.values()) {
 			LavaTrain train = (LavaTrain) ab;
 			if (train.affecteds.containsKey(block)) {
 				return true;
@@ -209,12 +209,12 @@ public class LavaTrain extends ActiveAbility {
 	}
 
 	public static LavaTrain getLavaTrain(Block b) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.LavaTrain);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
 		if (instances == null) {
 			return null;
 		}
 
-		for (IAbility ab : instances.values()) {
+		for (IBendingAbility ab : instances.values()) {
 			LavaTrain train = (LavaTrain) ab;
 			if (train.affecteds.containsKey(b)) {
 				return train;
@@ -229,7 +229,7 @@ public class LavaTrain extends ActiveAbility {
 			return false;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.LavaTrain);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
 		if (instances == null) {
 			return true;
 		}
@@ -243,7 +243,7 @@ public class LavaTrain extends ActiveAbility {
 	}
 	
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.LavaTrain;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.LavaTrain;
 	}
 }

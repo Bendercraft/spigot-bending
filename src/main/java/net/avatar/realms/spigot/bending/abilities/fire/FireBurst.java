@@ -9,13 +9,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -29,8 +29,8 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  *
  * @author Noko
  */
-@BendingAbility(name="Fire Burst", element=BendingType.Fire)
-public class FireBurst extends ActiveAbility {
+@BendingAbility(name="Fire Burst", element=BendingElement.Fire)
+public class FireBurst extends BendingActiveAbility {
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 2500;
 
@@ -52,7 +52,7 @@ public class FireBurst extends ActiveAbility {
 	public FireBurst (Player player) {
 		super(player, null);
 		
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
@@ -66,9 +66,9 @@ public class FireBurst extends ActiveAbility {
 	
 	@Override
 	public boolean sneak () {
-		if (this.state.equals(AbilityState.CanStart)) {
+		if (this.state.equals(BendingAbilityState.CanStart)) {
 			AbilityManager.getManager().addInstance(this);
-			setState(AbilityState.Preparing);
+			setState(BendingAbilityState.Preparing);
 			return false;
 		}
 
@@ -77,7 +77,7 @@ public class FireBurst extends ActiveAbility {
 
 	@Override
 	public boolean swing () {
-		if (this.state == AbilityState.Prepared) {
+		if (this.state == BendingAbilityState.Prepared) {
 			coneBurst();
 			return false;
 		}
@@ -106,7 +106,7 @@ public class FireBurst extends ActiveAbility {
 				}
 			}
 		}
-		setState(AbilityState.Ended);
+		setState(BendingAbilityState.Ended);
 	}
 
 	@Override
@@ -115,24 +115,24 @@ public class FireBurst extends ActiveAbility {
 			return false;
 		}
 		
-		if ((EntityTools.getBendingAbility(this.player) != Abilities.FireBurst)) {
+		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.FireBurst)) {
 			return false;
 		}
 
 		if (!this.player.isSneaking()) {
-			if (this.state.equals(AbilityState.Prepared)) {
+			if (this.state.equals(BendingAbilityState.Prepared)) {
 				sphereBurst();
 			}
 			return false;
 		}
 
-		if (this.state != AbilityState.Prepared) {
+		if (this.state != BendingAbilityState.Prepared) {
 			if (System.currentTimeMillis() > (this.startedTime + this.chargetime)) {
-				setState(AbilityState.Prepared);
+				setState(BendingAbilityState.Prepared);
 			}
 		}
 
-		if (this.state == AbilityState.Prepared) {
+		if (this.state == BendingAbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
 		}
@@ -158,25 +158,25 @@ public class FireBurst extends ActiveAbility {
 				new FireBlast(this.player, this, location, direction.normalize(), this.damage, safeblocks);
 			}
 		}
-		setState(AbilityState.Ended);
+		setState(BendingAbilityState.Ended);
 	}
 
 	@Override
 	public void remove () {
-		this.bender.cooldown(Abilities.FireBurst, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.FireBurst, COOLDOWN);
 		super.remove();
 	}
 
 	public boolean isCharged() {
-		return this.state == AbilityState.Prepared;
+		return this.state == BendingAbilityState.Prepared;
 	}
 
 	public static boolean isFireBursting(Player player) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireBurst);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		return instances.containsKey(player);
 	}
 	public static FireBurst getFireBurst(Player player) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireBurst);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		return (FireBurst) instances.get(player);
 	}
 	
@@ -186,7 +186,7 @@ public class FireBurst extends ActiveAbility {
 			return false;
 		}
 		
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireBurst);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		if (instances.containsKey(this.player)) {
 			return false;
 		}
@@ -200,7 +200,7 @@ public class FireBurst extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.FireBurst;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.FireBurst;
 	}
 }

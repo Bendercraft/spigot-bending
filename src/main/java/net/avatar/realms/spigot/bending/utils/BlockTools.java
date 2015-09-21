@@ -22,8 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.deprecated.Information;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
@@ -179,11 +179,11 @@ public class BlockTools {
 	}
 	
 	public static boolean isTransparentToEarthbending(Player player, Block block) {
-		return isTransparentToEarthbending(player, Abilities.RaiseEarth, block);
+		return isTransparentToEarthbending(player, BendingAbilities.RaiseEarth, block);
 	}
 
 	public static boolean isTransparentToEarthbending(Player player,
-			Abilities ability, Block block) {
+			BendingAbilities ability, Block block) {
 		if (ProtectionManager.isRegionProtectedFromBending(player, ability,
 				block.getLocation())) {
 			return false;
@@ -234,10 +234,10 @@ public class BlockTools {
 	}
 	
 	public static boolean isEarthbendable(Player player, Block block) {
-		return isEarthbendable(player, Abilities.RaiseEarth, block);
+		return isEarthbendable(player, BendingAbilities.RaiseEarth, block);
 	}
 
-	public static boolean isEarthbendable(Player player, Abilities ability,
+	public static boolean isEarthbendable(Player player, BendingAbilities ability,
 			Block block) {
 		if (ProtectionManager.isRegionProtectedFromBending(player, ability,
 				block.getLocation())){
@@ -256,10 +256,10 @@ public class BlockTools {
 			return true;
 		}
 		
-		if (EntityTools.isSpecialized(player, BendingSpecializationType.Lavabend)
+		if (EntityTools.isSpecialized(player, BendingAffinity.Lavabend)
 				&& (block.getType() == Material.OBSIDIAN)
-				&& ((ability == Abilities.EarthBlast)
-						|| (ability == Abilities.LavaTrain))) {
+				&& ((ability == BendingAbilities.EarthBlast)
+						|| (ability == BendingAbilities.LavaTrain))) {
 			return true;
 		}
 		
@@ -267,7 +267,7 @@ public class BlockTools {
 	}
 	
 	public static boolean isIronBendable(Player p, Material m) {
-		if (!EntityTools.canBend(p, Abilities.MetalBending)) {
+		if (!EntityTools.canBend(p, BendingAbilities.MetalBending)) {
 			return false;
 		}
 		
@@ -468,7 +468,7 @@ public class BlockTools {
 	public static boolean moveEarth(Player player, Block block,
 			Vector direction, int chainlength, boolean throwplayer) {
 		if (isEarthbendable(player, block)
-				&& !ProtectionManager.isRegionProtectedFromBending(player, Abilities.RaiseEarth,
+				&& !ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.RaiseEarth,
 						block.getLocation())) {
 
 			boolean up = false;
@@ -638,7 +638,7 @@ public class BlockTools {
 		}
 	}
 	
-	public static Block getEarthSourceBlock(Player player, Abilities ability, double range) {
+	public static Block getEarthSourceBlock(Player player, BendingAbilities ability, double range) {
 		Block testblock = EntityTools.getTargetBlock(player, (int) range,
 				getTransparentEarthbending());
 		if (isEarthbendable(player, ability, testblock)){
@@ -668,7 +668,7 @@ public class BlockTools {
 		for (double i = 0; i <= range; i++) {
 			Block block = location.clone().add(vector.clone().multiply(i))
 					.getBlock();
-			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.WaterManipulation,
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.WaterManipulation,
 					location)) {
 				continue;
 			}

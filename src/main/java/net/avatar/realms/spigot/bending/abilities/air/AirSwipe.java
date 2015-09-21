@@ -17,13 +17,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
@@ -41,8 +41,8 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  * State Prepared = Player has charged his Airswipe
  * State Progressing = Player has thrown his Airswipe
  */
-@BendingAbility(name="Air Swipe", element=BendingType.Air)
-public class AirSwipe extends ActiveAbility {
+@BendingAbility(name="Air Swipe", element=BendingElement.Air)
+public class AirSwipe extends BendingActiveAbility {
 	
 	private static int ID = Integer.MIN_VALUE;
 	private static List<Material> breakables = new ArrayList<Material>();
@@ -104,7 +104,7 @@ public class AirSwipe extends ActiveAbility {
 	public AirSwipe (Player player) {
 		super(player, null);
 		
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 		
@@ -114,7 +114,7 @@ public class AirSwipe extends ActiveAbility {
 		this.arc = ARC;
 		this.range = RANGE;
 
-		if(this.bender.hasPath(BendingPathType.Mobile)) {
+		if(this.bender.hasPath(BendingPath.Mobile)) {
 			this.arc *= 0.5;
 			this.range *= 1.4;
 		}
@@ -127,7 +127,7 @@ public class AirSwipe extends ActiveAbility {
 			case CannotStart:
 				return true;
 			case CanStart:
-				setState(AbilityState.Preparing);
+				setState(BendingAbilityState.Preparing);
 				AbilityManager.getManager().addInstance(this);
 				return false;
 			case Preparing:
@@ -148,11 +148,11 @@ public class AirSwipe extends ActiveAbility {
 			case CannotStart:
 				return true;
 			case CanStart:
-				setState(AbilityState.Progressing);
+				setState(BendingAbilityState.Progressing);
 				AbilityManager.getManager().addInstance(this);
 			case Preparing:
 			case Prepared:
-				this.setState(AbilityState.Progressing);
+				this.setState(BendingAbilityState.Progressing);
 			case Progressing:
 				this.origin = this.player.getEyeLocation();
 				launch();
@@ -187,7 +187,7 @@ public class AirSwipe extends ActiveAbility {
 	
 	@Override
 	public void remove () {
-		this.bender.cooldown(Abilities.AirSwipe, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.AirSwipe, COOLDOWN);
 		super.remove();
 	}
 	
@@ -197,16 +197,16 @@ public class AirSwipe extends ActiveAbility {
 			return false;
 		}
 		
-		if ((EntityTools.getBendingAbility(this.player) != Abilities.AirSwipe)) {
+		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSwipe)) {
 			return false;
 		}
 		
 		long now = System.currentTimeMillis();
 		
-		if (this.state.equals(AbilityState.Preparing)) {
+		if (this.state.equals(BendingAbilityState.Preparing)) {
 			if (this.player.isSneaking()) {
 				if (now >= (this.startedTime + MAX_CHARGE_TIME)) {
-					setState(AbilityState.Prepared);
+					setState(BendingAbilityState.Prepared);
 					this.damage *= maxfactor;
 					this.pushfactor *= maxfactor;
 					return true;
@@ -214,7 +214,7 @@ public class AirSwipe extends ActiveAbility {
 			}
 		}
 		
-		if (this.state.equals(AbilityState.Prepared)) {
+		if (this.state.equals(BendingAbilityState.Prepared)) {
 			this.player.getWorld().playEffect(
 					this.player.getEyeLocation(),
 					Effect.SMOKE,
@@ -222,7 +222,7 @@ public class AirSwipe extends ActiveAbility {
 					3);
 		}
 		
-		if (this.state.equals(AbilityState.Progressing)) {
+		if (this.state.equals(BendingAbilityState.Progressing)) {
 			if (this.elements.isEmpty()) {
 				return false;
 			}
@@ -230,7 +230,7 @@ public class AirSwipe extends ActiveAbility {
 		}
 		
 		if (!this.player.isSneaking()) {
-			if (!this.state.equals(AbilityState.Prepared)) {
+			if (!this.state.equals(BendingAbilityState.Prepared)) {
 				double factor = (maxfactor * (now - this.startedTime)) / MAX_CHARGE_TIME;
 				if (factor < 1) {
 					factor = 1;
@@ -240,7 +240,7 @@ public class AirSwipe extends ActiveAbility {
 			}
 			
 			launch();
-			this.setState(AbilityState.Progressing);
+			this.setState(BendingAbilityState.Progressing);
 			return true;
 		}
 		
@@ -263,7 +263,7 @@ public class AirSwipe extends ActiveAbility {
 						direction.clone().multiply(this.speedfactor));
 				if ((newlocation.distance(this.origin) <= this.range)
 						&& !ProtectionManager.isRegionProtectedFromBending(this.player,
-								Abilities.AirSwipe, newlocation)) {
+								BendingAbilities.AirSwipe, newlocation)) {
 					//If new location is still valid, we add it
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
 						toAdd.put(direction, newlocation);
@@ -327,7 +327,7 @@ public class AirSwipe extends ActiveAbility {
 					if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 						continue;
 					}
-					if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.AirSwipe,
+					if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSwipe,
 							entity.getLocation())) {
 						continue;
 					}
@@ -394,8 +394,8 @@ public class AirSwipe extends ActiveAbility {
 	}
 	
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.AirSwipe;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.AirSwipe;
 	}
 	
 	@Override

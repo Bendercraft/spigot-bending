@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
@@ -48,11 +48,11 @@ public class AirListener implements Listener {
 		if(event.getEntity() instanceof Player && event.getCause().equals(DamageCause.DROWNING)) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getEntity());
 			if(bPlayer != null) {
-				if(bPlayer.isBender(BendingType.Air) && !bPlayer.isBender(BendingType.ChiBlocker)) {
-					if(plugin.addPermission(bPlayer.getPlayer(), Abilities.AirBubble)) {
+				if(bPlayer.isBender(BendingElement.Air) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
+					if(plugin.addPermission(bPlayer.getPlayer(), BendingAbilities.AirBubble)) {
 						String message = "After running out of air, you realise that you could use your AirBending to grap air before sinking";
 						bPlayer.getPlayer().sendMessage(color+message);
-						message = "Congratulations, you have unlocked "+Abilities.AirBubble.name();
+						message = "Congratulations, you have unlocked "+BendingAbilities.AirBubble.name();
 						bPlayer.getPlayer().sendMessage(color+message);
 					} 
 				}
@@ -64,7 +64,7 @@ public class AirListener implements Listener {
 	public void unlockAirScooter(PlayerToggleSprintEvent event) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getPlayer());
 		if(bPlayer != null) {
-			if(bPlayer.isBender(BendingType.Air) && !bPlayer.isBender(BendingType.ChiBlocker)) {
+			if(bPlayer.isBender(BendingElement.Air) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
 				Player pl = bPlayer.getPlayer();
 				if(!event.getPlayer().isSprinting()) {
 					airScooterLastLocation.put(pl.getUniqueId(), pl.getLocation().clone());
@@ -78,10 +78,10 @@ public class AirListener implements Listener {
 								distance = airScooterDistanceTraveled.get(pl.getUniqueId()) + distance;
 							}
 							if(distance >= 1000) {
-								if(plugin.addPermission(pl, Abilities.AirScooter)) {
+								if(plugin.addPermission(pl, BendingAbilities.AirScooter)) {
 									String message = "After spending that much energy running arround, you think you will be able to speed up by using your airbending";
 									pl.sendMessage(color+message);
-									message = "Congratulations, you have unlocked "+Abilities.AirScooter.name();
+									message = "Congratulations, you have unlocked "+BendingAbilities.AirScooter.name();
 									pl.sendMessage(color+message);
 								} 
 								airScooterDistanceTraveled.remove(pl.getUniqueId());
@@ -99,7 +99,7 @@ public class AirListener implements Listener {
 	public void unlockAirSuction(PlayerVelocityEvent event) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getPlayer());
 		if(bPlayer != null) {
-			if(bPlayer.isBender(BendingType.Air) && !bPlayer.isBender(BendingType.ChiBlocker)) {
+			if(bPlayer.isBender(BendingElement.Air) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
 				Player player = bPlayer.getPlayer();
 				Vector down = new Vector(0, 1, 0);
 				float angleToDirectFall = event.getVelocity().angle(down);
@@ -112,10 +112,10 @@ public class AirListener implements Listener {
 					jumped = jumped + 1;
 					
 					if(jumped >= 50) {
-						if(plugin.addPermission(player, Abilities.AirSuction)) {
+						if(plugin.addPermission(player, BendingAbilities.AirSuction)) {
 							String message = "Without realising it, you band air more and more efficiently, and you are now able to catch people from far away.";
 							player.sendMessage(color+message);
-							message = "Congratulations, you have unlocked "+Abilities.AirSuction.name();
+							message = "Congratulations, you have unlocked "+BendingAbilities.AirSuction.name();
 							player.sendMessage(color+message);
 						} 
 						airSuctionJump.remove(player.getUniqueId());
@@ -131,7 +131,7 @@ public class AirListener implements Listener {
 	public void unlockAirBurst(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if(bPlayer != null) {
-			if(bPlayer.isBender(BendingType.Air) && !bPlayer.isBender(BendingType.ChiBlocker) && event.getAbility().equals(Abilities.AirBlast)) {
+			if(bPlayer.isBender(BendingElement.Air) && !bPlayer.isBender(BendingElement.ChiBlocker) && event.getAbility().equals(BendingAbilities.AirBlast)) {
 				Player player = bPlayer.getPlayer();
 				int blasted = 0;
 				if(airBurst.containsKey(player.getUniqueId())) {
@@ -139,10 +139,10 @@ public class AirListener implements Listener {
 				}
 				blasted = blasted + 1;
 				if(blasted >= 100) {
-					if(plugin.addPermission(player, Abilities.AirBurst)) {
+					if(plugin.addPermission(player, BendingAbilities.AirBurst)) {
 						String message = "Your skill at airblast is improving, and you feel now able to burst it 3 in one";
 						player.sendMessage(color+message);
-						message = "Congratulations, you have unlocked "+Abilities.AirBurst.name();
+						message = "Congratulations, you have unlocked "+BendingAbilities.AirBurst.name();
 						player.sendMessage(color+message);
 					} 
 					airBurst.remove(player.getUniqueId());
@@ -157,19 +157,19 @@ public class AirListener implements Listener {
 	public void unlockAirShield(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if(bPlayer != null) {
-			if(bPlayer.isBender(BendingType.Air) && event.getAbility().equals(Abilities.AirShield)) {
+			if(bPlayer.isBender(BendingElement.Air) && event.getAbility().equals(BendingAbilities.AirShield)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 				
 				for(Entity entity : entities) {
 					if(entity instanceof Player) {
 						Player p = (Player)entity;
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
-						if(trainee.isBender(BendingType.Air) && !trainee.isBender(BendingType.ChiBlocker)) {
+						if(trainee.isBender(BendingElement.Air) && !trainee.isBender(BendingElement.ChiBlocker)) {
 							if(p.hasLineOfSight(bPlayer.getPlayer())) {
-								if(plugin.addPermission(p, Abilities.AirShield)) {
+								if(plugin.addPermission(p, BendingAbilities.AirShield)) {
 									String message = "After seeing "+bPlayer.getPlayer().getName()+" doing an air shield, you are able to copy it for yourself.";
 									p.sendMessage(color+message);
-									message = "Congratulations, you have unlocked "+Abilities.AirShield.name();
+									message = "Congratulations, you have unlocked "+BendingAbilities.AirShield.name();
 									p.sendMessage(color+message);
 								} 
 							}

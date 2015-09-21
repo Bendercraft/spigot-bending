@@ -4,13 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
@@ -23,8 +23,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Fire Jet", element = BendingType.Fire)
-public class FireJet extends ActiveAbility {
+@BendingAbility(name = "Fire Jet", element = BendingElement.Fire)
+public class FireJet extends BendingActiveAbility {
 
 	@ConfigurationParameter("Speed")
 	private static double FACTOR = 0.7;
@@ -41,7 +41,7 @@ public class FireJet extends ActiveAbility {
 	public FireJet(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 		this.factor = PluginTools.firebendingDayAugment(FACTOR, player.getWorld());
@@ -64,7 +64,7 @@ public class FireJet extends ActiveAbility {
 		case Preparing:
 		case Prepared:
 		case Progressing:
-			setState(AbilityState.Ended);
+			setState(BendingAbilityState.Ended);
 			return false;
 		case Ending:
 		case Ended:
@@ -107,7 +107,7 @@ public class FireJet extends ActiveAbility {
 	}
 
 	public static List<Player> getPlayers() {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireJet);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireJet);
 		LinkedList<Player> players = new LinkedList<Player>();
 		if (instances == null) {
 			return players;
@@ -127,7 +127,7 @@ public class FireJet extends ActiveAbility {
 
 	@Override
 	public void remove() {
-		this.bender.cooldown(Abilities.FireJet, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.FireJet, COOLDOWN);
 		super.remove();
 	}
 
@@ -137,8 +137,8 @@ public class FireJet extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.FireJet;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.FireJet;
 	}
 
 }

@@ -8,19 +8,19 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@BendingAbility(name="Illumination", element=BendingType.Fire)
-public class Illumination extends ActiveAbility {
+@BendingAbility(name="Illumination", element=BendingElement.Fire)
+public class Illumination extends BendingActiveAbility {
 
 	@ConfigurationParameter("Range")
 	private static final int RANGE = 5;
@@ -43,12 +43,12 @@ public class Illumination extends ActiveAbility {
 				return false;
 			case CanStart:
 				AbilityManager.getManager().addInstance(this);
-				setState(AbilityState.Progressing);
+				setState(BendingAbilityState.Progressing);
 				return false;
 			case Preparing:
 			case Prepared:
 			case Progressing:
-				setState(AbilityState.Ended);
+				setState(BendingAbilityState.Ended);
 				return false;
 			case Ending:
 			case Ended:
@@ -115,12 +115,12 @@ public class Illumination extends ActiveAbility {
 	
 	@Override
 	public void remove () {
-		this.bender.cooldown(Abilities.Illumination, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.Illumination, COOLDOWN);
 		super.remove();
 	}
 
 	public static boolean isIlluminated (Block block) {
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.Illumination);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Illumination);
 		if (instances == null) {
 			return false;
 		}
@@ -139,8 +139,8 @@ public class Illumination extends ActiveAbility {
 	}
 	
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.FireBlast;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.FireBlast;
 	}
 
 }

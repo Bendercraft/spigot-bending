@@ -3,16 +3,16 @@ package net.avatar.realms.spigot.bending.abilities.air;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.multi.Bubble;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@BendingAbility(name="Air Bubble", element=BendingType.Air)
+@BendingAbility(name="Air Bubble", element=BendingElement.Air)
 public class AirBubble extends Bubble {
 
 	@ConfigurationParameter("Radius")
@@ -25,10 +25,10 @@ public class AirBubble extends Bubble {
 		this(player, null);
 	}
 
-	public AirBubble (Player player, ActiveAbility parent) {
+	public AirBubble (Player player, BendingActiveAbility parent) {
 		super(player, parent);
 
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
@@ -43,8 +43,8 @@ public class AirBubble extends Bubble {
 	}
 
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.AirBubble;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.AirBubble;
 	}
 
 	@Override

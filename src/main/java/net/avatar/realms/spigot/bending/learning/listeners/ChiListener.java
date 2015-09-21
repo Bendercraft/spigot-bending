@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
@@ -42,7 +42,7 @@ public class ChiListener implements Listener {
 		Player pl = (Player) event.getPlayer();
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(pl);
 		if(bPlayer != null) {
-			if(bPlayer.isBender(BendingType.ChiBlocker)) {
+			if(bPlayer.isBender(BendingElement.ChiBlocker)) {
 				if(!pl.isSprinting()) {
 					sprintLastLocationDash.put(pl.getUniqueId(), pl.getLocation().clone());
 				} else {
@@ -55,11 +55,11 @@ public class ChiListener implements Listener {
 								distance = sprintDistanceTraveledDash.get(pl.getUniqueId()) + distance;
 							}
 							if(distance >= distanceNeededDash) {
-								if(plugin.addPermission(pl, Abilities.Dash)) {
+								if(plugin.addPermission(pl, BendingAbilities.Dash)) {
 									
 									String message = "Wooo !";
 									pl.sendMessage(color+message);
-									message = "Congratulations, you have unlocked "+Abilities.Dash.name();
+									message = "Congratulations, you have unlocked "+BendingAbilities.Dash.name();
 									pl.sendMessage(color+message);
 								}
 								sprintDistanceTraveledDash.remove(pl.getUniqueId());
@@ -87,18 +87,18 @@ public class ChiListener implements Listener {
 	public void unlockSmokeBomb(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if(bPlayer != null) {
-			if(bPlayer.isBender(BendingType.ChiBlocker) && event.getAbility().equals(Abilities.SmokeBomb)) {
+			if(bPlayer.isBender(BendingElement.ChiBlocker) && event.getAbility().equals(BendingAbilities.SmokeBomb)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 				for(LivingEntity entity : entities) {
 					if(entity instanceof Player) {
 						Player p = (Player)entity;
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
-						if(trainee.isBender(BendingType.ChiBlocker)) {
+						if(trainee.isBender(BendingElement.ChiBlocker)) {
 							if(p.hasLineOfSight(bPlayer.getPlayer())) {
-								if(plugin.addPermission(p, Abilities.SmokeBomb)) {
+								if(plugin.addPermission(p, BendingAbilities.SmokeBomb)) {
 									String message = "By analizing and another smoke bomb from "+bPlayer.getPlayer().getName()+" you think you can reproduce it";
 									p.sendMessage(color+message);
-									message = "Congratulations, you have unlocked "+Abilities.SmokeBomb.name();
+									message = "Congratulations, you have unlocked "+BendingAbilities.SmokeBomb.name();
 									p.sendMessage(color+message);
 								}
 							}

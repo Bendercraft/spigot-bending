@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public abstract class BendingCommand implements IBendingCommand {
@@ -42,35 +42,35 @@ public abstract class BendingCommand implements IBendingCommand {
 		return null;
 	}
 
-	protected BendingType getElement(String name) {
+	protected BendingElement getElement(String name) {
 
 		for (String alias : Settings.AIR_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingType.Air;
+				return BendingElement.Air;
 			}
 		}
 
 		for (String alias : Settings.CHI_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingType.ChiBlocker;
+				return BendingElement.ChiBlocker;
 			}
 		}
 
 		for (String alias : Settings.EARTH_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingType.Earth;
+				return BendingElement.Earth;
 			}
 		}
 
 		for (String alias : Settings.FIRE_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingType.Fire;
+				return BendingElement.Fire;
 			}
 		}
 
 		for (String alias : Settings.WATER_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingType.Water;
+				return BendingElement.Water;
 			}
 		}
 

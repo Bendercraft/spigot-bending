@@ -1,6 +1,6 @@
 package net.avatar.realms.spigot.bending.abilities;
 
-public enum AbilityState {
+public enum BendingAbilityState {
 
 	None 		(0),
 	CannotStart	(1),
@@ -17,11 +17,11 @@ public enum AbilityState {
 
 	private int step;
 
-	AbilityState (int step) {
+	BendingAbilityState (int step) {
 		this.step = step;
 	}
 
-	public boolean isBefore (AbilityState state) {
+	public boolean isBefore (BendingAbilityState state) {
 		if (this.step < state.step) {
 			return true;
 		}

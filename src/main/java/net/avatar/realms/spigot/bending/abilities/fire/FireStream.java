@@ -6,12 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -24,8 +24,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Blaze", element = BendingType.Fire)
-public class FireStream extends ActiveAbility {
+@BendingAbility(name = "Blaze", element = BendingElement.Fire)
+public class FireStream extends BendingActiveAbility {
 	private static Map<Block, Player> ignitedblocks = new HashMap<Block, Player>();
 	private static Map<Block, Long> ignitedtimes = new HashMap<Block, Long>();
 	static final long soonesttime = Tools.timeinterval;
@@ -59,7 +59,7 @@ public class FireStream extends ActiveAbility {
 	private long time;
 	private double range;
 
-	public FireStream(Location location, Vector direction, Player player, int range, IAbility parent) {
+	public FireStream(Location location, Vector direction, Player player, int range, IBendingAbility parent) {
 		super(player, parent);
 		this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		this.player = player;
@@ -79,7 +79,7 @@ public class FireStream extends ActiveAbility {
 		if (!super.progress()) {
 			return false;
 		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.FireStream, this.location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.FireStream, this.location)) {
 			return false;
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
@@ -115,7 +115,7 @@ public class FireStream extends ActiveAbility {
 	}
 
 	public static boolean isIgnitable(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.Blaze, block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Blaze, block.getLocation())) {
 			return false;
 		}
 
@@ -178,8 +178,8 @@ public class FireStream extends ActiveAbility {
 
 	public static void removeAroundPoint(Location location, double radius) {
 		List<FireStream> toRemove = new LinkedList<FireStream>();
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.FireStream);
-		for (IAbility ability : instances.values()) {
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireStream);
+		for (IBendingAbility ability : instances.values()) {
 			FireStream stream = (FireStream) ability;
 			if (stream.location.getWorld().equals(location.getWorld())) {
 				if (stream.location.distance(location) <= radius) {
@@ -211,7 +211,7 @@ public class FireStream extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.FireStream;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.FireStream;
 	}
 }

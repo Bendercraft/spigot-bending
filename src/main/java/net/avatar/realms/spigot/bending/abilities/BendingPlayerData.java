@@ -8,12 +8,12 @@ import org.bukkit.Material;
 
 public class BendingPlayerData {
 	private UUID player;
-	private List<BendingType> bendings;
-	private List<BendingSpecializationType> specialization;
-	private List<BendingPathType> paths;
+	private List<BendingElement> bendings;
+	private List<BendingAffinity> specialization;
+	private List<BendingPath> paths;
 	private boolean bendToItem;
-	private Map<Integer, Abilities> slotAbilities;
-	private Map<Material, Abilities> itemAbilities;
+	private Map<Integer, BendingAbilities> slotAbilities;
+	private Map<Material, BendingAbilities> itemAbilities;
 	private long lastTime;
 	
 	
@@ -23,10 +23,10 @@ public class BendingPlayerData {
 	public void setPlayer(UUID player) {
 		this.player = player;
 	}
-	public List<BendingType> getBendings() {
+	public List<BendingElement> getBendings() {
 		return bendings;
 	}
-	public void setBendings(List<BendingType> bending) {
+	public void setBendings(List<BendingElement> bending) {
 		this.bendings = bending;
 	}
 	public boolean isBendToItem() {
@@ -35,16 +35,16 @@ public class BendingPlayerData {
 	public void setBendToItem(boolean bendToItem) {
 		this.bendToItem = bendToItem;
 	}
-	public Map<Integer, Abilities> getSlotAbilities() {
+	public Map<Integer, BendingAbilities> getSlotAbilities() {
 		return slotAbilities;
 	}
-	public void setSlotAbilities(Map<Integer, Abilities> slotAbilities) {
+	public void setSlotAbilities(Map<Integer, BendingAbilities> slotAbilities) {
 		this.slotAbilities = slotAbilities;
 	}
-	public Map<Material, Abilities> getItemAbilities() {
+	public Map<Material, BendingAbilities> getItemAbilities() {
 		return itemAbilities;
 	}
-	public void setItemAbilities(Map<Material, Abilities> itemAbilities) {
+	public void setItemAbilities(Map<Material, BendingAbilities> itemAbilities) {
 		this.itemAbilities = itemAbilities;
 	}
 	public long getLastTime() {
@@ -53,16 +53,16 @@ public class BendingPlayerData {
 	public void setLastTime(long lastTime) {
 		this.lastTime = lastTime;
 	}
-	public List<BendingSpecializationType> getSpecialization() {
+	public List<BendingAffinity> getSpecialization() {
 		return specialization;
 	}
-	public void setSpecialization(List<BendingSpecializationType> specialization) {
+	public void setSpecialization(List<BendingAffinity> specialization) {
 		this.specialization = specialization;
 	}
-	public List<BendingPathType> getPaths() {
+	public List<BendingPath> getPaths() {
 		return paths;
 	}
-	public void setPaths(List<BendingPathType> paths) {
+	public void setPaths(List<BendingPath> paths) {
 		this.paths = paths;
 	}
 }

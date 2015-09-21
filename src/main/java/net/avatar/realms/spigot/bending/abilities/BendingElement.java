@@ -1,11 +1,11 @@
 package net.avatar.realms.spigot.bending.abilities;
 
-public enum BendingType {
+public enum BendingElement {
 
 	None, Air, Water, Earth, Fire, ChiBlocker, Energy;
 
-	public static BendingType getType (String string) {
-		for (BendingType type : BendingType.values()) {
+	public static BendingElement getType (String string) {
+		for (BendingElement type : BendingElement.values()) {
 			if (type.toString().equalsIgnoreCase(string)) {
 				return type;
 			}

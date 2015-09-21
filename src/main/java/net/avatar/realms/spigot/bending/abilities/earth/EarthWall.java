@@ -3,11 +3,11 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -20,8 +20,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Raise Earth", element=BendingType.Earth)
-public class EarthWall extends ActiveAbility {
+@BendingAbility(name="Raise Earth", element=BendingElement.Earth)
+public class EarthWall extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	private static int RANGE = 15;
 	
@@ -53,27 +53,27 @@ public class EarthWall extends ActiveAbility {
 	@Override
 	public boolean swing() {
 		// One column
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		
-		if (bender.isOnCooldown(Abilities.RaiseEarth)) {
+		if (bender.isOnCooldown(BendingAbilities.RaiseEarth)) {
 			return false;
 		}
 		
 		columns.add(new EarthColumn(player));
-		state = AbilityState.Progressing;
+		state = BendingAbilityState.Progressing;
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		
 		// Wall
-		if (bender.isOnCooldown(Abilities.RaiseEarth))
+		if (bender.isOnCooldown(BendingAbilities.RaiseEarth))
 			return false;
 
 		Vector direction = player.getEyeLocation().getDirection().normalize();
@@ -86,7 +86,7 @@ public class EarthWall extends ActiveAbility {
 		Vector orth = new Vector(ox, oy, oz);
 		orth = orth.normalize();
 
-		Block sblock = BlockTools.getEarthSourceBlock(player, Abilities.RaiseEarth, RANGE);
+		Block sblock = BlockTools.getEarthSourceBlock(player, BendingAbilities.RaiseEarth, RANGE);
 		Location origin;
 		if (sblock == null) {
 			origin = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
@@ -103,7 +103,7 @@ public class EarthWall extends ActiveAbility {
 			if (BlockTools.isTransparentToEarthbending(player, block)) {
 				for (int j = 1; j < height; j++) {
 					block = block.getRelative(BlockFace.DOWN);
-					if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth, block)) {
+					if (BlockTools.isEarthbendable(player, BendingAbilities.RaiseEarth, block)) {
 						cooldown = true;
 						columns.add(new EarthColumn(player, block.getLocation(), height));
 						// } else if (block.getType() != Material.AIR
@@ -112,7 +112,7 @@ public class EarthWall extends ActiveAbility {
 						break;
 					}
 				}
-			} else if (BlockTools.isEarthbendable(player, Abilities.RaiseEarth,
+			} else if (BlockTools.isEarthbendable(player, BendingAbilities.RaiseEarth,
 						block.getRelative(BlockFace.UP))) {
 				for (int j = 1; j < height; j++) {
 					block = block.getRelative(BlockFace.UP);
@@ -131,9 +131,9 @@ public class EarthWall extends ActiveAbility {
 			}
 		}
 		if (cooldown) {
-			bender.cooldown(Abilities.RaiseEarth, COOLDOWN);
+			bender.cooldown(BendingAbilities.RaiseEarth, COOLDOWN);
 		}
-		state = AbilityState.Progressing;
+		state = BendingAbilityState.Progressing;
 		return false;
 	}
 
@@ -143,7 +143,7 @@ public class EarthWall extends ActiveAbility {
 			return false;
 		}
 		
-		if(state == AbilityState.Progressing && columns.isEmpty()) {
+		if(state == BendingAbilityState.Progressing && columns.isEmpty()) {
 			return false;
 		}
 		
@@ -170,8 +170,8 @@ public class EarthWall extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.RaiseEarth;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.RaiseEarth;
 	}
 
 }

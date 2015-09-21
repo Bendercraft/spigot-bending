@@ -9,13 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -26,8 +26,8 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * The more you hit it, the more it get slown.
  *
  */
-@BendingAbility(name="Vital Point", element=BendingType.ChiBlocker)
-public class VitalPoint extends ActiveAbility {
+@BendingAbility(name="Vital Point", element=BendingElement.ChiBlocker)
+public class VitalPoint extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 1;
@@ -67,7 +67,7 @@ public class VitalPoint extends ActiveAbility {
 	public VitalPoint(Player player) {
 		super(player, null);
 
-		if (!this.state.isBefore(AbilityState.CanStart)) {
+		if (!this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
@@ -89,7 +89,7 @@ public class VitalPoint extends ActiveAbility {
 				if (this.target == null) {
 					return false;
 				}
-				setState(AbilityState.Progressing);
+				setState(BendingAbilityState.Progressing);
 				AbilityManager.getManager().addInstance(this);
 
 			case Preparing:
@@ -157,7 +157,7 @@ public class VitalPoint extends ActiveAbility {
 
 	@Override
 	public void remove() {
-		this.bender.cooldown(Abilities.VitalPoint, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.VitalPoint, COOLDOWN);
 		super.remove();
 	}
 
@@ -171,7 +171,7 @@ public class VitalPoint extends ActiveAbility {
 			return false;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.VitalPoint);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.VitalPoint);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
@@ -186,8 +186,8 @@ public class VitalPoint extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.VitalPoint;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.VitalPoint;
 	}
 
 	@Override

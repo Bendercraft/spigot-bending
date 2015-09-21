@@ -1,15 +1,15 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -27,8 +27,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Ice Spikes", element=BendingType.Water)
-public class IceSpike extends ActiveAbility {
+@BendingAbility(name="Ice Spikes", element=BendingElement.Water)
+public class IceSpike extends BendingActiveAbility {
 	private static double defaultrange = 20;
 	private static int defaultdamage = 1;
 	private static int defaultmod = 2;
@@ -57,7 +57,7 @@ public class IceSpike extends ActiveAbility {
 	private SpikeField field = null;
 	private WaterReturn waterReturn;
 
-	public IceSpike(Player player, IAbility parent) {
+	public IceSpike(Player player, IBendingAbility parent) {
 		super(player, parent);
 		block(player);
 		if (EntityTools.canPlantbend(player))
@@ -81,7 +81,7 @@ public class IceSpike extends ActiveAbility {
 			return false;
 		}
 		
-		for (IAbility ab : AbilityManager.getManager().getInstances(this.getAbilityType()).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(this.getAbilityType()).values()) {
 			IceSpike ice = (IceSpike) ab;
 			if (ice.prepared && ice.player == player) {
 				ice.remove();
@@ -108,11 +108,11 @@ public class IceSpike extends ActiveAbility {
 		boolean activate = false;
 
 		if (BendingPlayer.getBendingPlayer(player).isOnCooldown(
-				Abilities.IceSpike)){
+				BendingAbilities.IceSpike)){
 			return false;
 		}
 			
-		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.IceSpike).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
 			IceSpike ice = (IceSpike) ab;
 			if (ice.prepared && ice.player == player) {
 				ice.throwIce();
@@ -207,7 +207,7 @@ public class IceSpike extends ActiveAbility {
 		}
 		
 		if (player.isDead() || !player.isOnline()
-				|| !EntityTools.canBend(player, Abilities.IceSpike)) {
+				|| !EntityTools.canBend(player, BendingAbilities.IceSpike)) {
 			return false;
 		}
 
@@ -222,7 +222,7 @@ public class IceSpike extends ActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.getBendingAbility(player) != Abilities.IceSpike
+		if (EntityTools.getBendingAbility(player) != BendingAbilities.IceSpike
 				&& prepared) {
 			return false;
 		}
@@ -273,7 +273,7 @@ public class IceSpike extends ActiveAbility {
 				return false;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike,
 					location)) {
 				returnWater();
 				return false;
@@ -336,7 +336,7 @@ public class IceSpike extends ActiveAbility {
 	}
 
 	private static void redirect(Player player) {
-		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.IceSpike).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
 			IceSpike ice = (IceSpike) ab;
 			
 			if (!ice.progressing)
@@ -363,7 +363,7 @@ public class IceSpike extends ActiveAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = ice.location;
-			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike,
 					mloc))
 				continue;
 			if (mloc.distance(location) <= defaultrange
@@ -387,7 +387,7 @@ public class IceSpike extends ActiveAbility {
 	}
 
 	private static void block(Player player) {
-		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.IceSpike).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
 			IceSpike ice = (IceSpike) ab;
 
 			if (ice.player.equals(player)) {
@@ -402,7 +402,7 @@ public class IceSpike extends ActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(player, Abilities.IceSpike,
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike,
 					ice.location)) {
 				continue;
 			}
@@ -417,7 +417,7 @@ public class IceSpike extends ActiveAbility {
 						&& mloc.distance(location.clone().add(vector)) < mloc
 								.distance(location.clone().add(
 										vector.clone().multiply(-1)))) {
-					ice.state = AbilityState.Ended;
+					ice.state = BendingAbilityState.Ended;
 				}
 			}
 		}
@@ -454,7 +454,7 @@ public class IceSpike extends ActiveAbility {
 	}
 
 	public static boolean isBending(Player player) {
-		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.IceSpike).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
 			IceSpike ice = (IceSpike) ab;
 			if (ice.player.equals(player))
 				return true;
@@ -468,7 +468,7 @@ public class IceSpike extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.IceSpike;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.IceSpike;
 	}
 }

@@ -13,18 +13,18 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "Smoke Bomb", element = BendingType.ChiBlocker)
-public class SmokeBomb extends ActiveAbility {
+@BendingAbility(name = "Smoke Bomb", element = BendingElement.ChiBlocker)
+public class SmokeBomb extends BendingActiveAbility {
 
 	@ConfigurationParameter("Radius")
 	public static int RADIUS = 5;
@@ -53,7 +53,7 @@ public class SmokeBomb extends ActiveAbility {
 	public SmokeBomb(Player player) {
 		super(player, null);
 
-		if (this.state.equals(AbilityState.CannotStart)) {
+		if (this.state.equals(BendingAbilityState.CannotStart)) {
 			return;
 		}
 
@@ -72,24 +72,24 @@ public class SmokeBomb extends ActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if ((this.state == AbilityState.CannotStart) || (this.state == AbilityState.Prepared)) {
+		if ((this.state == BendingAbilityState.CannotStart) || (this.state == BendingAbilityState.Prepared)) {
 			return true;
 		}
 
-		if (!this.state.equals(AbilityState.CanStart)) {
+		if (!this.state.equals(BendingAbilityState.CanStart)) {
 			return false;
 		}
 
-		setState(AbilityState.Prepared);
+		setState(BendingAbilityState.Prepared);
 
 		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST, (SOUND_RADIUS / 16.0f), 1.1f);
 		this.player.addPotionEffect(blindnessBomber);
 
-		this.bender.cooldown(Abilities.SmokeBomb, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.SmokeBomb, COOLDOWN);
 		AbilityManager.getManager().addInstance(this);
 
-		if (this.state == AbilityState.Prepared) {
-			setState(AbilityState.Progressing);
+		if (this.state == BendingAbilityState.Prepared) {
+			setState(BendingAbilityState.Progressing);
 		}
 		return false;
 	}
@@ -98,7 +98,7 @@ public class SmokeBomb extends ActiveAbility {
 	public boolean progress() {
 
 		Bending.plugin.getLogger().info("Before : " + this.state);
-		if (this.state != AbilityState.Progressing) {
+		if (this.state != BendingAbilityState.Progressing) {
 			return false;
 		}
 		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(this.origin, RADIUS);
@@ -138,7 +138,7 @@ public class SmokeBomb extends ActiveAbility {
 		this.ticksRemaining--;
 		Bending.plugin.getLogger().info("Ticks : " + this.ticksRemaining);
 		if (this.ticksRemaining <= 0) {
-			setState(AbilityState.Ended);
+			setState(BendingAbilityState.Ended);
 			return false;
 		}
 		else {
@@ -152,8 +152,8 @@ public class SmokeBomb extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.SmokeBomb;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.SmokeBomb;
 	}
 
 	@Override

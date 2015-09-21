@@ -1,11 +1,11 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -17,8 +17,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Catapult", element=BendingType.Earth)
-public class Catapult extends ActiveAbility {
+@BendingAbility(name="Catapult", element=BendingElement.Earth)
+public class Catapult extends BendingActiveAbility {
 	@ConfigurationParameter("Length")
 	private static int length = 6;
 	
@@ -50,10 +50,10 @@ public class Catapult extends ActiveAbility {
 	
 	@Override
 	public boolean swing() {
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		state = AbilityState.Progressing;
+		state = BendingAbilityState.Progressing;
 		origin = player.getEyeLocation().clone();
 		direction = origin.getDirection().clone().normalize();
 		Vector neg = direction.clone().multiply(-1);
@@ -63,7 +63,7 @@ public class Catapult extends ActiveAbility {
 		for (int i = 0; i <= length; i++) {
 			location = origin.clone().add(neg.clone().multiply((double) i));
 			block = location.getBlock();
-			if (BlockTools.isEarthbendable(player, Abilities.Catapult, block)) {
+			if (BlockTools.isEarthbendable(player, BendingAbilities.Catapult, block)) {
 				distance = BlockTools.getEarthbendableBlocksLength(player, block,
 						neg, length - i);
 				break;
@@ -80,7 +80,7 @@ public class Catapult extends ActiveAbility {
 			starttime = System.currentTimeMillis();
 			moving = true;
 			AbilityManager.getManager().addInstance(this);
-			bender.cooldown(Abilities.Catapult, COOLDOWN);
+			bender.cooldown(BendingAbilities.Catapult, COOLDOWN);
 		}
 		
 		return false;
@@ -187,7 +187,7 @@ public class Catapult extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.Catapult;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.Catapult;
 	}
 }

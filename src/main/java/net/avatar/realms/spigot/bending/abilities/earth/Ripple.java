@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -261,11 +261,11 @@ public class Ripple {
 		}
 		
 		double damage = DAMAGE;
-		if(bender.hasPath(BendingPathType.Tough)) {
+		if(bender.hasPath(BendingPath.Tough)) {
 			damage *= 0.85;
 		}
 		
-		if(bender.hasPath(BendingPathType.Reckless)) {
+		if(bender.hasPath(BendingPath.Reckless)) {
 			damage *= 1.15;
 		}
 		

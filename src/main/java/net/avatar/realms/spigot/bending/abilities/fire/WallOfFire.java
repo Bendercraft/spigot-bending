@@ -12,14 +12,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -27,8 +27,8 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name="Wall of Fire", element=BendingType.Fire)
-public class WallOfFire extends ActiveAbility {
+@BendingAbility(name="Wall of Fire", element=BendingElement.Fire)
+public class WallOfFire extends BendingActiveAbility {
 
 	private static double maxangle = 50;
 	private static long interval = 250;
@@ -68,7 +68,7 @@ public class WallOfFire extends ActiveAbility {
 	public WallOfFire(Player player) {
 		super (player, null);
 		
-		if (this.state.isBefore(AbilityState.CanStart)) {
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return;
 		}
 
@@ -77,7 +77,7 @@ public class WallOfFire extends ActiveAbility {
 		Block block = this.origin.getBlock();
 
 		if (block.isLiquid() || BlockTools.isSolid(block)) {
-			setState(AbilityState.CannotStart);
+			setState(BendingAbilityState.CannotStart);
 			return;
 		}
 	}
@@ -98,10 +98,10 @@ public class WallOfFire extends ActiveAbility {
 					this.damage = (int) PluginTools.firebendingDayAugment(DAMAGE, world);
 				}
 				
-				if(this.bender.hasPath(BendingPathType.Nurture)) {
+				if(this.bender.hasPath(BendingPath.Nurture)) {
 					this.damage *= 0.8;
 				}
-				if(this.bender.hasPath(BendingPathType.Lifeless)) {
+				if(this.bender.hasPath(BendingPath.Lifeless)) {
 					this.damage *= 1.1;
 				}
 
@@ -116,7 +116,7 @@ public class WallOfFire extends ActiveAbility {
 				}
 
 				initializeBlocks();
-				setState(AbilityState.Progressing);
+				setState(BendingAbilityState.Progressing);
 				AbilityManager.getManager().addInstance(this);
 				
 				return false;
@@ -183,7 +183,7 @@ public class WallOfFire extends ActiveAbility {
 						orthoud.clone().multiply(j));
 				location = location.add(ortholr.clone().multiply(i));
 				if (ProtectionManager.isRegionProtectedFromBending(this.player,
-						Abilities.WallOfFire, location)) {
+						BendingAbilities.WallOfFire, location)) {
 					continue;
 				}
 				Block block = location.getBlock();
@@ -217,7 +217,7 @@ public class WallOfFire extends ActiveAbility {
 			if(ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
 			}
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, Abilities.WallOfFire,
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.WallOfFire,
 					entity.getLocation())) {
 				continue;
 			}
@@ -246,7 +246,7 @@ public class WallOfFire extends ActiveAbility {
 			return false;
 		}
 
-		Map<Object, IAbility> instances = AbilityManager.getManager().getInstances(Abilities.WallOfFire);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.WallOfFire);
 		if (instances == null) {
 			return true;
 		}
@@ -260,8 +260,8 @@ public class WallOfFire extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType () {
-		return Abilities.WallOfFire;
+	public BendingAbilities getAbilityType () {
+		return BendingAbilities.WallOfFire;
 	}
 
 	

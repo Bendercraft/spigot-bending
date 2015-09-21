@@ -3,13 +3,13 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -21,8 +21,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@BendingAbility(name="Metalbending", element=BendingType.Earth, specialization=BendingSpecializationType.Metalbend)
-public class MetalBending extends ActiveAbility {
+@BendingAbility(name="Metalbending", element=BendingElement.Earth, specialization=BendingAffinity.Metalbend)
+public class MetalBending extends BendingActiveAbility {
 	@ConfigurationParameter("Melt-Time")
 	private static long MELT_TIME = 2000;
 
@@ -58,7 +58,7 @@ public class MetalBending extends ActiveAbility {
 	
 	@Override
 	public boolean sneak() {
-		if(state != AbilityState.CanStart) {
+		if(state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		
@@ -66,7 +66,7 @@ public class MetalBending extends ActiveAbility {
 		this.items = player.getItemInHand();
 		if(isMeltable(this.items.getType())) {
 			AbilityManager.getManager().addInstance(this);
-			state = AbilityState.Progressing;
+			state = BendingAbilityState.Progressing;
 		}
 		return false;
 	}
@@ -74,16 +74,16 @@ public class MetalBending extends ActiveAbility {
 	@SuppressWarnings("deprecation")
 	public static void use(Player pl, Block bl) {
 		// Don't really like it, magic value
-		if (EntityTools.isBender(pl, BendingType.Earth)
-				&& EntityTools.getBendingAbility(pl) == Abilities.MetalBending) {
-			if (EntityTools.canBend(pl, Abilities.MetalBending)) {
+		if (EntityTools.isBender(pl, BendingElement.Earth)
+				&& EntityTools.getBendingAbility(pl) == BendingAbilities.MetalBending) {
+			if (EntityTools.canBend(pl, BendingAbilities.MetalBending)) {
 				if (bl.getType() == Material.IRON_DOOR_BLOCK) {
 					if (bl.getData() >= 8) {
 						bl = bl.getRelative(BlockFace.DOWN);
 					}
 					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
 						if (!ProtectionManager.isRegionProtectedFromBending(pl,
-								Abilities.MetalBending, bl.getLocation())) {
+								BendingAbilities.MetalBending, bl.getLocation())) {
 							if (bl.getData() < 4) {
 								bl.setData((byte) (bl.getData() + 4));
 								bl.getWorld().playEffect(bl.getLocation(),
@@ -109,7 +109,7 @@ public class MetalBending extends ActiveAbility {
 			return false;
 		}
 		if (!player.isSneaking()
-				|| EntityTools.getBendingAbility(player) != Abilities.MetalBending) {
+				|| EntityTools.getBendingAbility(player) != BendingAbilities.MetalBending) {
 			return false;
 		}
 
@@ -170,8 +170,8 @@ public class MetalBending extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.MetalBending;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.MetalBending;
 	}
 
 }

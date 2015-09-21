@@ -3,12 +3,12 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -20,8 +20,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Shockwave", element=BendingType.Earth)
-public class Shockwave extends ActiveAbility {
+@BendingAbility(name="Shockwave", element=BendingElement.Earth)
+public class Shockwave extends BendingActiveAbility {
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 2500;
 	@ConfigurationParameter("Fall-Threshold")
@@ -47,7 +47,7 @@ public class Shockwave extends ActiveAbility {
 	
 	@Override
 	public boolean swing() {
-		if(state == AbilityState.Prepared) {
+		if(state == BendingAbilityState.Prepared) {
 			double dtheta = 360. / (2 * Math.PI * Ripple.RADIUS) - 1;
 			for (double theta = 0; theta < 360; theta += dtheta) {
 				double rtheta = Math.toRadians(theta);
@@ -56,16 +56,16 @@ public class Shockwave extends ActiveAbility {
 				if (vector.angle(player.getEyeLocation().getDirection()) < angle)
 					ripples.add(new Ripple(player, vector.normalize()));
 			}
-			state = AbilityState.Progressing;
+			state = BendingAbilityState.Progressing;
 		}
 		return false;
 	}
 	
 	@Override
 	public boolean sneak() {
-		if(state == AbilityState.CanStart) {
+		if(state == BendingAbilityState.CanStart) {
 			AbilityManager.getManager().addInstance(this);
-			state = AbilityState.Preparing;
+			state = BendingAbilityState.Preparing;
 		}
 		return false;
 	}
@@ -75,19 +75,19 @@ public class Shockwave extends ActiveAbility {
 		if(!super.progress()) {
 			return false;
 		}
-		if (!EntityTools.canBend(player, Abilities.Shockwave)
-				|| EntityTools.getBendingAbility(player) != Abilities.Shockwave) {
+		if (!EntityTools.canBend(player, BendingAbilities.Shockwave)
+				|| EntityTools.getBendingAbility(player) != BendingAbilities.Shockwave) {
 			return false;
 		}
 		
-		if(state == AbilityState.Preparing) {
+		if(state == BendingAbilityState.Preparing) {
 			if (!player.isSneaking()) {
 				return false;
 			}
 			if (System.currentTimeMillis() > starttime + chargetime) {
-				state = AbilityState.Prepared;
+				state = BendingAbilityState.Prepared;
 			}
-		} else if(state == AbilityState.Prepared) {
+		} else if(state == BendingAbilityState.Prepared) {
 			Location location = player.getEyeLocation();
 			location.getWorld().playEffect(
 					location,
@@ -104,9 +104,9 @@ public class Shockwave extends ActiveAbility {
 					Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
 					ripples.add(new Ripple(player, vector.normalize()));
 				}
-				state = AbilityState.Progressing;
+				state = BendingAbilityState.Progressing;
 			}
-		} else if(state == AbilityState.Progressing) {
+		} else if(state == BendingAbilityState.Progressing) {
 			List<Ripple> toRemove = new LinkedList<Ripple>();
 			for(Ripple ripple : ripples) {
 				if(!ripple.progress()) {
@@ -129,8 +129,8 @@ public class Shockwave extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.Shockwave;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.Shockwave;
 	}
 
 }

@@ -1,24 +1,24 @@
 package net.avatar.realms.spigot.bending.abilities;
 
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 
 public class RegisteredAbility {
-	private Class<? extends IAbility> ability;
+	private Class<? extends IBendingAbility> ability;
 	private String name;
-	private BendingType element;
-	private BendingSpecializationType specialization;
+	private BendingElement element;
+	private BendingAffinity specialization;
 
-	public RegisteredAbility(String name, Class<? extends IAbility> ability, BendingType element) {
+	public RegisteredAbility(String name, Class<? extends IBendingAbility> ability, BendingElement element) {
 		this(name, ability, element, null);
 	}
-	public RegisteredAbility(String name, Class<? extends IAbility> ability, BendingType element, BendingSpecializationType specialization) {
+	public RegisteredAbility(String name, Class<? extends IBendingAbility> ability, BendingElement element, BendingAffinity specialization) {
 		this.name = name;
 		this.ability = ability;
 		this.element = element;
 		this.specialization = specialization;
 	}
 
-	public Class<? extends IAbility> getAbility() {
+	public Class<? extends IBendingAbility> getAbility() {
 		return this.ability;
 	}
 
@@ -26,11 +26,11 @@ public class RegisteredAbility {
 		return this.name;
 	}
 
-	public BendingType getElement() {
+	public BendingElement getElement() {
 		return this.element;
 	}
 
-	public BendingSpecializationType getSpecialization() {
+	public BendingAffinity getSpecialization() {
 		return this.specialization;
 	}
 	public String getPermission() {

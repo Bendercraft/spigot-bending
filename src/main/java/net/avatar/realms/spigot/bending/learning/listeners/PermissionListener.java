@@ -1,6 +1,6 @@
 package net.avatar.realms.spigot.bending.learning.listeners;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 
 import org.bukkit.event.EventHandler;
@@ -21,25 +21,25 @@ public class PermissionListener implements Listener {
 		this.plugin.lease(event.getPlayer());
 		
 		//Add default perm to allow base ability to be used
-		this.plugin.addPermission(event.getPlayer(), Abilities.AirBlast);
-		this.plugin.addPermission(event.getPlayer(), Abilities.AirSpout);
-		this.plugin.addPermission(event.getPlayer(), Abilities.AirSwipe);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.AirBlast);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.AirSpout);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.AirSwipe);
 		
-		this.plugin.addPermission(event.getPlayer(), Abilities.WaterManipulation);
-		this.plugin.addPermission(event.getPlayer(), Abilities.WaterSpout);
-		this.plugin.addPermission(event.getPlayer(), Abilities.HealingWaters);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.WaterManipulation);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.WaterSpout);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.HealingWaters);
 		
-		this.plugin.addPermission(event.getPlayer(), Abilities.FireBlast);
-		this.plugin.addPermission(event.getPlayer(), Abilities.Blaze);
-		this.plugin.addPermission(event.getPlayer(), Abilities.HeatControl);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.FireBlast);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.Blaze);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.HeatControl);
 		
-		this.plugin.addPermission(event.getPlayer(), Abilities.EarthBlast);
-		this.plugin.addPermission(event.getPlayer(), Abilities.RaiseEarth);
-		this.plugin.addPermission(event.getPlayer(), Abilities.Collapse);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.EarthBlast);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.RaiseEarth);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.Collapse);
 		
-		this.plugin.addPermission(event.getPlayer(), Abilities.RapidPunch);
-		this.plugin.addPermission(event.getPlayer(), Abilities.VitalPoint);
-		this.plugin.addPermission(event.getPlayer(), Abilities.HighJump);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.RapidPunch);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.VitalPoint);
+		this.plugin.addPermission(event.getPlayer(), BendingAbilities.HighJump);
 	}
 	
 	@EventHandler

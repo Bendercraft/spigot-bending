@@ -16,24 +16,24 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Blood Bending", element=BendingType.Water, specialization=BendingSpecializationType.Bloodbend)
-public class Bloodbending extends ActiveAbility {
+@BendingAbility(name="Blood Bending", element=BendingElement.Water, specialization=BendingAffinity.Bloodbend)
+public class Bloodbending extends BendingActiveAbility {
 	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
 
 	@ConfigurationParameter("Throw-Factor")
@@ -71,11 +71,11 @@ public class Bloodbending extends ActiveAbility {
 				}
 				if (entity instanceof Player) {
 					if (ProtectionManager.isRegionProtectedFromBending(player,
-							Abilities.Bloodbending, entity.getLocation())
+							BendingAbilities.Bloodbending, entity.getLocation())
 							|| AvatarState.isAvatarState((Player) entity)
 							|| (entity.getEntityId() == player.getEntityId())
 							|| EntityTools.canBend((Player) entity,
-									Abilities.Bloodbending)) {
+									BendingAbilities.Bloodbending)) {
 						continue;
 					}
 				}
@@ -83,7 +83,7 @@ public class Bloodbending extends ActiveAbility {
 				this.targetEntities.put(entity, entity.getLocation().clone());
 			}
 		} else {
-			if (BendingPlayer.getBendingPlayer(player).isOnCooldown(Abilities.Bloodbending)) {
+			if (BendingPlayer.getBendingPlayer(player).isOnCooldown(BendingAbilities.Bloodbending)) {
 				return false;
 			}
 			Entity target = EntityTools.getTargettedEntity(player, this.range);
@@ -95,12 +95,12 @@ public class Bloodbending extends ActiveAbility {
 			}		
 			if (!(target instanceof LivingEntity)
 					|| ProtectionManager.isRegionProtectedFromBending(player,
-							Abilities.Bloodbending, target.getLocation())) {
+							BendingAbilities.Bloodbending, target.getLocation())) {
 				return false;
 			}
 			if (target instanceof Player) {
 				if (EntityTools
-						.canBend((Player) target, Abilities.Bloodbending)
+						.canBend((Player) target, BendingAbilities.Bloodbending)
 						|| AvatarState.isAvatarState((Player) target)
 						|| ((Player) target).isOp()) {
 					return false;
@@ -128,8 +128,8 @@ public class Bloodbending extends ActiveAbility {
 			vector.normalize();
 			entity.setVelocity(vector.multiply(FACTOR));
 		}
-		state = AbilityState.Ended;
-		BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.Bloodbending, COOLDOWN);
+		state = BendingAbilityState.Ended;
+		BendingPlayer.getBendingPlayer(this.player).cooldown(BendingAbilities.Bloodbending, COOLDOWN);
 		return false;
 	}
 
@@ -138,8 +138,8 @@ public class Bloodbending extends ActiveAbility {
 		PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 60, 1);
 
 		if (!this.player.isSneaking()
-				|| (EntityTools.getBendingAbility(this.player) != Abilities.Bloodbending)
-				|| !EntityTools.canBend(this.player, Abilities.Bloodbending)) {
+				|| (EntityTools.getBendingAbility(this.player) != BendingAbilities.Bloodbending)
+				|| !EntityTools.canBend(this.player, BendingAbilities.Bloodbending)) {
 			return false;
 		}
 
@@ -155,7 +155,7 @@ public class Bloodbending extends ActiveAbility {
 					continue;
 				}
 				if (ProtectionManager.isRegionProtectedFromBending(this.player,
-						Abilities.Bloodbending, entity.getLocation())) {
+						BendingAbilities.Bloodbending, entity.getLocation())) {
 					continue;
 				}
 				if (entity instanceof Player) {
@@ -235,7 +235,7 @@ public class Bloodbending extends ActiveAbility {
 	}
 
 	public static boolean isBloodbended(Entity entity) {
-		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.Bloodbending).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Bloodbending).values()) {
 			Bloodbending bloodBend = (Bloodbending) ab;
 			if (bloodBend.getTargetEntities().containsKey(entity)) {
 				return true;
@@ -245,7 +245,7 @@ public class Bloodbending extends ActiveAbility {
 	}
 
 	public static Location getBloodbendingLocation(Entity entity) {
-		for (IAbility ab : AbilityManager.getManager().getInstances(Abilities.Bloodbending).values()) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Bloodbending).values()) {
 			Bloodbending bloodBend = (Bloodbending) ab;
 			if (bloodBend.getTargetEntities().containsKey(entity)) {
 				return bloodBend.getTargetEntities().get(entity);
@@ -264,8 +264,8 @@ public class Bloodbending extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.Bloodbending;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.Bloodbending;
 	}
 
 }

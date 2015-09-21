@@ -7,10 +7,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingSpecializationType;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -72,23 +72,23 @@ public class LearningCommand {
 				this.sender.sendMessage("No player targeted ("+args[2]+")");
 				return;
 			}
-			if(target.isBender(BendingType.ChiBlocker)) {
-				BendingType type = BendingType.getType(args[2]);
+			if(target.isBender(BendingElement.ChiBlocker)) {
+				BendingElement type = BendingElement.getType(args[2]);
 				if(type == null) {
 					return;
 				}
-				List<BendingType> bends = target.getBendingTypes();
+				List<BendingElement> bends = target.getBendingTypes();
 				bends.remove(type);
 				target.removeBender();
-				for(BendingType bend : bends) {
+				for(BendingElement bend : bends) {
 					target.addBender(bend);
 				}
 			} else {
-				BendingSpecializationType spe = BendingSpecializationType.getType(args[2]);
+				BendingAffinity spe = BendingAffinity.getType(args[2]);
 				if(spe == null) {
 					return;
 				}
-				for(Abilities ability : Abilities.values()) {
+				for(BendingAbilities ability : BendingAbilities.values()) {
 					if((ability.getSpecialization() != null) && ability.getSpecialization().equals(spe)) {
 						this.plugin.removePermission(target.getPlayer(), ability);
 					}
@@ -105,7 +105,7 @@ public class LearningCommand {
 				this.sender.sendMessage("No player targeted ("+args[2]+")");
 				return;
 			}
-			Abilities ability = Abilities.getAbility(args[2]);
+			BendingAbilities ability = BendingAbilities.getAbility(args[2]);
 			if(ability == null) {
 				this.sender.sendMessage(ChatColor.RED +"Ability "+ability+" is unknown");
 				return;
@@ -134,7 +134,7 @@ public class LearningCommand {
 			this.sender.sendMessage("No player targeted ("+args[2]+")");
 			return;
 		}
-		BendingType type = BendingType.getType(args[1]);
+		BendingElement type = BendingElement.getType(args[1]);
 		if(type == null) {
 			this.sender.sendMessage("Incorrect type : "+args[1]);
 			return;
@@ -142,7 +142,7 @@ public class LearningCommand {
 		//Reset bending here
 		target.setBender(type);
 		//Ensure it keeps all previous
-		for(Abilities ability : Abilities.values()) {
+		for(BendingAbilities ability : BendingAbilities.values()) {
 			if(ability.getElement().equals(type) && !ability.isSpecialization()) {
 				this.plugin.addPermission(target.getPlayer(), ability);
 			}
@@ -167,11 +167,11 @@ public class LearningCommand {
 			this.sender.sendMessage("No player targeted ("+args[2]+")");
 			return;
 		}
-		if(!EntityTools.canBend(target.getPlayer(), Abilities.AvatarState)) {
+		if(!EntityTools.canBend(target.getPlayer(), BendingAbilities.AvatarState)) {
 			this.sender.sendMessage(target.getPlayer().getName()+" is not an avatar");
 			return;
 		}
-		BendingType type = BendingType.getType(args[1]);
+		BendingElement type = BendingElement.getType(args[1]);
 		if(type == null) {
 			this.sender.sendMessage("Incorrect type : "+args[1]);
 			return;
@@ -181,7 +181,7 @@ public class LearningCommand {
 			ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
 			String message = "Congratulations, you can now bend "+type.name();
 			target.getPlayer().sendMessage(color+message);
-			for(Abilities ability : Abilities.values()) {
+			for(BendingAbilities ability : BendingAbilities.values()) {
 				if(ability.getElement().equals(type) && !ability.isSpecialization()) {
 					this.plugin.addPermission(target.getPlayer(), ability);
 					message = "You can now use "+ability.name();
@@ -213,13 +213,13 @@ public class LearningCommand {
 			return;
 		}
 
-		Abilities ability = Abilities.getAbility(args[1]);
+		BendingAbilities ability = BendingAbilities.getAbility(args[1]);
 		if (ability == null) {
 			this.sender.sendMessage(ChatColor.RED +"Ability "+ability+" is unknown");
 			return;
 		}
-		if (target.isBender(BendingType.ChiBlocker)
-				&& !Abilities.isChiBlocking(ability)
+		if (target.isBender(BendingElement.ChiBlocker)
+				&& !BendingAbilities.isChiBlocking(ability)
 				&& !this.plugin.isBasicBendingAbility(ability)) {
 			this.sender.sendMessage(ChatColor.RED +"Ability "+ability+" is not available for chiblocker");
 			return;
@@ -258,15 +258,15 @@ public class LearningCommand {
 			return;
 		}
 
-		BendingSpecializationType spe = BendingSpecializationType.getType(speString);
-		BendingType type = BendingType.getType(speString);
+		BendingAffinity spe = BendingAffinity.getType(speString);
+		BendingElement type = BendingElement.getType(speString);
 
-		if(target.isBender(BendingType.ChiBlocker)) {
+		if(target.isBender(BendingElement.ChiBlocker)) {
 			if ((target.getBendingTypes().size() == 1) && (target.getSpecializations().size() <= 0)) {
 				if (spe != null) {
 					if(target.isBender(spe.getElement())) {
 						boolean canLearn = true;
-						for(BendingSpecializationType speTarget : target.getSpecializations()) {
+						for(BendingAffinity speTarget : target.getSpecializations()) {
 							if(speTarget.getElement().equals(spe.getElement())) {
 								canLearn = false;
 							}
@@ -276,7 +276,7 @@ public class LearningCommand {
 							ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
 							String message = "Congratulations, you can now use "+spe.name();
 							target.getPlayer().sendMessage(color+message);
-							for(Abilities ability : Abilities.values()) {
+							for(BendingAbilities ability : BendingAbilities.values()) {
 								if(ability.isSpecialization() && ability.getSpecialization().equals(spe)) {
 									this.plugin.addPermission(target.getPlayer(), ability);
 									message = "You can now use "+ability.name();
@@ -288,9 +288,9 @@ public class LearningCommand {
 				} else if (type != null) {
 					target.addBender(type);
 					ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
-					String message = "Congratulations, you can now bend "+type.name()+" as well as "+BendingType.ChiBlocker.name();
+					String message = "Congratulations, you can now bend "+type.name()+" as well as "+BendingElement.ChiBlocker.name();
 					target.getPlayer().sendMessage(color+message);
-					for(Abilities ability : Abilities.values()) {
+					for(BendingAbilities ability : BendingAbilities.values()) {
 						if(ability.getElement().equals(type)) {
 							if(EntityTools.hasPermission(target.getPlayer(), ability)) {
 								message = "You can now use "+ability.name();
@@ -308,7 +308,7 @@ public class LearningCommand {
 			if(spe != null) {
 				if(target.isBender(spe.getElement())) {
 					boolean canLearn = true;
-					for(BendingSpecializationType speTarget : target.getSpecializations()) {
+					for(BendingAffinity speTarget : target.getSpecializations()) {
 						if(speTarget.getElement().equals(spe.getElement())) {
 							canLearn = false;
 						}
@@ -318,7 +318,7 @@ public class LearningCommand {
 						ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
 						String message = "Congratulations, you can now use "+spe.name();
 						target.getPlayer().sendMessage(color+message);
-						for(Abilities ability : Abilities.values()) {
+						for(BendingAbilities ability : BendingAbilities.values()) {
 							if(ability.isSpecialization() && ability.getSpecialization().equals(spe)) {
 								this.plugin.addPermission(target.getPlayer(), ability);
 								message = "You can now use "+ability.name();

@@ -16,15 +16,15 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.AbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPathType;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -36,8 +36,8 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name="Water Manipulation", element=BendingType.Water)
-public class WaterManipulation extends ActiveAbility {
+@BendingAbility(name="Water Manipulation", element=BendingElement.Water)
+public class WaterManipulation extends BendingActiveAbility {
 	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 
 	private static int ID = Integer.MIN_VALUE;
@@ -87,7 +87,7 @@ public class WaterManipulation extends ActiveAbility {
 	
 	private WaterReturn waterReturn;
 
-	public WaterManipulation(Player player, IAbility parent) {
+	public WaterManipulation(Player player, IBendingAbility parent) {
 		super(player, parent);
 		if (water.isEmpty()) {
 			water.add((byte) 0);
@@ -101,12 +101,12 @@ public class WaterManipulation extends ActiveAbility {
 		
 		bender = BendingPlayer.getBendingPlayer(player);
 		
-		if(bender.hasPath(BendingPathType.Marksman)) {
+		if(bender.hasPath(BendingPath.Marksman)) {
 			damage *= 0.8;
 			range *= 1.4;
 		}
 		
-		if(bender.hasPath(BendingPathType.Flowless)) {
+		if(bender.hasPath(BendingPath.Flowless)) {
 			damage *= 1.15;
 		}
 		
@@ -120,10 +120,10 @@ public class WaterManipulation extends ActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(state != AbilityState.CanStart && state != AbilityState.Prepared) {
+		if(state != BendingAbilityState.CanStart && state != BendingAbilityState.Prepared) {
 			return true;
 		}
-		state = AbilityState.Preparing;
+		state = BendingAbilityState.Preparing;
 		Block block = BlockTools.getWaterSourceBlock(this.player, range,
 				EntityTools.canPlantbend(this.player));
 		
@@ -132,12 +132,12 @@ public class WaterManipulation extends ActiveAbility {
 			this.sourceblock = block;
 			focusBlock();
 			AbilityManager.getManager().addInstance(this);
-			state = AbilityState.Prepared;
+			state = BendingAbilityState.Prepared;
 			return false;
 		}
 		
 		//If no block available, check if bender can drainbend !
-		if(Drainbending.canDrainBend(this.player) && !bender.isOnCooldown(Abilities.Drainbending)) {
+		if(Drainbending.canDrainBend(this.player) && !bender.isOnCooldown(BendingAbilities.Drainbending)) {
 			Location location = this.player.getEyeLocation();
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
@@ -145,16 +145,16 @@ public class WaterManipulation extends ActiveAbility {
 				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 				this.sourceblock = block;
 				focusBlock();
-				bender.cooldown(Abilities.Drainbending, Drainbending.COOLDOWN);
+				bender.cooldown(BendingAbilities.Drainbending, Drainbending.COOLDOWN);
 				AbilityManager.getManager().addInstance(this);
-				state = AbilityState.Prepared;
+				state = BendingAbilityState.Prepared;
 				return false;
 			}
 		}
 		
 		//Check for bottle too !
-		if (!bender.isOnCooldown(Abilities.WaterManipulation)) {
-			if (state != AbilityState.Prepared && WaterReturn.hasWaterBottle(player)) {
+		if (!bender.isOnCooldown(BendingAbilities.WaterManipulation)) {
+			if (state != BendingAbilityState.Prepared && WaterReturn.hasWaterBottle(player)) {
 				Location eyeloc = player.getEyeLocation();
 				block = eyeloc.add(eyeloc.getDirection().normalize())
 						.getBlock();
@@ -202,12 +202,12 @@ public class WaterManipulation extends ActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(state == AbilityState.CanStart || state == AbilityState.Progressing) {
+		if(state == BendingAbilityState.CanStart || state == BendingAbilityState.Progressing) {
 			redirectTargettedBlasts(player);
 			return false;
 		}
 
-		if(state == AbilityState.Prepared) {
+		if(state == BendingAbilityState.Prepared) {
 			if (this.sourceblock == null) {
 				return false;
 			}
@@ -219,7 +219,7 @@ public class WaterManipulation extends ActiveAbility {
 			if (this.targetdestination.distance(this.location) <= 1) {
 				this.progressing = false;
 				this.targetdestination = null;
-				this.state = AbilityState.Ended;
+				this.state = BendingAbilityState.Ended;
 			} else {
 				this.progressing = true;
 				this.settingup = true;
@@ -230,9 +230,9 @@ public class WaterManipulation extends ActiveAbility {
 				this.targetdirection = Tools.getDirection(this.firstdestination,
 						this.targetdestination).normalize();
 				addWater(this.sourceblock);
-				state = AbilityState.Progressing;
+				state = BendingAbilityState.Progressing;
 			}
-			BendingPlayer.getBendingPlayer(this.player).cooldown(Abilities.WaterManipulation, COOLDOWN);
+			BendingPlayer.getBendingPlayer(this.player).cooldown(BendingAbilities.WaterManipulation, COOLDOWN);
 		}
 		
 		return false;
@@ -240,7 +240,7 @@ public class WaterManipulation extends ActiveAbility {
 
 	private Location getTargetLocation(Player player) {
 		Entity target = null;
-		if(!bender.hasPath(BendingPathType.Flowless)) {
+		if(!bender.hasPath(BendingPath.Flowless)) {
 			target = EntityTools.getTargettedEntity(player, range);
 		}
 		Location location = null;
@@ -291,7 +291,7 @@ public class WaterManipulation extends ActiveAbility {
 
 			if (!this.progressing
 					&& !this.falling
-					&& (EntityTools.getBendingAbility(this.player) != Abilities.WaterManipulation)) {
+					&& (EntityTools.getBendingAbility(this.player) != BendingAbilities.WaterManipulation)) {
 				return false;
 			}
 
@@ -500,7 +500,7 @@ public class WaterManipulation extends ActiveAbility {
 	}
 
 	private static void redirectTargettedBlasts(Player player) {
-		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (!manip.progressing){
 				continue;
@@ -511,7 +511,7 @@ public class WaterManipulation extends ActiveAbility {
 			}
 
 			if (ProtectionManager.isRegionProtectedFromBending(player,
-					Abilities.WaterManipulation, manip.location)){
+					BendingAbilities.WaterManipulation, manip.location)){
 				continue;
 			}
 
@@ -536,7 +536,7 @@ public class WaterManipulation extends ActiveAbility {
 
 	private static void block(Player player) {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.player.equals(player)) {
 				continue;
@@ -551,7 +551,7 @@ public class WaterManipulation extends ActiveAbility {
 			}
 
 			if (ProtectionManager.isRegionProtectedFromBending(player,
-					Abilities.WaterManipulation, manip.location)) {
+					BendingAbilities.WaterManipulation, manip.location)) {
 				continue;
 			}
 
@@ -643,7 +643,7 @@ public class WaterManipulation extends ActiveAbility {
 
 	public static void removeAroundPoint(Location location, double radius) {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.location.getWorld().equals(location.getWorld())) {
 				if (manip.location.distance(location) <= radius) {
@@ -660,7 +660,7 @@ public class WaterManipulation extends ActiveAbility {
 			Player source, boolean remove) {
 		boolean broke = false;
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.location.getWorld().equals(location.getWorld())
 					&& !source.equals(manip.player)) {
@@ -684,7 +684,7 @@ public class WaterManipulation extends ActiveAbility {
 	}
 	
 	public static boolean isWaterManipulater(Player player) {
-		for(IAbility ab : AbilityManager.getManager().getInstances(Abilities.WaterManipulation).values()) {
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if(manip.player.equals(player)) {
 				return true;
@@ -699,7 +699,7 @@ public class WaterManipulation extends ActiveAbility {
 	}
 
 	@Override
-	public Abilities getAbilityType() {
-		return Abilities.WaterManipulation;
+	public BendingAbilities getAbilityType() {
+		return BendingAbilities.WaterManipulation;
 	}
 }
