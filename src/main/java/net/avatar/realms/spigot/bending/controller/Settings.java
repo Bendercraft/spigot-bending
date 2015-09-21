@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Settings {
-	
+
 	@ConfigurationParameter("abilities.global-cooldown")
 	public static long GLOBAL_COOLDOWN = 250;
 
@@ -30,26 +30,35 @@ public class Settings {
 
 	@ConfigurationParameter("earth.bendables")
 	public static String[] EARTHBENDABLES = {
-			"STONE",
-			"CLAY",
-			"DIRT",
-			"GRASS",
-			"GRAVEL",
-			"COAL_ORE",
-			"LAPIS_ORE",
-			"REDSTONE_ORE",
-			"SAND",
-			"GLOWING_REDSTONE_ORE",
-			"MYCEL",
-	};
+			"STONE", "CLAY", "DIRT", "GRASS", "GRAVEL", "COAL_ORE", "LAPIS_ORE", "REDSTONE_ORE", "SAND", "GLOWING_REDSTONE_ORE", "MYCEL", };
+
+	@ConfigurationParameter("aliases.air")
+	public static String[] AIR_ALIASES = {
+			"air", "airbending", "airbender" };
+
+	@ConfigurationParameter("aliases.chi")
+	public static String[] CHI_ALIASES = {
+			"chi", "chiblocker", "chiblocking" };
+
+	@ConfigurationParameter("aliases.earth")
+	public static String[] EARTH_ALIASES = {
+			"earth", "earthbender", "earthbending" };
+
+	@ConfigurationParameter("aliases.fire")
+	public static String[] FIRE_ALIASES = {
+			"fire", "firebender", "firebending" };
+
+	@ConfigurationParameter("aliases.water")
+	public static String[] WATER_ALIASES = {
+			"water", "waterbender", "waterbender" };
 
 	@ConfigurationParameter("chi.fall-damage-reduction")
 	public static double CHI_FALL_REDUCTION = 1.0;
-	
+
 	@ConfigurationParameter("chi.dodge-chance")
 	public static double CHI_DODGE_CHANCE = 10.0;
 
-	@ConfigurationParameter ("chi.comboreset")
+	@ConfigurationParameter("chi.comboreset")
 	public static long CHI_COMBO_RESET = 7500;
 
 	@ConfigurationParameter("server.sea-level")
@@ -102,7 +111,7 @@ public class Settings {
 		File configFile = new File(configDir, "settings.json");
 
 		Map<String, Field> fields = new TreeMap<String, Field>();
-		for(Field f : Settings.class.getDeclaredFields()) {
+		for (Field f : Settings.class.getDeclaredFields()) {
 			if (Modifier.isStatic(f.getModifiers())) {
 				ConfigurationParameter an = f.getAnnotation(ConfigurationParameter.class);
 				if (an != null) {

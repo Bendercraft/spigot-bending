@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -11,7 +10,6 @@ import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
-import net.avatar.realms.spigot.bending.commands.BendingCommands;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
@@ -68,24 +66,9 @@ public class ChooseExecution extends BendingCommand {
 		}
 
 		String choice = args.remove(0);
-		BendingType element = BendingType.None;
-		if (Arrays.asList(BendingCommands.AIRBENDING_ALIASES).contains(choice)) {
-			element = BendingType.Air;
-		}
-		else if (Arrays.asList(BendingCommands.EARTHBENDING_ALIASES).contains(choice)) {
-			element = BendingType.Earth;
-		}
-		else if (Arrays.asList(BendingCommands.FIREBENDING_ALIASES).contains(choice)) {
-			element = BendingType.Fire;
-		}
-		else if (Arrays.asList(BendingCommands.WATERBENDING_ALIASES).contains(choice)) {
-			element = BendingType.Water;
-		}
-		else if (Arrays.asList(BendingCommands.CHIBLOCKING_ALIASES).contains(choice)) {
-			element = BendingType.ChiBlocker;
-		}
+		BendingType element = getElement(choice);
 
-		if (element == BendingType.None) {
+		if (element == null) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_ELEMENT);
 			return true;
 		}

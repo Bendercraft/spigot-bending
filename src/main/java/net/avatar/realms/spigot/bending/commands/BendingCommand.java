@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingType;
+import net.avatar.realms.spigot.bending.controller.Settings;
 
 public abstract class BendingCommand implements IBendingCommand {
 
@@ -43,20 +44,34 @@ public abstract class BendingCommand implements IBendingCommand {
 
 	protected BendingType getElement(String name) {
 
-		if (name.equalsIgnoreCase("chi") || name.equalsIgnoreCase("chiblocker") || name.equalsIgnoreCase("chiblocking")) {
-			return BendingType.ChiBlocker;
+		for (String alias : Settings.AIR_ALIASES) {
+			if (alias.equalsIgnoreCase(name)) {
+				return BendingType.Air;
+			}
 		}
-		if (name.equalsIgnoreCase("air") || name.equalsIgnoreCase("airbender") || name.equalsIgnoreCase("airbending")) {
-			return BendingType.Air;
+
+		for (String alias : Settings.CHI_ALIASES) {
+			if (alias.equalsIgnoreCase(name)) {
+				return BendingType.ChiBlocker;
+			}
 		}
-		if (name.equalsIgnoreCase("earth") || name.equalsIgnoreCase("earthbender") || name.equalsIgnoreCase("earthbending")) {
-			return BendingType.Earth;
+
+		for (String alias : Settings.EARTH_ALIASES) {
+			if (alias.equalsIgnoreCase(name)) {
+				return BendingType.Earth;
+			}
 		}
-		if (name.equalsIgnoreCase("fire") || name.equalsIgnoreCase("firebender") || name.equalsIgnoreCase("firebending")) {
-			return BendingType.Fire;
+
+		for (String alias : Settings.FIRE_ALIASES) {
+			if (alias.equalsIgnoreCase(name)) {
+				return BendingType.Fire;
+			}
 		}
-		if (name.equalsIgnoreCase("water") || name.equalsIgnoreCase("waterbender") || name.equalsIgnoreCase("waterbending")) {
-			return BendingType.Water;
+
+		for (String alias : Settings.WATER_ALIASES) {
+			if (alias.equalsIgnoreCase(name)) {
+				return BendingType.Water;
+			}
 		}
 
 		return null;
