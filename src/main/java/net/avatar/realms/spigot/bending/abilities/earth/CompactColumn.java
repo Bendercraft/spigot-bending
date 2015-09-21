@@ -1,15 +1,12 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 import org.bukkit.Location;
@@ -18,10 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Collapse", element=BendingType.Earth)
-public class CompactColumn implements IAbility {
+public class CompactColumn {
 	private static Map<Integer, CompactColumn> instances = new HashMap<Integer, CompactColumn>();
-	//TODO This map never receive any elements, strange
-	private static Map<Block, Block> alreadydoneblocks = new HashMap<Block, Block>();
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -39,10 +34,8 @@ public class CompactColumn implements IAbility {
 	private int id;
 	private long time;
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
-	private IAbility parent;
 
-	public CompactColumn(Player player, IAbility parent) {
-		this.parent = parent;
+	public CompactColumn(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(Abilities.Collapse))
@@ -75,8 +68,7 @@ public class CompactColumn implements IAbility {
 		}
 	}
 
-	public CompactColumn(Player player, Location origin, IAbility parent) {
-		this.parent = parent;
+	public CompactColumn(Player player, Location origin) {
 		// Tools.verbose("New compact column");
 		this.origin = origin;
 		this.player = player;
@@ -142,15 +134,14 @@ public class CompactColumn implements IAbility {
 
 	private boolean canInstantiate() {
 		for (Block block : affectedblocks.keySet()) {
-			if (blockInAllAffectedBlocks(block)
-					|| alreadydoneblocks.containsKey(block)) {
+			if (blockInAllAffectedBlocks(block)) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private boolean progress() {
+	public boolean progress() {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 			if (!moveEarth()) {
@@ -179,26 +170,8 @@ public class CompactColumn implements IAbility {
 		return true;
 	}
 
-	public static void progressAll() {
-		List<CompactColumn> toRemove = new LinkedList<CompactColumn>();
-		
-		for(CompactColumn column : instances.values()) {
-			boolean keep = column.progress();
-			if(!keep) {
-				toRemove.add(column);
-			}
-		}
-		for(CompactColumn column : toRemove) {
-			column.remove();
-		}
-	}
-
-	private void remove() {
+	public void remove() {
 		instances.remove(id);
-	}
-
-	public static void removeAll() {
-		instances.clear();
 	}
 
 	public static String getDescription() {
@@ -207,10 +180,5 @@ public class CompactColumn implements IAbility {
 				+ "back into the earth below them, if they can. "
 				+ "This ability does have the capacity to trap something inside of it, "
 				+ "although it is incredibly difficult to do so. ";
-	}
-
-	@Override
-	public IAbility getParent() {
-		return parent;
 	}
 }

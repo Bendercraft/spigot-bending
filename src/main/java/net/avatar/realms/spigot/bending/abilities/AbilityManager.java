@@ -35,6 +35,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
+import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
@@ -225,6 +226,8 @@ public class AbilityManager {
 			return new EarthGrab(player);
 		case RaiseEarth:
 			return new EarthWall(player);
+		case Collapse:
+			return new Collapse(player);
 		case LavaTrain:
 			return new LavaTrain(player);
 		case MetalBending:
@@ -302,8 +305,7 @@ public class AbilityManager {
 		register(Tornado.class);
 
 		register(Catapult.class);
-		// register(Collapse.class);
-		// register(CompactColumn.class);
+		register(Collapse.class);
 		register(EarthArmor.class);
 		register(EarthBlast.class);
 		register(EarthGrab.class);

@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,48 +12,66 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @BendingAbility(name="Collapse", element=BendingType.Earth)
-public class Collapse implements IAbility {
-	
+public class Collapse extends ActiveAbility {	
 	@ConfigurationParameter("Range")
-	 		static int RANGE = 20;
+	public static int RANGE = 20;
 	
 	@ConfigurationParameter("Radius")
 	private static double RADIUS = 7;
 	
 	@ConfigurationParameter("Depth")
-	 		static int DEPTH = 6;
+	public static int DEPTH = 6;
 	
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 3000;
 	
 	@ConfigurationParameter("Speed")
-	 		static double SPEED = 8;
+	public static double SPEED = 8;
 
 	//TODO : This map is never cleared of any of its item, strange
 	private Map<Block, Block> blocks = new HashMap<Block, Block>();
 	private Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 	private double radius = RADIUS;
-	private IAbility parent;
-	private Player player;
+	
+	private List<CompactColumn> columns = new LinkedList<CompactColumn>();
 
-	public Collapse(Player player, IAbility parent) {
-		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
+	public Collapse(Player player) {
+		super(player, null);
 
-		if (bPlayer.isOnCooldown(Abilities.Collapse)) {
-			return;
+		
+	}
+
+	@Override
+	public boolean swing() {
+		if(state != AbilityState.CanStart) {
+			return false;
+		}
+		if (bender.isOnCooldown(Abilities.Collapse)) {
+			return false;
+		}
+		bender.cooldown(Abilities.Collapse, COOLDOWN);
+		columns.add(new CompactColumn(player));
+		return false;
+	}
+
+	@Override
+	public boolean sneak() {
+		if(state != AbilityState.CanStart) {
+			return false;
+		}
+		if (bender.isOnCooldown(Abilities.Collapse)) {
+			return false;
 		}	
 
-		this.player = player;
 		Block sblock = BlockTools.getEarthSourceBlock(player, Abilities.Collapse, RANGE);
 		Location location;
 		if (sblock == null) {
@@ -69,12 +88,38 @@ public class Collapse implements IAbility {
 		}
 
 		if (!baseblocks.isEmpty()) {
-			bPlayer.cooldown(Abilities.Collapse, COOLDOWN);
+			bender.cooldown(Abilities.Collapse, COOLDOWN);
 		}
 
 		for (Block block : baseblocks.keySet()) {
-			new CompactColumn(player, block.getLocation(), this);
+			columns.add(new CompactColumn(player, block.getLocation()));
 		}
+		state = AbilityState.Progressing;
+		return false;
+	}
+
+	@Override
+	public boolean progress() {
+		if(!super.progress()) {
+			return false;
+		}
+		if(state == AbilityState.Progressing && columns.isEmpty()) {
+			return false;
+		}
+		for(CompactColumn column : columns) {
+			if(!column.progress()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public void remove() {
+		for(CompactColumn column : columns) {
+			column.remove();
+		}
+		super.remove();
 	}
 
 	private void getAffectedBlocks(Block block) {
@@ -98,9 +143,14 @@ public class Collapse implements IAbility {
 		}
 
 	}
-	
+
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Object getIdentifier() {
+		return player;
+	}
+
+	@Override
+	public Abilities getAbilityType() {
+		return Abilities.Collapse;
 	}
 }

@@ -264,23 +264,8 @@ public class BendingPlayerListener implements Listener {
 				ab.swing();
 			}
 //			
-//			if (ability == Abilities.Collapse) {
-//				new CompactColumn(player, null);
-//				return;
-//			}
-//			
 //			if (ability == Abilities.FireBlade) {
 //				new FireBlade(player);
-//				return;
-//			}
-//			
-//			if (ability == Abilities.PhaseChange) {
-//				new FreezeMelt(player, null);
-//				return;
-//			}
-//			
-//			if (ability == Abilities.Surge) {
-//				new WaterWall(player, null);
 //				return;
 //			}
 		}
@@ -312,20 +297,8 @@ public class BendingPlayerListener implements Listener {
 //					BendingPlayer.getBendingPlayer(player).toggleTremorsense();
 //				}
 //				
-//				if (ability == Abilities.Collapse) {
-//					new Collapse(player, null);
-//				}
-//				
 //				if (ability == Abilities.HealingWaters) {
 //					new HealingWaters(player);
-//				}
-//				
-//				if (ability == Abilities.PhaseChange) {
-//					new Melt(player, null);
-//				}
-//				
-//				if (ability == Abilities.MetalBending) {
-//					MetalBending.metalMelt(player);
 //				}
 
 				Map<Object, IAbility> abilities = AbilityManager.getManager().getInstances(ability);
