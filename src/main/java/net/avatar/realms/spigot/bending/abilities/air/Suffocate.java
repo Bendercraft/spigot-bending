@@ -27,7 +27,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Suffocate", element=BendingElement.Air, specialization=BendingAffinity.Suffocate)
+@BendingAbility(name="Suffocate", element=BendingElement.Air, affinity=BendingAffinity.Suffocate)
 public class Suffocate extends BendingActiveAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	private static String LORE_NAME = "Suffocation";

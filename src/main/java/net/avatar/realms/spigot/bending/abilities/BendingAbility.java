@@ -9,8 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BendingAbility {
-
 	public String name();
 	public BendingElement element();
-	public BendingAffinity specialization() default BendingAffinity.None;
+	public BendingAffinity affinity() default BendingAffinity.None;
 }

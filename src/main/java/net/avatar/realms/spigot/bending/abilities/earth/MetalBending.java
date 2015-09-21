@@ -21,7 +21,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@BendingAbility(name="Metalbending", element=BendingElement.Earth, specialization=BendingAffinity.Metalbend)
+@BendingAbility(name="Metalbending", element=BendingElement.Earth, affinity=BendingAffinity.Metalbend)
 public class MetalBending extends BendingActiveAbility {
 	@ConfigurationParameter("Melt-Time")
 	private static long MELT_TIME = 2000;

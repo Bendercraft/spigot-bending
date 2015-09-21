@@ -358,8 +358,8 @@ public class AbilityManager {
 					"Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
 			return;
 		}
-		if (annotation.specialization() != BendingAffinity.None) {
-			_register(annotation.name(), ability, annotation.specialization().getElement(), annotation.specialization());
+		if (annotation.affinity() != BendingAffinity.None) {
+			_register(annotation.name(), ability, annotation.affinity().getElement(), annotation.affinity());
 		} else {
 			if (annotation.element() == BendingElement.None) {
 				Bending.plugin.getLogger().severe(

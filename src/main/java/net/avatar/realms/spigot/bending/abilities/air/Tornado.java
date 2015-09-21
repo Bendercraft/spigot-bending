@@ -27,7 +27,7 @@ import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Tornado", element=BendingElement.Air, specialization=BendingAffinity.Tornado)
+@BendingAbility(name="Tornado", element=BendingElement.Air, affinity=BendingAffinity.Tornado)
 public class Tornado extends BendingActiveAbility {
 	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 	

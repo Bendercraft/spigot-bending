@@ -36,7 +36,7 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
-@BendingAbility(name = "Plastic Bomb", element = BendingElement.ChiBlocker, specialization = BendingAffinity.Inventor)
+@BendingAbility(name = "Plastic Bomb", element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
 public class C4 extends BendingActiveAbility {
 
 	private static int ID = Integer.MIN_VALUE;

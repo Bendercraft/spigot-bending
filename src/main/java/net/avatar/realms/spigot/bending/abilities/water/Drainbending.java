@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name="Drain Bending", element=BendingElement.Water, specialization=BendingAffinity.DrainBend)
+@BendingAbility(name="Drain Bending", element=BendingElement.Water, affinity=BendingAffinity.DrainBend)
 public class Drainbending {
 	
 	@ConfigurationParameter("Cooldown")

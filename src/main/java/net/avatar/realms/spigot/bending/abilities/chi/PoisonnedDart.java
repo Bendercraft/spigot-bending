@@ -37,7 +37,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  *
  */
 
-@BendingAbility(name="Poisonned Dart", element=BendingElement.ChiBlocker, specialization = BendingAffinity.Inventor)
+@BendingAbility(name="Poisonned Dart", element=BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
 public class PoisonnedDart extends BendingActiveAbility{
 
 	@ConfigurationParameter("Damage")

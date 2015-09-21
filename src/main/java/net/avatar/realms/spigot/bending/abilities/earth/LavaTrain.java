@@ -29,7 +29,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  * the duration
  */
 
-@BendingAbility(name="Lavatrain", element=BendingElement.Earth, specialization=BendingAffinity.Lavabend)
+@BendingAbility(name="Lavatrain", element=BendingElement.Earth, affinity=BendingAffinity.Lavabend)
 public class LavaTrain extends BendingActiveAbility {
 	public static double speed = 5;
 	private static long interval = (long) (1000. / speed);

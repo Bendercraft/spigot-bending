@@ -34,7 +34,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name="Combustion", element=BendingElement.Fire, specialization=BendingAffinity.Combustion)
+@BendingAbility(name="Combustion", element=BendingElement.Fire, affinity=BendingAffinity.Combustion)
 public class Combustion extends BendingActiveAbility {
 	private static long interval = 25;
 	

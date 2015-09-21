@@ -32,7 +32,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name="Blood Bending", element=BendingElement.Water, specialization=BendingAffinity.Bloodbend)
+@BendingAbility(name="Blood Bending", element=BendingElement.Water, affinity=BendingAffinity.Bloodbend)
 public class Bloodbending extends BendingActiveAbility {
 	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
 

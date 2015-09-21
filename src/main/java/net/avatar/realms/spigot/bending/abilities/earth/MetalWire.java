@@ -22,7 +22,7 @@ import org.bukkit.util.Vector;
 
 import com.google.common.collect.Sets;
 
-@BendingAbility(name="Metal Wire", element=BendingElement.Earth, specialization=BendingAffinity.Metalbend)
+@BendingAbility(name="Metal Wire", element=BendingElement.Earth, affinity=BendingAffinity.Metalbend)
 public class MetalWire {
 
 	private static Map<Player, FishHook> instances = new HashMap<Player, FishHook>();

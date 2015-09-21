@@ -30,7 +30,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name="Lightning", element=BendingElement.Fire, specialization=BendingAffinity.Lightning)
+@BendingAbility(name="Lightning", element=BendingElement.Fire, affinity=BendingAffinity.Lightning)
 public class Lightning extends BendingActiveAbility {
 	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();
 
