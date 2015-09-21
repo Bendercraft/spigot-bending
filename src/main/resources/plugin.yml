@@ -105,15 +105,16 @@ permissions:
   bending.admin:
     description: Allows all commands.
     children:
-      bending.admin.AstralProjection: true
-      bending.admin.AvatarState: true
-      bending.admin.remove: true
+      bending.energy.AstralProjection: true
+      bending.energy.AvatarState: true
+      bending.command.remove: true
       bending.admin.reload: true
       bending.admin.permaremove: true
       bending.command.choose: true
       bending.admin.rechoose: true
       bending.admin.choose: true
-      bending.admin.add: true
+      bending.command.add: true
+      bending.command.add.other: true
       bending.command.displayelement: true
       bending.command.clear: true
       bending.command.display: true
@@ -121,7 +122,7 @@ permissions:
       bending.water.Bloodbending: true
       bending.command.toggle: true
       bending.command.who: true
-      bending.admin.toggle: true
+      bending.command.toggle: true
       bending.command.language: true
       bending.command.save: true
       bending.command.getback: true
@@ -353,7 +354,7 @@ permissions:
     default: op
     
 # ADMIN PERMISSIONS
-  bending.admin.remove: 
+  bending.command.remove: 
     description: Allows the use of /bending remove <player>
     default: op
   bending.admin.reload:
@@ -371,11 +372,11 @@ permissions:
   bending.command.choose.other:
     description: Allows the use of /bending choose <player> <element>
     default: op
-  bending.admin.add: 
+  bending.command.add: 
     description: Allows the use of /bending add <element>
     default: op
-  bending.admin.toggle:
-    description: Allows /bending toggle on others
+  bending.command.add.other:
+    description: Allows to add elements to other player
     default: op
     
 # COMMAND PERMISSIONS

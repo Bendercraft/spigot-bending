@@ -22,7 +22,7 @@ public class RemoveExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (!sender.hasPermission("bending.admin.remove")) {
+		if (!sender.hasPermission("bending.command.remove")) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
@@ -53,7 +53,7 @@ public class RemoveExecution extends BendingCommand {
 
 	@Override
 	public void printUsage(CommandSender sender) {
-		if (sender.hasPermission("bending.admin.remove")) {
+		if (sender.hasPermission("bending.command.remove")) {
 			sender.sendMessage(ChatColor.RED + "/bending remove <player>");
 		}
 		else {

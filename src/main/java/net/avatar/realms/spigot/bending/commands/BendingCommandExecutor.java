@@ -12,6 +12,7 @@ import org.bukkit.command.TabCompleter;
 import net.avatar.realms.spigot.bending.abilities.Abilities;
 import net.avatar.realms.spigot.bending.commands.subcommands.AddExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.AffinityExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.AvailableExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.BindExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.ChooseExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.ClearExecution;
@@ -43,6 +44,7 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 	private IBendingCommand path;
 	private IBendingCommand reload;
 	private IBendingCommand help;
+	private IBendingCommand available;
 
 	private List<IBendingCommand> commands;
 
@@ -54,14 +56,16 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		this.version = new VersionExecution();
 		this.toggle = new ToggleExecution();
 		this.who = new WhoExecution();
-		this.display = new DisplayExecution();
 		this.cooldown = new CooldownExecution();
+		// TODO :
+		this.display = new DisplayExecution();
 		this.clear = new ClearExecution();
 		this.add = new AddExecution();
 		this.affinity = new AffinityExecution();
 		this.path = new PathExecution();
 		this.reload = new ReloadExecution();
 		this.help = new HelpExecution();
+		this.available = new AvailableExecution();
 
 		this.commands = new LinkedList<IBendingCommand>();
 		this.commands.add(this.bind);
@@ -71,6 +75,7 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		this.commands.add(this.affinity);
 		this.commands.add(this.path);
 		this.commands.add(this.learning);
+		this.commands.add(this.available);
 		this.commands.add(this.help);
 		this.commands.add(this.version);
 		this.commands.add(this.toggle);

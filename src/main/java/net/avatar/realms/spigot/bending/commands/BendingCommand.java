@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.abilities.BendingType;
+
 public abstract class BendingCommand implements IBendingCommand {
 
 	protected String command;
@@ -36,6 +38,27 @@ public abstract class BendingCommand implements IBendingCommand {
 				return player;
 			}
 		}
+		return null;
+	}
+
+	protected BendingType getElement(String name) {
+
+		if (name.equalsIgnoreCase("chi") || name.equalsIgnoreCase("chiblocker") || name.equalsIgnoreCase("chiblocking")) {
+			return BendingType.ChiBlocker;
+		}
+		if (name.equalsIgnoreCase("air") || name.equalsIgnoreCase("airbender") || name.equalsIgnoreCase("airbending")) {
+			return BendingType.Air;
+		}
+		if (name.equalsIgnoreCase("earth") || name.equalsIgnoreCase("earthbender") || name.equalsIgnoreCase("earthbending")) {
+			return BendingType.Earth;
+		}
+		if (name.equalsIgnoreCase("fire") || name.equalsIgnoreCase("firebender") || name.equalsIgnoreCase("firebending")) {
+			return BendingType.Fire;
+		}
+		if (name.equalsIgnoreCase("water") || name.equalsIgnoreCase("waterbender") || name.equalsIgnoreCase("waterbending")) {
+			return BendingType.Water;
+		}
+
 		return null;
 	}
 

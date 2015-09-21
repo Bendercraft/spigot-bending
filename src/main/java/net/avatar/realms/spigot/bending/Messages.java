@@ -85,7 +85,20 @@ public class Messages {
 	@LanguageParameter("command.who.is_bending")
 	public static String WHO_IS_BENDING = "{0} is a {1} bender.";
 
+	@LanguageParameter("command.who_is_chi")
 	public static String WHO_IS_CHI = "{0} is a chi-blocker.";
+
+	@LanguageParameter("command.not_element_able")
+	public static String NOT_ELEMENT_ABLE = "The target is not able to use the {0} bending.";
+
+	@LanguageParameter("command.already_element")
+	public static String ALREADY_ELEMENT = "The target already has this bending.";
+
+	@LanguageParameter("command.you_were_added")
+	public static String YOU_WERE_ADDED = "You now can use {0}.";
+
+	@LanguageParameter("command.you_added")
+	public static String YOU_ADDED = "You added {0} to {1}.";
 
 	private static Properties lines;
 	private static File languageFile;

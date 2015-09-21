@@ -2,8 +2,13 @@ package net.avatar.realms.spigot.bending.commands.subcommands;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.Messages;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.BendingType;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 
 public class AddExecution extends BendingCommand {
@@ -16,14 +21,74 @@ public class AddExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		// TODO Auto-generated method stub
-		return false;
+		if (!sender.hasPermission("bending.command.add")) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+			return true;
+		}
+
+		if ((args.size() != 1) && (args.size() != 2)) {
+			printUsage(sender);
+			return true;
+		}
+
+		if (!(sender instanceof Player) && args.size() != 2) {
+			sender.sendMessage(Messages.CONSOLE_SPECIFY_PLAYER);
+			return true;
+		}
+
+		Player player;
+
+		if (args.size() == 2) {
+			if (!sender.hasPermission("bending.command.add.other")) {
+				sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+				return true;
+			}
+			player = getPlayer(args.remove(0));
+		}
+		else {
+			player = (Player) sender;
+		}
+
+		if (player == null) {
+			sender.sendMessage(ChatColor.RED + Messages.INVALID_PLAYER);
+			return true;
+		}
+
+		final String choice = args.remove(0);
+		BendingType element = getElement(choice);
+		if (element == null) {
+			sender.sendMessage(ChatColor.RED + Messages.INVALID_ELEMENT);
+			return true;
+		}
+
+		if (!player.hasPermission("bending." + element.name().toLowerCase())) {
+			sender.sendMessage(ChatColor.RED + Messages.NOT_ELEMENT_ABLE);
+			return true;
+		}
+
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		if (bender.isBender(element)) {
+			sender.sendMessage(ChatColor.RED + Messages.ALREADY_ELEMENT);
+			return true;
+		}
+
+		bender.addBender(element);
+		String msg = Messages.YOU_ADDED;
+		msg = msg.replaceAll("{0}", element.name());
+		msg = msg.replaceAll("{1}", player.getName());
+		sender.sendMessage(msg);
+		msg = Messages.YOU_WERE_ADDED;
+		msg = msg.replaceAll("{0}", element.name());
+		player.sendMessage(msg);
+
+		return true;
 	}
 
 	@Override
 	public void printUsage(CommandSender sender) {
-		// TODO Auto-generated method stub
-
+		if (sender.hasPermission("bending.command.add")) {
+			sender.sendMessage("/bending add [player] <element>");
+		}
 	}
 
 }

@@ -22,7 +22,6 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 public class BendingCommand {
 
 	private static final String[] clearAliases = { "clear", "cl" };
-	private static final String[] addAliases = { "add", "a" };
 	private static final String[] specializeAliases = { "specialize", "spe" };
 	private static final String[] pathAliases = { "path", "p" };
 	private static final String[] displayAliases = { "display", "disp", "dis", "d" };
@@ -58,9 +57,6 @@ public class BendingCommand {
 			final String arg = args[0];
 			if (Arrays.asList(clearAliases).contains(arg)) {
 				clear(player, args);
-			}
-			else if (Arrays.asList(addAliases).contains(arg)) {
-				add(player, args);
 			}
 			else if (Arrays.asList(specializeAliases).contains(arg)) {
 				specialize(player, args);
@@ -537,13 +533,6 @@ public class BendingCommand {
 		Messages.sendMessage(null, "General.not_from_console");
 	}
 
-	private void printAddUsage(final Player player) {
-		if (player != null) {
-			printUsageMessage(player, "/bending add <element>", "General.add_self");
-		}
-		printUsageMessage(player, "/bending add <player> <element>", "General.add_other");
-	}
-
 	private void printSpecializationUsage(final Player player) {
 		printUsageMessage(player, "/bending spe", "General.spe_list");
 		if (player != null) {
@@ -567,168 +556,6 @@ public class BendingCommand {
 		}
 		else {
 			printUsageMessage(player, "/bending path set <path> <player>", "General.path_set_other");
-		}
-	}
-
-	private void add(final Player player, final String[] args) {
-		if (!hasPermission(player, "bending.admin.add")) {
-			return;
-		}
-		if ((args.length != 2) && (args.length != 3)) {
-			printAddUsage(player);
-			return;
-		}
-		if (args.length == 2) {
-			final String choice = args[1].toLowerCase();
-			if (Arrays.asList(airbendingAliases).contains(choice)) {
-				if (EntityTools.isBender(player, BendingType.Air)) {
-					Messages.sendMessage(player, "general.you_already_air");
-					return;
-				}
-				if (!hasHelpPermission(player, "bending.air")) {
-					Messages.sendMessage(player, "general.no_perms_air");
-					return;
-				}
-				Messages.sendMessage(player, "general.add_air");
-				BendingPlayer.getBendingPlayer(player).addBender(BendingType.Air);
-				return;
-			}
-			if (Arrays.asList(firebendingAliases).contains(choice)) {
-				if (EntityTools.isBender(player, BendingType.Fire)) {
-					Messages.sendMessage(player, "general.you_already_fire");
-					return;
-				}
-				if (!hasHelpPermission(player, "bending.fire")) {
-					Messages.sendMessage(player, "general.no_perms_fire");
-					return;
-				}
-				Messages.sendMessage(player, "general.add_fire");
-				BendingPlayer.getBendingPlayer(player).addBender(BendingType.Fire);
-				return;
-			}
-			if (Arrays.asList(earthbendingAliases).contains(choice)) {
-				if (EntityTools.isBender(player, BendingType.Earth)) {
-					Messages.sendMessage(player, "general.you_already_earth");
-					return;
-				}
-				if (!hasHelpPermission(player, "bending.earth")) {
-					Messages.sendMessage(player, "general.no_perms_earth");
-					return;
-				}
-				Messages.sendMessage(player, "general.add_earth");
-				BendingPlayer.getBendingPlayer(player).addBender(BendingType.Earth);
-				return;
-			}
-			if (Arrays.asList(waterbendingAliases).contains(choice)) {
-				if (EntityTools.isBender(player, BendingType.Water)) {
-					Messages.sendMessage(player, "general.you_already_water");
-					return;
-				}
-				if (!hasHelpPermission(player, "bending.water")) {
-					Messages.sendMessage(player, "general.no_perms_water");
-					return;
-				}
-				Messages.sendMessage(player, "general.add_water");
-				BendingPlayer.getBendingPlayer(player).addBender(BendingType.Water);
-				return;
-			}
-			if (Arrays.asList(chiblockingAliases).contains(choice)) {
-				if (EntityTools.isBender(player, BendingType.ChiBlocker)) {
-					Messages.sendMessage(player, "general.you_already_chi");
-					return;
-				}
-				if (!hasHelpPermission(player, "bending.chiblocking")) {
-					Messages.sendMessage(player, "general.no_perms_chi");
-					return;
-				}
-				Messages.sendMessage(player, "general.add_chi");
-				BendingPlayer.getBendingPlayer(player).addBender(BendingType.ChiBlocker);
-				return;
-			}
-			printAddUsage(player);
-		}
-		else if (args.length == 3) {
-			final String playername = args[1];
-			final Player targetplayer = getOnlinePlayer(playername);
-			if (targetplayer == null) {
-				printAddUsage(player);
-				return;
-			}
-			String senderName = Messages.getString("general.the_server");
-			if (player != null) {
-				senderName = player.getName();
-			}
-			final String choice = args[2].toLowerCase();
-			if (Arrays.asList(airbendingAliases).contains(choice)) {
-				if (EntityTools.isBender(targetplayer, BendingType.Air)) {
-					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_air"));
-					return;
-				}
-				if (!hasHelpPermission(targetplayer, "bending.air")) {
-					Messages.sendMessage(player, "general.no_perms_air");
-					return;
-				}
-				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_air"));
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_air"));
-				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.Air);
-				return;
-			}
-			if (Arrays.asList(firebendingAliases).contains(choice)) {
-				if (EntityTools.isBender(targetplayer, BendingType.Fire)) {
-					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_fire"));
-					return;
-				}
-				if (!hasHelpPermission(targetplayer, "bending.fire")) {
-					Messages.sendMessage(player, "general.no_perms_fire");
-					return;
-				}
-				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_fire"));
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_fire"));
-				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.Fire);
-				return;
-			}
-			if (Arrays.asList(earthbendingAliases).contains(choice)) {
-				if (EntityTools.isBender(targetplayer, BendingType.Earth)) {
-					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_earth"));
-					return;
-				}
-				if (!hasHelpPermission(targetplayer, "bending.earth")) {
-					Messages.sendMessage(player, "general.no_perms_earth");
-					return;
-				}
-				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_earth"));
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_earth"));
-				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.Earth);
-				return;
-			}
-			if (Arrays.asList(waterbendingAliases).contains(choice)) {
-				if (EntityTools.isBender(targetplayer, BendingType.Water)) {
-					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_water"));
-					return;
-				}
-				if (!hasHelpPermission(targetplayer, "bending.water")) {
-					Messages.sendMessage(player, "general.no_perms_water");
-				}
-				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_water"));
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_water"));
-				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.Water);
-				return;
-			}
-			if (Arrays.asList(chiblockingAliases).contains(choice)) {
-				if (EntityTools.isBender(targetplayer, BendingType.ChiBlocker)) {
-					sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.they_already_chi"));
-					return;
-				}
-				if (!hasHelpPermission(targetplayer, "bending.chiblocking")) {
-					Messages.sendMessage(player, "general.no_perms_chi");
-					return;
-				}
-				sendMessage(player, targetplayer.getName() + " " + Messages.getString("general.you_add_chi"));
-				sendMessage(targetplayer, senderName + " " + Messages.getString("general.add_you_chi"));
-				BendingPlayer.getBendingPlayer(targetplayer).addBender(BendingType.ChiBlocker);
-				return;
-			}
-			printAddUsage(player);
 		}
 	}
 
