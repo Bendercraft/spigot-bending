@@ -1,15 +1,11 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import net.avatar.realms.spigot.bending.abilities.Abilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.AbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingType;
-import net.avatar.realms.spigot.bending.abilities.deprecated.IAbility;
+import net.avatar.realms.spigot.bending.abilities.base.ActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -22,9 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 @BendingAbility(name="Catapult", element=BendingType.Earth)
-public class Catapult implements IAbility {
-	private static Map<Integer, Catapult> instances = new HashMap<Integer, Catapult>();
-
+public class Catapult extends ActiveAbility {
 	@ConfigurationParameter("Length")
 	private static int length = 6;
 	
@@ -37,10 +31,8 @@ public class Catapult implements IAbility {
 	@ConfigurationParameter("Catapult")
 	public static long COOLDOWN = 5000;
 
-	private static long interval = (long) (1000. / speed);
-	// private static long interval = 1500;
+	private long interval = (long) (1000. / speed);
 
-	private Player player;
 	private Location origin;
 	private Location location;
 	private Vector direction;
@@ -51,17 +43,17 @@ public class Catapult implements IAbility {
 	private long time;
 	private long starttime;
 	private int ticks = 0;
-	private IAbility parent;
 
-	public Catapult(Player player, IAbility parent) {
-		this.parent = parent;
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (bPlayer.isOnCooldown(Abilities.Catapult)) {
-			return;
-		}	
-
-		this.player = player;
+	public Catapult(Player player) {
+		super(player, null);
+	}
+	
+	@Override
+	public boolean swing() {
+		if(state != AbilityState.CanStart) {
+			return false;
+		}
+		state = AbilityState.Progressing;
 		origin = player.getEyeLocation().clone();
 		direction = origin.getDirection().clone().normalize();
 		Vector neg = direction.clone().multiply(-1);
@@ -87,13 +79,17 @@ public class Catapult implements IAbility {
 			time = System.currentTimeMillis() - interval;
 			starttime = System.currentTimeMillis();
 			moving = true;
-			instances.put(player.getEntityId(), this);
-			bPlayer.cooldown(Abilities.Catapult, COOLDOWN);
+			AbilityManager.getManager().addInstance(this);
+			bender.cooldown(Abilities.Catapult, COOLDOWN);
 		}
-
+		
+		return false;
 	}
 
 	public boolean progress() {
+		if(!super.progress()) {
+			return false;
+		}
 		if (player.isDead() || !player.isOnline()) {
 			return false;
 		}
@@ -142,10 +138,6 @@ public class Catapult implements IAbility {
 		return true;
 	}
 
-	private void remove() {
-		instances.remove(player.getEntityId());
-	}
-
 	private boolean moveEarth() {
 		if (ticks > distance) {
 			return false;
@@ -189,37 +181,13 @@ public class Catapult implements IAbility {
 		return true;
 	}
 
-	public static void progressAll() {
-		List<Catapult> toRemove = new LinkedList<Catapult>();
-		
-		for(Catapult catapult : instances.values()) {
-			boolean keep = catapult.progress();
-			if(!keep) {
-				toRemove.add(catapult);
-			}
-		}
-		for(Catapult catapult : toRemove) {
-			catapult.remove();
-		}
-	}
-
-	public static List<Player> getPlayers() {
-		List<Player> players = new LinkedList<Player>();
-		for (Catapult catapult : instances.values()) {
-			Player player = catapult.player;
-			if (!players.contains(player)){
-				players.add(player);
-			}
-		}
-		return players;
-	}
-
-	public static void removeAll() {
-		instances.clear();
+	@Override
+	public Object getIdentifier() {
+		return player;
 	}
 
 	@Override
-	public IAbility getParent() {
-		return parent;
+	public Abilities getAbilityType() {
+		return Abilities.Catapult;
 	}
 }

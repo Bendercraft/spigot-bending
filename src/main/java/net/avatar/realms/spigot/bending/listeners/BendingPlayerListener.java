@@ -263,11 +263,6 @@ public class BendingPlayerListener implements Listener{
 				ActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 				ab.swing();
 			}
-			
-//			if (ability == Abilities.Catapult) {
-//				new Catapult(player, null);
-//				return;
-//			}
 //			
 //			if (ability == Abilities.RaiseEarth) {
 //				new EarthColumn(player, null);
