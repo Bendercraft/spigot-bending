@@ -37,6 +37,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
+import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.earth.Tremorsense;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Blaze;
@@ -208,6 +209,8 @@ public class AbilityManager {
 			return new Tremorsense(player);
 		case EarthBlast:
 			return new EarthBlast(player);
+		case Shockwave:
+			return new Shockwave(player);
 		case LavaTrain:
 			return new LavaTrain(player);
 
@@ -295,11 +298,7 @@ public class AbilityManager {
 		// register(EarthWall.class);
 		register(LavaTrain.class);
 		// register(MetalBending.class);
-		// register(Ripple.class);
-		// register(Shockwave.class);
-		// register(ShockwaveArea.class);
-		// register(ShockwaveCone.class);
-		// register(ShockwaveFall.class);
+		register(Shockwave.class);
 		register(Tremorsense.class);
 
 		register(HeatControl.class);
