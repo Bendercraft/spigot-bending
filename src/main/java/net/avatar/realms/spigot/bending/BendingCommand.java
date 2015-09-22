@@ -7,7 +7,6 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -15,13 +14,10 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 @Deprecated
 public class BendingCommand {
 
-	private static final String[] clearAliases = { "clear", "cl" };
 	private static final String[] helpAliases = { "help", "h", "?" };
-	private final Server server;
 	private boolean verbose = true;
 
 	public BendingCommand(final Player player, String[] args, final Server server) {
-		this.server = server;
 		for (int i = 0; i < args.length; i++) {
 			args[i] = args[i].toLowerCase();
 		}
@@ -35,9 +31,7 @@ public class BendingCommand {
 				args = temp;
 			}
 			final String arg = args[0];
-			if (Arrays.asList(clearAliases).contains(arg)) {
-				clear(player, args);
-			} else if (Arrays.asList(helpAliases).contains(arg)) {
+			if (Arrays.asList(helpAliases).contains(arg)) {
 				help(player, args);
 			} else {
 				printHelpDialogue(player);
@@ -45,14 +39,6 @@ public class BendingCommand {
 		} else {
 			printHelpDialogue(player);
 		}
-	}
-
-	private void printUsageMessage(final Player player, final String command, final String key) {
-		final ChatColor color = ChatColor.AQUA;
-		final String usage = Messages.getString("general.usage");
-		final String description = Messages.getString(key);
-		sendMessage(player, color + usage + ": " + command);
-		sendMessage(player, color + "-" + description);
 	}
 
 	private void sendMessage(final Player player, final String message) {
@@ -64,10 +50,6 @@ public class BendingCommand {
 		} else {
 			player.sendMessage(message);
 		}
-	}
-
-	private void printNoPermissions(final Player player) {
-		sendMessage(player, ChatColor.RED + Messages.getString("general.no_execute_perms"));
 	}
 
 	private void help(final Player player, final String[] args) {
@@ -94,57 +76,6 @@ public class BendingCommand {
 
 	private void helpCommand(final Player player, final String[] args) {
 
-	}
-
-	private void printNotFromConsole() {
-		Messages.sendMessage(null, "General.not_from_console");
-	}
-
-	private void printClearUsage(final Player player) {
-		printUsageMessage(player, "/bending clear", "General.clear_all");
-		printUsageMessage(player, "/bending clear <slot#>", "General.clear_slot");
-		printUsageMessage(player, "/bending clear <item>", "General.clear_item");
-	}
-
-	private void clear(final Player player, final String[] args) {
-		if (!hasPermission(player, "bending.command.clear")) {
-			return;
-		}
-		if (player == null) {
-			printNotFromConsole();
-			return;
-		}
-		if ((args.length != 1) && (args.length != 2)) {
-			printClearUsage(player);
-		}
-		if (args.length == 1) {
-			BendingPlayer.getBendingPlayer(player).clearAbilities();
-			Messages.sendMessage(player, "General.cleared_message");
-		} else if (args.length == 2) {
-			try {
-				final int slot = Integer.parseInt(args[1]);
-				if ((slot > 0) && (slot < 10)) {
-					BendingPlayer.getBendingPlayer(player).removeAbility(slot - 1);
-					sendMessage(player, Messages.getString("general.slot") + " " + args[1] + " " + Messages.getString("general.slot_item_cleared"));
-					return;
-				}
-				printClearUsage(player);
-				return;
-			} catch (final NumberFormatException e) {
-
-			}
-		}
-	}
-
-	private boolean hasPermission(final Player player, final String permission) {
-		if (player == null) {
-			return true;
-		}
-		if (player.hasPermission(permission)) {
-			return true;
-		}
-		printNoPermissions(player);
-		return false;
 	}
 
 	private boolean hasHelpPermission(final Player player, final String permission) {
@@ -212,14 +143,5 @@ public class BendingCommand {
 		if (hasHelpPermission(player, "bending.command.version")) {
 			sendMessage(player, "/bending version");
 		}
-	}
-
-	private Player getOnlinePlayer(final String name) {
-		for (final Player p : this.server.getOnlinePlayers()) {
-			if (p.getName().equalsIgnoreCase(name)) {
-				return p;
-			}
-		}
-		return null;
 	}
 }

@@ -148,6 +148,15 @@ public class Messages {
 	@LanguageParameter("command.you_set_path")
 	public static String YOU_SET_PATH = "You set the {0} path to {1}.";
 
+	@LanguageParameter("command.invalid_slot")
+	public static String INVALID_SLOT = "Invalid slot number.";
+
+	@LanguageParameter("command.slot_cleared")
+	public static String SLOT_CLEARED = "You cleared the slot {0}.";
+
+	@LanguageParameter("command.cleared")
+	public static String CLEARED = "You cleared your slots.";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;
