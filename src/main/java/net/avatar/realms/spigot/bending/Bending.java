@@ -73,7 +73,7 @@ public class Bending extends JavaPlugin {
 		getCommand("bending").setTabCompleter(this.commandExecutor);
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
-		getServer().getScheduler().runTaskTimerAsynchronously(plugin, this.revertChecker, 0, 200);
+		getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this.revertChecker, 0, 200);
 
 		ProtectionManager.init();
 		PluginTools.verbose("Bending v" + getDescription().getVersion() + " has been loaded.");
