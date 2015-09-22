@@ -134,19 +134,7 @@ public class EntityTools {
 			return false;
 		}
 
-		if (ability.isAirbending() && !isBender(player, BendingElement.Air)) {
-			return false;
-		}
-		if (ability.isChiblocking() && !isBender(player, BendingElement.ChiBlocker)) {
-			return false;
-		}
-		if (ability.isEarthbending() && !isBender(player, BendingElement.Earth)) {
-			return false;
-		}
-		if (ability.isFirebending() && !isBender(player, BendingElement.Fire)) {
-			return false;
-		}
-		if (ability.isWaterbending() && !isBender(player, BendingElement.Water)) {
+		if (!isBender(player, ability.getElement())) {
 			return false;
 		}
 
