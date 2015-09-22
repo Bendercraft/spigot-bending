@@ -288,7 +288,7 @@ public class AbilityManager {
 	private void _register(String name, BendingAbilities bind, Class<? extends IBendingAbility> ability, BendingElement element, BendingAffinity specialization) {
 		if (this.binds.containsKey(name)) {
 			// Nope !
-			Bending.log.severe("Ability " + name + " is already register with class " + this.binds.get(name) + " ! Aborting registration...");
+			Bending.log.severe("Ability " + bind + "(" + name + ") is already register with class " + this.binds.get(name) + " ! Aborting registration...");
 			return;
 		}
 

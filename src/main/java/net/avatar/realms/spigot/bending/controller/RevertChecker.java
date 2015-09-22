@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
@@ -18,8 +19,8 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 public class RevertChecker implements Runnable {
 
-	static Map<Block, Block> revertQueue = new HashMap<Block, Block>();
-	static Map<Integer, Integer> airRevertQueue = new HashMap<Integer, Integer>();
+	static Map<Block, Block> revertQueue = new ConcurrentHashMap<Block, Block>();
+	static Map<Integer, Integer> airRevertQueue = new ConcurrentHashMap<Integer, Integer>();
 	private Future<ArrayList<Chunk>> returnFuture;
 
 	static Map<Chunk, Chunk> chunks = new HashMap<Chunk, Chunk>();
