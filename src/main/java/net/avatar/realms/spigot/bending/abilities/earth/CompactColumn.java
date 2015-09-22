@@ -33,11 +33,6 @@ public class CompactColumn {
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 
 	public CompactColumn(Player player) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-
-		if (bPlayer.isOnCooldown(BendingAbilities.Collapse))
-			return;
-
 		block = BlockTools.getEarthSourceBlock(player, BendingAbilities.Collapse, Collapse.RANGE);
 		if (block == null) {
 			return;
@@ -54,7 +49,6 @@ public class CompactColumn {
 			if (canInstantiate()) {
 				id = ID;
 				instances.put(id, this);
-				bPlayer.cooldown(BendingAbilities.Collapse, Collapse.COOLDOWN);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}
