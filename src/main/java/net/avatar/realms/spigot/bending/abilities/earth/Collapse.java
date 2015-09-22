@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
@@ -54,20 +55,16 @@ public class Collapse extends BendingActiveAbility {
 		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		if (bender.isOnCooldown(BendingAbilities.Collapse)) {
-			return false;
-		}
 		bender.cooldown(BendingAbilities.Collapse, COOLDOWN);
 		columns.add(new CompactColumn(player));
+		state = BendingAbilityState.Progressing;
+		AbilityManager.getManager().addInstance(this);
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
 		if (state != BendingAbilityState.CanStart) {
-			return false;
-		}
-		if (bender.isOnCooldown(BendingAbilities.Collapse)) {
 			return false;
 		}
 
@@ -92,6 +89,7 @@ public class Collapse extends BendingActiveAbility {
 			columns.add(new CompactColumn(player, block.getLocation()));
 		}
 		state = BendingAbilityState.Progressing;
+		AbilityManager.getManager().addInstance(this);
 		return false;
 	}
 

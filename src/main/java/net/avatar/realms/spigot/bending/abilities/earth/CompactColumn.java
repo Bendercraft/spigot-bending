@@ -138,6 +138,9 @@ public class CompactColumn {
 	public boolean progress() {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
+			if(!instances.containsKey(id)) {
+				return false;
+			}
 			if (!moveEarth()) {
 				for (Block blocki : affectedblocks.keySet()) {
 					EarthColumn.resetBlock(blocki);
