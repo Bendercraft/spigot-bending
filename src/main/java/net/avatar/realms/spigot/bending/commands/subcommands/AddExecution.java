@@ -86,9 +86,12 @@ public class AddExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.add")) {
 			sender.sendMessage("/bending add [player] <element>");
+		}
+		else if (permission) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
 

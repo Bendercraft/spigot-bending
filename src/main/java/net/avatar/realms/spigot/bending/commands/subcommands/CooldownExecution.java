@@ -63,10 +63,11 @@ public class CooldownExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.cooldown")) {
 			sender.sendMessage("/bending cooldown");
-		} else {
+		}
+		else if (permission) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}

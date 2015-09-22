@@ -79,12 +79,15 @@ public class PathExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.path")) {
 			sender.sendMessage("/bending path");
 			if (sender.hasPermission("bending.command.path.admin")) {
 				sender.sendMessage("/bending path set [player] <path>");
 			}
+		}
+		else if (permission) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
 

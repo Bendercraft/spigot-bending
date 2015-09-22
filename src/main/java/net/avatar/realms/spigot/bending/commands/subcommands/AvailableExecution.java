@@ -23,7 +23,7 @@ public class AvailableExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		// TODO Auto-generated method stub
 
 	}

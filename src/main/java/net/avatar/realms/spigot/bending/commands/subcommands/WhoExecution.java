@@ -107,9 +107,12 @@ public class WhoExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.who")) {
 			sender.sendMessage("/bending who <player>");
+		}
+		else if (permission) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
 }

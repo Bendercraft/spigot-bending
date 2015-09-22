@@ -49,6 +49,8 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 	private List<IBendingCommand> commands;
 
 	public BendingCommandExecutor() {
+		this.commands = new LinkedList<IBendingCommand>();
+
 		this.bind = new BindExecution();
 		this.choose = new ChooseExecution();
 		this.remove = new RemoveExecution();
@@ -64,10 +66,10 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		this.clear = new ClearExecution();
 		this.affinity = new AffinityExecution();
 		this.path = new PathExecution();
-		this.help = new HelpExecution();
 		this.available = new AvailableExecution();
+		this.help = new HelpExecution(this.commands);
 
-		this.commands = new LinkedList<IBendingCommand>();
+
 		this.commands.add(this.bind);
 		this.commands.add(this.choose);
 		this.commands.add(this.remove);

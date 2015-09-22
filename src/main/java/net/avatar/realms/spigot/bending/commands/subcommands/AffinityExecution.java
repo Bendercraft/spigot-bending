@@ -53,7 +53,7 @@ public class AffinityExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		if (!(sender instanceof Player)) {
 			return;
 		}
@@ -69,6 +69,9 @@ public class AffinityExecution extends BendingCommand {
 			sender.sendMessage("/bending affinity add <affinity>");
 			sender.sendMessage("/bending affinity remove <affinity>");
 			sender.sendMessage("/bending affinity clear");
+		}
+		else if (permission) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
 

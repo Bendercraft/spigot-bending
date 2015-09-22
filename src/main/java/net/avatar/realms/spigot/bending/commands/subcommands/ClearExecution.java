@@ -60,9 +60,12 @@ public class ClearExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.clear")) {
 			sender.sendMessage("/bending clear [slot#]");
+		}
+		else if (permission) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
 }

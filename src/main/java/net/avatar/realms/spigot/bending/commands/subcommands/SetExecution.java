@@ -20,4 +20,10 @@ public class SetExecution extends BendingCommand {
 
 	}
 
+	@Override
+	public void printUsage(CommandSender sender, boolean permission) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
