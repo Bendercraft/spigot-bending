@@ -127,6 +127,9 @@ public class BendingPlayer {
 	}
 
 	public boolean isBender(BendingElement type) {
+		if (type == BendingElement.Energy) {
+			return true;
+		}
 		return this.bendings.contains(type);
 	}
 
