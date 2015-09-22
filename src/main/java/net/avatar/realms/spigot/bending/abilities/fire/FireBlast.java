@@ -156,6 +156,7 @@ public class FireBlast extends BendingActiveAbility {
 			Vector perpDir = this.direction.clone();
 			double tempZ = -perpDir.getZ();
 			perpDir.setZ(perpDir.getX());
+			perpDir.setY(0);
 			perpDir.setX(tempZ);
 			List<Block> safes = new LinkedList<Block>();
 			new FireBlast(this.player, this, this.location.clone().add(perpDir), this.direction, this.damage, safes);
@@ -196,14 +197,13 @@ public class FireBlast extends BendingActiveAbility {
 			} else {
 				return true;
 			}
-		}
-
-		if (this.state == BendingAbilityState.Prepared) {
+		} else if (this.state == BendingAbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.FLAME, Tools.getIntCardinalDirection(location.getDirection()), 3);
-		}
-
-		if (this.state == BendingAbilityState.Progressing) {
+			if(!player.isSneaking() || bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
+				return false;
+			}
+		} else if (this.state == BendingAbilityState.Progressing) {
 			if (this.location.distance(this.origin) > this.range) {
 				return false;
 			}
