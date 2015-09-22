@@ -1,7 +1,9 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -63,7 +65,13 @@ public class RemoveExecution extends BendingCommand {
 
 	@Override
 	public List<String> autoComplete(CommandSender sender, List<String> args) {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedList<String> values = new LinkedList<String>();
+
+		if (sender.hasPermission("bending.command.remove")) {
+			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				values.add(player.getName());
+			}
+		}
+		return values;
 	}
 }
