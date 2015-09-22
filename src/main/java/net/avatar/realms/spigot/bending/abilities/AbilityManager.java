@@ -300,6 +300,7 @@ public class AbilityManager {
 			}
 			RegisteredAbility ra = new RegisteredAbility(name, ability, element, specialization, constructor);
 			this.binds.put(bind, ra);
+			this.reverseBinds.put(ra.getAbility(), bind);
 		} catch (Exception e) {
 			Bending.log.log(Level.SEVERE, "Bind " + bind + " associated with class " + ability + " threw exception when getting constructor", e);
 		}
