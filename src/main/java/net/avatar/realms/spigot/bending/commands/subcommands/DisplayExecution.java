@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -72,5 +72,11 @@ public class DisplayExecution extends BendingCommand {
 		if (sender.hasPermission("bending.command.display")) {
 			sender.sendMessage("/bending display [element]");
 		}
+	}
+
+	@Override
+	public List<String> autoComplete(CommandSender sender, List<String> args) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

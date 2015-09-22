@@ -10,7 +10,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.commands.subcommands.AddExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.AffinityExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.AvailableExecution;
@@ -120,23 +119,38 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 			}
 			result.add(autoCompleteParameter(args[0], values));
 		}
+		else if (args.length == 2) {
+			List<String> argList = Arrays.asList(args);
+			String sub = argList.remove(0);
+			for (IBendingCommand command : this.commands) {
+				if (command.isCommand(sub)) {
+					result.add(autoCompleteParameter(argList.get(0), command.autoComplete(sender, argList)));
+					break;
+				}
+			}
+		}
 		return result;
 	}
 
-	private String autoCompleteParameter(String start, BendingAbilities[] abilities) {
-		List<String> values = new LinkedList<String>();
-		for (BendingAbilities ability : abilities) {
-			values.add(ability.name());
-		}
-		return autoCompleteParameter(start, values);
-	}
-
+	/**
+	 * Choose the best available value for the autocompletion
+	 * 
+	 * @param start
+	 *            What was the parameter sent
+	 * @param values
+	 *            What are the possible values
+	 * @return the best value
+	 */
 	private String autoCompleteParameter(String start, List<String> values) {
 		if (start == null || start.isEmpty()) {
 			return " ";
 		}
 
 		List<String> valids = new LinkedList<String>();
+		if (values == null) {
+			return start;
+		}
+
 		for (String value : values) {
 			if (value.toLowerCase().startsWith(start.toLowerCase())) {
 				valids.add(value);

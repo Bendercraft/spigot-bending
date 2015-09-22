@@ -1,14 +1,16 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -101,5 +103,27 @@ public class ChooseExecution extends BendingCommand {
 		} else {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
+	}
+
+	@Override
+	public List<String> autoComplete(CommandSender sender, List<String> args) {
+		List<String> values = new LinkedList<String>();
+		if (!sender.hasPermission("bending.command.choose")) {
+			return values;
+		}
+
+		for (BendingElement el : BendingElement.values()) {
+			values.add(el.name());
+		}
+
+		if (args.size() == 2 || !sender.hasPermission("bending.command.choose.other")) {
+			return values;
+		}
+
+		for (Player online : Bukkit.getServer().getOnlinePlayers()) {
+			values.add(online.getName());
+		}
+
+		return values;
 	}
 }

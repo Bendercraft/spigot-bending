@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
@@ -81,4 +82,10 @@ public abstract class BendingCommand implements IBendingCommand {
 	public String getCommand() {
 		return this.command;
 	}
+
+	@Override
+	public List<String> autoComplete(CommandSender sender, List<String> args) {
+		return new LinkedList<String>();
+	}
+
 }

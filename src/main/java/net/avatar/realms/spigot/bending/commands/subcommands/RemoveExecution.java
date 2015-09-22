@@ -59,4 +59,10 @@ public class RemoveExecution extends BendingCommand {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
+
+	@Override
+	public List<String> autoComplete(CommandSender sender, List<String> args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

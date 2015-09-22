@@ -27,5 +27,4 @@ public class AvailableExecution extends BendingCommand {
 		// TODO Auto-generated method stub
 
 	}
-
 }

@@ -70,5 +70,4 @@ public class CooldownExecution extends BendingCommand {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
-
 }

@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -87,5 +89,35 @@ public class BindExecution extends BendingCommand {
 	@Override
 	public void printUsage(CommandSender sender) {
 		sender.sendMessage("/bending bind <ability> [slot]");
+	}
+
+	@Override
+	public List<String> autoComplete(CommandSender sender, List<String> args) {
+		List<String> values = new LinkedList<String>();
+		if (args.size() != 1) {
+			return values;
+		}
+
+		if (!(sender instanceof Player)) {
+			return values;
+		}
+
+		Player player = (Player) sender;
+
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+
+		if (bender == null || !bender.isBender()) {
+			return values;
+		}
+
+		for (BendingElement element : bender.getBendingTypes()) {
+			for (BendingAbilities ability : BendingAbilities.getElementAbilities(element)) {
+				if (player.hasPermission(ability.getPermission())) {
+					values.add(ability.name());
+				}
+			}
+		}
+
+		return values;
 	}
 }

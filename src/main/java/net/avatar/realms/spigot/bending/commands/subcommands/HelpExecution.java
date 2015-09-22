@@ -27,4 +27,10 @@ public class HelpExecution extends BendingCommand {
 
 	}
 
+	@Override
+	public List<String> autoComplete(CommandSender sender, List<String> args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

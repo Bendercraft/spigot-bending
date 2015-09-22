@@ -207,4 +207,10 @@ public class AffinityExecution extends BendingCommand {
 		}
 		return target;
 	}
+
+	@Override
+	public List<String> autoComplete(CommandSender sender, List<String> args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
