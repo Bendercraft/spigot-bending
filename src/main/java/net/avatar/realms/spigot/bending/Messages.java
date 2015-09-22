@@ -157,6 +157,9 @@ public class Messages {
 	@LanguageParameter("command.cleared")
 	public static String CLEARED = "You cleared your slots.";
 
+	@LanguageParameter("command.no_bind_permission")
+	public static String NO_BIND_PERMISSION = "You do not have the permission to bind that ability.";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;
