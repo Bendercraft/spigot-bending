@@ -1,11 +1,16 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -32,6 +37,8 @@ public class Blaze extends BendingActiveAbility {
 
 	private static int stepsize = 2;
 
+	private List<FireStream> firestreams = new LinkedList<FireStream>();
+
 	public Blaze(Player player) {
 		super(player, null);
 	}
@@ -41,6 +48,7 @@ public class Blaze extends BendingActiveAbility {
 		switch (this.state) {
 		case None:
 		case CannotStart:
+		case Progressing:
 			return false;
 		case Ended:
 		case Removed:
@@ -69,9 +77,11 @@ public class Blaze extends BendingActiveAbility {
 					range = AvatarState.getValue(range);
 				}
 
-				new FireStream(location, direction, this.player, range);
+				firestreams.add(new FireStream(location, direction, this.player, range));
 			}
 			this.bender.cooldown(BendingAbilities.Blaze, ARC_COOLDOWN);
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Progressing);
 			return false;
 		}
 	}
@@ -81,6 +91,7 @@ public class Blaze extends BendingActiveAbility {
 		switch (this.state) {
 		case None:
 		case CannotStart:
+		case Progressing:
 			return false;
 		case Ended:
 		case Removed:
@@ -107,12 +118,33 @@ public class Blaze extends BendingActiveAbility {
 					range = AvatarState.getValue(range);
 				}
 
-				new FireStream(location, direction, this.player, range);
+				firestreams.add(new FireStream(location, direction, this.player, range));
 			}
 
 			this.bender.cooldown(BendingAbilities.Blaze, RING_COOLDOWN);
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Progressing);
 			return false;
 		}
+	}
+
+	@Override
+	public boolean progress() {
+		if(!super.progress()) {
+			return false;
+		}
+		
+		if(state == BendingAbilityState.Progressing) {
+			List<FireStream> test = new LinkedList<FireStream>(firestreams);
+			for(FireStream stream : test) {
+				if(!stream.progress()) {
+					firestreams.remove(stream);
+				}
+			}
+			return !firestreams.isEmpty();
+		}
+		
+		return true;
 	}
 
 	@Override
