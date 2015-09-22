@@ -43,14 +43,11 @@ public class BendingPlayer {
 	public BendingPlayer(BendingPlayerData data) {
 		this.player = data.getPlayer();
 
-		this.bendings = data.getBendings();
-		this.slotAbilities = data.getSlotAbilities();
+		this.bendings = data.getBendings() != null ? data.getBendings() : this.bendings;
+		this.slotAbilities = data.getSlotAbilities() != null ? data.getSlotAbilities() : this.slotAbilities;
 
-		this.affinities = data.getAffinities();
-		this.paths = data.getPaths();
-		if (this.paths == null) {
-			this.paths = new LinkedList<BendingPath>();
-		}
+		this.affinities = data.getAffinities() != null ? data.getAffinities() : this.affinities;
+		this.paths = data.getPaths() != null ? data.getPaths() : this.paths;
 
 		this.lastTime = data.getLastTime();
 	}
