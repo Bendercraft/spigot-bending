@@ -379,9 +379,6 @@ permissions:
     default: op
     
 # COMMAND PERMISSIONS
-  bending.command.language:
-    description: Allows the use of /bending language
-    default: true
   bending.command.display: 
     description: Allows the use of /bending display <element>
     default: true
