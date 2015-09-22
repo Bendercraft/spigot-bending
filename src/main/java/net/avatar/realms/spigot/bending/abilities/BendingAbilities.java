@@ -210,32 +210,32 @@ public enum BendingAbilities {
 
 	public boolean isPassiveAbility() {
 		switch (this) {
-		case AirPassive:
-		case AirSpeed:
-		case ChiPassive:
-		case ChiSpeed:
-		case EarthPassive:
-		case FirePassive:
-		case FastSwimming:
-		case WaterPassive:
-			return true;
-		default:
-			return false;
+			case AirPassive:
+			case AirSpeed:
+			case ChiPassive:
+			case ChiSpeed:
+			case EarthPassive:
+			case FirePassive:
+			case FastSwimming:
+			case WaterPassive:
+				return true;
+			default:
+				return false;
 
 		}
 	}
 
 	public boolean isUtilityAbility() {
 		switch (this) {
-		case FireStream:
-			return true;
-		default:
-			return false;
+			case FireStream:
+				return true;
+			default:
+				return false;
 		}
 	}
 
 	public String getPermission() {
-		return "bending." + getElement().toString().toLowerCase() + name().toLowerCase();
+		return "bending." + this.element.name().toLowerCase() + "." + name().toLowerCase();
 	}
 
 	public static List<BendingAbilities> getElementAbilities(BendingElement el) {
