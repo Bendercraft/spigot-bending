@@ -45,7 +45,7 @@ public class EarthTunnel extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (state == BendingAbilityState.CanStart) {
+		if (state != BendingAbilityState.CanStart) {
 			return false;
 		}
 		location = player.getEyeLocation().clone();
