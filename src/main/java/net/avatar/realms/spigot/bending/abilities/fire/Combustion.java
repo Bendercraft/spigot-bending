@@ -126,7 +126,7 @@ public class Combustion extends BendingActiveAbility {
 			return false;
 		}
 
-		if (!state.isBefore(BendingAbilityState.Prepared)) {
+		if (state == BendingAbilityState.Preparing) {
 			if (!player.isSneaking()) {
 				return false;
 			}
