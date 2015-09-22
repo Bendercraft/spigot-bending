@@ -8,15 +8,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 
 @BendingAbility(name = "Avatar State", bind = BendingAbilities.AvatarState, element = BendingElement.Energy)
 public class AvatarState extends BendingActiveAbility {
@@ -49,7 +48,6 @@ public class AvatarState extends BendingActiveAbility {
 		}
 
 		if (this.state == BendingAbilityState.CanStart) {
-			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Progressing);
 		}
@@ -116,7 +114,6 @@ public class AvatarState extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		FlyingPlayer.removeFlyingPlayer(this.player, this);
 		long now = System.currentTimeMillis();
 		this.realDuration = now - this.startedTime;
 		this.bender.cooldown(BendingAbilities.AvatarState, this.realDuration * COOLDOWN_FACTOR);
