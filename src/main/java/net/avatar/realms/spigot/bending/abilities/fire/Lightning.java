@@ -179,7 +179,7 @@ public class Lightning extends BendingActiveAbility {
 
 		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
 
-		if (System.currentTimeMillis() > (this.startedTime + this.warmup)) {
+		if (System.currentTimeMillis() > (this.startedTime + this.warmup) && state == BendingAbilityState.Preparing) {
 			setState(BendingAbilityState.Prepared);
 		}
 
