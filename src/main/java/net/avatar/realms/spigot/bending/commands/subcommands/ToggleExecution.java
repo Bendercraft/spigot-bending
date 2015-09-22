@@ -56,7 +56,7 @@ public class ToggleExecution extends BendingCommand {
 	@Override
 	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.toggle")) {
-			sender.sendMessage("/bending toggle (spe)");
+			sender.sendMessage("/bending toggle (aff)");
 		}
 		else if (permission) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);

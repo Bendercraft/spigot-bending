@@ -121,7 +121,7 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 			}
 			result.add(autoCompleteParameter(args[0], values));
 		}
-		else if (args.length == 2) {
+		else {
 			List<String> argList = new LinkedList<String>(Arrays.asList(args));
 			String sub = argList.remove(0);
 			for (IBendingCommand command : this.commands) {

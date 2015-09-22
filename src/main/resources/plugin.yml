@@ -151,7 +151,7 @@ permissions:
     default: true
   bending.air.AirSwipe:
     description: Allows the use of AirSwipe.
-    default: false
+    default: true
   bending.air.AirBubble:
     description: Allows the use of AirBubble.
     default: false
@@ -166,19 +166,19 @@ permissions:
     default: false
   bending.air.AirSpout:
     description: Allows the use of AirSpout.
-    default: false
+    default: true
   bending.air.AirScooter:
     description: Allows the use of AirScooter.
     default: false
   bending.air.Speed:
     description: Allows the use of Speed.
-    default: false
+    default: true
   bending.air.Tornado:
     description: Allows the use of Tornado.
     default: false
   bending.air.AirBlast:
     description: Allows the use of AirBlast.
-    default: false
+    default: true
   bending.air.AirBurst:
     description: Allows the use of AirBurst.
     default: false
@@ -195,16 +195,16 @@ permissions:
     default: true
   bending.fire.Blaze:
     description: Allows the use of Blaze.
-    default: false
+    default: true
   bending.fire.HeatControl:
     description: Allows the use of ControlHeat.
-    default: false
+    default: true
   bending.fire.FireJet:
     description: Allows the use of FireJet.
     default: false
   bending.fire.FireBlast:
     description: Allows the use of FireBlast
-    default: false
+    default: true
   bending.fire.Passive:
     description: Allows the use of Passive.
     default: true
@@ -239,7 +239,7 @@ permissions:
     default: false
   bending.water.HealingWaters:
     description: Allows the use of HealingWaters.
-    default: false
+    default: true
   bending.water.Plantbending:
     description: Allows the use of Plantbending.
     default: true
@@ -248,13 +248,13 @@ permissions:
     default: false
   bending.water.WaterManipulation:
     description: Allows the use of WaterManipulation.
-    default: false
+    default: true
   bending.water.Passive:
     description: Allows the use of WaterPassive.
     default: true
   bending.water.WaterSpout:
     description: Allows the use of WaterSpout.
-    default: false
+    default: true
   bending.water.Surge:
     description: Allows the use of Surge.
     default: false
@@ -283,10 +283,10 @@ permissions:
     default: false
   bending.earth.EarthBlast:
     description: Allows the use of EarthBlast.
-    default: false
+    default: true
   bending.earth.RaiseEarth:
     description: Allows the use of RaiseEarth.
-    default: false
+    default: true
   bending.earth.Passive:
     description: Allows the use of EarthPassive.
     default: true
@@ -295,13 +295,13 @@ permissions:
     default: false
   bending.earth.Collapse:
     description: Allows the use of PatchTheEarth.
-    default: false
+    default: true
   bending.earth.EarthGrab:
     description: Allows the use of EarthGrab.
     default: false
   bending.earth.Tremorsense:
     description: Allows the use of Tremorsense.
-    default: true 
+    default: false
   bending.earth.Shockwave:
     description: Allows the use of Shockwave.
     default: false
@@ -324,17 +324,13 @@ permissions:
     default: true
   bending.chiblocker.RapidPunch:
     description: Allows the use of RapidPunch
-    default: false
+    default: true
   bending.chiblocker.HighJump:
     description: Allows the use of HighJump
-    default: false
-  bending.chiblocker.FastPunch:
-    description: Allows the use of FastPunch
-#    default: false
-    default: false
-  bending.chiblocker.Paralyze:
+    default: true
+  bending.chiblocker.VitalPoint:
     description: Allows the use of Paralyze
-    default: false
+    default: true
   bending.chiblocker.SmokeBomb:
     description: Allows the use of SmokeBomb
     default: false
@@ -343,6 +339,12 @@ permissions:
     default: false
   bending.chiblocker.PoisonnedDart:
     description: Allows the use of PoisonnedDart
+    default: false
+  bending.chiblocker.PlasticBomb:
+    description: Allows the use of the C4
+    default: false
+  bending.chiblocker.powerfulhit:
+    description: Allows the use of the PowerfulHit
     default: false
 
 # ENERGY PERMISSIONS
