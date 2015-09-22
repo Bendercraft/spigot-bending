@@ -75,11 +75,11 @@ public class AddExecution extends BendingCommand {
 
 		bender.addBender(element);
 		String msg = Messages.YOU_ADDED;
-		msg = msg.replaceAll("{0}", element.name());
-		msg = msg.replaceAll("{1}", player.getName());
+		msg = msg.replaceAll("\\{0\\}", element.name());
+		msg = msg.replaceAll("\\{1\\}", player.getName());
 		sender.sendMessage(msg);
 		msg = Messages.YOU_WERE_ADDED;
-		msg = msg.replaceAll("{0}", element.name());
+		msg = msg.replaceAll("\\{0\\}", element.name());
 		player.sendMessage(msg);
 
 		return true;

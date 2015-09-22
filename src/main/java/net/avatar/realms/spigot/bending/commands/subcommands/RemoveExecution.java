@@ -46,7 +46,7 @@ public class RemoveExecution extends BendingCommand {
 
 		player.sendMessage(Messages.OTHER_REMOVE_YOU);
 		String msg = Messages.YOU_REMOVE_OTHER;
-		msg = msg.replaceAll("{0}", playerName);
+		msg = msg.replaceAll("\\{0\\}", playerName);
 		sender.sendMessage(msg);
 		return true;
 	}

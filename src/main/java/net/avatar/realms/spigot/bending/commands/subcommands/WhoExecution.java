@@ -8,9 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -75,9 +75,9 @@ public class WhoExecution extends BendingCommand {
 				msg = Messages.WHO_IS_CHI;
 			} else {
 				msg = Messages.WHO_IS_BENDING;
-				msg = msg.replaceAll("{1}", element.name());
+				msg = msg.replaceAll("\\{1\\}", element.name());
 			}
-			msg = msg.replaceAll("{0}", p.getName());
+			msg = msg.replaceAll("\\{0\\}", p.getName());
 			msg = color + msg;
 			player.sendMessage(msg);
 

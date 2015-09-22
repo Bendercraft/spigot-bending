@@ -94,12 +94,12 @@ public class AffinityExecution extends BendingCommand {
 
 		bender.setSpecialization(affinity);
 		String msg = Messages.AFFINITY_SET;
-		msg = msg.replaceAll("{0}", affinity.name());
+		msg = msg.replaceAll("\\{0\\}", affinity.name());
 		target.sendMessage(msg);
 
 		msg = Messages.YOU_SET_AFFINITY;
-		msg = msg.replaceAll("{0}", affinity.name());
-		msg = msg.replaceAll("{1}", target.getName());
+		msg = msg.replaceAll("\\{0\\}", affinity.name());
+		msg = msg.replaceAll("\\{1\\}", target.getName());
 		sender.sendMessage(msg);
 	}
 
@@ -125,12 +125,12 @@ public class AffinityExecution extends BendingCommand {
 
 		bender.addSpecialization(affinity);
 		String msg = Messages.AFFINITY_ADDED;
-		msg = msg.replaceAll("{0}", affinity.name());
+		msg = msg.replaceAll("\\{0\\}", affinity.name());
 		target.sendMessage(msg);
 
 		msg = Messages.YOU_ADDED_AFFINITY;
-		msg = msg.replaceAll("{0}", affinity.name());
-		msg = msg.replaceAll("{1}", target.getName());
+		msg = msg.replaceAll("\\{0\\}", affinity.name());
+		msg = msg.replaceAll("\\{1\\}", target.getName());
 		sender.sendMessage(msg);
 	}
 
@@ -156,12 +156,12 @@ public class AffinityExecution extends BendingCommand {
 
 		bender.removeSpecialization(affinity);
 		String msg = Messages.AFFINITY_REMOVED;
-		msg = msg.replaceAll("{0}", affinity.name());
+		msg = msg.replaceAll("\\{0\\}", affinity.name());
 		target.sendMessage(msg);
 
 		msg = Messages.YOU_REMOVED_AFFINITY;
-		msg = msg.replaceAll("{0}", affinity.name());
-		msg = msg.replaceAll("{1}", target.getName());
+		msg = msg.replaceAll("\\{0\\}", affinity.name());
+		msg = msg.replaceAll("\\{1\\}", target.getName());
 		sender.sendMessage(msg);
 	}
 
@@ -180,7 +180,7 @@ public class AffinityExecution extends BendingCommand {
 		target.sendMessage(msg);
 
 		msg = Messages.YOU_CLEARED_AFFINITY;
-		msg = msg.replaceAll("{0}", target.getName());
+		msg = msg.replaceAll("\\{0\\}", target.getName());
 		sender.sendMessage(msg);
 	}
 
