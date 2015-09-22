@@ -19,9 +19,11 @@ public class BendingPlayer {
 	private UUID player;
 
 	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
+	private int currentSet = 1;
+	private Map<Integer, Map<Integer, BendingAbilities>> abilitiesSets = new HashMap<Integer, Map<Integer, BendingAbilities>>();
 
 	private List<BendingElement> bendings = new LinkedList<BendingElement>();
-	private List<BendingAffinity> specializations = new LinkedList<BendingAffinity>();
+	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
 	private List<BendingPath> paths = new LinkedList<BendingPath>();
 
 	private Map<BendingAbilities, Long> cooldowns = new HashMap<BendingAbilities, Long>();
@@ -44,7 +46,7 @@ public class BendingPlayer {
 		this.bendings = data.getBendings();
 		this.slotAbilities = data.getSlotAbilities();
 
-		this.specializations = data.getSpecialization();
+		this.affinities = data.getAffinities();
 		this.paths = data.getPaths();
 		if (this.paths == null) {
 			this.paths = new LinkedList<BendingPath>();
@@ -131,8 +133,8 @@ public class BendingPlayer {
 		return this.bendings.contains(type);
 	}
 
-	public boolean isSpecialized(BendingAffinity specialization) {
-		return this.specializations.contains(specialization);
+	public boolean hasAffinity(BendingAffinity specialization) {
+		return this.affinities.contains(specialization);
 	}
 
 	public boolean hasPath(BendingElement type) {
@@ -167,9 +169,9 @@ public class BendingPlayer {
 		}
 	}
 
-	public void setSpecialization(BendingAffinity specialization) {
-		this.clearSpecialization(specialization.getElement());
-		this.specializations.add(specialization);
+	public void setAffinity(BendingAffinity affinity) {
+		this.clearAffinity(affinity.getElement());
+		this.affinities.add(affinity);
 		Bending.database.save(this.player);
 	}
 
@@ -179,28 +181,28 @@ public class BendingPlayer {
 		Bending.database.save(this.player);
 	}
 
-	public void addSpecialization(BendingAffinity specialization) {
-		if (!this.specializations.contains(specialization)) {
-			this.specializations.add(specialization);
+	public void addAffinity(BendingAffinity affinity) {
+		if (!this.affinities.contains(affinity)) {
+			this.affinities.add(affinity);
 			Bending.database.save(this.player);
 		}
 	}
 
-	public void removeSpecialization(BendingAffinity specialization) {
-		this.specializations.remove(specialization);
+	public void removeAffinity(BendingAffinity affinity) {
+		this.affinities.remove(affinity);
 		clearAbilities();
 		// clear abilities will save for us
 	}
 
-	public void clearSpecialization(BendingElement element) {
+	public void clearAffinity(BendingElement element) {
 		List<BendingAffinity> toRemove = new LinkedList<BendingAffinity>();
-		for (BendingAffinity spe : this.specializations) {
+		for (BendingAffinity spe : this.affinities) {
 			if (spe.getElement().equals(element)) {
 				toRemove.add(spe);
 			}
 		}
 		for (BendingAffinity spe : toRemove) {
-			removeSpecialization(spe);
+			removeAffinity(spe);
 		}
 		// clear abilities will save for us
 		clearAbilities();
@@ -218,8 +220,8 @@ public class BendingPlayer {
 		}
 	}
 
-	public void clearSpecialization() {
-		this.specializations.clear();
+	public void clearAffinities() {
+		this.affinities.clear();
 		Bending.database.save(this.player);
 	}
 
@@ -230,7 +232,7 @@ public class BendingPlayer {
 
 	public void removeBender() {
 		clearAbilities();
-		this.specializations.clear();
+		this.affinities.clear();
 		this.bendings.clear();
 		this.paths.clear();
 		Bending.database.save(this.player);
@@ -345,7 +347,7 @@ public class BendingPlayer {
 	}
 
 	public List<BendingAffinity> getSpecializations() {
-		return this.specializations;
+		return this.affinities;
 	}
 
 	public List<BendingPath> getPath() {
@@ -356,7 +358,7 @@ public class BendingPlayer {
 		BendingPlayerData result = new BendingPlayerData();
 		result.setBendings(this.bendings);
 		result.setLastTime(this.lastTime);
-		result.setSpecialization(this.specializations);
+		result.setAffinities(this.affinities);
 		result.setPlayer(this.player);
 		result.setSlotAbilities(this.slotAbilities);
 		result.setPaths(this.paths);

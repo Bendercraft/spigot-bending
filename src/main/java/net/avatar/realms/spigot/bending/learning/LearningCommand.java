@@ -88,7 +88,7 @@ public class LearningCommand {
 						this.plugin.removePermission(target.getPlayer(), ability);
 					}
 				}
-				target.removeSpecialization(spe);
+				target.removeAffinity(spe);
 				this.sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has lost " + spe.name() + ".");
 			}
 		} else if (subChoice.equals("ability")) {
@@ -265,7 +265,7 @@ public class LearningCommand {
 							}
 						}
 						if (canLearn) {
-							target.setSpecialization(spe);
+							target.setAffinity(spe);
 							ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
 							String message = "Congratulations, you can now use " + spe.name();
 							target.getPlayer().sendMessage(color + message);
@@ -307,7 +307,7 @@ public class LearningCommand {
 						}
 					}
 					if (canLearn) {
-						target.setSpecialization(spe);
+						target.setAffinity(spe);
 						ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
 						String message = "Congratulations, you can now use " + spe.name();
 						target.getPlayer().sendMessage(color + message);

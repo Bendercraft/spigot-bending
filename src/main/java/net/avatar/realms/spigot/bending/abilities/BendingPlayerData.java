@@ -9,7 +9,7 @@ import org.bukkit.Material;
 public class BendingPlayerData {
 	private UUID player;
 	private List<BendingElement> bendings;
-	private List<BendingAffinity> specialization;
+	private List<BendingAffinity> affinities;
 	private List<BendingPath> paths;
 	private boolean bendToItem;
 	private Map<Integer, BendingAbilities> slotAbilities;
@@ -64,12 +64,12 @@ public class BendingPlayerData {
 		this.lastTime = lastTime;
 	}
 
-	public List<BendingAffinity> getSpecialization() {
-		return specialization;
+	public List<BendingAffinity> getAffinities() {
+		return affinities;
 	}
 
-	public void setSpecialization(List<BendingAffinity> specialization) {
-		this.specialization = specialization;
+	public void setAffinities(List<BendingAffinity> affinities) {
+		this.affinities = affinities;
 	}
 
 	public List<BendingPath> getPaths() {

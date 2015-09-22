@@ -95,7 +95,7 @@ public class AffinityExecution extends BendingCommand {
 			return;
 		}
 
-		bender.setSpecialization(affinity);
+		bender.setAffinity(affinity);
 		String msg = Messages.AFFINITY_SET;
 		msg = msg.replaceAll("\\{0\\}", affinity.name());
 		target.sendMessage(msg);
@@ -126,7 +126,7 @@ public class AffinityExecution extends BendingCommand {
 			return;
 		}
 
-		bender.addSpecialization(affinity);
+		bender.addAffinity(affinity);
 		String msg = Messages.AFFINITY_ADDED;
 		msg = msg.replaceAll("\\{0\\}", affinity.name());
 		target.sendMessage(msg);
@@ -157,7 +157,7 @@ public class AffinityExecution extends BendingCommand {
 			return;
 		}
 
-		bender.removeSpecialization(affinity);
+		bender.removeAffinity(affinity);
 		String msg = Messages.AFFINITY_REMOVED;
 		msg = msg.replaceAll("\\{0\\}", affinity.name());
 		target.sendMessage(msg);
@@ -177,7 +177,7 @@ public class AffinityExecution extends BendingCommand {
 
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(target);
 
-		bender.clearSpecialization();
+		bender.clearAffinities();
 
 		String msg = Messages.AFFINITY_CLEARED;
 		target.sendMessage(msg);
