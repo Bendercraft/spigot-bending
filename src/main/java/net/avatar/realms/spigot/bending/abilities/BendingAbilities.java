@@ -7,47 +7,99 @@ import java.util.List;
  * This class list all abilities
  */
 public enum BendingAbilities {
-
 	/*
 	 * AIR Abilities
 	 */
-	AirBlast(BendingElement.Air, true), AirBubble(BendingElement.Air, true), AirShield(BendingElement.Air, true), AirSuction(BendingElement.Air, true), AirSwipe(BendingElement.Air, true), AirScooter(BendingElement.Air, false), AirSpout(BendingElement.Air, false), AirBurst(BendingElement.Air, true), AirSpeed(BendingElement.Air, true), AirManipulation(BendingElement.Air, true), Tornado(BendingAffinity.Tornado, true), Suffocate(BendingAffinity.Suffocate, true),
+	AirBlast(BendingElement.Air, true), 
+	AirBubble(BendingElement.Air, true), 
+	AirShield(BendingElement.Air, true), 
+	AirSuction(BendingElement.Air, true), 
+	AirSwipe(BendingElement.Air, true), 
+	AirScooter(BendingElement.Air, false), 
+	AirSpout(BendingElement.Air, false), 
+	AirBurst(BendingElement.Air, true), 
+	AirSpeed(BendingElement.Air, true), 
+	AirManipulation(BendingElement.Air, true), 
+	Tornado(BendingAffinity.Tornado, true), 
+	Suffocate(BendingAffinity.Suffocate, true),
 
 	/*
 	 * EARTH Abilities
 	 */
-
-	Catapult(BendingElement.Earth, true), RaiseEarth(BendingElement.Earth, true), EarthGrab(BendingElement.Earth, true), EarthTunnel(BendingElement.Earth, true), EarthBlast(BendingElement.Earth, true), Collapse(BendingElement.Earth, true), Tremorsense(BendingElement.Earth, true), EarthArmor(BendingElement.Earth, true), Shockwave(BendingElement.Earth, true), LavaTrain(BendingAffinity.Lavabend, true), MetalBending(BendingAffinity.Metalbend, true),
+	Catapult(BendingElement.Earth, true), 
+	RaiseEarth(BendingElement.Earth, true), 
+	EarthGrab(BendingElement.Earth, true), 
+	EarthTunnel(BendingElement.Earth, true), 
+	EarthBlast(BendingElement.Earth, true), 
+	Collapse(BendingElement.Earth, true), 
+	Tremorsense(BendingElement.Earth, true), 
+	EarthArmor(BendingElement.Earth, true), 
+	Shockwave(BendingElement.Earth, true), 
+	LavaTrain(BendingAffinity.Lavabend, true), 
+	MetalBending(BendingAffinity.Metalbend, true),
 
 	/*
 	 * FIRE Abilities
 	 */
-
-	HeatControl(BendingElement.Fire, true), Blaze(BendingElement.Fire, true), FireJet(BendingElement.Fire, false), Illumination(BendingElement.Fire, false), WallOfFire(BendingElement.Fire, false), FireBlast(BendingElement.Fire, true), FireBurst(BendingElement.Fire, true), FireShield(BendingElement.Fire, true), FireBlade(BendingElement.Fire, false), Combustion(BendingAffinity.Combustion, true), Lightning(BendingAffinity.Lightning, true),
+	HeatControl(BendingElement.Fire, true), 
+	Blaze(BendingElement.Fire, true), 
+	FireJet(BendingElement.Fire, false), 
+	Illumination(BendingElement.Fire, false), 
+	WallOfFire(BendingElement.Fire, false), 
+	FireBlast(BendingElement.Fire, true), 
+	FireBurst(BendingElement.Fire, true), 
+	FireShield(BendingElement.Fire, true), 
+	FireBlade(BendingElement.Fire, false), 
+	Combustion(BendingAffinity.Combustion, true), 
+	Lightning(BendingAffinity.Lightning, true),
 
 	/*
 	 * WATER Abilities
 	 */
-
-	WaterBubble(BendingElement.Water, true), PhaseChange(BendingElement.Water, true), HealingWaters(BendingElement.Water, true), WaterManipulation(BendingElement.Water, true), Surge(BendingElement.Water, true), WaterSpout(BendingElement.Water, false), IceSpike(BendingElement.Water, true), OctopusForm(BendingElement.Water, true), Torrent(BendingElement.Water, true), IceSwipe(BendingElement.Water, true), Bloodbending(BendingAffinity.Bloodbend, true), Drainbending(BendingAffinity.DrainBend, false),
+	WaterBubble(BendingElement.Water, true), 
+	PhaseChange(BendingElement.Water, true), 
+	HealingWaters(BendingElement.Water, true), 
+	WaterManipulation(BendingElement.Water, true), 
+	Surge(BendingElement.Water, true), 
+	WaterSpout(BendingElement.Water, false), 
+	IceSpike(BendingElement.Water, true), 
+	OctopusForm(BendingElement.Water, true), 
+	Torrent(BendingElement.Water, true), 
+	IceSwipe(BendingElement.Water, true), 
+	Bloodbending(BendingAffinity.Bloodbend, true), 
+	Drainbending(BendingAffinity.DrainBend, false),
 
 	/*
 	 * CHI-BLOCKERS Abilities
 	 */
-
-	HighJump(BendingElement.ChiBlocker, false), ChiSpeed(BendingElement.ChiBlocker, false), RapidPunch(BendingElement.ChiBlocker, false), VitalPoint(BendingElement.ChiBlocker, false), SmokeBomb(BendingElement.ChiBlocker, false), Dash(BendingElement.ChiBlocker, true), PowerfulHit(BendingElement.ChiBlocker, false), PoisonnedDart(BendingAffinity.Inventor, false), PlasticBomb(BendingAffinity.Inventor, true),
+	HighJump(BendingElement.ChiBlocker, false), 
+	ChiSpeed(BendingElement.ChiBlocker, false), 
+	RapidPunch(BendingElement.ChiBlocker, false), 
+	VitalPoint(BendingElement.ChiBlocker, false), 
+	SmokeBomb(BendingElement.ChiBlocker, false), 
+	Dash(BendingElement.ChiBlocker, true), 
+	PowerfulHit(BendingElement.ChiBlocker, false), 
+	PoisonnedDart(BendingAffinity.Inventor, false), 
+	PlasticBomb(BendingAffinity.Inventor, true),
+	AirSlice(BendingAffinity.ChiAir, true),
+	WaterTurret(BendingAffinity.ChiWater, true),
+	EarthLariat(BendingAffinity.ChiEarth, true),
+	FireFurret(BendingAffinity.ChiFire, true),
 
 	/*
 	 * AVATAR Abilities
 	 */
-
 	AvatarState(BendingElement.Energy, false),
 
 	/*
 	 * PASSIVE Abilities
 	 */
-
-	AirPassive(BendingElement.Air, false), ChiPassive(BendingElement.ChiBlocker, false), EarthPassive(BendingElement.Earth, false), FirePassive(BendingElement.Fire, false), FastSwimming(BendingElement.Water, true), WaterPassive(BendingElement.Water, false);
+	AirPassive(BendingElement.Air, false), 
+	ChiPassive(BendingElement.ChiBlocker, false), 
+	EarthPassive(BendingElement.Earth, false), 
+	FirePassive(BendingElement.Fire, false), 
+	FastSwimming(BendingElement.Water, true), 
+	WaterPassive(BendingElement.Water, false);
 
 	private BendingElement element;
 	private BendingAffinity affinity;

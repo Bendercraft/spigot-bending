@@ -252,82 +252,35 @@ public class LearningCommand {
 		}
 
 		BendingAffinity spe = BendingAffinity.getType(speString);
-		BendingElement type = BendingElement.getType(speString);
-
-		if (target.isBender(BendingElement.ChiBlocker)) {
-			if ((target.getBendingTypes().size() == 1) && (target.getSpecializations().size() <= 0)) {
-				if (spe != null) {
-					if (target.isBender(spe.getElement())) {
-						boolean canLearn = true;
-						for (BendingAffinity speTarget : target.getSpecializations()) {
-							if (speTarget.getElement().equals(spe.getElement())) {
-								canLearn = false;
-							}
-						}
-						if (canLearn) {
-							target.setAffinity(spe);
-							ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
-							String message = "Congratulations, you can now use " + spe.name();
-							target.getPlayer().sendMessage(color + message);
-							for (BendingAbilities ability : BendingAbilities.values()) {
-								if (ability.isAffinity() && ability.getAffinity().equals(spe)) {
-									this.plugin.addPermission(target.getPlayer(), ability);
-									message = "You can now use " + ability.name();
-									target.getPlayer().sendMessage(color + message);
-								}
-							}
-						}
+		if (spe != null) {
+			if (target.isBender(spe.getElement())) {
+				boolean canLearn = true;
+				for (BendingAffinity speTarget : target.getSpecializations()) {
+					if (speTarget.getElement().equals(spe.getElement())) {
+						canLearn = false;
 					}
-				} else if (type != null) {
-					target.addBender(type);
-					ChatColor color = PluginTools.getColor(Settings.getColorString(type.name()));
-					String message = "Congratulations, you can now bend " + type.name() + " as well as " + BendingElement.ChiBlocker.name();
+				}
+				if (canLearn) {
+					target.setAffinity(spe);
+					ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
+					String message = "Congratulations, you can now use " + spe.name();
 					target.getPlayer().sendMessage(color + message);
 					for (BendingAbilities ability : BendingAbilities.values()) {
-						if (ability.getElement().equals(type)) {
-							if (EntityTools.hasPermission(target.getPlayer(), ability)) {
-								message = "You can now use " + ability.name();
-								target.getPlayer().sendMessage(color + message);
-							}
+						if (ability.isAffinity() && ability.getAffinity().equals(spe)) {
+							this.plugin.addPermission(target.getPlayer(), ability);
+							message = "You can now use " + ability.name();
+							target.getPlayer().sendMessage(color + message);
 						}
 					}
+					this.sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has received " + spe.name() + ".");
 				} else {
-					this.sender.sendMessage(ChatColor.RED + speString + " is not a valid a specialization/element");
+					this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " already have a specialization for " + spe.getElement());
 				}
 			} else {
-				this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " already have a specialization");
+				this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " cannot take " + spe.name() + " because cannot bend " + spe.getElement() + ".");
 			}
 		} else {
-			if (spe != null) {
-				if (target.isBender(spe.getElement())) {
-					boolean canLearn = true;
-					for (BendingAffinity speTarget : target.getSpecializations()) {
-						if (speTarget.getElement().equals(spe.getElement())) {
-							canLearn = false;
-						}
-					}
-					if (canLearn) {
-						target.setAffinity(spe);
-						ChatColor color = PluginTools.getColor(Settings.getColorString(spe.getElement().name()));
-						String message = "Congratulations, you can now use " + spe.name();
-						target.getPlayer().sendMessage(color + message);
-						for (BendingAbilities ability : BendingAbilities.values()) {
-							if (ability.isAffinity() && ability.getAffinity().equals(spe)) {
-								this.plugin.addPermission(target.getPlayer(), ability);
-								message = "You can now use " + ability.name();
-								target.getPlayer().sendMessage(color + message);
-							}
-						}
-						this.sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has received " + spe.name() + ".");
-					} else {
-						this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " already have a specialization for " + spe.getElement());
-					}
-				} else {
-					this.sender.sendMessage(ChatColor.RED + target.getPlayer().getName() + " cannot take " + spe.name() + " because cannot bend " + spe.getElement() + ".");
-				}
-			} else {
-				this.sender.sendMessage(ChatColor.RED + speString + " is not a valid a specialization");
-			}
+			this.sender.sendMessage(ChatColor.RED + speString + " is not a valid a specialization");
 		}
 	}
 
