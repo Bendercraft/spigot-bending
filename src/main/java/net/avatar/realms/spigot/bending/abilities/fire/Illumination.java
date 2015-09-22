@@ -119,7 +119,7 @@ public class Illumination extends BendingActiveAbility {
 		}
 		for (Object o : instances.keySet()) {
 			Illumination ill = (Illumination) instances.get(o);
-			if (ill.block.equals(block)) {
+			if (ill.block != null && ill.block.equals(block)) {
 				return true;
 			}
 		}
