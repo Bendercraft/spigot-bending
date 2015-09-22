@@ -51,7 +51,7 @@ public class EntityTools {
 		if (bPlayer == null) {
 			return false;
 		}
-		return bPlayer.isSpecialized(specialization);
+		return bPlayer.hasAffinity(specialization);
 	}
 
 	public static boolean isBender(Player player) {

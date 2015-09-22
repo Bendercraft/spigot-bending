@@ -10,6 +10,8 @@ public interface IBendingCommand {
 
 	void printUsage(CommandSender sender);
 
+	void printUsage(CommandSender sender, boolean permission);
+
 	boolean isCommand(String command);
 
 	String getCommand();

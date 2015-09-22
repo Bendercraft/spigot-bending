@@ -136,6 +136,27 @@ public class Messages {
 	@LanguageParameter("command.you_clear_affinity")
 	public static String YOU_CLEARED_AFFINITY = "You cleared the affinities of {0}.";
 
+	@LanguageParameter("command.invalid_path")
+	public static String INVALID_PATH = "Invalid path.";
+
+	@LanguageParameter("command.invalid_path_element")
+	public static String INVALID_PATH_ELEMENT = "The target does not have the required bending for this path.";
+
+	@LanguageParameter("command.path_set")
+	public static String PATH_SET = "You were set the {0} path.";
+
+	@LanguageParameter("command.you_set_path")
+	public static String YOU_SET_PATH = "You set the {0} path to {1}.";
+
+	@LanguageParameter("command.invalid_slot")
+	public static String INVALID_SLOT = "Invalid slot number.";
+
+	@LanguageParameter("command.slot_cleared")
+	public static String SLOT_CLEARED = "You cleared the slot {0}.";
+
+	@LanguageParameter("command.cleared")
+	public static String CLEARED = "You cleared your slots.";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;

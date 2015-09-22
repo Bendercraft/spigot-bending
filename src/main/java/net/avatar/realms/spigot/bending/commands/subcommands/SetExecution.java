@@ -6,15 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 
-public class AvailableExecution extends BendingCommand {
-
-	public AvailableExecution() {
-		super();
-		this.command = "available";
-		this.aliases.add("availables");
-		this.aliases.add("avail");
-
-	}
+public class SetExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
@@ -23,8 +15,15 @@ public class AvailableExecution extends BendingCommand {
 	}
 
 	@Override
+	public void printUsage(CommandSender sender) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
 	public void printUsage(CommandSender sender, boolean permission) {
 		// TODO Auto-generated method stub
 
 	}
+
 }

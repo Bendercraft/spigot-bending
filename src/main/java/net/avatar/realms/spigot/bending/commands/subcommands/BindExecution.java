@@ -87,8 +87,13 @@ public class BindExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
-		sender.sendMessage("/bending bind <ability> [slot]");
+	public void printUsage(CommandSender sender, boolean permission) {
+		if (sender.hasPermission("bending.command.bind")) {
+			sender.sendMessage("/bending bind <ability> [slot]");
+		}
+		else if (permission) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+		}
 	}
 
 	@Override

@@ -2,9 +2,11 @@ package net.avatar.realms.spigot.bending.commands.subcommands;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 
 public class VersionExecution extends BendingCommand {
@@ -26,9 +28,12 @@ public class VersionExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.version")) {
 			sender.sendMessage("/bending version");
+		}
+		else if (permission) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}
 

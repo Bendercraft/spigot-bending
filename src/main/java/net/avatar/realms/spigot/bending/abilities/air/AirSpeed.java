@@ -4,10 +4,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
@@ -59,10 +59,10 @@ public class AirSpeed extends BendingPassiveAbility {
 
 	private void applySpeed() {
 		PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, 1);
-		PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 2);
 
 		new TempPotionEffect(this.player, speed);
 		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.AirScooter) {
+			PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 2);
 			new TempPotionEffect(this.player, jump);
 		}
 	}

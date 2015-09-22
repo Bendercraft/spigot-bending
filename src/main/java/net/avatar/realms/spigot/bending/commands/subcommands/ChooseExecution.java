@@ -95,12 +95,14 @@ public class ChooseExecution extends BendingCommand {
 	}
 
 	@Override
-	public void printUsage(CommandSender sender) {
+	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.admin.choose") || sender.hasPermission("bending.admin.rechoose")) {
 			sender.sendMessage("/bending choose [player] <element>");
-		} else if (sender.hasPermission("bending.command.choose")) {
+		}
+		else if (sender.hasPermission("bending.command.choose")) {
 			sender.sendMessage("/bending choose <element>");
-		} else {
+		}
+		else if (permission) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
 	}

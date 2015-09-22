@@ -79,6 +79,11 @@ public abstract class BendingCommand implements IBendingCommand {
 	}
 
 	@Override
+	public void printUsage(CommandSender sender) {
+		printUsage(sender, true);
+	}
+
+	@Override
 	public String getCommand() {
 		return this.command;
 	}
