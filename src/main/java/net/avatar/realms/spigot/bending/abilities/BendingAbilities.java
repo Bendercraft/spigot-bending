@@ -47,17 +47,7 @@ public enum BendingAbilities {
 	 * PASSIVE Abilities
 	 */
 
-	AirPassive(BendingElement.Air, false), ChiPassive(BendingElement.ChiBlocker, false), EarthPassive(BendingElement.Earth, false), FirePassive(BendingElement.Fire, false), FastSwimming(BendingElement.Water, true), WaterPassive(BendingElement.Water, false),
-
-	/*
-	 * UTILITY Abilities
-	 */
-
-	FireStream(BendingElement.Fire, false);
-
-	/*
-	 *
-	 */
+	AirPassive(BendingElement.Air, false), ChiPassive(BendingElement.ChiBlocker, false), EarthPassive(BendingElement.Earth, false), FirePassive(BendingElement.Fire, false), FastSwimming(BendingElement.Water, true), WaterPassive(BendingElement.Water, false);
 
 	private BendingElement element;
 	private BendingAffinity affinity;
@@ -222,15 +212,6 @@ public enum BendingAbilities {
 			default:
 				return false;
 
-		}
-	}
-
-	public boolean isUtilityAbility() {
-		switch (this) {
-			case FireStream:
-				return true;
-			default:
-				return false;
 		}
 	}
 

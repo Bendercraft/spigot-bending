@@ -60,7 +60,7 @@ public class FireStream {
 	}
 
 	public boolean progress() {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.FireStream, this.location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Blaze, this.location)) {
 			return false;
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
@@ -159,7 +159,7 @@ public class FireStream {
 
 	public static void removeAroundPoint(Location location, double radius) {
 		List<FireStream> toRemove = new LinkedList<FireStream>();
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireStream);
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Blaze);
 		for (IBendingAbility ability : instances.values()) {
 			FireStream stream = (FireStream) ability;
 			if (stream.location.getWorld().equals(location.getWorld())) {
@@ -167,9 +167,6 @@ public class FireStream {
 					toRemove.add(stream);
 				}
 			}
-		}
-		for (FireStream stream : toRemove) {
-			//stream.remove();
 		}
 	}
 
