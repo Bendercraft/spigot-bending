@@ -80,8 +80,8 @@ public class BindExecution extends BendingCommand {
 		}
 		bender.setAbility(slot, ability);
 		String boundMessage = Messages.ABILITY_BOUND;
-		boundMessage = boundMessage.replaceAll("{0}", ability.name());
-		boundMessage = boundMessage.replaceAll("{1}", "" + slot);
+		boundMessage = boundMessage.replaceAll("\\{0\\}", ability.name());
+		boundMessage = boundMessage.replaceAll("\\{1\\}", "" + slot);
 		player.sendMessage(color + boundMessage);
 		return true;
 	}

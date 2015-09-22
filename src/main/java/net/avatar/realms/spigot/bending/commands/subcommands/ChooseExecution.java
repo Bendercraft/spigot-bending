@@ -79,15 +79,15 @@ public class ChooseExecution extends BendingCommand {
 		ChatColor color = PluginTools.getColor(Settings.getColorString(element.name()));
 		if (other) {
 			String msg = Messages.YOU_CHANGE_OTHER;
-			msg = msg.replaceAll("{0}", target.getName());
-			msg = msg.replaceAll("{1}", element.name());
+			msg = msg.replaceAll("\\{0\\}", target.getName());
+			msg = msg.replaceAll("\\{1\\}", element.name());
 			sender.sendMessage(color + msg);
 			msg = Messages.OTHER_CHANGE_YOU;
-			msg = msg.replaceAll("{0}", element.name());
+			msg = msg.replaceAll("\\{0\\}", element.name());
 			target.sendMessage(color + msg);
 		} else {
 			String msg = Messages.SET_ELEMENT;
-			msg = msg.replaceAll("{0}", element.name());
+			msg = msg.replaceAll("\\{0\\}", element.name());
 			target.sendMessage(color + msg);
 		}
 
