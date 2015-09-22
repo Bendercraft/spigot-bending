@@ -48,7 +48,7 @@ public class HelpExecution extends BendingCommand {
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	@Override

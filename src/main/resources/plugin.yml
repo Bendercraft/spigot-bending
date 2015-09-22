@@ -170,7 +170,7 @@ permissions:
   bending.air.AirScooter:
     description: Allows the use of AirScooter.
     default: false
-  bending.air.Speed:
+  bending.air.AirSpeed:
     description: Allows the use of Speed.
     default: true
   bending.air.Tornado:
@@ -322,6 +322,9 @@ permissions:
   bending.chiblocker:
     description: Allows being a Chiblocker.
     default: true
+  bending.chiblocker.ChiSpeed:
+    description: Allows the use of the Chi Speed
+    default: true
   bending.chiblocker.RapidPunch:
     description: Allows the use of RapidPunch
     default: true
@@ -343,7 +346,7 @@ permissions:
   bending.chiblocker.PlasticBomb:
     description: Allows the use of the C4
     default: false
-  bending.chiblocker.powerfulhit:
+  bending.chiblocker.PowerfulHit:
     description: Allows the use of the PowerfulHit
     default: false
 
