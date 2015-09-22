@@ -2,7 +2,6 @@ package net.avatar.realms.spigot.bending.utils;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -120,27 +119,6 @@ public class PluginTools {
 		if (something != null) {
 			Bending.log.info("[Bending] " + something.toString());
 		}
-	}
-
-	public static String getSupportedLanguages() {
-		String languages = "";
-		List<String> suplangs = Bending.language.getSupportedLanguages();
-		for (int i = 0; i < suplangs.size(); i++) {
-			String string = suplangs.get(i);
-			if (i != (suplangs.size() - 1)) {
-				string = string + ", ";
-			}
-			languages = languages + string;
-		}
-		return languages;
-	}
-
-	public static String getDefaultLanguage() {
-		return Bending.language.getDefaultLanguage();
-	}
-
-	public static boolean isLanguageSupported(String language) {
-		return (Bending.language.getSupportedLanguages().contains(language.toLowerCase()));
 	}
 
 	public static double firebendingDayAugment(double value, World world) {

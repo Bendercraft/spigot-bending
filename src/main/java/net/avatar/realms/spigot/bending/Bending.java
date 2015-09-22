@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -34,7 +33,6 @@ public class Bending extends JavaPlugin {
 	public final BendingPlayerListener bpListener = new BendingPlayerListener(this);
 	public final BendingBlockListener blListener = new BendingBlockListener(this);
 	private final RevertChecker revertChecker = new RevertChecker(this);
-	public static Language language;
 	public static IBendingDB database;
 	public Tools tools;
 
@@ -59,8 +57,6 @@ public class Bending extends JavaPlugin {
 		this.learning = new BendingLearning();
 		this.learning.onEnable();
 
-		language = new Language();
-		language.load(new File(getDataFolder(), "language.yml"));
 		database = DBUtils.choose(Settings.DATABASE);
 		// Fatal error
 		if (database == null) {
