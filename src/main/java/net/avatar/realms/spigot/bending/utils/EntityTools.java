@@ -21,9 +21,9 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
@@ -364,30 +364,30 @@ public class EntityTools {
 
 	public static boolean isWeapon(Material mat) {
 		switch (mat) {
-		case WOOD_AXE:
-		case WOOD_PICKAXE:
-		case WOOD_SPADE:
-		case WOOD_SWORD:
-		case STONE_AXE:
-		case STONE_PICKAXE:
-		case STONE_SPADE:
-		case STONE_SWORD:
-		case IRON_AXE:
-		case IRON_PICKAXE:
-		case IRON_SPADE:
-		case IRON_SWORD:
-		case GOLD_AXE:
-		case GOLD_PICKAXE:
-		case GOLD_SPADE:
-		case GOLD_SWORD:
-		case DIAMOND_AXE:
-		case DIAMOND_PICKAXE:
-		case DIAMOND_SPADE:
-		case DIAMOND_SWORD:
-			return true;
+			case WOOD_AXE:
+			case WOOD_PICKAXE:
+			case WOOD_SPADE:
+			case WOOD_SWORD:
+			case STONE_AXE:
+			case STONE_PICKAXE:
+			case STONE_SPADE:
+			case STONE_SWORD:
+			case IRON_AXE:
+			case IRON_PICKAXE:
+			case IRON_SPADE:
+			case IRON_SWORD:
+			case GOLD_AXE:
+			case GOLD_PICKAXE:
+			case GOLD_SPADE:
+			case GOLD_SWORD:
+			case DIAMOND_AXE:
+			case DIAMOND_PICKAXE:
+			case DIAMOND_SPADE:
+			case DIAMOND_SWORD:
+				return true;
 
-		default:
-			return false;
+			default:
+				return false;
 		}
 	}
 }

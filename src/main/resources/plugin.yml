@@ -193,16 +193,16 @@ permissions:
   bending.fire:
     description: Allows being a Firebender.
     default: true
-  bending.fire.Blaze:
+  bending.fire.blaze:
     description: Allows the use of Blaze.
     default: true
-  bending.fire.HeatControl:
+  bending.fire.heatcontrol:
     description: Allows the use of ControlHeat.
     default: true
   bending.fire.FireJet:
     description: Allows the use of FireJet.
     default: false
-  bending.fire.FireBlast:
+  bending.fire.fireblast:
     description: Allows the use of FireBlast
     default: true
   bending.fire.Passive:

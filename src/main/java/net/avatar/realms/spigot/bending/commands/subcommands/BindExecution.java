@@ -31,24 +31,24 @@ public class BindExecution extends BendingCommand {
 			return true;
 		}
 
-		Player player = (Player) sender;
-
-		if (!player.hasPermission("bending.command.bind")) {
-			player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+		if (!sender.hasPermission("bending.command.bind")) {
+			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
 
 		if ((args.size() != 1) && (args.size() != 2)) {
-			printUsage(player);
+			printUsage(sender);
 			return true;
 		}
 
 		final String a = args.get(0);
 		final BendingAbilities ability = BendingAbilities.getAbility(a);
 		if ((ability == null) || ability.isPassiveAbility()) {
-			player.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
+			sender.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
 			return true;
 		}
+
+		Player player = (Player) sender;
 
 		if (!EntityTools.hasPermission(player, ability)) {
 			player.sendMessage(ChatColor.RED + Messages.NO_BIND_PERMISSION);
