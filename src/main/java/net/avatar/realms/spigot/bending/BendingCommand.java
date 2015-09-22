@@ -7,7 +7,6 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -17,17 +16,12 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 public class BendingCommand {
 
 	private static final String[] clearAliases = { "clear", "cl" };
-	private static final String[] pathAliases = { "path", "p" };
 	private static final String[] helpAliases = { "help", "h", "?" };
 	private final Server server;
 	private boolean verbose = true;
-	private BendingPlayer bPlayer;
 
 	public BendingCommand(final Player player, String[] args, final Server server) {
 		this.server = server;
-		if (player != null) {
-			this.bPlayer = BendingPlayer.getBendingPlayer(player);
-		}
 		for (int i = 0; i < args.length; i++) {
 			args[i] = args[i].toLowerCase();
 		}
@@ -43,8 +37,6 @@ public class BendingCommand {
 			final String arg = args[0];
 			if (Arrays.asList(clearAliases).contains(arg)) {
 				clear(player, args);
-			} else if (Arrays.asList(pathAliases).contains(arg)) {
-				path(player, args);
 			} else if (Arrays.asList(helpAliases).contains(arg)) {
 				help(player, args);
 			} else {
@@ -53,61 +45,6 @@ public class BendingCommand {
 		} else {
 			printHelpDialogue(player);
 		}
-	}
-
-	private void path(Player player, String[] args) {
-		if (!hasPermission(player, "bending.admin.path")) {
-			return;
-		}
-		// If no args, just list
-		if (args.length == 1) {
-			for (BendingPath path : this.bPlayer.getPath()) {
-				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
-				sendMessage(player, color + "You are " + path.name() + " for element " + path.getElement().name() + ".");
-			}
-			return;
-		}
-		final String subAction = args[1];
-		if (subAction.equals("set")) {
-			if (args.length < 3) {
-				printPathUsage(player);
-			}
-			final String choice = args[2].toLowerCase();
-			final BendingPath path = BendingPath.getType(choice);
-			if (path == null) {
-				Messages.sendMessage(player, "general.bad_path");
-				return;
-			}
-			BendingPlayer bPlayer = null;
-			if (args.length == 4) {
-				final String playername = args[3];
-				final Player targetplayer = getOnlinePlayer(playername);
-				if (targetplayer == null) {
-					player.sendMessage("Player " + playername + " is unknown.");
-					return;
-				}
-				bPlayer = BendingPlayer.getBendingPlayer(targetplayer);
-			} else {
-				bPlayer = BendingPlayer.getBendingPlayer(player);
-			}
-			if (bPlayer == null) {
-				// Wut !
-				return;
-			}
-			if (!bPlayer.isBender(path.getElement())) {
-				Messages.sendMessage(player, "general.bad_path_element");
-				return;
-			}
-			bPlayer.setPath(path);
-			return;
-		} else if (subAction.equals("list")) {
-			for (final BendingPath path : BendingPath.values()) {
-				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
-				sendMessage(player, color + path.name());
-			}
-			return;
-		}
-		printPathUsage(player);
 	}
 
 	private void printUsageMessage(final Player player, final String command, final String key) {
@@ -161,15 +98,6 @@ public class BendingCommand {
 
 	private void printNotFromConsole() {
 		Messages.sendMessage(null, "General.not_from_console");
-	}
-
-	private void printPathUsage(final Player player) {
-		printUsageMessage(player, "/bending path", "General.path_list");
-		if (player != null) {
-			printUsageMessage(player, "/bending path set <path>", "General.path_set_self");
-		} else {
-			printUsageMessage(player, "/bending path set <path> <player>", "General.path_set_other");
-		}
 	}
 
 	private void printClearUsage(final Player player) {

@@ -1,7 +1,7 @@
 name: Bending
 main: net.avatar.realms.spigot.bending.Bending
 authors: [Noko, Koudja]
-version: 5.2.0
+version: 6.0.0
 depend: [WorldGuard,WGCustomFlags]
 softdepend: [WorldEdit,CoreProtect,Citizens,Factions]
 commands:
@@ -408,10 +408,10 @@ permissions:
     description: Allows the use of /bending cooldown
     default: true
   bending.command.path:
-    description: Allows the use of /bending path
+    description: Allows to list path
     default: true
-  bending.command.path.choose:
-    description: Allows to choose a path
+  bending.command.path.admin:
+    description: Allows to manage path
     default: op
   bending.command.affinity:
     description: Allows to choose an affinity
