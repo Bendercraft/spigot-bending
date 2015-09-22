@@ -111,6 +111,7 @@ public class FireBlast extends BendingActiveAbility {
 		this.direction = direction.clone().normalize();
 		this.damage *= 1.5;
 		this.id = ID++;
+		this.speedfactor = SPEED * (Bending.time_step / 1000.);
 
 		if (this.bender.hasPath(BendingPath.Nurture)) {
 			this.damage *= 0.8;
@@ -199,7 +200,8 @@ public class FireBlast extends BendingActiveAbility {
 			}
 		} else if (this.state == BendingAbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
-			location.getWorld().playEffect(location, Effect.FLAME, Tools.getIntCardinalDirection(location.getDirection()), 3);
+			//location.getWorld().playEffect(location, Effect.FLAME, Tools.getIntCardinalDirection(location.getDirection()), 3);
+			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
 			if(!player.isSneaking() || bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
 				return false;
 			}
