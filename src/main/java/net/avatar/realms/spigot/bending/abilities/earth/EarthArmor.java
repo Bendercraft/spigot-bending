@@ -277,6 +277,10 @@ public class EarthArmor extends BendingActiveAbility {
 
 	@Override
 	public boolean progress() {
+		if(!super.progress()) {
+			return false;
+		}
+		
 		if(state != BendingAbilityState.Progressing) {
 			return false;
 		}
