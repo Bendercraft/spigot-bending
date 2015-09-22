@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
@@ -61,6 +62,7 @@ public class EarthWall extends BendingActiveAbility {
 
 		columns.add(new EarthColumn(player));
 		state = BendingAbilityState.Progressing;
+		AbilityManager.getManager().addInstance(this);
 		return false;
 	}
 
@@ -129,12 +131,13 @@ public class EarthWall extends BendingActiveAbility {
 			bender.cooldown(BendingAbilities.RaiseEarth, COOLDOWN);
 		}
 		state = BendingAbilityState.Progressing;
+		AbilityManager.getManager().addInstance(this);
 		return false;
 	}
 
 	@Override
 	public boolean progress() {
-		if (super.progress()) {
+		if (!super.progress()) {
 			return false;
 		}
 
@@ -142,9 +145,10 @@ public class EarthWall extends BendingActiveAbility {
 			return false;
 		}
 
-		for (EarthColumn column : columns) {
+		LinkedList<EarthColumn> test = new LinkedList<EarthColumn>(columns);
+		for (EarthColumn column : test) {
 			if (!column.progress()) {
-				return false;
+				columns.remove(column);
 			}
 		}
 

@@ -88,28 +88,14 @@ public class EarthColumn {
 	}
 
 	public EarthColumn(Player player, Location origin) {
-		this.origin = origin;
-		location = origin.clone();
-		block = location.getBlock();
-		this.player = player;
-		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), height);
-
-		loadAffectedBlocks();
-
-		if (distance != 0) {
-			if (canInstantiate()) {
-				id = ID;
-				instances.put(id, this);
-				if (ID >= Integer.MAX_VALUE) {
-					ID = Integer.MIN_VALUE;
-				}
-				ID++;
-				time = System.currentTimeMillis() - interval;
-			}
-		}
+		this(player, origin, HEIGHT);
 	}
 
 	public EarthColumn(Player player, Location origin, int height) {
+		this(player, origin, height, null);
+	}
+
+	public EarthColumn(Player player, Location origin, int height, EarthGrab grab) {
 		this.height = height;
 		this.origin = origin;
 		location = origin.clone();
@@ -130,10 +116,6 @@ public class EarthColumn {
 				time = System.currentTimeMillis() - interval;
 			}
 		}
-	}
-
-	public EarthColumn(Player player, Location origin, int height, EarthGrab grab) {
-		this(player, origin, height);
 		this.earthGrab = grab;
 	}
 

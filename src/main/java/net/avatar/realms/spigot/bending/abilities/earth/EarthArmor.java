@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
@@ -51,6 +52,8 @@ public class EarthArmor extends BendingActiveAbility {
 	public List<ItemStack> armors = new ArrayList<ItemStack>(4);
 
 	private static long interval = 2000;
+	
+	private List<EarthColumn> columns = new LinkedList<EarthColumn>();
 
 	public EarthArmor(Player player) {
 		super(player, null);
@@ -110,7 +113,7 @@ public class EarthArmor extends BendingActiveAbility {
 
 		Block base = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
 
-		ArrayList<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks = new ArrayList<Block>();
 		Location location = base.getLocation();
 		Location loc1 = location.clone();
 		Location loc2 = location.clone();
@@ -121,22 +124,23 @@ public class EarthArmor extends BendingActiveAbility {
 		int height2 = 2;
 		for (double angle = 0; angle <= 360; angle += 20) {
 			testloc = loc1.clone().add(factor * Math.cos(Math.toRadians(angle)), 1, factor * Math.sin(Math.toRadians(angle)));
-			testloc2 = loc2.clone().add(factor2 * Math.cos(Math.toRadians(angle)), 1, factor2 * Math.sin(Math.toRadians(angle)));
 			for (int y = 0; y < EarthColumn.HEIGHT - height1; y++) {
 				testloc = testloc.clone().add(0, -1, 0);
 				if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
 					if (!blocks.contains(testloc.getBlock())) {
-						new EarthColumn(player, testloc, height1 + y - 1, null);
+						columns.add(new EarthColumn(player, testloc, height1+y-1));
 					}
 					blocks.add(testloc.getBlock());
 					break;
 				}
 			}
+			
+			testloc2 = loc2.clone().add(factor2 * Math.cos(Math.toRadians(angle)), 1, factor2 * Math.sin(Math.toRadians(angle)));
 			for (int y = 0; y < EarthColumn.HEIGHT - height2; y++) {
 				testloc2 = testloc2.clone().add(0, -1, 0);
 				if (BlockTools.isEarthbendable(player, testloc2.getBlock())) {
 					if (!blocks.contains(testloc2.getBlock())) {
-						new EarthColumn(player, testloc2, height2 + y - 1, null);
+						columns.add(new EarthColumn(player, testloc2, height2+y-1));
 					}
 					blocks.add(testloc2.getBlock());
 					break;
@@ -144,10 +148,10 @@ public class EarthArmor extends BendingActiveAbility {
 			}
 		}
 
-		if (!blocks.isEmpty()) {
+		if (!columns.isEmpty()) {
 			bender.cooldown(BendingAbilities.EarthArmor, COOLDOWN);
-			AbilityManager.getManager().addInstance(this);
 			state = BendingAbilityState.Progressing;
+			AbilityManager.getManager().addInstance(this);
 		}
 
 		return false;
@@ -222,6 +226,9 @@ public class EarthArmor extends BendingActiveAbility {
 	}
 
 	private boolean inPosition() {
+		if(this.headblock == null || this.legsblock == null) {
+			return false;
+		}
 		if (this.headblock.equals(this.player.getEyeLocation().getBlock()) && this.legsblock.equals(this.player.getLocation().getBlock())) {
 			return true;
 		}
@@ -270,6 +277,20 @@ public class EarthArmor extends BendingActiveAbility {
 
 	@Override
 	public boolean progress() {
+		if(state != BendingAbilityState.Progressing) {
+			return false;
+		}
+		
+		if(!columns.isEmpty()) {
+			List<EarthColumn> test = new LinkedList<EarthColumn>(columns);
+			for(EarthColumn column : test) {
+				if(!column.progress()) {
+					columns.remove(column);
+				}
+			}
+			return !columns.isEmpty();
+		}
+		
 		if (this.player.isDead() || !this.player.isOnline()) {
 			cancel();
 			removeEffect();
@@ -317,11 +338,10 @@ public class EarthArmor extends BendingActiveAbility {
 	}
 
 	public static void removeEffect(Player player) {
-		if (!AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor).containsKey(player)) {
-			return;
+		EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor).get(player);
+		if(earthArmor != null) {
+			earthArmor.removeEffect();
 		}
-		EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor);
-		earthArmor.removeEffect();
 	}
 
 	public static boolean canRemoveArmor(Player player) {
@@ -337,5 +357,13 @@ public class EarthArmor extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
+	}
+
+	@Override
+	public void remove() {
+		for(EarthColumn column : columns) {
+			column.remove();
+		}
+		super.remove();
 	}
 }
