@@ -346,7 +346,7 @@ public class BendingPlayer {
 		return string;
 	}
 
-	public List<BendingAffinity> getSpecializations() {
+	public List<BendingAffinity> getAffinities() {
 		return this.affinities;
 	}
 

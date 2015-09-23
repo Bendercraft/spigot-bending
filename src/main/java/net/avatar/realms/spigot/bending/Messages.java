@@ -160,6 +160,15 @@ public class Messages {
 	@LanguageParameter("command.no_bind_permission")
 	public static String NO_BIND_PERMISSION = "You do not have the permission to bind that ability.";
 
+	@LanguageParameter("command.already_element_affinity")
+	public static String ALREADY_ELEMENT_AFFINITY = "The target already has an affinity for {0}.";
+
+	@LanguageParameter("command.learning_ability")
+	public static String ABILITY_LEARNED = "You now can use ";
+
+	@LanguageParameter("command.invalid_parameter")
+	public static String INVALID_PARAMETER = "Invalid parameter.";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;

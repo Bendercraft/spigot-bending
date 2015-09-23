@@ -81,7 +81,7 @@ public class WhoExecution extends BendingCommand {
 			msg = color + msg;
 			player.sendMessage(msg);
 
-			for (BendingAffinity aff : bender.getSpecializations()) {
+			for (BendingAffinity aff : bender.getAffinities()) {
 				if (aff.getElement() == element) {
 					player.sendMessage(color + p.getName() + " has affinity : " + aff.name());
 					break;
