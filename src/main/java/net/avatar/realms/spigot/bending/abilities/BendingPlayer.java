@@ -19,7 +19,7 @@ public class BendingPlayer {
 	private UUID player;
 
 	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
-	private int currentSet = 1;
+	private String currentSet = "default";
 	private Map<Integer, Map<Integer, BendingAbilities>> abilitiesSets = new HashMap<Integer, Map<Integer, BendingAbilities>>();
 
 	private List<BendingElement> bendings = new LinkedList<BendingElement>();
@@ -32,8 +32,6 @@ public class BendingPlayer {
 	private long slowTime = 0;
 
 	private long lastTime = 0;
-
-	private boolean tremorsense = true;
 
 	public BendingPlayer(UUID id) {
 		this.player = id;
@@ -73,14 +71,6 @@ public class BendingPlayer {
 		} else {
 			return false;
 		}
-	}
-
-	public void toggleTremorsense() {
-		this.tremorsense = !this.tremorsense;
-	}
-
-	public boolean isTremorsensing() {
-		return this.tremorsense;
 	}
 
 	public void cooldown() {
