@@ -4,16 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Material;
-
 public class BendingPlayerData {
 	private UUID player;
 	private List<BendingElement> bendings;
 	private List<BendingAffinity> affinities;
 	private List<BendingPath> paths;
-	private boolean bendToItem;
 	private Map<String, Map<Integer, BendingAbilities>> decks;
-	private Map<Material, BendingAbilities> itemAbilities;
+	private String currentDeck;
 	private long lastTime;
 
 	public UUID getPlayer() {
@@ -32,28 +29,12 @@ public class BendingPlayerData {
 		this.bendings = bending;
 	}
 
-	public boolean isBendToItem() {
-		return this.bendToItem;
-	}
-
-	public void setBendToItem(boolean bendToItem) {
-		this.bendToItem = bendToItem;
-	}
-
 	public Map<String, Map<Integer, BendingAbilities>> getDecks() {
 		return this.decks;
 	}
 
 	public void setDecks(Map<String, Map<Integer, BendingAbilities>> slotAbilities) {
 		this.decks = slotAbilities;
-	}
-
-	public Map<Material, BendingAbilities> getItemAbilities() {
-		return this.itemAbilities;
-	}
-
-	public void setItemAbilities(Map<Material, BendingAbilities> itemAbilities) {
-		this.itemAbilities = itemAbilities;
 	}
 
 	public long getLastTime() {
@@ -78,5 +59,13 @@ public class BendingPlayerData {
 
 	public void setPaths(List<BendingPath> paths) {
 		this.paths = paths;
+	}
+
+	public String getCurrentDeck() {
+		return this.currentDeck;
+	}
+
+	public void setCurrentDeck(String currentDeck) {
+		this.currentDeck = currentDeck;
 	}
 }

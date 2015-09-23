@@ -60,10 +60,11 @@ public class BendingPlayer {
 		this.player = data.getPlayer();
 
 		this.bendings = data.getBendings() != null ? data.getBendings() : this.bendings;
-		this.decks = data.getDecks() != null ? data.getDecks() : this.decks;
-
 		this.affinities = data.getAffinities() != null ? data.getAffinities() : this.affinities;
 		this.paths = data.getPaths() != null ? data.getPaths() : this.paths;
+
+		this.decks = data.getDecks() != null ? data.getDecks() : this.decks;
+		this.currentDeck = data.getCurrentDeck();
 
 		this.lastTime = data.getLastTime();
 	}
@@ -371,6 +372,7 @@ public class BendingPlayer {
 		result.setAffinities(this.affinities);
 		result.setPlayer(this.player);
 		result.setDecks(this.decks);
+		result.setCurrentDeck(this.currentDeck);
 		result.setPaths(this.paths);
 		return result;
 	}
