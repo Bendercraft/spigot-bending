@@ -100,8 +100,9 @@ public class Settings {
 	@ConfigurationParameter("chat-colors.chi")
 	public static String CHI_COLOR = "YELLOW";
 
-	@ConfigurationParameter("bending.max-sets-amount")
-	public static int MAX_SETS_AMOUNT = 5;
+	@ConfigurationParameter("bending.max-decks-amount")
+	public static int MAX_DECKS_AMOUNT = 5;
+
 
 	public static void applyConfiguration(File configDir) {
 		configDir.mkdirs();

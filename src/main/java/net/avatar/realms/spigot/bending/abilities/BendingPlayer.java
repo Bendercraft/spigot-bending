@@ -51,6 +51,10 @@ public class BendingPlayer {
 		return this.decks;
 	}
 
+	public void setCurrentDeck(String current) {
+		this.currentDeck = current;
+	}
+
 	public BendingPlayer(BendingPlayerData data) {
 		this.player = data.getPlayer();
 
