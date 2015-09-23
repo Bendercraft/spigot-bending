@@ -37,6 +37,7 @@ public class DisplayExecution extends BendingCommand {
 			Player player = (Player) sender;
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 			Map<Integer, BendingAbilities> abilities = bender.getAbilities();
+			player.sendMessage("You currently use deck : " + bender.getCurrentDeck());
 			player.sendMessage("Slots :");
 			if (abilities != null && !abilities.isEmpty()) {
 				ChatColor white = ChatColor.WHITE;

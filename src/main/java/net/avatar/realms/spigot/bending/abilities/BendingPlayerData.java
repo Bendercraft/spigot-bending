@@ -12,12 +12,12 @@ public class BendingPlayerData {
 	private List<BendingAffinity> affinities;
 	private List<BendingPath> paths;
 	private boolean bendToItem;
-	private Map<Integer, BendingAbilities> slotAbilities;
+	private Map<String, Map<Integer, BendingAbilities>> decks;
 	private Map<Material, BendingAbilities> itemAbilities;
 	private long lastTime;
 
 	public UUID getPlayer() {
-		return player;
+		return this.player;
 	}
 
 	public void setPlayer(UUID player) {
@@ -25,7 +25,7 @@ public class BendingPlayerData {
 	}
 
 	public List<BendingElement> getBendings() {
-		return bendings;
+		return this.bendings;
 	}
 
 	public void setBendings(List<BendingElement> bending) {
@@ -33,23 +33,23 @@ public class BendingPlayerData {
 	}
 
 	public boolean isBendToItem() {
-		return bendToItem;
+		return this.bendToItem;
 	}
 
 	public void setBendToItem(boolean bendToItem) {
 		this.bendToItem = bendToItem;
 	}
 
-	public Map<Integer, BendingAbilities> getSlotAbilities() {
-		return slotAbilities;
+	public Map<String, Map<Integer, BendingAbilities>> getDecks() {
+		return this.decks;
 	}
 
-	public void setSlotAbilities(Map<Integer, BendingAbilities> slotAbilities) {
-		this.slotAbilities = slotAbilities;
+	public void setDecks(Map<String, Map<Integer, BendingAbilities>> slotAbilities) {
+		this.decks = slotAbilities;
 	}
 
 	public Map<Material, BendingAbilities> getItemAbilities() {
-		return itemAbilities;
+		return this.itemAbilities;
 	}
 
 	public void setItemAbilities(Map<Material, BendingAbilities> itemAbilities) {
@@ -57,7 +57,7 @@ public class BendingPlayerData {
 	}
 
 	public long getLastTime() {
-		return lastTime;
+		return this.lastTime;
 	}
 
 	public void setLastTime(long lastTime) {
@@ -65,7 +65,7 @@ public class BendingPlayerData {
 	}
 
 	public List<BendingAffinity> getAffinities() {
-		return affinities;
+		return this.affinities;
 	}
 
 	public void setAffinities(List<BendingAffinity> affinities) {
@@ -73,7 +73,7 @@ public class BendingPlayerData {
 	}
 
 	public List<BendingPath> getPaths() {
-		return paths;
+		return this.paths;
 	}
 
 	public void setPaths(List<BendingPath> paths) {

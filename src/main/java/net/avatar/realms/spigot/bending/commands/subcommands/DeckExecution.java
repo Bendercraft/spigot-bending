@@ -18,6 +18,9 @@ import net.avatar.realms.spigot.bending.controller.Settings;
 public class DeckExecution extends BendingCommand {
 
 	public DeckExecution() {
+		super();
+		this.command = "deck";
+		this.aliases.add("dk");
 		this.basePermission = "bending.command.deck";
 	}
 
@@ -32,7 +35,9 @@ public class DeckExecution extends BendingCommand {
 			if (args.get(0).equalsIgnoreCase("list")) {
 				listDecks(sender);
 			}
-			changeDeck(sender, args);
+			else {
+				changeDeck(sender, args);
+			}
 		}
 		else if (args.size() == 3) {
 			renameDeck(sender, args);

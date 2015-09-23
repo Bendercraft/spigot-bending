@@ -19,7 +19,7 @@ public class BendingPlayer {
 
 	private UUID player;
 
-	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
+	//	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
 	private String currentDeck = "default";
 	private Map<String, Map<Integer, BendingAbilities>> decks = new HashMap<String, Map<Integer, BendingAbilities>>();
 
@@ -37,6 +37,7 @@ public class BendingPlayer {
 	public BendingPlayer(UUID id) {
 		this.player = id;
 		this.lastTime = System.currentTimeMillis();
+		this.decks.put(this.currentDeck, new HashMap<Integer, BendingAbilities>());
 	}
 
 	public String getCurrentDeck() {
@@ -59,7 +60,7 @@ public class BendingPlayer {
 		this.player = data.getPlayer();
 
 		this.bendings = data.getBendings() != null ? data.getBendings() : this.bendings;
-		this.slotAbilities = data.getSlotAbilities() != null ? data.getSlotAbilities() : this.slotAbilities;
+		this.decks = data.getDecks() != null ? data.getDecks() : this.decks;
 
 		this.affinities = data.getAffinities() != null ? data.getAffinities() : this.affinities;
 		this.paths = data.getPaths() != null ? data.getPaths() : this.paths;
@@ -233,7 +234,8 @@ public class BendingPlayer {
 	}
 
 	public void clearAbilities() {
-		this.slotAbilities = new HashMap<Integer, BendingAbilities>();
+		// this.slotAbilities = new HashMap<Integer, BendingAbilities>();
+		this.decks.put(this.currentDeck, new HashMap<Integer, BendingAbilities>());
 		Bending.database.save(this.player);
 	}
 
@@ -259,15 +261,15 @@ public class BendingPlayer {
 	}
 
 	public Map<Integer, BendingAbilities> getAbilities() {
-		return this.slotAbilities;
+		return this.decks.get(this.currentDeck);
 	}
 
 	public BendingAbilities getAbility(int slot) {
-		return this.slotAbilities.get(slot);
+		return this.decks.get(this.currentDeck).get(slot);
 	}
 
 	public void setAbility(int slot, BendingAbilities ability) {
-		this.slotAbilities.put(slot, ability);
+		this.decks.get(this.currentDeck).put(slot, ability);
 		Bending.database.save(this.player);
 	}
 
@@ -348,7 +350,8 @@ public class BendingPlayer {
 		string += ", ";
 		string += "Bendings=" + this.bendings;
 		string += ", ";
-		string += "Binds=" + this.slotAbilities;
+		string += "Decks=" + this.decks;
+		// string += "Binds=" + this.slotAbilities;
 		string += "}";
 		return string;
 	}
@@ -367,7 +370,7 @@ public class BendingPlayer {
 		result.setLastTime(this.lastTime);
 		result.setAffinities(this.affinities);
 		result.setPlayer(this.player);
-		result.setSlotAbilities(this.slotAbilities);
+		result.setDecks(this.decks);
 		result.setPaths(this.paths);
 		return result;
 	}
