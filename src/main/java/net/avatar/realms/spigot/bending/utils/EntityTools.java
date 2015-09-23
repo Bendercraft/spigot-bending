@@ -154,11 +154,11 @@ public class EntityTools {
 		return !ProtectionManager.isRegionProtectedFromBending(player, ability, player.getLocation());
 	}
 
-	public static boolean canBendPassive(Player player, BendingElement type) {
+	public static boolean canBendPassive(Player player, BendingElement element) {
 		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player)) && !AvatarState.isAvatarState(player)) {
 			return false;
 		}
-		if (!player.hasPermission("bending." + type + ".passive")) {
+		if (!player.hasPermission("bending." + element.name() + ".passive")) {
 			return false;
 		}
 		if (ProtectionManager.isRegionProtectedFromBendingPassives(player, player.getLocation())) {

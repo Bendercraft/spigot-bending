@@ -46,7 +46,7 @@ public class DisplayExecution extends BendingCommand {
 				ChatColor white = ChatColor.WHITE;
 				for (Entry<Integer, BendingAbilities> slot : abilities.entrySet()) {
 					ChatColor color = PluginTools.getColor(Settings.getColorString(slot.getValue().getElement().name()));
-					player.sendMessage("--" + color + slot.getKey() + white + " : " + color + slot.getValue().name());
+					player.sendMessage("--" + color + (slot.getKey() + 1) + white + " : " + color + slot.getValue().name());
 				}
 			} else {
 				player.sendMessage("-" + Messages.NOTHING_BOUND);

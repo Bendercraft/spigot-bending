@@ -56,7 +56,7 @@ public class CooldownExecution extends BendingCommand {
 				if (!ab.isEnergyAbility()) {
 					col = PluginTools.getColor(Settings.getColorString(ab.getElement().name()));
 				}
-				player.sendMessage(col + "--- " + ab.name() + " ~ " + min + ":" + sec);
+				player.sendMessage(col + "--- " + ab.name() + " ~ " + min + ":" + ((sec < 10) ? "0" + sec : sec));
 			}
 		}
 		return true;

@@ -68,9 +68,6 @@ public class EarthGrab extends BendingActiveAbility {
 		Entity closestentity = EntityTools.getTargettedEntity(this.player, range);
 		boolean done = grabEntity(this.player, closestentity);
 		if (this.target != null && done == true) {
-			if (ID == Integer.MAX_VALUE) {
-				ID = Integer.MIN_VALUE;
-			}
 			this.id = ID++;
 			AbilityManager.getManager().addInstance(this);
 			this.state = BendingAbilityState.Progressing;
@@ -89,9 +86,6 @@ public class EarthGrab extends BendingActiveAbility {
 		this.self = true;
 		boolean done = grabEntity(this.player, this.player);
 		if (this.target != null && done == true) {
-			if (ID == Integer.MAX_VALUE) {
-				ID = Integer.MIN_VALUE;
-			}
 			this.id = ID++;
 			AbilityManager.getManager().addInstance(this);
 			this.state = BendingAbilityState.Progressing;

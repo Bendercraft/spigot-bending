@@ -23,7 +23,7 @@ permissions:
       bending.air.AirBubble: false
       bending.air.AirShield: false
       bending.air.AirSuction: false
-      bending.air.Speed: false
+      bending.air.AirSpeed: true
       bending.air.Tornado: false
       bending.air.AirBlast: false
       bending.air.Passive: false
