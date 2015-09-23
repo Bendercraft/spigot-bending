@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -76,7 +77,10 @@ public class DisplayExecution extends BendingCommand {
 
 	@Override
 	public List<String> autoComplete(CommandSender sender, List<String> args) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> values = new LinkedList<String>();
+		for (BendingElement element : BendingElement.values()) {
+			values.add(element.name());
+		}
+		return values;
 	}
 }
