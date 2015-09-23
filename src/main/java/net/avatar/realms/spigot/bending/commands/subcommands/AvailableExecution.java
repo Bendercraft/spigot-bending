@@ -13,6 +13,7 @@ public class AvailableExecution extends BendingCommand {
 		this.command = "available";
 		this.aliases.add("availables");
 		this.aliases.add("avail");
+		this.basePermission = "bending.command.available";
 
 	}
 

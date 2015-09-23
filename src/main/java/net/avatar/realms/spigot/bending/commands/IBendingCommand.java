@@ -28,4 +28,6 @@ public interface IBendingCommand {
 	 */
 	public List<String> autoComplete(CommandSender sender, List<String> args);
 
+	public boolean hasBasePermission(CommandSender sender);
+
 }

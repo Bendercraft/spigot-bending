@@ -5,11 +5,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
+import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.commands.subcommands.AddExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.AffinityExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.AvailableExecution;
@@ -17,6 +19,7 @@ import net.avatar.realms.spigot.bending.commands.subcommands.BindExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.ChooseExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.ClearExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.CooldownExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.DeckExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.DisplayExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.HelpExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.LearningExecution;
@@ -45,6 +48,7 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 	private IBendingCommand reload;
 	private IBendingCommand help;
 	private IBendingCommand available;
+	private IBendingCommand deck;
 
 	private List<IBendingCommand> commands;
 
@@ -62,13 +66,13 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		this.add = new AddExecution();
 		this.reload = new ReloadExecution();
 		this.display = new DisplayExecution();
-		// TODO :
 		this.clear = new ClearExecution();
 		this.affinity = new AffinityExecution();
 		this.path = new PathExecution();
-		this.available = new AvailableExecution();
 		this.help = new HelpExecution(this.commands);
-
+		// TODO :
+		this.deck = new DeckExecution();
+		this.available = new AvailableExecution();
 
 		this.commands.add(this.bind);
 		this.commands.add(this.choose);
@@ -102,7 +106,13 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 
 		for (IBendingCommand command : this.commands) {
 			if (command.isCommand(subCommand)) {
-				return command.execute(sender, argList);
+				if (command.hasBasePermission(sender)) {
+					return command.execute(sender, argList);
+				}
+				else {
+					sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+				}
+				return true;
 			}
 		}
 		return false;

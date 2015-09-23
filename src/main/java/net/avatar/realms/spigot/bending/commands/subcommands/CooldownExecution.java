@@ -22,6 +22,7 @@ public class CooldownExecution extends BendingCommand {
 		this.command = "cooldown";
 		this.aliases.add("cd");
 		this.aliases.add("cooldowns");
+		this.basePermission = "bending.command.cooldown";
 	}
 
 	@Override
@@ -31,10 +32,6 @@ public class CooldownExecution extends BendingCommand {
 			return true;
 		}
 
-		if (!sender.hasPermission("bending.command.cooldown")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-			return true;
-		}
 		Player player = (Player) sender;
 
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);

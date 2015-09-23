@@ -16,17 +16,13 @@ public class ClearExecution extends BendingCommand {
 		super();
 		this.command = "clear";
 		this.aliases.add("cl");
+		this.basePermission = "bending.command.clear";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
-			return true;
-		}
-
-		if (!sender.hasPermission("bending.command.clear")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
 

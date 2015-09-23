@@ -22,17 +22,13 @@ public class DisplayExecution extends BendingCommand {
 		super();
 		this.command = "display";
 		this.aliases.add("d");
+		this.basePermission = "bending.command.display";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
-			return true;
-		}
-
-		if (!sender.hasPermission("bending.command.display")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
 

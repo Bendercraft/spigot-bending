@@ -21,14 +21,11 @@ public class HelpExecution extends BendingCommand {
 		this.command = "help";
 		this.aliases.add("?");
 		this.aliases.add("h");
+		this.basePermission = "bending.command.help";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (!sender.hasPermission("bending.command.help")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-			return true;
-		}
 
 		if (args.isEmpty()) {
 			if (!(sender instanceof Player)) {

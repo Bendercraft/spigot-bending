@@ -16,17 +16,13 @@ public class ToggleExecution extends BendingCommand {
 		super();
 		this.command = "toggle";
 		this.aliases.add("t");
+		this.basePermission = "bending.command.toggle";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
-			return true;
-		}
-
-		if (!sender.hasPermission("bending.command.toggle")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
 

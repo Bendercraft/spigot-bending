@@ -22,17 +22,13 @@ public class BindExecution extends BendingCommand {
 		super();
 		this.command = "bind";
 		this.aliases.add("b");
+		this.basePermission = "bending.command.bind";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
-			return true;
-		}
-
-		if (!sender.hasPermission("bending.command.bind")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
 

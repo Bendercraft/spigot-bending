@@ -22,6 +22,7 @@ public class WhoExecution extends BendingCommand {
 		this.command = "who";
 		this.aliases.add("w");
 		this.aliases.add("wh");
+		this.basePermission = "bending.command.who";
 	}
 
 	@Override
@@ -30,11 +31,6 @@ public class WhoExecution extends BendingCommand {
 			// We do not allow console to use this command because this would
 			// spam the logs
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
-			return true;
-		}
-
-		if (sender.hasPermission("bending.command.who")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
 

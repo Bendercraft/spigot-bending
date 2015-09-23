@@ -18,14 +18,11 @@ public class AffinityExecution extends BendingCommand {
 		this.command = "affinity";
 		this.aliases.add("aff");
 		this.aliases.add("affi");
+		this.basePermission = "bending.command.affinity";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (!sender.hasPermission("bending.command.affinity")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-			return true;
-		}
 
 		if (args.isEmpty()) {
 			printUsage(sender);

@@ -23,14 +23,11 @@ public class LearningExecution extends BendingCommand {
 		this.command = "learning";
 		this.aliases.add("learn");
 		this.aliases.add("l");
+		this.basePermission = "bending.command.learning";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (!sender.hasPermission("bending.command.learning")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-			return true;
-		}
 
 		if (args.isEmpty()) {
 			printUsage(sender);

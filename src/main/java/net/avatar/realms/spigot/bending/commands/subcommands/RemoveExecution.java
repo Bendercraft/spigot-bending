@@ -20,14 +20,11 @@ public class RemoveExecution extends BendingCommand {
 		this.aliases.add("r");
 		this.aliases.add("rem");
 		this.aliases.add("rm");
+		this.basePermission = "bending.command.remove";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (!sender.hasPermission("bending.command.remove")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-			return true;
-		}
 
 		if (args.isEmpty()) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_PLAYER);

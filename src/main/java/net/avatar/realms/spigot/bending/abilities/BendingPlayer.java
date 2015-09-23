@@ -19,8 +19,8 @@ public class BendingPlayer {
 	private UUID player;
 
 	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
-	private String currentSet = "default";
-	private Map<Integer, Map<Integer, BendingAbilities>> abilitiesSets = new HashMap<Integer, Map<Integer, BendingAbilities>>();
+	private String currentDeck = "default";
+	private Map<Integer, Map<Integer, BendingAbilities>> abilitiesDecks = new HashMap<Integer, Map<Integer, BendingAbilities>>();
 
 	private List<BendingElement> bendings = new LinkedList<BendingElement>();
 	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
