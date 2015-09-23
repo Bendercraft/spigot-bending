@@ -5,15 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-import net.avatar.realms.spigot.bending.utils.Tools;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,6 +15,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.Tools;
 
 public class IceSpikeColumn {
 	private static Map<Integer, IceSpikeColumn> instances = new HashMap<Integer, IceSpikeColumn>();
@@ -66,9 +65,11 @@ public class IceSpikeColumn {
 
 	public IceSpikeColumn(Player player, IBendingAbility parent) {
 		this.player = player;
-		if (cooldowns.containsKey(player))
-			if (cooldowns.get(player) + COOLDOWN >= System.currentTimeMillis())
+		if (cooldowns.containsKey(player)) {
+			if (cooldowns.get(player) + COOLDOWN >= System.currentTimeMillis()) {
 				return;
+			}
+		}
 		try {
 			double lowestdistance = RANGE + 1;
 			Entity closestentity = null;
@@ -92,8 +93,8 @@ public class IceSpikeColumn {
 			} else {
 				this.block = EntityTools.getTargetBlock(player, RANGE);
 			}
-			origin = block.getLocation();
-			location = origin.clone();
+			this.origin = this.block.getLocation();
+			this.location = this.origin.clone();
 
 		} catch (IllegalStateException e) {
 			return;
@@ -101,15 +102,15 @@ public class IceSpikeColumn {
 
 		loadAffectedBlocks();
 
-		if (height != 0) {
+		if (this.height != 0) {
 			if (canInstantiate()) {
-				id = ID;
-				instances.put(id, this);
+				this.id = ID;
+				instances.put(this.id, this);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}
 				ID++;
-				time = System.currentTimeMillis() - interval;
+				this.time = System.currentTimeMillis() - interval;
 				cooldowns.put(player, System.currentTimeMillis());
 			}
 		}
@@ -118,52 +119,54 @@ public class IceSpikeColumn {
 	public IceSpikeColumn(Player player, Location origin, int damage, Vector throwing, long aoecooldown, SpikeField spikeField) {
 		this.player = player;
 		this.origin = origin;
-		location = origin.clone();
-		block = location.getBlock();
+		this.location = origin.clone();
+		this.block = this.location.getBlock();
 		this.damage = damage;
 		this.thrown = throwing;
 
 		loadAffectedBlocks();
 
-		if (block.getType() == Material.ICE) {
+		if (this.block.getType() == Material.ICE) {
 			if (canInstantiate()) {
-				id = ID;
-				instances.put(id, this);
+				this.id = ID;
+				instances.put(this.id, this);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}
 				ID++;
-				time = System.currentTimeMillis() - interval;
+				this.time = System.currentTimeMillis() - interval;
 			}
 		}
 	}
 
 	private void loadAffectedBlocks() {
-		affectedblocks.clear();
+		this.affectedblocks.clear();
 		Block thisblock;
-		for (int i = 1; i <= height; i++) {
-			thisblock = block.getWorld().getBlockAt(location.clone().add(direction.clone().multiply(i)));
-			affectedblocks.put(thisblock, thisblock);
+		for (int i = 1; i <= this.height; i++) {
+			thisblock = this.block.getWorld().getBlockAt(this.location.clone().add(direction.clone().multiply(i)));
+			this.affectedblocks.put(thisblock, thisblock);
 		}
 	}
 
 	private boolean blockInAffectedBlocks(Block block) {
-		return affectedblocks.containsKey(block);
+		return this.affectedblocks.containsKey(block);
 	}
 
 	private static boolean blockInAllAffectedBlocks(Block block) {
 		for (IceSpikeColumn spike : instances.values()) {
-			if (spike.blockInAffectedBlocks(block))
+			if (spike.blockInAffectedBlocks(block)) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	private boolean canInstantiate() {
-		if (block.getType() != Material.ICE)
+		if (this.block.getType() != Material.ICE) {
 			return false;
-		for (Block block : affectedblocks.keySet()) {
-			if (blockInAllAffectedBlocks(block) || block.getType() != Material.AIR || (block.getX() == player.getEyeLocation().getBlock().getX() && block.getZ() == player.getEyeLocation().getBlock().getZ())) {
+		}
+		for (Block block : this.affectedblocks.keySet()) {
+			if (blockInAllAffectedBlocks(block) || block.getType() != Material.AIR || (block.getX() == this.player.getEyeLocation().getBlock().getX() && block.getZ() == this.player.getEyeLocation().getBlock().getZ())) {
 				return false;
 			}
 		}
@@ -171,14 +174,14 @@ public class IceSpikeColumn {
 	}
 
 	public boolean progress() {
-		if (System.currentTimeMillis() - time >= interval) {
-			time = System.currentTimeMillis();
-			if (progress < height) {
+		if (System.currentTimeMillis() - this.time >= interval) {
+			this.time = System.currentTimeMillis();
+			if (this.progress < this.height) {
 				moveEarth();
-				removeTimers.put(player, System.currentTimeMillis());
+				this.removeTimers.put(this.player, System.currentTimeMillis());
 			} else {
-				if (removeTimers.get(player) + removeTimer <= System.currentTimeMillis()) {
-					baseblocks.put(location.clone().add(direction.clone().multiply(-1 * (height))).getBlock(), (height - 1));
+				if (this.removeTimers.get(this.player) + removeTimer <= System.currentTimeMillis()) {
+					baseblocks.put(this.location.clone().add(direction.clone().multiply(-1 * (this.height))).getBlock(), (this.height - 1));
 					if (!revertblocks()) {
 						return false;
 					}
@@ -189,21 +192,22 @@ public class IceSpikeColumn {
 	}
 
 	private boolean moveEarth() {
-		progress++;
-		Block affectedblock = location.clone().add(direction).getBlock();
-		location = location.add(direction);
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike, location))
+		this.progress++;
+		Block affectedblock = this.location.clone().add(direction).getBlock();
+		this.location = this.location.add(direction);
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.IceSpike, this.location)) {
 			return false;
-		for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(location, 1.4)) {
-			if (en != player && !damaged.contains(((LivingEntity) en))) {
-				LivingEntity le = (LivingEntity) en;
+		}
+		for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(this.location, 1.4)) {
+			if (en != this.player && !this.damaged.contains((en))) {
+				LivingEntity le = en;
 				affect(le);
 			}
 		}
 		affectedblock.setType(Material.ICE);
 		loadAffectedBlocks();
 
-		if (location.distance(origin) >= height) {
+		if (this.location.distance(this.origin) >= this.height) {
 			return false;
 		}
 
@@ -214,21 +218,21 @@ public class IceSpikeColumn {
 		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 			return;
 		}
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		entity.setVelocity(thrown);
-		entity.damage(damage);
-		damaged.add(entity);
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);
+		entity.setVelocity(this.thrown);
+		entity.damage(this.damage);
+		this.damaged.add(entity);
 		long slowCooldown = IceSpike.slowCooldown;
 		int mod = 2;
 		if (entity instanceof Player) {
 			if (bPlayer.canBeSlowed()) {
 				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
-				new TempPotionEffect(entity, effect);
+				entity.addPotionEffect(effect);
 				bPlayer.slow(slowCooldown);
 			}
 		} else {
 			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
-			new TempPotionEffect(entity, effect);
+			entity.addPotionEffect(effect);
 		}
 
 	}
@@ -242,10 +246,11 @@ public class IceSpikeColumn {
 
 	public boolean revertblocks() {
 		Vector direction = new Vector(0, -1, 0);
-		location.getBlock().setType(Material.AIR);// .clone().add(direction).getBlock().setType(Material.AIR);
-		location.add(direction);
-		if (blockIsBase(location.getBlock()))
+		this.location.getBlock().setType(Material.AIR);// .clone().add(direction).getBlock().setType(Material.AIR);
+		this.location.add(direction);
+		if (blockIsBase(this.location.getBlock())) {
 			return false;
+		}
 		return true;
 	}
 
