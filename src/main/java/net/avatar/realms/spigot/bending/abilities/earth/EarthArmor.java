@@ -4,19 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.deprecated.TempBlock;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,6 +13,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.controller.Settings;
+import net.avatar.realms.spigot.bending.deprecated.TempBlock;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @BendingAbility(name = "Earth Armor", bind = BendingAbilities.EarthArmor, element = BendingElement.Earth)
 public class EarthArmor extends BendingActiveAbility {
@@ -52,7 +51,7 @@ public class EarthArmor extends BendingActiveAbility {
 	public List<ItemStack> armors = new ArrayList<ItemStack>(4);
 
 	private static long interval = 2000;
-	
+
 	private List<EarthColumn> columns = new LinkedList<EarthColumn>();
 
 	public EarthArmor(Player player) {
@@ -63,16 +62,16 @@ public class EarthArmor extends BendingActiveAbility {
 	public boolean swing() {
 		// EarthArmor
 
-		if (state != BendingAbilityState.CanStart) {
+		if (this.state != BendingAbilityState.CanStart) {
 			return false;
 		}
 
-		if (bender.isOnCooldown(BendingAbilities.EarthArmor)) {
+		if (this.bender.isOnCooldown(BendingAbilities.EarthArmor)) {
 			return false;
 		}
 
-		this.headblock = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
-		if (BlockTools.getEarthbendableBlocksLength(player, this.headblock, new Vector(0, -1, 0), 2) >= 2) {
+		this.headblock = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending());
+		if (BlockTools.getEarthbendableBlocksLength(this.player, this.headblock, new Vector(0, -1, 0), 2) >= 2) {
 			this.legsblock = this.headblock.getRelative(BlockFace.DOWN);
 			this.headtype = this.headblock.getType();
 			this.legstype = this.legsblock.getType();
@@ -94,7 +93,7 @@ public class EarthArmor extends BendingActiveAbility {
 				BlockTools.removeBlock(oldlegsblock);
 			}
 			AbilityManager.getManager().addInstance(this);
-			state = BendingAbilityState.Progressing;
+			this.state = BendingAbilityState.Progressing;
 		}
 		return false;
 	}
@@ -103,15 +102,15 @@ public class EarthArmor extends BendingActiveAbility {
 	public boolean sneak() {
 		// EarthShield
 
-		if (state != BendingAbilityState.CanStart) {
+		if (this.state != BendingAbilityState.CanStart) {
 			return false;
 		}
 
-		if (bender.isOnCooldown(BendingAbilities.EarthArmor)) {
+		if (this.bender.isOnCooldown(BendingAbilities.EarthArmor)) {
 			return false;
 		}
 
-		Block base = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
+		Block base = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending());
 
 		List<Block> blocks = new ArrayList<Block>();
 		Location location = base.getLocation();
@@ -126,21 +125,21 @@ public class EarthArmor extends BendingActiveAbility {
 			testloc = loc1.clone().add(factor * Math.cos(Math.toRadians(angle)), 1, factor * Math.sin(Math.toRadians(angle)));
 			for (int y = 0; y < EarthColumn.HEIGHT - height1; y++) {
 				testloc = testloc.clone().add(0, -1, 0);
-				if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
+				if (BlockTools.isEarthbendable(this.player, testloc.getBlock())) {
 					if (!blocks.contains(testloc.getBlock())) {
-						columns.add(new EarthColumn(player, testloc, height1+y-1));
+						this.columns.add(new EarthColumn(this.player, testloc, height1+y-1));
 					}
 					blocks.add(testloc.getBlock());
 					break;
 				}
 			}
-			
+
 			testloc2 = loc2.clone().add(factor2 * Math.cos(Math.toRadians(angle)), 1, factor2 * Math.sin(Math.toRadians(angle)));
 			for (int y = 0; y < EarthColumn.HEIGHT - height2; y++) {
 				testloc2 = testloc2.clone().add(0, -1, 0);
-				if (BlockTools.isEarthbendable(player, testloc2.getBlock())) {
+				if (BlockTools.isEarthbendable(this.player, testloc2.getBlock())) {
 					if (!blocks.contains(testloc2.getBlock())) {
-						columns.add(new EarthColumn(player, testloc2, height2+y-1));
+						this.columns.add(new EarthColumn(this.player, testloc2, height2+y-1));
 					}
 					blocks.add(testloc2.getBlock());
 					break;
@@ -148,9 +147,9 @@ public class EarthArmor extends BendingActiveAbility {
 			}
 		}
 
-		if (!columns.isEmpty()) {
-			bender.cooldown(BendingAbilities.EarthArmor, COOLDOWN);
-			state = BendingAbilityState.Progressing;
+		if (!this.columns.isEmpty()) {
+			this.bender.cooldown(BendingAbilities.EarthArmor, COOLDOWN);
+			this.state = BendingAbilityState.Progressing;
 			AbilityManager.getManager().addInstance(this);
 		}
 
@@ -264,9 +263,9 @@ public class EarthArmor extends BendingActiveAbility {
 
 		if (cptIroned == 0) {
 			PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) DURATION / 50, STRENGTH - 1);
-			new TempPotionEffect(this.player, resistance);
+			this.player.addPotionEffect(resistance);
 			PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, (int) DURATION / 50, 0);
-			new TempPotionEffect(this.player, slowness);
+			this.player.addPotionEffect(slowness);
 		}
 		ItemStack[] ar = this.armors.toArray(new ItemStack[this.armors.size()]);
 		this.player.getInventory().setArmorContents(ar);
@@ -280,21 +279,21 @@ public class EarthArmor extends BendingActiveAbility {
 		if(!super.progress()) {
 			return false;
 		}
-		
-		if(state != BendingAbilityState.Progressing) {
+
+		if(this.state != BendingAbilityState.Progressing) {
 			return false;
 		}
-		
-		if(!columns.isEmpty()) {
-			List<EarthColumn> test = new LinkedList<EarthColumn>(columns);
+
+		if(!this.columns.isEmpty()) {
+			List<EarthColumn> test = new LinkedList<EarthColumn>(this.columns);
 			for(EarthColumn column : test) {
 				if(!column.progress()) {
-					columns.remove(column);
+					this.columns.remove(column);
 				}
 			}
-			return !columns.isEmpty();
+			return !this.columns.isEmpty();
 		}
-		
+
 		if (this.player.isDead() || !this.player.isOnline()) {
 			cancel();
 			removeEffect();
@@ -360,12 +359,12 @@ public class EarthArmor extends BendingActiveAbility {
 
 	@Override
 	public Object getIdentifier() {
-		return player;
+		return this.player;
 	}
 
 	@Override
 	public void remove() {
-		for(EarthColumn column : columns) {
+		for(EarthColumn column : this.columns) {
 			column.remove();
 		}
 		super.remove();

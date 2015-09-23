@@ -4,20 +4,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Material;
-
 public class BendingPlayerData {
 	private UUID player;
 	private List<BendingElement> bendings;
 	private List<BendingAffinity> affinities;
 	private List<BendingPath> paths;
-	private boolean bendToItem;
-	private Map<Integer, BendingAbilities> slotAbilities;
-	private Map<Material, BendingAbilities> itemAbilities;
+	private Map<String, Map<Integer, BendingAbilities>> decks;
+	private String currentDeck;
 	private long lastTime;
 
 	public UUID getPlayer() {
-		return player;
+		return this.player;
 	}
 
 	public void setPlayer(UUID player) {
@@ -25,39 +22,23 @@ public class BendingPlayerData {
 	}
 
 	public List<BendingElement> getBendings() {
-		return bendings;
+		return this.bendings;
 	}
 
 	public void setBendings(List<BendingElement> bending) {
 		this.bendings = bending;
 	}
 
-	public boolean isBendToItem() {
-		return bendToItem;
+	public Map<String, Map<Integer, BendingAbilities>> getDecks() {
+		return this.decks;
 	}
 
-	public void setBendToItem(boolean bendToItem) {
-		this.bendToItem = bendToItem;
-	}
-
-	public Map<Integer, BendingAbilities> getSlotAbilities() {
-		return slotAbilities;
-	}
-
-	public void setSlotAbilities(Map<Integer, BendingAbilities> slotAbilities) {
-		this.slotAbilities = slotAbilities;
-	}
-
-	public Map<Material, BendingAbilities> getItemAbilities() {
-		return itemAbilities;
-	}
-
-	public void setItemAbilities(Map<Material, BendingAbilities> itemAbilities) {
-		this.itemAbilities = itemAbilities;
+	public void setDecks(Map<String, Map<Integer, BendingAbilities>> slotAbilities) {
+		this.decks = slotAbilities;
 	}
 
 	public long getLastTime() {
-		return lastTime;
+		return this.lastTime;
 	}
 
 	public void setLastTime(long lastTime) {
@@ -65,7 +46,7 @@ public class BendingPlayerData {
 	}
 
 	public List<BendingAffinity> getAffinities() {
-		return affinities;
+		return this.affinities;
 	}
 
 	public void setAffinities(List<BendingAffinity> affinities) {
@@ -73,10 +54,18 @@ public class BendingPlayerData {
 	}
 
 	public List<BendingPath> getPaths() {
-		return paths;
+		return this.paths;
 	}
 
 	public void setPaths(List<BendingPath> paths) {
 		this.paths = paths;
+	}
+
+	public String getCurrentDeck() {
+		return this.currentDeck;
+	}
+
+	public void setCurrentDeck(String currentDeck) {
+		this.currentDeck = currentDeck;
 	}
 }

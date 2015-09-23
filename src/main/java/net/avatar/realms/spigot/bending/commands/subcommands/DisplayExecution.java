@@ -22,6 +22,7 @@ public class DisplayExecution extends BendingCommand {
 		super();
 		this.command = "display";
 		this.aliases.add("d");
+		this.basePermission = "bending.command.display";
 	}
 
 	@Override
@@ -31,22 +32,18 @@ public class DisplayExecution extends BendingCommand {
 			return true;
 		}
 
-		if (!sender.hasPermission("bending.command.display")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-			return true;
-		}
-
 		// If list slots
 		if (args.isEmpty()) {
 			Player player = (Player) sender;
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 			Map<Integer, BendingAbilities> abilities = bender.getAbilities();
+			player.sendMessage("You currently use deck : " + bender.getCurrentDeck());
 			player.sendMessage("Slots :");
 			if (abilities != null && !abilities.isEmpty()) {
 				ChatColor white = ChatColor.WHITE;
 				for (Entry<Integer, BendingAbilities> slot : abilities.entrySet()) {
 					ChatColor color = PluginTools.getColor(Settings.getColorString(slot.getValue().getElement().name()));
-					player.sendMessage("--" + color + slot.getKey() + white + " : " + color + slot.getValue().name());
+					player.sendMessage("--" + color + (slot.getKey() + 1) + white + " : " + color + slot.getValue().name());
 				}
 			} else {
 				player.sendMessage("-" + Messages.NOTHING_BOUND);

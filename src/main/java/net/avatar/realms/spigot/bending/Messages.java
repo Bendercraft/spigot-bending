@@ -160,6 +160,30 @@ public class Messages {
 	@LanguageParameter("command.no_bind_permission")
 	public static String NO_BIND_PERMISSION = "You do not have the permission to bind that ability.";
 
+	@LanguageParameter("command.already_element_affinity")
+	public static String ALREADY_ELEMENT_AFFINITY = "The target already has an affinity for {0}.";
+
+	@LanguageParameter("command.learning_ability")
+	public static String ABILITY_LEARNED = "You now can use ";
+
+	@LanguageParameter("command.invalid_parameter")
+	public static String INVALID_PARAMETER = "Invalid parameter.";
+
+	@LanguageParameter("command.max_decks_reached")
+	public static String MAX_DECKS_REACHED = "You've already reached the max amount of decks available. You should rename one.";
+
+	@LanguageParameter("command.deck_set")
+	public static String DECK_SET = "Deck set to {0}.";
+
+	@LanguageParameter("command.already_deck_name")
+	public static String ALREADY_DECK_NAME = "You already have a deck with the name : ";
+
+	@LanguageParameter("command.deck_renamed")
+	public static String DECK_RENAMED = "Deck renamed to : ";
+
+	@LanguageParameter("command.invalid_deck")
+	public static String INVALID_DECK = "You do not have a deck with this name.";
+
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;

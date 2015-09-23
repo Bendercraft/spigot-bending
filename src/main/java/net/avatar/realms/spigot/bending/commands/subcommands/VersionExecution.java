@@ -16,14 +16,13 @@ public class VersionExecution extends BendingCommand {
 		this.command = "version";
 		this.aliases.add("v");
 		this.aliases.add("ver");
+		this.basePermission = "bending.command.version";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (sender.hasPermission("bending.command.version")) {
-			sender.sendMessage("Bending v" + Bending.plugin.getDescription().getVersion());
-			sender.sendMessage("Authors : Koudja & Noko");
-		}
+		sender.sendMessage("Bending v" + Bending.plugin.getDescription().getVersion());
+		sender.sendMessage("Authors : Koudja & Noko");
 		return true;
 	}
 

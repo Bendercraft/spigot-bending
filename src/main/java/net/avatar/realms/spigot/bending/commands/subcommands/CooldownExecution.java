@@ -22,6 +22,7 @@ public class CooldownExecution extends BendingCommand {
 		this.command = "cooldown";
 		this.aliases.add("cd");
 		this.aliases.add("cooldowns");
+		this.basePermission = "bending.command.cooldown";
 	}
 
 	@Override
@@ -31,10 +32,6 @@ public class CooldownExecution extends BendingCommand {
 			return true;
 		}
 
-		if (!sender.hasPermission("bending.command.cooldown")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-			return true;
-		}
 		Player player = (Player) sender;
 
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
@@ -56,7 +53,7 @@ public class CooldownExecution extends BendingCommand {
 				if (!ab.isEnergyAbility()) {
 					col = PluginTools.getColor(Settings.getColorString(ab.getElement().name()));
 				}
-				player.sendMessage(col + "--- " + ab.name() + " ~ " + min + ":" + sec);
+				player.sendMessage(col + "--- " + ab.name() + " ~ " + min + ":" + ((sec < 10) ? "0" + sec : sec));
 			}
 		}
 		return true;

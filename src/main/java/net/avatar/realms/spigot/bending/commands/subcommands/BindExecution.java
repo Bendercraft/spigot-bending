@@ -22,17 +22,13 @@ public class BindExecution extends BendingCommand {
 		super();
 		this.command = "bind";
 		this.aliases.add("b");
+		this.basePermission = "bending.command.bind";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
-			return true;
-		}
-
-		if (!sender.hasPermission("bending.command.bind")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 			return true;
 		}
 
@@ -81,7 +77,7 @@ public class BindExecution extends BendingCommand {
 		bender.setAbility(slot, ability);
 		String boundMessage = Messages.ABILITY_BOUND;
 		boundMessage = boundMessage.replaceAll("\\{0\\}", ability.name());
-		boundMessage = boundMessage.replaceAll("\\{1\\}", "" + slot);
+		boundMessage = boundMessage.replaceAll("\\{1\\}", "" + (slot + 1));
 		player.sendMessage(color + boundMessage);
 		return true;
 	}

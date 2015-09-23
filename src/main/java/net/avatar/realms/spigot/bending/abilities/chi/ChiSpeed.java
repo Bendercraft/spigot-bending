@@ -9,7 +9,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 
 @BendingAbility(name = "ChiSpeed", bind = BendingAbilities.ChiSpeed, element = BendingElement.ChiBlocker)
@@ -29,10 +28,6 @@ public class ChiSpeed extends BendingPassiveAbility {
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
-		// I've separate it from constructor in case where a player bind Speed
-		// (as it became an Abilities enum) and make fun by clicking...
-		// new Flight(this.player);
-		// this.player.setAllowFlight(true);
 		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
 		return true;
@@ -57,8 +52,8 @@ public class ChiSpeed extends BendingPassiveAbility {
 	private void applySpeed() {
 		PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, 0);
 		PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 1);
-		new TempPotionEffect(this.player, speed);
-		new TempPotionEffect(this.player, jump);
+		this.player.addPotionEffect(speed);
+		this.player.addPotionEffect(jump);
 	}
 
 }

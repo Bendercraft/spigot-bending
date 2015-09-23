@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.TempPotionEffect;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -47,7 +46,6 @@ public class BendingManager implements Runnable {
 
 			manageEarthbending();
 			manageFirebending();
-			TempPotionEffect.progressAll();
 			FlyingPlayer.handleAll();
 			handleDayNight();
 		} catch (Exception e) {

@@ -15,15 +15,14 @@ public class ReloadExecution extends BendingCommand {
 	public ReloadExecution() {
 		super();
 		this.command = "reload";
+		this.basePermission = "bending.command.reload";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (sender.hasPermission("bending.command.reload")) {
-			AbilityManager.getManager().stopAllAbilities();
-			AbilityManager.getManager().applyConfiguration(Bending.plugin.getDataFolder());
-			sender.sendMessage(ChatColor.GREEN + Messages.RELOADED);
-		}
+		AbilityManager.getManager().stopAllAbilities();
+		AbilityManager.getManager().applyConfiguration(Bending.plugin.getDataFolder());
+		sender.sendMessage(ChatColor.GREEN + Messages.RELOADED);
 		return true;
 	}
 

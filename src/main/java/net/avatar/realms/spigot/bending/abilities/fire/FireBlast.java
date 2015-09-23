@@ -4,25 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
-import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
-import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.PluginTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-import net.avatar.realms.spigot.bending.utils.Tools;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,6 +16,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
+import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
+import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.PluginTools;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name = "Fire Blast", bind = BendingAbilities.FireBlast, element = BendingElement.Fire)
 public class FireBlast extends BendingActiveAbility {
@@ -202,7 +201,7 @@ public class FireBlast extends BendingActiveAbility {
 			Location location = this.player.getEyeLocation();
 			//location.getWorld().playEffect(location, Effect.FLAME, Tools.getIntCardinalDirection(location.getDirection()), 3);
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
-			if(!player.isSneaking() || bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
+			if(!this.player.isSneaking() || this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
 				return false;
 			}
 		} else if (this.state == BendingAbilityState.Progressing) {

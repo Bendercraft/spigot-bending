@@ -95,7 +95,7 @@ public class PluginTools {
 	public static void stopAllBending() {
 
 		FireStream.removeAll();
-
+		TemporaryBlock.removeAll();
 		// BendingManager.removeFlyers();
 		TempBlock.removeAll();
 

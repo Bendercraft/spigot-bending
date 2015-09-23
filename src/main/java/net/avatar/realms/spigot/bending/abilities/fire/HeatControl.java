@@ -10,8 +10,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
@@ -73,22 +73,22 @@ public class HeatControl extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-		case Ended:
-		case Removed:
-			return false;
-		default:
-			double range = PluginTools.firebendingDayAugment(EXT_RANGE, this.player.getWorld());
-			Block block = EntityTools.getTargetBlock(this.player, range);
-			if (BlockTools.isMeltable(block)) {
-				melt();
-			} else {
-				extinguish(range);
-			}
+			case None:
+			case CannotStart:
+			case Ended:
+			case Removed:
+				return false;
+			default:
+				double range = PluginTools.firebendingDayAugment(EXT_RANGE, this.player.getWorld());
+				Block block = EntityTools.getTargetBlock(this.player, range);
+				if (BlockTools.isMeltable(block)) {
+					melt();
+				} else {
+					extinguish(range);
+				}
 
-			this.bender.cooldown(BendingAbilities.HeatControl, EXT_COOLDOWN);
-			return false;
+				this.bender.cooldown(BendingAbilities.HeatControl, EXT_COOLDOWN);
+				return false;
 		}
 	}
 
@@ -133,19 +133,19 @@ public class HeatControl extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
-			this.items = this.player.getItemInHand();
-			if (isCookable(this.items.getType())) {
-				this.time = this.startedTime;
-				AbilityManager.getManager().addInstance(this);
-				setState(BendingAbilityState.Progressing);
-			}
-			return false;
-		default:
-			return false;
+			case None:
+			case CannotStart:
+				return false;
+			case CanStart:
+				this.items = this.player.getItemInHand();
+				if (isCookable(this.items.getType())) {
+					this.time = this.startedTime;
+					AbilityManager.getManager().addInstance(this);
+					setState(BendingAbilityState.Progressing);
+				}
+				return false;
+			default:
+				return false;
 		}
 	}
 
@@ -200,39 +200,39 @@ public class HeatControl extends BendingActiveAbility {
 	private ItemStack getCooked(Material material) {
 		ItemStack cooked = new ItemStack(Material.AIR);
 		switch (material) {
-		case RAW_BEEF:
-			cooked.setType(Material.COOKED_BEEF);
-			cooked.setAmount(1);
-			break;
-		case RAW_FISH:
-			cooked.setType(Material.COOKED_FISH);
-			cooked.setAmount(1);
-		case RAW_CHICKEN:
-			cooked.setType(Material.COOKED_CHICKEN);
-			cooked.setAmount(1);
-			break;
-		case PORK:
-			cooked.setType(Material.GRILLED_PORK);
-			cooked.setAmount(1);
-			break;
-		case POTATO_ITEM:
-		case POISONOUS_POTATO:
-			cooked.setType(Material.BAKED_POTATO);
-			cooked.setAmount(1);
-			break;
-		case STICK:
-			cooked.setType(Material.TORCH);
-			cooked.setAmount(4);
-			break;
-		case RABBIT:
-			cooked.setType(Material.COOKED_RABBIT);
-			cooked.setAmount(1);
-			break;
-		case MUTTON:
-			cooked.setType(Material.COOKED_MUTTON);
-			cooked.setAmount(1);
-		default:
-			break;
+			case RAW_BEEF:
+				cooked.setType(Material.COOKED_BEEF);
+				cooked.setAmount(1);
+				break;
+			case RAW_FISH:
+				cooked.setType(Material.COOKED_FISH);
+				cooked.setAmount(1);
+			case RAW_CHICKEN:
+				cooked.setType(Material.COOKED_CHICKEN);
+				cooked.setAmount(1);
+				break;
+			case PORK:
+				cooked.setType(Material.GRILLED_PORK);
+				cooked.setAmount(1);
+				break;
+			case POTATO_ITEM:
+			case POISONOUS_POTATO:
+				cooked.setType(Material.BAKED_POTATO);
+				cooked.setAmount(1);
+				break;
+			case STICK:
+				cooked.setType(Material.TORCH);
+				cooked.setAmount(4);
+				break;
+			case RABBIT:
+				cooked.setType(Material.COOKED_RABBIT);
+				cooked.setAmount(1);
+				break;
+			case MUTTON:
+				cooked.setType(Material.COOKED_MUTTON);
+				cooked.setAmount(1);
+			default:
+				break;
 		}
 		return cooked;
 	}
@@ -272,7 +272,7 @@ public class HeatControl extends BendingActiveAbility {
 	}
 
 	public static void evaporate(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange, block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.HeatControl, block.getLocation())) {
 			return;
 		}
 		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block) && WaterManipulation.canPhysicsChange(block)) {

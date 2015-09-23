@@ -21,14 +21,11 @@ public class ChooseExecution extends BendingCommand {
 		super();
 		this.command = "choose";
 		this.aliases.add("ch");
+		this.basePermission = "bending.command.choose";
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (!sender.hasPermission("bending.command.choose")) {
-			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-			return true;
-		}
 
 		if ((args.size() != 1) && (args.size() != 2)) {
 			printUsage(sender);

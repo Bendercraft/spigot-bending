@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -18,9 +19,9 @@ public class BendingPlayer {
 
 	private UUID player;
 
-	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
-	private int currentSet = 1;
-	private Map<Integer, Map<Integer, BendingAbilities>> abilitiesSets = new HashMap<Integer, Map<Integer, BendingAbilities>>();
+	//	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
+	private String currentDeck = "default";
+	private Map<String, Map<Integer, BendingAbilities>> decks = new HashMap<String, Map<Integer, BendingAbilities>>();
 
 	private List<BendingElement> bendings = new LinkedList<BendingElement>();
 	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
@@ -33,21 +34,37 @@ public class BendingPlayer {
 
 	private long lastTime = 0;
 
-	private boolean tremorsense = true;
-
 	public BendingPlayer(UUID id) {
 		this.player = id;
 		this.lastTime = System.currentTimeMillis();
+		this.decks.put(this.currentDeck, new HashMap<Integer, BendingAbilities>());
+	}
+
+	public String getCurrentDeck() {
+		return this.currentDeck;
+	}
+
+	public Set<String> getDecksNames() {
+		return this.decks.keySet();
+	}
+
+	public Map<String, Map<Integer, BendingAbilities>> getDecks() {
+		return this.decks;
+	}
+
+	public void setCurrentDeck(String current) {
+		this.currentDeck = current;
 	}
 
 	public BendingPlayer(BendingPlayerData data) {
 		this.player = data.getPlayer();
 
 		this.bendings = data.getBendings() != null ? data.getBendings() : this.bendings;
-		this.slotAbilities = data.getSlotAbilities() != null ? data.getSlotAbilities() : this.slotAbilities;
-
 		this.affinities = data.getAffinities() != null ? data.getAffinities() : this.affinities;
 		this.paths = data.getPaths() != null ? data.getPaths() : this.paths;
+
+		this.decks = data.getDecks() != null ? data.getDecks() : this.decks;
+		this.currentDeck = data.getCurrentDeck();
 
 		this.lastTime = data.getLastTime();
 	}
@@ -73,14 +90,6 @@ public class BendingPlayer {
 		} else {
 			return false;
 		}
-	}
-
-	public void toggleTremorsense() {
-		this.tremorsense = !this.tremorsense;
-	}
-
-	public boolean isTremorsensing() {
-		return this.tremorsense;
 	}
 
 	public void cooldown() {
@@ -226,7 +235,8 @@ public class BendingPlayer {
 	}
 
 	public void clearAbilities() {
-		this.slotAbilities = new HashMap<Integer, BendingAbilities>();
+		// this.slotAbilities = new HashMap<Integer, BendingAbilities>();
+		this.decks.put(this.currentDeck, new HashMap<Integer, BendingAbilities>());
 		Bending.database.save(this.player);
 	}
 
@@ -252,15 +262,15 @@ public class BendingPlayer {
 	}
 
 	public Map<Integer, BendingAbilities> getAbilities() {
-		return this.slotAbilities;
+		return this.decks.get(this.currentDeck);
 	}
 
 	public BendingAbilities getAbility(int slot) {
-		return this.slotAbilities.get(slot);
+		return this.decks.get(this.currentDeck).get(slot);
 	}
 
 	public void setAbility(int slot, BendingAbilities ability) {
-		this.slotAbilities.put(slot, ability);
+		this.decks.get(this.currentDeck).put(slot, ability);
 		Bending.database.save(this.player);
 	}
 
@@ -341,12 +351,13 @@ public class BendingPlayer {
 		string += ", ";
 		string += "Bendings=" + this.bendings;
 		string += ", ";
-		string += "Binds=" + this.slotAbilities;
+		string += "Decks=" + this.decks;
+		// string += "Binds=" + this.slotAbilities;
 		string += "}";
 		return string;
 	}
 
-	public List<BendingAffinity> getSpecializations() {
+	public List<BendingAffinity> getAffinities() {
 		return this.affinities;
 	}
 
@@ -360,7 +371,8 @@ public class BendingPlayer {
 		result.setLastTime(this.lastTime);
 		result.setAffinities(this.affinities);
 		result.setPlayer(this.player);
-		result.setSlotAbilities(this.slotAbilities);
+		result.setDecks(this.decks);
+		result.setCurrentDeck(this.currentDeck);
 		result.setPaths(this.paths);
 		return result;
 	}

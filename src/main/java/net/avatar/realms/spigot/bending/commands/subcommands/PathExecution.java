@@ -19,6 +19,7 @@ public class PathExecution extends BendingCommand {
 		super();
 		this.command = "path";
 		this.aliases.add("p");
+		this.basePermission = "bending.command.path";
 	}
 
 	@Override

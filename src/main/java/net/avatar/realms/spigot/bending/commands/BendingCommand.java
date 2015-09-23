@@ -14,6 +14,7 @@ public abstract class BendingCommand implements IBendingCommand {
 
 	protected String command;
 	protected List<String> aliases;
+	protected String basePermission;
 
 	public BendingCommand() {
 		this.aliases = new LinkedList<String>();
@@ -91,6 +92,14 @@ public abstract class BendingCommand implements IBendingCommand {
 	@Override
 	public List<String> autoComplete(CommandSender sender, List<String> args) {
 		return new LinkedList<String>();
+	}
+
+	@Override
+	public final boolean hasBasePermission(CommandSender sender) {
+		if (sender.hasPermission(this.basePermission)) {
+			return true;
+		}
+		return false;
 	}
 
 }
