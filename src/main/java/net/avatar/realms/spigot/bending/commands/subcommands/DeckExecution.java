@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -7,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 
 public class DeckExecution extends BendingCommand {
@@ -22,6 +24,11 @@ public class DeckExecution extends BendingCommand {
 			return true;
 		}
 
+		if (args.isEmpty()) {
+			printUsage(sender);
+			return true;
+		}
+
 		return true;
 	}
 
@@ -34,5 +41,23 @@ public class DeckExecution extends BendingCommand {
 		else if (permission) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
 		}
+	}
+
+	@Override
+	public List<String> autoComplete(CommandSender sender, List<String> args) {
+		List<String> values = new LinkedList<String>();
+		if (!(sender instanceof Player)) {
+			return values;
+		}
+
+		if (args.size() == 1 || args.size() == 2) {
+			Player player = (Player) sender;
+			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			for (String value : bender.getDecksNames()) {
+				values.add(value);
+			}
+		}
+
+		return values;
 	}
 }

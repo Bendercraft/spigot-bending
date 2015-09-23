@@ -75,6 +75,7 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		this.available = new AvailableExecution();
 
 		this.commands.add(this.bind);
+		this.commands.add(this.deck);
 		this.commands.add(this.choose);
 		this.commands.add(this.remove);
 		this.commands.add(this.add);

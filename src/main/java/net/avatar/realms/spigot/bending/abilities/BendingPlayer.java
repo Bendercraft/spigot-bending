@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -20,7 +21,7 @@ public class BendingPlayer {
 
 	private Map<Integer, BendingAbilities> slotAbilities = new HashMap<Integer, BendingAbilities>();
 	private String currentDeck = "default";
-	private Map<Integer, Map<Integer, BendingAbilities>> abilitiesDecks = new HashMap<Integer, Map<Integer, BendingAbilities>>();
+	private Map<String, Map<Integer, BendingAbilities>> decks = new HashMap<String, Map<Integer, BendingAbilities>>();
 
 	private List<BendingElement> bendings = new LinkedList<BendingElement>();
 	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
@@ -36,6 +37,18 @@ public class BendingPlayer {
 	public BendingPlayer(UUID id) {
 		this.player = id;
 		this.lastTime = System.currentTimeMillis();
+	}
+
+	public String getCurrentDeck() {
+		return this.currentDeck;
+	}
+
+	public Set<String> getDecksNames() {
+		return this.decks.keySet();
+	}
+
+	public Map<String, Map<Integer, BendingAbilities>> getDecks() {
+		return this.decks;
 	}
 
 	public BendingPlayer(BendingPlayerData data) {

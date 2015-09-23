@@ -7,13 +7,8 @@ softdepend: [WorldEdit,CoreProtect,Citizens,Factions]
 commands:
     bending:
         description: Chooses the many features of Bending.
-        aliases: [b, bend, tla, mtla, minecrafttla, minecraftthelastairbender, mthelastairbender]
-        usage: |
-             /<command> choose [element]
-             /<command> display [element]
-             /<command> bind [ability]
-             /<command> display
-             /<command> clear
+        aliases: [b, bend, tla, mtla, minecrafttla]
+        usage: /bending help
 permissions:
   bending.air.*:
     description: Allows all air bending.
@@ -388,8 +383,8 @@ permissions:
   bending.command.clear: 
     description: Allows the use of /bending clear 
     default: true
-  bending.command.display:
-    description: Allows the use of /bending display
+  bending.command.deck:
+    description: Allows the use of /bending deck
     default: true
   bending.command.bind:
     description: Allows the use of /bending bind <ability>
