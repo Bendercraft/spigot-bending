@@ -3,14 +3,13 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 public class CompactColumn {
 	private static Map<Integer, CompactColumn> instances = new HashMap<Integer, CompactColumn>();
@@ -33,27 +32,27 @@ public class CompactColumn {
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 
 	public CompactColumn(Player player) {
-		block = BlockTools.getEarthSourceBlock(player, BendingAbilities.Collapse, Collapse.RANGE);
-		if (block == null) {
+		this.block = BlockTools.getEarthSourceBlock(player, BendingAbilities.Collapse, Collapse.RANGE);
+		if (this.block == null) {
 			return;
 		}
 
-		origin = block.getLocation();
-		location = origin.clone();
+		this.origin = this.block.getLocation();
+		this.location = this.origin.clone();
 		this.player = player;
-		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), depth);
+		this.distance = BlockTools.getEarthbendableBlocksLength(player, this.block, direction.clone().multiply(-1), depth);
 
 		loadAffectedBlocks();
 
-		if (distance != 0) {
+		if (this.distance != 0) {
 			if (canInstantiate()) {
-				id = ID;
-				instances.put(id, this);
+				this.id = ID;
+				instances.put(this.id, this);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}
 				ID++;
-				time = System.currentTimeMillis() - interval;
+				this.time = System.currentTimeMillis() - interval;
 			}
 		}
 	}
@@ -62,43 +61,44 @@ public class CompactColumn {
 		// Tools.verbose("New compact column");
 		this.origin = origin;
 		this.player = player;
-		block = origin.getBlock();
+		this.block = origin.getBlock();
 		// Tools.verbose(block);
 		// Tools.verbose(origin);
-		location = origin.clone();
-		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), depth);
+		this.location = origin.clone();
+		this.distance = BlockTools.getEarthbendableBlocksLength(player, this.block, direction.clone().multiply(-1), depth);
 
 		loadAffectedBlocks();
 
-		if (distance != 0) {
+		if (this.distance != 0) {
 			if (canInstantiate()) {
-				for (Block blocki : affectedblocks.keySet()) {
+				for (Block blocki : this.affectedblocks.keySet()) {
 					EarthColumn.resetBlock(blocki);
 				}
-				id = ID;
-				instances.put(id, this);
+				this.id = ID;
+				instances.put(this.id, this);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}
 				ID++;
-				time = System.currentTimeMillis() - interval;
+				this.time = System.currentTimeMillis() - interval;
 			}
 		}
 	}
 
 	private void loadAffectedBlocks() {
-		affectedblocks.clear();
+		this.affectedblocks.clear();
 		Block thisblock;
-		for (int i = 0; i <= distance; i++) {
-			thisblock = block.getWorld().getBlockAt(location.clone().add(direction.clone().multiply(-i)));
-			affectedblocks.put(thisblock, thisblock);
-			if (EarthColumn.blockInAllAffectedBlocks(thisblock))
+		for (int i = 0; i <= this.distance; i++) {
+			thisblock = this.block.getWorld().getBlockAt(this.location.clone().add(direction.clone().multiply(-i)));
+			this.affectedblocks.put(thisblock, thisblock);
+			if (EarthColumn.blockInAllAffectedBlocks(thisblock)) {
 				EarthColumn.revertBlock(thisblock);
+			}
 		}
 	}
 
 	private boolean blockInAffectedBlocks(Block block) {
-		if (affectedblocks.containsKey(block)) {
+		if (this.affectedblocks.containsKey(block)) {
 			return true;
 		}
 		return false;
@@ -106,8 +106,9 @@ public class CompactColumn {
 
 	public static boolean blockInAllAffectedBlocks(Block block) {
 		for (CompactColumn column : instances.values()) {
-			if (column.blockInAffectedBlocks(block))
+			if (column.blockInAffectedBlocks(block)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -121,7 +122,7 @@ public class CompactColumn {
 	}
 
 	private boolean canInstantiate() {
-		for (Block block : affectedblocks.keySet()) {
+		for (Block block : this.affectedblocks.keySet()) {
 			if (blockInAllAffectedBlocks(block)) {
 				return false;
 			}
@@ -130,13 +131,13 @@ public class CompactColumn {
 	}
 
 	public boolean progress() {
-		if (System.currentTimeMillis() - time >= interval) {
-			time = System.currentTimeMillis();
-			if(!instances.containsKey(id)) {
+		if (System.currentTimeMillis() - this.time >= interval) {
+			this.time = System.currentTimeMillis();
+			if(!instances.containsKey(this.id)) {
 				return false;
 			}
 			if (!moveEarth()) {
-				for (Block blocki : affectedblocks.keySet()) {
+				for (Block blocki : this.affectedblocks.keySet()) {
 					EarthColumn.resetBlock(blocki);
 				}
 				return false;
@@ -146,15 +147,15 @@ public class CompactColumn {
 	}
 
 	private boolean moveEarth() {
-		Block block = location.getBlock();
-		location = location.add(direction);
-		if (block == null || location == null || distance == 0) {
+		Block block = this.location.getBlock();
+		this.location = this.location.add(direction);
+		if (block == null || this.location == null || this.distance == 0) {
 			return false;
 		}
-		BlockTools.moveEarth(player, block, direction, distance);
+		BlockTools.moveEarth(this.player, block, direction, this.distance);
 		loadAffectedBlocks();
 
-		if (location.distance(origin) >= distance) {
+		if (this.location.distance(this.origin) >= this.distance) {
 			return false;
 		}
 
@@ -162,7 +163,7 @@ public class CompactColumn {
 	}
 
 	public void remove() {
-		instances.remove(id);
+		instances.remove(this.id);
 	}
 
 	public static String getDescription() {
