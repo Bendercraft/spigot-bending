@@ -2,9 +2,16 @@ package net.avatar.realms.spigot.bending.commands.subcommands;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.Messages;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
+import net.avatar.realms.spigot.bending.controller.Settings;
+import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 public class AvailableExecution extends BendingCommand {
 
@@ -19,13 +26,27 @@ public class AvailableExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		// TODO Auto-generated method stub
-		return false;
+		if (!(sender instanceof Player)) {
+			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
+			return true;
+		}
+
+		Player player = (Player) sender;
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+
+		sender.sendMessage("Available abilities : ");
+		for (BendingAbilities ability : BendingAbilities.values()) {
+			if (player.hasPermission(ability.getPermission()) && bender.isBender(ability.getElement())
+					&& (!ability.isAffinity() || bender.hasAffinity(ability.getAffinity()))) {
+				ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
+				sender.sendMessage("--" + color + ability.name());
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public void printUsage(CommandSender sender, boolean permission) {
-		// TODO Auto-generated method stub
-
+		sender.sendMessage("/bending available");
 	}
 }
