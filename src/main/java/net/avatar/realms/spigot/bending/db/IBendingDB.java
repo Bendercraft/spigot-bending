@@ -1,26 +1,17 @@
 package net.avatar.realms.spigot.bending.db;
 
-import java.util.Map;
 import java.util.UUID;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayerData;
 
 public interface IBendingDB {
-	public void init(Bending plugin);
-
 	/**
-	 * DUmp everything this DB knows
+	 * Init
 	 * 
-	 * @return
+	 * @param plugin
 	 */
-	public Map<UUID, BendingPlayerData> dump();
-
-	/**
-	 * Clear a DB
-	 */
-	public void clear();
+	public void init(Bending plugin);
 
 	/**
 	 * Retrieve or create a BendingPlayer using UUID as unique id
@@ -38,7 +29,7 @@ public interface IBendingDB {
 	public void remove(UUID id);
 
 	/**
-	 * Update a player, update process is completly a discretion of
+	 * Update a player, update process is completely a discretion of
 	 * implementation
 	 * 
 	 * @param id
@@ -58,4 +49,18 @@ public interface IBendingDB {
 	 * @param id
 	 */
 	public void save(UUID id);
+	
+	/**
+	 * What to do when a player connect
+	 * 
+	 * @param player
+	 */
+	public void lease(UUID player);
+	
+	/**
+	 * What to do when a player disconnect
+	 * 
+	 * @param player
+	 */
+	public void release(UUID player);
 }
