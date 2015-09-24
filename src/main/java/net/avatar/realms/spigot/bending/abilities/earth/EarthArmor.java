@@ -277,6 +277,8 @@ public class EarthArmor extends BendingActiveAbility {
 	@Override
 	public boolean progress() {
 		if(!super.progress()) {
+			cancel();
+			removeEffect();
 			return false;
 		}
 
@@ -292,12 +294,6 @@ public class EarthArmor extends BendingActiveAbility {
 				}
 			}
 			return !this.columns.isEmpty();
-		}
-
-		if (this.player.isDead() || !this.player.isOnline()) {
-			cancel();
-			removeEffect();
-			return false;
 		}
 
 		if (this.formed) {
@@ -337,12 +333,14 @@ public class EarthArmor extends BendingActiveAbility {
 	}
 
 	private void removeEffect() {
-		this.player.getInventory().setArmorContents(this.oldarmor);
+		if (this.oldarmor != null) {
+			this.player.getInventory().setArmorContents(this.oldarmor);
+		}
 	}
 
 	public static void removeEffect(Player player) {
 		EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(BendingAbilities.EarthArmor).get(player);
-		if(earthArmor != null) {
+		if (earthArmor != null) {
 			earthArmor.removeEffect();
 		}
 	}
