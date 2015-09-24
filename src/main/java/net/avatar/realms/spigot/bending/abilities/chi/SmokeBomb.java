@@ -91,10 +91,10 @@ public class SmokeBomb extends BendingActiveAbility {
 		int combo = ComboPoints.getComboPointAmount(this.player);
 		if (combo >= 1) {
 			this.blind = true;
-		}
-		if (combo >= 2) {
-			this.invisibility = true;
-			ComboPoints.consume(this.player, 1);
+			if (combo >= 2) {
+				this.invisibility = true;
+				ComboPoints.consume(this.player, 1);
+			}
 		}
 
 		this.bender.cooldown(BendingAbilities.SmokeBomb, COOLDOWN);
