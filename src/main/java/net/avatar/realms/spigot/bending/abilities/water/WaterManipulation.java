@@ -65,7 +65,7 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	private static Set<Byte> water = new HashSet<Byte>();
 
-	private static long interval = (long) (1000. / SPEED);
+	private long interval;
 
 	private int id;
 	private Location location = null;
@@ -116,6 +116,8 @@ public class WaterManipulation extends BendingActiveAbility {
 		}
 		ID++;
 		this.time = System.currentTimeMillis();
+		
+		interval = (long) (1000. / SPEED);
 	}
 
 	@Override

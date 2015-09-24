@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -333,6 +334,26 @@ public class EntityTools {
 			}
 		}
 		return target;
+	}
+	
+	public static LivingEntity getNearestLivingEntity(Location location, double radius) {
+		return getNearestLivingEntity(location, radius, Collections.<LivingEntity> emptyList());
+	}
+	
+	public static LivingEntity getNearestLivingEntity(Location location, double radius, LivingEntity exclude) {
+		return getNearestLivingEntity(location, radius, Arrays.asList(exclude));
+	}
+	
+	public static LivingEntity getNearestLivingEntity(Location location, double radius, List<LivingEntity> excludes) {
+		LivingEntity result = null;
+		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, radius)) {
+			if(result == null || result.getLocation().distanceSquared(location) > entity.getLocation().distanceSquared(location)) {
+				if(!excludes.contains(entity)) {
+					result = entity;
+				}
+			}
+		}
+		return result;
 	}
 
 	@SuppressWarnings("deprecation")

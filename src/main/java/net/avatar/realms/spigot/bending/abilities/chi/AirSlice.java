@@ -159,11 +159,7 @@ public class AirSlice extends BendingActiveAbility {
 					}
 				}
 				location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) RANGE+4);
-				Location temp = location.add(this.direction.clone().multiply(speedfactor));
-				
-				location.setX(temp.getX());
-				location.setY(temp.getY());
-				location.setZ(temp.getZ());
+				location.add(this.direction.clone().multiply(speedfactor));
 				
 				if (location.distance(this.origin) > RANGE) {
 					toRemove.add(location);
