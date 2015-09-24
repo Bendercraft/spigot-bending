@@ -48,12 +48,13 @@ public class FlatFileDB implements IBendingDB {
 		}
 		
 		//File exist ? Load it !
+		FileReader reader = null;
+		BendingPlayer result = null;
 		try {
-			FileReader reader = new FileReader(file);
+			reader = new FileReader(file);
 			BendingPlayerData temp = mapper.fromJson(reader, BendingPlayerData.class);
-			BendingPlayer result = new BendingPlayer(temp);
+			result = new BendingPlayer(temp);
 			this.set(id, result);
-			return result;
 		} catch (FileNotFoundException e) {
 			Bending.log.log(Level.SEVERE, "Could not load file " + file, e);
 			try {
@@ -67,9 +68,17 @@ public class FlatFileDB implements IBendingDB {
 			} catch (IOException e1) {
 
 			}
+		} finally {
+			if(reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					
+				}
+			}
 		}
 		
-		return null;
+		return result;
 	}
 
 	@Override
@@ -100,13 +109,22 @@ public class FlatFileDB implements IBendingDB {
 			Bending.log.warning("Tried to save player "+id+" but not loaded.");
 			return;
 		}
+		FileWriter writer = null;
 		try {
 			File file = getFile(id);
-			FileWriter writer = new FileWriter(file, false);
+			writer = new FileWriter(file, false);
 			mapper.toJson(players.get(id).serialize(), writer);
 			writer.close();
 		} catch (Exception e) {
 			Bending.log.log(Level.SEVERE, "Could not save player " + id, e);
+		} finally {
+			if(writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					
+				}
+			}
 		}
 	}
 
