@@ -31,7 +31,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 /**
  * 
- * This ability throws a poisonned dart to straight foward. If the darth hit an
+ * This ability throws a poisonned dart to straight foward. If the dart hit an
  * entity, this entity gets poisonned. The type of poisonned can change if
  * specifics items are hold in hand.
  *
