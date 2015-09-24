@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -257,8 +258,27 @@ public class LearningExecution extends BendingCommand {
 
 	@Override
 	public List<String> autoComplete(CommandSender sender, List<String> args) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> values = new LinkedList<String>();
+		if (args.isEmpty()) {
+			return values;
+		}
+
+		if (args.size() == 1) {
+			values.add("affinity");
+			values.add("ability");
+			values.add("avatar");
+			values.add("unavatar");
+			values.add("free");
+			return values;
+		}
+
+		if (args.get(0).equalsIgnoreCase("free") && args.size() == 2) {
+			values.add("ability");
+			values.add("affinity");
+			return values;
+		}
+
+		return values;
 	}
 
 }
