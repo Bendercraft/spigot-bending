@@ -13,10 +13,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -47,6 +47,9 @@ public class SmokeBomb extends BendingActiveAbility {
 	private Location origin;
 	private int ticksRemaining;
 	private List<Location> locs;
+
+	private boolean blind = false;
+	private boolean invisibility = false;
 
 	private Integer id;
 
@@ -85,6 +88,15 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST, (SOUND_RADIUS / 16.0f), 1.1f);
 		this.player.addPotionEffect(blindnessBomber);
 
+		int combo = ComboPoints.getComboPointAmount(this.player);
+		if (combo >= 1) {
+			this.blind = true;
+		}
+		if (combo >= 2) {
+			this.invisibility = true;
+			ComboPoints.consume(this.player, 1);
+		}
+
 		this.bender.cooldown(BendingAbilities.SmokeBomb, COOLDOWN);
 		AbilityManager.getManager().addInstance(this);
 
@@ -105,26 +117,32 @@ public class SmokeBomb extends BendingActiveAbility {
 
 		this.blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS, this.ticksRemaining, 2);
 
-		for (LivingEntity targ : this.targets) {
-			if (!newTargets.contains(targ)) {
-				if (targ.getEntityId() != this.player.getEntityId()) {
-					targ.removePotionEffect(PotionEffectType.BLINDNESS);
-				} else {
-					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
+		if (this.blind || this.invisibility) {
+			for (LivingEntity targ : this.targets) {
+				if (!newTargets.contains(targ)) {
+					if (targ.getEntityId() != this.player.getEntityId()) {
+						targ.removePotionEffect(PotionEffectType.BLINDNESS);
+					}
+					else {
+						targ.removePotionEffect(PotionEffectType.INVISIBILITY);
+					}
 				}
 			}
 		}
 
 		this.targets.clear();
 
-		for (LivingEntity targ : newTargets) {
-			if (targ.getEntityId() != this.player.getEntityId()) {
-				targ.addPotionEffect(this.blindnessTarget);
-			} else {
-				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
-				targ.addPotionEffect(invisibilityLauncher);
+		if (this.blind || this.invisibility) {
+			for (LivingEntity targ : newTargets) {
+				if (targ.getEntityId() != this.player.getEntityId()) {
+					targ.addPotionEffect(this.blindnessTarget);
+				}
+				else if (this.invisibility) {
+					PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
+					targ.addPotionEffect(invisibilityLauncher);
+				}
+				this.targets.add(targ);
 			}
-			this.targets.add(targ);
 		}
 
 		if ((this.ticksRemaining % 16) == 0) {
