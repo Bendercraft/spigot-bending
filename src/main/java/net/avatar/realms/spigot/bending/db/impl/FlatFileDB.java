@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.db.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,11 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.google.gson.Gson;
 
 import net.avatar.realms.spigot.bending.Bending;
@@ -21,139 +19,132 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayerData;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
 
 public class FlatFileDB implements IBendingDB {
-	private Map<UUID, BendingPlayer> players = new HashMap<UUID, BendingPlayer>();
-
-	private static String FILE_NAME = "benders.json";
+	private static String DIR_NAME = "benders";
 
 	private Gson mapper = new Gson();
-	private File bendingPlayersFile = null;
-	private Map<UUID, BendingPlayerData> datas;
-
+	private Map<UUID, BendingPlayer> players = new HashMap<UUID, BendingPlayer>();
 	private File dataFolder;
 
 	@Override
 	public void init(Bending plugin) {
-		this.dataFolder = plugin.getDataFolder();
-		load();
+		this.dataFolder = new File(plugin.getDataFolder(), DIR_NAME);
+		this.dataFolder.mkdirs();
 	}
 
 	@Override
 	public BendingPlayer get(UUID id) {
-		// On flat file, don't bother keep RAM value syncing with file value
-		if (!this.players.containsKey(id)) {
-			if (this.datas.containsKey(id)) {
-				// old player but not charged
-				this.players.put(id, new BendingPlayer(this.datas.get(id)));
-			} else {
-				// New player !
-				this.set(id, new BendingPlayer(id));
+		//Already loaded ? Return that version !
+		if (this.players.containsKey(id)) {
+			return this.players.get(id);
+		}
+		
+		
+		File file = getFile(id);
+		//File does not exist ? New player !
+		if(!file.exists()) {
+			BendingPlayer result = new BendingPlayer(id);
+			this.set(id, result);
+			return result;
+		}
+		
+		//File exist ? Load it !
+		FileReader reader = null;
+		BendingPlayer result = null;
+		try {
+			reader = new FileReader(file);
+			BendingPlayerData temp = mapper.fromJson(reader, BendingPlayerData.class);
+			result = new BendingPlayer(temp);
+			this.set(id, result);
+		} catch (FileNotFoundException e) {
+			Bending.log.log(Level.SEVERE, "Could not load file " + file, e);
+			try {
+				File save = getFile(id, 0);
+				int i = 1;
+				while (save.exists()) {
+					save = getFile(id, i);
+					i++;
+				}
+				FileUtils.moveFile(file, save);
+			} catch (IOException e1) {
+
+			}
+		} finally {
+			if(reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					
+				}
 			}
 		}
-		return this.players.get(id);
+		
+		return result;
 	}
 
 	@Override
 	public void remove(UUID playerID) {
 		this.players.remove(playerID);
-		this.datas.remove(playerID);
-		this.save();
+		File file = getFile(playerID);
+		if(file.exists()) {
+			file.delete();
+		}
 	}
 
 	@Override
 	public void set(UUID playerID, BendingPlayer player) {
-		this.datas.put(playerID, player.serialize());
 		this.players.put(playerID, player);
 		this.save(playerID);
 	}
 
 	@Override
 	public void save() {
-		try {
-			FileWriter writer = new FileWriter(this.bendingPlayersFile, false);
-			BendingPlayerDatas temp = new BendingPlayerDatas();
-			temp.setDatas(this.datas);
-			this.mapper.toJson(temp, writer);
-			writer.close();
-		} catch (Exception e) {
-			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save db to " + this.bendingPlayersFile, e);
+		for(UUID id : players.keySet()) {
+			save(id);
 		}
 	}
 
 	@Override
 	public void save(UUID id) {
-		// Flat file, don't care of perf
-		this.save();
-	}
-
-	public void reload() {
-		this.datas = new HashMap<UUID, BendingPlayerData>();
-
-		if (this.bendingPlayersFile == null) {
-			this.bendingPlayersFile = new File(this.dataFolder, FILE_NAME);
+		if(!players.containsKey(id)) {
+			Bending.log.warning("Tried to save player "+id+" but not loaded.");
+			return;
 		}
+		FileWriter writer = null;
 		try {
-			if (!this.bendingPlayersFile.exists()) {
-				this.bendingPlayersFile.createNewFile();
-				FileWriter content = new FileWriter(this.bendingPlayersFile);
-				content.write("{}");
-				content.close();
-			}
-
-			FileReader reader = new FileReader(this.bendingPlayersFile);
-			BendingPlayerDatas temp = this.mapper.fromJson(reader, BendingPlayerDatas.class);
-			if (temp != null && temp.getDatas() != null) {
-				this.datas.putAll(temp.getDatas());
-			} else {
-				Bending.plugin.getLogger().warning("Bending Player Data was NULL !");
-			}
-
-			reader.close();
+			File file = getFile(id);
+			writer = new FileWriter(file, false);
+			mapper.toJson(players.get(id).serialize(), writer);
+			writer.close();
 		} catch (Exception e) {
-			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not load config from " + this.bendingPlayersFile, e);
-			try {
-				File save = new File(this.dataFolder, FILE_NAME + ".save.0");
-				int i = 1;
-				while (save.exists()) {
-					save = new File(this.dataFolder, FILE_NAME + ".save." + i);
-					i++;
+			Bending.log.log(Level.SEVERE, "Could not save player " + id, e);
+		} finally {
+			if(writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					
 				}
-				FileUtils.moveFile(this.bendingPlayersFile, save);
-			} catch (IOException e1) {
-
 			}
 		}
 	}
 
 	@Override
-	public Map<UUID, BendingPlayerData> dump() {
-		return this.datas;
-	}
-
-	private void load() {
-		if (this.datas == null) {
-			reload();
-		}
+	public void lease(UUID player) {
+		this.get(player); // Will do everything
 	}
 
 	@Override
-	public void clear() {
-		this.players.clear();
-		this.datas.clear();
-		if (this.bendingPlayersFile != null) {
-			this.bendingPlayersFile.delete();
-		}
+	public void release(UUID player) {
+		this.save(player);
+		this.players.remove(player);
 	}
-
-	private class BendingPlayerDatas {
-		private Map<UUID, BendingPlayerData> datas;
-
-		public Map<UUID, BendingPlayerData> getDatas() {
-			return this.datas;
-		}
-
-		public void setDatas(Map<UUID, BendingPlayerData> datas) {
-			this.datas = datas;
-		}
+	
+	private File getFile(UUID id) {
+		return new File(dataFolder, id.toString()+".json");
+	}
+	
+	private File getFile(UUID id, int save) {
+		return new File(dataFolder, id.toString()+".json.save."+save);
 	}
 
 }

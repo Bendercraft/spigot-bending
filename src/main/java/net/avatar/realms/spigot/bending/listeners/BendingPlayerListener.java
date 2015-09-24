@@ -87,6 +87,9 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
+		
+		Bending.database.lease(player.getUniqueId());
+		
 		BendingPlayer.getBendingPlayer(player);
 
 		if (!(Settings.CHAT_COMPATIBILITY) && (Settings.CHAT_ENABLED)) {
@@ -461,6 +464,8 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 			event.setReason(null);
 		}
+		
+		Bending.database.release(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler
@@ -504,6 +509,8 @@ public class BendingPlayerListener implements Listener {
 		if (EntityTools.speToggled(event.getPlayer())) {
 			EntityTools.speToggledBenders.remove(event.getPlayer());
 		}
+		
+		Bending.database.release(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
