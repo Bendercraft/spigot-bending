@@ -57,6 +57,11 @@ public class FireFerret extends BendingActiveAbility {
 	public boolean swing() {
 		if(state == BendingAbilityState.CanStart) {
 			if(player.isSneaking()) {
+				if(!ComboPoints.consume(player,2)) {
+					setState(BendingAbilityState.Ended);
+					return false;
+				}
+				
 				origin = player.getEyeLocation().clone();
 				location = origin.clone();
 				target = EntityTools.getNearestLivingEntity(location, SEARCH_RADIUS, player);
@@ -119,6 +124,7 @@ public class FireFerret extends BendingActiveAbility {
 		}
 		if (entity.getEntityId() != this.player.getEntityId()) {
 			EntityTools.damageEntity(this.player, entity, DAMAGE);
+			entity.setFireTicks(2);
 			return false;
 		}
 		return true;

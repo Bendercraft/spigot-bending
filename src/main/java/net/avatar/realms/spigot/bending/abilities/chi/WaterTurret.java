@@ -27,22 +27,22 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 @BendingAbility(name = "Water turret", bind = BendingAbilities.WaterTurret, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiWater)
 public class WaterTurret extends BendingActiveAbility {
 	@ConfigurationParameter("Select-Range")
-	private static double SELECT_RANGE = 10;
+	private static double SELECT_RANGE = 15;
 	
 	@ConfigurationParameter("Activation-Range")
-	private static double ACTIVATION_RANGE = 6;
+	private static double ACTIVATION_RANGE = 10;
 	
 	@ConfigurationParameter("Hit-Range")
-	private static double HIT_RANGE = 12;
+	private static double HIT_RANGE = 30;
 	
 	@ConfigurationParameter("Speed")
-	private static double SPEED = 10;
+	private static double SPEED = 12;
 	
 	@ConfigurationParameter("Radius")
 	public static double AFFECTING_RADIUS = 2;
 	
-	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 2;
+	@ConfigurationParameter("Damage-Per-Combo")
+	private static int DAMAGE = 1;
 	
 	private static final byte FULL = 0x0;
 	
@@ -52,6 +52,7 @@ public class WaterTurret extends BendingActiveAbility {
 	private List<TempBlock> turrets = new LinkedList<TempBlock>();
 	private Location head;
 	private long interval;
+	private int damage;
 	
 	public WaterTurret(Player player) {
 		super(player, null);
@@ -61,6 +62,7 @@ public class WaterTurret extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
+		setState(BendingAbilityState.Ended);
 		return false;
 	}
 
@@ -71,9 +73,16 @@ public class WaterTurret extends BendingActiveAbility {
 			if(origin == null) {
 				return false;
 			}
+			damage = DAMAGE;
+			damage *= ComboPoints.getComboPointAmount(player);
+			if(damage == 0) {
+				return false;
+			}
+			ComboPoints.consume(player);
 			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Prepared);
 			time = System.currentTimeMillis();
+			
 		}
 		return false;
 	}
