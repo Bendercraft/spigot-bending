@@ -15,10 +15,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
@@ -87,46 +87,56 @@ public class PoisonnedDart extends BendingActiveAbility {
 		this.effects = new LinkedList<PotionEffect>();
 		System.out.println(is.toString());
 		switch (is.getType()) {
-		case MILK_BUCKET:
-			this.effects = null;
-			is.setType(Material.BUCKET);
-			is.setAmount(1);
-			break;
-		case POTION:
-			Potion potion = Potion.fromItemStack(is);
-			this.effects.addAll(potion.getEffects());
-			this.player.getInventory().removeItem(is);
-			this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
-			break;
-		case EYE_OF_ENDER:
-			this.effects.add(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 10, 1));
-			if (is.getAmount() == 1) {
+			case MILK_BUCKET:
+				this.effects = null;
+				is.setType(Material.BUCKET);
+				is.setAmount(1);
+				break;
+			case POTION:
+				Potion potion = Potion.fromItemStack(is);
+				this.effects.addAll(potion.getEffects());
 				this.player.getInventory().removeItem(is);
-			} else {
-				is.setAmount(is.getAmount() - 1);
-			}
-			break;
-		case MUSHROOM_SOUP:
-			this.effects.add(new PotionEffect(PotionEffectType.CONFUSION, 20 * 12, 1));
-			is.setType(Material.BOWL);
-			is.setAmount(1);
-			break;
-		case SKULL_ITEM:
-			@SuppressWarnings("deprecation")
-			byte data = is.getData().getData();
-			// If this is a wither skull
-			if (data == 1) {
-				this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 60, 0));
+				this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
+				break;
+			case EYE_OF_ENDER:
+				this.effects.add(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 10, 1));
 				if (is.getAmount() == 1) {
 					this.player.getInventory().removeItem(is);
 				} else {
 					is.setAmount(is.getAmount() - 1);
 				}
+				break;
+			case MUSHROOM_SOUP:
+				this.effects.add(new PotionEffect(PotionEffectType.CONFUSION, 20 * 12, 1));
+				is.setType(Material.BOWL);
+				is.setAmount(1);
+				break;
+			case SKULL_ITEM:
+				@SuppressWarnings("deprecation")
+				byte data = is.getData().getData();
+				// If this is a wither skull
+				if (data == 1) {
+					this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 60, 0));
+					if (is.getAmount() == 1) {
+						this.player.getInventory().removeItem(is);
+					} else {
+						is.setAmount(is.getAmount() - 1);
+					}
+				}
+				break;
+			default:
+				this.effects.add(new PotionEffect(PotionEffectType.POISON, 20 * 1, 0));
+				break;
+		}
+
+		if (this.effects != null && ComboPoints.getComboPointAmount(this.player) >= 3) {
+			ComboPoints.consume(this.player, 2);
+			List<PotionEffect> newEffects = new LinkedList<PotionEffect>();
+			for (PotionEffect effect : this.effects) {
+				newEffects.add(new PotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier() + 1));
 			}
-			break;
-		default:
-			this.effects.add(new PotionEffect(PotionEffectType.POISON, 20 * 1, 0));
-			break;
+			this.effects.clear();
+			this.effects = newEffects;
 		}
 
 		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);

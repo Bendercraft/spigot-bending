@@ -31,7 +31,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.chi.EarthLariat;
-import net.avatar.realms.spigot.bending.abilities.chi.FireFurret;
+import net.avatar.realms.spigot.bending.abilities.chi.FireFerret;
 import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
 import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
 import net.avatar.realms.spigot.bending.abilities.chi.PowerfulHit;
@@ -218,7 +218,7 @@ public class AbilityManager {
 		register(AirSlice.class);
 		register(WaterTurret.class);
 		register(EarthLariat.class);
-		register(FireFurret.class);
+		register(FireFerret.class);
 
 		register(AirBlast.class);
 		register(AirBubble.class);
