@@ -38,7 +38,8 @@ public class ComboPoints {
 	 * Add a combo point to a player
 	 *
 	 * @param player
-	 *            The player that receive a combo point
+	 *            The {@link org.bukkit.entity.Player player} that receive a
+	 *            combo point
 	 * @param target
 	 *            The target that the player has hit to get the combo point.
 	 *            Know that if the target is different from the previous target,
@@ -196,12 +197,12 @@ public class ComboPoints {
 
 	private void consume() {
 		this.comboAmount = 0;
-		lastTime = System.currentTimeMillis();
+		this.lastTime = System.currentTimeMillis();
 	}
 
 	private void consume(int amount) {
 		this.comboAmount -= amount;
-		lastTime = System.currentTimeMillis();
+		this.lastTime = System.currentTimeMillis();
 	}
 
 }
