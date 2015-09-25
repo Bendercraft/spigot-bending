@@ -74,11 +74,10 @@ public enum BendingAbilities {
 	 */
 	HighJump(BendingElement.ChiBlocker, false), 
 	ChiSpeed(BendingElement.ChiBlocker, false), 
-	RapidPunch(BendingElement.ChiBlocker, false), 
 	VitalPoint(BendingElement.ChiBlocker, false), 
 	SmokeBomb(BendingElement.ChiBlocker, false), 
 	Dash(BendingElement.ChiBlocker, true), 
-	PowerfulHit(BendingElement.ChiBlocker, false), 
+	DirectHit(BendingElement.ChiBlocker, false), 
 	PoisonnedDart(BendingAffinity.Inventor, false), 
 	PlasticBomb(BendingAffinity.Inventor, true),
 	AirSlice(BendingAffinity.ChiAir, true),
@@ -274,7 +273,7 @@ public enum BendingAbilities {
 	public static List<BendingAbilities> getElementAbilities(BendingElement el) {
 		LinkedList<BendingAbilities> abilities = new LinkedList<BendingAbilities>();
 		for (BendingAbilities ability : values()) {
-			if (ability.element == el && !ability.isPassiveAbility()) {
+			if ((ability.element == el) && !ability.isPassiveAbility()) {
 				abilities.add(ability);
 			}
 		}

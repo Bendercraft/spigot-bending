@@ -15,8 +15,8 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * knockback You must be sneaking when clicking to activate this technique.
  *
  */
-@BendingAbility(name = "Powerful Hit", bind = BendingAbilities.PowerfulHit, element = BendingElement.ChiBlocker)
-public class PowerfulHit extends BendingActiveAbility {
+@BendingAbility(name = "Powerful Hit", bind = BendingAbilities.DirectHit, element = BendingElement.ChiBlocker)
+public class DirectHit extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	public static long DAMAGE = 5;
@@ -30,7 +30,7 @@ public class PowerfulHit extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 5000;
 
-	public PowerfulHit(Player player) {
+	public DirectHit(Player player) {
 		super(player, null);
 	}
 

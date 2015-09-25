@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import org.bukkit.entity.Player;
+
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
@@ -30,12 +32,11 @@ import net.avatar.realms.spigot.bending.abilities.chi.AirSlice;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
+import net.avatar.realms.spigot.bending.abilities.chi.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.chi.EarthLariat;
 import net.avatar.realms.spigot.bending.abilities.chi.FireFerret;
 import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
 import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
-import net.avatar.realms.spigot.bending.abilities.chi.PowerfulHit;
-import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
 import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.chi.WaterTurret;
@@ -66,10 +67,10 @@ import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
-import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
 import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
+import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
 import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
@@ -78,8 +79,6 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-
-import org.bukkit.entity.Player;
 
 public class AbilityManager {
 
@@ -138,7 +137,7 @@ public class AbilityManager {
 	}
 
 	public BendingActiveAbility buildAbility(BendingAbilities abilityType, Player player) {
-		RegisteredAbility registered = binds.get(abilityType);
+		RegisteredAbility registered = this.binds.get(abilityType);
 		if (registered == null) {
 			return null; // Invalid bind
 		}
@@ -159,7 +158,7 @@ public class AbilityManager {
 	}
 
 	public BendingAbilities getAbilityType(IBendingAbility instance) {
-		return reverseBinds.get(instance.getClass());
+		return this.reverseBinds.get(instance.getClass());
 	}
 
 	public void addInstance(IBendingAbility instance) {
@@ -211,8 +210,7 @@ public class AbilityManager {
 		register(Dash.class);
 		register(HighJump.class);
 		register(VitalPoint.class);
-		register(PowerfulHit.class);
-		register(RapidPunch.class);
+		register(DirectHit.class);
 		register(SmokeBomb.class);
 		register(ChiSpeed.class);
 		register(AirSlice.class);

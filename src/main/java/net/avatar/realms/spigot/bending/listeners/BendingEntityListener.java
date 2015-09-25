@@ -29,10 +29,10 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
-import net.avatar.realms.spigot.bending.abilities.chi.RapidPunch;
+import net.avatar.realms.spigot.bending.abilities.chi.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
@@ -96,8 +96,11 @@ public class BendingEntityListener implements Listener {
 		if ((source instanceof Player) && (entity instanceof Player)) {
 			Player sourceplayer = (Player) source;
 			Player targetplayer = (Player) entity;
-			if (EntityTools.canBendPassive(sourceplayer, BendingElement.ChiBlocker) && EntityTools.isBender(sourceplayer, BendingElement.ChiBlocker) && (event.getCause() == DamageCause.ENTITY_ATTACK) && (event.getDamage() == 1) && (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= RapidPunch.RANGE)) {
-				EntityTools.blockChi(targetplayer, System.currentTimeMillis());
+			if (EntityTools.canBendPassive(sourceplayer, BendingElement.ChiBlocker)
+					&& EntityTools.isBender(sourceplayer, BendingElement.ChiBlocker)
+					&& (event.getCause() == DamageCause.ENTITY_ATTACK) && (event.getDamage() == 1)
+					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= DirectHit.RANGE)) {
+				EntityTools.blockChi(targetplayer, 500);
 			}
 		}
 		if (entity instanceof Player) {
