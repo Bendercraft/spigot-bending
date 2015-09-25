@@ -2,16 +2,15 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 
 import java.util.Map;
 
-import org.bukkit.Effect;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
@@ -31,14 +30,11 @@ public class VitalPoint extends BendingActiveAbility {
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 1;
 
+	@ConfigurationParameter("Damage-Increment")
+	private static int DAMAGE_INCREMENT = 1;
+
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 10000;
-
-	@ConfigurationParameter("Interval")
-	private static long INTERVAL = 500;
-
-	@ConfigurationParameter("Punch-Interval")
-	private static int PUNCH_INTERVAL = 2;
 
 	@ConfigurationParameter("Duration")
 	private static long DURATION = 2500;
@@ -47,18 +43,13 @@ public class VitalPoint extends BendingActiveAbility {
 	private static int SLOW_DURATION = 5; // In seconds
 
 	@ConfigurationParameter("Chiblock-Duration")
-	private static long CHIBLOCK_DURATION = 1500;
-
-	@ConfigurationParameter("Max-Duration")
-	private static long MAX_DURATION = 60 * 1000;
+	private static long CHIBLOCK_DURATION = 3000;
 
 	@ConfigurationParameter("Max-Range")
 	private static float MAX_RANGE = 3.5f;
 
 	private static final PotionEffectType TYPE = PotionEffectType.SLOW;
 
-	private long time;
-	private int cptPunches;
 	private int damage;
 	private LivingEntity target;
 	private int amplifier;
@@ -70,8 +61,6 @@ public class VitalPoint extends BendingActiveAbility {
 			return;
 		}
 
-		this.time = this.startedTime;
-		this.cptPunches = 0;
 		this.amplifier = 0;
 		this.damage = DAMAGE;
 	}
@@ -79,85 +68,55 @@ public class VitalPoint extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-
-		case CanStart:
-			this.target = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
-			if (this.target == null) {
+			case None:
+			case CannotStart:
 				return false;
-			}
-			setState(BendingAbilityState.Progressing);
-			AbilityManager.getManager().addInstance(this);
 
-		case Preparing:
-		case Prepared:
-		case Progressing:
-			long now = System.currentTimeMillis();
-			if (((now - this.time) < INTERVAL) && (this.cptPunches > 0)) {
-				return false;
-			}
-
-			LivingEntity temp = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
-			if (!temp.equals(this.target)) {
-				this.cptPunches = 0;
-				this.amplifier = 0;
-				this.target = temp;
-			}
-
-			this.cptPunches++;
-			if ((this.cptPunches % PUNCH_INTERVAL) == 0) {
-				this.amplifier++;
-			}
-
-			this.target.damage(this.damage, this.player);
-			boolean isSlown = false;
-			for (PotionEffect pe : this.target.getActivePotionEffects()) {
-				if (pe.getType().equals(TYPE)) {
-					if ((pe.getDuration() < SLOW_DURATION) || (pe.getAmplifier() < this.amplifier)) {
-						isSlown = true;
-					}
+			case CanStart:
+				this.target = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
+				if (this.target == null) {
+					return false;
 				}
-			}
-			if (isSlown) {
-				// We have to remove it first, else it will not be added
-				this.target.removePotionEffect(TYPE);
-			}
-			this.target.addPotionEffect(new PotionEffect(TYPE, SLOW_DURATION, this.amplifier));
-			if (this.target instanceof Player) {
-				EntityTools.blockChi((Player) this.target, now + CHIBLOCK_DURATION);
-				((Player) this.target).playEffect(this.player.getLocation(), Effect.GHAST_SHRIEK, null);
-			}
-			this.time = System.currentTimeMillis();
-			return false;
 
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return true;
+				int combo = ComboPoints.getComboPointAmount(this.player);
+				if (this.player.isSneaking() && (combo > 0)) {
+					this.damage += combo * DAMAGE_INCREMENT;
+					this.target.damage(this.damage, this.player);
+					if (combo == 5) {
+						if (this.target instanceof Player) {
+							EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
+						}
+						this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
+					}
+					else {
+						this.amplifier = combo - 1;
+						if (combo == 4) {
+							if (this.target instanceof Player) {
+								EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
+							}
+						}
+						else if (combo == 1) {
+							this.amplifier = 1;
+						}
+						this.target.addPotionEffect(new PotionEffect(TYPE, SLOW_DURATION / 20, this.amplifier));
+					}
+					ComboPoints.consume(this.player);
+				}
+				else {
+					ComboPoints.AddComboPoint(this.player, this.target);
+					this.target.damage(this.damage, this.player);
+					this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
+				}
+
+				long cooldown = COOLDOWN + 1000;
+				cooldown /= (6 - combo);
+
+				this.bender.cooldown(BendingAbilities.VitalPoint, cooldown);
+
+				setState(BendingAbilityState.Ended);
+			default:
+				return true;
 		}
-	}
-
-	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		long now = System.currentTimeMillis();
-		if (now >= (this.time + DURATION)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public void remove() {
-		this.bender.cooldown(BendingAbilities.VitalPoint, COOLDOWN);
-		super.remove();
 	}
 
 	@Override
@@ -181,7 +140,7 @@ public class VitalPoint extends BendingActiveAbility {
 
 	@Override
 	protected long getMaxMillis() {
-		return MAX_DURATION;
+		return 2000;
 	}
 
 	@Override
