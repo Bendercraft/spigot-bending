@@ -7,6 +7,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
@@ -43,10 +44,17 @@ public class EarthLariat extends BendingActiveAbility {
 	public boolean swing() {
 		if(state == BendingAbilityState.CanStart) {
 			if(!player.isSneaking()) {
-				target = EntityTools.getTargettedEntity(player, RANGE);
-				if(target == null) {
+				if(!ComboPoints.consume(player,1)) {
+					setState(BendingAbilityState.Ended);
 					return false;
 				}
+				
+				target = EntityTools.getTargettedEntity(player, RANGE);
+				if(target == null) {
+					setState(BendingAbilityState.Ended);
+					return false;
+				}
+				
 				if(BlockTools.isEarthbendable(player, AbilityManager.getManager().getAbilityType(this), player.getLocation().getBlock().getRelative(BlockFace.DOWN))
 						&& BlockTools.isEarthbendable(player, AbilityManager.getManager().getAbilityType(this), target.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
 					//BlockTools.moveEarth(player, player.getLocation().getBlock().getRelative(BlockFace.DOWN), new Vector(0,1,0), 1);

@@ -29,7 +29,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 public class AirSlice extends BendingActiveAbility {
 
 	@ConfigurationParameter("Select-Range")
-	private static double SELECT_RANGE = 10;
+	private static double SELECT_RANGE = 6;
 
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 25.0;
@@ -44,7 +44,7 @@ public class AirSlice extends BendingActiveAbility {
 	public static double AFFECT_RADIUS = 2.0;
 
 	@ConfigurationParameter("Push-Factor")
-	public static double PUSH_FACTOR = 5.0;
+	public static double PUSH_FACTOR = 4.0;
 
 	public static final byte FULL = 0x0;
 
@@ -67,6 +67,12 @@ public class AirSlice extends BendingActiveAbility {
 			if(this.first == null || this.second == null) {
 				return false;
 			}
+			
+			if(!ComboPoints.consume(player,1)) {
+				setState(BendingAbilityState.Ended);
+				return false;
+			}
+			
 			this.direction = this.player.getEyeLocation().getDirection();
 			this.origin = this.first.clone().add(this.second).multiply(0.5);
 			double distance = this.second.distance(this.first);
@@ -91,6 +97,10 @@ public class AirSlice extends BendingActiveAbility {
 			if (this.first == null || this.first.getBlock().isLiquid() || BlockTools.isSolid(this.first.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSlice, this.first)) {
 				return false;
 			}
+			if(!ComboPoints.consume(player,1)) {
+				setState(BendingAbilityState.Ended);
+				return false;
+			}
 			setState(BendingAbilityState.Preparing);
 			AbilityManager.getManager().addInstance(this);
 		} else if(this.state == BendingAbilityState.Preparing || this.state == BendingAbilityState.Prepared) {
@@ -107,6 +117,10 @@ public class AirSlice extends BendingActiveAbility {
 			}
 			if(this.state == BendingAbilityState.Preparing) {
 				setState(BendingAbilityState.Prepared);
+			}
+			if(!ComboPoints.consume(player,1)) {
+				setState(BendingAbilityState.Ended);
+				return false;
 			}
 		}
 		return false;
