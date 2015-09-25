@@ -12,6 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -51,6 +52,7 @@ public class VitalPoint extends BendingActiveAbility {
 	private static final PotionEffectType TYPE = PotionEffectType.SLOW;
 
 	private int damage;
+	private long cooldown;
 	private LivingEntity target;
 	private int amplifier;
 
@@ -63,6 +65,16 @@ public class VitalPoint extends BendingActiveAbility {
 
 		this.amplifier = 0;
 		this.damage = DAMAGE;
+		this.cooldown = COOLDOWN;
+		
+		if(bender.hasPath(BendingPath.Seeker)) {
+			this.damage *= 1.5;
+			this.cooldown *= 1.4;
+		}
+		if(bender.hasPath(BendingPath.Restless)) {
+			this.damage *= 0.6;
+			this.cooldown *= 0.5;
+		}
 	}
 
 	@Override
@@ -108,7 +120,7 @@ public class VitalPoint extends BendingActiveAbility {
 					this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
 				}
 
-				long cooldown = COOLDOWN + 1000;
+				long cooldown = this.cooldown + 1000;
 				cooldown /= (6 - combo);
 
 				this.bender.cooldown(BendingAbilities.VitalPoint, cooldown);

@@ -18,6 +18,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -53,6 +54,8 @@ public class SmokeBomb extends BendingActiveAbility {
 
 	private Integer id;
 
+	private long cooldown;
+
 	public SmokeBomb(Player player) {
 		super(player, null);
 
@@ -62,8 +65,15 @@ public class SmokeBomb extends BendingActiveAbility {
 
 		this.origin = player.getLocation();
 		this.id = ID++;
-
+		this.cooldown = COOLDOWN;
 		this.ticksRemaining = DURATION * 20;
+		if(bender.hasPath(BendingPath.Seeker)) {
+			this.ticksRemaining *= 1.2;
+		}
+		if(bender.hasPath(BendingPath.Restless)) {
+			this.ticksRemaining *= 0.9;
+			this.cooldown *= 1.2; 
+		}
 		this.locs = new ArrayList<Location>();
 		this.targets = new ArrayList<LivingEntity>();
 
@@ -97,7 +107,7 @@ public class SmokeBomb extends BendingActiveAbility {
 			}
 		}
 
-		this.bender.cooldown(BendingAbilities.SmokeBomb, COOLDOWN);
+		this.bender.cooldown(BendingAbilities.SmokeBomb, cooldown);
 		AbilityManager.getManager().addInstance(this);
 
 		if (this.state == BendingAbilityState.Prepared) {

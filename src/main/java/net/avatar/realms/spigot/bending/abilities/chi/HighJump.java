@@ -8,6 +8,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -42,6 +43,15 @@ public class HighJump extends BendingActiveAbility {
 			return false;
 		}
 		int height = JUMP_HEIGHT;
+		
+		if(bender.hasPath(BendingPath.Seeker)) {
+			height *= 0.8;
+		}
+		
+		if(bender.hasPath(BendingPath.Restless)) {
+			height *= 1.2;
+		}
+		
 		if (ComboPoints.getComboPointAmount(this.player) >= 2) {
 			height++;
 		}
