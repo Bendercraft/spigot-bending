@@ -48,7 +48,7 @@ public class FireListener implements Listener {
 		if (event.getDamager() instanceof Player) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getDamager());
 			if (bPlayer != null) {
-				if (bPlayer.isBender(BendingElement.Fire) && !bPlayer.isBender(BendingElement.ChiBlocker) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.FireBlast)) {
+				if (bPlayer.isBender(BendingElement.Fire) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.FireBlast)) {
 					boolean ok = false;
 					Player p = (Player) event.getDamager();
 					if (p.getInventory().getItemInHand().getType().equals(Material.WOOD_SWORD)) {
@@ -92,7 +92,7 @@ public class FireListener implements Listener {
 	public void unlockFireBurst(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Fire) && !bPlayer.isBender(BendingElement.ChiBlocker) && event.getAbility().equals(BendingAbilities.FireBlast)) {
+			if (bPlayer.isBender(BendingElement.Fire) && event.getAbility().equals(BendingAbilities.FireBlast)) {
 				Player p = bPlayer.getPlayer();
 				long lastTime = -1;
 				long currentTime = System.currentTimeMillis();
@@ -139,7 +139,7 @@ public class FireListener implements Listener {
 					if (entity instanceof Player) {
 						Player p = (Player) entity;
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
-						if (trainee.isBender(BendingElement.Fire) && !trainee.isBender(BendingElement.ChiBlocker)) {
+						if (trainee.isBender(BendingElement.Fire)) {
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
 								if (this.plugin.addPermission(p, BendingAbilities.FireShield)) {
 									String message = "After seeing " + bPlayer.getPlayer().getName() + " doing a fire shield, you are able to copy it for yourself.";
@@ -159,7 +159,7 @@ public class FireListener implements Listener {
 	public void unlockWallOfFire(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Fire) && !bPlayer.isBender(BendingElement.ChiBlocker) && event.getAbility().equals(BendingAbilities.FireShield)) {
+			if (bPlayer.isBender(BendingElement.Fire) && event.getAbility().equals(BendingAbilities.FireShield)) {
 				Player p = bPlayer.getPlayer();
 				int done = 0;
 				if (this.wallOfFire.containsKey(p.getUniqueId())) {
@@ -188,7 +188,7 @@ public class FireListener implements Listener {
 		if (event.getBlockPlaced().getType().equals(Material.TORCH)) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 			if (bPlayer != null) {
-				if (bPlayer.isBender(BendingElement.Fire) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
+				if (bPlayer.isBender(BendingElement.Fire)) {
 					Player p = event.getPlayer();
 					if (this.plugin.addPermission(p, BendingAbilities.Illumination)) {
 						String message = "As you tried to light up, you realize that your firebending can already sustain that task";
@@ -206,7 +206,7 @@ public class FireListener implements Listener {
 		if (event.getCause().equals(DamageCause.FALL) && (event.getEntity() instanceof Player)) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getEntity());
 			if (bPlayer != null) {
-				if (bPlayer.isBender(BendingElement.Fire) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
+				if (bPlayer.isBender(BendingElement.Fire)) {
 					// Check fireburst
 					Player p = (Player) event.getEntity();
 					if (EntityTools.canBend(p, BendingAbilities.FireBurst)) {

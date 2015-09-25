@@ -48,7 +48,7 @@ public class WaterListener implements Listener {
 					if (entity instanceof Player) {
 						Player p = (Player) entity;
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
-						if (trainee.isBender(BendingElement.Water) && !trainee.isBender(BendingElement.ChiBlocker)) {
+						if (trainee.isBender(BendingElement.Water)) {
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
 								if (this.plugin.addPermission(p, BendingAbilities.Torrent)) {
 									String message = "You saw " + bPlayer.getPlayer().getName() + " bending a continuous torrent of water, and you copied it's mouvement";
@@ -70,7 +70,7 @@ public class WaterListener implements Listener {
 			Player p = (Player) event.getEntity();
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 			if (bPlayer != null) {
-				if (bPlayer.isBender(BendingElement.Water) && !bPlayer.isBender(BendingElement.ChiBlocker)) {
+				if (bPlayer.isBender(BendingElement.Water)) {
 					if (this.plugin.addPermission(p, BendingAbilities.WaterBubble)) {
 						String message = "Your suffocation made your realize that you can bend water arround you to prevent your own death";
 						p.sendMessage(color + message);
@@ -86,7 +86,7 @@ public class WaterListener implements Listener {
 	public void unlockSurge(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Water) && !bPlayer.isBender(BendingElement.ChiBlocker) && event.getAbility().equals(BendingAbilities.WaterManipulation)) {
+			if (bPlayer.isBender(BendingElement.Water) && event.getAbility().equals(BendingAbilities.WaterManipulation)) {
 				int blasted = 0;
 				Player p = bPlayer.getPlayer();
 				if (this.surge.containsKey(p.getUniqueId())) {
@@ -113,7 +113,7 @@ public class WaterListener implements Listener {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			// Check if player has unlocked PhaseChange here
-			if (bPlayer.isBender(BendingElement.Water) && !bPlayer.isBender(BendingElement.ChiBlocker) && event.getAbility().equals(BendingAbilities.WaterManipulation)) {
+			if (bPlayer.isBender(BendingElement.Water) && event.getAbility().equals(BendingAbilities.WaterManipulation)) {
 				Player p = bPlayer.getPlayer();
 				if (EntityTools.canBend(p, BendingAbilities.PhaseChange)) {
 					if (this.plugin.addPermission(p, BendingAbilities.IceSpike)) {
@@ -133,7 +133,7 @@ public class WaterListener implements Listener {
 		if (bPlayer != null) {
 			// Check if player knows surge
 			Player p = bPlayer.getPlayer();
-			if (bPlayer.isBender(BendingElement.Water) && !bPlayer.isBender(BendingElement.ChiBlocker) && EntityTools.canBend(p, BendingAbilities.Surge)) {
+			if (bPlayer.isBender(BendingElement.Water) && EntityTools.canBend(p, BendingAbilities.Surge)) {
 				if (event.getAbility().equals(BendingAbilities.WaterManipulation)) {
 					long lastTime = -1;
 					long currentTime = System.currentTimeMillis();
