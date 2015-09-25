@@ -135,39 +135,40 @@ public class FireBlast extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-			return true;
+			case None:
+			case CannotStart:
+				return true;
 
-		case CanStart:
-			launchSingle();
-			AbilityManager.getManager().addInstance(this);
-			this.bender.cooldown(BendingAbilities.FireBlast, COOLDOWN);
-			return false;
+			case CanStart:
+				launchSingle();
+				AbilityManager.getManager().addInstance(this);
+				this.bender.cooldown(BendingAbilities.FireBlast, COOLDOWN);
+				return false;
 
-		case Preparing:
-			launchSingle();
-			this.bender.cooldown(BendingAbilities.FireBlast, COOLDOWN);
-			return false;
+			case Preparing:
+				launchSingle();
+				this.bender.cooldown(BendingAbilities.FireBlast, COOLDOWN);
+				return false;
 
-		case Prepared:
-			this.damage *= 1.10;
-			launchSingle();
-			Vector perpDir = this.direction.clone();
-			double tempZ = -perpDir.getZ();
-			perpDir.setZ(perpDir.getX());
-			perpDir.setY(0);
-			perpDir.setX(tempZ);
-			List<Block> safes = new LinkedList<Block>();
-			new FireBlast(this.player, this, this.location.clone().add(perpDir), this.direction, this.damage, safes);
-			new FireBlast(this.player, this, this.location.clone().subtract(perpDir), this.direction, this.damage, safes);
-			this.bender.cooldown(BendingAbilities.FireBlast, CHARGED_COOLDOWN);
-			return false;
-		case Progressing:
-		case Ending:
-		case Ended:
-		case Removed:
-			return true;
+			case Prepared:
+				this.damage *= 1.10;
+				launchSingle();
+				Vector perpDir = this.direction.clone();
+				double tempZ = -perpDir.getZ();
+				perpDir.setZ(perpDir.getX());
+				perpDir.setY(0);
+				perpDir.setX(tempZ);
+				perpDir.multiply(1.5);
+				List<Block> safes = new LinkedList<Block>();
+				new FireBlast(this.player, this, this.location.clone().add(perpDir), this.direction, this.damage, safes);
+				new FireBlast(this.player, this, this.location.clone().subtract(perpDir), this.direction, this.damage, safes);
+				this.bender.cooldown(BendingAbilities.FireBlast, CHARGED_COOLDOWN);
+				return false;
+			case Progressing:
+			case Ending:
+			case Ended:
+			case Removed:
+				return true;
 		}
 		return true;
 	}
