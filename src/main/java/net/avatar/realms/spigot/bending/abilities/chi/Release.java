@@ -14,7 +14,7 @@ public class Release extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean swing() {
+	public boolean sneak() {
 		ComboPoints.consume(player);
 		return false;
 	}
