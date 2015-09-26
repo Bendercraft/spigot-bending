@@ -17,12 +17,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -83,10 +83,13 @@ public class AirSwipe extends BendingActiveAbility {
 
 	@ConfigurationParameter("Max-Charge-Time")
 	private static long MAX_CHARGE_TIME = 3000;
+	
+	@ConfigurationParameter ("Charge-Max-Factor")
+	private static double MAX_FACTOR = 2.5;
 
 	private static int stepsize = 4;
 	private static byte full = AirBlast.full;
-	private static double maxfactor = 3;
+	
 
 	private double speedfactor;
 
@@ -122,45 +125,45 @@ public class AirSwipe extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-			return true;
-		case CanStart:
-			setState(BendingAbilityState.Preparing);
-			AbilityManager.getManager().addInstance(this);
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ended:
-		case Removed:
-			return false;
-		default:
-			return false;
+			case None:
+			case CannotStart:
+				return true;
+			case CanStart:
+				setState(BendingAbilityState.Preparing);
+				AbilityManager.getManager().addInstance(this);
+				return false;
+			case Preparing:
+			case Prepared:
+			case Progressing:
+			case Ended:
+			case Removed:
+				return false;
+			default:
+				return false;
 		}
 	}
 
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-			return true;
-		case CanStart:
-			setState(BendingAbilityState.Progressing);
-			AbilityManager.getManager().addInstance(this);
-		case Preparing:
-		case Prepared:
-			this.setState(BendingAbilityState.Progressing);
-		case Progressing:
-			this.origin = this.player.getEyeLocation();
-			launch();
-			return false;
-		case Ended:
-		case Removed:
-			return false;
-		default:
-			return false;
+			case None:
+			case CannotStart:
+				return true;
+			case CanStart:
+				setState(BendingAbilityState.Progressing);
+				AbilityManager.getManager().addInstance(this);
+			case Preparing:
+			case Prepared:
+				this.setState(BendingAbilityState.Progressing);
+			case Progressing:
+				this.origin = this.player.getEyeLocation();
+				launch();
+				return false;
+			case Ended:
+			case Removed:
+				return false;
+			default:
+				return false;
 		}
 	}
 
@@ -206,8 +209,8 @@ public class AirSwipe extends BendingActiveAbility {
 			if (this.player.isSneaking()) {
 				if (now >= (this.startedTime + MAX_CHARGE_TIME)) {
 					setState(BendingAbilityState.Prepared);
-					this.damage *= maxfactor;
-					this.pushfactor *= maxfactor;
+					this.damage *= MAX_FACTOR;
+					this.pushfactor *= MAX_FACTOR;
 					return true;
 				}
 			}
@@ -226,7 +229,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 		if (!this.player.isSneaking()) {
 			if (!this.state.equals(BendingAbilityState.Prepared)) {
-				double factor = (maxfactor * (now - this.startedTime)) / MAX_CHARGE_TIME;
+				double factor = (MAX_FACTOR * (now - this.startedTime)) / MAX_CHARGE_TIME;
 				if (factor < 1) {
 					factor = 1;
 				}
