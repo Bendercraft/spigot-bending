@@ -2,13 +2,9 @@ package net.avatar.realms.spigot.bending.abilities.fire;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -25,7 +21,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class FireProtection extends BendingActiveAbility {
+public class FireProtection {
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1000;
@@ -36,55 +32,36 @@ public class FireProtection extends BendingActiveAbility {
 	private static long interval = 100;
 	private static double radius = 3;
 	private static double discradius = 1.5;
-	private static boolean ignite = true;
 
 	private long time;
+	private long startedTime;
+
+	private Player player;
+
+	private BendingPlayer bender;
 
 	public FireProtection(Player player) {
-		super(player, null);
+		this.player = player;
+		this.time = System.currentTimeMillis();
+		this.startedTime = this.time;
+		this.bender = BendingPlayer.getBendingPlayer(player);
 	}
 
-	@Override
-	public boolean swing() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
-			if (!this.player.getEyeLocation().getBlock().isLiquid()) {
-				this.time = this.startedTime;
-				setState(BendingAbilityState.Progressing);
-			}
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return true;
-		}
-	}
-
-	@Override
 	public void remove() {
-		this.bender.cooldown(BendingAbilities.FireShield, COOLDOWN);
-		super.remove();
+		bender.cooldown(BendingAbilities.FireShield, COOLDOWN);
 	}
 
-	@Override
 	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		if(state != BendingAbilityState.Progressing) {
-			return false;
-		}
-		
 		if (System.currentTimeMillis() > (this.time + interval)) {
 			this.time = System.currentTimeMillis();
+			
+			if(this.startedTime + DURATION < this.time) {
+				return false;
+			}
+			
+			if (this.player.getEyeLocation().getBlock().isLiquid()) {
+				return false;
+			}
 
 			List<Block> blocks = new LinkedList<Block>();
 			Location location = this.player.getEyeLocation().clone();
@@ -117,10 +94,11 @@ public class FireProtection extends BendingActiveAbility {
 					continue;
 				}
 
-				if ((this.player.getEntityId() != entity.getEntityId()) && ignite) {
-					entity.setFireTicks(120);
+				if (this.player.getEntityId() != entity.getEntityId()) {
 					if (!(entity instanceof LivingEntity)) {
 						entity.remove();
+					} else {
+						new Enflamed(player, entity, 5, null);
 					}
 				}
 			}
@@ -132,24 +110,5 @@ public class FireProtection extends BendingActiveAbility {
 
 		}
 		return true;
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireShield);
-		if (instances == null) {
-			return true;
-		}
-
-		return !instances.containsKey(this.player);
-	}
-
-	@Override
-	public Object getIdentifier() {
-		return this.player;
 	}
 }

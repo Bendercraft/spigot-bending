@@ -51,7 +51,7 @@ public class FireShield extends BendingActiveAbility {
 		if (state == BendingAbilityState.CanStart) {
 			protect = new FireProtection(this.player);
 			setState(BendingAbilityState.Progressing);
-			return protect.swing();
+			AbilityManager.getManager().addInstance(this);
 		}
 		return false;
 	}
