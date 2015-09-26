@@ -49,7 +49,10 @@ public class DirectHit extends BendingActiveAbility {
 				EntityTools.damageEntity(player, target, DAMAGE);
 				target.setVelocity(player.getEyeLocation().getDirection().clone().normalize().multiply(KNOCKBACK));
 				bender.cooldown(this, COOLDOWN);
-				
+				if(ComboPoints.getComboPointAmount(player) == 0) {
+					ComboPoints.AddComboPoint(player, target);
+					ComboPoints.AddComboPoint(player, target);
+				}
 				AbilityManager.getManager().addInstance(this);
 				setState(BendingAbilityState.Progressing);
 			}
