@@ -66,11 +66,6 @@ public class AirShield extends BendingActiveAbility {
 			}
 		}
 		this.speedfactor = 1;
-
-		if (bender.hasPath(BendingPath.Renegade)) {
-			maxRadius *= 0.4;
-			numberOfStreams = (int) (.75 * MAX_RADIUS);
-		}
 	}
 
 	@Override
@@ -159,7 +154,7 @@ public class AirShield extends BendingActiveAbility {
 				velocity.multiply(this.radius / maxRadius);
 
 				if (bender.hasPath(BendingPath.Renegade)) {
-					EntityTools.damageEntity(player, entity, 0.5);
+					EntityTools.damageEntity(player, entity, 1);
 					velocity.multiply(2);
 				}
 				entity.setVelocity(velocity);
