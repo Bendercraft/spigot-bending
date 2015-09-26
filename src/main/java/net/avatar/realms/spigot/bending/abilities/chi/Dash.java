@@ -68,7 +68,6 @@ public class Dash extends BendingActiveAbility {
 		if (this.state != BendingAbilityState.Progressing) {
 			return true;
 		}
-		System.out.println(this.player.getLocation().toString());
 		dash();
 		return false;
 	}
@@ -90,7 +89,6 @@ public class Dash extends BendingActiveAbility {
 		} else {
 			this.direction = d.normalize();
 		}
-		System.out.println(this.player.getLocation().toString());
 		setState(BendingAbilityState.Progressing);
 	}
 
