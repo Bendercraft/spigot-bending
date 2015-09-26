@@ -61,7 +61,6 @@ public abstract class BendingAbility implements IBendingAbility {
 	 * </pre>
 	 */
 	protected final void setState(BendingAbilityState newState) {
-		Bending.plugin.getLogger().info(newState.name());
 		this.state = newState;
 	}
 

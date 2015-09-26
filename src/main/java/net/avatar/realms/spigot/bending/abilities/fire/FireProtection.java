@@ -6,8 +6,7 @@ import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
@@ -26,7 +25,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Fire Shield", bind = BendingAbilities.FireShield, element = BendingElement.Fire)
 public class FireProtection extends BendingActiveAbility {
 
 	@ConfigurationParameter("Cooldown")
@@ -55,7 +53,7 @@ public class FireProtection extends BendingActiveAbility {
 		case CanStart:
 			if (!this.player.getEyeLocation().getBlock().isLiquid()) {
 				this.time = this.startedTime;
-				AbilityManager.getManager().addInstance(this);
+				setState(BendingAbilityState.Progressing);
 			}
 			return false;
 		case Preparing:
@@ -81,6 +79,10 @@ public class FireProtection extends BendingActiveAbility {
 			return false;
 		}
 
+		if(state != BendingAbilityState.Progressing) {
+			return false;
+		}
+		
 		if (System.currentTimeMillis() > (this.time + interval)) {
 			this.time = System.currentTimeMillis();
 

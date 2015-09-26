@@ -252,7 +252,6 @@ public class AbilityManager {
 		register(FireBlast.class);
 		register(FireBurst.class);
 		register(FireJet.class);
-		register(FireProtection.class);
 		register(FireShield.class);
 		register(Illumination.class);
 		register(Lightning.class);

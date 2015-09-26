@@ -30,6 +30,7 @@ public class FireShield extends BendingActiveAbility {
 	private static boolean ignite = true;
 
 	private long time;
+	private FireProtection protect;
 
 	public FireShield(Player player) {
 		super(player, null);
@@ -39,6 +40,7 @@ public class FireShield extends BendingActiveAbility {
 	public boolean sneak() {
 		if (state == BendingAbilityState.CanStart) {
 			this.time = System.currentTimeMillis();
+			setState(BendingAbilityState.Progressing);
 			AbilityManager.getManager().addInstance(this);
 		}
 		return false;
@@ -46,12 +48,19 @@ public class FireShield extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		FireProtection protect = new FireProtection(this.player);
-		return protect.swing();
+		if (state == BendingAbilityState.CanStart) {
+			protect = new FireProtection(this.player);
+			setState(BendingAbilityState.Progressing);
+			return protect.swing();
+		}
+		return false;
 	}
 
 	@Override
 	public void remove() {
+		if(protect != null) {
+			protect.remove();
+		}
 		this.bender.cooldown(BendingAbilities.FireShield, FireProtection.COOLDOWN);
 		super.remove();
 	}
@@ -60,6 +69,9 @@ public class FireShield extends BendingActiveAbility {
 	public boolean progress() {
 		if (!super.progress()) {
 			return false;
+		}
+		if(protect != null) {
+			return protect.progress();
 		}
 		if (!this.player.isSneaking()) {
 			return false;

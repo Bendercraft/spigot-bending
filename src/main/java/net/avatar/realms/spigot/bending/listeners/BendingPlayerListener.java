@@ -286,7 +286,6 @@ public class BendingPlayerListener implements Listener {
 
 				if ((abilities == null) || abilities.isEmpty()) {
 					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-					Bending.log.info("I created proudly (and fresh) " + ab);
 					ab.sneak();
 					return;
 				}
@@ -301,7 +300,6 @@ public class BendingPlayerListener implements Listener {
 				}
 				if (shouldCreateNew) {
 					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-					Bending.log.info("I created proudly (because I was not satisfied) " + ab);
 					ab.sneak();
 				}
 			}
