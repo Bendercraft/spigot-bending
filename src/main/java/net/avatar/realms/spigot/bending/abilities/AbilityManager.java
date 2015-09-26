@@ -37,6 +37,7 @@ import net.avatar.realms.spigot.bending.abilities.chi.EarthLariat;
 import net.avatar.realms.spigot.bending.abilities.chi.FireFerret;
 import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
 import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
+import net.avatar.realms.spigot.bending.abilities.chi.Release;
 import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.chi.WaterTurret;
@@ -205,6 +206,7 @@ public class AbilityManager {
 
 		register(AvatarState.class);
 
+		register(Release.class);
 		register(PoisonnedDart.class);
 		register(C4.class);
 		register(Dash.class);
