@@ -12,6 +12,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -34,31 +35,31 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 @BendingAbility(name = "Blood Bending", bind = BendingAbilities.Bloodbending, element = BendingElement.Water, affinity = BendingAffinity.Bloodbend)
 public class Bloodbending extends BendingActiveAbility {
 	private Map<Entity, Location> targetEntities = new HashMap<Entity, Location>();
-
+	
 	@ConfigurationParameter("Throw-Factor")
 	private static double FACTOR = 1.0;
-
+	
 	@ConfigurationParameter("Max-Duration")
 	private static int MAX_DURATION = 10000;
-
+	
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 6000;
-
+	
 	@ConfigurationParameter("Range")
 	public static int RANGE = 8;
-
+	
 	private int range;
 	private Long time;
-
+	
 	public Bloodbending(Player player) {
 		super(player, null);
-
+		
 		this.range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			this.range = AvatarState.getValue(this.range);
 		}
 	}
-
+	
 	@Override
 	public boolean sneak() {
 		if (AvatarState.isAvatarState(this.player)) {
@@ -92,7 +93,7 @@ public class Bloodbending extends BendingActiveAbility {
 				if (EntityTools.canBend((Player) target, BendingAbilities.Bloodbending) || AvatarState.isAvatarState((Player) target) || ((Player) target).isOp()) {
 					return false;
 				}
-
+				
 			}
 			EntityTools.damageEntity(this.player, target, 0);
 			this.targetEntities.put(target, target.getLocation().clone());
@@ -101,7 +102,7 @@ public class Bloodbending extends BendingActiveAbility {
 		AbilityManager.getManager().addInstance(this);
 		return false;
 	}
-
+	
 	@Override
 	public boolean swing() {
 		Location location = this.player.getLocation();
@@ -119,19 +120,22 @@ public class Bloodbending extends BendingActiveAbility {
 		BendingPlayer.getBendingPlayer(this.player).cooldown(BendingAbilities.Bloodbending, COOLDOWN);
 		return false;
 	}
-
+	
 	@Override
 	public boolean progress() {
+		if (!super.progress()) {
+			return false;
+		}
 		PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 60, 1);
-
+		
 		if (!this.player.isSneaking() || (EntityTools.getBendingAbility(this.player) != BendingAbilities.Bloodbending) || !EntityTools.canBend(this.player, BendingAbilities.Bloodbending)) {
 			return false;
 		}
-
+		
 		if ((System.currentTimeMillis() - this.time) > MAX_DURATION) {
 			return false;
 		}
-
+		
 		if (AvatarState.isAvatarState(this.player)) {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.player.getLocation(), this.range)) {
@@ -169,7 +173,7 @@ public class Bloodbending extends BendingActiveAbility {
 				if (entity instanceof Creature) {
 					((Creature) entity).setTarget(null);
 				}
-
+				
 			}
 			List<Entity> toRemove = new LinkedList<Entity>();
 			for (Entity entity : this.targetEntities.keySet()) {
@@ -215,7 +219,7 @@ public class Bloodbending extends BendingActiveAbility {
 		}
 		return true;
 	}
-
+	
 	public static boolean isBloodbended(Entity entity) {
 		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Bloodbending).values()) {
 			Bloodbending bloodBend = (Bloodbending) ab;
@@ -225,7 +229,7 @@ public class Bloodbending extends BendingActiveAbility {
 		}
 		return false;
 	}
-
+	
 	public static Location getBloodbendingLocation(Entity entity) {
 		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Bloodbending).values()) {
 			Bloodbending bloodBend = (Bloodbending) ab;
@@ -235,11 +239,25 @@ public class Bloodbending extends BendingActiveAbility {
 		}
 		return null;
 	}
-
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		ItemStack i = this.player.getItemInHand();
+		if (EntityTools.isWeapon(i.getType())) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public Map<Entity, Location> getTargetEntities() {
 		return this.targetEntities;
 	}
-
+	
 	@Override
 	public Object getIdentifier() {
 		return this.player;
