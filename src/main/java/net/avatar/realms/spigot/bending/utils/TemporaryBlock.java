@@ -9,6 +9,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
+/**
+ * Class that handles temporary blocks for bending purposes
+ *
+ * @author Noko
+ */
 public class TemporaryBlock {
 	
 	/**
@@ -39,6 +44,14 @@ public class TemporaryBlock {
 		this.maxDuration = maxDuration;
 	}
 	
+	/**
+	 * Create and register a temporary block
+	 *
+	 * @param block
+	 *        The block whose you must save the state
+	 * @return
+	 * 		The TemporaryBlock that you will have to revert later
+	 */
 	public static TemporaryBlock makeTemporary(Block block) {
 		if (!timedBlocks.containsKey(block)) {
 			TemporaryBlock temp = new TemporaryBlock(block, block.getState());

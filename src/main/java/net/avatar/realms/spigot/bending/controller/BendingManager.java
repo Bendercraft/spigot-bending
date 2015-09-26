@@ -22,6 +22,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
+import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 public class BendingManager implements Runnable {
@@ -43,10 +44,12 @@ public class BendingManager implements Runnable {
 			this.time = System.currentTimeMillis();
 
 			AbilityManager.getManager().progressAllAbilities();
+			TemporaryBlock.progressAll();
+			FlyingPlayer.handleAll();
 
 			manageEarthbending();
 			manageFirebending();
-			FlyingPlayer.handleAll();
+
 			handleDayNight();
 		} catch (Exception e) {
 			AbilityManager.getManager().stopAllAbilities();
