@@ -18,7 +18,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name = "Fire Furret", bind = BendingAbilities.FireFurret, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiFire)
+@BendingAbility(name = "Fire Ferret", bind = BendingAbilities.FireFerret, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiFire)
 public class FireFerret extends BendingActiveAbility {
 	@ConfigurationParameter("Search-Radius")
 	public static double SEARCH_RADIUS = 20;

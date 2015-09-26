@@ -83,7 +83,7 @@ public enum BendingAbilities {
 	AirSlice(BendingAffinity.ChiAir, true),
 	WaterTurret(BendingAffinity.ChiWater, true),
 	EarthLariat(BendingAffinity.ChiEarth, true),
-	FireFurret(BendingAffinity.ChiFire, true),
+	FireFerret(BendingAffinity.ChiFire, true),
 
 	/*
 	 * AVATAR Abilities
