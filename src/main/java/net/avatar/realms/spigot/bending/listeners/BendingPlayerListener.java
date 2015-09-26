@@ -43,19 +43,19 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
@@ -245,11 +245,6 @@ public class BendingPlayerListener implements Listener {
 				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 				ab.swing();
 			}
-			//
-			// if (ability == Abilities.FireBlade) {
-			// new FireBlade(player);
-			// return;
-			// }
 		}
 	}
 
@@ -272,21 +267,11 @@ public class BendingPlayerListener implements Listener {
 
 		if (EntityTools.canBend(player, ability)) {
 			if (!player.isSneaking()) {
-				// If the player sneaks
-				//
-				// if (ability == Abilities.Tremorsense) {
-				// BendingPlayer.getBendingPlayer(player).toggleTremorsense();
-				// }
-				//
-				// if (ability == Abilities.HealingWaters) {
-				// new HealingWaters(player);
-				// }
 
 				Map<Object, IBendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
 				if ((abilities == null) || abilities.isEmpty()) {
 					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-					Bending.log.info("I created proudly (and fresh) " + ab);
 					ab.sneak();
 					return;
 				}
@@ -301,7 +286,6 @@ public class BendingPlayerListener implements Listener {
 				}
 				if (shouldCreateNew) {
 					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-					Bending.log.info("I created proudly (because I was not satisfied) " + ab);
 					ab.sneak();
 				}
 			}
