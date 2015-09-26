@@ -12,6 +12,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -116,12 +117,15 @@ public class Bloodbending extends BendingActiveAbility {
 			entity.setVelocity(vector.multiply(FACTOR));
 		}
 		this.state = BendingAbilityState.Ended;
-		BendingPlayer.getBendingPlayer(this.player).cooldown(BendingAbilities.Bloodbending, COOLDOWN);
+		BendingPlayer.getBendingPlayer(this.player).cooldown(this, COOLDOWN);
 		return false;
 	}
 
 	@Override
 	public boolean progress() {
+		if (!super.progress()) {
+			return false;
+		}
 		PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 60, 1);
 
 		if (!this.player.isSneaking() || (EntityTools.getBendingAbility(this.player) != BendingAbilities.Bloodbending) || !EntityTools.canBend(this.player, BendingAbilities.Bloodbending)) {
@@ -234,6 +238,20 @@ public class Bloodbending extends BendingActiveAbility {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		ItemStack i = this.player.getItemInHand();
+		if (EntityTools.isWeapon(i.getType())) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public Map<Entity, Location> getTargetEntities() {

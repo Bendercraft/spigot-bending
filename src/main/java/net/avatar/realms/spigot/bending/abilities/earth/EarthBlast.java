@@ -13,29 +13,30 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
- * State Prepared = block is selected but still not threw State Progressing =
+ * State Prepared = block is selected but still not thrown State Progressing =
  * block is thrown
  *
  * @author Koudja
- *
  */
 @BendingAbility(name = "Earth Blast", bind = BendingAbilities.EarthBlast, element = BendingElement.Earth)
 public class EarthBlast extends BendingActiveAbility {
@@ -67,7 +68,7 @@ public class EarthBlast extends BendingActiveAbility {
 	private static boolean REVERT = true;
 
 	@ConfigurationParameter("Revert")
-	private static long COOLDOWN = 1000;
+	private static long COOLDOWN = 500;
 
 	private int damage;
 
@@ -81,6 +82,7 @@ public class EarthBlast extends BendingActiveAbility {
 
 	private int id;
 	private Location location = null;
+	private TemporaryBlock source;
 	private Block sourceblock = null;
 	private Material sourcetype = null;
 	private Location destination = null;
@@ -96,9 +98,6 @@ public class EarthBlast extends BendingActiveAbility {
 		}
 
 		this.id = ID++;
-		if (ID >= Integer.MAX_VALUE) {
-			ID = Integer.MIN_VALUE;
-		}
 		this.time = this.startedTime;
 
 		double speed = SPEED;
@@ -124,20 +123,22 @@ public class EarthBlast extends BendingActiveAbility {
 		cancelPrevious(block);
 		block(this.player);
 		if (block != null) {
+			this.source = TemporaryBlock.makeTemporary(block, Settings.REVERSE_TIME);
 			this.sourceblock = block;
-			if (EarthPassive.isPassiveSand(this.sourceblock)) {
-				EarthPassive.revertSand(this.sourceblock);
+			if (EarthPassive.isPassiveSand(block)) {
+				EarthPassive.revertSand(block);
 			}
 			this.sourcetype = this.sourceblock.getType();
 			this.damage = EARTH_DAMAGE;
-			if (this.sourcetype == Material.SAND) {
+			if (block.getType() == Material.SAND) {
 				this.sourceblock.setType(Material.SANDSTONE);
 				this.damage = SAND_DAMAGE;
-			} else if (this.sourcetype == Material.STONE) {
+			}
+			else if (block.getType() == Material.STONE) {
 				this.sourceblock.setType(Material.COBBLESTONE);
 			} else {
 				if (EntityTools.canBend(this.player, BendingAbilities.MetalBending) && BlockTools.isIronBendable(this.player, this.sourceblock.getType())) {
-					if (this.sourcetype == Material.IRON_BLOCK) {
+					if (block.getType() == Material.IRON_BLOCK) {
 						this.sourceblock.setType(Material.IRON_ORE);
 					} else {
 						this.sourceblock.setType(Material.IRON_BLOCK);
@@ -196,7 +197,7 @@ public class EarthBlast extends BendingActiveAbility {
 	 * Should remove() after this method
 	 */
 	public void cancel() {
-		this.sourceblock.setType(this.sourcetype);
+		this.source.forceRevert();
 	}
 
 	public void throwEarth() {
@@ -361,7 +362,6 @@ public class EarthBlast extends BendingActiveAbility {
 			}
 
 			if (REVERT) {
-				// Tools.addTempEarthBlock(sourceblock, block);
 				this.sourceblock.setType(this.sourcetype);
 				BlockTools.moveEarthBlock(this.sourceblock, block);
 				if (block.getType() == Material.SAND) {

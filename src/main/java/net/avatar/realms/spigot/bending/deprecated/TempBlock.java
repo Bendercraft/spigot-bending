@@ -14,9 +14,9 @@ import org.bukkit.block.BlockState;
 @Deprecated
 // Use BlockState instead
 /**
- * Use {@link net.avatar.realms.spigot.bending.utils.TemporaryBlock
- * TemporaryBlock} instead
- *
+ * Use net.avatar.realms.spigot.bending.utils.TemporaryBlock instead
+ * 
+ * @author orion304
  */
 public class TempBlock {
 	private static Map<Block, TempBlock> instances = new HashMap<Block, TempBlock>();
