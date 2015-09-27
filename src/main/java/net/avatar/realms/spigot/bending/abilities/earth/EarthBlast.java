@@ -243,6 +243,9 @@ public class EarthBlast extends BendingActiveAbility {
 	public static EarthBlast getBlastFromSource(Block block) {
 		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.EarthBlast).values()) {
 			EarthBlast blast = (EarthBlast) ab;
+			if(blast == null || blast.sourceblock == null) {
+				continue; //TODO why is sourceblock null ?
+			}
 			if (blast.sourceblock.equals(block)) {
 				return blast;
 			}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -229,6 +230,10 @@ public class BendingPlayerListener implements Listener {
 
 			if ((abilities == null) || abilities.isEmpty()) {
 				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+				if(ab == null) {
+					Bending.log.log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility");
+					return;
+				}
 				ab.swing();
 				return;
 			}
@@ -243,6 +248,10 @@ public class BendingPlayerListener implements Listener {
 			}
 			if (shouldCreateNew) {
 				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+				if(ab == null) {
+					Bending.log.log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility");
+					return;
+				}
 				ab.swing();
 			}
 		}
@@ -272,6 +281,10 @@ public class BendingPlayerListener implements Listener {
 
 				if ((abilities == null) || abilities.isEmpty()) {
 					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+					if(ab == null) {
+						Bending.log.log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility");
+						return;
+					}
 					ab.sneak();
 					return;
 				}
@@ -286,6 +299,10 @@ public class BendingPlayerListener implements Listener {
 				}
 				if (shouldCreateNew) {
 					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+					if(ab == null) {
+						Bending.log.log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility");
+						return;
+					}
 					ab.sneak();
 				}
 			}
