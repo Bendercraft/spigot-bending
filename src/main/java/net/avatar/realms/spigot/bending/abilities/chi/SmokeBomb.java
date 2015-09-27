@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
@@ -67,10 +66,10 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.id = ID++;
 		this.cooldown = COOLDOWN;
 		this.ticksRemaining = DURATION * 20;
-		if(bender.hasPath(BendingPath.Seeker)) {
+		if(this.bender.hasPath(BendingPath.Seeker)) {
 			this.ticksRemaining *= 1.2;
 		}
-		if(bender.hasPath(BendingPath.Restless)) {
+		if(this.bender.hasPath(BendingPath.Restless)) {
 			this.ticksRemaining *= 0.9;
 			this.cooldown *= 1.2; 
 		}
@@ -107,7 +106,7 @@ public class SmokeBomb extends BendingActiveAbility {
 			}
 		}
 
-		this.bender.cooldown(BendingAbilities.SmokeBomb, cooldown);
+		this.bender.cooldown(BendingAbilities.SmokeBomb, this.cooldown);
 		AbilityManager.getManager().addInstance(this);
 
 		if (this.state == BendingAbilityState.Prepared) {
@@ -119,7 +118,6 @@ public class SmokeBomb extends BendingActiveAbility {
 	@Override
 	public boolean progress() {
 
-		Bending.plugin.getLogger().info("Before : " + this.state);
 		if (this.state != BendingAbilityState.Progressing) {
 			return false;
 		}
@@ -162,7 +160,6 @@ public class SmokeBomb extends BendingActiveAbility {
 		}
 
 		this.ticksRemaining--;
-		Bending.plugin.getLogger().info("Ticks : " + this.ticksRemaining);
 		if (this.ticksRemaining <= 0) {
 			setState(BendingAbilityState.Ended);
 			return false;

@@ -3,7 +3,6 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
@@ -13,7 +12,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
- * 
+ *
  * This ability hit the first entity in front of you powerfully driving to a
  * knockback You must be sneaking when clicking to activate this technique.
  *
@@ -25,7 +24,7 @@ public class DirectHit extends BendingActiveAbility {
 	public static long DAMAGE = 5;
 
 	@ConfigurationParameter("Knockback")
-	public static long KNOCKBACK = 1;
+	public static long KNOCKBACK = 2;
 
 	@ConfigurationParameter("Range")
 	public static long RANGE = 4;
@@ -39,22 +38,22 @@ public class DirectHit extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(state == BendingAbilityState.CanStart) {
-			if(player.isSneaking()) {
-				LivingEntity target = EntityTools.getTargettedEntity(player, RANGE);
+		if(this.state == BendingAbilityState.CanStart) {
+			if(this.player.isSneaking()) {
+				LivingEntity target = EntityTools.getTargettedEntity(this.player, RANGE);
 				if(target == null) {
 					setState(BendingAbilityState.Ended);
 					return false;
 				}
-				EntityTools.damageEntity(player, target, DAMAGE);
-				target.setVelocity(player.getEyeLocation().getDirection().clone().normalize().multiply(KNOCKBACK));
-				bender.cooldown(this, COOLDOWN);
-				if(ComboPoints.getComboPointAmount(player) == 0) {
-					ComboPoints.addComboPoint(player, target);
-					ComboPoints.addComboPoint(player, target);
+				EntityTools.damageEntity(this.player, target, DAMAGE);
+				target.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
+						.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
+
+				if(ComboPoints.getComboPointAmount(this.player) == 0) {
+					ComboPoints.addComboPoint(this.player, target, 2);
 				}
-				AbilityManager.getManager().addInstance(this);
-				setState(BendingAbilityState.Progressing);
+
+				this.bender.cooldown(this, COOLDOWN);
 			}
 		}
 		return false;

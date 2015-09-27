@@ -19,7 +19,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
- * 
+ *
  * This ability will be modified : When you hit an entity, you deal a small
  * amount of damage to it and it gets slown. The more you hit it, the more it
  * get slown.
@@ -67,13 +67,11 @@ public class VitalPoint extends BendingActiveAbility {
 		this.damage = DAMAGE;
 		this.cooldown = COOLDOWN;
 		
-		if(bender.hasPath(BendingPath.Seeker)) {
+		if(this.bender.hasPath(BendingPath.Seeker)) {
 			this.damage *= 1.5;
-			this.cooldown *= 1.4;
 		}
-		if(bender.hasPath(BendingPath.Restless)) {
+		if(this.bender.hasPath(BendingPath.Restless)) {
 			this.damage *= 0.6;
-			this.cooldown *= 0.5;
 		}
 	}
 
@@ -91,6 +89,7 @@ public class VitalPoint extends BendingActiveAbility {
 				}
 
 				int combo = ComboPoints.getComboPointAmount(this.player);
+				this.cooldown = 1000;
 				if (this.player.isSneaking() && (combo > 0)) {
 					this.damage += combo * DAMAGE_INCREMENT;
 					this.target.damage(this.damage, this.player);
@@ -112,6 +111,7 @@ public class VitalPoint extends BendingActiveAbility {
 						}
 						this.target.addPotionEffect(new PotionEffect(TYPE, SLOW_DURATION / 20, this.amplifier));
 					}
+					this.cooldown += COOLDOWN / (6 - combo);
 					ComboPoints.consume(this.player);
 				}
 				else {
@@ -120,10 +120,13 @@ public class VitalPoint extends BendingActiveAbility {
 					this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
 				}
 
-				long cooldown = this.cooldown + 1000;
-				cooldown /= (6 - combo);
-
-				this.bender.cooldown(BendingAbilities.VitalPoint, cooldown);
+				if (this.bender.hasPath(BendingPath.Seeker)) {
+					this.cooldown *= 1.4;
+				}
+				if (this.bender.hasPath(BendingPath.Restless)) {
+					this.cooldown *= 0.5;
+				}
+				this.bender.cooldown(BendingAbilities.VitalPoint, this.cooldown);
 
 				setState(BendingAbilityState.Ended);
 			default:
