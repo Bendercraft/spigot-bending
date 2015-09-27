@@ -61,6 +61,7 @@ public abstract class BendingAbility implements IBendingAbility {
 	 * </pre>
 	 */
 	protected final void setState(BendingAbilityState newState) {
+		Bending.log.info("Player "+player.getName()+" - "+AbilityManager.getManager().getAbilityType(this)+" - "+newState);
 		this.state = newState;
 	}
 
@@ -87,6 +88,10 @@ public abstract class BendingAbility implements IBendingAbility {
 
 		if (!EntityTools.canBend(this.player, AbilityManager.getManager().getAbilityType(this))) {
 			// Also check region protection at player location
+			return false;
+		}
+		
+		if(AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this)).containsKey(this.getIdentifier())) {
 			return false;
 		}
 

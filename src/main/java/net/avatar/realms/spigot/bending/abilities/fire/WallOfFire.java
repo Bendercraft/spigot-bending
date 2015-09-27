@@ -232,21 +232,6 @@ public class WallOfFire extends BendingActiveAbility {
 		entity.setVelocity(new Vector(0, 0, 0));
 		EntityTools.damageEntity(this.player, entity, this.damage);
 		new Enflamed(this.player, entity, 1, this);
-
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.WallOfFire);
-		if (instances == null) {
-			return true;
-		}
-
-		return !instances.containsKey(this.player);
 	}
 
 	@Override
