@@ -272,6 +272,9 @@ public class BendingPlayer {
 	}
 	
 	public BendingAbilities getAbility(int slot) {
+		if(!this.decks.containsKey(currentDeck)) {
+			return null;
+		}
 		return this.decks.get(this.currentDeck).get(slot);
 	}
 	

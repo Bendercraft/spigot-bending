@@ -95,6 +95,7 @@ public class FireBlast extends BendingActiveAbility {
 		this.safe = new LinkedList<Block>();
 		this.speedfactor = SPEED * (Bending.time_step / 1000.);
 		this.range = PluginTools.firebendingDayAugment(this.range, player.getWorld());
+		this.location = this.player.getEyeLocation();
 		this.id = ID++;
 	}
 

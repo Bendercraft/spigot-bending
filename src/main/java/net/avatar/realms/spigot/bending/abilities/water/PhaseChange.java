@@ -92,6 +92,9 @@ public class PhaseChange extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
+		if(source == null) {
+			return false;
+		}
 		@SuppressWarnings("deprecation")
 		byte data = source.getData();
 		source.setType(Material.ICE);

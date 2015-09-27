@@ -68,6 +68,8 @@ public class FlatFileDB implements IBendingDB {
 			} catch (IOException e1) {
 
 			}
+		} catch(Exception e) {
+			Bending.log.log(Level.SEVERE, "Could not load file SEVERE " + file, e);
 		} finally {
 			if(reader != null) {
 				try {

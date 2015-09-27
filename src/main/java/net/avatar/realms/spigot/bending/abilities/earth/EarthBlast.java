@@ -510,6 +510,9 @@ public class EarthBlast extends BendingActiveAbility {
 		boolean broke = false;
 		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.EarthBlast).values()) {
 			EarthBlast blast = (EarthBlast) ab;
+			if(blast == null || blast.location == null || blast.player == null) {
+				continue;
+			}
 			if (blast.location.getWorld().equals(location.getWorld()) && !source.equals(blast.player)) {
 				if (blast.location.distance(location) <= radius) {
 					blast.breakBlock();
