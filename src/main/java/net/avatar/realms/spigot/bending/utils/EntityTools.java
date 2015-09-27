@@ -240,11 +240,7 @@ public class EntityTools {
 	}
 
 	public static boolean toggledBending(Player player) {
-		if (toggledBending.contains(player)) {
-			return true;
-		}
-
-		return false;
+		return toggledBending.contains(player.getUniqueId());
 	}
 
 	public static boolean speToggled(Player p) {
