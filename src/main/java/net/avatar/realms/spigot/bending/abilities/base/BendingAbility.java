@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
@@ -63,7 +62,7 @@ public abstract class BendingAbility implements IBendingAbility {
 	 * </pre>
 	 */
 	protected final void setState(BendingAbilityState newState) {
-		Bending.log.info("Player "+player.getName()+" - "+AbilityManager.getManager().getAbilityType(this)+" - "+newState);
+		//Bending.log.info("Player "+player.getName()+" - "+AbilityManager.getManager().getAbilityType(this)+" - "+newState);
 		this.state = newState;
 	}
 
@@ -95,7 +94,7 @@ public abstract class BendingAbility implements IBendingAbility {
 		
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this));
 		if(instances != null && instances.containsKey(this.getIdentifier())) {
-			Bending.log.info("Player "+player.getName()+" - "+AbilityManager.getManager().getAbilityType(this)+" - tried to start twice same ability");
+			//Bending.log.info("Player "+player.getName()+" - "+AbilityManager.getManager().getAbilityType(this)+" - tried to start twice same ability");
 			return false;
 		}
 
