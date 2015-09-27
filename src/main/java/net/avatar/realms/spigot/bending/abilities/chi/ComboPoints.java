@@ -19,27 +19,27 @@ import net.avatar.realms.spigot.bending.controller.Settings;
  * @author Noko
  */
 public class ComboPoints {
-	
-	private static final int MAX_COMBO_POINTS = 5;
 
+	private static final int MAX_COMBO_POINTS = 5;
+	
 	public static final Sound SOUND = Sound.LEVEL_UP;
 	public static final Effect VISUAL = Effect.HAPPY_VILLAGER;
-	
+
 	private static Map<UUID, ComboPoints> combos = new HashMap<UUID, ComboPoints>();
-	
+
 	@SuppressWarnings("unused")
 	private Player player;
 	private long lastTime;
 	private int comboAmount;
 	private LivingEntity target;
-	
+
 	private ComboPoints(Player player) {
 		this.player = player;
 		this.comboAmount = 0;
 		this.target = null;
 		this.lastTime = 0;
 	}
-	
+
 	/**
 	 * Add a combo point to a player
 	 *
@@ -64,7 +64,7 @@ public class ComboPoints {
 			combo = new ComboPoints(player);
 			combos.put(player.getUniqueId(), combo);
 		}
-		
+
 		if (combo.addComboPoint(target)) {
 			player.playSound(player.getLocation(), SOUND, 1, 1.1f);
 			player.playEffect(target.getEyeLocation(), VISUAL, 0x1);
@@ -72,7 +72,7 @@ public class ComboPoints {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Add a combo point to a player
 	 *
@@ -99,7 +99,7 @@ public class ComboPoints {
 			combo = new ComboPoints(player);
 			combos.put(player.getUniqueId(), combo);
 		}
-		
+
 		if (combo.addComboPoint(target, amount)) {
 			player.playSound(player.getLocation(), SOUND, 1, 1.1f);
 			player.playEffect(target.getEyeLocation(), VISUAL, 0x1);
@@ -107,7 +107,7 @@ public class ComboPoints {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get how many combo points has a player got
 	 *
@@ -131,7 +131,7 @@ public class ComboPoints {
 		}
 		return 0;
 	}
-	
+
 	private int getComboAmount() {
 		long now = System.currentTimeMillis();
 		if ((now - this.lastTime) > Settings.CHI_COMBO_RESET) {
@@ -144,61 +144,58 @@ public class ComboPoints {
 		System.out.println(this.comboAmount);
 		return this.comboAmount;
 	}
-	
+
 	private boolean addComboPoint(LivingEntity target) {
 		if (target == null) {
 			return false;
 		}
 		long now = System.currentTimeMillis();
 		
-		if ((now - this.lastTime) < 500) {
-			return false;
-		}
 		if (!target.equals(this.target)) {
 			this.comboAmount = 0;
 			this.target = target;
 		}
-		
+
 		if ((this.lastTime != 0) && ((now - this.lastTime) > Settings.CHI_COMBO_RESET)) {
 			this.comboAmount = 0;
 		}
-		
+
 		if (this.comboAmount < MAX_COMBO_POINTS) {
 			this.comboAmount++;
 		}
-		
+
+		this.lastTime = now;
+
 		Bending.log.info(" Combopoints : " + this.comboAmount);
-		
+
 		return true;
 	}
-	
+
 	private boolean addComboPoint(LivingEntity target, int amount) {
 		if (target == null) {
 			return false;
 		}
 		long now = System.currentTimeMillis();
-		
-		if ((now - this.lastTime) < 500) {
-			return false;
-		}
+
 		if (!target.equals(this.target)) {
 			this.comboAmount = 0;
 			this.target = target;
 		}
-		
+
 		if ((this.lastTime != 0) && ((now - this.lastTime) > Settings.CHI_COMBO_RESET)) {
 			this.comboAmount = 0;
 		}
-		
+
 		if (this.comboAmount < MAX_COMBO_POINTS) {
 			this.comboAmount += amount;
 		}
-
-		Bending.log.info(" Combopoints : " + this.comboAmount);
 		
+		this.lastTime = now;
+		Bending.log.info(" Combopoints : " + this.comboAmount);
+
 		return true;
 	}
-	
+
 	/**
 	 * Use some combo points to improve an ability
 	 *
@@ -214,34 +211,34 @@ public class ComboPoints {
 		if (player == null) {
 			return false;
 		}
-		
+
 		if (amount < 0) {
 			return false;
 		}
-		
+
 		if (amount > MAX_COMBO_POINTS) {
 			amount = MAX_COMBO_POINTS;
 		}
-		
+
 		if (!combos.containsKey(player.getUniqueId())) {
 			return false;
 		}
-		
+
 		ComboPoints combo = combos.get(player.getUniqueId());
 		if (combo == null) {
 			combos.remove(player.getUniqueId());
 			return false;
 		}
-		
+
 		if (combo.comboAmount < amount) {
 			return false;
 		}
-		
+
 		combo.consume(amount);
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Use all combo points to improve an ability
 	 *
@@ -254,34 +251,34 @@ public class ComboPoints {
 		if (player == null) {
 			return false;
 		}
-		
+
 		if (!combos.containsKey(player.getUniqueId())) {
 			return false;
 		}
-		
+
 		ComboPoints combo = combos.get(player.getUniqueId());
 		if (combo == null) {
 			combos.remove(player.getUniqueId());
 			return false;
 		}
-		
+
 		if (combo.comboAmount == 0) {
 			return false;
 		}
-		
+
 		combo.consume();
-		
+
 		return true;
 	}
-	
+
 	private void consume() {
 		this.comboAmount = 0;
 		this.lastTime = System.currentTimeMillis();
 	}
-	
+
 	private void consume(int amount) {
 		this.comboAmount -= amount;
 		this.lastTime = System.currentTimeMillis();
 	}
-	
+
 }
