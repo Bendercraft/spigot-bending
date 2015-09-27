@@ -100,6 +100,7 @@ public class Bloodbending extends BendingActiveAbility {
 		}
 		this.time = System.currentTimeMillis();
 		AbilityManager.getManager().addInstance(this);
+		BendingPlayer.getBendingPlayer(this.player).cooldown(this, COOLDOWN);
 		return false;
 	}
 
@@ -117,7 +118,6 @@ public class Bloodbending extends BendingActiveAbility {
 			entity.setVelocity(vector.multiply(FACTOR));
 		}
 		this.state = BendingAbilityState.Ended;
-		BendingPlayer.getBendingPlayer(this.player).cooldown(this, COOLDOWN);
 		return false;
 	}
 
