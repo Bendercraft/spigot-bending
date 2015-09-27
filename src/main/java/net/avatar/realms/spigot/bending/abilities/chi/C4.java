@@ -21,10 +21,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
@@ -252,21 +252,21 @@ public class C4 extends BendingActiveAbility {
 		this.bomb = block;
 		byte facing = 0x1;
 		switch (face) {
-		case SOUTH:
-			facing = 0x3;
-			break;
-		case NORTH:
-			facing = 0x2;
-			break;
-		case WEST:
-			facing = 0x4;
-			break;
-		case EAST:
-			facing = 0x5;
-			break;
-		default:
-			facing = 0x1;
-			break;
+			case SOUTH:
+				facing = 0x3;
+				break;
+			case NORTH:
+				facing = 0x2;
+				break;
+			case WEST:
+				facing = 0x4;
+				break;
+			case EAST:
+				facing = 0x5;
+				break;
+			default:
+				facing = 0x1;
+				break;
 		}
 		this.bomb.setTypeIdAndData(Material.SKULL.getId(), facing, true);
 		Skull skull = (Skull) this.bomb.getState();
@@ -294,6 +294,9 @@ public class C4 extends BendingActiveAbility {
 		for (Block block : affecteds) {
 			if (!block.getType().equals(Material.BEDROCK)) {
 				if (!obsidian || (this.location.distance(block.getLocation()) < 2.0)) {
+					if (isCFour(block) != null) {
+						continue;
+					}
 					if (block.getType() == Material.TNT) {
 						block.setType(Material.AIR);
 						block.getWorld().spawn(block.getLocation().add(0.5, 0.5, 0.5), TNTPrimed.class);
@@ -369,7 +372,7 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		if (this.bomb != null && previousType != null) {
+		if (this.bomb != null && this.previousType != null) {
 			this.bomb.setType(this.previousType);
 		}
 	}
