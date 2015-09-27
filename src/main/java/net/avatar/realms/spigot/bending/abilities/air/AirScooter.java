@@ -103,10 +103,19 @@ public class AirScooter extends BendingActiveAbility {
 		if (this.state == BendingAbilityState.Ending) {
 			return false;
 		}
+		
+		if(bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
+			return false;
+		}
+		
+		if(player.isSneaking()) {
+			return false;
+		}
 
 		if (!this.player.isFlying()) {
 			return false;
 		}
+		
 
 		getFloor();
 		if (this.floorblock == null) {
