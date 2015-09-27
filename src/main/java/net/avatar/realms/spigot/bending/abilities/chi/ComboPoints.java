@@ -9,7 +9,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 /**
@@ -141,7 +140,6 @@ public class ComboPoints {
 			this.comboAmount = 0;
 		}
 		this.lastTime = now;
-		System.out.println(this.comboAmount);
 		return this.comboAmount;
 	}
 
@@ -166,8 +164,6 @@ public class ComboPoints {
 
 		this.lastTime = now;
 
-		Bending.log.info(" Combopoints : " + this.comboAmount);
-
 		return true;
 	}
 
@@ -191,8 +187,6 @@ public class ComboPoints {
 		}
 		
 		this.lastTime = now;
-		Bending.log.info(" Combopoints : " + this.comboAmount);
-
 		return true;
 	}
 
