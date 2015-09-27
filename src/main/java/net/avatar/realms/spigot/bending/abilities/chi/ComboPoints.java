@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Effect;
+import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -18,6 +20,9 @@ import net.avatar.realms.spigot.bending.controller.Settings;
 public class ComboPoints {
 
 	private static final int MAX_COMBO_POINTS = 5;
+	
+	public static final Sound SOUND = Sound.LEVEL_UP;
+	public static final Effect VISUAL = Effect.HAPPY_VILLAGER;
 
 	private static Map<UUID, ComboPoints> combos = new HashMap<UUID, ComboPoints>();
 
@@ -48,6 +53,7 @@ public class ComboPoints {
 	 *         already at maximum) <code>false</code> if no target or if too
 	 *         soon after the previous combo point addition
 	 */
+	@SuppressWarnings ("deprecation")
 	public static boolean addComboPoint(Player player, LivingEntity target) {
 		ComboPoints combo = null;
 		if (combos.containsKey(player.getUniqueId())) {
@@ -58,6 +64,8 @@ public class ComboPoints {
 			combos.put(player.getUniqueId(), combo);
 		}
 
+		player.playSound(player.getLocation(), SOUND, 1, 1.1f);
+		player.playEffect(target.getEyeLocation(), VISUAL, 0x1);
 		return combo.addComboPoint(target);
 	}
 
