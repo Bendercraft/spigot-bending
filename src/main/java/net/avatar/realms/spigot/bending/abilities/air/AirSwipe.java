@@ -124,47 +124,21 @@ public class AirSwipe extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		switch (this.state) {
-			case None:
-			case CannotStart:
-				return true;
-			case CanStart:
-				setState(BendingAbilityState.Preparing);
-				AbilityManager.getManager().addInstance(this);
-				return false;
-			case Preparing:
-			case Prepared:
-			case Progressing:
-			case Ended:
-			case Removed:
-				return false;
-			default:
-				return false;
+		if(state == BendingAbilityState.CanStart) {
+			setState(BendingAbilityState.Preparing);
+			AbilityManager.getManager().addInstance(this);
 		}
+		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		switch (this.state) {
-			case None:
-			case CannotStart:
-				return true;
-			case CanStart:
-				setState(BendingAbilityState.Progressing);
-				AbilityManager.getManager().addInstance(this);
-			case Preparing:
-			case Prepared:
-				this.setState(BendingAbilityState.Progressing);
-			case Progressing:
-				this.origin = this.player.getEyeLocation();
-				launch();
-				return false;
-			case Ended:
-			case Removed:
-				return false;
-			default:
-				return false;
+		if(state == BendingAbilityState.Prepared) {
+			this.setState(BendingAbilityState.Progressing);
+			this.origin = this.player.getEyeLocation();
+			launch();
 		}
+		return false;
 	}
 
 	private void launch() {
