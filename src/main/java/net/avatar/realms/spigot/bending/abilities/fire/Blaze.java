@@ -152,4 +152,10 @@ public class Blaze extends BendingActiveAbility {
 		return this.player;
 	}
 
+	public List<FireStream> getFirestreams() {
+		return firestreams;
+	}
+	
+	
+
 }

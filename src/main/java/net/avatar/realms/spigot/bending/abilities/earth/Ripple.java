@@ -85,6 +85,9 @@ public class Ripple {
 
 	public boolean progress() {
 		boolean result = true;
+		if(origin == null) {
+			return false; //TODO problem
+		}
 		if (!BlockTools.isEarthbendable(player, origin.getBlock())) {
 			return false;
 		}
