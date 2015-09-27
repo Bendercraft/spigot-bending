@@ -267,6 +267,19 @@ public enum BendingAbilities {
 		}
 	}
 
+	public boolean isBindable() {
+		if (isPassiveAbility()) {
+			return false;
+		}
+
+		switch (this) {
+			case Drainbending:
+				return false;
+			default:
+				return true;
+		}
+	}
+
 	public String getPermission() {
 		return "bending." + this.element.name().toLowerCase() + "." + name().toLowerCase();
 	}
@@ -274,7 +287,7 @@ public enum BendingAbilities {
 	public static List<BendingAbilities> getElementAbilities(BendingElement el) {
 		LinkedList<BendingAbilities> abilities = new LinkedList<BendingAbilities>();
 		for (BendingAbilities ability : values()) {
-			if ((ability.element == el) && !ability.isPassiveAbility()) {
+			if ((ability.element == el) && ability.isBindable()) {
 				abilities.add(ability);
 			}
 		}

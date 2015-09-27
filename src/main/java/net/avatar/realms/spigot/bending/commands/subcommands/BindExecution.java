@@ -39,7 +39,7 @@ public class BindExecution extends BendingCommand {
 
 		final String a = args.get(0);
 		final BendingAbilities ability = BendingAbilities.getAbility(a);
-		if ((ability == null) || ability.isPassiveAbility()) {
+		if ((ability == null) || !ability.isBindable()) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
 			return true;
 		}
