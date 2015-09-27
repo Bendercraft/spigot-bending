@@ -263,7 +263,6 @@ public enum BendingAbilities {
 				return true;
 			default:
 				return false;
-
 		}
 	}
 

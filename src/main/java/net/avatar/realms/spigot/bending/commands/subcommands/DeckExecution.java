@@ -1,9 +1,9 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -93,7 +93,7 @@ public class DeckExecution extends BendingCommand {
 				sender.sendMessage(ChatColor.RED + Messages.MAX_DECKS_REACHED);
 			}
 			else {
-				Map<Integer, BendingAbilities> deck = new HashMap<Integer, BendingAbilities>();
+				Map<Integer, BendingAbilities> deck = new TreeMap<Integer, BendingAbilities>();
 				bender.getDecks().put(deckName, deck);
 				bender.setCurrentDeck(deckName);
 				String msg = Messages.DECK_SET;
