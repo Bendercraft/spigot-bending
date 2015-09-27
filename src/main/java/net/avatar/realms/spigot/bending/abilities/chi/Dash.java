@@ -5,10 +5,10 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
@@ -24,7 +24,7 @@ public class Dash extends BendingActiveAbility {
 	private static double HEIGHT = 0.7;
 
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 6000;
+	private static long COOLDOWN = 4000;
 
 	private Vector direction;
 
@@ -95,8 +95,8 @@ public class Dash extends BendingActiveAbility {
 	@Override
 	public void remove() {
 		long cd = COOLDOWN;
-		if (ComboPoints.getComboPointAmount(player) >= 1) {
-			ComboPoints.consume(player, 1);
+		if (ComboPoints.getComboPointAmount(this.player) >= 1) {
+			ComboPoints.consume(this.player, 1);
 		} else {
 			cd *= 2;
 		}

@@ -21,7 +21,7 @@ public class HighJump extends BendingActiveAbility {
 	private static final int JUMP_HEIGHT = 7;
 
 	@ConfigurationParameter("Cooldown")
-	private static final long COOLDOWN = 1500;
+	private static final long COOLDOWN = 2500;
 
 	public HighJump(Player p) {
 		super(p, null);
@@ -43,15 +43,15 @@ public class HighJump extends BendingActiveAbility {
 			return false;
 		}
 		int height = JUMP_HEIGHT;
-		
-		if(bender.hasPath(BendingPath.Seeker)) {
+
+		if(this.bender.hasPath(BendingPath.Seeker)) {
 			height *= 0.8;
 		}
-		
-		if(bender.hasPath(BendingPath.Restless)) {
+
+		if(this.bender.hasPath(BendingPath.Restless)) {
 			height *= 1.2;
 		}
-		
+
 		if (ComboPoints.getComboPointAmount(this.player) >= 2) {
 			height++;
 		}
