@@ -115,7 +115,7 @@ public class VitalPoint extends BendingActiveAbility {
 					ComboPoints.consume(this.player);
 				}
 				else {
-					ComboPoints.AddComboPoint(this.player, this.target);
+					ComboPoints.addComboPoint(this.player, this.target);
 					this.target.damage(this.damage, this.player);
 					this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
 				}

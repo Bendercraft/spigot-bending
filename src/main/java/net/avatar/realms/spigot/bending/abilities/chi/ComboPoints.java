@@ -48,7 +48,7 @@ public class ComboPoints {
 	 *         already at maximum) <code>false</code> if no target or if too
 	 *         soon after the previous combo point addition
 	 */
-	public static boolean AddComboPoint(Player player, LivingEntity target) {
+	public static boolean addComboPoint(Player player, LivingEntity target) {
 		ComboPoints combo = null;
 		if (combos.containsKey(player.getUniqueId())) {
 			combo = combos.get(player.getUniqueId());
