@@ -161,10 +161,12 @@ public class FireStream {
 		List<FireStream> toRemove = new LinkedList<FireStream>();
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Blaze);
 		for (IBendingAbility ability : instances.values()) {
-			FireStream stream = (FireStream) ability;
-			if (stream.location.getWorld().equals(location.getWorld())) {
-				if (stream.location.distance(location) <= radius) {
-					toRemove.add(stream);
+			Blaze blaze = (Blaze) ability;
+			for(FireStream stream : blaze.getFirestreams()) {
+				if (stream.location.getWorld().equals(location.getWorld())) {
+					if (stream.location.distance(location) <= radius) {
+						toRemove.add(stream);
+					}
 				}
 			}
 		}
