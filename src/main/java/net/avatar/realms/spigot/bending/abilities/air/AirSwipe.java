@@ -185,11 +185,11 @@ public class AirSwipe extends BendingActiveAbility {
 
 			this.elements.put(direction, this.origin);
 		}
+		this.bender.cooldown(BendingAbilities.AirSwipe, COOLDOWN);
 	}
 
 	@Override
 	public void remove() {
-		this.bender.cooldown(BendingAbilities.AirSwipe, COOLDOWN);
 		super.remove();
 	}
 
