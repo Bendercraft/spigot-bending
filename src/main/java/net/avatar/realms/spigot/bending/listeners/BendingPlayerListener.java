@@ -240,10 +240,8 @@ public class BendingPlayerListener implements Listener {
 
 			boolean shouldCreateNew = false;
 			for (IBendingAbility a : abilities.values()) {
-				if (a.getPlayer().equals(player)) {
-					if (((BendingActiveAbility) a).swing()) {
-						shouldCreateNew = true;
-					}
+				if (((BendingActiveAbility) a).swing()) {
+					shouldCreateNew = true;
 				}
 			}
 			if (shouldCreateNew) {
@@ -291,10 +289,8 @@ public class BendingPlayerListener implements Listener {
 
 				boolean shouldCreateNew = false;
 				for (IBendingAbility a : abilities.values()) {
-					if (a.getPlayer().equals(player)) {
-						if (((BendingActiveAbility) a).sneak()) {
-							shouldCreateNew = true;
-						}
+					if (((BendingActiveAbility) a).sneak()) {
+						shouldCreateNew = true;
 					}
 				}
 				if (shouldCreateNew) {
