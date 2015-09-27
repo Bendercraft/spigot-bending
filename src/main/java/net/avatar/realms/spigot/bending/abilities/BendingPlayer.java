@@ -279,6 +279,10 @@ public class BendingPlayer {
 	}
 	
 	public void setAbility(int slot, BendingAbilities ability) {
+		if(!this.decks.containsKey(currentDeck)) {
+			Bending.log.warning("Player "+player+" tried to bind an ability on unknown deck "+currentDeck);
+			return;
+		}
 		this.decks.get(this.currentDeck).put(slot, ability);
 		Bending.database.save(this.player);
 	}

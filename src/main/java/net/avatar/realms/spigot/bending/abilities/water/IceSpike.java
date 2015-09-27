@@ -72,8 +72,8 @@ public class IceSpike extends BendingActiveAbility {
 		}
 		this.sourceblock = BlockTools.getWaterSourceBlock(this.player, this.range, this.plantbending);
 		if (this.sourceblock == null) {
-			this.field = new SpikeField(this.player, this);
-			AbilityManager.getManager().addInstance(this);
+			//this.field = new SpikeField(this.player, this);
+			//AbilityManager.getManager().addInstance(this);
 			return false;
 		}
 

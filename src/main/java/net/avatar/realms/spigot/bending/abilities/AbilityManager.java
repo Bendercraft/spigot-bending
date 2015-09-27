@@ -175,7 +175,7 @@ public class AbilityManager {
 		if (this.runnings.containsKey(type)) {
 			return this.runnings.get(type);
 		}
-		return Collections.emptyMap();
+		return new HashMap<Object, IBendingAbility>();
 	}
 
 	public boolean isUsingAbility(Player player, BendingAbilities ability) {
