@@ -225,7 +225,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (EntityTools.canBend(player, ability)) {
+		if (!EntityTools.isWeapon(player.getItemInHand().getType()) && EntityTools.canBend(player, ability)) {
 			Map<Object, IBendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
 			if ((abilities == null) || abilities.isEmpty()) {
