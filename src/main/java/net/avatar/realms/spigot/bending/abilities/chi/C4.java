@@ -369,7 +369,7 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		if (this.bomb != null) {
+		if (this.bomb != null && previousType != null) {
 			this.bomb.setType(this.previousType);
 		}
 	}
