@@ -1,5 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.base;
 
+import java.util.Map;
+
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
@@ -91,7 +93,9 @@ public abstract class BendingAbility implements IBendingAbility {
 			return false;
 		}
 		
-		if(AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this)).containsKey(this.getIdentifier())) {
+		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this));
+		if(instances != null && instances.containsKey(this.getIdentifier())) {
+			Bending.log.info("Player "+player.getName()+" - "+AbilityManager.getManager().getAbilityType(this)+" - tried to start twice same ability");
 			return false;
 		}
 
