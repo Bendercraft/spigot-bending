@@ -103,32 +103,6 @@ public class Torrent extends BendingActiveAbility {
 		}
 	}
 
-	@Override
-	public boolean sneak() {
-		if (this.state != BendingAbilityState.CanStart) {
-			return false;
-		}
-		this.time = System.currentTimeMillis();
-		this.sourceblock = BlockTools.getWaterSourceBlock(this.player, selectrange, EntityTools.canPlantbend(this.player));
-
-		if (this.sourceblock == null && WaterReturn.hasWaterBottle(this.player)) {
-			Location eyeloc = this.player.getEyeLocation();
-			Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-			if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
-				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-				sourceblock = block;
-				WaterReturn.emptyWaterBottle(this.player);
-			}
-		}
-
-		if (this.sourceblock != null) {
-			this.sourceselected = true;
-			AbilityManager.getManager().addInstance(this);
-		}
-
-		return false;
-	}
-
 	private void freeze() {
 		if (this.layer == 0) {
 			return;
@@ -147,6 +121,29 @@ public class Torrent extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
+		if (this.state == BendingAbilityState.CanStart) {
+			this.time = System.currentTimeMillis();
+			this.sourceblock = BlockTools.getWaterSourceBlock(this.player, selectrange, EntityTools.canPlantbend(this.player));
+		
+			if (this.sourceblock == null && WaterReturn.hasWaterBottle(this.player)) {
+				Location eyeloc = this.player.getEyeLocation();
+				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
+				if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
+					drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+					sourceblock = block;
+					WaterReturn.emptyWaterBottle(this.player);
+				}
+			}
+		
+			if (this.sourceblock != null) {
+				this.sourceselected = true;
+				setState(BendingAbilityState.Preparing);
+				AbilityManager.getManager().addInstance(this);
+			}
+		
+			return false;
+		}
+		
 		this.launch = true;
 		if (this.launching) {
 			this.freeze = true;
