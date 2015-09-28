@@ -250,7 +250,7 @@ permissions:
     description: Allows the use of WaterPassive.
     default: true
   bending.water.WaterPassive:
-    description; Allows the use of WaterPassive.
+    description: Allows the use of WaterPassive.
     default: true
   bending.water.FastSwimming:
     description: Allows the use of Dolphin
