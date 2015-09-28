@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -50,10 +50,10 @@ public class AirScooter extends BendingActiveAbility {
 			this.angles.add((double) (60 * i));
 		}
 
-		speed = SPEED;
+		this.speed = SPEED;
 
-		if (bender.hasPath(BendingPath.Mobile)) {
-			speed *= 0.2;
+		if (this.bender.hasPath(BendingPath.Mobile)) {
+			this.speed *= 1.2;
 		}
 	}
 
@@ -103,19 +103,19 @@ public class AirScooter extends BendingActiveAbility {
 		if (this.state == BendingAbilityState.Ending) {
 			return false;
 		}
-		
-		if(bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
+
+		if(this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
 			return false;
 		}
-		
-		if(player.isSneaking()) {
+
+		if(this.player.isSneaking()) {
 			return false;
 		}
 
 		if (!this.player.isFlying()) {
 			return false;
 		}
-		
+
 
 		getFloor();
 		if (this.floorblock == null) {
@@ -124,10 +124,10 @@ public class AirScooter extends BendingActiveAbility {
 
 		Vector velocity = this.player.getEyeLocation().getDirection().clone();
 		velocity.setY(0);
-		velocity = velocity.clone().normalize().multiply(speed);
+		velocity = velocity.clone().normalize().multiply(this.speed);
 		if (System.currentTimeMillis() > (this.time + INTERVAL)) {
 			this.time = System.currentTimeMillis();
-			if (this.player.getVelocity().length() < (speed * .5)) {
+			if (this.player.getVelocity().length() < (this.speed * .5)) {
 				return false;
 			}
 			spinScooter();
