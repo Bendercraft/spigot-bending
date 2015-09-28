@@ -56,6 +56,7 @@ permissions:
       bending.water.WaterManipulation: false
       bending.water.Surge: false
       bending.water.Passive: true
+      bending.water.WaterPassive: true
       bending.water.FastSwimming: true
       bending.water.WaterSpout: false
       bending.water.IceSpike: false
@@ -248,6 +249,9 @@ permissions:
   bending.water.Passive:
     description: Allows the use of WaterPassive.
     default: true
+  bending.water.WaterPassive:
+    description; Allows the use of WaterPassive.
+    default: true
   bending.water.FastSwimming:
     description: Allows the use of Dolphin
     default: true
@@ -287,6 +291,9 @@ permissions:
     description: Allows the use of RaiseEarth.
     default: true
   bending.earth.Passive:
+    description: Allows the use of EarthPassive.
+    default: true
+  bending.earth.EarthPassive:
     description: Allows the use of EarthPassive.
     default: true
   bending.earth.EarthTunnel:
