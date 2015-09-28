@@ -420,6 +420,9 @@ permissions:
   bending.command.affinity.other:
     description: Allows to use affinity command on other people
     default: op
+  bending.command.available:
+    description: Allows the use of available command
+    default: true
     
   bending.message.daymessage:
     description: Allows receipt of the sun rising and falling for firebenders
