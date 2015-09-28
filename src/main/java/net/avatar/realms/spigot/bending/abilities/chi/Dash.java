@@ -18,10 +18,10 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 public class Dash extends BendingActiveAbility {
 
 	@ConfigurationParameter("Length")
-	private static double LENGTH = 1.9;
+	private static double LENGTH = 1.95;
 
 	@ConfigurationParameter("Height")
-	private static double HEIGHT = 0.7;
+	private static double HEIGHT = 0.71;
 
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 4000;
