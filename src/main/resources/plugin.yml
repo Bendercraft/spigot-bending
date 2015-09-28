@@ -56,6 +56,7 @@ permissions:
       bending.water.WaterManipulation: false
       bending.water.Surge: false
       bending.water.Passive: true
+      bending.water.FastSwimming: true
       bending.water.WaterSpout: false
       bending.water.IceSpike: false
       bending.water.Torrent: false
@@ -246,6 +247,9 @@ permissions:
     default: true
   bending.water.Passive:
     description: Allows the use of WaterPassive.
+    default: true
+  bending.water.FastSwimming:
+    description: Allows the use of Dolphin
     default: true
   bending.water.WaterSpout:
     description: Allows the use of WaterSpout.
