@@ -81,6 +81,8 @@ public class Torrent extends BendingActiveAbility {
 
 	private WaterReturn waterReturn;
 
+	private TempBlock drainedBlock;
+
 	public Torrent(Player player) {
 		super(player, null);
 
@@ -113,6 +115,8 @@ public class Torrent extends BendingActiveAbility {
 			Location eyeloc = this.player.getEyeLocation();
 			Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 			if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
+				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				sourceblock = block;
 				WaterReturn.emptyWaterBottle(this.player);
 			}
 		}
@@ -507,15 +511,18 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		this.clear();
+		if(drainedBlock != null) {
+			drainedBlock.revertBlock();
+			drainedBlock = null;
+		}
 		if (this.waterReturn != null) {
-			this.waterReturn.remove();
+			this.waterReturn.stop();
 		}
 		if (this.burst != null) {
 			this.burst.remove();
 		}
-		super.remove();
 	}
 
 	private void returnWater(Location location) {
@@ -620,14 +627,6 @@ public class Torrent extends BendingActiveAbility {
 			return !frozenblocks.containsKey(tblock);
 		}
 		return true;
-	}
-
-	@Override
-	public void stop() {
-		// TODO : frozenblocks not static
-		// for (TempBlock temp : frozenblocks.values()) {
-		// temp.revertBlock();
-		// }
 	}
 
 	public static boolean wasBrokenFor(Player player, Block block) {

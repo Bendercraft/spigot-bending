@@ -18,6 +18,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -53,6 +54,7 @@ public class IceSpike extends BendingActiveAbility {
 
 	private SpikeField field = null;
 	private WaterReturn waterReturn;
+	private TempBlock drainedBlock;
 
 	public IceSpike(Player player) {
 		super(player, null);
@@ -103,48 +105,34 @@ public class IceSpike extends BendingActiveAbility {
 		redirect(this.player);
 		boolean activate = false;
 
-		if (BendingPlayer.getBendingPlayer(this.player).isOnCooldown(BendingAbilities.IceSpike)) {
+		if (bender.isOnCooldown(BendingAbilities.IceSpike)) {
 			return false;
 		}
 
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
-			IceSpike ice = (IceSpike) ab;
-			if (ice.prepared && (ice.player == this.player)) {
-				ice.throwIce();
-				activate = true;
-			}
-		}
+		if (WaterReturn.hasWaterBottle(this.player)) {
+			Location eyeloc = this.player.getEyeLocation();
+			Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
+			if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
 
-		if (!activate) {
-			IceSpike spike = new IceSpike(this.player);
-			if ((spike.id == 0) && WaterReturn.hasWaterBottle(this.player)) {
-				Location eyeloc = this.player.getEyeLocation();
-				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-				if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
-
-					LivingEntity target = EntityTools.getTargettedEntity(this.player, defaultrange);
-					Location destination;
-					if (target == null) {
-						destination = EntityTools.getTargetedLocation(this.player, defaultrange, BlockTools.transparentEarthbending);
-					} else {
-						destination = Tools.getPointOnLine(this.player.getEyeLocation(), target.getEyeLocation(), defaultrange);
-					}
-
-					if (destination.distance(block.getLocation()) < 1) {
-						return false;
-					}
-
-					block.setType(Material.WATER);
-					throwIce();
-
-					if (this.progressing) {
-						WaterReturn.emptyWaterBottle(this.player);
-					} else {
-						block.setType(Material.AIR);
-					}
+				LivingEntity target = EntityTools.getTargettedEntity(this.player, defaultrange);
+				Location destination;
+				if (target == null) {
+					destination = EntityTools.getTargetedLocation(this.player, defaultrange, BlockTools.transparentEarthbending);
+				} else {
+					destination = Tools.getPointOnLine(this.player.getEyeLocation(), target.getEyeLocation(), defaultrange);
 				}
+
+				if (destination.distance(block.getLocation()) < 1) {
+					return false;
+				}
+
+				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				throwIce();
+
+				WaterReturn.emptyWaterBottle(this.player);
 			}
 		}
+		
 
 		return false;
 	}
@@ -406,12 +394,15 @@ public class IceSpike extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
+		if (this.drainedBlock != null) {
+			this.drainedBlock.revertBlock();
+			drainedBlock = null;
+		}
 		if (this.waterReturn != null) {
-			this.waterReturn.remove();
+			this.waterReturn.stop();
 		}
 		this.clear();
-		super.remove();
 	}
 
 	private void returnWater() {

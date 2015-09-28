@@ -125,10 +125,44 @@ public class WaterManipulation extends BendingActiveAbility {
 		if (state != BendingAbilityState.CanStart && state != BendingAbilityState.Prepared) {
 			return true;
 		}
+		
+		if(this.drainedBlock != null) {
+			this.drainedBlock.revertBlock();
+			this.drainedBlock = null;
+		}
+		
 		state = BendingAbilityState.Preparing;
 		Block block = BlockTools.getWaterSourceBlock(this.player, range, EntityTools.canPlantbend(this.player));
 
 		block(this.player);
+		
+
+		// If no block available, check if bender can drainbend !
+		if (block == null && Drainbending.canDrainBend(this.player) && !bender.isOnCooldown(BendingAbilities.Drainbending)) {
+			Location location = this.player.getEyeLocation();
+			Vector vector = location.getDirection().clone().normalize();
+			block = location.clone().add(vector.clone().multiply(2)).getBlock();
+			if (Drainbending.canBeSource(block)) {
+				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, full);
+			} else {
+				block = null;
+			}
+		}
+
+		// Check for bottle too !
+		if (block == null && !bender.isOnCooldown(BendingAbilities.WaterManipulation)) {
+			if (state != BendingAbilityState.Prepared && WaterReturn.hasWaterBottle(player)) {
+				Location eyeloc = player.getEyeLocation();
+				block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
+				if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
+					this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, full);
+					WaterReturn.emptyWaterBottle(player);
+				} else {
+					block = null;
+				}
+			}
+		}
+		
 		if (block != null) {
 			this.sourceblock = block;
 			focusBlock();
@@ -137,44 +171,11 @@ public class WaterManipulation extends BendingActiveAbility {
 			return false;
 		}
 
-		// If no block available, check if bender can drainbend !
-		if (Drainbending.canDrainBend(this.player) && !bender.isOnCooldown(BendingAbilities.Drainbending)) {
-			Location location = this.player.getEyeLocation();
-			Vector vector = location.getDirection().clone().normalize();
-			block = location.clone().add(vector.clone().multiply(2)).getBlock();
-			if (Drainbending.canBeSource(block)) {
-				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-				this.sourceblock = block;
-				focusBlock();
-				bender.cooldown(BendingAbilities.Drainbending, Drainbending.COOLDOWN);
-				AbilityManager.getManager().addInstance(this);
-				state = BendingAbilityState.Prepared;
-				return false;
-			}
-		}
-
-		// Check for bottle too !
-		if (!bender.isOnCooldown(BendingAbilities.WaterManipulation)) {
-			if (state != BendingAbilityState.Prepared && WaterReturn.hasWaterBottle(player)) {
-				Location eyeloc = player.getEyeLocation();
-				block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-				if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
-					block.setType(Material.WATER);
-					block.setData(full);
-					if (!progressing) {
-						block.setType(Material.AIR);
-					} else {
-						WaterReturn.emptyWaterBottle(player);
-					}
-				}
-			}
-		}
-
 		return false;
 	}
-
+	
 	@Override
-	public void remove() {
+	public void stop() {
 		finalRemoveWater(this.sourceblock);
 		if (this.drainedBlock != null) {
 			this.drainedBlock.revertBlock();
@@ -189,9 +190,8 @@ public class WaterManipulation extends BendingActiveAbility {
 			this.trail2 = null;
 		}
 		if (waterReturn != null) {
-			waterReturn.remove();
+			waterReturn.stop();
 		}
-		super.remove();
 	}
 
 	private void focusBlock() {

@@ -83,13 +83,6 @@ public class WaterWall extends BendingActiveAbility {
 				state = BendingAbilityState.Ended;
 				return false;
 			}
-			if (WaterReturn.hasWaterBottle(player)) {
-				Location eyeloc = player.getEyeLocation();
-				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-				block.setType(Material.WATER);
-				block.setData(full);
-				WaterReturn.emptyWaterBottle(player);
-			}
 			wave = new Wave(player);
 			if (wave.prepare()) {
 				state = BendingAbilityState.Prepared;
@@ -100,8 +93,10 @@ public class WaterWall extends BendingActiveAbility {
 		} else if (state == BendingAbilityState.Prepared) {
 			if (wave == null) {
 				moveWater(); // Build wall
+				state = BendingAbilityState.Progressing;
+			} else {
+				state = BendingAbilityState.Ended;
 			}
-			state = BendingAbilityState.Progressing;
 		} else if (state == BendingAbilityState.Progressing) {
 			if (wave != null) {
 				wave.freeze();
@@ -165,6 +160,10 @@ public class WaterWall extends BendingActiveAbility {
 	}
 
 	public boolean prepare() {
+		if(this.drainedBlock != null) {
+			this.drainedBlock.revertBlock();
+			this.drainedBlock = null;
+		}
 		Block block = BlockTools.getWaterSourceBlock(player, RANGE, EntityTools.canPlantbend(player));
 		if (block != null) {
 			sourceblock = block;

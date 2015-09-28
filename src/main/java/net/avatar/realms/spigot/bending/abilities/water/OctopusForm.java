@@ -51,6 +51,7 @@ public class OctopusForm extends BendingActiveAbility {
 	private boolean forming = false;
 	private boolean formed = false;
 	private WaterReturn waterReturn;
+	private TempBlock drainedBlock;
 
 	public OctopusForm(Player player) {
 		super(player, null);
@@ -96,14 +97,9 @@ public class OctopusForm extends BendingActiveAbility {
 				Location eyeloc = player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 				if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
-					block.setType(Material.WATER);
-					block.setData(full);
-					sourceblock = BlockTools.getWaterSourceBlock(player, range, EntityTools.canPlantbend(player));
-					if (formed || forming || settingup) {
-						WaterReturn.emptyWaterBottle(player);
-					} else {
-						block.setType(Material.AIR);
-					}
+					this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+					sourceblock = block;
+					WaterReturn.emptyWaterBottle(player);
 				}
 			}
 
@@ -390,12 +386,15 @@ public class OctopusForm extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		this.clear();
-		if (waterReturn != null) {
-			waterReturn.remove();
+		if (this.drainedBlock != null) {
+			this.drainedBlock.revertBlock();
+			drainedBlock = null;
 		}
-		super.remove();
+		if (waterReturn != null) {
+			waterReturn.stop();
+		}
 	}
 
 	private void returnWater() {

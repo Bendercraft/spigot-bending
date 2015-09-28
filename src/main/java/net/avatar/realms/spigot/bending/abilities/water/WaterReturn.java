@@ -97,7 +97,7 @@ public class WaterReturn {
 		return true;
 	}
 
-	public void remove() {
+	public void stop() {
 		if (block != null) {
 			block.revertBlock();
 			block = null;
