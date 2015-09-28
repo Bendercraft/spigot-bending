@@ -76,9 +76,9 @@ public class BlockTools {
 		transparentEarthbending.add(Material.LAVA);
 		transparentEarthbending.add(Material.STATIONARY_LAVA);
 		transparentEarthbending.add(Material.WEB); // Not sure here, previously
-													// ID 30
+		// ID 30
 		transparentEarthbending.add(Material.LONG_GRASS); // Not sure here,
-															// previously ID 31
+		// previously ID 31
 		transparentEarthbending.add(Material.DOUBLE_PLANT);
 		transparentEarthbending.add(Material.DEAD_BUSH);
 		transparentEarthbending.add(Material.YELLOW_FLOWER);
@@ -621,7 +621,7 @@ public class BlockTools {
 			if (isWaterbendable(block, player) && (!isPlant(block) || plantbending)) {
 				if (TempBlock.isTempBlock(block) || TemporaryBlock.isTemporaryBlock(block)) {
 					return null;
-					
+
 					//TempBlock tb = TempBlock.get(block);
 					//byte full = 0x0;
 					//if ((tb.getState().getRawData() != full) && ((tb.getState().getType() != Material.WATER) || (tb.getState().getType() != Material.STATIONARY_WATER))) {
@@ -807,7 +807,7 @@ public class BlockTools {
 		// Difference with the class method : Do not bother the pitch and the
 		// yaw
 
-		if (((int) la.getX() == (int) lb.getX()) && ((int) la.getY() == (int) lb.getY()) && ((int) la.getZ() == (int) lb.getZ())) {
+		if ((la.getX() == lb.getX()) && (la.getY() == lb.getY()) && (la.getZ() == lb.getZ())) {
 			return true;
 		}
 		return false;
