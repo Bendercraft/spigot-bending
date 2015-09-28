@@ -25,6 +25,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
+import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -116,11 +117,15 @@ public class EarthBlast extends BendingActiveAbility {
 		if ((this.state != BendingAbilityState.Preparing) && (this.state != BendingAbilityState.Prepared)) {
 			return true;
 		}
-
-		this.state = BendingAbilityState.Preparing;
+		
+		cancel();
 		Block block = BlockTools.getEarthSourceBlock(this.player, BendingAbilities.EarthBlast, SELECT_RANGE);
+		if(TempBlock.isTempBlock(block) || TemporaryBlock.isTemporaryBlock(block)) {
+			return false;
+		}
+		
+		this.state = BendingAbilityState.Preparing;
 
-		cancelPrevious(block);
 		block(this.player);
 		if (block != null) {
 			this.source = TemporaryBlock.makeTemporary(block, Settings.REVERSE_TIME);
@@ -179,25 +184,13 @@ public class EarthBlast extends BendingActiveAbility {
 		return location;
 	}
 
-	private void cancelPrevious(Block b) {
-		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this)).values()) {
-			EarthBlast blast = (EarthBlast) ab;
-			if ((blast.state == BendingAbilityState.Prepared) && (blast.sourceblock.equals(b) || (blast.player == this.player))) {
-				blast.cancel();
-				toRemove.add(blast);
-			}
-		}
-		for (EarthBlast blast : toRemove) {
-			blast.remove();
-		}
-	}
-
 	/**
 	 * Should remove() after this method
 	 */
 	public void cancel() {
-		this.source.forceRevert();
+		if(source != null) {
+			this.source.forceRevert();
+		}
 	}
 
 	public void throwEarth() {

@@ -318,4 +318,9 @@ public class EarthGrab extends BendingActiveAbility {
 	public Object getIdentifier() {
 		return this.id;
 	}
+
+	@Override
+	public void stop() {
+		revertEarthGrab();
+	}
 }

@@ -188,6 +188,10 @@ public class AirBlast extends BendingActiveAbility {
 		if (!super.progress()) {
 			return false;
 		}
+		
+		if(bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
+			return false;
+		}
 
 		if (this.state == BendingAbilityState.Preparing) {
 			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) SELECT_RANGE);

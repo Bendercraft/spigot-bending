@@ -225,7 +225,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (EntityTools.canBend(player, ability)) {
+		if (!EntityTools.isWeapon(player.getItemInHand().getType()) && EntityTools.canBend(player, ability)) {
 			Map<Object, IBendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 
 			if ((abilities == null) || abilities.isEmpty()) {
@@ -238,11 +238,11 @@ public class BendingPlayerListener implements Listener {
 				return;
 			}
 
-			boolean shouldCreateNew = false;
+			boolean shouldCreateNew = true;
 			for (IBendingAbility a : abilities.values()) {
 				if (a.getPlayer().equals(player)) {
-					if (((BendingActiveAbility) a).swing()) {
-						shouldCreateNew = true;
+					if (!((BendingActiveAbility) a).swing()) {
+						shouldCreateNew = false;
 					}
 				}
 			}
@@ -289,11 +289,11 @@ public class BendingPlayerListener implements Listener {
 					return;
 				}
 
-				boolean shouldCreateNew = false;
+				boolean shouldCreateNew = true;
 				for (IBendingAbility a : abilities.values()) {
 					if (a.getPlayer().equals(player)) {
-						if (((BendingActiveAbility) a).sneak()) {
-							shouldCreateNew = true;
+						if (!((BendingActiveAbility) a).sneak()) {
+							shouldCreateNew = false;
 						}
 					}
 				}

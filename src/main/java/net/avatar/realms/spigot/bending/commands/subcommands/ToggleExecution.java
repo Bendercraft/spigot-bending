@@ -46,7 +46,7 @@ public class ToggleExecution extends BendingCommand {
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override

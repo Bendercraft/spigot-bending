@@ -106,8 +106,7 @@ public class AbilityManager {
 		List<IBendingAbility> toRemove = new LinkedList<IBendingAbility>();
 		for (Map<Object, IBendingAbility> abilities : this.runnings.values()) {
 			for (IBendingAbility ability : abilities.values()) {
-				boolean canKeep = ability.progress();
-				if (!canKeep) {
+				if (!ability.progress()) {
 					toRemove.add(ability);
 				}
 			}

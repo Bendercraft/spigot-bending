@@ -2,8 +2,6 @@ package net.avatar.realms.spigot.bending.abilities.fire;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -19,7 +17,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -56,7 +53,6 @@ public class WallOfFire extends BendingActiveAbility {
 
 	private Location origin;
 	private long time;
-	private boolean active = true;
 	private int damagetick = 0, intervaltick = 0;
 	private List<Block> blocks = new LinkedList<Block>();
 
@@ -91,12 +87,10 @@ public class WallOfFire extends BendingActiveAbility {
 		case CanStart:
 			World world = this.player.getWorld();
 
-			if (Tools.isDay(this.player.getWorld())) {
-				this.width = (int) PluginTools.firebendingDayAugment(WIDTH, world);
-				this.height = (int) PluginTools.firebendingDayAugment(HEIGHT, world);
-				this.duration = (long) PluginTools.firebendingDayAugment(DURATION, world);
-				this.damage = (int) PluginTools.firebendingDayAugment(DAMAGE, world);
-			}
+			this.width = (int) PluginTools.firebendingDayAugment(WIDTH, world);
+			this.height = (int) PluginTools.firebendingDayAugment(HEIGHT, world);
+			this.duration = (long) PluginTools.firebendingDayAugment(DURATION, world);
+			this.damage = (int) PluginTools.firebendingDayAugment(DAMAGE, world);
 
 			if (this.bender.hasPath(BendingPath.Nurture)) {
 				this.damage *= 0.8;
@@ -139,17 +133,8 @@ public class WallOfFire extends BendingActiveAbility {
 
 		this.time = System.currentTimeMillis();
 
-		if ((this.time - this.startedTime) > COOLDOWN) {
-			return false;
-		}
-
-		if (!this.active) {
-			return true;
-		}
-
 		if ((this.time - this.startedTime) > this.duration) {
-			this.active = false;
-			return true;
+			return false;
 		}
 
 		if ((this.time - this.startedTime) > (this.intervaltick * interval)) {
@@ -232,21 +217,6 @@ public class WallOfFire extends BendingActiveAbility {
 		entity.setVelocity(new Vector(0, 0, 0));
 		EntityTools.damageEntity(this.player, entity, this.damage);
 		new Enflamed(this.player, entity, 1, this);
-
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.WallOfFire);
-		if (instances == null) {
-			return true;
-		}
-
-		return !instances.containsKey(this.player);
 	}
 
 	@Override
