@@ -18,6 +18,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -53,6 +54,7 @@ public class IceSpike extends BendingActiveAbility {
 
 	private SpikeField field = null;
 	private WaterReturn waterReturn;
+	private TempBlock drainedBlock;
 
 	public IceSpike(Player player) {
 		super(player, null);
@@ -134,14 +136,10 @@ public class IceSpike extends BendingActiveAbility {
 						return false;
 					}
 
-					block.setType(Material.WATER);
+					this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 					throwIce();
 
-					if (this.progressing) {
-						WaterReturn.emptyWaterBottle(this.player);
-					} else {
-						block.setType(Material.AIR);
-					}
+					WaterReturn.emptyWaterBottle(this.player);
 				}
 			}
 		}
@@ -406,12 +404,15 @@ public class IceSpike extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
+		if (this.drainedBlock != null) {
+			this.drainedBlock.revertBlock();
+			drainedBlock = null;
+		}
 		if (this.waterReturn != null) {
-			this.waterReturn.remove();
+			this.waterReturn.stop();
 		}
 		this.clear();
-		super.remove();
 	}
 
 	private void returnWater() {

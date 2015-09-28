@@ -619,12 +619,14 @@ public class BlockTools {
 			}
 
 			if (isWaterbendable(block, player) && (!isPlant(block) || plantbending)) {
-				if (TempBlock.isTempBlock(block)) {
-					TempBlock tb = TempBlock.get(block);
-					byte full = 0x0;
-					if ((tb.getState().getRawData() != full) && ((tb.getState().getType() != Material.WATER) || (tb.getState().getType() != Material.STATIONARY_WATER))) {
-						continue;
-					}
+				if (TempBlock.isTempBlock(block) || TemporaryBlock.isTemporaryBlock(block)) {
+					return null;
+					
+					//TempBlock tb = TempBlock.get(block);
+					//byte full = 0x0;
+					//if ((tb.getState().getRawData() != full) && ((tb.getState().getType() != Material.WATER) || (tb.getState().getType() != Material.STATIONARY_WATER))) {
+					//	continue;
+					//}
 				}
 				return block;
 			}

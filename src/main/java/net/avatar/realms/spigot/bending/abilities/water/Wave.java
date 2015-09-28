@@ -85,6 +85,11 @@ public class Wave {
 	}
 
 	public boolean prepare() {
+		if(this.drainedBlock != null) {
+			this.drainedBlock.revertBlock();
+			this.drainedBlock = null;
+		}
+		
 		Block block = BlockTools.getWaterSourceBlock(this.player, this.range, EntityTools.canPlantbend(this.player));
 		if (block != null) {
 			this.sourceblock = block;
@@ -111,6 +116,16 @@ public class Wave {
 				return true;
 			}
 		}
+		
+		if (WaterReturn.hasWaterBottle(player)) {
+			Location eyeloc = player.getEyeLocation();
+			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
+			this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+			this.sourceblock = block;
+			focusBlock();
+			WaterReturn.emptyWaterBottle(player);
+			return true;
+		}
 		return false;
 	}
 
@@ -118,9 +133,10 @@ public class Wave {
 		finalRemoveWater(this.sourceblock);
 		if (this.drainedBlock != null) {
 			this.drainedBlock.revertBlock();
+			drainedBlock = null;
 		}
 		if (waterReturn != null) {
-			waterReturn.remove();
+			waterReturn.stop();
 		}
 	}
 
