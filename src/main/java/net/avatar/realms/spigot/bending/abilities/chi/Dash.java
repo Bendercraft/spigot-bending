@@ -98,7 +98,7 @@ public class Dash extends BendingActiveAbility {
 		if (ComboPoints.getComboPointAmount(this.player) >= 1) {
 			ComboPoints.consume(this.player, 1);
 		} else {
-			cd *= 2;
+			cd *= 1.5;
 		}
 		this.bender.cooldown(BendingAbilities.Dash, cd);
 		super.remove();
