@@ -13,12 +13,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -50,7 +50,7 @@ public class AirBlast extends BendingActiveAbility {
 	private static double SELECT_RANGE = 10;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 500;
+	public static long COOLDOWN = 250;
 
 	static final double maxspeed = 1. / PUSH_FACTOR;
 	public static byte full = 0x0;
@@ -131,54 +131,54 @@ public class AirBlast extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-			return true;
-		case CanStart:
-			this.origin = this.player.getEyeLocation();
-			AbilityManager.getManager().addInstance(this);
-			setState(BendingAbilityState.Preparing);
-		case Preparing:
-			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
-			if (this.bender.hasPath(BendingPath.Mobile)) {
-				entity = null;
-			}
-			if (entity != null) {
-				this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
-			} else {
-				this.direction = Tools.getDirection(this.origin, EntityTools.getTargetedLocation(this.player, this.range)).normalize();
-			}
-			this.location = this.origin.clone();
-			long cooldown = COOLDOWN;
-			if (this.bender.hasPath(BendingPath.Renegade)) {
-				cooldown *= 1.2;
-			}
-			if (this.bender.hasPath(BendingPath.Mobile)) {
-				cooldown *= 0.8;
-			}
-			this.bender.cooldown(BendingAbilities.AirBlast, cooldown);
-			setState(BendingAbilityState.Progressing);
-			return false;
-		default:
-			return true;
+			case None:
+			case CannotStart:
+				return true;
+			case CanStart:
+				this.origin = this.player.getEyeLocation();
+				AbilityManager.getManager().addInstance(this);
+				setState(BendingAbilityState.Preparing);
+			case Preparing:
+				Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
+				if (this.bender.hasPath(BendingPath.Mobile)) {
+					entity = null;
+				}
+				if (entity != null) {
+					this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
+				} else {
+					this.direction = Tools.getDirection(this.origin, EntityTools.getTargetedLocation(this.player, this.range)).normalize();
+				}
+				this.location = this.origin.clone();
+				long cooldown = COOLDOWN;
+				if (this.bender.hasPath(BendingPath.Renegade)) {
+					cooldown *= 1.2;
+				}
+				if (this.bender.hasPath(BendingPath.Mobile)) {
+					cooldown *= 0.8;
+				}
+				this.bender.cooldown(BendingAbilities.AirBlast, cooldown);
+				setState(BendingAbilityState.Progressing);
+				return false;
+			default:
+				return true;
 		}
 	}
 
 	@Override
 	public boolean sneak() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-			return true;
-		case CanStart:
-			setOtherOrigin(this.player);
-			AbilityManager.getManager().addInstance(this);
-			return false;
-		case Preparing:
-			setOtherOrigin(this.player);
-			return false;
-		default:
-			return true;
+			case None:
+			case CannotStart:
+				return true;
+			case CanStart:
+				setOtherOrigin(this.player);
+				AbilityManager.getManager().addInstance(this);
+				return false;
+			case Preparing:
+				setOtherOrigin(this.player);
+				return false;
+			default:
+				return true;
 		}
 	}
 
@@ -188,8 +188,8 @@ public class AirBlast extends BendingActiveAbility {
 		if (!super.progress()) {
 			return false;
 		}
-		
-		if(bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
+
+		if(this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
 			return false;
 		}
 
