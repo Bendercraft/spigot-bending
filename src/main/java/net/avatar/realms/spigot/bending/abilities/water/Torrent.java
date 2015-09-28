@@ -105,8 +105,8 @@ public class Torrent extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (this.state == BendingAbilityState.CanStart) {
-
+		if (this.state != BendingAbilityState.CanStart) {
+			return false;
 		}
 		this.time = System.currentTimeMillis();
 		this.sourceblock = BlockTools.getWaterSourceBlock(this.player, selectrange, EntityTools.canPlantbend(this.player));

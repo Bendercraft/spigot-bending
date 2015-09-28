@@ -1,19 +1,18 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
@@ -39,42 +38,83 @@ public class PhaseChange extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 500;
 
-	private Map<Block, Byte> frozenblocks = new HashMap<Block, Byte>();
-	private Block source;
-
-	public PhaseChange(Player player, IBendingAbility parent, Block block) {
-		super(player, parent);
-		if (isFreezable(player, block)) {
-			source = block;
-			byte data = block.getData();
-			block.setType(Material.ICE);
-			this.frozenblocks.put(block, data);
-			AbilityManager.getManager().addInstance(this);
-		}
-	}
+	private List<TempBlock> frozens = new LinkedList<TempBlock>();
+	private List<TempBlock> melted = new LinkedList<TempBlock>();
 
 	public PhaseChange(Player player) {
 		super(player, null);
+	}
 
-		if (bender.isOnCooldown(BendingAbilities.PhaseChange)) {
-			return;
+	@Override
+	public boolean swing() {
+		if(state == BendingAbilityState.CanStart) {
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Progressing);
 		}
-
+		
+		if (bender.isOnCooldown(BendingAbilities.PhaseChange)) {
+			return false;
+		}
+		//Freeze
 		int range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
 		int radius = (int) PluginTools.waterbendingNightAugment(RADIUS, player.getWorld());
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
 		}
-
 		Location location = EntityTools.getTargetedLocation(player, range);
 		int y = (int) location.getY();
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (block.getLocation().getY() >= (y - DEPTH)) {
-				new PhaseChange(player, this, block);
+				if(isFreezable(player, block)) {
+					PhaseChange owner = get(block);
+					if(owner != null) {
+						TempBlock b = TempBlock.get(block);
+						b.revertBlock();
+						owner.melted.remove(b);
+					} else {
+						frozens.add(new TempBlock(block, Material.ICE, block.getData()));
+					}
+				}
 			}
 		}
-
 		bender.cooldown(BendingAbilities.PhaseChange, COOLDOWN);
+		return false;
+	}
+
+	@Override
+	public boolean sneak() {
+		if(state == BendingAbilityState.CanStart) {
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Progressing);
+		}
+		
+		if (bender.isOnCooldown(BendingAbilities.PhaseChange)) {
+			return false;
+		}
+		//Thaw
+		int range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
+		int radius = (int) PluginTools.waterbendingNightAugment(RADIUS, player.getWorld());
+		if (AvatarState.isAvatarState(player)) {
+			range = AvatarState.getValue(range);
+		}
+		Location location = EntityTools.getTargetedLocation(player, range);
+		int y = (int) location.getY();
+		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+			if (block.getLocation().getY() >= (y - DEPTH)) {
+				if(isThawable(player, block)) {
+					PhaseChange owner = get(block);
+					if(owner != null) {
+						TempBlock b = TempBlock.get(block);
+						b.revertBlock();
+						owner.frozens.remove(b);
+					} else {
+						melted.add(new TempBlock(block, Material.WATER, block.getData()));
+					}
+				}
+			}
+		}
+		bender.cooldown(BendingAbilities.PhaseChange, COOLDOWN);
+		return false;
 	}
 
 	private static boolean isFreezable(Player player, Block block) {
@@ -82,7 +122,20 @@ public class PhaseChange extends BendingActiveAbility {
 			return false;
 		}
 		if ((block.getType() == Material.WATER) || (block.getType() == Material.STATIONARY_WATER)) {
-			if (WaterManipulation.canPhysicsChange(block) && !TempBlock.isTempBlock(block)) {
+			if (!TempBlock.isTempBlock(block) || isMelted(block)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	private static boolean isThawable(Player player, Block block) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange, block.getLocation())) {
+			return false;
+		}
+		if (block.getType() == Material.ICE) {
+			if (!TempBlock.isTempBlock(block) || isFrozen(block)) {
 				return true;
 			}
 		}
@@ -91,118 +144,88 @@ public class PhaseChange extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean swing() {
-		if(source == null) {
+	public boolean progress() {
+		if(!super.progress()) {
 			return false;
 		}
-		@SuppressWarnings("deprecation")
-		byte data = source.getData();
-		source.setType(Material.ICE);
-		this.frozenblocks.put(source, data);
-		return false;
-	}
-
-	@SuppressWarnings("deprecation")
-	private boolean thaw(Block block) {
-		if (this.frozenblocks.containsKey(block)) {
-			byte data = this.frozenblocks.get(block);
-			block.setType(Material.WATER);
-			block.setData(data);
+		if(melted.isEmpty() && frozens.isEmpty()) {
 			return false;
 		}
 		return true;
 	}
-
+	
 	@Override
-	public boolean progress() {
-		List<Block> toRemove = new LinkedList<Block>();
-		for (Block block : this.frozenblocks.keySet()) {
-			if (canThaw(block)) {
-				boolean keep = thaw(block);
-				if (!keep) {
-					toRemove.add(block);
-				}
-			}
+	public void stop() {
+		for(TempBlock b : frozens) {
+			b.revertBlock();
 		}
-		for (Block block : toRemove) {
-			this.frozenblocks.remove(block);
+		frozens.clear();
+		for(TempBlock b : melted) {
+			b.revertBlock();
 		}
-		return !this.frozenblocks.isEmpty();
-	}
-
-	public boolean canThaw(Block block) {
-		if (!WaterManipulation.canPhysicsChange(block)) {
-			return false;
-		}
-		if (this.frozenblocks.containsKey(block)) {
-			if (EntityTools.canBend(getPlayer(), BendingAbilities.PhaseChange)) {
-				double range = PluginTools.waterbendingNightAugment(RANGE, getPlayer().getWorld());
-				if (AvatarState.isAvatarState(getPlayer())) {
-					range = AvatarState.getValue(range);
-				}
-				// Player just changed world, allow thaw
-				if (!block.getLocation().getWorld().getUID().equals(getPlayer().getLocation().getWorld().getUID())) {
-					return true;
-				}
-				if (block.getLocation().distance(getPlayer().getLocation()) <= range) {
-					return false;
-				}
-			}
-			if (EntityTools.getBendingAbility(getPlayer()) == BendingAbilities.OctopusForm) {
-				if (block.getLocation().distance(getPlayer().getLocation()) <= (OctopusForm.radius + 2)) {
-					return false;
-				}
-			}
-			return true;
-
-		}
-		return false;
-	}
-
-	@SuppressWarnings("deprecation")
-	public void clear() {
-		List<Block> toRemove = new LinkedList<Block>();
-		for (Entry<Block, Byte> entry : this.frozenblocks.entrySet()) {
-			Block block = entry.getKey();
-			if (block.getType() == Material.ICE) {
-				byte data = entry.getValue();
-				block.setType(Material.WATER);
-				block.setData(data);
-				toRemove.add(block);
-			}
-		}
-		this.frozenblocks.clear();
-	}
-
-	private boolean isBlockFrozen(Block block) {
-		return this.frozenblocks.containsKey(block);
+		melted.clear();
 	}
 
 	public static boolean isFrozen(Block block) {
 		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
 			PhaseChange fm = (PhaseChange) ab;
-			if (fm.isBlockFrozen(block)) {
-				return true;
+			for(TempBlock b : fm.frozens) {
+				if(b.getBlock().getLocation().equals(block.getLocation())) {
+					return true;
+				}
 			}
 		}
 		return false;
+	}
+	
+	public static boolean isMelted(Block block) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+			PhaseChange fm = (PhaseChange) ab;
+			for(TempBlock b : fm.melted) {
+				if(b.getBlock().getLocation().equals(block.getLocation())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private static PhaseChange get(Block block) {
+		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+			PhaseChange fm = (PhaseChange) ab;
+			for(TempBlock b : fm.melted) {
+				if(b.getBlock().getLocation().equals(block.getLocation())) {
+					return fm;
+				}
+			}
+			for(TempBlock b : fm.frozens) {
+				if(b.getBlock().getLocation().equals(block.getLocation())) {
+					return fm;
+				}
+			}
+		}
+		return null;
 	}
 
 	public static void thawThenRemove(Block block) {
 		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
 			PhaseChange fm = (PhaseChange) ab;
-			if (fm.thaw(block)) {
-				fm.remove(block);
+			for(TempBlock b : fm.frozens) {
+				if(b.getBlock().getLocation().equals(block.getLocation())) {
+					fm.setState(BendingAbilityState.Ended);
+					break;
+				}
 			}
 		}
 	}
 
-	private void remove(Block block) {
-		this.frozenblocks.remove(block);
-	}
-
-	public boolean isBlockLevel(Object block, Byte level) {
-		return this.frozenblocks.get(block) == level;
+	public boolean isBlockLevel(Block block, Byte level) {
+		for(TempBlock b : frozens) {
+			if(b.getBlock().getLocation().equals(block.getLocation())) {
+				return b.getBlock().getState().getRawData() == level;
+			}
+		}
+		return false;
 	}
 
 	public static boolean isLevel(Block block, byte level) {

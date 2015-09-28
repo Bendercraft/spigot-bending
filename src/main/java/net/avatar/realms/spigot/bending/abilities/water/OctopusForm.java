@@ -361,7 +361,7 @@ public class OctopusForm extends BendingActiveAbility {
 		for (BlockFace face : faces) {
 			Block rel = block.getRelative(face);
 			if (BlockTools.isWater(rel) && !TempBlock.isTempBlock(rel)) {
-				new PhaseChange(player, this, rel);
+				//new PhaseChange(player, this, rel);
 				// water.add(new TempBlock(rel, Material.AIR, (byte) 0));
 			}
 		}
