@@ -151,6 +151,7 @@ public abstract class BendingAbility implements IBendingAbility {
 
 	@Override
 	public void remove() {
+		stop();
 		AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this)).remove(this.getIdentifier());
 		setState(BendingAbilityState.Removed);
 	}

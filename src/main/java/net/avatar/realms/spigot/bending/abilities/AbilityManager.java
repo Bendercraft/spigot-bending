@@ -113,7 +113,6 @@ public class AbilityManager {
 		}
 
 		for (IBendingAbility ability : toRemove) {
-			ability.stop();
 			ability.remove();
 		}
 	}
