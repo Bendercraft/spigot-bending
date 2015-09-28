@@ -105,44 +105,34 @@ public class IceSpike extends BendingActiveAbility {
 		redirect(this.player);
 		boolean activate = false;
 
-		if (BendingPlayer.getBendingPlayer(this.player).isOnCooldown(BendingAbilities.IceSpike)) {
+		if (bender.isOnCooldown(BendingAbilities.IceSpike)) {
 			return false;
 		}
 
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
-			IceSpike ice = (IceSpike) ab;
-			if (ice.prepared && (ice.player == this.player)) {
-				ice.throwIce();
-				activate = true;
-			}
-		}
+		if (WaterReturn.hasWaterBottle(this.player)) {
+			Location eyeloc = this.player.getEyeLocation();
+			Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
+			if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
 
-		if (!activate) {
-			IceSpike spike = new IceSpike(this.player);
-			if ((spike.id == 0) && WaterReturn.hasWaterBottle(this.player)) {
-				Location eyeloc = this.player.getEyeLocation();
-				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-				if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
-
-					LivingEntity target = EntityTools.getTargettedEntity(this.player, defaultrange);
-					Location destination;
-					if (target == null) {
-						destination = EntityTools.getTargetedLocation(this.player, defaultrange, BlockTools.transparentEarthbending);
-					} else {
-						destination = Tools.getPointOnLine(this.player.getEyeLocation(), target.getEyeLocation(), defaultrange);
-					}
-
-					if (destination.distance(block.getLocation()) < 1) {
-						return false;
-					}
-
-					this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-					throwIce();
-
-					WaterReturn.emptyWaterBottle(this.player);
+				LivingEntity target = EntityTools.getTargettedEntity(this.player, defaultrange);
+				Location destination;
+				if (target == null) {
+					destination = EntityTools.getTargetedLocation(this.player, defaultrange, BlockTools.transparentEarthbending);
+				} else {
+					destination = Tools.getPointOnLine(this.player.getEyeLocation(), target.getEyeLocation(), defaultrange);
 				}
+
+				if (destination.distance(block.getLocation()) < 1) {
+					return false;
+				}
+
+				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				throwIce();
+
+				WaterReturn.emptyWaterBottle(this.player);
 			}
 		}
+		
 
 		return false;
 	}

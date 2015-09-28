@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
-import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -21,6 +22,7 @@ import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.controller.Settings;
+import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
@@ -41,7 +43,7 @@ public class WaterSpout extends BendingActiveAbility {
 
 	private int currentCardinalPoint = 0;
 	private BlockState baseState;
-	private Map<Block, BlockState> blocks;
+	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private FlyingPlayer flying;
 	private int height;
 
@@ -59,7 +61,7 @@ public class WaterSpout extends BendingActiveAbility {
 		case CanStart:
 			if (canWaterSpout(this.player)) {
 				this.height = 0;
-				this.blocks = new HashMap<Block, BlockState>();
+				this.blocks = new LinkedList<TempBlock>();
 				this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 				if (this.flying != null) {
 					spout();
@@ -100,8 +102,8 @@ public class WaterSpout extends BendingActiveAbility {
 
 	private void revertSpout() {
 		revertBaseBlock();
-		for (Block b : this.blocks.keySet()) {
-			this.blocks.get(b).update(true);
+		for (TempBlock b : this.blocks) {
+			b.revertBlock();
 		}
 		this.blocks.clear();
 	}
@@ -132,8 +134,7 @@ public class WaterSpout extends BendingActiveAbility {
 		for (int i = 0, cardinalPoint = this.currentCardinalPoint / SPEED; i < (this.height + 1); i++, cardinalPoint--) {
 			Location loc = location.clone().add(0, -i, 0);
 			if (!BlockTools.isTempBlock(loc.getBlock())) {
-				this.blocks.put(loc.getBlock(), loc.getBlock().getState());
-				loc.getBlock().setType(Material.STATIONARY_WATER);
+				this.blocks.add(new TempBlock(loc.getBlock(), Material.STATIONARY_WATER, (byte) 0x0));
 			}
 
 			if (cardinalPoint == -1) {
@@ -142,8 +143,7 @@ public class WaterSpout extends BendingActiveAbility {
 
 			loc = loc.add(vectors[cardinalPoint]);
 			if (loc.getBlock().getType().equals(Material.AIR)) {
-				this.blocks.put(loc.getBlock(), loc.getBlock().getState());
-				loc.getBlock().setType(Material.WATER);
+				this.blocks.add(new TempBlock(loc.getBlock(), Material.STATIONARY_WATER, (byte) 0x0));
 			}
 
 		}
@@ -199,8 +199,10 @@ public class WaterSpout extends BendingActiveAbility {
 
 		for (IBendingAbility ab : instances.values()) {
 			WaterSpout spout = (WaterSpout) ab;
-			if (spout.blocks.containsKey(block)) {
-				return true;
+			for(TempBlock b : spout.blocks) {
+				if(b.getBlock() == block) {
+					return true;
+				}
 			}
 		}
 		return false;
