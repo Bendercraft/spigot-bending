@@ -355,12 +355,14 @@ public class BendingPlayerListener implements Listener {
 						player.setFallDistance(0);
 						event.setDamage(0);
 						event.setCancelled(true);
+						return;
 					}
 
 					if (MetalWire.hasNoFallDamage(player)) {
 						player.setFallDistance(0);
 						event.setDamage(0);
 						event.setCancelled(true);
+						return;
 					}
 				}
 
@@ -374,6 +376,7 @@ public class BendingPlayerListener implements Listener {
 					player.setFallDistance(0);
 					event.setDamage(0);
 					event.setCancelled(true);
+					return;
 				}
 
 				if (!event.isCancelled() && EntityTools.isBender(player, BendingElement.Water)) {
@@ -384,6 +387,7 @@ public class BendingPlayerListener implements Listener {
 						player.setFallDistance(0);
 						event.setDamage(0);
 						event.setCancelled(true);
+						return;
 					}
 				}
 
@@ -392,6 +396,7 @@ public class BendingPlayerListener implements Listener {
 						event.setDamage((int) (event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
 						if (event.getEntity().getFallDistance() < 10) {
 							event.setCancelled(true);
+							return;
 						}
 					}
 				}
@@ -399,6 +404,7 @@ public class BendingPlayerListener implements Listener {
 				if (!event.isCancelled()) {
 					if (EntityTools.isFallImmune(player)) {
 						event.setCancelled(true);
+						return;
 					}
 				}
 			}
