@@ -165,7 +165,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		
 		if (block != null) {
 			this.sourceblock = block;
-			focusBlock();
+			this.location = this.sourceblock.getLocation();
 			AbilityManager.getManager().addInstance(this);
 			state = BendingAbilityState.Prepared;
 			return false;
@@ -192,10 +192,6 @@ public class WaterManipulation extends BendingActiveAbility {
 		if (waterReturn != null) {
 			waterReturn.stop();
 		}
-	}
-
-	private void focusBlock() {
-		this.location = this.sourceblock.getLocation();
 	}
 
 	@Override
