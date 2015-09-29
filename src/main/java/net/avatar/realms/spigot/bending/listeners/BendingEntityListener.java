@@ -33,7 +33,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.DirectHit;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
@@ -127,11 +126,6 @@ public class BendingEntityListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		for (Block block : event.blockList()) {
-			EarthBlast blast = EarthBlast.getBlastFromSource(block);
-
-			if (blast != null) {
-				blast.cancel();
-			}
 			if (PhaseChange.isFrozen(block)) {
 				PhaseChange.thawThenRemove(block);
 			}

@@ -19,7 +19,6 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
@@ -127,10 +126,6 @@ public class BendingBlockListener implements Listener {
 		if (WaterWall.wasBrokenFor(player, block) || OctopusForm.wasBrokenFor(player, block) || Torrent.wasBrokenFor(player, block)) {
 			event.setCancelled(true);
 			return;
-		}
-		EarthBlast blast = EarthBlast.getBlastFromSource(block);
-		if (blast != null) {
-			blast.cancel();
 		}
 
 		Object bomber = C4.isCFour(block);
