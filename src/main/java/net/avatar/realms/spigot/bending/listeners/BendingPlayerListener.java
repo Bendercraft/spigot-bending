@@ -266,11 +266,13 @@ public class BendingPlayerListener implements Listener {
 		}
 
 		BendingAbilities ability = EntityTools.getBendingAbility(player);
-		if ((ability == null) || !ability.isShiftAbility() || !player.isSneaking()) {
+		if (!player.isSneaking() && ((ability == null) || !ability.isShiftAbility())) {
 			if (EntityTools.isBender(player, BendingElement.Water) && EntityTools.canBendPassive(player, BendingElement.Water)) {
-				FastSwimming ab = new FastSwimming(player);
-				ab.start();
-				// return;
+				if (!WaterSpout.isBending(player)) {
+					FastSwimming ab = new FastSwimming(player);
+					ab.start();
+					return;
+				}
 			}
 		}
 

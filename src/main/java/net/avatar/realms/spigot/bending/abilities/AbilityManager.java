@@ -85,9 +85,7 @@ public class AbilityManager {
 
 	private Map<BendingAbilities, RegisteredAbility> binds;
 	private Map<BendingAbilities, Map<Object, IBendingAbility>> runnings;
-	private Map<Class<? extends IBendingAbility>, BendingAbilities> reverseBinds; // For
-																					// performance
-																					// purpose
+	private Map<Class<? extends IBendingAbility>, BendingAbilities> reverseBinds;
 
 	public static AbilityManager getManager() {
 		if (manager == null) {
