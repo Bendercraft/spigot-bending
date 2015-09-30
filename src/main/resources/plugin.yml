@@ -155,6 +155,9 @@ permissions:
   bending.air.Passive:
     description: Allows the use of AirPassive.
     default: true
+  bending.air.AirGlide:
+    description: Allows the use of the Glide
+    default: true
   bending.air.AirShield:
     description: Allows the use of AirShield.
     default: false

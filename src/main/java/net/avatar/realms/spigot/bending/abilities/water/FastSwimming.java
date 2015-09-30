@@ -3,10 +3,10 @@ package net.avatar.realms.spigot.bending.abilities.water;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -21,23 +21,6 @@ public class FastSwimming extends BendingPassiveAbility {
 
 	public FastSwimming(Player player) {
 		super(player, null);
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		if (this.player.isSneaking()) {
-			return false;
-		}
-
-		if (!EntityTools.canBendPassive(this.player, BendingElement.Water)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override

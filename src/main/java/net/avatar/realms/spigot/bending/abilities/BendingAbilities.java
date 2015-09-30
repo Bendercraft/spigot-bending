@@ -11,7 +11,7 @@ public enum BendingAbilities {
 	 * AIR Abilities
 	 */
 	AirBlast(BendingElement.Air, true), 
-	AirBubble(BendingElement.Air, true), 
+	AirBubble(BendingElement.Air, false),
 	AirShield(BendingElement.Air, true), 
 	AirSuction(BendingElement.Air, true), 
 	AirSwipe(BendingElement.Air, true), 
@@ -19,9 +19,10 @@ public enum BendingAbilities {
 	AirSpout(BendingElement.Air, false), 
 	AirBurst(BendingElement.Air, true), 
 	AirSpeed(BendingElement.Air, true), 
+	AirGlide(BendingElement.Air, true),
 	AirManipulation(BendingElement.Air, true), 
 	Tornado(BendingAffinity.Tornado, true), 
-	Suffocate(BendingAffinity.Suffocate, true),
+	Suffocate(BendingAffinity.Suffocate, false),
 
 	/*
 	 * EARTH Abilities
@@ -56,7 +57,7 @@ public enum BendingAbilities {
 	/*
 	 * WATER Abilities
 	 */
-	WaterBubble(BendingElement.Water, true), 
+	WaterBubble(BendingElement.Water, false),
 	PhaseChange(BendingElement.Water, true), 
 	HealingWaters(BendingElement.Water, true), 
 	WaterManipulation(BendingElement.Water, true), 
@@ -253,6 +254,7 @@ public enum BendingAbilities {
 	public boolean isPassiveAbility() {
 		switch (this) {
 			case AirPassive:
+			case AirGlide:
 			case AirSpeed:
 			case ChiPassive:
 			case ChiSpeed:
