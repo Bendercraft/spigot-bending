@@ -223,6 +223,11 @@ public class LearningExecution extends BendingCommand {
 		}
 		if (canLearn) {
 			bender.addAffinity(affinity);
+			for (BendingAbilities ability : BendingAbilities.values()) {
+				if (ability.getAffinity() == affinity) {
+					Bending.plugin.learning.addPermission(target, ability);
+				}
+			}
 			String msg = Messages.AFFINITY_SET;
 			msg = msg.replaceAll("\\{0\\}", affinity.name());
 			target.sendMessage(msg);
