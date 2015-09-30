@@ -31,10 +31,10 @@ public class ToggleExecution extends BendingCommand {
 		if (args.size() >= 1 && isAffinityToggle(args.get(0))) {
 			if (EntityTools.speToggledBenders.contains(player.getUniqueId())) {
 				EntityTools.speToggledBenders.remove(player.getUniqueId());
-				player.sendMessage("You toggled back your specialization");
+				player.sendMessage("You toggled back your affinity");
 			} else {
 				EntityTools.speToggledBenders.add(player.getUniqueId());
-				player.sendMessage("You toggled your specialization");
+				player.sendMessage("You toggled your affinity");
 			}
 		} else {
 			if (!EntityTools.toggledBending.contains(player.getUniqueId())) {
