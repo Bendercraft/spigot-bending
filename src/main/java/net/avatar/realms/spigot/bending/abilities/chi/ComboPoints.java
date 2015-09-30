@@ -20,7 +20,7 @@ import net.avatar.realms.spigot.bending.controller.Settings;
 public class ComboPoints {
 
 	private static final int MAX_COMBO_POINTS = 5;
-	
+
 	public static final Sound SOUND = Sound.LEVEL_UP;
 	public static final Effect VISUAL = Effect.HAPPY_VILLAGER;
 
@@ -71,7 +71,7 @@ public class ComboPoints {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Add a combo point to a player
 	 *
@@ -144,12 +144,9 @@ public class ComboPoints {
 	}
 
 	private boolean addComboPoint(LivingEntity target) {
-		if (target == null) {
-			return false;
-		}
 		long now = System.currentTimeMillis();
-		
-		if (!target.equals(this.target)) {
+
+		if (target != null && !target.equals(this.target)) {
 			this.comboAmount = 0;
 			this.target = target;
 		}
@@ -168,12 +165,9 @@ public class ComboPoints {
 	}
 
 	private boolean addComboPoint(LivingEntity target, int amount) {
-		if (target == null) {
-			return false;
-		}
 		long now = System.currentTimeMillis();
 
-		if (!target.equals(this.target)) {
+		if (target != null && !target.equals(this.target)) {
 			this.comboAmount = 0;
 			this.target = target;
 		}
@@ -185,7 +179,7 @@ public class ComboPoints {
 		if (this.comboAmount < MAX_COMBO_POINTS) {
 			this.comboAmount += amount;
 		}
-		
+
 		this.lastTime = now;
 		return true;
 	}

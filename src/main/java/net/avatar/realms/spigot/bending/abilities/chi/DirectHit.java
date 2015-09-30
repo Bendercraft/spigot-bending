@@ -30,7 +30,7 @@ public class DirectHit extends BendingActiveAbility {
 	public static long RANGE = 4;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 5000;
+	public static long COOLDOWN = 4000;
 
 	public DirectHit(Player player) {
 		super(player, null);

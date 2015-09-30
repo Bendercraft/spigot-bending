@@ -35,6 +35,8 @@ public class HighJump extends BendingActiveAbility {
 		if (makeJump()) {
 			this.bender.cooldown(BendingAbilities.HighJump, COOLDOWN);
 		}
+
+		ComboPoints.addComboPoint(this.player, null);
 		return true;
 	}
 
