@@ -58,6 +58,7 @@ public class FireJet extends BendingActiveAbility {
 			if (FireStream.isIgnitable(this.player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(this.player)) {
 				FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 				this.player.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor));
+				setState(BendingAbilityState.Progressing);
 				AbilityManager.getManager().addInstance(this);
 			}
 			return false;

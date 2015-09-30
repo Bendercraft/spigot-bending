@@ -22,7 +22,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -31,7 +30,6 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 public class Suffocate extends BendingActiveAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	private static String LORE_NAME = "Suffocation";
-	// private int distance = ConfigManager.suffocateDistance;
 
 	@ConfigurationParameter("Range")
 	private static int RANGE = 10;
@@ -56,10 +54,6 @@ public class Suffocate extends BendingActiveAbility {
 	public Suffocate(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.time = this.startedTime;
 
 		this.temp = new ItemStack(Material.STAINED_GLASS, 1, (byte) 0x0);
@@ -72,12 +66,7 @@ public class Suffocate extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return true;
-		case CanStart:
+		if(this.state == BendingAbilityState.CanStart) {
 			Entity target = EntityTools.getTargettedEntity(this.player, RANGE);
 
 			if (!(target instanceof Player)) {
@@ -96,16 +85,8 @@ public class Suffocate extends BendingActiveAbility {
 
 			setState(BendingAbilityState.Progressing);
 			AbilityManager.getManager().addInstance(this);
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -154,15 +135,11 @@ public class Suffocate extends BendingActiveAbility {
 
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			this.time = System.currentTimeMillis();
-			double addtionnalDamage = 0;
-			try {
-				addtionnalDamage = (this.targetLocation.getLocation().distance(this.target.getLocation()) / 10);
-				if (addtionnalDamage > 6) {
-					addtionnalDamage = 6;
-				}
-			} catch (Exception e) {
-				// Quiet, does not matter
+			double addtionnalDamage = (this.targetLocation.getLocation().distance(this.target.getLocation()) / 10);
+			if (addtionnalDamage > 6) {
+				addtionnalDamage = 6;
 			}
+			
 			this.target.getWorld().playEffect(this.target.getEyeLocation(), Effect.SMOKE, 4);
 			this.target.damage(baseDamage + addtionnalDamage, this.player);
 
@@ -217,24 +194,6 @@ public class Suffocate extends BendingActiveAbility {
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (super.canBeInitialized()) {
-			return false;
-		}
-
-		if (!this.player.isSneaking()) {
-			return false;
-		}
-
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Suffocate);
-		if ((instances == null) || instances.isEmpty()) {
-			return true;
-		}
-
-		return !instances.containsKey(this.player);
 	}
 
 	@Override

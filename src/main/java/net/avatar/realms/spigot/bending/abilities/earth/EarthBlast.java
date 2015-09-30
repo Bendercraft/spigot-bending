@@ -30,7 +30,6 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
@@ -83,7 +82,6 @@ public class EarthBlast extends BendingActiveAbility {
 
 	private int id;
 	private Location location = null;
-	private TemporaryBlock source;
 	private Block sourceblock = null;
 	private Material sourcetype = null;
 	private Location destination = null;
@@ -118,9 +116,8 @@ public class EarthBlast extends BendingActiveAbility {
 			return true;
 		}
 		
-		cancel();
 		Block block = BlockTools.getEarthSourceBlock(this.player, BendingAbilities.EarthBlast, SELECT_RANGE);
-		if(TempBlock.isTempBlock(block) || TemporaryBlock.isTemporaryBlock(block)) {
+		if(TempBlock.isTempBlock(block)) {
 			return false;
 		}
 		
@@ -128,7 +125,6 @@ public class EarthBlast extends BendingActiveAbility {
 
 		block(this.player);
 		if (block != null) {
-			this.source = TemporaryBlock.makeTemporary(block, Settings.REVERSE_TIME);
 			this.sourceblock = block;
 			if (EarthPassive.isPassiveSand(block)) {
 				EarthPassive.revertSand(block);
@@ -182,15 +178,6 @@ public class EarthBlast extends BendingActiveAbility {
 			// location.setY(location.getY() - 1);
 		}
 		return location;
-	}
-
-	/**
-	 * Should remove() after this method
-	 */
-	public void cancel() {
-		if(source != null) {
-			this.source.forceRevert();
-		}
 	}
 
 	public void throwEarth() {
@@ -266,18 +253,15 @@ public class EarthBlast extends BendingActiveAbility {
 
 			if (this.state == BendingAbilityState.Prepared) {
 				if (EntityTools.getBendingAbility(this.player) != BendingAbilities.EarthBlast) {
-					cancel();
 					return false;
 				}
 				if (this.sourceblock == null) {
 					return false;
 				}
 				if (this.player.getWorld() != this.sourceblock.getWorld()) {
-					cancel();
 					return false;
 				}
 				if (this.sourceblock.getLocation().distance(this.player.getLocation()) > SELECT_RANGE) {
-					cancel();
 					return false;
 				}
 				return true;
