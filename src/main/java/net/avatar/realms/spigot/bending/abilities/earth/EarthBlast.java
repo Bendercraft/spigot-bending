@@ -30,6 +30,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
@@ -82,8 +83,8 @@ public class EarthBlast extends BendingActiveAbility {
 
 	private int id;
 	private Location location = null;
+	private TempBlock source;
 	private Block sourceblock = null;
-	private Material sourcetype = null;
 	private Location destination = null;
 	private Location firstdestination = null;
 	private long time;
@@ -116,8 +117,9 @@ public class EarthBlast extends BendingActiveAbility {
 			return true;
 		}
 		
+		cancel();
 		Block block = BlockTools.getEarthSourceBlock(this.player, BendingAbilities.EarthBlast, SELECT_RANGE);
-		if(TempBlock.isTempBlock(block)) {
+		if(TempBlock.isTempBlock(block) || TemporaryBlock.isTemporaryBlock(block)) {
 			return false;
 		}
 		
@@ -129,27 +131,26 @@ public class EarthBlast extends BendingActiveAbility {
 			if (EarthPassive.isPassiveSand(block)) {
 				EarthPassive.revertSand(block);
 			}
-			this.sourcetype = this.sourceblock.getType();
 			this.damage = EARTH_DAMAGE;
 			if (block.getType() == Material.SAND) {
-				this.sourceblock.setType(Material.SANDSTONE);
+				this.source = new TempBlock(sourceblock, Material.SANDSTONE, (byte) 0x0);
 				this.damage = SAND_DAMAGE;
 			}
 			else if (block.getType() == Material.STONE) {
-				this.sourceblock.setType(Material.COBBLESTONE);
+				this.source = new TempBlock(sourceblock, Material.COBBLESTONE, (byte) 0x0);
 			} else {
 				if (EntityTools.canBend(this.player, BendingAbilities.MetalBending) && BlockTools.isIronBendable(this.player, this.sourceblock.getType())) {
 					if (block.getType() == Material.IRON_BLOCK) {
-						this.sourceblock.setType(Material.IRON_ORE);
+						this.source = new TempBlock(sourceblock, Material.IRON_ORE, (byte) 0x0);
 					} else {
-						this.sourceblock.setType(Material.IRON_BLOCK);
+						this.source = new TempBlock(sourceblock, Material.IRON_BLOCK, (byte) 0x0);
 					}
 					this.damage = IRON_DAMAGE;
 				} else if (EntityTools.canBend(this.player, BendingAbilities.LavaTrain) && (this.sourceblock.getType() == Material.OBSIDIAN)) {
 					this.damage = IRON_DAMAGE;
-					this.sourceblock.setType(Material.BEDROCK);
+					this.source = new TempBlock(sourceblock, Material.BEDROCK, (byte) 0x0);
 				} else {
-					this.sourceblock.setType(Material.STONE);
+					this.source = new TempBlock(sourceblock, Material.STONE, (byte) 0x0);
 				}
 
 			}
@@ -178,6 +179,16 @@ public class EarthBlast extends BendingActiveAbility {
 			// location.setY(location.getY() - 1);
 		}
 		return location;
+	}
+
+	/**
+	 * Should remove() after this method
+	 */
+	public void cancel() {
+		if(source != null) {
+			source.revertBlock();
+			source = null;
+		}
 	}
 
 	public void throwEarth() {
@@ -214,8 +225,9 @@ public class EarthBlast extends BendingActiveAbility {
 		} else {
 			this.state = BendingAbilityState.Progressing;
 			this.sourceblock.getWorld().playEffect(this.sourceblock.getLocation(), Effect.GHAST_SHOOT, 0, 10);
-			if ((this.sourcetype != Material.SAND) && (this.sourcetype != Material.GRAVEL)) {
-				this.sourceblock.setType(this.sourcetype);
+			if (source != null && (source.getState().getType() != Material.SAND) && (source.getState().getType() != Material.GRAVEL)) {
+				source.revertBlock();
+				source = null;
 			}
 		}
 	}
@@ -253,15 +265,18 @@ public class EarthBlast extends BendingActiveAbility {
 
 			if (this.state == BendingAbilityState.Prepared) {
 				if (EntityTools.getBendingAbility(this.player) != BendingAbilities.EarthBlast) {
+					cancel();
 					return false;
 				}
 				if (this.sourceblock == null) {
 					return false;
 				}
 				if (this.player.getWorld() != this.sourceblock.getWorld()) {
+					cancel();
 					return false;
 				}
 				if (this.sourceblock.getLocation().distance(this.player.getLocation()) > SELECT_RANGE) {
+					cancel();
 					return false;
 				}
 				return true;
@@ -342,7 +357,10 @@ public class EarthBlast extends BendingActiveAbility {
 			}
 
 			if (REVERT) {
-				this.sourceblock.setType(this.sourcetype);
+				if(source != null) {
+					source.revertBlock();
+					source = null;
+				}
 				BlockTools.moveEarthBlock(this.sourceblock, block);
 				if (block.getType() == Material.SAND) {
 					block.setType(Material.SANDSTONE);
@@ -360,8 +378,9 @@ public class EarthBlast extends BendingActiveAbility {
 			this.sourceblock = block;
 
 			if (this.location.distance(this.destination) < 1) {
-				if ((this.sourcetype == Material.SAND) || (this.sourcetype == Material.GRAVEL)) {
-					this.sourceblock.setType(this.sourcetype);
+				if (source != null && ((source.getState().getType() == Material.SAND) || (source.getState().getType() == Material.GRAVEL))) {
+					source.revertBlock();
+					source = null;
 				}
 				this.state = BendingAbilityState.Ended;
 				breakBlock();
@@ -375,7 +394,10 @@ public class EarthBlast extends BendingActiveAbility {
 	 * Should remove() after this method
 	 */
 	private void breakBlock() {
-		this.sourceblock.setType(this.sourcetype);
+		if(source != null) {
+			source.revertBlock();
+			source = null;
+		}
 		if (REVERT) {
 			BlockTools.addTempAirBlock(this.sourceblock);
 		} else {
