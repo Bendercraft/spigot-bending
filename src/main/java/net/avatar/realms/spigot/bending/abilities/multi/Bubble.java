@@ -14,8 +14,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
@@ -60,7 +60,7 @@ public abstract class Bubble extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean sneak() {
+	public boolean swing() {
 
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return true;
