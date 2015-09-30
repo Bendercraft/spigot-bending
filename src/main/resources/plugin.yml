@@ -331,8 +331,8 @@ permissions:
   bending.chiblocker.ChiSpeed:
     description: Allows the use of the Chi Speed
     default: true
-  bending.chiblocker.RapidPunch:
-    description: Allows the use of RapidPunch
+  bending.chiblocker.DirectHit:
+    description: Allows the use of DirectHit
     default: true
   bending.chiblocker.HighJump:
     description: Allows the use of HighJump
@@ -352,9 +352,9 @@ permissions:
   bending.chiblocker.PlasticBomb:
     description: Allows the use of the C4
     default: false
-  bending.chiblocker.PowerfulHit:
-    description: Allows the use of the PowerfulHit
-    default: false
+  bending.chiblocker.Release:
+    description: Allows the use of the Release
+    default: true
 
 # ENERGY PERMISSIONS
   bending.energy.astralproject:
