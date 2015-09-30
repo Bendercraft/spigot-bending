@@ -94,7 +94,7 @@ public class Torrent extends BendingActiveAbility {
 		this.range = RANGE;
 		this.bender = BendingPlayer.getBendingPlayer(player);
 		if (this.bender.hasPath(BendingPath.Marksman)) {
-			this.range *= 1.4;
+			this.range *= 1.3;
 			this.damage *= 0.8;
 		}
 
@@ -124,26 +124,26 @@ public class Torrent extends BendingActiveAbility {
 		if (this.state == BendingAbilityState.CanStart) {
 			this.time = System.currentTimeMillis();
 			this.sourceblock = BlockTools.getWaterSourceBlock(this.player, selectrange, EntityTools.canPlantbend(this.player));
-		
+
 			if (this.sourceblock == null && WaterReturn.hasWaterBottle(this.player)) {
 				Location eyeloc = this.player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
-					drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-					sourceblock = block;
+					this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+					this.sourceblock = block;
 					WaterReturn.emptyWaterBottle(this.player);
 				}
 			}
-		
+
 			if (this.sourceblock != null) {
 				this.sourceselected = true;
 				setState(BendingAbilityState.Preparing);
 				AbilityManager.getManager().addInstance(this);
 			}
-		
+
 			return false;
 		}
-		
+
 		this.launch = true;
 		if (this.launching) {
 			this.freeze = true;
@@ -510,9 +510,9 @@ public class Torrent extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		this.clear();
-		if(drainedBlock != null) {
-			drainedBlock.revertBlock();
-			drainedBlock = null;
+		if(this.drainedBlock != null) {
+			this.drainedBlock.revertBlock();
+			this.drainedBlock = null;
 		}
 		if (this.waterReturn != null) {
 			this.waterReturn.stop();
