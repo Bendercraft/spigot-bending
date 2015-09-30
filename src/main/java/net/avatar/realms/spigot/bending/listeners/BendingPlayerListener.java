@@ -50,6 +50,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
+import net.avatar.realms.spigot.bending.abilities.air.AirGlide;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
@@ -273,6 +274,12 @@ public class BendingPlayerListener implements Listener {
 					ab.start();
 					return;
 				}
+			}
+
+			if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
+				AirGlide ab = new AirGlide(player);
+				ab.start();
+				return;
 			}
 		}
 

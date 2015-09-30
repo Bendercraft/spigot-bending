@@ -22,7 +22,7 @@ public enum BendingAbilities {
 	AirGlide(BendingElement.Air, true),
 	AirManipulation(BendingElement.Air, true), 
 	Tornado(BendingAffinity.Tornado, true), 
-	Suffocate(BendingAffinity.Suffocate, true),
+	Suffocate(BendingAffinity.Suffocate, false),
 
 	/*
 	 * EARTH Abilities
