@@ -15,10 +15,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
@@ -54,6 +54,14 @@ public class Suffocate extends BendingActiveAbility {
 	public Suffocate(Player player) {
 		super(player, null);
 
+		if (this.state.isBefore(BendingAbilityState.CanStart)) {
+			return;
+		}
+
+		if (!this.player.isSneaking()) {
+			setState(BendingAbilityState.CannotStart);
+			return;
+		}
 		this.time = this.startedTime;
 
 		this.temp = new ItemStack(Material.STAINED_GLASS, 1, (byte) 0x0);
@@ -103,10 +111,6 @@ public class Suffocate extends BendingActiveAbility {
 			return false;
 		}
 
-		if (!this.player.isSneaking()) {
-			return false;
-		}
-
 		if (!this.state.equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
@@ -139,7 +143,7 @@ public class Suffocate extends BendingActiveAbility {
 			if (addtionnalDamage > 6) {
 				addtionnalDamage = 6;
 			}
-			
+
 			this.target.getWorld().playEffect(this.target.getEyeLocation(), Effect.SMOKE, 4);
 			this.target.damage(baseDamage + addtionnalDamage, this.player);
 
