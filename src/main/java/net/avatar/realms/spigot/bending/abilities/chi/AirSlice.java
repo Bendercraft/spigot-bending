@@ -67,12 +67,12 @@ public class AirSlice extends BendingActiveAbility {
 			if(this.first == null || this.second == null) {
 				return false;
 			}
-			
-			if(!ComboPoints.consume(player,1)) {
+
+			if(!ComboPoints.consume(this.player,1)) {
 				setState(BendingAbilityState.Ended);
 				return false;
 			}
-			
+
 			this.direction = this.player.getEyeLocation().getDirection();
 			this.origin = this.first.clone().add(this.second).multiply(0.5);
 			double distance = this.second.distance(this.first);
@@ -97,7 +97,7 @@ public class AirSlice extends BendingActiveAbility {
 			if (this.first == null || this.first.getBlock().isLiquid() || BlockTools.isSolid(this.first.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSlice, this.first)) {
 				return false;
 			}
-			if(!ComboPoints.consume(player,1)) {
+			if(!ComboPoints.consume(this.player,1)) {
 				setState(BendingAbilityState.Ended);
 				return false;
 			}
@@ -118,7 +118,7 @@ public class AirSlice extends BendingActiveAbility {
 			if(this.state == BendingAbilityState.Preparing) {
 				setState(BendingAbilityState.Prepared);
 			}
-			if(!ComboPoints.consume(player,1)) {
+			if(!ComboPoints.consume(this.player,1)) {
 				setState(BendingAbilityState.Ended);
 				return false;
 			}
@@ -168,9 +168,7 @@ public class AirSlice extends BendingActiveAbility {
 				}
 
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(location, AFFECT_RADIUS)) {
-					if (entity.getEntityId() != this.player.getEntityId()) {
-						affect(location, entity);
-					}
+					affect(location, entity);
 				}
 				location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) RANGE+4);
 				location.add(this.direction.clone().multiply(speedfactor));
