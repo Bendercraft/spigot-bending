@@ -30,7 +30,7 @@ public class DirectHit extends BendingActiveAbility {
 	public static long RANGE = 4;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 5000;
+	public static long COOLDOWN = 1500;
 
 	public DirectHit(Player player) {
 		super(player, null);
@@ -38,21 +38,21 @@ public class DirectHit extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(this.state == BendingAbilityState.CanStart) {
-			if(this.player.isSneaking()) {
-				LivingEntity target = EntityTools.getTargettedEntity(this.player, RANGE);
-				if(target == null) {
-					setState(BendingAbilityState.Ended);
-					return false;
-				}
-				EntityTools.damageEntity(this.player, target, DAMAGE);
-				target.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
-						.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
+		LivingEntity target = EntityTools.getTargettedEntity(this.player, RANGE);
+		if(target == null) {
+			setState(BendingAbilityState.Ended);
+			return false;
+		}
+		if(this.player.isSneaking()) {
+			EntityTools.damageEntity(this.player, target, DAMAGE);
+			target.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
+					.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
 
-				if(ComboPoints.getComboPointAmount(this.player) == 0) {
-					ComboPoints.addComboPoint(this.player, target, 2);
-				}
-
+			this.bender.cooldown(this, COOLDOWN * 2);
+		}
+		else {
+			if (ComboPoints.getComboPointAmount(this.player) < 3) {
+				ComboPoints.addComboPoint(this.player, target);
 				this.bender.cooldown(this, COOLDOWN);
 			}
 		}
