@@ -1,10 +1,8 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -22,6 +20,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.deprecated.TempBlock;
@@ -33,8 +32,6 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name = "Torrent", bind = BendingAbilities.Torrent, element = BendingElement.Water)
 public class Torrent extends BendingActiveAbility {
-	private static Map<TempBlock, Player> frozenblocks = new HashMap<TempBlock, Player>();
-
 	static long interval = 30;
 	private static int defaultrange = 20;
 	private static int selectrange = 10;
@@ -82,6 +79,8 @@ public class Torrent extends BendingActiveAbility {
 	private WaterReturn waterReturn;
 
 	private TempBlock drainedBlock;
+	
+	private List<TempBlock> iceds = new LinkedList<TempBlock>();
 
 	public Torrent(Player player) {
 		super(player, null);
@@ -111,10 +110,19 @@ public class Torrent extends BendingActiveAbility {
 			return;
 		}
 		List<Block> ice = BlockTools.getBlocksAroundPoint(this.location, this.layer);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, layer);
 		for (Block block : ice) {
 			if (BlockTools.isTransparentToEarthbending(this.player, block) && (block.getType() != Material.ICE)) {
-				TempBlock tblock = new TempBlock(block, Material.ICE, (byte) 0);
-				frozenblocks.put(tblock, this.player);
+				boolean safe = true;
+				for(LivingEntity entity : entities) {
+					if(entity.getEyeLocation().getBlock().getLocation().equals(block.getLocation())) {
+						safe = false;
+						break;
+					}
+				}
+				if(safe) {
+					iceds.add(new TempBlock(block, Material.ICE, (byte) 0));
+				}
 			}
 		}
 	}
@@ -179,7 +187,7 @@ public class Torrent extends BendingActiveAbility {
 
 		if (System.currentTimeMillis() > (this.time + interval)) {
 			this.time = System.currentTimeMillis();
-
+			
 			if (this.sourceselected) {
 				if (!this.sourceblock.getWorld().equals(this.player.getWorld())) {
 					return false;
@@ -300,7 +308,7 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	private boolean launch() {
-		if (this.launchblocks.isEmpty() && this.blocks.isEmpty()) {
+		if (this.launchblocks.isEmpty() && this.blocks.isEmpty() && iceds.isEmpty()) {
 			return false;
 		}
 
@@ -330,9 +338,8 @@ public class Torrent extends BendingActiveAbility {
 			}
 			if (this.launchblocks.isEmpty()) {
 				return false;
-			} else {
-				return true;
 			}
+			return true;
 		}
 
 		Entity target = null;
@@ -444,7 +451,7 @@ public class Torrent extends BendingActiveAbility {
 		this.launchblocks.clear();
 		this.launchblocks.addAll(newblocks);
 
-		if (this.launchblocks.isEmpty()) {
+		if (this.launchblocks.isEmpty() && iceds.isEmpty()) {
 			return false;
 		}
 
@@ -519,6 +526,10 @@ public class Torrent extends BendingActiveAbility {
 		}
 		if (this.burst != null) {
 			this.burst.remove();
+		}
+		
+		for(TempBlock b : iceds) {
+			b.revertBlock();
 		}
 	}
 
@@ -607,21 +618,27 @@ public class Torrent extends BendingActiveAbility {
 	public static void thaw(Block block) {
 		if (TempBlock.isTempBlock(block)) {
 			TempBlock tblock = TempBlock.get(block);
-			if (frozenblocks.containsKey(tblock)) {
-				thaw(tblock);
-			}
+			thaw(tblock);
 		}
 	}
 
 	public static void thaw(TempBlock block) {
-		block.revertBlock();
-		frozenblocks.remove(block);
+		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Torrent).values()) {
+			Torrent torrent = (Torrent) ab;
+			block.revertBlock();
+			torrent.iceds.remove(block);
+		}
 	}
 
 	public static boolean canThaw(Block block) {
 		if (TempBlock.isTempBlock(block)) {
 			TempBlock tblock = TempBlock.get(block);
-			return !frozenblocks.containsKey(tblock);
+			for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Torrent).values()) {
+				Torrent torrent = (Torrent) ab;
+				if(torrent.iceds.contains(tblock)) {
+					return true;
+				}
+			}
 		}
 		return true;
 	}
