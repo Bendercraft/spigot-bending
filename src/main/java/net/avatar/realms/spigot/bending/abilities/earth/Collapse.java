@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -33,7 +33,7 @@ public class Collapse extends BendingActiveAbility {
 	public static int DEPTH = 6;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 3000;
+	public static long COOLDOWN = 250;
 
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 8;
@@ -52,43 +52,43 @@ public class Collapse extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (state != BendingAbilityState.CanStart) {
+		if (this.state != BendingAbilityState.CanStart) {
 			return false;
 		}
-		bender.cooldown(BendingAbilities.Collapse, COOLDOWN);
-		columns.add(new CompactColumn(player));
-		state = BendingAbilityState.Progressing;
+		this.bender.cooldown(BendingAbilities.Collapse, COOLDOWN);
+		this.columns.add(new CompactColumn(this.player));
+		this.state = BendingAbilityState.Progressing;
 		AbilityManager.getManager().addInstance(this);
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if (state != BendingAbilityState.CanStart) {
+		if (this.state != BendingAbilityState.CanStart) {
 			return false;
 		}
 
-		Block sblock = BlockTools.getEarthSourceBlock(player, BendingAbilities.Collapse, RANGE);
+		Block sblock = BlockTools.getEarthSourceBlock(this.player, BendingAbilities.Collapse, RANGE);
 		Location location;
 		if (sblock == null) {
-			location = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
+			location = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
 		} else {
 			location = sblock.getLocation();
 		}
-		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-			if (BlockTools.isEarthbendable(player, BendingAbilities.Collapse, block) && !blocks.containsKey(block) && block.getY() >= location.getBlockY()) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, this.radius)) {
+			if (BlockTools.isEarthbendable(this.player, BendingAbilities.Collapse, block) && !this.blocks.containsKey(block) && block.getY() >= location.getBlockY()) {
 				getAffectedBlocks(block);
 			}
 		}
 
-		if (!baseblocks.isEmpty()) {
-			bender.cooldown(BendingAbilities.Collapse, COOLDOWN);
+		if (!this.baseblocks.isEmpty()) {
+			this.bender.cooldown(BendingAbilities.Collapse, COOLDOWN);
 		}
 
-		for (Block block : baseblocks.keySet()) {
-			columns.add(new CompactColumn(player, block.getLocation()));
+		for (Block block : this.baseblocks.keySet()) {
+			this.columns.add(new CompactColumn(this.player, block.getLocation()));
 		}
-		state = BendingAbilityState.Progressing;
+		this.state = BendingAbilityState.Progressing;
 		AbilityManager.getManager().addInstance(this);
 		return false;
 	}
@@ -98,10 +98,10 @@ public class Collapse extends BendingActiveAbility {
 		if (!super.progress()) {
 			return false;
 		}
-		if (state == BendingAbilityState.Progressing && columns.isEmpty()) {
+		if (this.state == BendingAbilityState.Progressing && this.columns.isEmpty()) {
 			return false;
 		}
-		for (CompactColumn column : columns) {
+		for (CompactColumn column : this.columns) {
 			if (!column.progress()) {
 				return false;
 			}
@@ -111,7 +111,7 @@ public class Collapse extends BendingActiveAbility {
 
 	@Override
 	public void remove() {
-		for (CompactColumn column : columns) {
+		for (CompactColumn column : this.columns) {
 			column.remove();
 		}
 		super.remove();
@@ -124,7 +124,7 @@ public class Collapse extends BendingActiveAbility {
 		bendableblocks.add(block);
 		for (int i = 1; i <= DEPTH; i++) {
 			Block blocki = block.getRelative(BlockFace.DOWN, i);
-			if (BlockTools.isEarthbendable(player, BendingAbilities.Collapse, blocki)) {
+			if (BlockTools.isEarthbendable(this.player, BendingAbilities.Collapse, blocki)) {
 				baseblock = blocki;
 				bendableblocks.add(blocki);
 				tall++;
@@ -132,15 +132,15 @@ public class Collapse extends BendingActiveAbility {
 				break;
 			}
 		}
-		baseblocks.put(baseblock, tall);
+		this.baseblocks.put(baseblock, tall);
 		for (Block blocki : bendableblocks) {
-			blocks.put(blocki, baseblock);
+			this.blocks.put(blocki, baseblock);
 		}
 
 	}
 
 	@Override
 	public Object getIdentifier() {
-		return player;
+		return this.player;
 	}
 }
