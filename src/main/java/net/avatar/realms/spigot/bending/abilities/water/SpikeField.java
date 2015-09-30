@@ -1,10 +1,8 @@
 package net.avatar.realms.spigot.bending.abilities.water;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
@@ -33,20 +31,17 @@ public class SpikeField {
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 3000;
 
-	public static int numofspikes = ((RADIUS * 2) * (RADIUS * 2)) / 16;
-	public static Map<Player, Long> cooldowns = new HashMap<Player, Long>();
+	public int numofspikes;
 
 	private Random ran = new Random();
 
 	private int damage = DAMAGE;
 	private Vector thrown = new Vector(0, THROW_MULT, 0);
 
-	private List<IceSpikeColumn> spikes = new LinkedList<IceSpikeColumn>();
+	private List<SpikeFieldColumn> spikes = new LinkedList<SpikeFieldColumn>();
 
 	public SpikeField(Player p, IBendingAbility parent) {
-		if (cooldowns.containsKey(p))
-			if (cooldowns.get(p) + COOLDOWN >= System.currentTimeMillis())
-				return;
+		numofspikes = (RADIUS * RADIUS) / 4;
 		// Tools.verbose("Trying to create IceField" + numofspikes);
 		int locX = p.getLocation().getBlockX();
 		int locY = p.getLocation().getBlockY();
@@ -62,13 +57,11 @@ public class SpikeField {
 				}
 			}
 		}
-
+		if (iceblocks.isEmpty())
+			return;
+		
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(p.getLocation(), RADIUS);
-
 		for (int i = 0; i < numofspikes; i++) {
-			if (iceblocks.isEmpty())
-				return;
-
 			Entity target = null;
 			Block targetblock = null;
 			for (Entity entity : entities) {
@@ -92,11 +85,7 @@ public class SpikeField {
 				entities.remove(target);
 			} else {
 				targetblock = iceblocks.get(ran.nextInt(iceblocks.size()));
-			}
-
-			if (targetblock.getRelative(BlockFace.UP).getType() != Material.ICE) {
-				spikes.add(new IceSpikeColumn(p, targetblock.getLocation(), damage, thrown, COOLDOWN, this));
-				cooldowns.put(p, System.currentTimeMillis());
+				spikes.add(new SpikeFieldColumn(p, targetblock.getLocation(), damage, thrown, COOLDOWN, this));
 				iceblocks.remove(targetblock);
 			}
 		}
@@ -104,9 +93,18 @@ public class SpikeField {
 
 	public boolean progress() {
 		boolean result = false;
-		for (IceSpikeColumn column : spikes) {
-			result = result || column.progress();
+		for (SpikeFieldColumn column : spikes) {
+			if(column.progress()) {
+				result = true;
+			}
 		}
 		return result;
+	}
+	
+	public void remove() {
+		for (SpikeFieldColumn column : spikes) {
+			column.remove();
+		}
+		spikes.clear();
 	}
 }
