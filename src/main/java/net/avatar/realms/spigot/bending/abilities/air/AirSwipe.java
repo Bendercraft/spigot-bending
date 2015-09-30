@@ -83,13 +83,13 @@ public class AirSwipe extends BendingActiveAbility {
 
 	@ConfigurationParameter("Max-Charge-Time")
 	private static long MAX_CHARGE_TIME = 3000;
-	
+
 	@ConfigurationParameter ("Charge-Max-Factor")
 	private static double MAX_FACTOR = 2.5;
 
 	private static int stepsize = 4;
 	private static byte full = AirBlast.full;
-	
+
 
 	private double speedfactor;
 
@@ -124,7 +124,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(state == BendingAbilityState.CanStart) {
+		if(this.state == BendingAbilityState.CanStart) {
 			setState(BendingAbilityState.Preparing);
 			AbilityManager.getManager().addInstance(this);
 		}
@@ -133,7 +133,11 @@ public class AirSwipe extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(state == BendingAbilityState.Prepared) {
+		if (this.state == BendingAbilityState.CanStart) {
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Prepared);
+		}
+		if(this.state == BendingAbilityState.Prepared) {
 			this.setState(BendingAbilityState.Progressing);
 			this.origin = this.player.getEyeLocation();
 			launch();
