@@ -5,11 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
-import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -17,6 +12,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 public class SpikeField {
 	@ConfigurationParameter("Radius")
@@ -41,7 +41,7 @@ public class SpikeField {
 	private List<SpikeFieldColumn> spikes = new LinkedList<SpikeFieldColumn>();
 
 	public SpikeField(Player p, IBendingAbility parent) {
-		numofspikes = (RADIUS * RADIUS) / 4;
+		this.numofspikes = (RADIUS * RADIUS) / 4;
 		// Tools.verbose("Trying to create IceField" + numofspikes);
 		int locX = p.getLocation().getBlockX();
 		int locY = p.getLocation().getBlockY();
@@ -57,11 +57,12 @@ public class SpikeField {
 				}
 			}
 		}
-		if (iceblocks.isEmpty())
+		if (iceblocks.isEmpty()) {
 			return;
+		}
 		
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(p.getLocation(), RADIUS);
-		for (int i = 0; i < numofspikes; i++) {
+		for (int i = 0; i < this.numofspikes; i++) {
 			Entity target = null;
 			Block targetblock = null;
 			for (Entity entity : entities) {
@@ -84,8 +85,8 @@ public class SpikeField {
 			if (target != null) {
 				entities.remove(target);
 			} else {
-				targetblock = iceblocks.get(ran.nextInt(iceblocks.size()));
-				spikes.add(new SpikeFieldColumn(p, targetblock.getLocation(), damage, thrown, COOLDOWN, this));
+				targetblock = iceblocks.get(this.ran.nextInt(iceblocks.size()));
+				this.spikes.add(new SpikeFieldColumn(p, targetblock.getLocation(), this.damage, this.thrown, COOLDOWN, this));
 				iceblocks.remove(targetblock);
 			}
 		}
@@ -93,7 +94,7 @@ public class SpikeField {
 
 	public boolean progress() {
 		boolean result = false;
-		for (SpikeFieldColumn column : spikes) {
+		for (SpikeFieldColumn column : this.spikes) {
 			if(column.progress()) {
 				result = true;
 			}
@@ -102,9 +103,9 @@ public class SpikeField {
 	}
 	
 	public void remove() {
-		for (SpikeFieldColumn column : spikes) {
+		for (SpikeFieldColumn column : this.spikes) {
 			column.remove();
 		}
-		spikes.clear();
+		this.spikes.clear();
 	}
 }

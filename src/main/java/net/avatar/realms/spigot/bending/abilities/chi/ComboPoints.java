@@ -66,7 +66,9 @@ public class ComboPoints {
 
 		if (combo.addComboPoint(target)) {
 			player.playSound(player.getLocation(), SOUND, 1, 1.1f);
-			player.playEffect(target.getEyeLocation(), VISUAL, 0x1);
+			if (target != null) {
+				player.playEffect(target.getEyeLocation(), VISUAL, 0x1);
+			}
 			return true;
 		}
 		return false;

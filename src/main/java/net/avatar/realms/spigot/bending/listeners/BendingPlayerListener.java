@@ -261,7 +261,6 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSneak(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
-
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}
@@ -275,8 +274,9 @@ public class BendingPlayerListener implements Listener {
 					return;
 				}
 			}
-
+			Bending.plugin.log.info("DEBUG : Sneak");
 			if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
+				Bending.plugin.log.info("DEBUG : In if");
 				AirGlide ab = new AirGlide(player);
 				ab.start();
 				return;

@@ -152,7 +152,7 @@ permissions:
   bending.air.AirBubble:
     description: Allows the use of AirBubble.
     default: false
-  bending.air.Passive:
+  bending.air.passive:
     description: Allows the use of AirPassive.
     default: true
   bending.air.AirGlide:

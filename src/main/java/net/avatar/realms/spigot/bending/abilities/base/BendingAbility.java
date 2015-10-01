@@ -94,7 +94,6 @@ public abstract class BendingAbility implements IBendingAbility {
 		
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this));
 		if(instances != null && instances.containsKey(this.getIdentifier())) {
-			//Bending.log.info("Player "+player.getName()+" - "+AbilityManager.getManager().getAbilityType(this)+" - tried to start twice same ability");
 			return false;
 		}
 

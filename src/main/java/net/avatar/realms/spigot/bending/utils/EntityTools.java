@@ -331,15 +331,15 @@ public class EntityTools {
 		}
 		return target;
 	}
-	
+
 	public static LivingEntity getNearestLivingEntity(Location location, double radius) {
 		return getNearestLivingEntity(location, radius, Collections.<LivingEntity> emptyList());
 	}
-	
+
 	public static LivingEntity getNearestLivingEntity(Location location, double radius, LivingEntity exclude) {
 		return getNearestLivingEntity(location, radius, Arrays.asList(exclude));
 	}
-	
+
 	public static LivingEntity getNearestLivingEntity(Location location, double radius, List<LivingEntity> excludes) {
 		LivingEntity result = null;
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, radius)) {

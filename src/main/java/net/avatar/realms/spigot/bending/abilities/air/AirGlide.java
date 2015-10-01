@@ -11,14 +11,17 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @BendingAbility(name = "AirGlide", bind = BendingAbilities.AirGlide, element = BendingElement.Air)
-
 public class AirGlide extends BendingPassiveAbility {
 
 	@ConfigurationParameter("Fall-Factor")
-	private static double FALL_FACTOR = 0.6;
+	private static double FALL_FACTOR = 0.45;
+
+	private FlyingPlayer fly;
+	private double y;
 
 	public AirGlide(Player player) {
 		super(player, null);
@@ -46,11 +49,19 @@ public class AirGlide extends BendingPassiveAbility {
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
-
+		this.y = this.player.getVelocity().getY() * FALL_FACTOR;
 		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
-
+		this.fly = FlyingPlayer.addFlyingPlayer(this.player, this, 0L);
+		this.bender.cooldown(this, 500);
 		return true;
+	}
+
+	@Override
+	public void stop() {
+		if (this.fly != null) {
+			this.fly.resetState();
+		}
 	}
 
 	@Override
@@ -63,13 +74,13 @@ public class AirGlide extends BendingPassiveAbility {
 			return false;
 		}
 		BendingAbilities ability = EntityTools.getBendingAbility(this.player);
-		if ((ability != null) && ability.isShiftAbility() && (ability != BendingAbilities.AirSpout)) {
+		if ((ability != null) && ability.isShiftAbility()) {
 			return false;
 		}
 
 		if (this.player.getLocation().getBlock().getType() == Material.AIR) {
 			Vector vel = this.player.getVelocity();
-			vel.setY(vel.getY() * FALL_FACTOR);
+			vel.setY(this.y);
 			this.player.setVelocity(vel);
 		}
 		return true;
