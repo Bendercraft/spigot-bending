@@ -244,7 +244,7 @@ public class EntityTools {
 	}
 
 	public static boolean speToggled(Player p) {
-		return speToggledBenders.contains(p);
+		return speToggledBenders.contains(p.getUniqueId());
 	}
 
 	public static List<Entity> getEntitiesAroundPoint(Location location, double radius) {

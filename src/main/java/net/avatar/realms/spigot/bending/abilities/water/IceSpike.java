@@ -23,7 +23,6 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 @BendingAbility(name = "Ice Spikes", bind = BendingAbilities.IceSpike, element = BendingElement.Water)
@@ -42,7 +41,7 @@ public class IceSpike extends BendingActiveAbility {
 	private double range;
 	private boolean plantbending = false;
 	private Block sourceblock;
-	private TemporaryBlock source;
+	private TempBlock source;
 	private boolean prepared = false;
 	private boolean settingup = false;
 	private boolean progressing = false;
@@ -54,7 +53,6 @@ public class IceSpike extends BendingActiveAbility {
 
 	private SpikeField field = null;
 	private WaterReturn waterReturn;
-	private TempBlock drainedBlock;
 
 	public IceSpike(Player player) {
 		super(player, null);
@@ -74,8 +72,8 @@ public class IceSpike extends BendingActiveAbility {
 		}
 		this.sourceblock = BlockTools.getWaterSourceBlock(this.player, this.range, this.plantbending);
 		if (this.sourceblock == null) {
-			//this.field = new SpikeField(this.player, this);
-			//AbilityManager.getManager().addInstance(this);
+			this.field = new SpikeField(this.player, this);
+			AbilityManager.getManager().addInstance(this);
 			return false;
 		}
 
@@ -103,8 +101,6 @@ public class IceSpike extends BendingActiveAbility {
 			return false;
 		}
 		redirect(this.player);
-		boolean activate = false;
-
 		if (bender.isOnCooldown(BendingAbilities.IceSpike)) {
 			return false;
 		}
@@ -126,13 +122,10 @@ public class IceSpike extends BendingActiveAbility {
 					return false;
 				}
 
-				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-				throwIce();
-
 				WaterReturn.emptyWaterBottle(this.player);
 			}
 		}
-		
+		throwIce();
 
 		return false;
 	}
@@ -169,7 +162,7 @@ public class IceSpike extends BendingActiveAbility {
 			this.sourceblock.setType(Material.AIR);
 		}
 
-		this.source = TemporaryBlock.makeTemporary(this.sourceblock, Material.ICE);
+		this.source = new TempBlock(this.sourceblock, Material.ICE, (byte) 0x0);
 	}
 
 	@Override
@@ -234,7 +227,7 @@ public class IceSpike extends BendingActiveAbility {
 				return true;
 			}
 
-			this.source.forceRevert();
+			this.source.revertBlock();
 			this.source = null;
 
 			if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
@@ -265,7 +258,7 @@ public class IceSpike extends BendingActiveAbility {
 			}
 
 			this.sourceblock = block;
-			this.source = TemporaryBlock.makeTemporary(this.sourceblock, Material.ICE);
+			this.source = new TempBlock(this.sourceblock, Material.ICE, (byte) 0x0);
 
 		} else if (this.prepared) {
 			Tools.playFocusWaterEffect(this.sourceblock);
@@ -387,7 +380,7 @@ public class IceSpike extends BendingActiveAbility {
 	private void clear() {
 		if (this.progressing) {
 			if (this.source != null) {
-				this.source.forceRevert();
+				this.source.revertBlock();
 			}
 			this.progressing = false;
 		}
@@ -395,9 +388,8 @@ public class IceSpike extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		if (this.drainedBlock != null) {
-			this.drainedBlock.revertBlock();
-			drainedBlock = null;
+		if (this.field != null) {
+			this.field.remove();
 		}
 		if (this.waterReturn != null) {
 			this.waterReturn.stop();
