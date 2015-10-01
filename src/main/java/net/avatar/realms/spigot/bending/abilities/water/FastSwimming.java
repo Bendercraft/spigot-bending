@@ -48,6 +48,11 @@ public class FastSwimming extends BendingPassiveAbility {
 		if ((ability != null) && ability.isShiftAbility() && (ability != BendingAbilities.WaterSpout)) {
 			return false;
 		}
+
+		if (WaterSpout.isBending(this.player)) {
+			return false;
+		}
+
 		if (BlockTools.isWater(this.player.getLocation().getBlock()) && !BlockTools.isTempBlock(this.player.getLocation().getBlock())) {
 			swimFast();
 		}
