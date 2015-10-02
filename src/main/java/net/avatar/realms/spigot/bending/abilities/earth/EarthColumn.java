@@ -188,9 +188,6 @@ public class EarthColumn {
 		if(location == null) {
 			return false;
 		}
-		if(!canInstantiate()) {
-			return false;
-		}
 		Block block = location.getBlock();
 		if(TempBlock.isTempBlock(block)) {
 			return false;
