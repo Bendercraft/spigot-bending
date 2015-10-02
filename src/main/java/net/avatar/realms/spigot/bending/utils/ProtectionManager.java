@@ -104,12 +104,12 @@ public class ProtectionManager {
 
 		Plugin citizens = Bukkit.getPluginManager().getPlugin("Citizens");
 		if (citizens != null) {
-			PluginTools.verbose("Recognized Citizens...");
+			Bending.log.info("Recognized Citizens...");
 			if (Settings.RESPECT_CITIZENS) {
 				useCitizens = true;
-				PluginTools.verbose("Bending is set to respect Citizens traits.");
+				Bending.log.info("Bending is set to respect Citizens traits.");
 			} else {
-				PluginTools.verbose("But Bending is set to ignore Citizens traits.");
+				Bending.log.info("But Bending is set to ignore Citizens traits.");
 			}
 		}
 	}

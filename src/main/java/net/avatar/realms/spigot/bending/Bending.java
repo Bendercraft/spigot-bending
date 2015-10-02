@@ -87,7 +87,7 @@ public class Bending extends JavaPlugin {
 		getServer().getScheduler().runTaskTimerAsynchronously(plugin, this.revertChecker, 0, 200);
 
 		ProtectionManager.init();
-		PluginTools.verbose("Bending v" + getDescription().getVersion() + " has been loaded.");
+		Bending.log.info("Bending v" + getDescription().getVersion() + " has been loaded.");
 
 		// Citizens
 		if ((getServer().getPluginManager().getPlugin("Citizens") != null) && getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {

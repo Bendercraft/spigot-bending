@@ -74,7 +74,6 @@ public class EarthLariat extends BendingActiveAbility {
 		} else if(state == BendingAbilityState.Progressing) {
 			if(player.getLocation().distance(target.getLocation()) < DISTANCE) {
 				target.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, CONFUSION_DURATION, 1));
-				Bending.log.info("Confused");
 			}
 			setState(BendingAbilityState.Ended);
 		}

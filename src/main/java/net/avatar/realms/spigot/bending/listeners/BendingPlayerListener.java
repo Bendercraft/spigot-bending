@@ -293,9 +293,7 @@ public class BendingPlayerListener implements Listener {
 					return;
 				}
 			}
-			Bending.plugin.log.info("DEBUG : Sneak");
 			if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
-				Bending.plugin.log.info("DEBUG : In if");
 				AirGlide ab = new AirGlide(player);
 				ab.start();
 				return;
