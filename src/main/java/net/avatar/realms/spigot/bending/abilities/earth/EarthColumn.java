@@ -8,6 +8,7 @@ import java.util.Map;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 import org.bukkit.Location;
@@ -184,7 +185,16 @@ public class EarthColumn {
 	}
 
 	private boolean moveEarth() {
+		if(location == null) {
+			return false;
+		}
+		if(!canInstantiate()) {
+			return false;
+		}
 		Block block = location.getBlock();
+		if(TempBlock.isTempBlock(block)) {
+			return false;
+		}
 		location = location.add(direction);
 		BlockTools.moveEarth(player, block, direction, distance);
 		loadAffectedBlocks();
