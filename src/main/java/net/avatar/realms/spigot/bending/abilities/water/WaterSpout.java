@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
@@ -54,34 +54,34 @@ public class WaterSpout extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
+			case None:
+			case CannotStart:
+				return false;
 
-		case CanStart:
-			if (canWaterSpout(this.player)) {
-				this.height = 0;
-				this.blocks = new LinkedList<TempBlock>();
-				this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
-				if (this.flying != null) {
-					spout();
-					setState(BendingAbilityState.Progressing);
-					AbilityManager.getManager().addInstance(this);
+			case CanStart:
+				if (canWaterSpout(this.player)) {
+					this.height = 0;
+					this.blocks = new LinkedList<TempBlock>();
+					this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+					if (this.flying != null) {
+						spout();
+						setState(BendingAbilityState.Progressing);
+						AbilityManager.getManager().addInstance(this);
+					}
 				}
-			}
-			return false;
+				return false;
 
-		case Preparing:
-		case Prepared:
-		case Progressing:
-			setState(BendingAbilityState.Ended);
-			return false;
+			case Preparing:
+			case Prepared:
+			case Progressing:
+				setState(BendingAbilityState.Ended);
+				return false;
 
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
+			case Ending:
+			case Ended:
+			case Removed:
+			default:
+				return false;
 		}
 	}
 
@@ -158,6 +158,9 @@ public class WaterSpout extends BendingActiveAbility {
 	private int spoutableWaterHeight(Location location) {
 
 		Location loc = location.clone();
+		if (loc.getBlock().getType() != Material.AIR && !BlockTools.isWaterBased(loc.getBlock())) {
+			return -1;
+		}
 		int height = HEIGHT;
 		if (Tools.isNight(loc.getWorld())) {
 			height = (int) (Settings.NIGHT_FACTOR * HEIGHT) + 1;
