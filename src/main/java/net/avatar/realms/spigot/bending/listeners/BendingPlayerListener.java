@@ -3,9 +3,12 @@ package net.avatar.realms.spigot.bending.listeners;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -79,11 +82,23 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 public class BendingPlayerListener implements Listener {
-
-	public Bending plugin;
+	private Bending plugin;
+	
+	/*
+	 * Because PlayerInteract triggers PlayerAnimation if something was hit (like a door or trap).
+	 * We need to prevent bending from such case (not really practicable).
+	 * It is safe to reset this every tick, because event are sync to main thread and are not spread among 2 ticks.
+	 */
+	private Set<UUID> interact = new HashSet<UUID>();
 
 	public BendingPlayerListener(Bending bending) {
-		this.plugin = bending;
+		plugin = bending;
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				interact.clear();
+			}
+		}, 0, 1);
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -137,7 +152,7 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-
+		interact.add(player.getUniqueId());
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 			return;
@@ -217,6 +232,10 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSwing(PlayerAnimationEvent event) {
 		Player player = event.getPlayer();
+		if(interact.contains(player.getUniqueId())) {
+			interact.remove(player.getUniqueId());
+			return;
+		}
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}

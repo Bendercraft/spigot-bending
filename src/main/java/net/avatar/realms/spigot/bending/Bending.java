@@ -26,13 +26,13 @@ import net.citizensnpcs.api.trait.TraitInfo;
 
 public class Bending extends JavaPlugin {
 	public static long time_step = 1; // in ms
-	public static Logger log = null;
+	public static Logger log;
 	public static Bending plugin;
-	public final BendingManager manager = new BendingManager(this);
-	public final BendingEntityListener listener = new BendingEntityListener(this);
-	public final BendingPlayerListener bpListener = new BendingPlayerListener(this);
-	public final BendingBlockListener blListener = new BendingBlockListener(this);
-	private final RevertChecker revertChecker = new RevertChecker(this);
+	public BendingManager manager;
+	public BendingEntityListener listener;
+	public BendingPlayerListener bpListener;
+	public BendingBlockListener blListener;
+	private RevertChecker revertChecker;
 	public static IBendingDB database;
 	public Tools tools;
 
@@ -44,6 +44,17 @@ public class Bending extends JavaPlugin {
 	public void onEnable() {
 		plugin = this;
 		log = plugin.getLogger();
+		
+		if(manager == null)
+			manager = new BendingManager(this);
+		if(listener == null)
+			listener = new BendingEntityListener(this);
+		if(bpListener == null)
+			bpListener = new BendingPlayerListener(this);
+		if(blListener == null)
+			blListener = new BendingBlockListener(this);
+		if(revertChecker == null)
+			revertChecker = new RevertChecker(this);
 
 		this.commandExecutor = new BendingCommandExecutor();
 
