@@ -127,7 +127,7 @@ public class EntityTools {
 			return true;
 		}
 
-		if (toggledBending(player)) {
+		if (toggledBending(player) && !ability.isPassiveAbility()) {
 			return false;
 		}
 
