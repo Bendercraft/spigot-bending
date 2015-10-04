@@ -74,6 +74,7 @@ public enum BendingAbilities {
 	 * CHI-BLOCKERS Abilities
 	 */
 	Release(BendingElement.ChiBlocker, false), 
+	Count(BendingElement.ChiBlocker, false), 
 	HighJump(BendingElement.ChiBlocker, false), 
 	ChiSpeed(BendingElement.ChiBlocker, false), 
 	VitalPoint(BendingElement.ChiBlocker, false), 
