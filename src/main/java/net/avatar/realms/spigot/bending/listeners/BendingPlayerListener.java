@@ -83,7 +83,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 
 public class BendingPlayerListener implements Listener {
 	private Bending plugin;
-	
+
 	/*
 	 * Because PlayerInteract triggers PlayerAnimation if something was hit (like a door or trap).
 	 * We need to prevent bending from such case (not really practicable).
@@ -92,11 +92,11 @@ public class BendingPlayerListener implements Listener {
 	private Set<UUID> interact = new HashSet<UUID>();
 
 	public BendingPlayerListener(Bending bending) {
-		plugin = bending;
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+		this.plugin = bending;
+		this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
 			@Override
 			public void run() {
-				interact.clear();
+				BendingPlayerListener.this.interact.clear();
 			}
 		}, 0, 1);
 	}
@@ -152,7 +152,7 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		interact.add(player.getUniqueId());
+		this.interact.add(player.getUniqueId());
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 			return;
@@ -232,8 +232,8 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSwing(PlayerAnimationEvent event) {
 		Player player = event.getPlayer();
-		if(interact.contains(player.getUniqueId())) {
-			interact.remove(player.getUniqueId());
+		if(this.interact.contains(player.getUniqueId())) {
+			this.interact.remove(player.getUniqueId());
 			return;
 		}
 		if (Bloodbending.isBloodbended(player)) {
@@ -286,19 +286,19 @@ public class BendingPlayerListener implements Listener {
 
 		BendingAbilities ability = EntityTools.getBendingAbility(player);
 		if (!player.isSneaking() && ((ability == null) || !ability.isShiftAbility())) {
-			if (EntityTools.isBender(player, BendingElement.Water) && EntityTools.canBendPassive(player, BendingElement.Water)) {
-				if (!WaterSpout.isBending(player)) {
-					FastSwimming ab = new FastSwimming(player);
+			if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying()) {
+				if (EntityTools.isBender(player, BendingElement.Water) && EntityTools.canBendPassive(player, BendingElement.Water)) {
+					if (!WaterSpout.isBending(player)) {
+						FastSwimming ab = new FastSwimming(player);
+						ab.start();
+						return;
+					}
+				}
+				if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
+					AirGlide ab = new AirGlide(player);
 					ab.start();
 					return;
 				}
-			}
-			Bending.plugin.log.info("DEBUG : Sneak");
-			if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
-				Bending.plugin.log.info("DEBUG : In if");
-				AirGlide ab = new AirGlide(player);
-				ab.start();
-				return;
 			}
 		}
 

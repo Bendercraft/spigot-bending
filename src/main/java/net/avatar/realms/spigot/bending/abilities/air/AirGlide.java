@@ -21,7 +21,9 @@ public class AirGlide extends BendingPassiveAbility {
 	private static double FALL_FACTOR = 0.45;
 
 	private FlyingPlayer fly;
+	private double x;
 	private double y;
+	private double z;
 
 	public AirGlide(Player player) {
 		super(player, null);
@@ -49,7 +51,10 @@ public class AirGlide extends BendingPassiveAbility {
 		if (this.state.isBefore(BendingAbilityState.CanStart)) {
 			return false;
 		}
+		this.x = this.player.getVelocity().getX();
 		this.y = this.player.getVelocity().getY() * FALL_FACTOR;
+		this.z = this.player.getVelocity().getZ();
+
 		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
 		this.fly = FlyingPlayer.addFlyingPlayer(this.player, this, 0L);
@@ -80,7 +85,9 @@ public class AirGlide extends BendingPassiveAbility {
 
 		if (this.player.getLocation().getBlock().getType() == Material.AIR) {
 			Vector vel = this.player.getVelocity();
+			vel.setX(this.x);
 			vel.setY(this.y);
+			vel.setZ(this.z);
 			this.player.setVelocity(vel);
 		}
 		return true;
