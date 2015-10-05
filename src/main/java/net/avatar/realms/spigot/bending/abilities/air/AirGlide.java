@@ -57,7 +57,7 @@ public class AirGlide extends BendingPassiveAbility {
 
 		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
-		this.fly = FlyingPlayer.addFlyingPlayer(this.player, this, 0L);
+		this.fly = FlyingPlayer.addFlyingPlayer(this.player, this, 60 * 1000L);
 		this.bender.cooldown(this, 500);
 		return true;
 	}
