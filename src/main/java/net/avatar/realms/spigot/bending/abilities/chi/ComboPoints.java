@@ -108,6 +108,21 @@ public class ComboPoints {
 		}
 		return false;
 	}
+	
+	public static LivingEntity getComboPointTarget(Player player) {
+		if (player == null) {
+			return null;
+		}
+		if (combos.containsKey(player.getUniqueId())) {
+			ComboPoints combo = combos.get(player.getUniqueId());
+			if (combo != null) {
+				return combo.target;
+			} else {
+				combos.remove(player.getUniqueId());
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Get how many combo points has a player got

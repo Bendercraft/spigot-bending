@@ -115,12 +115,6 @@ public class PluginTools {
 		return colors.get(input.toLowerCase().replace("&", ""));
 	}
 
-	public static <T> void verbose(T something) {
-		if (something != null) {
-			Bending.log.info("[Bending] " + something.toString());
-		}
-	}
-
 	public static double firebendingDayAugment(double value, World world) {
 		if (Tools.isDay(world)) {
 			return Settings.DAY_FACTOR * value;

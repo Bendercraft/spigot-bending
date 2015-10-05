@@ -31,6 +31,7 @@ import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.AirSlice;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
+import net.avatar.realms.spigot.bending.abilities.chi.Count;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.chi.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.chi.EarthLariat;
@@ -202,6 +203,7 @@ public class AbilityManager {
 		register(AvatarState.class);
 
 		register(Release.class);
+		register(Count.class);
 		register(PoisonnedDart.class);
 		register(C4.class);
 		register(Dash.class);
