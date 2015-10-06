@@ -61,13 +61,13 @@ public class FireBlast extends BendingActiveAbility {
 	private static int RANGE = 25;
 
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 450;
+	private static long COOLDOWN = 950;
 
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 3500;
 
 	@ConfigurationParameter("Charged-Cooldown")
-	private static long CHARGED_COOLDOWN = 1350;
+	private static long CHARGED_COOLDOWN = 1250;
 
 	private Location location;
 	private List<Block> safe;
