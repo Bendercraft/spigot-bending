@@ -9,3 +9,4 @@ build.xml
 /bin/
 /save/
 /.externalToolBuilders/
+/.sonar/
