@@ -157,15 +157,24 @@ public class BendingLearning {
 		case AirBlast:
 		case AirSpout:
 		case AirSwipe:
+			
 		case FireBlast:
 		case Blaze:
 		case HeatControl:
+			
 		case EarthBlast:
 		case Collapse:
 		case RaiseEarth:
+			
 		case WaterManipulation:
 		case HealingWaters:
 		case WaterSpout:
+			
+		case Release:
+		case Count:
+		case VitalPoint:
+		case Dash:
+		case HighJump:
 			return true;
 		default:
 			return false;

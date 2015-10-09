@@ -1,17 +1,14 @@
 package net.avatar.realms.spigot.bending.controller;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
@@ -19,10 +16,9 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
-import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 public class BendingManager implements Runnable {
@@ -31,6 +27,8 @@ public class BendingManager implements Runnable {
 	private List<World> worlds = new LinkedList<World>();
 	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
+	
+	private List<Queue> revertQueue = new LinkedList<Queue>();
 
 	public BendingManager(Bending bending) {
 		this.plugin = bending;
@@ -44,12 +42,11 @@ public class BendingManager implements Runnable {
 			this.time = System.currentTimeMillis();
 
 			AbilityManager.getManager().progressAllAbilities();
-			TemporaryBlock.progressAll();
 			FlyingPlayer.handleAll();
-
-			manageEarthbending();
+			
 			manageFirebending();
 
+			manageGlobalTempBlock();
 			handleDayNight();
 		} catch (Exception e) {
 			AbilityManager.getManager().stopAllAbilities();
@@ -59,18 +56,18 @@ public class BendingManager implements Runnable {
 
 	}
 
-	private void manageEarthbending() {
-		Set<Block> copy = new HashSet<Block>(RevertChecker.revertQueue.keySet());
-		for (Block block : copy) {
-			BlockTools.revertBlock(block);
+	private void manageGlobalTempBlock() {
+		long now = System.currentTimeMillis();
+		List<Queue> toRemove = new LinkedList<Queue>();
+		for(Queue queue : revertQueue) {
+			if(queue.started+queue.life < now) {
+				for(TempBlock block : queue.blocks) {
+					block.revertBlock();
+				}
+				toRemove.add(queue);
+			}
 		}
-		RevertChecker.revertQueue.clear();
-
-		Set<Integer> otherCopy = new HashSet<Integer>(RevertChecker.airRevertQueue.keySet());
-		for (int i : otherCopy) {
-			BlockTools.revertAirBlock(i);
-		}
-		RevertChecker.airRevertQueue.clear();
+		revertQueue.removeAll(toRemove);
 	}
 
 	private void manageFirebending() {
@@ -146,5 +143,27 @@ public class BendingManager implements Runnable {
 			this.worlds.remove(world);
 		}
 	}
+	
+	public void addGlobalTempBlock(long life, TempBlock... blocks) {
+		List<TempBlock> temp = new LinkedList<TempBlock>();
+		for(TempBlock block : blocks) {
+			temp.add(block);
+		}
+		addGlobalTempBlock(life, temp);
+	}
+	
+	public void addGlobalTempBlock(long life, List<TempBlock> blocks) {
+		Queue queue = new Queue();
+		queue.started = System.currentTimeMillis();
+		queue.life = life;
+		queue.blocks = blocks;
+		
+		revertQueue.add(queue);
+	}
 
+	private class Queue {
+		private long started;
+		private long life;
+		private List<TempBlock> blocks;
+	}
 }

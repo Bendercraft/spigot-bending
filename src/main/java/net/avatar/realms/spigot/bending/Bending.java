@@ -10,7 +10,6 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
 import net.avatar.realms.spigot.bending.commands.BendingCommandExecutor;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
-import net.avatar.realms.spigot.bending.controller.RevertChecker;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.db.DBUtils;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
@@ -32,7 +31,6 @@ public class Bending extends JavaPlugin {
 	public BendingEntityListener listener;
 	public BendingPlayerListener bpListener;
 	public BendingBlockListener blListener;
-	private RevertChecker revertChecker;
 	public static IBendingDB database;
 	public Tools tools;
 
@@ -53,8 +51,6 @@ public class Bending extends JavaPlugin {
 			bpListener = new BendingPlayerListener(this);
 		if(blListener == null)
 			blListener = new BendingBlockListener(this);
-		if(revertChecker == null)
-			revertChecker = new RevertChecker(this);
 
 		this.commandExecutor = new BendingCommandExecutor();
 
@@ -84,7 +80,6 @@ public class Bending extends JavaPlugin {
 		getCommand("bending").setTabCompleter(this.commandExecutor);
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
-		getServer().getScheduler().runTaskTimerAsynchronously(plugin, this.revertChecker, 0, 200);
 
 		ProtectionManager.init();
 		Bending.log.info("Bending v" + getDescription().getVersion() + " has been loaded.");

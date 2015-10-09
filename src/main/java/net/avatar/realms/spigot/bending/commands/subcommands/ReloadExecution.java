@@ -9,7 +9,6 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
-import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
 
 public class ReloadExecution extends BendingCommand {
 
@@ -22,7 +21,6 @@ public class ReloadExecution extends BendingCommand {
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
 		AbilityManager.getManager().stopAllAbilities();
-		TemporaryBlock.removeAll();
 		AbilityManager.getManager().applyConfiguration(Bending.plugin.getDataFolder());
 		sender.sendMessage(ChatColor.GREEN + Messages.RELOADED);
 		return true;

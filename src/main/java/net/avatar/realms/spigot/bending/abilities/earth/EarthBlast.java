@@ -24,13 +24,11 @@ import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
@@ -119,7 +117,7 @@ public class EarthBlast extends BendingActiveAbility {
 		
 		cancel();
 		Block block = BlockTools.getEarthSourceBlock(this.player, BendingAbilities.EarthBlast, SELECT_RANGE);
-		if(TempBlock.isTempBlock(block) || TemporaryBlock.isTemporaryBlock(block)) {
+		if(TempBlock.isTempBlock(block)) {
 			return false;
 		}
 		
@@ -200,12 +198,12 @@ public class EarthBlast extends BendingActiveAbility {
 			return;
 		}
 
-		if (BlockTools.bendedBlocks.containsKey(this.sourceblock)) {
-			if (!REVERT) {
-				BlockTools.removeRevertIndex(this.sourceblock);
-				// Tools.removeEarthbendedBlockIndex(sourceblock);
-			}
-		}
+		//if (BlockTools.bendedBlocks.containsKey(this.sourceblock)) {
+		//	if (!REVERT) {
+		//		BlockTools.removeRevertIndex(this.sourceblock);
+		//		// Tools.removeEarthbendedBlockIndex(sourceblock);
+		//	}
+		//}
 		LivingEntity target = EntityTools.getTargettedEntity(this.player, RANGE);
 		// Tools.verbose(target);
 		if (target == null) {

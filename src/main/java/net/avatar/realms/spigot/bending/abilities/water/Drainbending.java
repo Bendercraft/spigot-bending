@@ -5,9 +5,8 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.TemporaryBlock;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 public class Drainbending {
 
@@ -19,7 +18,7 @@ public class Drainbending {
 	}
 
 	public static boolean canBeSource(Block block) {
-		if (TemporaryBlock.isTemporaryBlock(block) || TempBlock.isTempBlock(block)) {
+		if (TempBlock.isTempBlock(block)) {
 			return false;
 		}
 		return block.isEmpty();

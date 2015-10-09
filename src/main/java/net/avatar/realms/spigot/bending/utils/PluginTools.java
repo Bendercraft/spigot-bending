@@ -9,12 +9,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 
 public class PluginTools {
 
@@ -93,13 +91,8 @@ public class PluginTools {
 	}
 
 	public static void stopAllBending() {
-
 		FireStream.removeAll();
-		TemporaryBlock.removeAll();
-		// BendingManager.removeFlyers();
 		TempBlock.removeAll();
-
-		BlockTools.removeAllEarthbendedBlocks();
 	}
 
 	public static void removeSpouts(Location location, double radius, Player sourceplayer) {

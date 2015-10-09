@@ -41,8 +41,8 @@ import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 public class BendingEntityListener implements Listener {
 
@@ -136,8 +136,8 @@ public class BendingEntityListener implements Listener {
 			if (!Wave.canThaw(block)) {
 				Wave.thaw(block);
 			}
-			if (BlockTools.bendedBlocks.containsKey(block)) {
-				BlockTools.removeRevertIndex(block);
+			if (TempBlock.isTempBlock(block)) {
+				TempBlock.get(block).revertBlock();
 			}
 		}
 	}

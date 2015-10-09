@@ -31,8 +31,8 @@ import net.avatar.realms.spigot.bending.abilities.water.Torrent;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
-import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 public class BendingBlockListener implements Listener {
 
@@ -151,8 +151,6 @@ public class BendingBlockListener implements Listener {
 		} else if (!Wave.canThaw(block)) {
 			Wave.thaw(block);
 			event.setCancelled(true);
-		} else if (BlockTools.bendedBlocks.containsKey(block)) {
-			BlockTools.removeRevertIndex(block);
 		}
 		TempBlock.revertBlock(block);
 	}

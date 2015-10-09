@@ -2,11 +2,8 @@ package net.avatar.realms.spigot.bending.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Effect;
@@ -22,9 +19,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthColumn;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
@@ -32,13 +29,11 @@ import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.deprecated.Information;
-import net.avatar.realms.spigot.bending.deprecated.TempBlock;
 
 public class BlockTools {
 
 	private static final ItemStack pickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
-	public static ArrayList<Block> tempnophysics = new ArrayList<Block>();
+	public static List<Block> tempnophysics = new ArrayList<Block>();
 	private static Set<Material> plantIds = new HashSet<Material>();
 	static {
 		plantIds.add(Material.SAPLING);
@@ -151,9 +146,6 @@ public class BlockTools {
 		ironBendables.add(Material.HOPPER);
 		ironBendables.add(Material.CAULDRON);
 	}
-
-	public static Map<Block, Information> bendedBlocks = new HashMap<Block, Information>();
-	public static Map<Integer, Information> tempAir = new HashMap<Integer, Information>();
 
 	public static boolean isTempBlock(Block block) {
 		// TODO : Check in almost every ability that the block isn't a block
@@ -558,35 +550,21 @@ public class BlockTools {
 
 	@SuppressWarnings("deprecation")
 	public static void moveEarthBlock(Block source, Block target) {
-		byte full = 0x0;
-		Information info;
-		if (bendedBlocks.containsKey(source)) {
-			info = bendedBlocks.get(source);
-			info.setTime(System.currentTimeMillis());
-			bendedBlocks.remove(source);
-			bendedBlocks.put(target, info);
+		TempBlock tempTarget = null;
+		if (target.getType() == Material.SAND) {
+			tempTarget = new TempBlock(target, Material.SANDSTONE, source.getData());
 		} else {
-			info = new Information();
-			info.setBlock(source);
-			info.setType(source.getType());
-
-			info.setTime(System.currentTimeMillis());
-			info.setState(source.getState());
-			bendedBlocks.put(target, info);
+			tempTarget = new TempBlock(target, source.getType(), source.getData());
 		}
-
+		
+		TempBlock tempSource = null;
 		if (adjacentToThreeOrMoreSources(source)) {
-			source.setType(Material.WATER);
-			source.setData(full);
+			tempSource = new TempBlock(source, Material.WATER, (byte) 0x0);
 		} else {
-			source.setType(Material.AIR);
+			tempSource = new TempBlock(source, Material.AIR, (byte) 0x0);
 		}
-		if (info.getState().getType() == Material.SAND) {
-			target.setType(Material.SANDSTONE);
-		} else {
-			target.setType(info.getState().getType());
-			target.setData(info.getState().getRawData());
-		}
+		
+		Bending.plugin.manager.addGlobalTempBlock(Settings.REVERSE_TIME, tempSource, tempTarget);
 	}
 
 	public static Block getEarthSourceBlock(Player player, BendingAbilities ability, double range) {
@@ -619,14 +597,8 @@ public class BlockTools {
 			}
 
 			if (isWaterbendable(block, player) && (!isPlant(block) || plantbending)) {
-				if (TempBlock.isTempBlock(block) || TemporaryBlock.isTemporaryBlock(block)) {
+				if (TempBlock.isTempBlock(block)) {
 					return null;
-
-					//TempBlock tb = TempBlock.get(block);
-					//byte full = 0x0;
-					//if ((tb.getState().getRawData() != full) && ((tb.getState().getType() != Material.WATER) || (tb.getState().getType() != Material.STATIONARY_WATER))) {
-					//	continue;
-					//}
 				}
 				return block;
 			}
@@ -635,107 +607,9 @@ public class BlockTools {
 	}
 
 	public static void addTempAirBlock(Block block) {
-		if (bendedBlocks.containsKey(block)) {
-			Information info = bendedBlocks.get(block);
-			block.setType(Material.AIR);
-			info.setTime(System.currentTimeMillis());
-			bendedBlocks.remove(block);
-			tempAir.put(info.getID(), info);
-		} else {
-			Information info = new Information();
-			info.setBlock(block);
-			info.setState(block.getState());
-			info.setTime(System.currentTimeMillis());
-			block.setType(Material.AIR);
-			tempAir.put(info.getID(), info);
-		}
-
+		Bending.plugin.manager.addGlobalTempBlock(Settings.REVERSE_TIME, new TempBlock(block, Material.AIR, (byte) 0x0));
 	}
-
-	public static void revertAirBlock(int i) {
-		revertAirBlock(i, false);
-	}
-
-	@SuppressWarnings("deprecation")
-	public static void revertAirBlock(int i, boolean force) {
-		if (!tempAir.containsKey(i)) {
-			return;
-		}
-		Information info = tempAir.get(i);
-		Block block = info.getState().getBlock();
-		if ((block.getType() != Material.AIR) && !block.isLiquid()) {
-			if (force || !bendedBlocks.containsKey(block)) {
-				dropItems(block, getDrops(block, info.getState().getType(), info.getState().getRawData(), pickaxe));
-				tempAir.remove(i);
-			} else {
-				info.setTime(info.getTime() + 10000);
-			}
-			return;
-		} else {
-			info.getState().update(true);
-			tempAir.remove(i);
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	public static boolean revertBlock(Block block) {
-		byte full = 0x0;
-		if (bendedBlocks.containsKey(block)) {
-			Information info = bendedBlocks.get(block);
-			Block sourceblock = info.getState().getBlock();
-
-			if (info.getState().getType() == Material.AIR) {
-				bendedBlocks.remove(block);
-				return true;
-			}
-
-			if (block.equals(sourceblock)) {
-				info.getState().update(true);
-				if (EarthColumn.blockInAllAffectedBlocks(sourceblock)) {
-					EarthColumn.revertBlock(sourceblock);
-				}
-				if (EarthColumn.blockInAllAffectedBlocks(block)) {
-					EarthColumn.revertBlock(block);
-				}
-				EarthColumn.resetBlock(sourceblock);
-				EarthColumn.resetBlock(block);
-				bendedBlocks.remove(block);
-				return true;
-			}
-
-			if (bendedBlocks.containsKey(sourceblock)) {
-				addTempAirBlock(block);
-				bendedBlocks.remove(block);
-				return true;
-			}
-
-			if ((sourceblock.getType() == Material.AIR) || sourceblock.isLiquid()) {
-				info.getState().update(true);
-			} else {
-				dropItems(block, getDrops(block, info.getState().getType(), info.getState().getRawData(), pickaxe));
-
-			}
-
-			if (adjacentToThreeOrMoreSources(block)) {
-				block.setType(Material.WATER);
-				block.setData(full);
-			} else {
-				block.setType(Material.AIR);
-			}
-
-			if (EarthColumn.blockInAllAffectedBlocks(sourceblock)) {
-				EarthColumn.revertBlock(sourceblock);
-			}
-			if (EarthColumn.blockInAllAffectedBlocks(block)) {
-				EarthColumn.revertBlock(block);
-			}
-			EarthColumn.resetBlock(sourceblock);
-			EarthColumn.resetBlock(block);
-			bendedBlocks.remove(block);
-		}
-		return true;
-	}
-
+	
 	public static void breakBlock(Block block) {
 		block.breakNaturally(new ItemStack(Material.AIR));
 	}
@@ -747,31 +621,6 @@ public class BlockTools {
 			block.setData((byte) 0x0);
 		} else {
 			block.setType(Material.AIR);
-		}
-	}
-
-	public static void removeRevertIndex(Block block) {
-		if (bendedBlocks.containsKey(block)) {
-			Information info = bendedBlocks.get(block);
-			if ((block.getType() == Material.SANDSTONE) && (info.getType() == Material.SAND)) {
-				block.setType(Material.SAND);
-			}
-			if (EarthColumn.blockInAllAffectedBlocks(block)) {
-				EarthColumn.revertBlock(block);
-			}
-			EarthColumn.resetBlock(block);
-			bendedBlocks.remove(block);
-		}
-	}
-
-	public static void removeAllEarthbendedBlocks() {
-		List<Block> copy = new LinkedList<Block>(bendedBlocks.keySet());
-		for (Block block : copy) {
-			revertBlock(block);
-		}
-		List<Integer> otherCopy = new LinkedList<Integer>(tempAir.keySet());
-		for (Integer i : otherCopy) {
-			revertAirBlock(i, true);
 		}
 	}
 
