@@ -1,8 +1,8 @@
 package net.avatar.realms.spigot.bending.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
@@ -33,7 +32,7 @@ import net.avatar.realms.spigot.bending.controller.Settings;
 public class BlockTools {
 	public static final byte FULL = 0x0;
 	
-	private static List<Block> tempnophysics = new ArrayList<Block>();
+	private static List<Block> tempnophysics = new LinkedList<Block>();
 	private static Set<Material> plantIds = new HashSet<Material>();
 	static {
 		plantIds.add(Material.SAPLING);
@@ -145,6 +144,10 @@ public class BlockTools {
 		ironBendables.add(Material.IRON_FENCE);
 		ironBendables.add(Material.HOPPER);
 		ironBendables.add(Material.CAULDRON);
+	}
+	
+	private BlockTools() {
+		
 	}
 
 	public static boolean isTempBlock(Block block) {
@@ -354,15 +357,14 @@ public class BlockTools {
 		}
 
 		int sources = 0;
-		byte full = 0x0;
 		BlockFace[] faces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
 		for (BlockFace face : faces) {
 			Block blocki = block.getRelative(face);
-			if (((blocki.getType() == Material.WATER) || (blocki.getType() == Material.STATIONARY_WATER)) && (blocki.getData() == full) && WaterManipulation.canPhysicsChange(blocki)) {
+			if (((blocki.getType() == Material.WATER) || (blocki.getType() == Material.STATIONARY_WATER)) && (blocki.getData() == FULL) && WaterManipulation.canPhysicsChange(blocki)) {
 				sources++;
 			}
 			if (PhaseChange.isFrozen(blocki)) {
-				if (PhaseChange.isLevel(blocki, full)) {
+				if (PhaseChange.isLevel(blocki, FULL)) {
 					sources++;
 				}
 			} else if (blocki.getType() == Material.ICE) {
@@ -379,7 +381,7 @@ public class BlockTools {
 		BlockFace[] faces = { BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH };
 		boolean adjacent = false;
 		for (BlockFace face : faces) {
-			if (PhaseChange.isFrozen((block.getRelative(face)))) {
+			if (PhaseChange.isFrozen(block.getRelative(face))) {
 				adjacent = true;
 			}
 		}
@@ -387,7 +389,7 @@ public class BlockTools {
 	}
 
 	public static List<Block> getBlocksOnPlane(Location location, int radius) {
-		List<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks = new LinkedList<Block>();
 
 		for (int x = -radius; x <= radius; x++) {
 			for (int y = -radius; y <= radius; y++) {
@@ -398,8 +400,7 @@ public class BlockTools {
 	}
 
 	public static List<Block> getBlocksAroundPoint(Location location, double radius) {
-
-		List<Block> blocks = new ArrayList<Block>();
+		List<Block> blocks = new LinkedList<Block>();
 
 		int xorg = location.getBlockX();
 		int yorg = location.getBlockY();
@@ -434,8 +435,8 @@ public class BlockTools {
 	}
 
 	public static boolean moveEarth(Player player, Block block, Vector direction, int chainlength, boolean throwplayer) {
-		if (isEarthbendable(player, block) && !ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.RaiseEarth, block.getLocation())) {
-
+		if (isEarthbendable(player, block) 
+				&& !ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.RaiseEarth, block.getLocation())) {
 			boolean up = false;
 			boolean down = false;
 			Vector norm = direction.clone().normalize();
@@ -448,7 +449,7 @@ public class BlockTools {
 
 			Location location = block.getLocation();
 
-			ArrayList<Block> blocks = new ArrayList<Block>();
+			List<Block> blocks = new LinkedList<Block>();
 			for (double j = -2; j <= chainlength; j++) {
 				Block checkblock = location.clone().add(negnorm.clone().multiply(j)).getBlock();
 				if (!tempnophysics.contains(checkblock)) {
@@ -470,16 +471,16 @@ public class BlockTools {
 					for (Entity entity : EntityTools.getEntitiesAroundPoint(affectedblock.getLocation(), 1.75)) {
 						if (entity instanceof LivingEntity) {
 							LivingEntity lentity = (LivingEntity) entity;
-							if ((lentity.getEyeLocation().getBlockX() == affectedblock.getX()) && (lentity.getEyeLocation().getBlockZ() == affectedblock.getZ())) {
-								if (!(entity instanceof FallingBlock)) {
-									entity.setVelocity(norm.clone().multiply(.75));
-								}
+							if (lentity.getEyeLocation().getBlockX() == affectedblock.getX() 
+									&& lentity.getEyeLocation().getBlockZ() == affectedblock.getZ() 
+									&& !(entity instanceof FallingBlock)) {
+								entity.setVelocity(norm.clone().multiply(.75));
 							}
 						} else {
-							if ((entity.getLocation().getBlockX() == affectedblock.getX()) && (entity.getLocation().getBlockZ() == affectedblock.getZ())) {
-								if (!(entity instanceof FallingBlock)) {
-									entity.setVelocity(norm.clone().multiply(.75));
-								}
+							if (entity.getLocation().getBlockX() == affectedblock.getX() 
+									&& entity.getLocation().getBlockZ() == affectedblock.getZ() 
+									&& !(entity instanceof FallingBlock)) {
+								entity.setVelocity(norm.clone().multiply(.75));
 							}
 						}
 					}
@@ -490,7 +491,6 @@ public class BlockTools {
 					if (topblock.getType() != Material.AIR) {
 						breakBlock(affectedblock);
 					} else if (!affectedblock.isLiquid() && (affectedblock.getType() != Material.AIR)) {
-						// affectedblock.setType(Material.GLASS);
 						moveEarthBlock(affectedblock, topblock);
 					}
 				} else {
@@ -526,12 +526,11 @@ public class BlockTools {
 
 				int i = chainlength;
 				affectedblock = location.clone().add(negnorm.getX() * i, negnorm.getY() * i, negnorm.getZ() * i).getBlock();
-				if (!isEarthbendable(player, affectedblock)) {
-					if (down) {
-						if (isTransparentToEarthbending(player, affectedblock) && !affectedblock.isLiquid()) {
-							moveEarthBlock(affectedblock, block);
-						}
-					}
+				if (!isEarthbendable(player, affectedblock) 
+						&& down 
+						&& isTransparentToEarthbending(player, affectedblock) 
+						&& !affectedblock.isLiquid()) {
+					moveEarthBlock(affectedblock, block);
 				}
 
 			} else {
@@ -627,16 +626,6 @@ public class BlockTools {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public static Collection<ItemStack> getDrops(Block block, Material type, byte data, ItemStack breakitem) {
-		BlockState tempstate = block.getState();
-		block.setType(type);
-		block.setData(data);
-		Collection<ItemStack> item = block.getDrops();
-		tempstate.update(true);
-		return item;
-	}
-
 	public static void dropItems(Block block, Collection<ItemStack> items) {
 		for (ItemStack item : items) {
 			block.getWorld().dropItem(block.getLocation(), item);
@@ -645,8 +634,6 @@ public class BlockTools {
 
 	public static boolean isBlockTouching(Block block1, Block block2) {
 		BlockFace[] faces = { BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH };
-		block1 = block1.getLocation().getBlock();
-		block2 = block2.getLocation().getBlock();
 		for (BlockFace face : faces) {
 			if (block1.getRelative(face).equals(block2)) {
 				return true;
