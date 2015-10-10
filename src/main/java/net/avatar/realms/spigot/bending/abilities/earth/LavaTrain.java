@@ -31,8 +31,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 @BendingAbility(name = "Lavatrain", bind = BendingAbilities.LavaTrain, element = BendingElement.Earth, affinity = BendingAffinity.Lavabend)
 public class LavaTrain extends BendingActiveAbility {
-	public static double speed = 5;
-	private static long interval = (long) (1000. / speed);
+	@ConfigurationParameter("Speed")
+	public static double SPEED = 5;
 
 	@ConfigurationParameter("Range")
 	public static int RANGE = 7;
@@ -59,6 +59,7 @@ public class LavaTrain extends BendingActiveAbility {
 	private Block safePoint;
 	private Location current;
 	private Vector direction;
+	private long interval;
 
 	private Map<Block, BlockState> affecteds = new HashMap<Block, BlockState>();
 
@@ -66,15 +67,12 @@ public class LavaTrain extends BendingActiveAbility {
 
 	public LavaTrain(Player player) {
 		super(player, null);
+		interval = (long) (1000. / SPEED);
 	}
 
 	@Override
 	public boolean swing() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
+		if(state == BendingAbilityState.CanStart) {
 			if (!this.player.isSneaking()) {
 				return false;
 			}
@@ -90,16 +88,8 @@ public class LavaTrain extends BendingActiveAbility {
 
 			setState(BendingAbilityState.Preparing);
 			AbilityManager.getManager().addInstance(this);
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
 		}
+		return false;
 	}
 
 	@Override

@@ -38,13 +38,12 @@ public class Suffocate extends BendingActiveAbility {
 	private static int baseDamage = 1;
 
 	@ConfigurationParameter("Speed")
-	public static double speed = 1;
+	public static double SPEED = 1;
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 2000;
 
-	private static long interval = (long) (1000. / speed);
-
+	private long interval;
 	private Player target;
 	private Block targetLocation;
 	private ItemStack helmet;
@@ -70,6 +69,8 @@ public class Suffocate extends BendingActiveAbility {
 		ItemMeta meta = this.temp.getItemMeta();
 		meta.setLore(lore);
 		this.temp.setItemMeta(meta);
+		
+		interval = (long) (1000. / SPEED);
 	}
 
 	@Override

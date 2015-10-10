@@ -146,6 +146,7 @@ public class BendingPlayerListener implements Listener {
 		try {
 			dc.save(sv);
 		} catch (IOException e) {
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Failed to save armors file", e);
 		}
 	}
 
@@ -539,10 +540,6 @@ public class BendingPlayerListener implements Listener {
 		}
 		if (FireBlade.isFireBlading(event.getPlayer())) {
 			FireBlade.getFireBlading(event.getPlayer()).remove();
-		}
-
-		if (EntityTools.speToggled(event.getPlayer())) {
-			EntityTools.speToggledBenders.remove(event.getPlayer());
 		}
 
 		Bending.getInstance().database.release(event.getPlayer().getUniqueId());

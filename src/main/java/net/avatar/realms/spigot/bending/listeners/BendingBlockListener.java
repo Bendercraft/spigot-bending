@@ -115,7 +115,7 @@ public class BendingBlockListener implements Listener {
 			event.setCancelled(Illumination.isIlluminated(block));
 		}
 		if (!event.isCancelled()) {
-			event.setCancelled(BlockTools.tempnophysics.contains(block));
+			event.setCancelled(BlockTools.isTempNoPhysics(block));
 		}
 	}
 

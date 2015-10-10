@@ -50,23 +50,12 @@ public class FireBlade extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
+		if(state == BendingAbilityState.CanStart) {
 			giveFireBlade();
 			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Progressing);
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
 		}
+		return false;
 	}
 
 	@Override

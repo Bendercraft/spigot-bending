@@ -23,7 +23,6 @@ public class AffinityExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-
 		if (args.isEmpty()) {
 			printUsage(sender);
 			return true;
@@ -36,6 +35,7 @@ public class AffinityExecution extends BendingCommand {
 				return true;
 			case "add":
 				add(sender, args);
+				return true;
 			case "remove":
 			case "rem":
 				remove(sender, args);

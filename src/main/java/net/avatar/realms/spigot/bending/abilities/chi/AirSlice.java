@@ -93,7 +93,7 @@ public class AirSlice extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 		if(this.state == BendingAbilityState.CanStart) {
-			this.first = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.nonOpaque);
+			this.first = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
 			if (this.first == null || this.first.getBlock().isLiquid() || BlockTools.isSolid(this.first.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSlice, this.first)) {
 				return false;
 			}
@@ -104,7 +104,7 @@ public class AirSlice extends BendingActiveAbility {
 			setState(BendingAbilityState.Preparing);
 			AbilityManager.getManager().addInstance(this);
 		} else if(this.state == BendingAbilityState.Preparing || this.state == BendingAbilityState.Prepared) {
-			this.second = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.nonOpaque);
+			this.second = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
 			if(this.second != null && this.second.distance(this.first) > DISTANCE) {
 				this.second = null;
 			}

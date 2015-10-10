@@ -31,7 +31,9 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class BlockTools {
-	public static List<Block> tempnophysics = new ArrayList<Block>();
+	public static final byte FULL = 0x0;
+	
+	private static List<Block> tempnophysics = new ArrayList<Block>();
 	private static Set<Material> plantIds = new HashSet<Material>();
 	static {
 		plantIds.add(Material.SAPLING);
@@ -60,7 +62,7 @@ public class BlockTools {
 		// plantIds.add(); SUN FLOWER wanted here (ID 175)
 	}
 
-	public static Set<Material> transparentEarthbending = new HashSet<Material>();
+	private static Set<Material> transparentEarthbending = new HashSet<Material>();
 	static {
 		transparentEarthbending.add(Material.AIR);
 		transparentEarthbending.add(Material.SAPLING);
@@ -86,7 +88,7 @@ public class BlockTools {
 		transparentEarthbending.add(Material.VINE);
 	}
 
-	public static Set<Material> nonOpaque = new HashSet<Material>();
+	private static Set<Material> nonOpaque = new HashSet<Material>();
 	static {
 		nonOpaque.add(Material.AIR);
 		nonOpaque.add(Material.SAPLING);
@@ -134,7 +136,7 @@ public class BlockTools {
 
 	}
 
-	public static Set<Material> ironBendables = new HashSet<Material>();
+	private static Set<Material> ironBendables = new HashSet<Material>();
 
 	static {
 		ironBendables.add(Material.IRON_BLOCK);
@@ -545,6 +547,10 @@ public class BlockTools {
 		}
 		return false;
 	}
+	
+	public static boolean isTempNoPhysics(Block block) {
+		return tempnophysics.contains(block);
+	}
 
 	@SuppressWarnings("deprecation")
 	public static void moveEarthBlock(Block source, Block target) {
@@ -657,5 +663,13 @@ public class BlockTools {
 			return true;
 		}
 		return false;
+	}
+	
+	public static Set<Material> getTransparentEarthBending() {
+		return transparentEarthbending;
+	}
+	
+	public static Set<Material> getNonOpaque() {
+		return nonOpaque;
 	}
 }

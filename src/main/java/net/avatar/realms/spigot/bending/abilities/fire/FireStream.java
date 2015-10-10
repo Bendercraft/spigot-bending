@@ -30,12 +30,8 @@ public class FireStream {
 
 	private static final Material[] ignitables = { Material.BEDROCK, Material.BOOKSHELF, Material.BRICK, Material.CLAY, Material.CLAY_BRICK, Material.COAL_ORE, Material.COBBLESTONE, Material.DIAMOND_ORE, Material.DIAMOND_BLOCK, Material.DIRT, Material.ENDER_STONE, Material.GLOWING_REDSTONE_ORE, Material.GOLD_BLOCK, Material.GRAVEL, Material.GRASS, Material.HUGE_MUSHROOM_1, Material.HUGE_MUSHROOM_2, Material.LAPIS_BLOCK, Material.LAPIS_ORE, Material.LOG, Material.MOSSY_COBBLESTONE, Material.MYCEL, Material.NETHER_BRICK, Material.NETHERRACK, Material.OBSIDIAN, Material.REDSTONE_ORE, Material.SAND, Material.SANDSTONE, Material.SMOOTH_BRICK, Material.STONE, Material.SOUL_SAND, Material.SNOW_BLOCK, Material.WOOD, Material.WOOL, Material.LEAVES };
 
-	public static int firedamage = 3;
-	public static int tickdamage = 2;
-
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 15;
-	private static long interval = (long) (1000. / SPEED);
 
 	@ConfigurationParameter("Dissipate-Time")
 	private static long dissipateAfter = 1200;
@@ -46,6 +42,7 @@ public class FireStream {
 	private long time;
 	private double range;
 	private Player player;
+	private long interval;
 
 	public FireStream(Location location, Vector direction, Player player, int range) {
 		this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
@@ -57,6 +54,7 @@ public class FireStream {
 		this.direction = this.direction.clone().normalize();
 		this.location = this.location.clone().add(this.direction);
 		this.time = System.currentTimeMillis();
+		interval = (long) (1000. / SPEED);
 	}
 
 	public boolean progress() {
@@ -162,7 +160,7 @@ public class FireStream {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Blaze);
 		for (IBendingAbility ability : instances.values()) {
 			Blaze blaze = (Blaze) ability;
-			for(FireStream stream : blaze.getFirestreams()) {
+			for (FireStream stream : blaze.getFirestreams()) {
 				if (stream.location.getWorld().equals(location.getWorld())) {
 					if (stream.location.distance(location) <= radius) {
 						toRemove.add(stream);

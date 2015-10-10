@@ -72,24 +72,18 @@ public class HeatControl extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		switch (this.state) {
-			case None:
-			case CannotStart:
-			case Ended:
-			case Removed:
-				return false;
-			default:
-				double range = PluginTools.firebendingDayAugment(EXT_RANGE, this.player.getWorld());
-				Block block = EntityTools.getTargetBlock(this.player, range);
-				if (BlockTools.isMeltable(block)) {
-					melt();
-				} else {
-					extinguish(range);
-				}
+		if(state == BendingAbilityState.CanStart) {
+			double range = PluginTools.firebendingDayAugment(EXT_RANGE, this.player.getWorld());
+			Block block = EntityTools.getTargetBlock(this.player, range);
+			if (BlockTools.isMeltable(block)) {
+				melt();
+			} else {
+				extinguish(range);
+			}
 
-				this.bender.cooldown(BendingAbilities.HeatControl, EXT_COOLDOWN);
-				return false;
+			this.bender.cooldown(BendingAbilities.HeatControl, EXT_COOLDOWN);
 		}
+		return false;
 	}
 
 	private void melt() {
@@ -132,21 +126,15 @@ public class HeatControl extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		switch (this.state) {
-			case None:
-			case CannotStart:
-				return false;
-			case CanStart:
-				this.items = this.player.getItemInHand();
-				if (isCookable(this.items.getType())) {
-					this.time = this.startedTime;
-					AbilityManager.getManager().addInstance(this);
-					setState(BendingAbilityState.Progressing);
-				}
-				return false;
-			default:
-				return false;
+		if(state == BendingAbilityState.CanStart) {
+			this.items = this.player.getItemInHand();
+			if (isCookable(this.items.getType())) {
+				this.time = this.startedTime;
+				AbilityManager.getManager().addInstance(this);
+				setState(BendingAbilityState.Progressing);
+			}
 		}
+		return false;
 	}
 
 	@Override
@@ -207,6 +195,7 @@ public class HeatControl extends BendingActiveAbility {
 			case RAW_FISH:
 				cooked.setType(Material.COOKED_FISH);
 				cooked.setAmount(1);
+				break;
 			case RAW_CHICKEN:
 				cooked.setType(Material.COOKED_CHICKEN);
 				cooked.setAmount(1);

@@ -430,7 +430,7 @@ public enum ParticleEffect {
 	private final String name;
 	private final int id;
 	private final int requiredVersion;
-	private final List<ParticleProperty> properties;
+	private List<ParticleProperty> properties;
 
 	// Initialize map for quick name and id lookup
 	static {

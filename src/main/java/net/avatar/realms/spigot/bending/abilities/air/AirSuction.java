@@ -125,7 +125,7 @@ public class AirSuction extends BendingActiveAbility {
 				this.direction = Tools.getDirection(entity.getLocation(), this.origin).normalize();
 				this.location = getLocation(this.origin, this.direction.clone().multiply(-1));
 			} else {
-				this.location = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.nonOpaque);
+				this.location = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.getNonOpaque());
 				this.direction = Tools.getDirection(this.location, this.origin).normalize();
 			}
 
@@ -148,7 +148,7 @@ public class AirSuction extends BendingActiveAbility {
 	}
 
 	public static Location getNewOriginLocation(Player player) {
-		Location location = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.nonOpaque);
+		Location location = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.getNonOpaque());
 		if (location.getBlock().isLiquid() || BlockTools.isSolid(location.getBlock())) {
 			return null;
 		}

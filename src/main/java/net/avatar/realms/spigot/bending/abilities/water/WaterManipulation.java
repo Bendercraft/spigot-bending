@@ -237,7 +237,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		}
 		Location location = null;
 		if ((target == null) || ProtectionManager.isEntityProtectedByCitizens(target)) {
-			location = EntityTools.getTargetedLocation(player, range, BlockTools.transparentEarthbending);
+			location = EntityTools.getTargetedLocation(player, range, BlockTools.getTransparentEarthBending());
 		} else {
 			// targetting = true;
 			location = ((LivingEntity) target).getEyeLocation();

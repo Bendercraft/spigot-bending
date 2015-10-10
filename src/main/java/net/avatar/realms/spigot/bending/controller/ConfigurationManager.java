@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.io.IOUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -23,8 +25,7 @@ public abstract class ConfigurationManager {
 		try {
 			configFile.createNewFile();
 		} catch (IOException e) {
-			Bending.getInstance().getLogger().severe("Couldn't create default config file");
-			e.printStackTrace();
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Couldn't create default config file", e);
 		}
 		if (configFile.exists()) {
 			FileWriter writer = null;
@@ -57,25 +58,18 @@ public abstract class ConfigurationManager {
 								Bending.getInstance().getLogger().warning("Config variable " + f.getName() + " found with annoted param " + path + " and in config file but is of unknown type " + f.getType());
 							}
 						} catch (IllegalAccessException e) {
-							Bending.getInstance().getLogger().severe("IllegalAccessException on config param " + path);
-							e.printStackTrace();
+							Bending.getInstance().getLogger().log(Level.SEVERE, "IllegalAccessException on config param " + path, e);
 						} catch (IllegalArgumentException e) {
-							Bending.getInstance().getLogger().severe("IllegalArgument type on " + a.value());
-							e.printStackTrace();
+							Bending.getInstance().getLogger().log(Level.SEVERE, "IllegalArgument type on " + a.value(), e);
 						}
 					}
 				}
 				gson.toJson(root, writer);
 			} catch (IOException e) {
-				Bending.getInstance().getLogger().severe("Error while writing default config file data");
-				e.printStackTrace();
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Error while writing default config file data", e);
 			}
 			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-
-				}
+				IOUtils.closeQuietly(writer);
 			}
 		}
 	}
@@ -129,14 +123,9 @@ public abstract class ConfigurationManager {
 				}
 			} catch (Exception e) {
 				Bending.getInstance().getLogger().log(Level.SEVERE, "Error while loading config file data", e);
-				e.printStackTrace();
 			}
 			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-
-				}
+				IOUtils.closeQuietly(reader);
 			}
 		} else {
 			Bending.getInstance().getLogger().warning("Config file is missing, should be at " + configFile.getPath());

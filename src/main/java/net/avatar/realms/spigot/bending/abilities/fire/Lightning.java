@@ -75,22 +75,11 @@ public class Lightning extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
+		if(state == BendingAbilityState.CanStart) {
 			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Preparing);
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ended:
-		case Removed:
-		default:
-			return false;
 		}
+		return false;
 	}
 
 	public static Lightning getLightning(Entity entity) {

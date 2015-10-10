@@ -88,7 +88,6 @@ public class AirSwipe extends BendingActiveAbility {
 	private static double MAX_FACTOR = 2.5;
 
 	private static int stepsize = 4;
-	private static byte full = AirBlast.full;
 
 
 	private double speedfactor;
@@ -279,7 +278,7 @@ public class AirSwipe extends BendingActiveAbility {
 					toRemove.add(direction);
 				}
 				if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
-					if (block.getData() == full) {
+					if (block.getData() == BlockTools.FULL) {
 						block.setType(Material.OBSIDIAN);
 					} else {
 						block.setType(Material.COBBLESTONE);

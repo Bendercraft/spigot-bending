@@ -113,7 +113,7 @@ public class IceSpike extends BendingActiveAbility {
 				LivingEntity target = EntityTools.getTargettedEntity(this.player, defaultrange);
 				Location destination;
 				if (target == null) {
-					destination = EntityTools.getTargetedLocation(this.player, defaultrange, BlockTools.transparentEarthbending);
+					destination = EntityTools.getTargetedLocation(this.player, defaultrange, BlockTools.getTransparentEarthBending());
 				} else {
 					destination = Tools.getPointOnLine(this.player.getEyeLocation(), target.getEyeLocation(), defaultrange);
 				}
@@ -136,7 +136,7 @@ public class IceSpike extends BendingActiveAbility {
 		}
 		LivingEntity target = EntityTools.getTargettedEntity(this.player, this.range);
 		if (target == null) {
-			this.destination = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.transparentEarthbending);
+			this.destination = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.getTransparentEarthBending());
 		} else {
 			this.destination = target.getEyeLocation();
 		}

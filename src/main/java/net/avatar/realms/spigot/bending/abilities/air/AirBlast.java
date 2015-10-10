@@ -53,7 +53,6 @@ public class AirBlast extends BendingActiveAbility {
 	public static long COOLDOWN = 250;
 
 	static final double maxspeed = 1. / PUSH_FACTOR;
-	public static byte full = 0x0;
 
 	private Location location;
 	private Location origin;
@@ -111,7 +110,7 @@ public class AirBlast extends BendingActiveAbility {
 	}
 
 	public void setOtherOrigin(Player player) {
-		Location location = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.nonOpaque);
+		Location location = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.getNonOpaque());
 		if (location.getBlock().isLiquid() || BlockTools.isSolid(location.getBlock())) {
 			setState(BendingAbilityState.CannotStart);
 			return;
@@ -130,38 +129,34 @@ public class AirBlast extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		switch (this.state) {
-			case None:
-			case CannotStart:
-				return true;
-			case CanStart:
-				this.origin = this.player.getEyeLocation();
-				AbilityManager.getManager().addInstance(this);
-				setState(BendingAbilityState.Preparing);
-			case Preparing:
-				Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
-				if (this.bender.hasPath(BendingPath.Mobile)) {
-					entity = null;
-				}
-				if (entity != null) {
-					this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
-				} else {
-					this.direction = Tools.getDirection(this.origin, EntityTools.getTargetedLocation(this.player, this.range)).normalize();
-				}
-				this.location = this.origin.clone();
-				long cooldown = COOLDOWN;
-				if (this.bender.hasPath(BendingPath.Renegade)) {
-					cooldown *= 1.2;
-				}
-				if (this.bender.hasPath(BendingPath.Mobile)) {
-					cooldown *= 0.8;
-				}
-				this.bender.cooldown(BendingAbilities.AirBlast, cooldown);
-				setState(BendingAbilityState.Progressing);
-				return false;
-			default:
-				return true;
+		if(state == BendingAbilityState.CanStart) {
+			this.origin = this.player.getEyeLocation();
+			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Preparing);
 		}
+		if(state == BendingAbilityState.Preparing) {
+			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
+			if (this.bender.hasPath(BendingPath.Mobile)) {
+				entity = null;
+			}
+			if (entity != null) {
+				this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
+			} else {
+				this.direction = Tools.getDirection(this.origin, EntityTools.getTargetedLocation(this.player, this.range)).normalize();
+			}
+			this.location = this.origin.clone();
+			long cooldown = COOLDOWN;
+			if (this.bender.hasPath(BendingPath.Renegade)) {
+				cooldown *= 1.2;
+			}
+			if (this.bender.hasPath(BendingPath.Mobile)) {
+				cooldown *= 0.8;
+			}
+			this.bender.cooldown(BendingAbilities.AirBlast, cooldown);
+			setState(BendingAbilityState.Progressing);
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -213,7 +208,7 @@ public class AirBlast extends BendingActiveAbility {
 		}
 		if ((BlockTools.isSolid(block) || block.isLiquid()) && !this.affectedlevers.contains(block)) {
 			if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
-				if (block.getData() == full) {
+				if (block.getData() == BlockTools.FULL) {
 					block.setType(Material.OBSIDIAN);
 				} else {
 					block.setType(Material.COBBLESTONE);

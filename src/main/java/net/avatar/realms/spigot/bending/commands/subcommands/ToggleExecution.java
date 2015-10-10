@@ -29,19 +29,19 @@ public class ToggleExecution extends BendingCommand {
 		Player player = (Player) sender;
 
 		if (args.size() >= 1 && isAffinityToggle(args.get(0))) {
-			if (EntityTools.speToggledBenders.contains(player.getUniqueId())) {
-				EntityTools.speToggledBenders.remove(player.getUniqueId());
+			if (EntityTools.getToggledAffinities().contains(player.getUniqueId())) {
+				EntityTools.getToggledAffinities().remove(player.getUniqueId());
 				player.sendMessage("You toggled back your affinity");
 			} else {
-				EntityTools.speToggledBenders.add(player.getUniqueId());
+				EntityTools.getToggledAffinities().add(player.getUniqueId());
 				player.sendMessage("You toggled your affinity");
 			}
 		} else {
-			if (!EntityTools.toggledBending.contains(player.getUniqueId())) {
-				EntityTools.toggledBending.add(player.getUniqueId());
+			if (!EntityTools.getToggledBendings().contains(player.getUniqueId())) {
+				EntityTools.getToggledBendings().add(player.getUniqueId());
 				Messages.sendMessage(player, "general.toggle_off", ChatColor.AQUA);
 			} else {
-				EntityTools.toggledBending.remove(player.getUniqueId());
+				EntityTools.getToggledBendings().remove(player.getUniqueId());
 				Messages.sendMessage(player, "general.toggle_on", ChatColor.AQUA);
 			}
 		}

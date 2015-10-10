@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,10 +30,10 @@ import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 
 public class EntityTools {
 
-	public static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
-	public static Map<Player, Long> grabedPlayers = new HashMap<Player, Long>();
-	public static List<UUID> toggledBending = new ArrayList<UUID>();
-	public static List<UUID> speToggledBenders = new ArrayList<UUID>();
+	private static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
+	private static Map<Player, Long> grabedPlayers = new HashMap<Player, Long>();
+	private static List<UUID> toggledBending = new LinkedList<UUID>();
+	private static List<UUID> affToggledBenders = new LinkedList<UUID>();
 
 	// Tornados, Metalwire,...
 	public static final Map<UUID, Long> fallImmunity = new HashMap<UUID, Long>();
@@ -244,7 +243,7 @@ public class EntityTools {
 	}
 
 	public static boolean speToggled(Player p) {
-		return speToggledBenders.contains(p.getUniqueId());
+		return affToggledBenders.contains(p.getUniqueId());
 	}
 
 	public static List<Entity> getEntitiesAroundPoint(Location location, double radius) {
@@ -312,7 +311,7 @@ public class EntityTools {
 	}
 
 	public static LivingEntity getTargettedEntity(Player player, double range) {
-		return getTargettedEntity(player, range, new ArrayList<Entity>());
+		return getTargettedEntity(player, range, new LinkedList<Entity>());
 	}
 
 	public static LivingEntity getTargettedEntity(Player player, double range, List<Entity> avoid) {
@@ -394,5 +393,13 @@ public class EntityTools {
 			default:
 				return false;
 		}
+	}
+	
+	public static List<UUID> getToggledBendings() {
+		return toggledBending;
+	}
+	
+	public static List<UUID> getToggledAffinities() {
+		return affToggledBenders;
 	}
 }

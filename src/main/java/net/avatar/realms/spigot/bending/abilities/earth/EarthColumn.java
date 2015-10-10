@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -67,6 +69,7 @@ public class EarthColumn {
 			location = origin.clone();
 			distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), height);
 		} catch (IllegalStateException e) {
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Error while initializing earth column at "+origin, e);
 			return;
 		}
 

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -196,12 +197,13 @@ public class Messages {
 			folder.mkdir();
 		}
 
-		languageFile = new File(folder + File.separator + FILENAME);
+		languageFile = new File(folder, FILENAME);
 		if (languageFile.exists()) {
 			try {
 				input = new FileInputStream(languageFile);
 			} catch (Exception e) {
 				input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
+				Bending.getInstance().getLogger().info("File "+languageFile.getName()+" not found or broken, loading "+FILENAME+" instead");
 			}
 		} else {
 			input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
@@ -210,8 +212,7 @@ public class Messages {
 		try {
 			lines.load(input);
 		} catch (IOException e) {
-			e.printStackTrace();
-			// Should never happen, hope so
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Error when laoding messages", e);
 		}
 
 	}
