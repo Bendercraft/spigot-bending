@@ -145,11 +145,11 @@ public class AbilityManager {
 		try {
 			BendingActiveAbility ab = (BendingActiveAbility) contructor.newInstance(player);
 			if (ab == null) {
-				Bending.log.warning("Invalid class for ability " + abilityType);
+				Bending.getInstance().getLogger().warning("Invalid class for ability " + abilityType);
 			}
 			return ab;
 		} catch (Exception e) {
-			Bending.log.log(Level.SEVERE, "Invalid constructor for ability " + abilityType, e);
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Invalid constructor for ability " + abilityType, e);
 		}
 		return null;
 	}
@@ -272,18 +272,18 @@ public class AbilityManager {
 	protected void register(Class<? extends IBendingAbility> ability) {
 		BendingAbility annotation = ability.getAnnotation(BendingAbility.class);
 		if (annotation == null) {
-			Bending.plugin.getLogger().severe("Trying to register ability : " + ability + " but not annoted ! Aborting this registration...");
+			Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but not annoted ! Aborting this registration...");
 			return;
 		}
 		if ((annotation.name() == null) || annotation.name().equals("")) {
-			Bending.plugin.getLogger().severe("Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
+			Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
 			return;
 		}
 		if (annotation.affinity() != BendingAffinity.None) {
 			_register(annotation.name(), annotation.bind(), ability, annotation.affinity().getElement(), annotation.affinity());
 		} else {
 			if (annotation.element() == BendingElement.None) {
-				Bending.plugin.getLogger().severe("Trying to register ability : " + ability + " but element&specilization are not set ! Aborting this registration...");
+				Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but element&specilization are not set ! Aborting this registration...");
 				return;
 			}
 			_register(annotation.name(), annotation.bind(), ability, annotation.element(), null);
@@ -293,21 +293,21 @@ public class AbilityManager {
 	private void _register(String name, BendingAbilities bind, Class<? extends IBendingAbility> ability, BendingElement element, BendingAffinity specialization) {
 		if (this.binds.containsKey(name)) {
 			// Nope !
-			Bending.log.severe("Ability " + bind + "(" + name + ") is already register with class " + this.binds.get(name) + " ! Aborting registration...");
+			Bending.getInstance().getLogger().severe("Ability " + bind + "(" + name + ") is already register with class " + this.binds.get(name) + " ! Aborting registration...");
 			return;
 		}
 
 		try {
 			Constructor<? extends IBendingAbility> constructor = ability.getConstructor(Player.class);
 			if (constructor == null) {
-				Bending.log.severe("Bind " + bind + " associated with class " + ability + " has no valid constructor with just one player.");
+				Bending.getInstance().getLogger().severe("Bind " + bind + " associated with class " + ability + " has no valid constructor with just one player.");
 				return;
 			}
 			RegisteredAbility ra = new RegisteredAbility(name, ability, element, specialization, constructor);
 			this.binds.put(bind, ra);
 			this.reverseBinds.put(ra.getAbility(), bind);
 		} catch (Exception e) {
-			Bending.log.log(Level.SEVERE, "Bind " + bind + " associated with class " + ability + " threw exception when getting constructor", e);
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Bind " + bind + " associated with class " + ability + " threw exception when getting constructor", e);
 		}
 
 	}

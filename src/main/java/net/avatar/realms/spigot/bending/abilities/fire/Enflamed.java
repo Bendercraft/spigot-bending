@@ -8,7 +8,6 @@ import java.util.Map;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;

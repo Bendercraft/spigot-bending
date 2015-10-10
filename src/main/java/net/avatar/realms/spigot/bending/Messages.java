@@ -191,7 +191,7 @@ public class Messages {
 	public static void loadMessages() {
 		lines = new Properties();
 
-		File folder = Bending.plugin.getDataFolder();
+		File folder = Bending.getInstance().getDataFolder();
 		if (!folder.exists()) {
 			folder.mkdir();
 		}
@@ -230,7 +230,7 @@ public class Messages {
 
 	public static void sendMessage(Player player, String key, ChatColor color) {
 		if (player == null) {
-			Bending.plugin.getLogger().info(color + getString(key));
+			Bending.getInstance().getLogger().info(color + getString(key));
 		} else {
 			player.sendMessage(color + getString(key));
 		}
@@ -246,7 +246,7 @@ public class Messages {
 			msg.replaceAll("%" + k + "%", params.get(k));
 		}
 		if (player == null) {
-			Bending.plugin.getLogger().info(color + msg);
+			Bending.getInstance().getLogger().info(color + msg);
 		} else {
 			player.sendMessage(color + msg);
 		}

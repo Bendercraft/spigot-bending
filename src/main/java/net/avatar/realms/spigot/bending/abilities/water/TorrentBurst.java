@@ -24,7 +24,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class TorrentBurst {
-	private static int ID = Integer.MIN_VALUE;
 	private static double defaultmaxradius = 15;
 	private static double dr = 0.5;
 	private static double defaultfactor = 1.5;
@@ -34,7 +33,6 @@ public class TorrentBurst {
 	// private static final Vector reference = new Vector(1, 0, 0);
 
 	private Player player;
-	private int id;
 	private long time;
 	private Location origin;
 	private double radius = dr;
@@ -49,13 +47,9 @@ public class TorrentBurst {
 		World world = player.getWorld();
 		origin = player.getEyeLocation().clone();
 		time = System.currentTimeMillis();
-		id = ID++;
 		factor = PluginTools.waterbendingNightAugment(factor, world);
 		maxradius = PluginTools.waterbendingNightAugment(maxradius, world);
 		this.radius = radius;
-		if (ID >= Integer.MAX_VALUE) {
-			ID = Integer.MIN_VALUE;
-		}
 		initializeHeightsMap();
 	}
 

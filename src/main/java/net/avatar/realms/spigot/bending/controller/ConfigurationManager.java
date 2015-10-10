@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,7 +23,7 @@ public abstract class ConfigurationManager {
 		try {
 			configFile.createNewFile();
 		} catch (IOException e) {
-			Bending.plugin.getLogger().severe("Couldn't create default config file");
+			Bending.getInstance().getLogger().severe("Couldn't create default config file");
 			e.printStackTrace();
 		}
 		if (configFile.exists()) {
@@ -53,20 +54,20 @@ public abstract class ConfigurationManager {
 							} else if (f.getType().equals(String[].class)) {
 								getLast(root, path).add(getLastKey(path), gson.toJsonTree(f.get(null), String[].class));
 							} else {
-								Bending.plugin.getLogger().warning("Config variable " + f.getName() + " found with annoted param " + path + " and in config file but is of unknown type " + f.getType());
+								Bending.getInstance().getLogger().warning("Config variable " + f.getName() + " found with annoted param " + path + " and in config file but is of unknown type " + f.getType());
 							}
 						} catch (IllegalAccessException e) {
-							Bending.plugin.getLogger().severe("IllegalAccessException on config param " + path);
+							Bending.getInstance().getLogger().severe("IllegalAccessException on config param " + path);
 							e.printStackTrace();
 						} catch (IllegalArgumentException e) {
-							Bending.plugin.getLogger().severe("IllegalArgument type on " + a.value());
+							Bending.getInstance().getLogger().severe("IllegalArgument type on " + a.value());
 							e.printStackTrace();
 						}
 					}
 				}
 				gson.toJson(root, writer);
 			} catch (IOException e) {
-				Bending.plugin.getLogger().severe("Error while writing default config file data");
+				Bending.getInstance().getLogger().severe("Error while writing default config file data");
 				e.printStackTrace();
 			}
 			if (writer != null) {
@@ -114,22 +115,20 @@ public abstract class ConfigurationManager {
 								} else if (f.getType().equals(String[].class)) {
 									f.set(null, gson.fromJson(param, String[].class));
 								} else {
-									Bending.plugin.getLogger().warning("Config variable " + f.getName() + " found with annoted param '" + path + "' and in config file but is of unknown type " + f.getType());
+									Bending.getInstance().getLogger().warning("Config variable " + f.getName() + " found with annoted param '" + path + "' and in config file but is of unknown type " + f.getType());
 								}
 							} else {
-								Bending.plugin.getLogger().warning("Config variable " + f.getName() + " found with annoted param '" + path + "' but not in config file");
+								Bending.getInstance().getLogger().warning("Config variable " + f.getName() + " found with annoted param '" + path + "' but not in config file");
 							}
 						} catch (IllegalAccessException e) {
-							Bending.plugin.getLogger().severe("IllegalAccessException on config param " + a.value());
-							e.printStackTrace();
+							Bending.getInstance().getLogger().log(Level.SEVERE, "IllegalAccessException on config param " + a.value(), e);
 						} catch (IllegalArgumentException e) {
-							Bending.plugin.getLogger().severe("IllegalArgument type on " + a.value());
-							e.printStackTrace();
+							Bending.getInstance().getLogger().log(Level.SEVERE, "IllegalArgument type on " + a.value(), e);
 						}
 					}
 				}
 			} catch (Exception e) {
-				Bending.plugin.getLogger().severe("Error while loading config file data");
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Error while loading config file data", e);
 				e.printStackTrace();
 			}
 			if (reader != null) {
@@ -140,7 +139,7 @@ public abstract class ConfigurationManager {
 				}
 			}
 		} else {
-			Bending.plugin.getLogger().warning("Config file is missing, should be at " + configFile.getPath());
+			Bending.getInstance().getLogger().warning("Config file is missing, should be at " + configFile.getPath());
 			File defaultConfigFile = new File(configFile.getParentFile(), configFile.getName() + ".default");
 			generateDefaultConfigFile(defaultConfigFile, fields);
 		}

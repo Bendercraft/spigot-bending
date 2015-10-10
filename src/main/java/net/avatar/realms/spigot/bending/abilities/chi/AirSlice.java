@@ -126,6 +126,7 @@ public class AirSlice extends BendingActiveAbility {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean progress() {
 		if(!super.progress()) {
@@ -144,7 +145,7 @@ public class AirSlice extends BendingActiveAbility {
 				return false;
 			}
 
-			double speedfactor = SPEED * (Bending.time_step / 1000.);
+			double speedfactor = SPEED * (Bending.getInstance().manager.getTimestep() / 1000.);
 
 			List<Location> toRemove = new LinkedList<Location>();
 			for(Location location : this.onGoing) {

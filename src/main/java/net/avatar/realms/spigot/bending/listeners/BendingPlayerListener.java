@@ -105,7 +105,7 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 
-		Bending.database.lease(player.getUniqueId());
+		Bending.getInstance().database.lease(player.getUniqueId());
 
 		BendingPlayer.getBendingPlayer(player);
 
@@ -251,7 +251,7 @@ public class BendingPlayerListener implements Listener {
 			if ((abilities == null) || abilities.isEmpty()) {
 				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 				if(ab == null) {
-					Bending.log.log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
+					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
 					return;
 				}
 				ab.swing();
@@ -269,7 +269,7 @@ public class BendingPlayerListener implements Listener {
 			if (shouldCreateNew) {
 				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 				if(ab == null) {
-					Bending.log.log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
+					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
 					return;
 				}
 				ab.swing();
@@ -310,7 +310,7 @@ public class BendingPlayerListener implements Listener {
 				if ((abilities == null) || abilities.isEmpty()) {
 					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 					if(ab == null) {
-						Bending.log.log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
+						Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
 						return;
 					}
 					ab.sneak();
@@ -328,7 +328,7 @@ public class BendingPlayerListener implements Listener {
 				if (shouldCreateNew) {
 					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 					if(ab == null) {
-						Bending.log.log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
+						Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
 						return;
 					}
 					ab.sneak();
@@ -500,7 +500,7 @@ public class BendingPlayerListener implements Listener {
 			event.setReason(null);
 		}
 
-		Bending.database.release(event.getPlayer().getUniqueId());
+		Bending.getInstance().database.release(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler
@@ -545,7 +545,7 @@ public class BendingPlayerListener implements Listener {
 			EntityTools.speToggledBenders.remove(event.getPlayer());
 		}
 
-		Bending.database.release(event.getPlayer().getUniqueId());
+		Bending.getInstance().database.release(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

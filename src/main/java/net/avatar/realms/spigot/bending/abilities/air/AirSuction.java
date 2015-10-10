@@ -67,7 +67,7 @@ public class AirSuction extends BendingActiveAbility {
 			return;
 		}
 
-		this.speedfactor = speed * (Bending.time_step / 1000.); // Really used ?
+		this.speedfactor = speed * (Bending.getInstance().manager.getTimestep() / 1000.); // Really used ?
 
 		this.id = ID++;
 

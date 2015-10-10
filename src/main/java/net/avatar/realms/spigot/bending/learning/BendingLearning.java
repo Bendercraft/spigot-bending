@@ -42,15 +42,15 @@ public class BendingLearning {
 			ChiListener chiListener = new ChiListener(this);
 
 			// Register listeners
-			Bending.plugin.getServer().getPluginManager().registerEvents(permListener, Bending.plugin);
-			Bending.plugin.getServer().getPluginManager().registerEvents(airListener, Bending.plugin);
-			Bending.plugin.getServer().getPluginManager().registerEvents(earthListener, Bending.plugin);
-			Bending.plugin.getServer().getPluginManager().registerEvents(waterListener, Bending.plugin);
-			Bending.plugin.getServer().getPluginManager().registerEvents(fireListener, Bending.plugin);
-			Bending.plugin.getServer().getPluginManager().registerEvents(chiListener, Bending.plugin);
+			Bending.getInstance().getServer().getPluginManager().registerEvents(permListener, Bending.getInstance());
+			Bending.getInstance().getServer().getPluginManager().registerEvents(airListener, Bending.getInstance());
+			Bending.getInstance().getServer().getPluginManager().registerEvents(earthListener, Bending.getInstance());
+			Bending.getInstance().getServer().getPluginManager().registerEvents(waterListener, Bending.getInstance());
+			Bending.getInstance().getServer().getPluginManager().registerEvents(fireListener, Bending.getInstance());
+			Bending.getInstance().getServer().getPluginManager().registerEvents(chiListener, Bending.getInstance());
 
 		} catch (Exception e) {
-			Bending.plugin.getLogger().severe("Could not load Bending_Learning : " + e.getMessage());
+			Bending.getInstance().getLogger().severe("Could not load Bending_Learning : " + e.getMessage());
 		}
 	}
 
@@ -74,7 +74,7 @@ public class BendingLearning {
 			try {
 				this.save();
 			} catch (Exception e) {
-				Bending.plugin.getLogger().severe("Could not have saved permission " + perm + " for player " + player.getName() + " because : " + e.getMessage());
+				Bending.getInstance().getLogger().severe("Could not have saved permission " + perm + " for player " + player.getName() + " because : " + e.getMessage());
 			}
 			return true;
 		}
@@ -93,7 +93,7 @@ public class BendingLearning {
 			try {
 				this.save();
 			} catch (Exception e) {
-				Bending.plugin.getLogger().severe("Could not have saved permission " + perm + " for player " + player.getName() + " because : " + e.getMessage());
+				Bending.getInstance().getLogger().severe("Could not have saved permission " + perm + " for player " + player.getName() + " because : " + e.getMessage());
 			}
 			return true;
 		}
@@ -101,7 +101,7 @@ public class BendingLearning {
 	}
 
 	private void load() throws IOException {
-		File folder = Bending.plugin.getDataFolder();
+		File folder = Bending.getInstance().getDataFolder();
 		File permissionsFile = new File(folder, "permissions.json");
 
 		if (permissionsFile.exists() && permissionsFile.isFile()) {
@@ -114,7 +114,7 @@ public class BendingLearning {
 	}
 
 	private void save() throws IOException {
-		File folder = Bending.plugin.getDataFolder();
+		File folder = Bending.getInstance().getDataFolder();
 		File permissionsFile = new File(folder, "permissions.json");
 
 		if (!permissionsFile.exists()) {
@@ -132,7 +132,7 @@ public class BendingLearning {
 		if (actuals.containsKey(p)) {
 			return actuals.get(p);
 		}
-		PermissionAttachment attachment = p.addAttachment(Bending.plugin);
+		PermissionAttachment attachment = p.addAttachment(Bending.getInstance());
 		actuals.put(p, attachment);
 		if (permissions.containsKey(p.getUniqueId())) {
 			for (String perm : permissions.get(p.getUniqueId())) {

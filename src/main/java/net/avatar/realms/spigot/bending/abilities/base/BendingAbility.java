@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.abilities.base;
 
 import java.util.Map;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
@@ -177,5 +178,11 @@ public abstract class BendingAbility implements IBendingAbility {
 		}
 
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17,31).append(getIdentifier())
+				.append(player).append(parent).toHashCode();
 	}
 }

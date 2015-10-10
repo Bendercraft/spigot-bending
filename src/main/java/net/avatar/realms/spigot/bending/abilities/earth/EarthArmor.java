@@ -58,6 +58,7 @@ public class EarthArmor extends BendingActiveAbility {
 		super(player, null);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean swing() {
 		// EarthArmor

@@ -202,7 +202,7 @@ public class AirBlast extends BendingActiveAbility {
 			return false;
 		}
 
-		this.speedfactor = SPEED * (Bending.time_step / 1000.);
+		this.speedfactor = SPEED * (Bending.getInstance().manager.getTimestep() / 1000.);
 
 		Block block = this.location.getBlock();
 		for (Block testblock : BlockTools.getBlocksAroundPoint(this.location, AFFECT_RADIUS)) {

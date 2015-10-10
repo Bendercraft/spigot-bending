@@ -21,7 +21,7 @@ public class VersionExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		sender.sendMessage("Bending v" + Bending.plugin.getDescription().getVersion());
+		sender.sendMessage("Bending v" + Bending.getInstance().getDescription().getVersion());
 		sender.sendMessage("Authors : Koudja & Noko");
 		return true;
 	}

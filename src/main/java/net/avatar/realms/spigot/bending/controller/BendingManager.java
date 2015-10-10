@@ -22,11 +22,12 @@ import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 public class BendingManager implements Runnable {
-	public Bending plugin;
+	private Bending plugin;
 	private long time;
 	private List<World> worlds = new LinkedList<World>();
 	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
+	private long timestep = 1; // in ms
 	
 	private List<Queue> revertQueue = new LinkedList<Queue>();
 
@@ -38,8 +39,9 @@ public class BendingManager implements Runnable {
 	@Override
 	public void run() {
 		try {
-			Bending.time_step = System.currentTimeMillis() - this.time;
-			this.time = System.currentTimeMillis();
+			long now = System.currentTimeMillis();
+			timestep = now - this.time;
+			this.time = now;
 
 			AbilityManager.getManager().progressAllAbilities();
 			FlyingPlayer.handleAll();
@@ -159,6 +161,10 @@ public class BendingManager implements Runnable {
 		queue.blocks = blocks;
 		
 		revertQueue.add(queue);
+	}
+
+	public long getTimestep() {
+		return timestep;
 	}
 
 	private class Queue {

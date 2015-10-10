@@ -54,7 +54,7 @@ public class ProtectionManager {
 	public static void init() {
 		// WorldGuard
 		if (Settings.RESPECT_WORLDGUARD) {
-			pm = Bending.plugin.getServer().getPluginManager();
+			pm = Bending.getInstance().getServer().getPluginManager();
 			Plugin plugin = pm.getPlugin("WorldGuard");
 			if ((plugin != null) && (plugin.isEnabled())) {
 				worldguard = (WorldGuardPlugin) plugin;
@@ -104,12 +104,12 @@ public class ProtectionManager {
 
 		Plugin citizens = Bukkit.getPluginManager().getPlugin("Citizens");
 		if (citizens != null) {
-			Bending.log.info("Recognized Citizens...");
+			Bending.getInstance().getLogger().info("Recognized Citizens...");
 			if (Settings.RESPECT_CITIZENS) {
 				useCitizens = true;
-				Bending.log.info("Bending is set to respect Citizens traits.");
+				Bending.getInstance().getLogger().info("Bending is set to respect Citizens traits.");
 			} else {
-				Bending.log.info("But Bending is set to ignore Citizens traits.");
+				Bending.getInstance().getLogger().info("But Bending is set to ignore Citizens traits.");
 			}
 		}
 	}

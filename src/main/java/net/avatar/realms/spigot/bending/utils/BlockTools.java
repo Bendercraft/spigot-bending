@@ -31,8 +31,6 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class BlockTools {
-
-	private static final ItemStack pickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
 	public static List<Block> tempnophysics = new ArrayList<Block>();
 	private static Set<Material> plantIds = new HashSet<Material>();
 	static {
@@ -564,7 +562,7 @@ public class BlockTools {
 			tempSource = new TempBlock(source, Material.AIR, (byte) 0x0);
 		}
 		
-		Bending.plugin.manager.addGlobalTempBlock(Settings.REVERSE_TIME, tempSource, tempTarget);
+		Bending.getInstance().manager.addGlobalTempBlock(Settings.REVERSE_TIME, tempSource, tempTarget);
 	}
 
 	public static Block getEarthSourceBlock(Player player, BendingAbilities ability, double range) {
@@ -586,7 +584,6 @@ public class BlockTools {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static Block getWaterSourceBlock(Player player, double range, boolean plantbending) {
 		Location location = player.getEyeLocation();
 		Vector vector = location.getDirection().clone().normalize();
@@ -607,7 +604,7 @@ public class BlockTools {
 	}
 
 	public static void addTempAirBlock(Block block) {
-		Bending.plugin.manager.addGlobalTempBlock(Settings.REVERSE_TIME, new TempBlock(block, Material.AIR, (byte) 0x0));
+		Bending.getInstance().manager.addGlobalTempBlock(Settings.REVERSE_TIME, new TempBlock(block, Material.AIR, (byte) 0x0));
 	}
 	
 	public static void breakBlock(Block block) {

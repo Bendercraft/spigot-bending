@@ -56,7 +56,7 @@ public class FlatFileDB implements IBendingDB {
 			result = new BendingPlayer(temp);
 			this.set(id, result);
 		} catch (FileNotFoundException e) {
-			Bending.log.log(Level.SEVERE, "Could not load file " + file, e);
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not load file " + file, e);
 			try {
 				File save = getFile(id, 0);
 				int i = 1;
@@ -69,7 +69,7 @@ public class FlatFileDB implements IBendingDB {
 
 			}
 		} catch(Exception e) {
-			Bending.log.log(Level.SEVERE, "Could not load file SEVERE " + file, e);
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not load file SEVERE " + file, e);
 		} finally {
 			if(reader != null) {
 				try {
@@ -108,7 +108,7 @@ public class FlatFileDB implements IBendingDB {
 	@Override
 	public void save(UUID id) {
 		if(!players.containsKey(id)) {
-			Bending.log.warning("Tried to save player "+id+" but not loaded.");
+			Bending.getInstance().getLogger().warning("Tried to save player "+id+" but not loaded.");
 			return;
 		}
 		FileWriter writer = null;
@@ -118,7 +118,7 @@ public class FlatFileDB implements IBendingDB {
 			mapper.toJson(players.get(id).serialize(), writer);
 			writer.close();
 		} catch (Exception e) {
-			Bending.log.log(Level.SEVERE, "Could not save player " + id, e);
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not save player " + id, e);
 		} finally {
 			if(writer != null) {
 				try {

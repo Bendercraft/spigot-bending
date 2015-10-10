@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
@@ -45,6 +44,7 @@ public class PhaseChange extends BendingActiveAbility {
 		super(player, null);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean swing() {
 		if(state == BendingAbilityState.CanStart) {
@@ -81,6 +81,7 @@ public class PhaseChange extends BendingActiveAbility {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean sneak() {
 		if(state == BendingAbilityState.CanStart) {
@@ -219,6 +220,7 @@ public class PhaseChange extends BendingActiveAbility {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean isBlockLevel(Block block, Byte level) {
 		for(TempBlock b : frozens) {
 			if(b.getBlock().getLocation().equals(block.getLocation())) {

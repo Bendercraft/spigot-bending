@@ -71,7 +71,7 @@ public class BendingPlayer {
 	}
 
 	public static BendingPlayer getBendingPlayer(Player player) {
-		return Bending.database.get(player.getUniqueId());
+		return Bending.getInstance().database.get(player.getUniqueId());
 	}
 
 	public boolean isOnGlobalCooldown() {
@@ -174,32 +174,32 @@ public class BendingPlayer {
 		removeBender();
 		this.bendings.add(type);
 		setPath(type.getDefaultPath());
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public void addBender(BendingElement type) {
 		if (!this.bendings.contains(type)) {
 			this.bendings.add(type);
-			Bending.database.save(this.player);
+			Bending.getInstance().database.save(this.player);
 		}
 	}
 
 	public void setAffinity(BendingAffinity affinity) {
 		this.clearAffinity(affinity.getElement());
 		this.affinities.add(affinity);
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public void setPath(BendingPath path) {
 		this.clearPath(path.getElement());
 		this.paths.add(path);
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public void addAffinity(BendingAffinity affinity) {
 		if (!this.affinities.contains(affinity)) {
 			this.affinities.add(affinity);
-			Bending.database.save(this.player);
+			Bending.getInstance().database.save(this.player);
 		}
 	}
 
@@ -237,13 +237,13 @@ public class BendingPlayer {
 
 	public void clearAffinities() {
 		this.affinities.clear();
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public void clearAbilities() {
 		// this.slotAbilities = new HashMap<Integer, BendingAbilities>();
 		this.decks.put(this.currentDeck, new HashMap<Integer, BendingAbilities>());
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public void removeBender() {
@@ -251,7 +251,7 @@ public class BendingPlayer {
 		this.affinities.clear();
 		this.bendings.clear();
 		this.paths.clear();
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public BendingAbilities getAbility() {
@@ -280,11 +280,11 @@ public class BendingPlayer {
 
 	public void setAbility(int slot, BendingAbilities ability) {
 		if(!this.decks.containsKey(this.currentDeck)) {
-			Bending.log.warning("Player "+this.player+" tried to bind an ability on unknown deck "+this.currentDeck);
+			Bending.getInstance().getLogger().warning("Player "+this.player+" tried to bind an ability on unknown deck "+this.currentDeck);
 			return;
 		}
 		this.decks.get(this.currentDeck).put(slot, ability);
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public void removeSelectedAbility() {
@@ -299,12 +299,12 @@ public class BendingPlayer {
 		int slot = p.getInventory().getHeldItemSlot();
 		removeAbility(slot);
 
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public void removeAbility(int slot) {
 		setAbility(slot, null);
-		Bending.database.save(this.player);
+		Bending.getInstance().database.save(this.player);
 	}
 
 	public Player getPlayer() {
@@ -354,7 +354,7 @@ public class BendingPlayer {
 	}
 
 	public void delete() {
-		Bending.database.remove(this.player);
+		Bending.getInstance().database.remove(this.player);
 	}
 
 	@Override

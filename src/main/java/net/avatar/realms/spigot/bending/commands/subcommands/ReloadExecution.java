@@ -21,7 +21,7 @@ public class ReloadExecution extends BendingCommand {
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
 		AbilityManager.getManager().stopAllAbilities();
-		AbilityManager.getManager().applyConfiguration(Bending.plugin.getDataFolder());
+		AbilityManager.getManager().applyConfiguration(Bending.getInstance().getDataFolder());
 		sender.sendMessage(ChatColor.GREEN + Messages.RELOADED);
 		return true;
 	}

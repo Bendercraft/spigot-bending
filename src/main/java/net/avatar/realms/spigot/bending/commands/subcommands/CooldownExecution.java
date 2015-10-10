@@ -36,7 +36,7 @@ public class CooldownExecution extends BendingCommand {
 
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (bender == null) {
-			Bending.plugin.getLogger().warning("Cooldown command was not able to find bending player for " + player.getName());
+			Bending.getInstance().getLogger().warning("Cooldown command was not able to find bending player for " + player.getName());
 			sender.sendMessage(ChatColor.RED + Messages.YOU_NO_EXIST);
 			return true;
 		}

@@ -1,7 +1,5 @@
 package net.avatar.realms.spigot.bending;
 
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,14 +22,13 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 
 public class Bending extends JavaPlugin {
-	public static long time_step = 1; // in ms
-	public static Logger log;
-	public static Bending plugin;
+	private static Bending instance;
+	
 	public BendingManager manager;
 	public BendingEntityListener listener;
 	public BendingPlayerListener bpListener;
 	public BendingBlockListener blListener;
-	public static IBendingDB database;
+	public IBendingDB database;
 	public Tools tools;
 
 	public BendingLearning learning;
@@ -40,8 +37,7 @@ public class Bending extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		plugin = this;
-		log = plugin.getLogger();
+		instance = this;
 		
 		if(manager == null)
 			manager = new BendingManager(this);
@@ -82,7 +78,7 @@ public class Bending extends JavaPlugin {
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 
 		ProtectionManager.init();
-		Bending.log.info("Bending v" + getDescription().getVersion() + " has been loaded.");
+		getLogger().info("Bending v" + getDescription().getVersion() + " has been loaded.");
 
 		// Citizens
 		if ((getServer().getPluginManager().getPlugin("Citizens") != null) && getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
@@ -94,7 +90,7 @@ public class Bending extends JavaPlugin {
 	public void onDisable() {
 		PluginTools.stopAllBending();
 		AbilityManager.getManager().stopAllAbilities();
-		getServer().getScheduler().cancelTasks(plugin);
+		getServer().getScheduler().cancelTasks(this);
 
 		this.learning.onDisable();
 	}
@@ -106,5 +102,9 @@ public class Bending extends JavaPlugin {
 
 	public static void callEvent(Event e) {
 		Bukkit.getServer().getPluginManager().callEvent(e);
+	}
+	
+	public static Bending getInstance() {
+		return instance;
 	}
 }
