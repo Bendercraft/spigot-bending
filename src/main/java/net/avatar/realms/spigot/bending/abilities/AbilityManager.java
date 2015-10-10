@@ -89,17 +89,17 @@ public class AbilityManager {
 	private Map<BendingAbilities, Map<Object, IBendingAbility>> runnings;
 	private Map<Class<? extends IBendingAbility>, BendingAbilities> reverseBinds;
 
+	private AbilityManager() {
+		this.runnings = new HashMap<BendingAbilities, Map<Object, IBendingAbility>>();
+		this.binds = new HashMap<BendingAbilities, RegisteredAbility>();
+		this.reverseBinds = new HashMap<Class<? extends IBendingAbility>, BendingAbilities>();
+	}
+	
 	public static AbilityManager getManager() {
 		if (manager == null) {
 			manager = new AbilityManager();
 		}
 		return manager;
-	}
-
-	private AbilityManager() {
-		this.runnings = new HashMap<BendingAbilities, Map<Object, IBendingAbility>>();
-		this.binds = new HashMap<BendingAbilities, RegisteredAbility>();
-		this.reverseBinds = new HashMap<Class<? extends IBendingAbility>, BendingAbilities>();
 	}
 
 	public void progressAllAbilities() {
