@@ -99,7 +99,7 @@ public class AirBurst extends BendingActiveAbility {
 			return false;
 		}
 
-		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirBurst)) {
+		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.AirBurst) {
 			return false;
 		}
 
@@ -130,7 +130,7 @@ public class AirBurst extends BendingActiveAbility {
 	}
 
 	public boolean isCharged() {
-		return (this.state == BendingAbilityState.Prepared);
+		return this.state == BendingAbilityState.Prepared;
 	}
 
 	public static AirBurst getAirBurst(Player player) {
@@ -206,7 +206,7 @@ public class AirBurst extends BendingActiveAbility {
 
 	@Override
 	protected long getMaxMillis() {
-		return 60 * 10 * 1000;
+		return 60 * 10 * 1000L;
 	}
 
 	@Override

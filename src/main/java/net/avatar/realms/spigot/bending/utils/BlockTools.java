@@ -568,7 +568,7 @@ public class BlockTools {
 			tempSource = new TempBlock(source, Material.AIR, (byte) 0x0);
 		}
 		
-		Bending.getInstance().manager.addGlobalTempBlock(Settings.REVERSE_TIME, tempSource, tempTarget);
+		Bending.getInstance().getManager().addGlobalTempBlock(Settings.REVERSE_TIME, tempSource, tempTarget);
 	}
 
 	public static Block getEarthSourceBlock(Player player, BendingAbilities ability, double range) {
@@ -610,7 +610,7 @@ public class BlockTools {
 	}
 
 	public static void addTempAirBlock(Block block) {
-		Bending.getInstance().manager.addGlobalTempBlock(Settings.REVERSE_TIME, new TempBlock(block, Material.AIR, (byte) 0x0));
+		Bending.getInstance().getManager().addGlobalTempBlock(Settings.REVERSE_TIME, new TempBlock(block, Material.AIR, (byte) 0x0));
 	}
 	
 	public static void breakBlock(Block block) {

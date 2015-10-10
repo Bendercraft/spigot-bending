@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.air;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Effect;
@@ -34,7 +35,7 @@ public class AirScooter extends BendingActiveAbility {
 
 	private Block floorblock;
 	private long time;
-	private ArrayList<Double> angles = new ArrayList<Double>();
+	private List<Double> angles = new LinkedList<Double>();
 
 	private double speed;
 
@@ -175,8 +176,8 @@ public class AirScooter extends BendingActiveAbility {
 		}
 	}
 
-	public static ArrayList<Player> getPlayers() {
-		ArrayList<Player> players = new ArrayList<Player>();
+	public static List<Player> getPlayers() {
+		List<Player> players = new LinkedList<Player>();
 
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirScooter);
 		if ((instances == null) || instances.isEmpty()) {
@@ -196,7 +197,7 @@ public class AirScooter extends BendingActiveAbility {
 
 	@Override
 	protected long getMaxMillis() {
-		return 1000 * 60 * 10;
+		return 1000L * 60 * 10;
 	}
 
 	public static boolean isOnScooter(Player player) {

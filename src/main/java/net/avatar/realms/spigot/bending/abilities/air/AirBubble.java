@@ -19,7 +19,7 @@ public class AirBubble extends Bubble {
 	private static double DEFAULT_RADIUS = 4;
 
 	@ConfigurationParameter("Max-Duration")
-	private static long MAX_DURATION = 60 * 10 * 1000;
+	private static long MAX_DURATION = 60 * 10 * 1000L;
 
 	public AirBubble(Player player) {
 		this(player, null);

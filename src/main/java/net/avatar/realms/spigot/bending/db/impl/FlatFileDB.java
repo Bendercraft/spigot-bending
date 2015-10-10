@@ -68,7 +68,7 @@ public class FlatFileDB implements IBendingDB {
 				}
 				FileUtils.moveFile(file, save);
 			} catch (IOException e1) {
-				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not move file " + file + " to "+save, e);
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not move file " + file + " to "+save, e1);
 			}
 		} catch(Exception e) {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not load file SEVERE " + file, e);

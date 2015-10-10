@@ -105,7 +105,7 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 
-		Bending.getInstance().database.lease(player.getUniqueId());
+		Bending.getInstance().getBendingDatabase().lease(player.getUniqueId());
 
 		BendingPlayer.getBendingPlayer(player);
 
@@ -501,7 +501,7 @@ public class BendingPlayerListener implements Listener {
 			event.setReason(null);
 		}
 
-		Bending.getInstance().database.release(event.getPlayer().getUniqueId());
+		Bending.getInstance().getBendingDatabase().release(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler
@@ -542,7 +542,7 @@ public class BendingPlayerListener implements Listener {
 			FireBlade.getFireBlading(event.getPlayer()).remove();
 		}
 
-		Bending.getInstance().database.release(event.getPlayer().getUniqueId());
+		Bending.getInstance().getBendingDatabase().release(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

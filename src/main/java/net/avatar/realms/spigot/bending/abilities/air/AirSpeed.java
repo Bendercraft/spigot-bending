@@ -40,13 +40,11 @@ public class AirSpeed extends BendingPassiveAbility {
 			return false;
 		}
 
-		if (this.player.isSprinting()) {
-			if (this.bender.isBender(BendingElement.Air)) {
-				if (EntityTools.canBendPassive(this.player, BendingElement.Air)) {
-					applySpeed();
-					return true;
-				}
-			}
+		if (this.player.isSprinting() 
+				&& this.bender.isBender(BendingElement.Air)
+				&& EntityTools.canBendPassive(this.player, BendingElement.Air)) {
+			applySpeed();
+			return true;
 		}
 
 		return false;

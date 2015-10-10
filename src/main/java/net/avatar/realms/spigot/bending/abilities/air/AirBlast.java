@@ -110,19 +110,18 @@ public class AirBlast extends BendingActiveAbility {
 	}
 
 	public void setOtherOrigin(Player player) {
-		Location location = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.getNonOpaque());
-		if (location.getBlock().isLiquid() || BlockTools.isSolid(location.getBlock())) {
+		Location originLocation = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.getNonOpaque());
+		if (originLocation.getBlock().isLiquid() || BlockTools.isSolid(originLocation.getBlock())) {
 			setState(BendingAbilityState.CannotStart);
 			return;
 		}
 
-		if ((location == null) || ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirBlast, location)) {
+		if ((originLocation == null) || ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirBlast, originLocation)) {
 			setState(BendingAbilityState.CannotStart);
 			return;
 		}
 
-		this.origin = location;
-		System.out.println(this.origin.getBlock().getType());
+		this.origin = originLocation;
 		setState(BendingAbilityState.Preparing);
 		this.otherOrigin = true;
 	}
@@ -197,7 +196,7 @@ public class AirBlast extends BendingActiveAbility {
 			return false;
 		}
 
-		this.speedfactor = SPEED * (Bending.getInstance().manager.getTimestep() / 1000.);
+		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 
 		Block block = this.location.getBlock();
 		for (Block testblock : BlockTools.getBlocksAroundPoint(this.location, AFFECT_RADIUS)) {
@@ -222,7 +221,7 @@ public class AirBlast extends BendingActiveAbility {
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, AFFECT_RADIUS)) {
-			if (((entity.getEntityId() != this.player.getEntityId()) || this.otherOrigin)) {
+			if ((entity.getEntityId() != this.player.getEntityId()) || this.otherOrigin) {
 				affect(entity);
 			}
 		}
@@ -250,7 +249,7 @@ public class AirBlast extends BendingActiveAbility {
 			entity.setFireTicks(0);
 		}
 		Vector velocity = entity.getVelocity();
-		// double mag = Math.abs(velocity.getY());
+		
 		double max = maxspeed;
 		double factor = this.pushfactor;
 		if (AvatarState.isAvatarState(this.player)) {
@@ -291,9 +290,6 @@ public class AirBlast extends BendingActiveAbility {
 		if (this.bender.hasPath(BendingPath.Renegade)) {
 			EntityTools.damageEntity(this.player, entity, 0.5);
 		}
-		// if (!isUser && (entity instanceof Player)) {
-		// new Flight((Player) entity, this.player);
-		// }
 	}
 
 	@Override

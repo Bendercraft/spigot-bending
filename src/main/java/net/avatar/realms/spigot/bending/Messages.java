@@ -207,7 +207,7 @@ public class Messages {
 				input = new FileInputStream(languageFile);
 			} catch (Exception e) {
 				input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);
-				Bending.getInstance().getLogger().info("File "+languageFile.getName()+" not found or broken, loading "+FILENAME+" instead");
+				Bending.getInstance().getLogger().log(Level.WARNING, "File "+languageFile.getName()+" not found or broken, loading "+FILENAME+" instead", e);
 			}
 		} else {
 			input = Messages.class.getClassLoader().getResourceAsStream(FILENAME);

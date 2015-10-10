@@ -38,7 +38,7 @@ public class AirShield extends BendingActiveAbility {
 	public static long COOLDOWN = 3000;
 
 	@ConfigurationParameter("Max-Duration")
-	private static long MAX_DURATION = 5 * 60 * 1000;
+	private static long MAX_DURATION = 5 * 60 * 1000L;
 
 	private int numberOfStreams = (int) (.75 * MAX_RADIUS);
 
@@ -113,15 +113,12 @@ public class AirShield extends BendingActiveAbility {
 		FireBlast.removeFireBlastsAroundPoint(origin, this.radius);
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, this.radius)) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
-				continue;
-			}
-
-			if ((entity instanceof ExperienceOrb) || (entity instanceof FallingBlock) || (entity instanceof ItemFrame) || (entity instanceof Item)) {
-				continue;
-			}
-
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirShield, entity.getLocation())) {
+			if (ProtectionManager.isEntityProtectedByCitizens(entity)
+					|| (entity instanceof ExperienceOrb) 
+					|| (entity instanceof FallingBlock) 
+					|| (entity instanceof ItemFrame) 
+					|| (entity instanceof Item)
+					|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirShield, entity.getLocation())) {
 				continue;
 			}
 
@@ -176,7 +173,6 @@ public class AirShield extends BendingActiveAbility {
 
 			y = origin.getY() + (factor * i);
 
-			// double theta = Math.asin(y/radius);
 			double f = Math.sqrt(1 - (factor * factor * (i / this.radius) * (i / this.radius)));
 
 			x = origin.getX() + (this.radius * Math.cos(angle) * f);

@@ -167,28 +167,23 @@ public class AirSpout extends BendingActiveAbility {
 				this.angle = 0;
 			}
 			for (int i = 1; i <= dy; i++) {
-
 				index += 1;
 				if (index >= directions.length) {
 					index = 0;
 				}
-
-				Location effectloc2 = new Location(location.getWorld(), location.getX(), block.getY() + i, location.getZ());
-
-				// location.getWorld().playEffect(effectloc2, Effect.SMOKE,
-				// (int) directions[index], (int) height + 5);
-				VISUAL.display(0, 0, 0, 1, 1, effectloc2, 20);
+				VISUAL.display(0, 0, 0, 1, 1, new Location(location.getWorld(), location.getX(), block.getY() + i, location.getZ()), 20);
 			}
 		}
 	}
 
-	public static void removeSpouts(Location loc0, double radius, Player sourceplayer) {
+	public static void removeSpouts(Location loc, double radius, Player sourceplayer) {
 		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirSpout);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return;
 		}
 
+		Location loc0 = loc;
 		for (Object o : instances.keySet()) {
 			Player player = (Player) o;
 			if (!player.equals(sourceplayer)) {
@@ -223,7 +218,7 @@ public class AirSpout extends BendingActiveAbility {
 
 	@Override
 	protected long getMaxMillis() {
-		return 1000 * 60 * 20;
+		return 1000L * 60 * 20;
 	}
 
 	@Override

@@ -220,6 +220,7 @@ public class HeatControl extends BendingActiveAbility {
 			case MUTTON:
 				cooked.setType(Material.COOKED_MUTTON);
 				cooked.setAmount(1);
+				break;
 			default:
 				break;
 		}

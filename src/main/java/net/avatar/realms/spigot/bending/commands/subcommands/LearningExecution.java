@@ -80,7 +80,7 @@ public class LearningExecution extends BendingCommand {
 			}
 			for (BendingAbilities ability : BendingAbilities.values()) {
 				if (affinity.equals(ability.getAffinity())) {
-					Bending.getInstance().learning.removePermission(target, ability);
+					Bending.getInstance().getLearning().removePermission(target, ability);
 				}
 			}
 			bender.removeAffinity(affinity);
@@ -98,7 +98,7 @@ public class LearningExecution extends BendingCommand {
 			return;
 		}
 
-		if (Bending.getInstance().learning.removePermission(target, ability)) {
+		if (Bending.getInstance().getLearning().removePermission(target, ability)) {
 			bender.clearAbilities();
 			sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has lost " + ability.name() + ".");
 		}
@@ -151,7 +151,7 @@ public class LearningExecution extends BendingCommand {
 		bender.setBender(element);
 		for (BendingAbilities ability : BendingAbilities.values()) {
 			if (ability.getElement().equals(element) && !ability.isAffinity()) {
-				Bending.getInstance().learning.addPermission(target, ability);
+				Bending.getInstance().getLearning().addPermission(target, ability);
 			}
 		}
 		sender.sendMessage(ChatColor.DARK_GREEN + "Player " + target.getPlayer().getName() + " has lost all element except : " + element.name());
@@ -176,7 +176,7 @@ public class LearningExecution extends BendingCommand {
 			target.getPlayer().sendMessage(color + message);
 			for (BendingAbilities ability : BendingAbilities.values()) {
 				if (ability.getElement().equals(element) && !ability.isAffinity()) {
-					Bending.getInstance().learning.addPermission(target, ability);
+					Bending.getInstance().getLearning().addPermission(target, ability);
 					message = "You can now use " + ability.name();
 					target.getPlayer().sendMessage(color + message);
 				}
@@ -196,7 +196,7 @@ public class LearningExecution extends BendingCommand {
 			return;
 		}
 
-		if (Bending.getInstance().learning.addPermission(target, ability)) {
+		if (Bending.getInstance().getLearning().addPermission(target, ability)) {
 			ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
 			String message = Messages.ABILITY_LEARNED + ability.name();
 			target.getPlayer().sendMessage(color + message);
@@ -225,7 +225,7 @@ public class LearningExecution extends BendingCommand {
 			bender.addAffinity(affinity);
 			for (BendingAbilities ability : BendingAbilities.values()) {
 				if (ability.getAffinity() == affinity) {
-					Bending.getInstance().learning.addPermission(target, ability);
+					Bending.getInstance().getLearning().addPermission(target, ability);
 				}
 			}
 			String msg = Messages.AFFINITY_SET;

@@ -23,13 +23,13 @@ import net.citizensnpcs.api.trait.TraitInfo;
 public class Bending extends JavaPlugin {
 	private static Bending instance;
 	
-	public BendingManager manager;
-	public BendingEntityListener listener;
-	public BendingPlayerListener bpListener;
-	public BendingBlockListener blListener;
-	public IBendingDB database;
+	private BendingManager manager;
+	private BendingEntityListener listener;
+	private BendingPlayerListener bpListener;
+	private BendingBlockListener blListener;
+	private IBendingDB bendingDatabase;
 
-	public BendingLearning learning;
+	private BendingLearning learning;
 
 	private BendingCommandExecutor commandExecutor;
 
@@ -58,12 +58,12 @@ public class Bending extends JavaPlugin {
 		this.learning = new BendingLearning();
 		this.learning.onEnable();
 
-		database = DBUtils.choose(Settings.DATABASE);
+		bendingDatabase = DBUtils.choose(Settings.DATABASE);
 		// Fatal error
-		if (database == null) {
+		if (bendingDatabase == null) {
 			throw new RuntimeException("Invalid database : " + Settings.DATABASE);
 		}
-		database.init(this);
+		bendingDatabase.init(this);
 
 		getServer().getPluginManager().registerEvents(this.listener, this);
 		getServer().getPluginManager().registerEvents(this.bpListener, this);
@@ -90,6 +90,18 @@ public class Bending extends JavaPlugin {
 		getServer().getScheduler().cancelTasks(this);
 
 		this.learning.onDisable();
+	}
+
+	public BendingManager getManager() {
+		return manager;
+	}
+
+	public IBendingDB getBendingDatabase() {
+		return bendingDatabase;
+	}
+
+	public BendingLearning getLearning() {
+		return learning;
 	}
 
 	public void reloadConfiguration() {
