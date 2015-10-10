@@ -274,12 +274,10 @@ public enum BendingAbilities {
 			return false;
 		}
 
-		switch (this) {
-			case Drainbending:
-				return false;
-			default:
-				return true;
+		if(this == Drainbending) {
+			return false;
 		}
+		return true;
 	}
 
 	public String getPermission() {
