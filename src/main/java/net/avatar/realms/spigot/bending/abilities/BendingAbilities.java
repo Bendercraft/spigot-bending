@@ -287,7 +287,7 @@ public enum BendingAbilities {
 	}
 
 	public static List<BendingAbilities> getElementAbilities(BendingElement el) {
-		LinkedList<BendingAbilities> abilities = new LinkedList<BendingAbilities>();
+		List<BendingAbilities> abilities = new LinkedList<BendingAbilities>();
 		for (BendingAbilities ability : values()) {
 			if ((ability.element == el) && ability.isBindable()) {
 				abilities.add(ability);

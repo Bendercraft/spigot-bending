@@ -75,7 +75,7 @@ public class BendingPlayer {
 	}
 
 	public boolean isOnGlobalCooldown() {
-		return (System.currentTimeMillis() <= (this.lastTime + Settings.GLOBAL_COOLDOWN));
+		return System.currentTimeMillis() <= (this.lastTime + Settings.GLOBAL_COOLDOWN);
 	}
 
 	public boolean isOnCooldown(BendingAbilities ability) {
@@ -86,7 +86,7 @@ public class BendingPlayer {
 
 		if (this.cooldowns.containsKey(ability)) {
 			long time = System.currentTimeMillis();
-			return (time <= this.cooldowns.get(ability));
+			return time <= this.cooldowns.get(ability);
 
 		} else {
 			return false;
@@ -113,23 +113,23 @@ public class BendingPlayer {
 	}
 
 	public Map<BendingAbilities, Long> getCooldowns() {
-		Map<BendingAbilities, Long> cooldowns = new HashMap<BendingAbilities, Long>();
+		Map<BendingAbilities, Long> result = new HashMap<BendingAbilities, Long>();
 		long now = System.currentTimeMillis();
 		List<BendingAbilities> toRemove = new LinkedList<BendingAbilities>();
-		for (BendingAbilities ab : this.cooldowns.keySet()) {
-			long remain = this.cooldowns.get(ab) - now;
+		for (BendingAbilities ab : cooldowns.keySet()) {
+			long remain = cooldowns.get(ab) - now;
 			if (remain <= 0) {
 				toRemove.add(ab);
 			} else {
-				cooldowns.put(ab, remain);
+				result.put(ab, remain);
 			}
 		}
 
 		for (BendingAbilities ab : toRemove) {
-			cooldowns.remove(ab);
+			result.remove(ab);
 		}
 
-		return cooldowns;
+		return result;
 	}
 
 	public UUID getPlayerID() {
@@ -241,7 +241,6 @@ public class BendingPlayer {
 	}
 
 	public void clearAbilities() {
-		// this.slotAbilities = new HashMap<Integer, BendingAbilities>();
 		this.decks.put(this.currentDeck, new HashMap<Integer, BendingAbilities>());
 		Bending.getInstance().database.save(this.player);
 	}
@@ -255,15 +254,15 @@ public class BendingPlayer {
 	}
 
 	public BendingAbilities getAbility() {
-		Player player = getPlayer();
-		if (player == null) {
+		Player playerEntity = getPlayer();
+		if (playerEntity == null) {
 			return null;
 		}
-		if (!player.isOnline() || player.isDead()) {
+		if (!playerEntity.isOnline() || playerEntity.isDead()) {
 			return null;
 		}
 
-		int slot = player.getInventory().getHeldItemSlot();
+		int slot = playerEntity.getInventory().getHeldItemSlot();
 		return getAbility(slot);
 	}
 
@@ -334,11 +333,11 @@ public class BendingPlayer {
 	}
 
 	public boolean canBeParalyzed() {
-		return (System.currentTimeMillis() > this.paralyzeTime);
+		return System.currentTimeMillis() > this.paralyzeTime;
 	}
 
 	public boolean canBeSlowed() {
-		return (System.currentTimeMillis() > this.slowTime);
+		return System.currentTimeMillis() > this.slowTime;
 	}
 
 	public void paralyze(long cooldown) {
@@ -365,7 +364,6 @@ public class BendingPlayer {
 		string += "Bendings=" + this.bendings;
 		string += ", ";
 		string += "Decks=" + this.decks;
-		// string += "Binds=" + this.slotAbilities;
 		string += "}";
 		return string;
 	}

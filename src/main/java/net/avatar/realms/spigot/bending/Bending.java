@@ -17,7 +17,6 @@ import net.avatar.realms.spigot.bending.listeners.BendingEntityListener;
 import net.avatar.realms.spigot.bending.listeners.BendingPlayerListener;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-import net.avatar.realms.spigot.bending.utils.Tools;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 
@@ -29,7 +28,6 @@ public class Bending extends JavaPlugin {
 	public BendingPlayerListener bpListener;
 	public BendingBlockListener blListener;
 	public IBendingDB database;
-	public Tools tools;
 
 	public BendingLearning learning;
 
@@ -66,7 +64,6 @@ public class Bending extends JavaPlugin {
 			throw new RuntimeException("Invalid database : " + Settings.DATABASE);
 		}
 		database.init(this);
-		this.tools = new Tools();
 
 		getServer().getPluginManager().registerEvents(this.listener, this);
 		getServer().getPluginManager().registerEvents(this.bpListener, this);

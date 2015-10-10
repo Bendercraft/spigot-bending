@@ -275,7 +275,7 @@ public class AbilityManager {
 			Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but not annoted ! Aborting this registration...");
 			return;
 		}
-		if ((annotation.name() == null) || annotation.name().equals("")) {
+		if ((annotation.name() == null) || annotation.name().isEmpty()) {
 			Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
 			return;
 		}

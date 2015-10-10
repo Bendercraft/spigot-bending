@@ -188,6 +188,10 @@ public class Messages {
 	private static Properties lines;
 	private static File languageFile;
 	private static InputStream input;
+	
+	private Messages() {
+		
+	}
 
 	public static void loadMessages() {
 		lines = new Properties();
