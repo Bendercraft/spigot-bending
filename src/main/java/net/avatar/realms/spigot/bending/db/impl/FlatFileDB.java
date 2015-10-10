@@ -11,6 +11,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import com.google.gson.Gson;
 
 import net.avatar.realms.spigot.bending.Bending;
@@ -57,8 +59,8 @@ public class FlatFileDB implements IBendingDB {
 			this.set(id, result);
 		} catch (FileNotFoundException e) {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not load file " + file, e);
+			File save = getFile(id, 0);
 			try {
-				File save = getFile(id, 0);
 				int i = 1;
 				while (save.exists()) {
 					save = getFile(id, i);
@@ -66,17 +68,13 @@ public class FlatFileDB implements IBendingDB {
 				}
 				FileUtils.moveFile(file, save);
 			} catch (IOException e1) {
-
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not move file " + file + " to "+save, e);
 			}
 		} catch(Exception e) {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not load file SEVERE " + file, e);
 		} finally {
 			if(reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					
-				}
+				IOUtils.closeQuietly(reader);
 			}
 		}
 		
@@ -121,11 +119,7 @@ public class FlatFileDB implements IBendingDB {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not save player " + id, e);
 		} finally {
 			if(writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					
-				}
+				IOUtils.closeQuietly(writer);
 			}
 		}
 	}

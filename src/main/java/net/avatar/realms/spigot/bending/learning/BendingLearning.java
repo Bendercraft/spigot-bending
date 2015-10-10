@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
+
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.learning.listeners.AirListener;
@@ -50,7 +52,7 @@ public class BendingLearning {
 			Bending.getInstance().getServer().getPluginManager().registerEvents(chiListener, Bending.getInstance());
 
 		} catch (Exception e) {
-			Bending.getInstance().getLogger().severe("Could not load Bending_Learning : " + e.getMessage());
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not load Bending_Learning", e);
 		}
 	}
 
@@ -74,7 +76,7 @@ public class BendingLearning {
 			try {
 				this.save();
 			} catch (Exception e) {
-				Bending.getInstance().getLogger().severe("Could not have saved permission " + perm + " for player " + player.getName() + " because : " + e.getMessage());
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not have saved permission " + perm + " for player " + player.getName() + " because : ", e);
 			}
 			return true;
 		}
@@ -93,13 +95,14 @@ public class BendingLearning {
 			try {
 				this.save();
 			} catch (Exception e) {
-				Bending.getInstance().getLogger().severe("Could not have saved permission " + perm + " for player " + player.getName() + " because : " + e.getMessage());
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not have saved permission " + perm + " for player " + player.getName(), e);
 			}
 			return true;
 		}
 		return false;
 	}
 
+	//TODO Rework throws as reader might not be closed in the end
 	private void load() throws IOException {
 		File folder = Bending.getInstance().getDataFolder();
 		File permissionsFile = new File(folder, "permissions.json");
@@ -113,6 +116,7 @@ public class BendingLearning {
 		}
 	}
 
+	//TODO Rework throws as writer might not be closed in the end
 	private void save() throws IOException {
 		File folder = Bending.getInstance().getDataFolder();
 		File permissionsFile = new File(folder, "permissions.json");
