@@ -464,7 +464,7 @@ public class EarthBlast extends BendingActiveAbility {
 				continue;
 			}
 
-			if (!blast.location.getWorld().equals(player.getWorld())) {
+			if (blast.location == null || !blast.location.getWorld().equals(player.getWorld())) {
 				continue;
 			}
 
