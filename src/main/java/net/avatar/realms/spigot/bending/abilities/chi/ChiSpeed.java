@@ -8,12 +8,14 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
 
 @BendingAbility(name = "ChiSpeed", bind = BendingAbilities.ChiSpeed, element = BendingElement.ChiBlocker)
 public class ChiSpeed extends BendingPassiveAbility {
 
+	private int speedAmplifier = 0;
 	public ChiSpeed(Player player) {
 		super(player, null);
 	}
@@ -30,6 +32,9 @@ public class ChiSpeed extends BendingPassiveAbility {
 		}
 		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
+		if (this.bender.hasAffinity(BendingAffinity.ChiAir)) {
+			this.speedAmplifier++;
+		}
 		return true;
 	}
 
@@ -50,7 +55,7 @@ public class ChiSpeed extends BendingPassiveAbility {
 	}
 
 	private void applySpeed() {
-		PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, 0);
+		PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, this.speedAmplifier);
 		PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 1);
 		this.player.addPotionEffect(speed);
 		this.player.addPotionEffect(jump);
