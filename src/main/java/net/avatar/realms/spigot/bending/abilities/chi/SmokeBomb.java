@@ -12,18 +12,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "Smoke Bomb", bind = BendingAbilities.SmokeBomb, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Smoke Bomb", bind = BendingAbilities.SmokeBomb, element = BendingElement.ChiBlocker)
 public class SmokeBomb extends BendingActiveAbility {
 
 	@ConfigurationParameter("Radius")
@@ -58,10 +57,6 @@ public class SmokeBomb extends BendingActiveAbility {
 	public SmokeBomb(Player player) {
 		super(player, null);
 
-		if (this.state.equals(BendingAbilityState.CannotStart)) {
-			return;
-		}
-
 		this.origin = player.getLocation();
 		this.id = ID++;
 		this.cooldown = COOLDOWN;
@@ -84,11 +79,11 @@ public class SmokeBomb extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if ((this.state == BendingAbilityState.CannotStart) || (this.state == BendingAbilityState.Prepared)) {
+		if (getState() == BendingAbilityState.Prepared) {
 			return true;
 		}
 
-		if (!this.state.equals(BendingAbilityState.CanStart)) {
+		if (!getState().equals(BendingAbilityState.Start)) {
 			return false;
 		}
 
@@ -107,19 +102,18 @@ public class SmokeBomb extends BendingActiveAbility {
 		}
 
 		this.bender.cooldown(BendingAbilities.SmokeBomb, this.cooldown);
-		AbilityManager.getManager().addInstance(this);
 
-		if (this.state == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.Prepared) {
 			setState(BendingAbilityState.Progressing);
 		}
 		return false;
 	}
 
 	@Override
-	public boolean progress() {
-
-		if (this.state != BendingAbilityState.Progressing) {
-			return false;
+	public void progress() {
+		if (getState() != BendingAbilityState.Progressing) {
+			remove();
+			return;
 		}
 		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(this.origin, RADIUS);
 
@@ -162,9 +156,7 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.ticksRemaining--;
 		if (this.ticksRemaining <= 0) {
 			setState(BendingAbilityState.Ended);
-			return false;
-		} else {
-			return true;
+			remove();
 		}
 	}
 
@@ -188,5 +180,10 @@ public class SmokeBomb extends BendingActiveAbility {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

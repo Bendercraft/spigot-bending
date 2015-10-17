@@ -5,11 +5,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 
-@BendingAbility(name = "Release", bind = BendingAbilities.Count, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Release", bind = BendingAbilities.Count, element = BendingElement.ChiBlocker)
 public class Count extends BendingActiveAbility {
 
 	public Count(Player player) {
@@ -28,13 +28,18 @@ public class Count extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		return false;
+	public Object getIdentifier() {
+		return this.player;
 	}
 
 	@Override
-	public Object getIdentifier() {
-		return this.player;
+	public void progress() {
+		
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

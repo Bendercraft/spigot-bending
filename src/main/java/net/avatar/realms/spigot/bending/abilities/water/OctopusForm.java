@@ -6,9 +6,9 @@ import java.util.List;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -24,7 +24,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Octopus Form", bind = BendingAbilities.OctopusForm, element = BendingElement.Water)
+@ABendingAbility(name = "Octopus Form", bind = BendingAbilities.OctopusForm, element = BendingElement.Water)
 public class OctopusForm extends BendingActiveAbility {
 	private static int range = 10;
 	static final double radius = 3;
@@ -71,7 +71,7 @@ public class OctopusForm extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (state != BendingAbilityState.Preparing) {
+		if (getState() != BendingAbilityState.Preparing) {
 			return false;
 		}
 
@@ -84,13 +84,13 @@ public class OctopusForm extends BendingActiveAbility {
 		}
 		source = new TempBlock(sourceblock, Material.WATER, full);
 
-		state = BendingAbilityState.Prepared;
+		setState(BendingAbilityState.Prepared);
 		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		if (state == BendingAbilityState.CanStart) {
+		if (getState() == BendingAbilityState.Start) {
 			sourceblock = BlockTools.getWaterSourceBlock(player, range, EntityTools.canPlantbend(player));
 			if (sourceblock == null && WaterReturn.hasWaterBottle(player)) {
 				Location eyeloc = player.getEyeLocation();
@@ -110,8 +110,7 @@ public class OctopusForm extends BendingActiveAbility {
 
 			sourcelocation = sourceblock.getLocation();
 			sourceselected = true;
-			AbilityManager.getManager().addInstance(this);
-			state = BendingAbilityState.Preparing;
+			setState(BendingAbilityState.Preparing);
 			return false;
 		}
 
@@ -149,26 +148,21 @@ public class OctopusForm extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
+	public void progress() {
 		if (waterReturn != null) {
-			return waterReturn.progress();
+			if(!waterReturn.progress()) {
+				remove();
+			}
+			return;
 		}
 
-		if (!EntityTools.canBend(player, BendingAbilities.OctopusForm) || (!player.isSneaking() && !sourceselected) || EntityTools.getBendingAbility(player) != BendingAbilities.OctopusForm) {
-			returnWater();
-			return false;
-		}
-
-		if (!sourceblock.getWorld().equals(player.getWorld())) {
-			return false;
-		}
-
-		if (sourceblock.getLocation().distance(player.getLocation()) > range && sourceselected) {
-			return false;
+		if (!EntityTools.canBend(player, BendingAbilities.OctopusForm) 
+				|| (!player.isSneaking() && !sourceselected) 
+				|| EntityTools.getBendingAbility(player) != BendingAbilities.OctopusForm 
+				|| !sourceblock.getWorld().equals(player.getWorld()) 
+				|| (sourceblock.getLocation().distance(player.getLocation()) > range && sourceselected)) {
+			remove();
+			return;
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
@@ -189,7 +183,7 @@ public class OctopusForm extends BendingActiveAbility {
 						sourceblock = newblock;
 					} else {
 						returnWater();
-						return false;
+						return;
 					}
 				} else if (sourceblock.getY() > location.getBlockY()) {
 					source.revertBlock();
@@ -201,7 +195,7 @@ public class OctopusForm extends BendingActiveAbility {
 						sourceblock = newblock;
 					} else {
 						returnWater();
-						return false;
+						return;
 					}
 				} else if (sourcelocation.distance(location) > radius) {
 					Vector vector = Tools.getDirection(sourcelocation, location.getBlock().getLocation()).normalize();
@@ -232,24 +226,28 @@ public class OctopusForm extends BendingActiveAbility {
 				} else {
 					angle += 20;
 				}
-				boolean result = formOctopus();
+				if(!formOctopus()) {
+					remove();
+					return;
+				}
 				if (y == 2) {
 					incrementStep();
 				}
-				return result;
+				return;
 			} else if (formed) {
 				step += 1;
 				if (step % inc == 0)
 					animstep += 1;
 				if (animstep > 8)
 					animstep = 1;
-				return formOctopus();
+				if(!formOctopus()) {
+					remove();
+				}
 			} else {
-				return false;
+				remove();
+				return;
 			}
 		}
-
-		return true;
 	}
 
 	private boolean formOctopus() {

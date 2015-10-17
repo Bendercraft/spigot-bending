@@ -4,10 +4,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -17,7 +17,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * knockback You must be sneaking when clicking to activate this technique.
  *
  */
-@BendingAbility(name = "Direct Hit", bind = BendingAbilities.DirectHit, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Direct Hit", bind = BendingAbilities.DirectHit, element = BendingElement.ChiBlocker)
 public class DirectHit extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
@@ -60,12 +60,8 @@ public class DirectHit extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		return false;
+	public void progress() {
+		
 	}
 
 	@Override
@@ -89,6 +85,11 @@ public class DirectHit extends BendingActiveAbility {
 		}
 
 		return true;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

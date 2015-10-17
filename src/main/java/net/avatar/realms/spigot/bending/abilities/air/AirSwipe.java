@@ -17,13 +17,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
@@ -40,7 +39,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  * State Preparing = Player is charging his Airswipe State Prepared = Player has
  * charged his Airswipe State Progressing = Player has thrown his Airswipe
  */
-@BendingAbility(name = "Air Swipe", bind = BendingAbilities.AirSwipe, element = BendingElement.Air)
+@ABendingAbility(name = "Air Swipe", bind = BendingAbilities.AirSwipe, element = BendingElement.Air)
 public class AirSwipe extends BendingActiveAbility {
 
 	private static int ID = Integer.MIN_VALUE;
@@ -105,10 +104,6 @@ public class AirSwipe extends BendingActiveAbility {
 	public AirSwipe(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.id = ID++;
 		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 
@@ -123,20 +118,17 @@ public class AirSwipe extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(this.state == BendingAbilityState.CanStart) {
+		if(getState() == BendingAbilityState.Start) {
 			setState(BendingAbilityState.Preparing);
-			AbilityManager.getManager().addInstance(this);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		if (this.state == BendingAbilityState.CanStart) {
-			AbilityManager.getManager().addInstance(this);
+		if (getState() == BendingAbilityState.Start) {
 			setState(BendingAbilityState.Prepared);
-		}
-		if(this.state == BendingAbilityState.Prepared) {
+		} else if(getState() == BendingAbilityState.Prepared) {
 			this.setState(BendingAbilityState.Progressing);
 			this.origin = this.player.getEyeLocation();
 			launch();
@@ -164,48 +156,47 @@ public class AirSwipe extends BendingActiveAbility {
 		}
 		this.bender.cooldown(BendingAbilities.AirSwipe, COOLDOWN);
 	}
-
+	
 	@Override
-	public void remove() {
-		super.remove();
-	}
-
-	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
 		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSwipe)) {
 			return false;
 		}
+		return true;
+	}
 
+	@Override
+	public void progress() {
 		long now = System.currentTimeMillis();
-
-		if (this.state.equals(BendingAbilityState.Preparing)) {
+		if (getState().equals(BendingAbilityState.Preparing)) {
 			if (this.player.isSneaking()) {
 				if (now >= (this.startedTime + MAX_CHARGE_TIME)) {
 					setState(BendingAbilityState.Prepared);
 					this.damage *= MAX_FACTOR;
 					this.pushfactor *= MAX_FACTOR;
-					return true;
+					return;
 				}
 			}
 		}
 
-		if (this.state.equals(BendingAbilityState.Prepared)) {
+		if (getState().equals(BendingAbilityState.Prepared)) {
 			this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE, Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 3);
 		}
 
-		if (this.state.equals(BendingAbilityState.Progressing)) {
+		if (getState().equals(BendingAbilityState.Progressing)) {
 			if (this.elements.isEmpty()) {
-				return false;
+				remove();
+				return;
 			}
-			return advanceSwipe();
+			advanceSwipe();
+			return;
 		}
 
 		if (!this.player.isSneaking()) {
-			if (!this.state.equals(BendingAbilityState.Prepared)) {
+			if (!getState().equals(BendingAbilityState.Prepared)) {
 				double factor = (MAX_FACTOR * (now - this.startedTime)) / MAX_CHARGE_TIME;
 				if (factor < 1) {
 					factor = 1;
@@ -216,10 +207,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 			launch();
 			this.setState(BendingAbilityState.Progressing);
-			return true;
 		}
-
-		return true;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -359,6 +347,11 @@ public class AirSwipe extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.id;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

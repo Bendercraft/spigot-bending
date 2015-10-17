@@ -15,9 +15,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -382,7 +382,7 @@ public class Wave {
 	}
 
 	public static boolean isBlockWave(Block block) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
 			if (wall.getWave() != null) {
 				if (wall.getWave().wave.containsKey(block)) {
@@ -433,7 +433,7 @@ public class Wave {
 	}
 
 	public static void thaw(Block block) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
 			if (wall.getWave() != null) {
 				if (wall.getWave().frozenblocks.containsKey(block)) {
@@ -445,7 +445,7 @@ public class Wave {
 	}
 
 	public static boolean canThaw(Block block) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
 			if (wall.getWave() != null) {
 				if (wall.getWave().frozenblocks.containsKey(block)) {

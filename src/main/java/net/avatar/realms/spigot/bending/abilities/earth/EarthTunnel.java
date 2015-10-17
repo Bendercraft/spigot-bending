@@ -1,11 +1,10 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -16,7 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Earth Tunnel", bind = BendingAbilities.EarthTunnel, element = BendingElement.Earth)
+@ABendingAbility(name = "Earth Tunnel", bind = BendingAbilities.EarthTunnel, element = BendingElement.Earth)
 public class EarthTunnel extends BendingActiveAbility {
 	@ConfigurationParameter("Max-Radius")
 	private static double RADIUS = 1.0;
@@ -45,7 +44,7 @@ public class EarthTunnel extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (state != BendingAbilityState.CanStart) {
+		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
 		location = player.getEyeLocation().clone();
@@ -59,32 +58,31 @@ public class EarthTunnel extends BendingActiveAbility {
 		radius = radiusinc;
 		time = System.currentTimeMillis();
 
-		AbilityManager.getManager().addInstance(this);
-		state = BendingAbilityState.Progressing;
+		setState(BendingAbilityState.Progressing);
 		return false;
 	}
 
-	public boolean progress() {
-		if (player.isDead() || !player.isOnline()) {
-			return false;
-		}
+	public void progress() {
 		if (System.currentTimeMillis() - time >= INTERVAL) {
 			time = System.currentTimeMillis();
 			// Tools.verbose("progressing");
 			if (Math.abs(Math.toDegrees(player.getEyeLocation().getDirection().angle(direction))) > 20 || !player.isSneaking()) {
-				return false;
+				remove();
+				return;
 			} else {
 				while (!BlockTools.isEarthbendable(player, block)) {
 					// Tools.verbose("going");
 					if (!BlockTools.isTransparentToEarthbending(player, block)) {
-						return false;
+						remove();
+						return;
 					}
 					if (angle >= 360) {
 						angle = 0;
 						if (radius >= RADIUS) {
 							radius = radiusinc;
 							if (depth >= range) {
-								return false;
+								remove();
+								return;
 							} else {
 								depth += .5;
 							}
@@ -104,16 +102,18 @@ public class EarthTunnel extends BendingActiveAbility {
 				} else {
 					block.breakNaturally();
 				}
-
-				return true;
 			}
 		}
-		return true;
 	}
 
 	@Override
 	public Object getIdentifier() {
 		return player;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

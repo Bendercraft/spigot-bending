@@ -12,18 +12,18 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name = "Healing Waters", bind = BendingAbilities.HealingWaters, element = BendingElement.Water)
+@ABendingAbility(name = "Healing Waters", bind = BendingAbilities.HealingWaters, element = BendingElement.Water)
 public class HealingWaters extends BendingActiveAbility {
 
 	@ConfigurationParameter("Range")
@@ -34,58 +34,44 @@ public class HealingWaters extends BendingActiveAbility {
 
 	public HealingWaters(final Player player) {
 		super(player, null);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
 		this.time = this.startedTime;
 	}
 
 	@Override
 	public boolean sneak() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
+		if(getState() == BendingAbilityState.Start) {
 			LivingEntity temp = EntityTools.getTargettedEntity(this.player, RANGE);
 			if (temp == null) {
 				temp = this.player;
 			}
 			this.target = temp;
 			setState(BendingAbilityState.Progressing);
-			AbilityManager.getManager().addInstance(this);
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ended:
-		case Removed:
-		default:
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
+		if (!this.player.isSneaking()
+				|| this.bender.getAbility() != BendingAbilities.HealingWaters) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-		if (!this.player.isSneaking()) {
-			return false;
-		}
-		if (this.bender.getAbility() != BendingAbilities.HealingWaters) {
-			return false;
-		}
+	public void progress() {
 		LivingEntity entity = EntityTools.getTargettedEntity(this.player, RANGE);
 		if (entity == null) {
 			entity = this.player;
 		}
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
-			return false;
-		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.HealingWaters, entity.getLocation())) {
-			return false;
+		if (ProtectionManager.isEntityProtectedByCitizens(entity) 
+				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.HealingWaters, entity.getLocation())) {
+			remove();
+			return;
 		}
 
 		final long now = System.currentTimeMillis();
@@ -98,11 +84,11 @@ public class HealingWaters extends BendingActiveAbility {
 			giveHPToEntity(this.target);
 		} else if (inWater(this.player)) {
 			if (!inWater(this.target)) {
-				return true;
+				return;
 			}
 			giveHPToEntity(this.target);
 		} else {
-			return true;
+			return;
 		}
 
 		if ((now - this.time) > 1000) {
@@ -115,7 +101,6 @@ public class HealingWaters extends BendingActiveAbility {
 				}
 			}
 		}
-		return true;
 	}
 
 	public static boolean isNegativePotionEffect(final PotionEffectType peType) {
@@ -188,10 +173,15 @@ public class HealingWaters extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.HealingWaters);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.HealingWaters);
 		if (instances == null) {
 			return true;
 		}
 		return !instances.containsKey(this.player);
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

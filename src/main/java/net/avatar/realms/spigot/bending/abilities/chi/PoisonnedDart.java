@@ -18,11 +18,11 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -37,7 +37,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  *
  */
 
-@BendingAbility(name = "Poisonned Dart", bind = BendingAbilities.PoisonnedDart, element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
+@ABendingAbility(name = "Poisonned Dart", bind = BendingAbilities.PoisonnedDart, element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
 public class PoisonnedDart extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
@@ -58,20 +58,15 @@ public class PoisonnedDart extends BendingActiveAbility {
 
 	public PoisonnedDart(Player player) {
 		super(player, null);
-
-		if (this.state.equals(BendingAbilityState.CannotStart)) {
-			return;
-		}
 	}
 
 	@Override
 	public boolean swing() {
-
-		if (this.state.equals(BendingAbilityState.CannotStart) || this.state.equals(BendingAbilityState.Preparing)) {
+		if (getState().equals(BendingAbilityState.Preparing)) {
 			return true;
 		}
 
-		if (!this.state.equals(BendingAbilityState.CanStart)) {
+		if (!getState().equals(BendingAbilityState.Start)) {
 			return false;
 		}
 
@@ -80,8 +75,6 @@ public class PoisonnedDart extends BendingActiveAbility {
 		this.direction = this.origin.getDirection().normalize();
 
 		setState(BendingAbilityState.Preparing);
-
-		AbilityManager.getManager().addInstance(this);
 
 		ItemStack is = this.player.getItemInHand();
 		this.effects = new LinkedList<PotionEffect>();
@@ -146,35 +139,26 @@ public class PoisonnedDart extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		if (this.state == BendingAbilityState.Preparing) {
+	public void progress() {
+		if (getState() == BendingAbilityState.Preparing) {
 			setState(BendingAbilityState.Progressing);
 		}
 
-		if (this.state != BendingAbilityState.Progressing) {
-			return true;
+		if (getState() != BendingAbilityState.Progressing) {
+			return;
 		}
 
-		if (!this.player.getWorld().equals(this.location.getWorld())) {
-			return false;
-		}
-		if (this.location.distance(this.origin) > RANGE) {
-			return false;
-		}
-
-		if (BlockTools.isSolid(this.location.getBlock())) {
-			return false;
+		if (!this.player.getWorld().equals(this.location.getWorld()) 
+				|| this.location.distance(this.origin) > RANGE 
+				|| BlockTools.isSolid(this.location.getBlock())) {
+			remove();
+			return;
 		}
 
 		advanceLocation();
 		if (!affectAround()) {
-			return false;
+			remove();
 		}
-		return true;
 	}
 
 	private boolean affectAround() {
@@ -240,7 +224,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PoisonnedDart);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PoisonnedDart);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
@@ -255,6 +239,11 @@ public class PoisonnedDart extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

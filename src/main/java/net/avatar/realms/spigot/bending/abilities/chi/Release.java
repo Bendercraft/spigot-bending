@@ -2,11 +2,11 @@ package net.avatar.realms.spigot.bending.abilities.chi;
 
 import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 
-@BendingAbility(name = "Release", bind = BendingAbilities.Release, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Release", bind = BendingAbilities.Release, element = BendingElement.ChiBlocker)
 public class Release extends BendingActiveAbility {
 
 	public Release(Player player) {
@@ -20,13 +20,18 @@ public class Release extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		return false;
+	public void progress() {
+		
 	}
 
 	@Override
 	public Object getIdentifier() {
 		return this.player;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

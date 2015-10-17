@@ -16,12 +16,12 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -31,7 +31,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name = "Torrent", bind = BendingAbilities.Torrent, element = BendingElement.Water)
+@ABendingAbility(name = "Torrent", bind = BendingAbilities.Torrent, element = BendingElement.Water)
 public class Torrent extends BendingActiveAbility {
 	static long interval = 30;
 	private static int defaultrange = 20;
@@ -86,10 +86,6 @@ public class Torrent extends BendingActiveAbility {
 	public Torrent(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.damage = DAMAGE;
 		this.range = RANGE;
 		this.bender = BendingPlayer.getBendingPlayer(player);
@@ -130,7 +126,7 @@ public class Torrent extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (this.state == BendingAbilityState.CanStart) {
+		if (getState() == BendingAbilityState.Start) {
 			this.time = System.currentTimeMillis();
 			this.sourceblock = BlockTools.getWaterSourceBlock(this.player, selectrange, EntityTools.canPlantbend(this.player));
 
@@ -147,7 +143,6 @@ public class Torrent extends BendingActiveAbility {
 			if (this.sourceblock != null) {
 				this.sourceselected = true;
 				setState(BendingAbilityState.Preparing);
-				AbilityManager.getManager().addInstance(this);
 			}
 
 			return false;
@@ -162,40 +157,38 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
+	public void progress() {
 		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.Torrent) {
 			if (this.location != null) {
 				returnWater(this.location);
 			}
-			return false;
+			remove();
+			return;
 		}
 
 		if (this.waterReturn != null) {
-			return this.waterReturn.progress();
+			if(!this.waterReturn.progress()) {
+				remove();
+				return;
+			}
 		}
 
 		if (this.burst != null) {
 			if (!this.burst.progress()) {
 				returnWater(this.location);
-				return false;
+				remove();
 			}
-			return true;
+			return;
 		}
 
 		if (System.currentTimeMillis() > (this.time + interval)) {
 			this.time = System.currentTimeMillis();
 			
 			if (this.sourceselected) {
-				if (!this.sourceblock.getWorld().equals(this.player.getWorld())) {
-					return false;
-				}
-
-				if (this.sourceblock.getLocation().distance(this.player.getLocation()) > selectrange) {
-					return false;
+				if (!this.sourceblock.getWorld().equals(this.player.getWorld()) 
+						|| this.sourceblock.getLocation().distance(this.player.getLocation()) > selectrange) {
+					remove();
+					return;
 				}
 
 				if (this.player.isSneaking()) {
@@ -211,14 +204,14 @@ public class Torrent extends BendingActiveAbility {
 					this.location = this.sourceblock.getLocation();
 				} else {
 					Tools.playFocusWaterEffect(this.sourceblock);
-					return true;
+					return;
 				}
 			}
 
 			if (this.settingup) {
 				if (!this.player.isSneaking()) {
 					returnWater(this.source.getLocation());
-					return false;
+					return;
 				}
 				Location eyeloc = this.player.getEyeLocation();
 				double startangle = this.player.getEyeLocation().getDirection().angle(new Vector(1, 0, 0));
@@ -227,12 +220,10 @@ public class Torrent extends BendingActiveAbility {
 				double dz = radius * Math.sin(startangle);
 				Location setup = eyeloc.clone().add(dx, dy, dz);
 
-				if (!this.location.getWorld().equals(this.player.getWorld())) {
-					return false;
-				}
-
-				if (this.location.distance(setup) > defaultrange) {
-					return false;
+				if (!this.location.getWorld().equals(this.player.getWorld()) 
+						|| this.location.distance(setup) > defaultrange) {
+					remove();
+					return;
 				}
 
 				if (this.location.getBlockY() > setup.getBlockY()) {
@@ -257,7 +248,8 @@ public class Torrent extends BendingActiveAbility {
 						this.source = null;
 						Block block = this.location.getBlock();
 						if (!BlockTools.isTransparentToEarthbending(this.player, block) || block.isLiquid()) {
-							return false;
+							remove();
+							return;
 						}
 						this.source = new TempBlock(this.location.getBlock(), Material.WATER, full);
 					}
@@ -266,7 +258,7 @@ public class Torrent extends BendingActiveAbility {
 
 			if (this.forming && !this.player.isSneaking()) {
 				returnWater(this.player.getEyeLocation().add(radius, 0, 0));
-				return false;
+				return;
 			}
 
 			if (this.forming || this.formed) {
@@ -278,13 +270,14 @@ public class Torrent extends BendingActiveAbility {
 				}
 				formRing();
 				if (this.blocks.isEmpty()) {
-					return false;
+					remove();
+					return;
 				}
 			}
 
 			if (this.formed && !this.player.isSneaking() && !this.launch) {
 				this.burst = new TorrentBurst(this.player, radius, this);
-				return true;
+				return;
 			}
 
 			if (this.launch && this.formed) {
@@ -292,20 +285,19 @@ public class Torrent extends BendingActiveAbility {
 				this.launch = false;
 				this.formed = false;
 				if (!launch()) {
-					return false;
+					remove();
+					return;
 				}
 			}
 
 			if (this.launching) {
-				if (!this.player.isSneaking()) {
-					return false;
-				}
-				if (!launch()) {
-					return false;
+				if (!this.player.isSneaking() 
+						|| !launch()) {
+					remove();
+					return;
 				}
 			}
 		}
-		return true;
 	}
 
 	private boolean launch() {
@@ -624,7 +616,7 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	public static void thaw(TempBlock block) {
-		for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Torrent).values()) {
+		for(BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Torrent).values()) {
 			Torrent torrent = (Torrent) ab;
 			block.revertBlock();
 			torrent.iceds.remove(block);
@@ -634,7 +626,7 @@ public class Torrent extends BendingActiveAbility {
 	public static boolean canThaw(Block block) {
 		if (TempBlock.isTempBlock(block)) {
 			TempBlock tblock = TempBlock.get(block);
-			for(IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Torrent).values()) {
+			for(BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Torrent).values()) {
 				Torrent torrent = (Torrent) ab;
 				if(torrent.iceds.contains(tblock)) {
 					return true;

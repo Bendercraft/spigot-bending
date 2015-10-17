@@ -13,16 +13,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "Fire Blade", bind = BendingAbilities.FireBlade, element = BendingElement.Fire)
+@ABendingAbility(name = "Fire Blade", bind = BendingAbilities.FireBlade, element = BendingElement.Fire)
 public class FireBlade extends BendingActiveAbility {
 	private static String LORE_NAME = "FireBlade";
 
@@ -50,32 +50,30 @@ public class FireBlade extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(state == BendingAbilityState.CanStart) {
+		if(getState() == BendingAbilityState.Start) {
 			giveFireBlade();
-			AbilityManager.getManager().addInstance(this);
+			
 			setState(BendingAbilityState.Progressing);
 		}
 		return false;
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
-		if (this.blade == null) {
-			return false;
-		}
-
-		if (!isFireBlade(this.player.getItemInHand())) {
-			return false;
-		}
-
-		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.FireBlade) {
+		if (this.blade == null 
+				|| !isFireBlade(this.player.getItemInHand()) 
+				|| EntityTools.getBendingAbility(this.player) != BendingAbilities.FireBlade) {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void progress() {
+		
 	}
 
 	@Override
@@ -91,23 +89,18 @@ public class FireBlade extends BendingActiveAbility {
 			this.player.getInventory().remove(toRemove);
 		}
 		this.player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-	}
-
-	@Override
-	public void remove() {
 		long now = System.currentTimeMillis();
 		long realDuration = now - this.startedTime;
 		this.bender.cooldown(BendingAbilities.FireBlade, (long) (realDuration * COOLDOWN_FACTOR));
-		super.remove();
 	}
 
 	public static void removeFireBlade(ItemStack is) {
 		FireBlade toRemove = null;
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
 		if (instances == null) {
 			return;
 		}
-		for (IBendingAbility ab : instances.values()) {
+		for (BendingAbility ab : instances.values()) {
 			FireBlade blade = (FireBlade) ab;
 			if ((blade.getBlade() != null) && isFireBlade(blade.getBlade())) {
 				toRemove = blade;
@@ -134,7 +127,7 @@ public class FireBlade extends BendingActiveAbility {
 	}
 
 	public static boolean isFireBlading(Player p) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
 		if (instances == null) {
 			return false;
 		}
@@ -142,7 +135,7 @@ public class FireBlade extends BendingActiveAbility {
 	}
 
 	public static FireBlade getFireBlading(Player p) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
 		if (instances == null) {
 			return null;
 		}

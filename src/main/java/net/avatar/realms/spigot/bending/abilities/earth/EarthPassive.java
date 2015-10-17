@@ -10,17 +10,17 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
-import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "Earth Passive", bind = BendingAbilities.EarthPassive, element = BendingElement.Earth)
+@ABendingAbility(name = "Earth Passive", bind = BendingAbilities.EarthPassive, element = BendingElement.Earth)
 public class EarthPassive extends BendingPassiveAbility {
 
 	@ConfigurationParameter("Time-Before-Reverse")
@@ -34,10 +34,6 @@ public class EarthPassive extends BendingPassiveAbility {
 
 	@Override
 	public boolean start() {
-		if (state.isBefore(BendingAbilityState.CanStart)) {
-			return false;
-		}
-
 		Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
 
 		if (BlockTools.isEarthbendable(player, BendingAbilities.EarthPassive, block) || BlockTools.isTransparentToEarthbending(player, BendingAbilities.EarthPassive, block)) {
@@ -61,7 +57,7 @@ public class EarthPassive extends BendingPassiveAbility {
 					}
 				}
 			}
-			AbilityManager.getManager().addInstance(this);
+			
 			setState(BendingAbilityState.Progressing);
 			return true;
 		}
@@ -83,11 +79,11 @@ public class EarthPassive extends BendingPassiveAbility {
 	}
 
 	public static boolean isPassiveSand(Block block) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.EarthPassive);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.EarthPassive);
 		if (instances == null || instances.isEmpty()) {
 			return false;
 		}
-		for (IBendingAbility passive : instances.values()) {
+		for (BendingAbility passive : instances.values()) {
 			if (((EarthPassive) passive).blocks.containsKey(block)) {
 				return true;
 			}
@@ -97,7 +93,7 @@ public class EarthPassive extends BendingPassiveAbility {
 
 	public static void revertSand(Block block) {
 		EarthPassive passive = null;
-		for (IBendingAbility abil : AbilityManager.getManager().getInstances(BendingAbilities.EarthPassive).values()) {
+		for (BendingAbility abil : AbilityManager.getManager().getInstances(BendingAbilities.EarthPassive).values()) {
 			if (((EarthPassive) abil).blocks.containsKey(block)) {
 				passive = ((EarthPassive) abil);
 				break;
@@ -124,7 +120,7 @@ public class EarthPassive extends BendingPassiveAbility {
 			return false;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.EarthPassive);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.EarthPassive);
 		if (instances == null) {
 			return true;
 		}
@@ -135,5 +131,10 @@ public class EarthPassive extends BendingPassiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
+	}
+
+	@Override
+	public void progress() {
+		
 	}
 }

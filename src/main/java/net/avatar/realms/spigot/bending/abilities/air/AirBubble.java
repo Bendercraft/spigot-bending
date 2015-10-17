@@ -4,15 +4,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.multi.Bubble;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@BendingAbility(name = "Air Bubble", bind = BendingAbilities.AirBubble, element = BendingElement.Air)
+@ABendingAbility(name = "Air Bubble", bind = BendingAbilities.AirBubble, element = BendingElement.Air)
 public class AirBubble extends Bubble {
 
 	@ConfigurationParameter("Radius")
@@ -27,10 +26,6 @@ public class AirBubble extends Bubble {
 
 	public AirBubble(Player player, BendingActiveAbility parent) {
 		super(player, parent);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
 
 		this.radius = DEFAULT_RADIUS;
 

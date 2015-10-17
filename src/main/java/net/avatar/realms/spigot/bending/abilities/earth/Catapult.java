@@ -1,11 +1,10 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -17,7 +16,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Catapult", bind = BendingAbilities.Catapult, element = BendingElement.Earth)
+@ABendingAbility(name = "Catapult", bind = BendingAbilities.Catapult, element = BendingElement.Earth)
 public class Catapult extends BendingActiveAbility {
 	@ConfigurationParameter("Length")
 	private static int length = 6;
@@ -50,10 +49,10 @@ public class Catapult extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (state != BendingAbilityState.CanStart) {
+		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
-		state = BendingAbilityState.Progressing;
+		setState(BendingAbilityState.Progressing);
 		origin = player.getEyeLocation().clone();
 		direction = origin.getDirection().clone().normalize();
 		Vector neg = direction.clone().multiply(-1);
@@ -78,21 +77,14 @@ public class Catapult extends BendingActiveAbility {
 			time = System.currentTimeMillis() - interval;
 			starttime = System.currentTimeMillis();
 			moving = true;
-			AbilityManager.getManager().addInstance(this);
+			
 			bender.cooldown(BendingAbilities.Catapult, COOLDOWN);
 		}
 
 		return false;
 	}
 
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-		if (player.isDead() || !player.isOnline()) {
-			return false;
-		}
-
+	public void progress() {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 			if (moving)
@@ -101,12 +93,16 @@ public class Catapult extends BendingActiveAbility {
 				}
 		}
 
-		if (flying)
-			return fly();
+		if (flying) {
+			if(!fly()) {
+				remove();
+				return;
+			}
+		}
 
-		if (!flying && !moving && System.currentTimeMillis() > starttime + 1000)
-			return false;
-		return true;
+		if (!flying && !moving && System.currentTimeMillis() > starttime + 1000) {
+			remove();
+		}
 	}
 
 	private boolean fly() {
@@ -180,5 +176,10 @@ public class Catapult extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

@@ -13,7 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -40,7 +40,7 @@ public class SpikeField {
 
 	private List<SpikeFieldColumn> spikes = new LinkedList<SpikeFieldColumn>();
 
-	public SpikeField(Player p, IBendingAbility parent) {
+	public SpikeField(Player p, BendingAbility parent) {
 		this.numofspikes = (RADIUS * RADIUS) / 4;
 		// Tools.verbose("Trying to create IceField" + numofspikes);
 		int locX = p.getLocation().getBlockX();

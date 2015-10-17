@@ -11,17 +11,16 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "Collapse", bind = BendingAbilities.Collapse, element = BendingElement.Earth)
+@ABendingAbility(name = "Collapse", bind = BendingAbilities.Collapse, element = BendingElement.Earth)
 public class Collapse extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	public static int RANGE = 20;
@@ -38,7 +37,6 @@ public class Collapse extends BendingActiveAbility {
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 8;
 
-	// TODO : This map is never cleared of any of its item, strange
 	private Map<Block, Block> blocks = new HashMap<Block, Block>();
 	private Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
 	private double radius = RADIUS;
@@ -52,19 +50,19 @@ public class Collapse extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (this.state != BendingAbilityState.CanStart) {
+		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
 		this.bender.cooldown(BendingAbilities.Collapse, COOLDOWN);
 		this.columns.add(new CompactColumn(this.player));
-		this.state = BendingAbilityState.Progressing;
-		AbilityManager.getManager().addInstance(this);
+		setState(BendingAbilityState.Progressing);
+		
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if (this.state != BendingAbilityState.CanStart) {
+		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
 
@@ -88,33 +86,36 @@ public class Collapse extends BendingActiveAbility {
 		for (Block block : this.baseblocks.keySet()) {
 			this.columns.add(new CompactColumn(this.player, block.getLocation()));
 		}
-		this.state = BendingAbilityState.Progressing;
-		AbilityManager.getManager().addInstance(this);
+		setState(BendingAbilityState.Progressing);
 		return false;
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-		if (this.state == BendingAbilityState.Progressing && this.columns.isEmpty()) {
+		if (getState() == BendingAbilityState.Progressing && this.columns.isEmpty()) {
 			return false;
-		}
-		for (CompactColumn column : this.columns) {
-			if (!column.progress()) {
-				return false;
-			}
 		}
 		return true;
 	}
 
 	@Override
-	public void remove() {
+	public void progress() {
+		for (CompactColumn column : this.columns) {
+			if (!column.progress()) {
+				remove();
+				return;
+			}
+		}
+	}
+
+	@Override
+	public void stop() {
 		for (CompactColumn column : this.columns) {
 			column.remove();
 		}
-		super.remove();
 	}
 
 	private void getAffectedBlocks(Block block) {

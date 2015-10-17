@@ -4,15 +4,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "AirSpeed", bind = BendingAbilities.AirSpeed, element = BendingElement.Air)
+@ABendingAbility(name = "AirSpeed", bind = BendingAbilities.AirSpeed, element = BendingElement.Air)
 public class AirSpeed extends BendingPassiveAbility {
 
 	public AirSpeed(Player player) {
@@ -26,28 +25,19 @@ public class AirSpeed extends BendingPassiveAbility {
 
 	@Override
 	public boolean start() {
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return false;
-		}
-		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
 		return true;
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
+	public void progress() {
 		if (this.player.isSprinting() 
 				&& this.bender.isBender(BendingElement.Air)
 				&& EntityTools.canBendPassive(this.player, BendingElement.Air)) {
 			applySpeed();
-			return true;
+		} else {
+			remove();
 		}
-
-		return false;
 	}
 
 	private void applySpeed() {
@@ -71,6 +61,11 @@ public class AirSpeed extends BendingPassiveAbility {
 		}
 
 		return true;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

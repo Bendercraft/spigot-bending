@@ -16,9 +16,9 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -35,44 +35,29 @@ public abstract class Bubble extends BendingActiveAbility {
 
 	public Bubble(Player player, BendingActiveAbility parent) {
 		super(player, parent);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.lastLocation = player.getLocation();
 		this.origins = new HashMap<Block, BlockState>();
 		this.pushedMaterials = new HashSet<Material>();
 	}
 
 	@Override
-	public boolean progress() {
-
-		if (!super.progress()) {
-			return false;
-		}
-
+	public void progress() {
 		if (EntityTools.getBendingAbility(this.player) == AbilityManager.getManager().getAbilityType(this)) {
 			pushWater();
-			return true;
+			return;
 		}
-		return false;
+		remove();
 	}
 
 	@Override
 	public boolean swing() {
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return true;
-		}
-
-		if (this.state.equals(BendingAbilityState.CanStart)) {
-			AbilityManager.getManager().addInstance(this);
+		if (getState().equals(BendingAbilityState.Start)) {
+			
 			setState(BendingAbilityState.Progressing);
 			return false;
 		}
 
-		if (!this.state.equals(BendingAbilityState.Progressing)) {
+		if (!getState().equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
 
@@ -133,11 +118,11 @@ public abstract class Bubble extends BendingActiveAbility {
 	}
 
 	public static boolean canFlowTo(Block block) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBubble);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBubble);
 		if (instances == null) {
-			instances = new HashMap<Object, IBendingAbility>();
+			instances = new HashMap<Object, BendingAbility>();
 		}
-		Map<Object, IBendingAbility> insts = AbilityManager.getManager().getInstances(BendingAbilities.WaterBubble);
+		Map<Object, BendingAbility> insts = AbilityManager.getManager().getInstances(BendingAbilities.WaterBubble);
 
 		if (insts != null) {
 			instances.putAll(insts);

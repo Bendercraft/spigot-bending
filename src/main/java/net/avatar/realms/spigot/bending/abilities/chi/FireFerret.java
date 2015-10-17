@@ -7,18 +7,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name = "Fire Ferret", bind = BendingAbilities.FireFerret, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiFire)
+@ABendingAbility(name = "Fire Ferret", bind = BendingAbilities.FireFerret, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiFire)
 public class FireFerret extends BendingActiveAbility {
 	@ConfigurationParameter("Search-Radius")
 	public static double SEARCH_RADIUS = 20;
@@ -55,7 +54,7 @@ public class FireFerret extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(state == BendingAbilityState.CanStart) {
+		if(getState() == BendingAbilityState.Start) {
 			if(player.isSneaking()) {
 				if(!ComboPoints.consume(player,2)) {
 					setState(BendingAbilityState.Ended);
@@ -69,7 +68,6 @@ public class FireFerret extends BendingActiveAbility {
 					return false;
 				}
 				time = System.currentTimeMillis();
-				AbilityManager.getManager().addInstance(this);
 				setState(BendingAbilityState.Progressing);
 			}
 		}
@@ -82,35 +80,32 @@ public class FireFerret extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if(!super.progress()) {
-			return false;
-		}
-		
+	public void progress() {
 		long now = System.currentTimeMillis();
 		if(now - time > TIME_TO_TARGET * 1000) {
 			time = now;
 			target = EntityTools.getNearestLivingEntity(location, SEARCH_RADIUS, player);
 			if(target == null) {
-				return false;
+				remove();
+				return;
 			}
 		}
 		
 		if(target.isDead()) {
-			return false;
+			remove();
+			return;
 		}
 
 		location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 0, (int) RANGE + 4);
 		
 		if(target.getLocation().distance(location) < AFFECTING_RADIUS) {
 			affect(target);
-			return false;
+			remove();
+			return;
 		}
 		
 		Vector direction = target.getLocation().toVector().clone().subtract(location.toVector());
 		location = this.location.add(direction.multiply(speedfactor));
-		
-		return true;
 	}
 
 	@Override
@@ -128,5 +123,10 @@ public class FireFerret extends BendingActiveAbility {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

@@ -4,11 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -20,7 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Shockwave", bind = BendingAbilities.Shockwave, element = BendingElement.Earth)
+@ABendingAbility(name = "Shockwave", bind = BendingAbilities.Shockwave, element = BendingElement.Earth)
 public class Shockwave extends BendingActiveAbility {
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 2500;
@@ -47,7 +46,7 @@ public class Shockwave extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (state == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.Prepared) {
 			double dtheta = 360. / (2 * Math.PI * Ripple.RADIUS) - 1;
 			for (double theta = 0; theta < 360; theta += dtheta) {
 				double rtheta = Math.toRadians(theta);
@@ -55,37 +54,41 @@ public class Shockwave extends BendingActiveAbility {
 				if (vector.angle(player.getEyeLocation().getDirection()) < angle)
 					ripples.add(new Ripple(player, vector.normalize()));
 			}
-			state = BendingAbilityState.Progressing;
+			setState(BendingAbilityState.Progressing);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if (state == BendingAbilityState.CanStart) {
-			AbilityManager.getManager().addInstance(this);
-			state = BendingAbilityState.Preparing;
+		if (getState() == BendingAbilityState.Start) {
+			setState(BendingAbilityState.Preparing);
 		}
 		return false;
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
 		if (!EntityTools.canBend(player, BendingAbilities.Shockwave) || EntityTools.getBendingAbility(player) != BendingAbilities.Shockwave) {
 			return false;
 		}
+		return true;
+	}
 
-		if (state == BendingAbilityState.Preparing) {
+	@Override
+	public void progress() {
+		if (getState() == BendingAbilityState.Preparing) {
 			if (!player.isSneaking()) {
-				return false;
+				remove();
+				return;
 			}
 			if (System.currentTimeMillis() > starttime + chargetime) {
-				state = BendingAbilityState.Prepared;
+				setState(BendingAbilityState.Prepared);
 			}
-		} else if (state == BendingAbilityState.Prepared) {
+		} else if (getState() == BendingAbilityState.Prepared) {
 			Location location = player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.SMOKE, Tools.getIntCardinalDirection(player.getEyeLocation().getDirection()), 3);
 
@@ -97,9 +100,9 @@ public class Shockwave extends BendingActiveAbility {
 					Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
 					ripples.add(new Ripple(player, vector.normalize()));
 				}
-				state = BendingAbilityState.Progressing;
+				setState(BendingAbilityState.Progressing);
 			}
-		} else if (state == BendingAbilityState.Progressing) {
+		} else if (getState() == BendingAbilityState.Progressing) {
 			List<Ripple> toRemove = new LinkedList<Ripple>();
 			for (Ripple ripple : ripples) {
 				if (!ripple.progress()) {
@@ -108,17 +111,22 @@ public class Shockwave extends BendingActiveAbility {
 			}
 			ripples.removeAll(toRemove);
 			if (ripples.isEmpty()) {
-				return false;
+				remove();
+				return;
 			}
 		} else {
-			return false;
+			remove();
 		}
-		return true;
 	}
 
 	@Override
 	public Object getIdentifier() {
 		return player;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

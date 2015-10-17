@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -22,7 +22,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-@BendingAbility(name = "Fire Shield", bind = BendingAbilities.FireShield, element = BendingElement.Fire)
+@ABendingAbility(name = "Fire Shield", bind = BendingAbilities.FireShield, element = BendingElement.Fire)
 public class FireShield extends BendingActiveAbility {
 
 	private static long interval = 100;
@@ -38,43 +38,43 @@ public class FireShield extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (state == BendingAbilityState.CanStart) {
+		if (getState() == BendingAbilityState.Start) {
 			this.time = System.currentTimeMillis();
 			setState(BendingAbilityState.Progressing);
-			AbilityManager.getManager().addInstance(this);
+			
 		}
 		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		if (state == BendingAbilityState.CanStart) {
+		if (getState() == BendingAbilityState.Start) {
 			protect = new FireProtection(this.player);
 			setState(BendingAbilityState.Progressing);
-			AbilityManager.getManager().addInstance(this);
+			
 		}
 		return false;
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		if(protect != null) {
 			protect.remove();
 		}
 		this.bender.cooldown(BendingAbilities.FireShield, FireProtection.COOLDOWN);
-		super.remove();
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
+	public void progress() {
 		if(protect != null) {
-			return protect.progress();
+			if(!protect.progress()) {
+				remove();
+			}
+			return;
 		}
 		if (!this.player.isSneaking()) {
-			return false;
+			remove();
+			return;
 		}
 
 		if (System.currentTimeMillis() > (this.time + interval)) {
@@ -111,14 +111,11 @@ public class FireShield extends BendingActiveAbility {
 					if (this.bender.hasPath(BendingPath.Lifeless)) {
 						EntityTools.damageEntity(this.player, entity, 2);
 					}
-					new Enflamed(this.player, entity, 3, this);
+					new Enflamed(this.player, entity, 3);
 				}
 			}
-
 			FireBlast.removeFireBlastsAroundPoint(location, radius);
-
 		}
-		return true;
 	}
 
 	@Override
@@ -131,7 +128,7 @@ public class FireShield extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireShield);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireShield);
 		return !instances.containsKey(player);
 	}
 

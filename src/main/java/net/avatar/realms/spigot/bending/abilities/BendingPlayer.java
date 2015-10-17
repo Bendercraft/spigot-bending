@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 
@@ -97,7 +96,7 @@ public class BendingPlayer {
 		this.lastTime = System.currentTimeMillis();
 	}
 
-	public void cooldown(IBendingAbility ability, long cooldownTime) {
+	public void cooldown(BendingAbility ability, long cooldownTime) {
 		cooldown(AbilityManager.getManager().getAbilityType(ability), cooldownTime);
 	}
 

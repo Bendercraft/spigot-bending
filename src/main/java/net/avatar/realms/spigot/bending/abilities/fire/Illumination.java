@@ -9,17 +9,17 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@BendingAbility(name = "Illumination", bind = BendingAbilities.Illumination, element = BendingElement.Fire)
+@ABendingAbility(name = "Illumination", bind = BendingAbilities.Illumination, element = BendingElement.Fire)
 public class Illumination extends BendingActiveAbility {
 
 	@ConfigurationParameter("Range")
@@ -37,25 +37,12 @@ public class Illumination extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
-			AbilityManager.getManager().addInstance(this);
+		if(getState() == BendingAbilityState.Start) {
 			setState(BendingAbilityState.Progressing);
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-			setState(BendingAbilityState.Ended);
-			return false;
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
+		} else if(getState() == BendingAbilityState.Progressing) {
+			remove();
 		}
+		return false;
 	}
 
 	private void set() {
@@ -80,19 +67,14 @@ public class Illumination extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
+	public void progress() {
 		set();
-
-		return true;
 	}
 
 	@Override
 	public void stop() {
 		revert();
+		this.bender.cooldown(BendingAbilities.Illumination, COOLDOWN);
 	}
 
 	private void revert() {
@@ -106,14 +88,8 @@ public class Illumination extends BendingActiveAbility {
 		return 1000 * 60 * 15;
 	}
 
-	@Override
-	public void remove() {
-		this.bender.cooldown(BendingAbilities.Illumination, COOLDOWN);
-		super.remove();
-	}
-
 	public static boolean isIlluminated(Block block) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Illumination);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Illumination);
 		if (instances == null) {
 			return false;
 		}

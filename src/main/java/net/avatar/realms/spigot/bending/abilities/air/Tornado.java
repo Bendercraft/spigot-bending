@@ -16,18 +16,17 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name = "Tornado", bind = BendingAbilities.Tornado, element = BendingElement.Air, affinity = BendingAffinity.Tornado)
+@ABendingAbility(name = "Tornado", bind = BendingAbilities.Tornado, element = BendingElement.Air, affinity = BendingAffinity.Tornado)
 public class Tornado extends BendingActiveAbility {
 	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 
@@ -67,10 +66,6 @@ public class Tornado extends BendingActiveAbility {
 	public Tornado(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.origin = EntityTools.getTargetBlock(player, RANGE).getLocation();
 		this.origin.setY(this.origin.getY() - ((1. / 10.) * this.height));
 
@@ -86,61 +81,36 @@ public class Tornado extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return true;
-		case CanStart:
+		if(getState() == BendingAbilityState.Start) {
 			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			if (this.flying != null) {
 				setState(BendingAbilityState.Progressing);
-				AbilityManager.getManager().addInstance(this);
 			}
-			return false;
-
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
 		}
+		return false;
 	}
 
 	@Override
 	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
-		if (this.player.getEyeLocation().getBlock().isLiquid()) {
+		if (this.player.getEyeLocation().getBlock().isLiquid() 
+				|| !this.player.isSneaking()
+				|| EntityTools.getBendingAbility(this.player) != BendingAbilities.Tornado
+				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirBlast, this.origin)) {
 			return false;
 		}
-
-		if (!this.player.isSneaking()) {
-			return false;
-		}
-
-		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.Tornado)) {
-			return false;
-		}
-
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirBlast, this.origin)) {
-			return false;
-		}
-
-		rotateTornado();
 		return true;
 	}
 
-	private void rotateTornado() {
+	@Override
+	public void progress() {
 		this.origin = EntityTools.getTargetBlock(this.player, RANGE).getLocation();
 
 		double timefactor = this.height / HEIGHT;
@@ -213,10 +183,6 @@ public class Tornado extends BendingActiveAbility {
 						velocity.multiply(timefactor * 0.75);
 						entity.setVelocity(velocity);
 						entity.setFallDistance((float) (entity.getFallDistance() / 3.0));
-
-						// if (entity instanceof Player) {
-						// new Flight((Player) entity);
-						// }
 					}
 				}
 				EntityTools.fallImmunity.put(entity.getUniqueId(), System.currentTimeMillis() + FALL_IMMUNITY);

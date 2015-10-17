@@ -1,30 +1,13 @@
-package net.avatar.realms.spigot.bending.abilities.base;
+package net.avatar.realms.spigot.bending.abilities;
 
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 public abstract class BendingActiveAbility extends BendingAbility {
 
-	/**
-	 * Construct the bases of a new active ability instance
-	 *
-	 * @param player
-	 *            The player that launches this ability
-	 * @param parent
-	 *            The ability that generates this ability. null if none
-	 */
-	public BendingActiveAbility(Player player, IBendingAbility parent) {
+	public BendingActiveAbility(Player player, BendingAbility parent) {
 		super(player, parent);
-
-		if (canBeInitialized()) {
-			this.startedTime = System.currentTimeMillis();
-			setState(BendingAbilityState.CanStart);
-		} else {
-			setState(BendingAbilityState.CannotStart);
-		}
 	}
 
 	/**
@@ -69,28 +52,13 @@ public abstract class BendingActiveAbility extends BendingAbility {
 	}
 
 	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
-		if (this.bender.isOnCooldown(AbilityManager.getManager().getAbilityType(this))) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, AbilityManager.getManager().getAbilityType(this), this.player.getLocation())) {
 			return false;
 		}
-
 		return true;
 	}
 

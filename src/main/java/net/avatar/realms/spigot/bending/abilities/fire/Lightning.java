@@ -14,14 +14,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -30,7 +30,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name = "Lightning", bind = BendingAbilities.Lightning, element = BendingElement.Fire, affinity = BendingAffinity.Lightning)
+@ABendingAbility(name = "Lightning", bind = BendingAbilities.Lightning, element = BendingElement.Fire, affinity = BendingAffinity.Lightning)
 public class Lightning extends BendingActiveAbility {
 	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();
 
@@ -62,9 +62,6 @@ public class Lightning extends BendingActiveAbility {
 	public Lightning(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
 		this.warmup = WARMUP;
 		if (AvatarState.isAvatarState(this.player)) {
 			this.warmup = 0;
@@ -75,8 +72,7 @@ public class Lightning extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(state == BendingAbilityState.CanStart) {
-			AbilityManager.getManager().addInstance(this);
+		if(getState() == BendingAbilityState.Start) {
 			setState(BendingAbilityState.Preparing);
 		}
 		return false;
@@ -151,42 +147,41 @@ public class Lightning extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		this.bender.cooldown(BendingAbilities.Lightning, COOLDOWN);
-		super.remove();
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
 		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.Lightning) {
 			return false;
 		}
+		return true;
+	}
 
+	@Override
+	public void progress() {
 		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
 
-		if (System.currentTimeMillis() > (this.startedTime + this.warmup) && state == BendingAbilityState.Preparing) {
+		if (System.currentTimeMillis() > (this.startedTime + this.warmup) && getState() == BendingAbilityState.Preparing) {
 			setState(BendingAbilityState.Prepared);
 		}
 
-		if (this.state.equals(BendingAbilityState.Prepared)) {
+		if (getState().equals(BendingAbilityState.Prepared)) {
 			if (this.player.isSneaking()) {
 				this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE, Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), distance);
 			} else {
 				strike();
-				setState(BendingAbilityState.Ended);
-				return false;
+				remove();
 			}
 		} else {
 			if (!this.player.isSneaking()) {
-				setState(BendingAbilityState.Ended);
-				return false;
+				remove();
 			}
 		}
-		return true;
 	}
 
 	public void dealDamage(Entity entity) {
@@ -210,7 +205,7 @@ public class Lightning extends BendingActiveAbility {
 
 	public static boolean isNearbyChannel(Location location) {
 		boolean isNearby = false;
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Lightning);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Lightning);
 
 		for (Object obj : instances.keySet()) {
 			if (!instances.get(obj).getPlayer().getWorld().equals(location.getWorld())) {
@@ -235,7 +230,7 @@ public class Lightning extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Lightning);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Lightning);
 
 		if (instances == null) {
 			return true;

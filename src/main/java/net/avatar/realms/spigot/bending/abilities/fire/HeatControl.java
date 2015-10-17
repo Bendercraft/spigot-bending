@@ -10,12 +10,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
@@ -34,7 +33,7 @@ import net.avatar.realms.spigot.bending.utils.TempBlock;
  *
  * @author Noko
  */
-@BendingAbility(name = "HeatControl", bind = BendingAbilities.HeatControl, element = BendingElement.Fire)
+@ABendingAbility(name = "HeatControl", bind = BendingAbilities.HeatControl, element = BendingElement.Fire)
 public class HeatControl extends BendingActiveAbility {
 
 	@ConfigurationParameter("Extinguish-Range")
@@ -72,7 +71,7 @@ public class HeatControl extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(state == BendingAbilityState.CanStart) {
+		if(getState() == BendingAbilityState.Start) {
 			double range = PluginTools.firebendingDayAugment(EXT_RANGE, this.player.getWorld());
 			Block block = EntityTools.getTargetBlock(this.player, range);
 			if (BlockTools.isMeltable(block)) {
@@ -126,27 +125,30 @@ public class HeatControl extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(state == BendingAbilityState.CanStart) {
+		if(getState() == BendingAbilityState.Start) {
 			this.items = this.player.getItemInHand();
 			if (isCookable(this.items.getType())) {
 				this.time = this.startedTime;
-				AbilityManager.getManager().addInstance(this);
+				
 				setState(BendingAbilityState.Progressing);
 			}
 		}
 		return false;
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
 		if (!this.player.isSneaking()) {
 			return false;
 		}
-
+		return true;
+	}
+	
+	@Override
+	public void progress() {
 		long now = System.currentTimeMillis();
 		if (!this.items.equals(this.player.getItemInHand())) {
 			this.time = now;
@@ -154,7 +156,8 @@ public class HeatControl extends BendingActiveAbility {
 		}
 
 		if (!isCookable(this.items.getType())) {
-			return false;
+			remove();
+			return;
 		}
 
 		if (now > (this.time + COOK_TIME)) {
@@ -163,7 +166,6 @@ public class HeatControl extends BendingActiveAbility {
 		}
 
 		this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.MOBSPAWNER_FLAMES, 0, 10);
-		return true;
 	}
 
 	private static boolean isCookable(Material material) {
@@ -269,5 +271,10 @@ public class HeatControl extends BendingActiveAbility {
 			block.setType(Material.AIR);
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1);
 		}
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

@@ -15,16 +15,16 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
-@BendingAbility(name = "Air Scooter", bind = BendingAbilities.AirScooter, element = BendingElement.Air)
+@ABendingAbility(name = "Air Scooter", bind = BendingAbilities.AirScooter, element = BendingElement.Air)
 public class AirScooter extends BendingActiveAbility {
 
 	@ConfigurationParameter("Speed")
@@ -42,10 +42,6 @@ public class AirScooter extends BendingActiveAbility {
 	public AirScooter(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.time = this.startedTime;
 		for (int i = 0; i < 5; i++) {
 			this.angles.add((double) (60 * i));
@@ -60,23 +56,18 @@ public class AirScooter extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return true;
-		}
-
-		if (this.state == BendingAbilityState.CanStart) {
+		if (getState() == BendingAbilityState.Start) {
 			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			this.player.setAllowFlight(true);
 			this.player.setFlying(true);
 			this.player.setSprinting(false);
 
-			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Progressing);
 
 			return false;
 		}
 
-		if (this.state == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.Progressing) {
 			setState(BendingAbilityState.Ended);
 			return false;
 		}
@@ -94,33 +85,24 @@ public class AirScooter extends BendingActiveAbility {
 	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 	}
+	
+	@Override
+	public boolean canTick() {
+		if(!super.canTick() 
+				|| this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this) 
+				|| this.player.isSneaking() 
+				|| !this.player.isFlying()) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		if (this.state == BendingAbilityState.Ending) {
-			return false;
-		}
-
-		if(this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
-			return false;
-		}
-
-		if(this.player.isSneaking()) {
-			return false;
-		}
-
-		if (!this.player.isFlying()) {
-			return false;
-		}
-
-
+	public void progress() {
 		getFloor();
 		if (this.floorblock == null) {
-			return false;
+			remove();
+			return;
 		}
 
 		Vector velocity = this.player.getEyeLocation().getDirection().clone();
@@ -129,7 +111,8 @@ public class AirScooter extends BendingActiveAbility {
 		if (System.currentTimeMillis() > (this.time + INTERVAL)) {
 			this.time = System.currentTimeMillis();
 			if (this.player.getVelocity().length() < (this.speed * .5)) {
-				return false;
+				remove();
+				return;
 			}
 			spinScooter();
 		}
@@ -147,8 +130,6 @@ public class AirScooter extends BendingActiveAbility {
 		this.player.setSprinting(false);
 		this.player.removePotionEffect(PotionEffectType.SPEED);
 		this.player.setVelocity(velocity);
-
-		return true;
 	}
 
 	private void spinScooter() {
@@ -179,7 +160,7 @@ public class AirScooter extends BendingActiveAbility {
 	public static List<Player> getPlayers() {
 		List<Player> players = new LinkedList<Player>();
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirScooter);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirScooter);
 		if ((instances == null) || instances.isEmpty()) {
 			return players;
 		}
@@ -201,8 +182,7 @@ public class AirScooter extends BendingActiveAbility {
 	}
 
 	public static boolean isOnScooter(Player player) {
-
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirScooter);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirScooter);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}

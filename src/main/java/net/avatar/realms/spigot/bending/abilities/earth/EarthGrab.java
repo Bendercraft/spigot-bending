@@ -17,17 +17,17 @@ import org.bukkit.potion.PotionEffectType;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@BendingAbility(name = "Earth Grab", bind = BendingAbilities.EarthGrab, element = BendingElement.Earth)
+@ABendingAbility(name = "Earth Grab", bind = BendingAbilities.EarthGrab, element = BendingElement.Earth)
 public class EarthGrab extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	private static double range = 15;
@@ -58,7 +58,7 @@ public class EarthGrab extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (this.state != BendingAbilityState.CanStart) {
+		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
 		if (this.bender.isOnCooldown(BendingAbilities.EarthGrab)) {
@@ -69,15 +69,14 @@ public class EarthGrab extends BendingActiveAbility {
 		boolean done = grabEntity(this.player, closestentity);
 		if (this.target != null && done == true) {
 			this.id = ID++;
-			AbilityManager.getManager().addInstance(this);
-			this.state = BendingAbilityState.Progressing;
+			setState(BendingAbilityState.Progressing);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if (this.state != BendingAbilityState.CanStart) {
+		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
 		if (this.bender.isOnCooldown(BendingAbilities.EarthGrab)) {
@@ -87,8 +86,7 @@ public class EarthGrab extends BendingActiveAbility {
 		boolean done = grabEntity(this.player, this.player);
 		if (this.target != null && done == true) {
 			this.id = ID++;
-			AbilityManager.getManager().addInstance(this);
-			this.state = BendingAbilityState.Progressing;
+			setState(BendingAbilityState.Progressing);
 		}
 		return false;
 	}
@@ -203,48 +201,36 @@ public class EarthGrab extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
+	public void progress() {
 		Location loc = this.target.getLocation();
 
 		if (!this.toKeep) {
-			return false;
+			remove();
+			return;
 		}
 
 		if (this.target == null) {
-			return false;
+			remove();
+			return;
 		}
 		if (this.player.getEntityId() == this.target.getEntityId()) {
 			if (System.currentTimeMillis() > this.time + (SELF_DURATION * 1000)) {
-				return false;
+				remove();
+				return;
 			}
 		}
 
-		if (loc.getWorld() != this.origin.getWorld()) {
-			return false;
+		if (loc.getWorld() != this.origin.getWorld()
+				|| (int) loc.getX() != (int) this.origin.getX()
+				|| (int) loc.getZ() != (int) this.origin.getZ()
+				|| (int) loc.getY() != (int) this.origin.getY()
+				|| !BlockTools.isEarthbendable(this.player, loc.add(0, 0, -1).getBlock()) 
+				|| !BlockTools.isEarthbendable(this.player, loc.add(0, 0, +2).getBlock()) 
+				|| !BlockTools.isEarthbendable(this.player, loc.add(-1, 0, -1).getBlock()) 
+				|| !BlockTools.isEarthbendable(this.player, loc.add(+2, 0, 0).getBlock())) {
+			remove();
+			return;
 		}
-		if ((int) loc.getX() != (int) this.origin.getX()) {
-			return false;
-		}
-		if ((int) loc.getZ() != (int) this.origin.getZ()) {
-			return false;
-		}
-		if ((int) loc.getY() != (int) this.origin.getY()) {
-			return false;
-		}
-
-		if (!BlockTools.isEarthbendable(this.player, loc.add(0, 0, -1).getBlock())) {
-			return false;
-		}
-		if (!BlockTools.isEarthbendable(this.player, loc.add(0, 0, +2).getBlock())) {
-			return false;
-		}
-		if (!BlockTools.isEarthbendable(this.player, loc.add(-1, 0, -1).getBlock())) {
-			return false;
-		}
-		if (!BlockTools.isEarthbendable(this.player, loc.add(+2, 0, 0).getBlock())) {
-			return false;
-		}
-		return true;
 	}
 
 	public boolean revertEarthGrab() {
@@ -263,7 +249,7 @@ public class EarthGrab extends BendingActiveAbility {
 	}
 
 	public static EarthGrab blockInEarthGrab(Block block) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.EarthGrab).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.EarthGrab).values()) {
 			EarthGrab grab = (EarthGrab) ab;
 			if (grab.locInEarthGrab(block.getLocation())) {
 				return grab;

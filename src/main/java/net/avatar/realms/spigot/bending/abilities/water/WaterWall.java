@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.Set;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -31,7 +31,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Surge", bind = BendingAbilities.Surge, element = BendingElement.Water)
+@ABendingAbility(name = "Surge", bind = BendingAbilities.Surge, element = BendingElement.Water)
 public class WaterWall extends BendingActiveAbility {
 	private static final long interval = 30;
 
@@ -77,26 +77,22 @@ public class WaterWall extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (state == BendingAbilityState.CanStart) {
+		if (getState() == BendingAbilityState.Start) {
 			if (bender.isOnCooldown(AbilityManager.getManager().getAbilityType(this))) {
-				state = BendingAbilityState.Ended;
 				return false;
 			}
 			wave = new Wave(player);
 			if (wave.prepare()) {
-				state = BendingAbilityState.Prepared;
-				AbilityManager.getManager().addInstance(this);
-			} else {
-				state = BendingAbilityState.Ended;
+				setState(BendingAbilityState.Prepared);
 			}
-		} else if (state == BendingAbilityState.Prepared) {
+		} else if (getState() == BendingAbilityState.Prepared) {
 			if (wave == null) {
 				moveWater(); // Build wall
-				state = BendingAbilityState.Progressing;
+				setState(BendingAbilityState.Progressing);
 			} else {
-				state = BendingAbilityState.Ended;
+				remove();
 			}
-		} else if (state == BendingAbilityState.Progressing) {
+		} else if (getState() == BendingAbilityState.Progressing) {
 			if (wave != null) {
 				wave.freeze();
 			}
@@ -107,24 +103,20 @@ public class WaterWall extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (state == BendingAbilityState.CanStart) {
+		if (getState() == BendingAbilityState.Start) {
 			if (bender.isOnCooldown(AbilityManager.getManager().getAbilityType(this))) {
-				state = BendingAbilityState.Ended;
 				return false;
 			}
 			// WaterWall !
 			if (prepare()) {
-				state = BendingAbilityState.Prepared;
-				AbilityManager.getManager().addInstance(this);
-			} else {
-				state = BendingAbilityState.Ended;
+				setState(BendingAbilityState.Prepared);
 			}
-		} else if (state == BendingAbilityState.Prepared) {
+		} else if (getState() == BendingAbilityState.Prepared) {
 			if (wave != null) {
 				wave.moveWater();
-				state = BendingAbilityState.Progressing;
+				setState(BendingAbilityState.Progressing);
 			}
-		} else if (state == BendingAbilityState.Progressing) {
+		} else if (getState() == BendingAbilityState.Progressing) {
 			if (wave == null) {
 				freezeThaw();
 			}
@@ -188,7 +180,7 @@ public class WaterWall extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		finalRemoveWater(sourceblock);
 		if (drainedBlock != null) {
 			drainedBlock.revertBlock();
@@ -196,7 +188,6 @@ public class WaterWall extends BendingActiveAbility {
 		if (wave != null) {
 			wave.remove();
 		}
-		super.remove();
 	}
 
 	private void focusBlock() {
@@ -249,39 +240,45 @@ public class WaterWall extends BendingActiveAbility {
 
 	}
 
-	public boolean progress() {
+	@Override
+	public void progress() {
 		if (wave != null) {
-			return wave.progress();
+			if(!wave.progress()) {
+				remove();
+			}
+			return;
 		}
 
 		// TODO : Try to find why sometimes, the watersource is going far in the
 		// sky.
 		if (player.isDead() || !player.isOnline()) {
 			breakBlock();
-			return false;
+			remove();
+			return;
 		}
 		if (!EntityTools.canBend(player, BendingAbilities.Surge)) {
 			if (!forming)
 				breakBlock();
 			returnWater();
-			return false;
+			return;
 		}
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 
 			if (!progressing && EntityTools.getBendingAbility(player) != BendingAbilities.Surge) {
-				return false;
+				remove();
+				return;
 			}
 
 			if (progressing && (!player.isSneaking() || EntityTools.getBendingAbility(player) != BendingAbilities.Surge)) {
 				breakBlock();
 				returnWater();
-				return false;
+				return;
 			}
 
 			if (!progressing) {
 				sourceblock.getWorld().playEffect(location, Effect.SMOKE, 4, (int) RANGE);
-				return true;
+				return;
 			}
 
 			if (forming) {
@@ -324,7 +321,7 @@ public class WaterWall extends BendingActiveAbility {
 					}
 				}
 
-				return true;
+				return;
 			}
 
 			if (sourceblock.getLocation().distance(firstdestination) < .5 && settingup) {
@@ -348,12 +345,13 @@ public class WaterWall extends BendingActiveAbility {
 			if (block.getType() != Material.AIR) {
 				breakBlock();
 				returnWater();
-				return false;
+				return;
 			}
 
 			if (!progressing) {
 				breakBlock();
-				return false;
+				remove();
+				return;
 			}
 
 			addWater(block);
@@ -364,11 +362,7 @@ public class WaterWall extends BendingActiveAbility {
 				removeWater(sourceblock);
 				forming = true;
 			}
-
-			return true;
 		}
-
-		return true;
 	}
 
 	private void addWallBlock(Block block) {
@@ -454,7 +448,7 @@ public class WaterWall extends BendingActiveAbility {
 	}
 
 	public static boolean isWaterWalling(Player player) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Surge).values()) {
 			WaterWall wall = (WaterWall) ab;
 			if (wall.player.equals(player))
 				return true;

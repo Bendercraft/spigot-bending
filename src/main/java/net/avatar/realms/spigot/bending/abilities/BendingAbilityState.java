@@ -2,11 +2,11 @@ package net.avatar.realms.spigot.bending.abilities;
 
 public enum BendingAbilityState {
 
-	None(0), CannotStart(1), CanStart(2), Preparing(3), Prepared(4), Progressing(5), Ending(6),
+	Start(0), Preparing(1), Prepared(2), Progressing(3),
 	/**
 	 * When the state is on Ended, the ability will be removed in the next tick
 	 */
-	Ended(7), Removed(8);
+	Ended(4);
 
 	private int step;
 

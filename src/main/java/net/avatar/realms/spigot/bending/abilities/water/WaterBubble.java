@@ -4,8 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.multi.Bubble;
@@ -13,7 +12,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name = "Water Bubble", bind = BendingAbilities.WaterBubble, element = BendingElement.Water)
+@ABendingAbility(name = "Water Bubble", bind = BendingAbilities.WaterBubble, element = BendingElement.Water)
 public class WaterBubble extends Bubble {
 
 	@ConfigurationParameter("Radius")
@@ -24,10 +23,6 @@ public class WaterBubble extends Bubble {
 
 	public WaterBubble(Player player) {
 		super(player, null);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
 
 		if (Tools.isNight(this.player.getWorld())) {
 			this.radius = PluginTools.waterbendingNightAugment(WaterBubble.DEFAULT_RADIUS, this.player.getWorld());

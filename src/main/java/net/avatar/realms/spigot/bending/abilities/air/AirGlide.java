@@ -4,17 +4,16 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "AirGlide", bind = BendingAbilities.AirGlide, element = BendingElement.Air)
+@ABendingAbility(name = "AirGlide", bind = BendingAbilities.AirGlide, element = BendingElement.Air)
 public class AirGlide extends BendingPassiveAbility {
 
 	@ConfigurationParameter("Fall-Factor")
@@ -48,14 +47,10 @@ public class AirGlide extends BendingPassiveAbility {
 
 	@Override
 	public boolean start() {
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return false;
-		}
 		this.x = this.player.getVelocity().getX();
 		this.y = this.player.getVelocity().getY() * FALL_FACTOR;
 		this.z = this.player.getVelocity().getZ();
 
-		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
 		this.fly = FlyingPlayer.addFlyingPlayer(this.player, this, 60 * 1000L);
 		this.bender.cooldown(this, 500);
@@ -68,21 +63,22 @@ public class AirGlide extends BendingPassiveAbility {
 			this.fly.resetState();
 		}
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		if (!(EntityTools.canBendPassive(this.player, BendingElement.Air) && this.player.isSneaking())) {
+	public boolean canTick() {
+		if(!super.canTick() 
+				|| !(EntityTools.canBendPassive(this.player, BendingElement.Air) && this.player.isSneaking())) {
 			return false;
 		}
 		BendingAbilities ability = EntityTools.getBendingAbility(this.player);
 		if ((ability != null) && ability.isShiftAbility()) {
 			return false;
 		}
+		return true;
+	}
 
+	@Override
+	public void progress() {
 		if (this.player.getLocation().getBlock().getType() == Material.AIR) {
 			Vector vel = this.player.getVelocity();
 			vel.setX(this.x);
@@ -90,7 +86,6 @@ public class AirGlide extends BendingPassiveAbility {
 			vel.setZ(this.z);
 			this.player.setVelocity(vel);
 		}
-		return true;
 	}
 
 	@Override

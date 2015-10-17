@@ -2,20 +2,18 @@ package net.avatar.realms.spigot.bending.abilities;
 
 import java.lang.reflect.Constructor;
 
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
-
 public class RegisteredAbility {
-	private Class<? extends IBendingAbility> ability;
+	private Class<? extends BendingAbility> ability;
 	private String name;
 	private BendingElement element;
 	private BendingAffinity specialization;
-	private Constructor<? extends IBendingAbility> constructor;
+	private Constructor<? extends BendingAbility> constructor;
 
-	public RegisteredAbility(String name, Class<? extends IBendingAbility> ability, BendingElement element, Constructor<? extends IBendingAbility> constructor) {
+	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, Constructor<? extends BendingAbility> constructor) {
 		this(name, ability, element, null, constructor);
 	}
 
-	public RegisteredAbility(String name, Class<? extends IBendingAbility> ability, BendingElement element, BendingAffinity specialization, Constructor<? extends IBendingAbility> constructor) {
+	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity specialization, Constructor<? extends BendingAbility> constructor) {
 		this.name = name;
 		this.ability = ability;
 		this.element = element;
@@ -23,7 +21,7 @@ public class RegisteredAbility {
 		this.constructor = constructor;
 	}
 
-	public Class<? extends IBendingAbility> getAbility() {
+	public Class<? extends BendingAbility> getAbility() {
 		return this.ability;
 	}
 
@@ -47,7 +45,7 @@ public class RegisteredAbility {
 		return this.element.name().toLowerCase() + "." + this.name.toLowerCase().replaceAll(" ", "_");
 	}
 
-	public Constructor<? extends IBendingAbility> getConstructor() {
+	public Constructor<? extends BendingAbility> getConstructor() {
 		return constructor;
 	}
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.base.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 
 // I continue to use an extern class to handle flying because there can be many reasons to be flying
 // : WaterSpout and Tornado for example.

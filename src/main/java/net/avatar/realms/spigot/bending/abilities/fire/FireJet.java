@@ -13,17 +13,17 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@BendingAbility(name = "Fire Jet", bind = BendingAbilities.FireJet, element = BendingElement.Fire)
+@ABendingAbility(name = "Fire Jet", bind = BendingAbilities.FireJet, element = BendingElement.Fire)
 public class FireJet extends BendingActiveAbility {
 
 	@ConfigurationParameter("Speed")
@@ -40,39 +40,23 @@ public class FireJet extends BendingActiveAbility {
 
 	public FireJet(Player player) {
 		super(player, null);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
 		this.factor = PluginTools.firebendingDayAugment(FACTOR, player.getWorld());
 	}
 
 	@Override
 	public boolean swing() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
+		if(getState() == BendingAbilityState.Start) {
 			Block block = this.player.getLocation().getBlock();
 			if (FireStream.isIgnitable(this.player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(this.player)) {
 				FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 				this.player.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor));
 				setState(BendingAbilityState.Progressing);
-				AbilityManager.getManager().addInstance(this);
+				
 			}
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-			setState(BendingAbilityState.Ended);
-			return false;
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
+		} else if(getState() == BendingAbilityState.Progressing) {
+			remove();
 		}
+		return false;
 	}
 
 	public static boolean checkTemporaryImmunity(Player player) {
@@ -81,33 +65,35 @@ public class FireJet extends BendingActiveAbility {
 		}
 		return false;
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
-		long now = System.currentTimeMillis();
-		if ((BlockTools.isWater(this.player.getLocation().getBlock()) || (now > (this.startedTime + this.duration))) && !AvatarState.isAvatarState(this.player)) {
+		if ((BlockTools.isWater(this.player.getLocation().getBlock()) 
+				|| (System.currentTimeMillis() > (this.startedTime + this.duration))) && !AvatarState.isAvatarState(this.player)) {
 			return false;
-		} else {
-			this.player.getWorld().playEffect(this.player.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
-			double timefactor;
-			if (AvatarState.isAvatarState(this.player)) {
-				timefactor = 1;
-			} else {
-				timefactor = 1 - ((now - this.startedTime) / (2.0 * this.duration));
-			}
-			Vector velocity = this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor * timefactor);
-			this.player.setVelocity(velocity);
-			this.player.setFallDistance(0);
 		}
 		return true;
 	}
 
+	@Override
+	public void progress() {
+		this.player.getWorld().playEffect(this.player.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+		double timefactor;
+		if (AvatarState.isAvatarState(this.player)) {
+			timefactor = 1;
+		} else {
+			timefactor = 1 - ((System.currentTimeMillis() - this.startedTime) / (2.0 * this.duration));
+		}
+		Vector velocity = this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor * timefactor);
+		this.player.setVelocity(velocity);
+		this.player.setFallDistance(0);
+	}
+
 	public static List<Player> getPlayers() {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireJet);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireJet);
 		LinkedList<Player> players = new LinkedList<Player>();
 		if (instances == null) {
 			return players;
@@ -123,12 +109,7 @@ public class FireJet extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
-	}
-
-	@Override
-	public void remove() {
 		this.bender.cooldown(BendingAbilities.FireJet, COOLDOWN);
-		super.remove();
 	}
 
 	@Override

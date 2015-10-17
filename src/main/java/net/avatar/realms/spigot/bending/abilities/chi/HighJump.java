@@ -5,16 +5,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name = "High Jump", bind = BendingAbilities.HighJump, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "High Jump", bind = BendingAbilities.HighJump, element = BendingElement.ChiBlocker)
 public class HighJump extends BendingActiveAbility {
 
 	@ConfigurationParameter("Height")
@@ -29,9 +28,6 @@ public class HighJump extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (this.state == BendingAbilityState.CannotStart) {
-			return true;
-		}
 		if (makeJump()) {
 			this.bender.cooldown(BendingAbilities.HighJump, COOLDOWN);
 		}
@@ -65,5 +61,15 @@ public class HighJump extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
+	}
+
+	@Override
+	public void progress() {
+		
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

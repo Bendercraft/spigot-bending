@@ -24,11 +24,11 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -36,7 +36,7 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
-@BendingAbility(name = "Plastic Bomb", bind = BendingAbilities.PlasticBomb, element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
+@ABendingAbility(name = "Plastic Bomb", bind = BendingAbilities.PlasticBomb, element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
 public class C4 extends BendingActiveAbility {
 
 	private static int ID = Integer.MIN_VALUE;
@@ -70,48 +70,19 @@ public class C4 extends BendingActiveAbility {
 	private Material previousType;
 	private Block hitBlock = null;
 	private BlockFace hitFace = null;
+	
+	private Arrow arrow;
 
 	public C4(Player player) {
 		super(player, null);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
-		if (!hasDetonator(this.player)) {
-			setState(BendingAbilityState.CannotStart);
-		}
-
 		loadBlockByDir(player.getEyeLocation(), player.getEyeLocation().getDirection());
-
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PlasticBomb, this.location)) {
-			setState(BendingAbilityState.CannotStart);
-			return;
-		}
-		if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
-			setState(BendingAbilityState.CannotStart);
-			return;
-		}
 		this.previousType = this.location.getBlock().getType();
 	}
 
 	public C4(Player player, Arrow arrow) {
 		super(player, null);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
+		this.arrow = arrow;
 		loadBlockByDir(arrow.getLocation(), arrow.getVelocity().normalize());
-
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PlasticBomb, this.location)) {
-			setState(BendingAbilityState.CannotStart);
-			return;
-		}
-		if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
-			setState(BendingAbilityState.CannotStart);
-			return;
-		}
 	}
 
 	@Override
@@ -119,13 +90,32 @@ public class C4 extends BendingActiveAbility {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
+		
+		if(arrow != null) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PlasticBomb, this.location)) {
+				return false;
+			}
+			if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
+				return false;
+			}
+		} else {
+			if (!hasDetonator(this.player)) {
+				return false;
+			}
+			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PlasticBomb, this.location)) {
+				return false;
+			}
+			if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
+				return false;
+			}
+		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
 		int cpt = 0;
-		for (IBendingAbility ab : instances.values()) {
+		for (BendingAbility ab : instances.values()) {
 			if (ab.getPlayer().equals(this.player)) {
 				cpt++;
 				if (cpt >= MAX_BOMBS) {
@@ -155,12 +145,7 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return true;
-		}
-
-		if (this.state.equals(BendingAbilityState.Progressing)) {
+		if (getState().equals(BendingAbilityState.Progressing)) {
 			// The block has already been posed
 
 			long now = System.currentTimeMillis();
@@ -173,7 +158,6 @@ public class C4 extends BendingActiveAbility {
 
 		this.generateCFour(this.location.getBlock(), this.hitFace);
 		this.id = ID++;
-		AbilityManager.getManager().addInstance(this);
 
 		setState(BendingAbilityState.Progressing);
 		return false;
@@ -182,7 +166,7 @@ public class C4 extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 
-		if (!this.state.equals(BendingAbilityState.Progressing)) {
+		if (!getState().equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
 
@@ -208,27 +192,24 @@ public class C4 extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		if (!this.state.equals(BendingAbilityState.Progressing)) {
-			return true;
+	public void progress() {
+		if (!getState().equals(BendingAbilityState.Progressing)) {
+			return;
 		}
 
 		if (this.bomb == null) {
-			return false;
+			remove();
+			return;
 		}
 
 		if ((this.bomb != null) && (this.bomb.getType() != Material.SKULL)) {
-			return false;
+			remove();
+			return;
 		}
 
 		if (this.bomb.getDrops() != null) {
 			this.bomb.getDrops().clear();
 		}
-		return true;
 	}
 
 	private void activate() {
@@ -382,7 +363,7 @@ public class C4 extends BendingActiveAbility {
 			return null;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
 		for (Object obj : instances.keySet()) {
 			if (((C4) instances.get(obj)).bomb.equals(block)) {
 				return obj;
@@ -408,7 +389,7 @@ public class C4 extends BendingActiveAbility {
 
 	public static C4 getCFour(Object id) {
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
 		if ((instances != null) && !instances.isEmpty()) {
 			return (C4) instances.get(id);
 		}

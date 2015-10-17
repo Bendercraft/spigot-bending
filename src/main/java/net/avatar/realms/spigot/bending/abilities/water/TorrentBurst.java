@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -42,7 +42,7 @@ public class TorrentBurst {
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private List<Entity> affectedentities = new LinkedList<Entity>();
 
-	public TorrentBurst(Player player, double radius, IBendingAbility parent) {
+	public TorrentBurst(Player player, double radius, BendingAbility parent) {
 		this.player = player;
 		World world = player.getWorld();
 		origin = player.getEyeLocation().clone();

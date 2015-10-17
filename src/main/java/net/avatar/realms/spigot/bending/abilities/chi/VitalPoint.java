@@ -10,11 +10,11 @@ import org.bukkit.potion.PotionEffectType;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -25,7 +25,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * get slown.
  *
  */
-@BendingAbility(name = "Vital Point", bind = BendingAbilities.VitalPoint, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Vital Point", bind = BendingAbilities.VitalPoint, element = BendingElement.ChiBlocker)
 public class VitalPoint extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
@@ -59,10 +59,6 @@ public class VitalPoint extends BendingActiveAbility {
 	public VitalPoint(Player player) {
 		super(player, null);
 
-		if (!this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.amplifier = 0;
 		this.damage = DAMAGE;
 		this.cooldown = COOLDOWN;
@@ -77,61 +73,53 @@ public class VitalPoint extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		switch (this.state) {
-			case None:
-			case CannotStart:
+		if(getState() == BendingAbilityState.Start) {
+			this.target = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
+			if (this.target == null) {
 				return false;
+			}
 
-			case CanStart:
-				this.target = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
-				if (this.target == null) {
-					return false;
+			int combo = ComboPoints.getComboPointAmount(this.player);
+			this.cooldown = 1000;
+			if (this.player.isSneaking() && (combo > 0)) {
+				this.damage += combo * DAMAGE_INCREMENT;
+				this.target.damage(this.damage, this.player);
+				if (combo == 5) {
+					if (this.target instanceof Player) {
+						EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
+					}
+					this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
 				}
-
-				int combo = ComboPoints.getComboPointAmount(this.player);
-				this.cooldown = 1000;
-				if (this.player.isSneaking() && (combo > 0)) {
-					this.damage += combo * DAMAGE_INCREMENT;
-					this.target.damage(this.damage, this.player);
-					if (combo == 5) {
+				else {
+					this.amplifier = combo - 1;
+					if (combo == 4) {
 						if (this.target instanceof Player) {
 							EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
 						}
-						this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
 					}
-					else {
-						this.amplifier = combo - 1;
-						if (combo == 4) {
-							if (this.target instanceof Player) {
-								EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
-							}
-						}
-						else if (combo == 1) {
-							this.amplifier = 1;
-						}
-						this.target.addPotionEffect(new PotionEffect(TYPE, SLOW_DURATION / 20, this.amplifier));
+					else if (combo == 1) {
+						this.amplifier = 1;
 					}
-					this.cooldown += COOLDOWN / (6 - combo);
-					ComboPoints.consume(this.player);
+					this.target.addPotionEffect(new PotionEffect(TYPE, SLOW_DURATION / 20, this.amplifier));
 				}
-				else {
-					ComboPoints.addComboPoint(this.player, this.target);
-					this.target.damage(this.damage, this.player);
-					this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
-				}
+				this.cooldown += COOLDOWN / (6 - combo);
+				ComboPoints.consume(this.player);
+			}
+			else {
+				ComboPoints.addComboPoint(this.player, this.target);
+				this.target.damage(this.damage, this.player);
+				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
+			}
 
-				if (this.bender.hasPath(BendingPath.Seeker)) {
-					this.cooldown *= 1.4;
-				}
-				if (this.bender.hasPath(BendingPath.Restless)) {
-					this.cooldown *= 0.5;
-				}
-				this.bender.cooldown(BendingAbilities.VitalPoint, this.cooldown);
-
-				setState(BendingAbilityState.Ended);
-			default:
-				return true;
+			if (this.bender.hasPath(BendingPath.Seeker)) {
+				this.cooldown *= 1.4;
+			}
+			if (this.bender.hasPath(BendingPath.Restless)) {
+				this.cooldown *= 0.5;
+			}
+			this.bender.cooldown(BendingAbilities.VitalPoint, this.cooldown);
 		}
+		return true;
 	}
 
 	@Override
@@ -144,7 +132,7 @@ public class VitalPoint extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.VitalPoint);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.VitalPoint);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
@@ -161,5 +149,15 @@ public class VitalPoint extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
+	}
+
+	@Override
+	public void progress() {
+		
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

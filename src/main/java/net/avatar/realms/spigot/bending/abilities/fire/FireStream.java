@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -157,8 +157,8 @@ public class FireStream {
 
 	public static void removeAroundPoint(Location location, double radius) {
 		List<FireStream> toRemove = new LinkedList<FireStream>();
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Blaze);
-		for (IBendingAbility ability : instances.values()) {
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Blaze);
+		for (BendingAbility ability : instances.values()) {
 			Blaze blaze = (Blaze) ability;
 			for (FireStream stream : blaze.getFirestreams()) {
 				if (stream.location.getWorld().equals(location.getWorld())) {

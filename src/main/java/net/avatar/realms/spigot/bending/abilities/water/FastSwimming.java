@@ -3,17 +3,16 @@ package net.avatar.realms.spigot.bending.abilities.water;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "Dolphin", bind = BendingAbilities.FastSwimming, element = BendingElement.Water)
+@ABendingAbility(name = "Dolphin", bind = BendingAbilities.FastSwimming, element = BendingElement.Water)
 public class FastSwimming extends BendingPassiveAbility {
 
 	@ConfigurationParameter("Speed-Factor")
@@ -25,22 +24,17 @@ public class FastSwimming extends BendingPassiveAbility {
 
 	@Override
 	public boolean start() {
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return false;
-		}
-
-		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
-
 		return true;
 	}
+	
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
+		
 		if (!(EntityTools.canBendPassive(this.player, BendingElement.Water) && this.player.isSneaking())) {
 			return false;
 		}
@@ -52,11 +46,15 @@ public class FastSwimming extends BendingPassiveAbility {
 		if (WaterSpout.isBending(this.player)) {
 			return false;
 		}
+		
+		return true;
+	}
 
+	@Override
+	public void progress() {
 		if (BlockTools.isWater(this.player.getLocation().getBlock()) && !BlockTools.isTempBlock(this.player.getLocation().getBlock())) {
 			swimFast();
 		}
-		return true;
 	}
 
 	private void swimFast() {
@@ -67,5 +65,10 @@ public class FastSwimming extends BendingPassiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

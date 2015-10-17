@@ -4,15 +4,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 
-@BendingAbility(name = "ChiSpeed", bind = BendingAbilities.ChiSpeed, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "ChiSpeed", bind = BendingAbilities.ChiSpeed, element = BendingElement.ChiBlocker)
 public class ChiSpeed extends BendingPassiveAbility {
 
 	private int speedAmplifier = 0;
@@ -27,10 +26,6 @@ public class ChiSpeed extends BendingPassiveAbility {
 
 	@Override
 	public boolean start() {
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return false;
-		}
-		AbilityManager.getManager().addInstance(this);
 		setState(BendingAbilityState.Progressing);
 		if (this.bender.hasAffinity(BendingAffinity.ChiAir)) {
 			this.speedAmplifier++;
@@ -39,19 +34,15 @@ public class ChiSpeed extends BendingPassiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
+	public void progress() {
 		if (this.player.isSprinting()) {
 			if (this.bender.isBender(BendingElement.ChiBlocker)) {
 				applySpeed();
-				return true;
+				return;
 			}
 		}
 
-		return false;
+		remove();
 	}
 
 	private void applySpeed() {
@@ -59,6 +50,11 @@ public class ChiSpeed extends BendingPassiveAbility {
 		PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 1);
 		this.player.addPotionEffect(speed);
 		this.player.addPotionEffect(jump);
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

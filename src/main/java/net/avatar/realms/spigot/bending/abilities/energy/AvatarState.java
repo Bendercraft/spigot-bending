@@ -11,13 +11,13 @@ import org.bukkit.potion.PotionEffectType;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@BendingAbility(name = "Avatar State", bind = BendingAbilities.AvatarState, element = BendingElement.Energy)
+@ABendingAbility(name = "Avatar State", bind = BendingAbilities.AvatarState, element = BendingElement.Energy)
 public class AvatarState extends BendingActiveAbility {
 
 	@ConfigurationParameter("Factor")
@@ -37,18 +37,12 @@ public class AvatarState extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return true;
-		}
-
-		if (this.state == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.Progressing) {
 			setState(BendingAbilityState.Ended);
 			return false;
 		}
 
-		if (this.state == BendingAbilityState.CanStart) {
-			AbilityManager.getManager().addInstance(this);
+		if (getState() == BendingAbilityState.Start) {
 			setState(BendingAbilityState.Progressing);
 		}
 
@@ -56,18 +50,13 @@ public class AvatarState extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-
-		if (!super.progress()) {
-			return false;
-		}
-
-		if (this.state == BendingAbilityState.Progressing) {
+	public void progress() {
+		if (getState() == BendingAbilityState.Progressing) {
 			addPotionEffects();
-			return true;
+			return;
 		}
 
-		return false;
+		remove();
 	}
 
 	private void addPotionEffects() {
@@ -79,7 +68,7 @@ public class AvatarState extends BendingActiveAbility {
 	}
 
 	public static boolean isAvatarState(Player player) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AvatarState);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AvatarState);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
@@ -100,7 +89,7 @@ public class AvatarState extends BendingActiveAbility {
 	}
 
 	public static List<Player> getPlayers() {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AvatarState);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AvatarState);
 		LinkedList<Player> players = new LinkedList<Player>();
 		if ((instances == null) || instances.isEmpty()) {
 			return players;

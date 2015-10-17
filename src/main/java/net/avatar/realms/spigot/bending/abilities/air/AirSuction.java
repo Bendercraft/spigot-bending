@@ -9,12 +9,11 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -25,7 +24,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 /**
  * State Preparing = Origin Set State Progressing = AirSuction thrown
  */
-@BendingAbility(name = "Air Suction", bind = BendingAbilities.AirSuction, element = BendingElement.Air)
+@ABendingAbility(name = "Air Suction", bind = BendingAbilities.AirSuction, element = BendingElement.Air)
 public class AirSuction extends BendingActiveAbility {
 
 	static final long soonesttime = Tools.timeinterval;
@@ -63,10 +62,6 @@ public class AirSuction extends BendingActiveAbility {
 	public AirSuction(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.); // Really used ?
 
 		this.id = ID++;
@@ -75,26 +70,34 @@ public class AirSuction extends BendingActiveAbility {
 			this.range *= 0.6;
 		}
 	}
-
+	
 	@Override
-	public boolean sneak() {
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
 			return false;
 		}
 
-		if (this.state == BendingAbilityState.CanStart) {
+		if (this.player.getEyeLocation().getBlock().isLiquid()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean sneak() {
+		if (getState() == BendingAbilityState.Start) {
 			Location loc = getNewOriginLocation(this.player);
 			if (loc == null) {
 				return false;
 			}
 			this.origin = loc;
 			setState(BendingAbilityState.Preparing);
-			AbilityManager.getManager().addInstance(this);
 			this.otherorigin = true;
 			return false;
 		}
 
-		if (this.state == BendingAbilityState.Preparing) {
+		if (getState() == BendingAbilityState.Preparing) {
 			Location loc = getNewOriginLocation(this.player);
 			if (loc != null) {
 				this.origin = loc;
@@ -107,19 +110,11 @@ public class AirSuction extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return false;
-		}
-
-		if (this.state == BendingAbilityState.CanStart) {
+		if (getState() == BendingAbilityState.Start) {
 			this.origin = this.player.getEyeLocation();
-			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Preparing);
-		}
-
-		if (this.state == BendingAbilityState.Preparing) {
-
+			return false;
+		} else if (getState() == BendingAbilityState.Preparing) {
 			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
 			if (entity != null) {
 				this.direction = Tools.getDirection(entity.getLocation(), this.origin).normalize();
@@ -128,11 +123,9 @@ public class AirSuction extends BendingActiveAbility {
 				this.location = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.getNonOpaque());
 				this.direction = Tools.getDirection(this.location, this.origin).normalize();
 			}
-
 			setState(BendingAbilityState.Progressing);
 			return false;
 		}
-
 		return true;
 	}
 
@@ -159,40 +152,36 @@ public class AirSuction extends BendingActiveAbility {
 
 		return location;
 	}
+	
+	@Override
+	public boolean canTick() {
+		if(!super.canTick()) {
+			return false;
+		}
+		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSuction) 
+				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction, this.location)) {
+			// Info : This is checking the position of the suction and not the position of the bender
+			return false;
+		}
+		return true;
+	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSuction)) {
-			return false;
-		}
-
-		if (this.state.equals(BendingAbilityState.Preparing)) {
-			if (!this.origin.getWorld().equals(this.player.getWorld())) {
-				return false;
-			}
-			if (this.origin.distance(this.player.getEyeLocation()) > SELECT_RANGE) {
-				return false;
+	public void progress() {
+		if (getState().equals(BendingAbilityState.Preparing)) {
+			if (!this.origin.getWorld().equals(this.player.getWorld()) 
+					|| this.origin.distance(this.player.getEyeLocation()) > SELECT_RANGE) {
+				remove();
 			}
 			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) SELECT_RANGE);
-			return true;
+			return;
 		}
 
-		if (!this.state.equals(BendingAbilityState.Progressing)) {
-			return false;
-		}
-
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction, this.location)) {
-			// Info : This is checking the position of the suction and not the
-			// position of the bender
-			return false;
-		}
-
-		if ((this.location.distance(this.origin) > this.range) || (this.location.distance(this.origin) <= 1)) {
-			return false;
+		if (!getState().equals(BendingAbilityState.Progressing) 
+				|| this.location.distance(this.origin) > this.range 
+				|| this.location.distance(this.origin) <= 1) {
+			remove();
+			return;
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, affectingradius)) {
@@ -244,20 +233,14 @@ public class AirSuction extends BendingActiveAbility {
 			}
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);
-			// if ((entity.getEntityId() != this.player.getEntityId())
-			// && (entity instanceof Player)) {
-			// FlyingPlayer.addFlyingPlayer(this.player, this, 2000L);
-			// }
 
 		}
 		advanceLocation();
-		return true;
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		this.bender.cooldown(BendingAbilities.AirSuction, COOLDOWN);
-		super.remove();
 	}
 
 	private void advanceLocation() {
@@ -268,19 +251,6 @@ public class AirSuction extends BendingActiveAbility {
 	@Override
 	protected long getMaxMillis() {
 		return 1000 * 60 * 2;
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		if (this.player.getEyeLocation().getBlock().isLiquid()) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override

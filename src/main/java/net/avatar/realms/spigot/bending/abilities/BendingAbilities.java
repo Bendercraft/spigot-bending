@@ -33,7 +33,6 @@ public enum BendingAbilities {
 	EarthTunnel(BendingElement.Earth, true),
 	EarthBlast(BendingElement.Earth, true),
 	Collapse(BendingElement.Earth, true),
-	Tremorsense(BendingElement.Earth, true),
 	EarthArmor(BendingElement.Earth, true),
 	Shockwave(BendingElement.Earth, true),
 	LavaTrain(BendingAffinity.Lavabend, true),
@@ -66,7 +65,6 @@ public enum BendingAbilities {
 	IceSpike(BendingElement.Water, true),
 	OctopusForm(BendingElement.Water, true),
 	Torrent(BendingElement.Water, true),
-	IceSwipe(BendingElement.Water, true),
 	Bloodbending(BendingAffinity.Bloodbend, true),
 	Drainbending(BendingAffinity.DrainBend, false),
 	

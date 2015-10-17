@@ -7,14 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@BendingAbility(name = "Water Passive", bind = BendingAbilities.WaterPassive, element = BendingElement.Water)
+@ABendingAbility(name = "Water Passive", bind = BendingAbilities.WaterPassive, element = BendingElement.Water)
 public class WaterPassive extends BendingPassiveAbility {
 
 	public WaterPassive(Player player) {
@@ -28,10 +27,6 @@ public class WaterPassive extends BendingPassiveAbility {
 
 	@Override
 	public boolean start() {
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return false;
-		}
-
 		Block block = this.player.getLocation().getBlock();
 		Block fallblock = block.getRelative(BlockFace.DOWN);
 
@@ -70,6 +65,16 @@ public class WaterPassive extends BendingPassiveAbility {
 		}
 
 		return true;
+	}
+
+	@Override
+	public void progress() {
+		
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

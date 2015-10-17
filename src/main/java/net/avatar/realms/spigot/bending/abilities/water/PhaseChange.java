@@ -9,12 +9,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -23,7 +23,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@BendingAbility(name = "Phase Change", bind = BendingAbilities.PhaseChange, element = BendingElement.Water)
+@ABendingAbility(name = "Phase Change", bind = BendingAbilities.PhaseChange, element = BendingElement.Water)
 public class PhaseChange extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	public static int RANGE = 20;
@@ -47,8 +47,7 @@ public class PhaseChange extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean swing() {
-		if(state == BendingAbilityState.CanStart) {
-			AbilityManager.getManager().addInstance(this);
+		if(getState() == BendingAbilityState.Start) {
 			setState(BendingAbilityState.Progressing);
 		}
 		
@@ -84,8 +83,7 @@ public class PhaseChange extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean sneak() {
-		if(state == BendingAbilityState.CanStart) {
-			AbilityManager.getManager().addInstance(this);
+		if(getState() == BendingAbilityState.Start) {
 			setState(BendingAbilityState.Progressing);
 		}
 		
@@ -143,16 +141,22 @@ public class PhaseChange extends BendingActiveAbility {
 
 		return false;
 	}
+	
 
 	@Override
-	public boolean progress() {
-		if(!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
 		if(melted.isEmpty() && frozens.isEmpty()) {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public void progress() {
+		
 	}
 	
 	@Override
@@ -168,7 +172,7 @@ public class PhaseChange extends BendingActiveAbility {
 	}
 
 	public static boolean isFrozen(Block block) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
 			PhaseChange fm = (PhaseChange) ab;
 			for(TempBlock b : fm.frozens) {
 				if(b.getBlock().getLocation().equals(block.getLocation())) {
@@ -180,7 +184,7 @@ public class PhaseChange extends BendingActiveAbility {
 	}
 	
 	public static boolean isMelted(Block block) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
 			PhaseChange fm = (PhaseChange) ab;
 			for(TempBlock b : fm.melted) {
 				if(b.getBlock().getLocation().equals(block.getLocation())) {
@@ -192,7 +196,7 @@ public class PhaseChange extends BendingActiveAbility {
 	}
 	
 	private static PhaseChange get(Block block) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
 			PhaseChange fm = (PhaseChange) ab;
 			for(TempBlock b : fm.melted) {
 				if(b.getBlock().getLocation().equals(block.getLocation())) {
@@ -209,7 +213,7 @@ public class PhaseChange extends BendingActiveAbility {
 	}
 
 	public static void thawThenRemove(Block block) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
 			PhaseChange fm = (PhaseChange) ab;
 			for(TempBlock b : fm.frozens) {
 				if(b.getBlock().getLocation().equals(block.getLocation())) {
@@ -231,7 +235,7 @@ public class PhaseChange extends BendingActiveAbility {
 	}
 
 	public static boolean isLevel(Block block, byte level) {
-		for (IBendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.PhaseChange).values()) {
 			PhaseChange fm = (PhaseChange) ab;
 			if (fm.isBlockLevel(block, level)) {
 				return true;

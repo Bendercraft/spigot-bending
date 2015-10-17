@@ -16,17 +16,17 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@BendingAbility(name = "Earth Armor", bind = BendingAbilities.EarthArmor, element = BendingElement.Earth)
+@ABendingAbility(name = "Earth Armor", bind = BendingAbilities.EarthArmor, element = BendingElement.Earth)
 public class EarthArmor extends BendingActiveAbility {
 	@ConfigurationParameter("Duration")
 	private static long DURATION = 60000;
@@ -61,12 +61,8 @@ public class EarthArmor extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean swing() {
-		// EarthArmor
-
-		if (this.state != BendingAbilityState.CanStart) {
-			return false;
-		}
-
+		//EarthArmor
+		
 		if (this.bender.isOnCooldown(BendingAbilities.EarthArmor)) {
 			return false;
 		}
@@ -93,8 +89,8 @@ public class EarthArmor extends BendingActiveAbility {
 				BlockTools.removeBlock(oldheadblock);
 				BlockTools.removeBlock(oldlegsblock);
 			}
-			AbilityManager.getManager().addInstance(this);
-			this.state = BendingAbilityState.Progressing;
+			
+			setState(BendingAbilityState.Progressing);
 		}
 		return false;
 	}
@@ -103,7 +99,7 @@ public class EarthArmor extends BendingActiveAbility {
 	public boolean sneak() {
 		// EarthShield
 
-		if (this.state != BendingAbilityState.CanStart) {
+		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
 
@@ -150,8 +146,7 @@ public class EarthArmor extends BendingActiveAbility {
 
 		if (!this.columns.isEmpty()) {
 			this.bender.cooldown(BendingAbilities.EarthArmor, COOLDOWN);
-			this.state = BendingAbilityState.Progressing;
-			AbilityManager.getManager().addInstance(this);
+			setState(BendingAbilityState.Progressing);
 		}
 
 		return false;
@@ -276,15 +271,10 @@ public class EarthArmor extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean progress() {
-		if(!super.progress()) {
-			cancel();
-			removeEffect();
-			return false;
-		}
-
-		if(this.state != BendingAbilityState.Progressing) {
-			return false;
+	public void progress() {
+		if(getState() != BendingAbilityState.Progressing) {
+			remove();
+			return;
 		}
 
 		if(!this.columns.isEmpty()) {
@@ -294,26 +284,32 @@ public class EarthArmor extends BendingActiveAbility {
 					this.columns.remove(column);
 				}
 			}
-			return !this.columns.isEmpty();
+			if(this.columns.isEmpty()) {
+				remove();
+				return;
+			}
 		}
 
 		if (this.formed) {
 			if ((System.currentTimeMillis() > (this.starttime + DURATION)) && !this.complete) {
 				this.complete = true;
 				removeEffect();
-				return true;
+				return;
 			}
 			if (System.currentTimeMillis() > (this.starttime + COOLDOWN)) {
-				return false;
+				remove();
+				return;
 			}
 		} else if (System.currentTimeMillis() > (this.time + interval)) {
 			if (inPosition()) {
 				formArmor();
 			} else {
-				return moveBlocks();
+				if(!moveBlocks()) {
+					remove();
+					return;
+				}
 			}
 		}
-		return true;
 	}
 
 	public static boolean hasEarthArmor(Player player) {
@@ -362,10 +358,9 @@ public class EarthArmor extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		for(EarthColumn column : this.columns) {
 			column.remove();
 		}
-		super.remove();
 	}
 }

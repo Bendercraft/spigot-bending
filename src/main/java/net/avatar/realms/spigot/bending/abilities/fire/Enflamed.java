@@ -12,7 +12,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -24,17 +23,14 @@ public class Enflamed {
 	private int secondsLeft;
 	private Player source;
 	private Entity target;
-	@SuppressWarnings("unused")
-	private IBendingAbility parent;
 
 	private long time;
 	private BendingPlayer bender;
 
-	public Enflamed(Player source, Entity entity, int seconds, IBendingAbility parent) {
+	public Enflamed(Player source, Entity entity, int seconds) {
 		if (entity.getEntityId() == source.getEntityId()) {
 			return;
 		}
-		this.parent = parent;
 		this.target = entity;
 		this.source = source;
 		this.time = System.currentTimeMillis();

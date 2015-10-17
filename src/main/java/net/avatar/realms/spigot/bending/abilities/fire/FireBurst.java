@@ -1,26 +1,37 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
+import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.PluginTools;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
@@ -29,7 +40,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  *
  * @author Noko
  */
-@BendingAbility(name = "Fire Burst", bind = BendingAbilities.FireBurst, element = BendingElement.Fire)
+@ABendingAbility(name = "Fire Burst", bind = BendingAbilities.FireBurst, element = BendingElement.Fire)
 public class FireBurst extends BendingActiveAbility {
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 2500;
@@ -45,16 +56,26 @@ public class FireBurst extends BendingActiveAbility {
 
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2500;
+	
+	@ConfigurationParameter("Blast-Range")
+	private static int BLAST_RANGE = 25;
+	
+	@ConfigurationParameter("Blast-Speed")
+	private static double BLAST_SPEED = 15;
+	
+	@ConfigurationParameter("Blast-Radius")
+	public static double BLAST_AFFECTING_RADIUS = 2;
+	
+	@ConfigurationParameter("Blast-Push")
+	private static double BLAST_PUSH_FACTOR = 0.3;
 
 	private long chargetime = CHARGE_TIME;
 	private int damage = DAMAGE;
+	
+	private List<BurstBlast> blasts;
 
 	public FireBurst(Player player) {
 		super(player, null);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
 
 		if (Tools.isDay(player.getWorld())) {
 			this.chargetime /= Settings.DAY_FACTOR;
@@ -62,26 +83,24 @@ public class FireBurst extends BendingActiveAbility {
 		if (AvatarState.isAvatarState(player)) {
 			this.chargetime = 0;
 		}
+		
+		blasts = new LinkedList<BurstBlast>();
 	}
 
 	@Override
 	public boolean sneak() {
-		if (this.state.equals(BendingAbilityState.CanStart)) {
-			AbilityManager.getManager().addInstance(this);
+		if (getState().equals(BendingAbilityState.Start)) {
 			setState(BendingAbilityState.Preparing);
-			return false;
 		}
-
 		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		if (this.state == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.Prepared) {
 			coneBurst();
 			return false;
 		}
-
 		return true;
 	}
 
@@ -102,42 +121,58 @@ public class FireBurst extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					new FireBlast(this.player, this, location, direction.normalize(), this.damage, safeblocks);
+					new BurstBlast(this.player, this.bender, this, location, direction.normalize(), this.damage, safeblocks);
 				}
 			}
 		}
 		setState(BendingAbilityState.Ended);
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
 		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.FireBurst)) {
 			return false;
 		}
+		return true;
+	}
 
+	@Override
+	public void progress() {
+		if(getState() == BendingAbilityState.Progressing) {
+			List<BurstBlast> toRemove = new LinkedList<BurstBlast>();
+			for(BurstBlast blast : blasts) {
+				if(!blast.progress()) {
+					toRemove.add(blast);
+				}
+			}
+			blasts.removeAll(toRemove);
+			if(blasts.isEmpty()) {
+				remove();
+			}
+			return;
+		}
+		
 		if (!this.player.isSneaking()) {
-			if (this.state.equals(BendingAbilityState.Prepared)) {
+			if (getState().equals(BendingAbilityState.Prepared)) {
 				sphereBurst();
 			}
-			return false;
+			remove();
+			return;
 		}
 
-		if (this.state != BendingAbilityState.Prepared) {
+		if (getState() != BendingAbilityState.Prepared) {
 			if (System.currentTimeMillis() > (this.startedTime + this.chargetime)) {
 				setState(BendingAbilityState.Prepared);
 			}
 		}
 
-		if (this.state == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.Prepared) {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
 		}
-
-		return true;
 	}
 
 	private void sphereBurst() {
@@ -155,29 +190,28 @@ public class FireBurst extends BendingActiveAbility {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				new FireBlast(this.player, this, location, direction.normalize(), this.damage, safeblocks);
+				new BurstBlast(this.player, this.bender, this, location, direction.normalize(), this.damage, safeblocks);
 			}
 		}
 		setState(BendingAbilityState.Ended);
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		this.bender.cooldown(BendingAbilities.FireBurst, COOLDOWN);
-		super.remove();
 	}
 
 	public boolean isCharged() {
-		return this.state == BendingAbilityState.Prepared;
+		return getState() == BendingAbilityState.Prepared;
 	}
 
 	public static boolean isFireBursting(Player player) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		return instances.containsKey(player);
 	}
 
 	public static FireBurst getFireBurst(Player player) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		return (FireBurst) instances.get(player);
 	}
 
@@ -187,7 +221,7 @@ public class FireBurst extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
 		if (instances.containsKey(this.player)) {
 			return false;
 		}
@@ -198,5 +232,96 @@ public class FireBurst extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
+	}
+	
+	private class BurstBlast {
+
+		private Player player;
+		private List<Block> safe;
+		private Location location;
+		private Location origin;
+		private Vector direction;
+		private BendingPlayer bender;
+		private double range;
+		private double damage;
+		private double speedfactor;
+
+		public BurstBlast(Player player, BendingPlayer bender, BendingAbility parent, Location location, Vector direction, int damage, List<Block> safeblocks) {
+			this.player = player;
+			this.bender = bender;
+			this.safe = safeblocks;
+			this.range = PluginTools.firebendingDayAugment(BLAST_RANGE, player.getWorld());
+			this.location = location.clone();
+			this.origin = location.clone();
+			this.direction = direction.clone().normalize();
+			this.damage = damage*1.5;
+			this.speedfactor = BLAST_SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
+			if (this.bender.hasPath(BendingPath.Nurture)) {
+				this.damage *= 0.8;
+			}
+			if (this.bender.hasPath(BendingPath.Lifeless)) {
+				this.damage *= 1.1;
+			}
+		}
+		
+		public boolean progress() {
+			if (this.location.distance(this.origin) > this.range) {
+				return false;
+			}
+			Block block = this.location.getBlock();
+			if (BlockTools.isSolid(block) || block.isLiquid()) {
+				if (FireStream.isIgnitable(this.player, block.getRelative(BlockFace.UP))) {
+					ignite(this.location);
+				}
+				return false;
+			}
+
+			PluginTools.removeSpouts(this.location, this.player);
+
+			double radius = FireBlast.AFFECTING_RADIUS;
+			Player source = this.player;
+			if (EarthBlast.annihilateBlasts(this.location, radius, source) || WaterManipulation.annihilateBlasts(this.location, radius, source) || FireBlast.shouldAnnihilateBlasts(this.location, radius, source, false)) {
+				return false;
+			}
+
+			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, BLAST_AFFECTING_RADIUS)) {
+				boolean result = affect(entity);
+				// If result is true, do not return here ! we need to iterate
+				// fully !
+				if (result == false) {
+					return false;
+				}
+			}
+
+			this.location.getWorld().playEffect(this.location, Effect.MOBSPAWNER_FLAMES, 0, (int) this.range);
+			this.location = this.location.add(this.direction.clone().multiply(this.speedfactor));
+			
+			return true;
+		}
+		
+		private void ignite(Location location) {
+			for (Block block : BlockTools.getBlocksAroundPoint(location, BLAST_AFFECTING_RADIUS)) {
+				if (FireStream.isIgnitable(this.player, block) && !this.safe.contains(block)) {
+					block.setType(Material.FIRE);
+				}
+			}
+		}
+
+		private boolean affect(LivingEntity entity) {
+			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				return false;
+			}
+			if (entity.getEntityId() != this.player.getEntityId()) {
+				if (AvatarState.isAvatarState(this.player)) {
+					entity.setVelocity(this.direction.clone().multiply(AvatarState.getValue(BLAST_PUSH_FACTOR)));
+				} else {
+					entity.setVelocity(this.direction.clone().multiply(BLAST_PUSH_FACTOR));
+				}
+				new Enflamed(this.player, entity, 1);
+				EntityTools.damageEntity(this.player, entity, PluginTools.firebendingDayAugment(this.damage, entity.getWorld()));
+				return false;
+			}
+			return true;
+		}
 	}
 }

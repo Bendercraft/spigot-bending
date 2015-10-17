@@ -15,18 +15,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name = "Suffocate", bind = BendingAbilities.Suffocate, element = BendingElement.Air, affinity = BendingAffinity.Suffocate)
+@ABendingAbility(name = "Suffocate", bind = BendingAbilities.Suffocate, element = BendingElement.Air, affinity = BendingAffinity.Suffocate)
 public class Suffocate extends BendingActiveAbility {
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	private static String LORE_NAME = "Suffocation";
@@ -53,14 +52,6 @@ public class Suffocate extends BendingActiveAbility {
 	public Suffocate(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
-		if (!this.player.isSneaking()) {
-			setState(BendingAbilityState.CannotStart);
-			return;
-		}
 		this.time = this.startedTime;
 
 		this.temp = new ItemStack(Material.STAINED_GLASS, 1, (byte) 0x0);
@@ -74,8 +65,17 @@ public class Suffocate extends BendingActiveAbility {
 	}
 
 	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized() 
+				|| !this.player.isSneaking()) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
 	public boolean swing() {
-		if(this.state == BendingAbilityState.CanStart) {
+		if(getState() == BendingAbilityState.Start) {
 			Entity target = EntityTools.getTargettedEntity(this.player, RANGE);
 
 			if (!(target instanceof Player)) {
@@ -93,42 +93,26 @@ public class Suffocate extends BendingActiveAbility {
 			this.target.getInventory().setHelmet(this.temp);
 
 			setState(BendingAbilityState.Progressing);
-			AbilityManager.getManager().addInstance(this);
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean canTick() {
+		if(!super.canTick() 
+				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Suffocate, this.target.getLocation()) 
+				|| this.target.isDead() 
+				|| !getState().equals(BendingAbilityState.Progressing) 
+				|| !this.player.hasLineOfSight(this.target) 
+				|| this.target.getLocation().getWorld() != this.player.getLocation().getWorld() 
+				|| this.target.getLocation().distance(this.player.getLocation()) > (2 * RANGE)) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Suffocate, this.target.getLocation())) {
-			return false;
-		}
-
-		if (this.target.isDead()) {
-			return false;
-		}
-
-		if (!this.state.equals(BendingAbilityState.Progressing)) {
-			return false;
-		}
-
-		// Must have line of sight anyway
-		if (!this.player.hasLineOfSight(this.target)) {
-			return false;
-		}
-
-		if (this.target.getLocation().getWorld() != this.player.getLocation().getWorld()) {
-			return false;
-		}
-
-		if (this.target.getLocation().distance(this.player.getLocation()) > (2 * RANGE)) {
-			return false;
-		}
-
+	public void progress() {
 		// Target should be slowed to hell
 		if (!this.target.hasPotionEffect(PotionEffectType.SLOW)) {
 			this.target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 500, 1));
@@ -150,8 +134,6 @@ public class Suffocate extends BendingActiveAbility {
 
 			this.targetLocation = this.target.getLocation().getBlock();
 		}
-
-		return true;
 	}
 
 	public void restoreTargetHelmet() {
@@ -164,12 +146,7 @@ public class Suffocate extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		this.restoreTargetHelmet();
-	}
-
-	@Override
-	public void remove() {
 		this.bender.cooldown(BendingAbilities.Suffocate, COOLDOWN);
-		super.remove();
 	}
 
 	public static boolean isTempHelmet(ItemStack is) {

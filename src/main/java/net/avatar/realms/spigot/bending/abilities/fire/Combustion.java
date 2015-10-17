@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -34,7 +34,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@BendingAbility(name = "Combustion", bind = BendingAbilities.Combustion, element = BendingElement.Fire, affinity = BendingAffinity.Combustion)
+@ABendingAbility(name = "Combustion", bind = BendingAbilities.Combustion, element = BendingElement.Fire, affinity = BendingAffinity.Combustion)
 public class Combustion extends BendingActiveAbility {
 	private static long interval = 25;
 
@@ -81,10 +81,6 @@ public class Combustion extends BendingActiveAbility {
 	public Combustion(Player player) {
 		super(player, null);
 
-		if (state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		time = startedTime;
 		if (AvatarState.isAvatarState(player)) {
 			damage = AvatarState.getValue(damage);
@@ -95,44 +91,36 @@ public class Combustion extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		switch (state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
+		if(getState() == BendingAbilityState.Start) {
 			if (!player.getEyeLocation().getBlock().isLiquid()) {
 				setState(BendingAbilityState.Preparing);
-				AbilityManager.getManager().addInstance(this);
 			}
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
 		}
+		return false;
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
 		if ((EntityTools.getBendingAbility(player) != BendingAbilities.Combustion)) {
 			return false;
 		}
+		return true;
+	}
 
-		if (state == BendingAbilityState.Preparing) {
+	@Override
+	public void progress() {
+		if (getState() == BendingAbilityState.Preparing) {
 			if (!player.isSneaking()) {
-				return false;
+				remove();
+				return;
 			}
 
 			if (player.getLocation().getBlock().getLocation().distance(block.getLocation()) > MAX_DISTANCE) {
-				return false;
+				remove();
+				return;
 			}
 
 			if (System.currentTimeMillis() > time + chargeTime) {
@@ -141,12 +129,13 @@ public class Combustion extends BendingActiveAbility {
 				direction = location.getDirection().normalize().multiply(radius);
 				setState(BendingAbilityState.Prepared);
 			}
-			return true;
+			return;
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
 			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Combustion, location)) {
-				return false;
+				remove();
+				return;
 			}
 
 			time = System.currentTimeMillis();
@@ -154,18 +143,23 @@ public class Combustion extends BendingActiveAbility {
 			location = location.clone().add(direction);
 			if (location.distance(origin) > range) {
 				explode();
-				return false;
+				remove();
+				return;
 			}
 			if (BlockTools.isSolid(location.getBlock())) {
 				explode();
-				return false;
+				remove();
+				return;
 			} else if (location.getBlock().isLiquid()) {
-				return false;
+				remove();
+				return;
 			}
 
-			return fireball();
+			if(!fireball()) {
+				remove();
+				return;
+			}
 		}
-		return true;
 	}
 
 	public void dealDamage(Entity entity) {
@@ -284,22 +278,21 @@ public class Combustion extends BendingActiveAbility {
 	}
 
 	@Override
-	public void remove() {
+	public void stop() {
 		BendingPlayer.getBendingPlayer(player).cooldown(BendingAbilities.Combustion, COOLDOWN);
-		super.remove();
 	}
 
 	public static void removeFireballsAroundPoint(Location location, double radius) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Combustion);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Combustion);
 		if (instances == null) {
 			return;
 		}
-		for (IBendingAbility ab : instances.values()) {
+		for (BendingAbility ab : instances.values()) {
 			Combustion fireball = ((Combustion) ab);
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld()) {
 				if (location.distance(fireblastlocation) <= radius) {
-					fireball.consume();
+					fireball.remove();
 				}
 			}
 		}
@@ -307,17 +300,17 @@ public class Combustion extends BendingActiveAbility {
 
 	public static boolean annihilateBlasts(Location location, double radius, Player source) {
 		boolean broke = false;
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Combustion);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Combustion);
 		if (instances == null) {
 			return broke;
 		}
-		for (IBendingAbility ab : instances.values()) {
+		for (BendingAbility ab : instances.values()) {
 			Combustion fireball = ((Combustion) ab);
 			Location fireblastlocation = fireball.location;
 			if (location.getWorld() == fireblastlocation.getWorld() && !source.equals(fireball.player)) {
 				if (location.distance(fireblastlocation) <= radius) {
 					fireball.explode();
-					fireball.consume();
+					fireball.remove();
 					broke = true;
 				}
 			}

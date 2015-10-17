@@ -14,11 +14,11 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -29,7 +29,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  * duration
  */
 
-@BendingAbility(name = "Lavatrain", bind = BendingAbilities.LavaTrain, element = BendingElement.Earth, affinity = BendingAffinity.Lavabend)
+@ABendingAbility(name = "Lavatrain", bind = BendingAbilities.LavaTrain, element = BendingElement.Earth, affinity = BendingAffinity.Lavabend)
 public class LavaTrain extends BendingActiveAbility {
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 5;
@@ -72,7 +72,7 @@ public class LavaTrain extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(state == BendingAbilityState.CanStart) {
+		if(getState() == BendingAbilityState.Start) {
 			if (!this.player.isSneaking()) {
 				return false;
 			}
@@ -87,67 +87,58 @@ public class LavaTrain extends BendingActiveAbility {
 			this.current = this.origin.clone();
 
 			setState(BendingAbilityState.Preparing);
-			AbilityManager.getManager().addInstance(this);
+			
 		}
 		return false;
 	}
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.LavaTrain, this.current)) {
 			return false;
 		}
+		return true;
+	}
 
+	@Override
+	public void progress() {
 		if ((this.direction.getX() == 0) && (this.direction.getZ() == 0)) {
-			if (!this.state.equals(BendingAbilityState.Progressing)) {
+			if (!getState().equals(BendingAbilityState.Progressing)) {
 				this.affectBlocks(this.current, REACH_WIDTH);
 				setState(BendingAbilityState.Progressing);
 			} else {
 				if ((System.currentTimeMillis() - this.time) > DURATION) {
-					return false;
+					remove();
 				}
-				return true;
+				return;
 			}
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			if (this.origin.distance(this.current) >= RANGE) {
-				if (!this.state.equals(BendingAbilityState.Progressing)) {
+				if (!getState().equals(BendingAbilityState.Progressing)) {
 					this.affectBlocks(this.current, REACH_WIDTH);
 					setState(BendingAbilityState.Progressing);
 				} else {
 					if ((System.currentTimeMillis() - this.time) > DURATION) {
-						return false;
+						remove();
 					}
-					return true;
+					return;
 				}
 			} else {
 				this.affectBlocks(this.current, TRAIN_WIDTH);
 			}
 
 			if (this.affecteds.isEmpty()) {
-				return false;
+				remove();
+				return;
 			}
 
 			this.time = System.currentTimeMillis();
 			this.current = this.current.clone().add(this.direction);
 		}
-
-		return true;
-	}
-
-	@Override
-	public void remove() {
-		this.bender.cooldown(BendingAbilities.LavaTrain, DURATION * COOLDOWN_FACTOR); // TODO
-																						// :
-																						// Real
-																						// duration
-																						// *
-																						// COOLDOWN_FACTOR
-		super.remove();
 	}
 
 	private void affectBlocks(Location current, int width) {
@@ -185,14 +176,15 @@ public class LavaTrain extends BendingActiveAbility {
 			affected.update(true);
 		}
 		this.affecteds.clear();
+		this.bender.cooldown(BendingAbilities.LavaTrain, DURATION * COOLDOWN_FACTOR);
 	}
 
 	public static boolean isLavaPart(Block block) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
 		if (instances == null) {
 			return false;
 		}
-		for (IBendingAbility ab : instances.values()) {
+		for (BendingAbility ab : instances.values()) {
 			LavaTrain train = (LavaTrain) ab;
 			if (train.affecteds.containsKey(block)) {
 				return true;
@@ -202,12 +194,12 @@ public class LavaTrain extends BendingActiveAbility {
 	}
 
 	public static LavaTrain getLavaTrain(Block b) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
 		if (instances == null) {
 			return null;
 		}
 
-		for (IBendingAbility ab : instances.values()) {
+		for (BendingAbility ab : instances.values()) {
 			LavaTrain train = (LavaTrain) ab;
 			if (train.affecteds.containsKey(b)) {
 				return train;
@@ -222,7 +214,7 @@ public class LavaTrain extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
 		if (instances == null) {
 			return true;
 		}

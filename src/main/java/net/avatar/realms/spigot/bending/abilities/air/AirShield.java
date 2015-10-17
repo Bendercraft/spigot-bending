@@ -15,20 +15,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@BendingAbility(name = "Air Shield", bind = BendingAbilities.AirShield, element = BendingElement.Air)
+@ABendingAbility(name = "Air Shield", bind = BendingAbilities.AirShield, element = BendingElement.Air)
 public class AirShield extends BendingActiveAbility {
 
 	@ConfigurationParameter("Max-Radius")
@@ -52,10 +52,6 @@ public class AirShield extends BendingActiveAbility {
 	public AirShield(Player player) {
 		super(player, null);
 
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		int angle = 0;
 		int di = (int) ((maxRadius * 2) / numberOfStreams);
 		for (int i = -(int) maxRadius + di; i < (int) maxRadius; i += di) {
@@ -69,17 +65,24 @@ public class AirShield extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean swing() {
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
 			return false;
 		}
 
+		if (isShielded(this.player)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean swing() {
 		if (AvatarState.isAvatarState(this.player)) {
-			if (this.state == BendingAbilityState.CanStart) {
-				AbilityManager.getManager().addInstance(this);
+			if (getState() == BendingAbilityState.Start) {
 				setState(BendingAbilityState.Progressing);
-			} else if (this.state == BendingAbilityState.Progressing) {
+			} else if (getState() == BendingAbilityState.Progressing) {
 				setState(BendingAbilityState.Ended);
 			}
 		}
@@ -89,25 +92,35 @@ public class AirShield extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return false;
-		}
-
-		if (this.state == BendingAbilityState.CanStart) {
-			AbilityManager.getManager().addInstance(this);
+		if (getState() == BendingAbilityState.Start) {
 			setState(BendingAbilityState.Progressing);
 			return false;
 		}
 
-		if (this.state == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.Progressing) {
 			return false;
 		}
 
 		return true;
 	}
+	
+	@Override
+	public boolean canTick() {
+		if(!super.canTick()) {
+			return false;
+		}
+		if (this.player.getEyeLocation().getBlock().isLiquid()) {
+			return false;
+		}
+		if (((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirShield) || (!this.player.isSneaking())) 
+				&& !AvatarState.isAvatarState(this.player)) {
+			return false;
+		}
+		return true;
+	}
 
-	private boolean rotateShield() {
+	@Override
+	public void progress() {
 		Location origin = this.player.getLocation();
 
 		FireBlast.removeFireBlastsAroundPoint(origin, this.radius);
@@ -158,7 +171,8 @@ public class AirShield extends BendingActiveAbility {
 				entity.setFallDistance(0);
 
 				if (bender.hasPath(BendingPath.Renegade)) {
-					return false;
+					remove();
+					return;
 				}
 			}
 		}
@@ -193,27 +207,10 @@ public class AirShield extends BendingActiveAbility {
 		if (this.radius > maxRadius) {
 			this.radius = maxRadius;
 		}
-		return true;
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
-		if (this.player.getEyeLocation().getBlock().isLiquid()) {
-			return false;
-		}
-		if (((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirShield) || (!this.player.isSneaking())) && !AvatarState.isAvatarState(this.player)) {
-			return false;
-		}
-
-		return rotateShield();
-	}
-
-	@Override
-	public void remove() {
+	public void stop() {
 		long cooldown = COOLDOWN;
 		if (bender.hasPath(BendingPath.Renegade)) {
 			cooldown *= 1.2;
@@ -222,18 +219,6 @@ public class AirShield extends BendingActiveAbility {
 		super.remove();
 	}
 
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		if (isShielded(this.player)) {
-			return false;
-		}
-
-		return true;
-	}
 
 	@Override
 	protected long getMaxMillis() {
@@ -241,7 +226,7 @@ public class AirShield extends BendingActiveAbility {
 	}
 
 	public static boolean isShielded(Player player) {
-		Map<Object, IBendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirShield);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirShield);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}

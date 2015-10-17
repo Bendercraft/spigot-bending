@@ -1,8 +1,5 @@
 package net.avatar.realms.spigot.bending.abilities.air;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,11 +12,11 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -30,7 +27,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 /**
  * Preparing state = Origin set Progressing state = Airblast thrown
  */
-@BendingAbility(name = "Air Blast", bind = BendingAbilities.AirBlast, element = BendingElement.Air)
+@ABendingAbility(name = "Air Blast", bind = BendingAbilities.AirBlast, element = BendingElement.Air)
 public class AirBlast extends BendingActiveAbility {
 	private static int ID = Integer.MIN_VALUE;
 
@@ -63,77 +60,29 @@ public class AirBlast extends BendingActiveAbility {
 	private double pushfactor = PUSH_FACTOR;
 	private boolean otherOrigin = false;
 
-	private List<Block> affectedlevers = new ArrayList<Block>();
-
 	public AirBlast(Player player) {
 		super(player, null);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
-		if (player.getEyeLocation().getBlock().isLiquid()) {
-			return;
-		}
-
 		this.id = ID++;
-
 		if (this.bender.hasPath(BendingPath.Renegade)) {
 			this.range = this.range * 0.6;
 		}
 	}
 
-	public AirBlast(Location location, Vector direction, Player player, double factorpush, BendingActiveAbility parent) {
-		super(player, parent);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
+	@Override
+	public boolean canBeInitialized() {
+		if(!super.canBeInitialized() 
+				|| player.getEyeLocation().getBlock().isLiquid()) {
+			return false;
 		}
-
-		if (location.getBlock().isLiquid()) {
-			return;
-		}
-
-		this.player = player;
-		this.origin = location.clone();
-		this.direction = direction.clone();
-		this.location = location.clone();
-		this.id = ID++;
-		this.pushfactor *= factorpush;
-
-		setState(BendingAbilityState.Progressing);
-		AbilityManager.getManager().addInstance(this);
-
-		if (this.bender.hasPath(BendingPath.Renegade)) {
-			this.range = this.range * 0.6;
-		}
-	}
-
-	public void setOtherOrigin(Player player) {
-		Location originLocation = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.getNonOpaque());
-		if (originLocation.getBlock().isLiquid() || BlockTools.isSolid(originLocation.getBlock())) {
-			setState(BendingAbilityState.CannotStart);
-			return;
-		}
-
-		if ((originLocation == null) || ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirBlast, originLocation)) {
-			setState(BendingAbilityState.CannotStart);
-			return;
-		}
-
-		this.origin = originLocation;
-		setState(BendingAbilityState.Preparing);
-		this.otherOrigin = true;
+		return true;
 	}
 
 	@Override
 	public boolean swing() {
-		if(state == BendingAbilityState.CanStart) {
+		if(getState() == BendingAbilityState.Start) {
 			this.origin = this.player.getEyeLocation();
-			AbilityManager.getManager().addInstance(this);
 			setState(BendingAbilityState.Preparing);
-		}
-		if(state == BendingAbilityState.Preparing) {
+		} else if(getState() == BendingAbilityState.Preparing) {
 			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
 			if (this.bender.hasPath(BendingPath.Mobile)) {
 				entity = null;
@@ -160,40 +109,47 @@ public class AirBlast extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		switch (this.state) {
-			case None:
-			case CannotStart:
-				return true;
-			case CanStart:
-				setOtherOrigin(this.player);
-				AbilityManager.getManager().addInstance(this);
+		if(getState() == BendingAbilityState.Start 
+				|| getState() == BendingAbilityState.Preparing) {
+			Location originLocation = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.getNonOpaque());
+			if (originLocation.getBlock().isLiquid() || BlockTools.isSolid(originLocation.getBlock())) {
 				return false;
-			case Preparing:
-				setOtherOrigin(this.player);
+			}
+
+			if ((originLocation == null) || ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirBlast, originLocation)) {
 				return false;
-			default:
-				return true;
+			}
+
+			this.origin = originLocation;
+			this.otherOrigin = true;
+			setState(BendingAbilityState.Preparing);
+			return false;
 		}
+		return true;
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
 		if(this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
 			return false;
 		}
-
-		if (this.state == BendingAbilityState.Preparing) {
+		return true;
+	}
+	
+	@Override
+	@SuppressWarnings("deprecation")
+	public void progress() {
+		if (getState() == BendingAbilityState.Preparing) {
 			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) SELECT_RANGE);
-			return true;
+			return;
 		}
 
-		if (this.state != BendingAbilityState.Progressing) {
-			return false;
+		if (getState() != BendingAbilityState.Progressing) {
+			remove();
+			return;
 		}
 
 		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
@@ -205,7 +161,7 @@ public class AirBlast extends BendingActiveAbility {
 				testblock.getWorld().playEffect(testblock.getLocation(), Effect.EXTINGUISH, 0);
 			}
 		}
-		if ((BlockTools.isSolid(block) || block.isLiquid()) && !this.affectedlevers.contains(block)) {
+		if(BlockTools.isSolid(block) || block.isLiquid()) {
 			if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
 				if (block.getData() == BlockTools.FULL) {
 					block.setType(Material.OBSIDIAN);
@@ -213,11 +169,13 @@ public class AirBlast extends BendingActiveAbility {
 					block.setType(Material.COBBLESTONE);
 				}
 			}
-			return false;
+			remove();
+			return;
 		}
 
 		if (this.location.distance(this.origin) > this.range) {
-			return false;
+			remove();
+			return;
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, AFFECT_RADIUS)) {
@@ -226,7 +184,6 @@ public class AirBlast extends BendingActiveAbility {
 			}
 		}
 		advanceLocation();
-		return true;
 	}
 
 	private void advanceLocation() {
@@ -295,5 +252,10 @@ public class AirBlast extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.id;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }

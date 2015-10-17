@@ -49,7 +49,11 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
@@ -58,9 +62,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.BendingPassiveAbility;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
 import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
 import net.avatar.realms.spigot.bending.abilities.chi.Dash;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
@@ -247,20 +248,9 @@ public class BendingPlayerListener implements Listener {
 		}
 
 		if (!EntityTools.isWeapon(player.getItemInHand().getType()) && EntityTools.canBend(player, ability)) {
-			Map<Object, IBendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
-
-			if ((abilities == null) || abilities.isEmpty()) {
-				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-				if(ab == null) {
-					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
-					return;
-				}
-				ab.swing();
-				return;
-			}
-
+			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			boolean shouldCreateNew = true;
-			for (IBendingAbility a : abilities.values()) {
+			for (BendingAbility a : abilities.values()) {
 				if (a.getPlayer().equals(player) && !((BendingActiveAbility) a).swing()) {
 					shouldCreateNew = false;
 				}
@@ -272,6 +262,9 @@ public class BendingPlayerListener implements Listener {
 					return;
 				}
 				ab.swing();
+				if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+					AbilityManager.getManager().addInstance(ab);
+				}
 			}
 		}
 	}
@@ -302,20 +295,9 @@ public class BendingPlayerListener implements Listener {
 		}
 
 		if (EntityTools.canBend(player, ability) && !player.isSneaking()) {
-			Map<Object, IBendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
-
-			if ((abilities == null) || abilities.isEmpty()) {
-				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-				if(ab == null) {
-					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
-					return;
-				}
-				ab.sneak();
-				return;
-			}
-
+			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			boolean shouldCreateNew = true;
-			for (IBendingAbility a : abilities.values()) {
+			for (BendingAbility a : abilities.values()) {
 				if (a.getPlayer().equals(player) && !((BendingActiveAbility) a).sneak()) {
 					shouldCreateNew = false;
 				}
@@ -327,6 +309,9 @@ public class BendingPlayerListener implements Listener {
 					return;
 				}
 				ab.sneak();
+				if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+					AbilityManager.getManager().addInstance(ab);
+				}
 			}
 		}
 	}

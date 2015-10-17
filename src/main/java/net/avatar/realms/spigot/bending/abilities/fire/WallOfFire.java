@@ -11,12 +11,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -24,7 +23,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@BendingAbility(name = "Wall of Fire", bind = BendingAbilities.WallOfFire, element = BendingElement.Fire)
+@ABendingAbility(name = "Wall of Fire", bind = BendingAbilities.WallOfFire, element = BendingElement.Fire)
 public class WallOfFire extends BendingActiveAbility {
 
 	private static double maxangle = 50;
@@ -63,28 +62,23 @@ public class WallOfFire extends BendingActiveAbility {
 
 	public WallOfFire(Player player) {
 		super(player, null);
-
-		if (this.state.isBefore(BendingAbilityState.CanStart)) {
-			return;
-		}
-
 		this.origin = EntityTools.getTargetedLocation(player, RANGE);
-
+	}
+	
+	@Override
+	public boolean canBeInitialized() {
 		Block block = this.origin.getBlock();
-
-		if (block.isLiquid() || BlockTools.isSolid(block)) {
-			setState(BendingAbilityState.CannotStart);
-			return;
+		if(!super.canBeInitialized() 
+				|| block.isLiquid() 
+				|| BlockTools.isSolid(block)) {
+			return false;
 		}
+		return true;
 	}
 
 	@Override
 	public boolean swing() {
-		switch (this.state) {
-		case None:
-		case CannotStart:
-			return false;
-		case CanStart:
+		if(getState() == BendingAbilityState.Start) {
 			World world = this.player.getWorld();
 
 			this.width = (int) PluginTools.firebendingDayAugment(WIDTH, world);
@@ -111,30 +105,17 @@ public class WallOfFire extends BendingActiveAbility {
 
 			initializeBlocks();
 			setState(BendingAbilityState.Progressing);
-			AbilityManager.getManager().addInstance(this);
-
-			return false;
-		case Preparing:
-		case Prepared:
-		case Progressing:
-		case Ending:
-		case Ended:
-		case Removed:
-		default:
-			return false;
 		}
+		return false;
 	}
 
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
-			return false;
-		}
-
+	public void progress() {
 		this.time = System.currentTimeMillis();
 
 		if ((this.time - this.startedTime) > this.duration) {
-			return false;
+			remove();
+			return;
 		}
 
 		if ((this.time - this.startedTime) > (this.intervaltick * interval)) {
@@ -146,7 +127,6 @@ public class WallOfFire extends BendingActiveAbility {
 			this.damagetick++;
 			damage();
 		}
-		return true;
 	}
 
 	private void initializeBlocks() {
@@ -215,13 +195,18 @@ public class WallOfFire extends BendingActiveAbility {
 			return;
 		}
 		entity.setVelocity(new Vector(0, 0, 0));
-		new Enflamed(this.player, entity, 1, this);
+		new Enflamed(this.player, entity, 1);
 		EntityTools.damageEntity(this.player, entity, this.damage);	
 	}
 
 	@Override
 	public Object getIdentifier() {
 		return this.player;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

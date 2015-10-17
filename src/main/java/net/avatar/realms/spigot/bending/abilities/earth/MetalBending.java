@@ -4,12 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.base.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -21,7 +20,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@BendingAbility(name = "Metalbending", bind = BendingAbilities.MetalBending, element = BendingElement.Earth, affinity = BendingAffinity.Metalbend)
+@ABendingAbility(name = "Metalbending", bind = BendingAbilities.MetalBending, element = BendingElement.Earth, affinity = BendingAffinity.Metalbend)
 public class MetalBending extends BendingActiveAbility {
 	@ConfigurationParameter("Melt-Time")
 	private static long MELT_TIME = 2000;
@@ -58,15 +57,14 @@ public class MetalBending extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (state != BendingAbilityState.CanStart) {
+		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
 
 		this.time = System.currentTimeMillis();
 		this.items = player.getItemInHand();
 		if (isMeltable(this.items.getType())) {
-			AbilityManager.getManager().addInstance(this);
-			state = BendingAbilityState.Progressing;
+			setState(BendingAbilityState.Progressing);
 		}
 		return false;
 	}
@@ -99,30 +97,33 @@ public class MetalBending extends BendingActiveAbility {
 	public static boolean isMeltable(Material m) {
 		return metals.containsKey(m);
 	}
-
-	public boolean progress() {
-		if (player.isDead() || !player.isOnline()) {
+	
+	@Override
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
 		if (!player.isSneaking() || EntityTools.getBendingAbility(player) != BendingAbilities.MetalBending) {
 			return false;
 		}
+		return true;
+	}
 
+	public void progress() {
 		if (!items.equals(player.getItemInHand())) {
 			time = System.currentTimeMillis();
 			items = player.getItemInHand();
 		}
 
 		if (!isMeltable(items.getType())) {
-			return false;
+			remove();
+			return;
 		}
 
 		if (System.currentTimeMillis() > time + MELT_TIME) {
 			melt();
 			time = System.currentTimeMillis();
 		}
-
-		return true;
 	}
 
 	private void melt() {
@@ -159,6 +160,11 @@ public class MetalBending extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return player;
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 
 }

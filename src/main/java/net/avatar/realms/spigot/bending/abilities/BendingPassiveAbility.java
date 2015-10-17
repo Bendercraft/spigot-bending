@@ -1,20 +1,13 @@
-package net.avatar.realms.spigot.bending.abilities.base;
+package net.avatar.realms.spigot.bending.abilities;
 
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 public abstract class BendingPassiveAbility extends BendingAbility {
 
 	public BendingPassiveAbility(Player player, BendingAbility parent) {
 		super(player, parent);
-		if (canBeInitialized()) {
-			this.startedTime = System.currentTimeMillis();
-			setState(BendingAbilityState.CanStart);
-		} else {
-			setState(BendingAbilityState.CannotStart);
-		}
 	}
 
 	@Override
@@ -37,21 +30,16 @@ public abstract class BendingPassiveAbility extends BendingAbility {
 	 *         <code>false</code> if the passive did NOT properly work
 	 */
 	public abstract boolean start();
-
+	
 	@Override
-	public boolean progress() {
-		if (!super.progress()) {
+	public boolean canTick() {
+		if(!super.canTick()) {
 			return false;
 		}
-
-		if (ProtectionManager.isRegionProtectedFromBendingPassives(this.player, this.player.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBendingPassives(this.player, this.player.getLocation()) 
+				|| !getState().equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
-
-		if (!this.state.equals(BendingAbilityState.Progressing)) {
-			return false;
-		}
-
 		return true;
 	}
 
@@ -59,5 +47,4 @@ public abstract class BendingPassiveAbility extends BendingAbility {
 	protected long getMaxMillis() {
 		return 0;
 	}
-
 }

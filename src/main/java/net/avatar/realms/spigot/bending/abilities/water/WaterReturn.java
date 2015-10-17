@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.base.IBendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -30,7 +30,7 @@ public class WaterReturn {
 	private long time;
 	private Player player;
 
-	public WaterReturn(Player player, Block block, IBendingAbility parent) {
+	public WaterReturn(Player player, Block block, BendingAbility parent) {
 		location = block.getLocation();
 		this.player = player;
 		if (!ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.WaterManipulation, location) && EntityTools.canBend(player, BendingAbilities.WaterManipulation)) {
