@@ -46,7 +46,7 @@ public abstract class BendingAbility {
 	 * </pre>
 	 */
 	protected final void setState(BendingAbilityState newState) {
-		if(state == BendingAbilityState.Ended) {
+		if(newState == BendingAbilityState.Ended) {
 			Bending.getInstance().getLogger().warning(this+" tried to change its state to ended directly");
 			return;
 		}

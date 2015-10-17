@@ -99,9 +99,8 @@ public class FireBurst extends BendingActiveAbility {
 	public boolean swing() {
 		if (getState() == BendingAbilityState.Prepared) {
 			coneBurst();
-			return false;
 		}
-		return true;
+		return false;
 	}
 
 	private void coneBurst() {
@@ -121,11 +120,11 @@ public class FireBurst extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					new BurstBlast(this.player, this.bender, this, location, direction.normalize(), this.damage, safeblocks);
+					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), this.damage, safeblocks));
 				}
 			}
 		}
-		setState(BendingAbilityState.Ended);
+		setState(BendingAbilityState.Progressing);
 	}
 	
 	@Override
@@ -159,7 +158,6 @@ public class FireBurst extends BendingActiveAbility {
 			if (getState().equals(BendingAbilityState.Prepared)) {
 				sphereBurst();
 			}
-			remove();
 			return;
 		}
 
@@ -190,10 +188,11 @@ public class FireBurst extends BendingActiveAbility {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				new BurstBlast(this.player, this.bender, this, location, direction.normalize(), this.damage, safeblocks);
+				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), this.damage, safeblocks));
 			}
 		}
-		setState(BendingAbilityState.Ended);
+		
+		setState(BendingAbilityState.Progressing);
 	}
 
 	@Override
