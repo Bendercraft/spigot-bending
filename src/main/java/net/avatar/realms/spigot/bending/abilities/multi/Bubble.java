@@ -52,7 +52,6 @@ public abstract class Bubble extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if (getState().equals(BendingAbilityState.Start)) {
-			
 			setState(BendingAbilityState.Progressing);
 			return false;
 		}
@@ -60,9 +59,7 @@ public abstract class Bubble extends BendingActiveAbility {
 		if (!getState().equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
-
-		setState(BendingAbilityState.Ended);
-
+		remove();
 		return false;
 	}
 
