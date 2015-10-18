@@ -52,7 +52,7 @@ public class MetalBending extends BendingActiveAbility {
 	private ItemStack items;
 
 	public MetalBending(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

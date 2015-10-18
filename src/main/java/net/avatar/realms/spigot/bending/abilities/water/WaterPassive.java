@@ -17,7 +17,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 public class WaterPassive extends BendingPassiveAbility {
 
 	public WaterPassive(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	public static Vector handle(Player player, Vector velocity) {

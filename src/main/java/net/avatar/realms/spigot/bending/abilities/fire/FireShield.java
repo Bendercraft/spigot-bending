@@ -33,7 +33,7 @@ public class FireShield extends BendingActiveAbility {
 	private FireProtection protect;
 
 	public FireShield(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

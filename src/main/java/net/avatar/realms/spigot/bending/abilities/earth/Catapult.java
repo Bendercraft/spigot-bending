@@ -44,7 +44,7 @@ public class Catapult extends BendingActiveAbility {
 	private int ticks = 0;
 
 	public Catapult(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

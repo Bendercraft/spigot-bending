@@ -39,7 +39,7 @@ public class Blaze extends BendingActiveAbility {
 	private List<FireStream> firestreams = new LinkedList<FireStream>();
 
 	public Blaze(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

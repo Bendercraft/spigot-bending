@@ -40,7 +40,7 @@ public class EarthWall extends BendingActiveAbility {
 	private List<EarthColumn> columns = new LinkedList<EarthColumn>();
 
 	public EarthWall(Player player) {
-		super(player, null);
+		super(player);
 
 		if (AvatarState.isAvatarState(player)) {
 			this.height = (int) (2. / 5. * AvatarState.getValue(this.height));

@@ -66,7 +66,7 @@ public class LavaTrain extends BendingActiveAbility {
 	private long time;
 
 	public LavaTrain(Player player) {
-		super(player, null);
+		super(player);
 		interval = (long) (1000. / SPEED);
 	}
 

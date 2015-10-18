@@ -81,7 +81,7 @@ public class WaterManipulation extends BendingActiveAbility {
 	private WaterReturn waterReturn;
 
 	public WaterManipulation(Player player) {
-		super(player, null);
+		super(player);
 		if (water.isEmpty()) {
 			water.add((byte) 0);
 			water.add((byte) 8);

@@ -39,7 +39,7 @@ public class FireJet extends BendingActiveAbility {
 	private double factor = FACTOR;
 
 	public FireJet(Player player) {
-		super(player, null);
+		super(player);
 		this.factor = PluginTools.firebendingDayAugment(FACTOR, player.getWorld());
 	}
 

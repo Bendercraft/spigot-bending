@@ -79,7 +79,7 @@ public class FireBlast extends BendingActiveAbility {
 	double range = RANGE;
 
 	public FireBlast(Player player) {
-		super(player, null);
+		super(player);
 
 		if (this.bender.hasPath(BendingPath.Nurture)) {
 			this.damage *= 0.8;

@@ -44,7 +44,7 @@ public class Collapse extends BendingActiveAbility {
 	private List<CompactColumn> columns = new LinkedList<CompactColumn>();
 
 	public Collapse(Player player) {
-		super(player, null);
+		super(player);
 
 	}
 

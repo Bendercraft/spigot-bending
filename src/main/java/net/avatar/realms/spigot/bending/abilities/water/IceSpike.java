@@ -54,7 +54,7 @@ public class IceSpike extends BendingActiveAbility {
 	private WaterReturn waterReturn;
 
 	public IceSpike(Player player) {
-		super(player, null);
+		super(player);
 		block(player);
 		if (EntityTools.canPlantbend(player)) {
 			this.plantbending = true;

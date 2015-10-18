@@ -75,7 +75,7 @@ public class FireBurst extends BendingActiveAbility {
 	private List<BurstBlast> blasts;
 
 	public FireBurst(Player player) {
-		super(player, null);
+		super(player);
 
 		if (Tools.isDay(player.getWorld())) {
 			this.chargetime /= Settings.DAY_FACTOR;

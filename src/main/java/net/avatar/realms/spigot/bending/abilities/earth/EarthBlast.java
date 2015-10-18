@@ -89,7 +89,7 @@ public class EarthBlast extends BendingActiveAbility {
 	private boolean settingup = true;
 
 	public EarthBlast(Player player) {
-		super(player, null);
+		super(player);
 
 		this.id = ID++;
 		this.time = this.startedTime;

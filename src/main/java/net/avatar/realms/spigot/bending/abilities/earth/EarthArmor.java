@@ -55,7 +55,7 @@ public class EarthArmor extends BendingActiveAbility {
 	private List<EarthColumn> columns = new LinkedList<EarthColumn>();
 
 	public EarthArmor(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@SuppressWarnings("deprecation")

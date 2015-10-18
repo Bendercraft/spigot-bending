@@ -66,7 +66,7 @@ public class HeatControl extends BendingActiveAbility {
 	private long time;
 
 	public HeatControl(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

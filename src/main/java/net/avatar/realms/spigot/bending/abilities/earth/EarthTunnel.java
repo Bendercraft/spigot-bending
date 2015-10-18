@@ -39,7 +39,7 @@ public class EarthTunnel extends BendingActiveAbility {
 	private long time;
 
 	public EarthTunnel(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

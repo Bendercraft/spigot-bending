@@ -54,7 +54,7 @@ public class WaterTurret extends BendingActiveAbility {
 	private int damage;
 	
 	public WaterTurret(Player player) {
-		super(player, null);
+		super(player);
 		
 		interval = (long) (1000. / SPEED);
 	}

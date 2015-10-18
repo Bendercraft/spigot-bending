@@ -33,8 +33,8 @@ public abstract class Bubble extends BendingActiveAbility {
 
 	protected Set<Material> pushedMaterials;
 
-	public Bubble(Player player, BendingActiveAbility parent) {
-		super(player, parent);
+	public Bubble(Player player) {
+		super(player);
 		this.lastLocation = player.getLocation();
 		this.origins = new HashMap<Block, BlockState>();
 		this.pushedMaterials = new HashSet<Material>();

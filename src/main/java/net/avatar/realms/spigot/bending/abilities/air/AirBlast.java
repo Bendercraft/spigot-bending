@@ -61,7 +61,7 @@ public class AirBlast extends BendingActiveAbility {
 	private boolean otherOrigin = false;
 
 	public AirBlast(Player player) {
-		super(player, null);
+		super(player);
 		this.id = ID++;
 		if (this.bender.hasPath(BendingPath.Renegade)) {
 			this.range = this.range * 0.6;

@@ -64,7 +64,7 @@ public class Tornado extends BendingActiveAbility {
 	private FlyingPlayer flying;
 
 	public Tornado(Player player) {
-		super(player, null);
+		super(player);
 
 		this.origin = EntityTools.getTargetBlock(player, RANGE).getLocation();
 		this.origin.setY(this.origin.getY() - ((1. / 10.) * this.height));

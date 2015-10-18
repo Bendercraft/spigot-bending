@@ -55,7 +55,7 @@ public class SmokeBomb extends BendingActiveAbility {
 	private long cooldown;
 
 	public SmokeBomb(Player player) {
-		super(player, null);
+		super(player);
 
 		this.origin = player.getLocation();
 		this.id = ID++;

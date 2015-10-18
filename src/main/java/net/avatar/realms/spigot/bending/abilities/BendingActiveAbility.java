@@ -6,8 +6,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 public abstract class BendingActiveAbility extends BendingAbility {
 
-	public BendingActiveAbility(Player player, BendingAbility parent) {
-		super(player, parent);
+	public BendingActiveAbility(Player player) {
+		super(player);
 	}
 
 	/**

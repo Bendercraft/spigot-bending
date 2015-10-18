@@ -60,7 +60,7 @@ public class Lightning extends BendingActiveAbility {
 	private List<Entity> hitentities = new LinkedList<Entity>();
 
 	public Lightning(Player player) {
-		super(player, null);
+		super(player);
 
 		this.warmup = WARMUP;
 		if (AvatarState.isAvatarState(this.player)) {

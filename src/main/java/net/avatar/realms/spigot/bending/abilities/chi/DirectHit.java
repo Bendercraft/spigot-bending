@@ -33,7 +33,7 @@ public class DirectHit extends BendingActiveAbility {
 	public static long COOLDOWN = 1500;
 
 	public DirectHit(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

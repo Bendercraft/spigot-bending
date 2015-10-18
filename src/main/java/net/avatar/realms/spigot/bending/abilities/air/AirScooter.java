@@ -40,7 +40,7 @@ public class AirScooter extends BendingActiveAbility {
 	private double speed;
 
 	public AirScooter(Player player) {
-		super(player, null);
+		super(player);
 
 		this.time = this.startedTime;
 		for (int i = 0; i < 5; i++) {

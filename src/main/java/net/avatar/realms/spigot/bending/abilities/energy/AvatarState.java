@@ -32,7 +32,7 @@ public class AvatarState extends BendingActiveAbility {
 	private long realDuration;
 
 	public AvatarState(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

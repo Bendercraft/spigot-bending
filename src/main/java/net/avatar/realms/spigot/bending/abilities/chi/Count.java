@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 public class Count extends BendingActiveAbility {
 
 	public Count(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -21,11 +20,7 @@ public class AirBubble extends Bubble {
 	private static long MAX_DURATION = 60 * 10 * 1000L;
 
 	public AirBubble(Player player) {
-		this(player, null);
-	}
-
-	public AirBubble(Player player, BendingActiveAbility parent) {
-		super(player, parent);
+		super(player);
 
 		this.radius = DEFAULT_RADIUS;
 

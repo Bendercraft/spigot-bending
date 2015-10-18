@@ -84,7 +84,7 @@ public class Torrent extends BendingActiveAbility {
 	private List<TempBlock> iceds = new LinkedList<TempBlock>();
 
 	public Torrent(Player player) {
-		super(player, null);
+		super(player);
 
 		this.damage = DAMAGE;
 		this.range = RANGE;

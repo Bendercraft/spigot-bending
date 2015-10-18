@@ -53,7 +53,7 @@ public class EarthGrab extends BendingActiveAbility {
 	private List<TempBlock> affectedBlocks = new ArrayList<TempBlock>(8);
 
 	public EarthGrab(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

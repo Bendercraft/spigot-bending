@@ -22,8 +22,8 @@ public class HighJump extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	private static final long COOLDOWN = 3500;
 
-	public HighJump(Player p) {
-		super(p, null);
+	public HighJump(Player player) {
+		super(player);
 	}
 
 	@Override

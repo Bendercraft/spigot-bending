@@ -69,7 +69,7 @@ public class WaterWall extends BendingActiveAbility {
 	private Wave wave;
 
 	public WaterWall(Player player) {
-		super(player, null);
+		super(player);
 		if (AvatarState.isAvatarState(player)) {
 			radius = AvatarState.getValue(radius);
 		}

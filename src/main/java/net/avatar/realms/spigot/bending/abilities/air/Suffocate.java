@@ -50,7 +50,7 @@ public class Suffocate extends BendingActiveAbility {
 	private long time;
 
 	public Suffocate(Player player) {
-		super(player, null);
+		super(player);
 
 		this.time = this.startedTime;
 

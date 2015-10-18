@@ -25,7 +25,7 @@ public class AirGlide extends BendingPassiveAbility {
 	private double z;
 
 	public AirGlide(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

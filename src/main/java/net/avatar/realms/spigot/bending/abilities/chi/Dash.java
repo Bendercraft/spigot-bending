@@ -29,7 +29,7 @@ public class Dash extends BendingActiveAbility {
 	private Vector direction;
 
 	public Dash(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

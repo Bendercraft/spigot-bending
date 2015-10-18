@@ -57,7 +57,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 	private List<PotionEffect> effects;
 
 	public PoisonnedDart(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 public class Release extends BendingActiveAbility {
 
 	public Release(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

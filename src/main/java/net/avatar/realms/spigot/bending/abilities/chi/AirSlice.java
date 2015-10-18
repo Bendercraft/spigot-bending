@@ -55,7 +55,7 @@ public class AirSlice extends BendingActiveAbility {
 	private List<Location> onGoing = new LinkedList<Location>();
 
 	public AirSlice(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class EarthLariat extends BendingActiveAbility {
 	private LivingEntity target;
 
 	public EarthLariat(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

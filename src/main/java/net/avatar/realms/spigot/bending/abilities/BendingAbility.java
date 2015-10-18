@@ -11,9 +11,6 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * Represent the base class for bending abilities
  */
 public abstract class BendingAbility {
-
-	private BendingAbility parent;
-
 	protected BendingPlayer bender;
 	protected Player player;
 
@@ -29,10 +26,9 @@ public abstract class BendingAbility {
 	 * @param parent
 	 *            The ability that generates this ability. null if none
 	 */
-	public BendingAbility(Player player, BendingAbility parent) {
+	public BendingAbility(Player player) {
 		this.player = player;
 		this.bender = BendingPlayer.getBendingPlayer(player);
-		this.parent = parent;
 		this.startedTime = System.currentTimeMillis();
 	}
 
@@ -143,10 +139,6 @@ public abstract class BendingAbility {
 
 	public final BendingPlayer getBender() {
 		return this.bender;
-	}
-
-	public final BendingAbility getParent() {
-		return this.parent;
 	}
 	
 	public final BendingAbilityState getState() {

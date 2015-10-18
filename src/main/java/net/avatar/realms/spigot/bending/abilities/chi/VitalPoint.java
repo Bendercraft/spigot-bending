@@ -57,7 +57,7 @@ public class VitalPoint extends BendingActiveAbility {
 	private int amplifier;
 
 	public VitalPoint(Player player) {
-		super(player, null);
+		super(player);
 
 		this.amplifier = 0;
 		this.damage = DAMAGE;

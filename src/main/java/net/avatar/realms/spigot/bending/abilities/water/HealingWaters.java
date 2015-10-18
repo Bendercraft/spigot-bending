@@ -33,7 +33,7 @@ public class HealingWaters extends BendingActiveAbility {
 	private LivingEntity target;
 
 	public HealingWaters(final Player player) {
-		super(player, null);
+		super(player);
 		this.time = this.startedTime;
 	}
 

@@ -22,7 +22,7 @@ public class WaterBubble extends Bubble {
 	private static long MAX_DURATION = 60 * 10 * 1000;
 
 	public WaterBubble(Player player) {
-		super(player, null);
+		super(player);
 
 		if (Tools.isNight(this.player.getWorld())) {
 			this.radius = PluginTools.waterbendingNightAugment(WaterBubble.DEFAULT_RADIUS, this.player.getWorld());

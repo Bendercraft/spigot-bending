@@ -45,7 +45,7 @@ public class FireBlade extends BendingActiveAbility {
 	private ItemStack blade;
 
 	public FireBlade(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

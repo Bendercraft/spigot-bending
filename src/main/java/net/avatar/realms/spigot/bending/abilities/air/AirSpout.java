@@ -43,7 +43,7 @@ public class AirSpout extends BendingActiveAbility {
 	private double height;
 
 	public AirSpout(Player player) {
-		super(player, null);
+		super(player);
 
 		this.time = this.startedTime;
 

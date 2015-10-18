@@ -50,7 +50,7 @@ public class AirShield extends BendingActiveAbility {
 	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
 
 	public AirShield(Player player) {
-		super(player, null);
+		super(player);
 
 		int angle = 0;
 		int di = (int) ((maxRadius * 2) / numberOfStreams);

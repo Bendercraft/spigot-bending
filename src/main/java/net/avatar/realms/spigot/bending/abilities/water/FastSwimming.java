@@ -19,7 +19,7 @@ public class FastSwimming extends BendingPassiveAbility {
 	private static double FACTOR = 0.7;
 
 	public FastSwimming(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class AirSuction extends BendingActiveAbility {
 	private double speedfactor;
 
 	public AirSuction(Player player) {
-		super(player, null);
+		super(player);
 
 		this.speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.); // Really used ?
 

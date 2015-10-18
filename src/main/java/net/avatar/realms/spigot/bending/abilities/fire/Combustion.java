@@ -79,7 +79,7 @@ public class Combustion extends BendingActiveAbility {
 	private double damage = DAMAGE;
 
 	public Combustion(Player player) {
-		super(player, null);
+		super(player);
 
 		time = startedTime;
 		if (AvatarState.isAvatarState(player)) {

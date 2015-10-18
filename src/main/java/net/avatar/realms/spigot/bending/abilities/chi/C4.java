@@ -74,13 +74,13 @@ public class C4 extends BendingActiveAbility {
 	private Arrow arrow;
 
 	public C4(Player player) {
-		super(player, null);
+		super(player);
 		loadBlockByDir(player.getEyeLocation(), player.getEyeLocation().getDirection());
 		this.previousType = this.location.getBlock().getType();
 	}
 
 	public C4(Player player, Arrow arrow) {
-		super(player, null);
+		super(player);
 		this.arrow = arrow;
 		loadBlockByDir(arrow.getLocation(), arrow.getVelocity().normalize());
 	}

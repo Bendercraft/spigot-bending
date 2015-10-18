@@ -35,7 +35,7 @@ public class Shockwave extends BendingActiveAbility {
 	private List<Ripple> ripples = new LinkedList<Ripple>();
 
 	public Shockwave(Player player) {
-		super(player, null);
+		super(player);
 
 		starttime = System.currentTimeMillis();
 		if (AvatarState.isAvatarState(player))

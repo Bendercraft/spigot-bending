@@ -61,7 +61,7 @@ public class WallOfFire extends BendingActiveAbility {
 	private long duration;
 
 	public WallOfFire(Player player) {
-		super(player, null);
+		super(player);
 		this.origin = EntityTools.getTargetedLocation(player, RANGE);
 	}
 	

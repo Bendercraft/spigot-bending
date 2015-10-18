@@ -15,7 +15,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 public class AirSpeed extends BendingPassiveAbility {
 
 	public AirSpeed(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

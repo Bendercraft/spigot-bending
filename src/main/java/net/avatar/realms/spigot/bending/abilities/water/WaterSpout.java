@@ -48,7 +48,7 @@ public class WaterSpout extends BendingActiveAbility {
 	private int height;
 
 	public WaterSpout(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

@@ -68,7 +68,7 @@ public class AirBurst extends BendingActiveAbility {
 	private List<BurstBlast> blasts;
 	
 	public AirBurst(Player player) {
-		super(player, null);
+		super(player);
 		
 		blasts = new LinkedList<BurstBlast>();
 		chargetime = DEFAULT_CHARGETIME;

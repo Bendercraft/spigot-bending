@@ -41,7 +41,7 @@ public class PhaseChange extends BendingActiveAbility {
 	private List<TempBlock> melted = new LinkedList<TempBlock>();
 
 	public PhaseChange(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@SuppressWarnings("deprecation")

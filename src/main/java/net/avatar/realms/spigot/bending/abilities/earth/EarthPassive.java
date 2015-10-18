@@ -29,7 +29,7 @@ public class EarthPassive extends BendingPassiveAbility {
 	private Map<Block, BlockState> blocks = new HashMap<Block, BlockState>();
 
 	public EarthPassive(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

@@ -102,7 +102,7 @@ public class AirSwipe extends BendingActiveAbility {
 	private int arc;
 
 	public AirSwipe(Player player) {
-		super(player, null);
+		super(player);
 
 		this.id = ID++;
 		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);

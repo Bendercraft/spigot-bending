@@ -32,7 +32,7 @@ public class Illumination extends BendingActiveAbility {
 	private BlockState blockState;
 
 	public Illumination(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

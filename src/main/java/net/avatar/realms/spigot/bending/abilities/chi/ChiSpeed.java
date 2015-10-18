@@ -16,7 +16,7 @@ public class ChiSpeed extends BendingPassiveAbility {
 
 	private int speedAmplifier = 0;
 	public ChiSpeed(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class OctopusForm extends BendingActiveAbility {
 	private TempBlock drainedBlock;
 
 	public OctopusForm(Player player) {
-		super(player, null);
+		super(player);
 	}
 
 	private void incrementStep() {

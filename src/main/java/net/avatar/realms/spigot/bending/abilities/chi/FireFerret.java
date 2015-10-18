@@ -47,7 +47,7 @@ public class FireFerret extends BendingActiveAbility {
 	private double speedfactor;
 	
 	public FireFerret(Player player) {
-		super(player, null);
+		super(player);
 		
 		speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 	}
