@@ -261,9 +261,11 @@ public class BendingPlayerListener implements Listener {
 					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
 					return;
 				}
-				ab.swing();
-				if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
-					AbilityManager.getManager().addInstance(ab);
+				if(ab.canBeInitialized()) {
+					ab.swing();
+					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+						AbilityManager.getManager().addInstance(ab);
+					}
 				}
 			}
 		}
@@ -308,9 +310,11 @@ public class BendingPlayerListener implements Listener {
 					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
 					return;
 				}
-				ab.sneak();
-				if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
-					AbilityManager.getManager().addInstance(ab);
+				if(ab.canBeInitialized()) {
+					ab.sneak();
+					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+						AbilityManager.getManager().addInstance(ab);
+					}
 				}
 			}
 		}
