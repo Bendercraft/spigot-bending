@@ -83,7 +83,7 @@ public class AirShield extends BendingActiveAbility {
 			if (getState() == BendingAbilityState.Start) {
 				setState(BendingAbilityState.Progressing);
 			} else if (getState() == BendingAbilityState.Progressing) {
-				setState(BendingAbilityState.Ended);
+				remove();
 			}
 		}
 

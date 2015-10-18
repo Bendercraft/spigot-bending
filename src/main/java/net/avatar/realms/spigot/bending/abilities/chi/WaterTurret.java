@@ -61,7 +61,7 @@ public class WaterTurret extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		setState(BendingAbilityState.Ended);
+		remove();
 		return false;
 	}
 

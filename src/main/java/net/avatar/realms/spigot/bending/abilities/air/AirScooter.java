@@ -68,7 +68,7 @@ public class AirScooter extends BendingActiveAbility {
 		}
 
 		if (getState() == BendingAbilityState.Progressing) {
-			setState(BendingAbilityState.Ended);
+			remove();
 			return false;
 		}
 
@@ -77,7 +77,7 @@ public class AirScooter extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		setState(BendingAbilityState.Ended);
+		remove();
 		return false;
 	}
 

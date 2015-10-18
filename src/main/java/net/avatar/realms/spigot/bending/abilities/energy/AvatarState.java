@@ -38,7 +38,7 @@ public class AvatarState extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if (getState() == BendingAbilityState.Progressing) {
-			setState(BendingAbilityState.Ended);
+			remove();
 			return false;
 		}
 

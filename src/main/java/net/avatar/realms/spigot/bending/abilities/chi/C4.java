@@ -224,8 +224,7 @@ public class C4 extends BendingActiveAbility {
 		explode();
 
 		this.bender.cooldown(BendingAbilities.PlasticBomb, COOLDOWN);
-
-		setState(BendingAbilityState.Ended);
+		remove();
 	}
 
 	@SuppressWarnings("deprecation")

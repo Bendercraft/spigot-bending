@@ -155,7 +155,6 @@ public class SmokeBomb extends BendingActiveAbility {
 
 		this.ticksRemaining--;
 		if (this.ticksRemaining <= 0) {
-			setState(BendingAbilityState.Ended);
 			remove();
 		}
 	}

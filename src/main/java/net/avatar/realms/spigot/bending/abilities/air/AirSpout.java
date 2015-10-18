@@ -63,7 +63,7 @@ public class AirSpout extends BendingActiveAbility {
 		} else if (getState() == BendingAbilityState.Progressing) {
 			long now = System.currentTimeMillis();
 			if (now >= (this.startedTime + 200)) {
-				setState(BendingAbilityState.Ended);
+				remove();
 			}
 		}
 		return false;

@@ -64,7 +64,7 @@ public class Dash extends BendingActiveAbility {
 	public void dash() {
 		Vector dir = new Vector(this.direction.getX() * LENGTH, HEIGHT, this.direction.getZ() * LENGTH);
 		this.player.setVelocity(dir);
-		setState(BendingAbilityState.Ended);
+		remove();
 	}
 
 	// This should be called in OnMoveEvent to set the direction dash the same

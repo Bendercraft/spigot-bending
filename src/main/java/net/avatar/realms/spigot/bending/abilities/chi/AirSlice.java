@@ -68,7 +68,7 @@ public class AirSlice extends BendingActiveAbility {
 			}
 
 			if(!ComboPoints.consume(this.player,1)) {
-				setState(BendingAbilityState.Ended);
+				remove();
 				return false;
 			}
 
@@ -97,7 +97,7 @@ public class AirSlice extends BendingActiveAbility {
 				return false;
 			}
 			if(!ComboPoints.consume(this.player,1)) {
-				setState(BendingAbilityState.Ended);
+				remove();
 				return false;
 			}
 			setState(BendingAbilityState.Preparing);
@@ -117,7 +117,7 @@ public class AirSlice extends BendingActiveAbility {
 				setState(BendingAbilityState.Prepared);
 			}
 			if(!ComboPoints.consume(this.player,1)) {
-				setState(BendingAbilityState.Ended);
+				remove();
 				return false;
 			}
 		}

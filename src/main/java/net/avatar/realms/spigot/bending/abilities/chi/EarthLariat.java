@@ -44,13 +44,13 @@ public class EarthLariat extends BendingActiveAbility {
 		if(getState() == BendingAbilityState.Start) {
 			if(!player.isSneaking()) {
 				if(!ComboPoints.consume(player,1)) {
-					setState(BendingAbilityState.Ended);
+					remove();
 					return false;
 				}
 				
 				target = EntityTools.getTargettedEntity(player, RANGE);
 				if(target == null) {
-					setState(BendingAbilityState.Ended);
+					remove();
 					return false;
 				}
 				
@@ -73,7 +73,7 @@ public class EarthLariat extends BendingActiveAbility {
 			if(player.getLocation().distance(target.getLocation()) < DISTANCE) {
 				target.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, CONFUSION_DURATION, 1));
 			}
-			setState(BendingAbilityState.Ended);
+			remove();
 		}
 		return false;
 	}

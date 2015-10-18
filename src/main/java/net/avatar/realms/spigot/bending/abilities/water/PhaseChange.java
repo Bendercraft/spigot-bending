@@ -217,7 +217,7 @@ public class PhaseChange extends BendingActiveAbility {
 			PhaseChange fm = (PhaseChange) ab;
 			for(TempBlock b : fm.frozens) {
 				if(b.getBlock().getLocation().equals(block.getLocation())) {
-					fm.setState(BendingAbilityState.Ended);
+					fm.remove();
 					break;
 				}
 			}

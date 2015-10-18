@@ -57,7 +57,7 @@ public class FireFerret extends BendingActiveAbility {
 		if(getState() == BendingAbilityState.Start) {
 			if(player.isSneaking()) {
 				if(!ComboPoints.consume(player,2)) {
-					setState(BendingAbilityState.Ended);
+					remove();
 					return false;
 				}
 				
