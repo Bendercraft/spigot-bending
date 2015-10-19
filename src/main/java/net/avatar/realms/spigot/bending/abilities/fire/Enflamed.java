@@ -60,6 +60,9 @@ public class Enflamed {
 
 	public boolean progress() {
 		long now = System.currentTimeMillis();
+		if(target.isDead()) {
+			return false;
+		}
 		if ((now - this.time) < 1000) {
 			return true;
 		}
