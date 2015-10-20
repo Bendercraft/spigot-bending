@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
@@ -71,7 +71,7 @@ public class AirBlast extends BendingActiveAbility {
 	@Override
 	public boolean canBeInitialized() {
 		if(!super.canBeInitialized() 
-				|| player.getEyeLocation().getBlock().isLiquid()) {
+				|| this.player.getEyeLocation().getBlock().isLiquid()) {
 			return false;
 		}
 		return true;
@@ -111,12 +111,12 @@ public class AirBlast extends BendingActiveAbility {
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.Start 
 				|| getState() == BendingAbilityState.Preparing) {
-			Location originLocation = EntityTools.getTargetedLocation(player, SELECT_RANGE, BlockTools.getNonOpaque());
+			Location originLocation = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
 			if (originLocation.getBlock().isLiquid() || BlockTools.isSolid(originLocation.getBlock())) {
 				return false;
 			}
 
-			if ((originLocation == null) || ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirBlast, originLocation)) {
+			if ((originLocation == null) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirBlast, originLocation)) {
 				return false;
 			}
 
@@ -133,12 +133,12 @@ public class AirBlast extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if(this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
+		if (getState() == BendingAbilityState.Preparing && this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	@Override
 	@SuppressWarnings("deprecation")
 	public void progress() {
@@ -206,7 +206,7 @@ public class AirBlast extends BendingActiveAbility {
 			entity.setFireTicks(0);
 		}
 		Vector velocity = entity.getVelocity();
-		
+
 		double max = maxspeed;
 		double factor = this.pushfactor;
 		if (AvatarState.isAvatarState(this.player)) {
@@ -256,6 +256,6 @@ public class AirBlast extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		
+
 	}
 }
