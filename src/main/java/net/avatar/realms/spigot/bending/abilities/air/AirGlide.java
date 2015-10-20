@@ -4,8 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
@@ -63,7 +63,7 @@ public class AirGlide extends BendingPassiveAbility {
 			this.fly.resetState();
 		}
 	}
-	
+
 	@Override
 	public boolean canTick() {
 		if(!super.canTick() 
@@ -79,6 +79,9 @@ public class AirGlide extends BendingPassiveAbility {
 
 	@Override
 	public void progress() {
+		if (this.y > 0) {
+			remove();
+		}
 		if (this.player.getLocation().getBlock().getType() == Material.AIR) {
 			Vector vel = this.player.getVelocity();
 			vel.setX(this.x);
