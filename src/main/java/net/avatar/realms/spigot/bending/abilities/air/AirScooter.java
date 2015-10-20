@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
@@ -85,11 +85,12 @@ public class AirScooter extends BendingActiveAbility {
 	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
 	}
-	
+
 	@Override
 	public boolean canTick() {
 		if(!super.canTick() 
-				|| this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this) 
+				|| this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)
+				// TODO: Remove Scooter when using another ability instead of this
 				|| this.player.isSneaking() 
 				|| !this.player.isFlying()) {
 			return false;
