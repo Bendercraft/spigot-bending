@@ -158,8 +158,7 @@ public class AirSuction extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSuction) 
-				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction, this.location)) {
+		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSuction)) {
 			// Info : This is checking the position of the suction and not the position of the bender
 			return false;
 		}
@@ -176,10 +175,15 @@ public class AirSuction extends BendingActiveAbility {
 			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) SELECT_RANGE);
 			return;
 		}
-
+		
 		if (!getState().equals(BendingAbilityState.Progressing) 
 				|| this.location.distance(this.origin) > this.range 
 				|| this.location.distance(this.origin) <= 1) {
+			remove();
+			return;
+		}
+		
+		if(ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction, this.location)) {
 			remove();
 			return;
 		}
