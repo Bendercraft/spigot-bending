@@ -216,7 +216,6 @@ public class AirShield extends BendingActiveAbility {
 			cooldown *= 1.2;
 		}
 		this.bender.cooldown(BendingAbilities.AirShield, cooldown);
-		super.remove();
 	}
 
 
