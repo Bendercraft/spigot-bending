@@ -227,7 +227,11 @@ public class WaterSpout extends BendingActiveAbility {
 			return true;
 		}
 		int cpt = 0;
-		while ((loc.getBlock().getType() == Material.AIR) && (loc.getBlockY() > 0) && (cpt <= HEIGHT)) {
+		while ((loc.getBlock().getType() == Material.AIR 
+					|| loc.getBlock().getType() == Material.WATER 
+					|| loc.getBlock().getType() ==Material.STATIONARY_WATER) 
+				&& (loc.getBlockY() > 0) 
+				&& (cpt <= HEIGHT)) {
 			loc = loc.add(0, -1, 0);
 			if (BlockTools.isWaterBased(loc.getBlock())) {
 				return true;
