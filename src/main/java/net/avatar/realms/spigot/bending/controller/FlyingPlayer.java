@@ -10,41 +10,29 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 
-// I continue to use an extern class to handle flying because there can be many reasons to be flying
-// : WaterSpout and Tornado for example.
-// If your were WaterSpouting when a tornado comes against you, there may be a conflict giving the
-// fly to a player
 public class FlyingPlayer {
 
 	private static Map<UUID, FlyingPlayer> flyingPlayers = new HashMap<UUID, FlyingPlayer>();
 
 	private Player player;
-	private boolean couldFly;
-	private boolean wasFlying;
 	private Map<BendingAbility, Long> causes;
 
 	private FlyingPlayer(Player player) {
-
 		this.player = player;
-		this.couldFly = (player.getAllowFlight());
-		this.wasFlying = player.isFlying();
 		this.causes = new HashMap<BendingAbility, Long>();
 	}
 
 	public void fly() {
-
 		this.player.setAllowFlight(true);
 		this.player.setFlying(true);
 	}
 
 	public void resetState() {
-
-		this.player.setAllowFlight(this.couldFly);
-		this.player.setFlying(this.wasFlying);
+		this.player.setAllowFlight(false);
+		this.player.setFlying(false);
 	}
 
 	private boolean addCause(BendingAbility cause, Long maxDuration) {
-
 		if (this.causes == null) {
 			return false;
 		}
@@ -54,7 +42,6 @@ public class FlyingPlayer {
 	}
 
 	public boolean hasCauses() {
-
 		if (this.causes == null) {
 			return false;
 		}
@@ -63,7 +50,6 @@ public class FlyingPlayer {
 	}
 
 	public boolean hasCause(BendingAbility cause) {
-
 		if (this.causes == null) {
 			return false;
 		}
@@ -76,7 +62,6 @@ public class FlyingPlayer {
 	}
 
 	private void removeCause(BendingAbility cause) {
-
 		if (this.causes == null) {
 			return;
 		}
@@ -87,7 +72,6 @@ public class FlyingPlayer {
 	}
 
 	public static FlyingPlayer addFlyingPlayer(Player player, BendingAbility cause, Long maxDuration) {
-
 		if ((player == null) || (cause == null)) {
 			return null;
 		}
@@ -95,9 +79,6 @@ public class FlyingPlayer {
 		FlyingPlayer flying = null;
 		if (flyingPlayers.containsKey(player.getUniqueId())) {
 			flying = flyingPlayers.get(player.getUniqueId());
-			if (flying == null) {
-				flying = new FlyingPlayer(player);
-			}
 		} else {
 			flying = new FlyingPlayer(player);
 		}
@@ -111,7 +92,6 @@ public class FlyingPlayer {
 	}
 
 	public static void removeFlyingPlayer(Player player, BendingAbility cause) {
-
 		if (!flyingPlayers.containsKey(player.getUniqueId())) {
 			return;
 		}
@@ -132,7 +112,6 @@ public class FlyingPlayer {
 	}
 
 	private boolean handle() {
-
 		long now = System.currentTimeMillis();
 		List<BendingAbility> toRemove = new LinkedList<BendingAbility>();
 		for (BendingAbility ab : this.causes.keySet()) {
@@ -149,7 +128,6 @@ public class FlyingPlayer {
 	}
 
 	public static void handleAll() {
-
 		List<UUID> toRemove = new LinkedList<UUID>();
 		for (UUID id : flyingPlayers.keySet()) {
 			if (!flyingPlayers.get(id).handle()) {
