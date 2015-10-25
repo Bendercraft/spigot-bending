@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 
 public class FlyingPlayer {
 
@@ -115,7 +116,7 @@ public class FlyingPlayer {
 		long now = System.currentTimeMillis();
 		List<BendingAbility> toRemove = new LinkedList<BendingAbility>();
 		for (BendingAbility ab : this.causes.keySet()) {
-			if (now > this.causes.get(ab)) {
+			if (now > this.causes.get(ab) || ab.getState() == BendingAbilityState.Ended) {
 				toRemove.add(ab);
 			}
 		}
