@@ -103,10 +103,10 @@ public class Collapse extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		for (CompactColumn column : this.columns) {
+		LinkedList<CompactColumn> test = new LinkedList<CompactColumn>(this.columns);
+		for (CompactColumn column : test) {
 			if (!column.progress()) {
-				remove();
-				return;
+				this.columns.remove(column);
 			}
 		}
 	}

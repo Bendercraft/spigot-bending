@@ -11,8 +11,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.TempBlock;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -192,9 +190,6 @@ public class EarthColumn {
 			return false;
 		}
 		Block block = location.getBlock();
-		if(TempBlock.isTempBlock(block)) {
-			return false;
-		}
 		location = location.add(direction);
 		BlockTools.moveEarth(player, block, direction, distance);
 		loadAffectedBlocks();
