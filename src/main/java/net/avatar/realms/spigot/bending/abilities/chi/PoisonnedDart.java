@@ -78,7 +78,6 @@ public class PoisonnedDart extends BendingActiveAbility {
 
 		ItemStack is = this.player.getItemInHand();
 		this.effects = new LinkedList<PotionEffect>();
-		System.out.println(is.toString());
 		switch (is.getType()) {
 			case MILK_BUCKET:
 				this.effects = null;
