@@ -61,9 +61,10 @@ public class WaterSpout extends BendingActiveAbility {
 				if (this.flying != null) {
 					spout();
 					setState(BendingAbilityState.Progressing);
-					
 				}
 			}
+		} else if(getState() == BendingAbilityState.Progressing) {
+			remove();
 		}
 		return false;
 	}
