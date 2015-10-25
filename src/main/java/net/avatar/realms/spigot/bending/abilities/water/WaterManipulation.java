@@ -140,6 +140,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			} else {
 				block = null;
 			}
+			bender.cooldown(BendingAbilities.Drainbending, Drainbending.COOLDOWN/2);
 		}
 
 		// Check for bottle too !
