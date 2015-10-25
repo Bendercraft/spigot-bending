@@ -10,7 +10,6 @@ import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -20,6 +19,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.Tools;
 import net.coreprotect.CoreProtectAPI;
 
 import org.bukkit.Bukkit;
@@ -39,22 +39,28 @@ public class Combustion extends BendingActiveAbility {
 	private static long interval = 25;
 
 	@ConfigurationParameter("Radius")
-	private static double radius = 2;
+	private static double HITBOX = 2;
 
 	@ConfigurationParameter("Charge-Time")
-	private static long chargeTime = 2000;
+	private static long CHARGE_TIME = 2000;
 
+	@ConfigurationParameter("Push-Radius")
+	private static double PUSH_RADIUS = 5.0;
+	
 	@ConfigurationParameter("Explosion-Radius")
-	private static double explosionradius = 3.0;
+	private static double EXPLOSION_RADIUS = 3.0;
 
 	@ConfigurationParameter("Inner-Radius")
-	private static double innerradius = 3.0;
+	private static double DAMAGE_RADIUS = 3.0;
 
 	@ConfigurationParameter("Sound-Radius")
 	private static int SOUND_RADIUS = 35;
 
 	@ConfigurationParameter("Range")
 	private static double RANGE = 20;
+	
+	@ConfigurationParameter("Push-back")
+	private static double PUSH_BACK = 5.0;
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 9;
@@ -62,14 +68,10 @@ public class Combustion extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 2000;
 
-	@ConfigurationParameter("Max-Move")
-	private static float MAX_DISTANCE = 2.5f;
-
 	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
 	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
 
 	private Location origin;
-	private Block block;
 	private Location location;
 	private Vector direction;
 	private long time;
@@ -86,7 +88,6 @@ public class Combustion extends BendingActiveAbility {
 			damage = AvatarState.getValue(damage);
 		}
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
-		block = player.getLocation().getBlock();
 	}
 
 	@Override
@@ -117,16 +118,13 @@ public class Combustion extends BendingActiveAbility {
 				remove();
 				return;
 			}
-
-			if (player.getLocation().getBlock().getLocation().distance(block.getLocation()) > MAX_DISTANCE) {
-				remove();
-				return;
-			}
-
-			if (System.currentTimeMillis() > time + chargeTime) {
+			player.getWorld().playEffect(player.getEyeLocation(), 
+					Effect.SMOKE, 
+					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 3);
+			if (System.currentTimeMillis() > time + CHARGE_TIME) {
 				location = player.getEyeLocation();
 				origin = location.clone();
-				direction = location.getDirection().normalize().multiply(radius);
+				direction = location.getDirection().normalize().multiply(HITBOX);
 				setState(BendingAbilityState.Prepared);
 			}
 			return;
@@ -146,7 +144,7 @@ public class Combustion extends BendingActiveAbility {
 				remove();
 				return;
 			}
-			if (BlockTools.isSolid(location.getBlock())) {
+			if (BlockTools.isSolid(location.getBlock()) && !BlockTools.isPlant(location.getBlock())) {
 				explode();
 				remove();
 				return;
@@ -164,22 +162,22 @@ public class Combustion extends BendingActiveAbility {
 
 	public void dealDamage(Entity entity) {
 		double distance = entity.getLocation().distance(location);
-		if (distance > explosionradius) {
+		if (distance > EXPLOSION_RADIUS) {
 			return;
 		}
-		if (distance < innerradius) {
+		if (distance < DAMAGE_RADIUS) {
 			EntityTools.damageEntity(player, entity, damage);
 			return;
 		}
-		double slope = -(damage * .5) / (explosionradius - innerradius);
+		double slope = -(damage * .5) / (EXPLOSION_RADIUS - DAMAGE_RADIUS);
 
-		double damage = slope * (distance - innerradius) + this.damage;
+		double damage = slope * (distance - DAMAGE_RADIUS) + this.damage;
 		EntityTools.damageEntity(player, entity, (int) damage);
 	}
 
 	private void knockBack(Entity entity) {
 		double distance = entity.getLocation().distance(location);
-		if (distance > explosionradius) {
+		if (distance > PUSH_RADIUS) {
 			return;
 		}
 		double dx = entity.getLocation().getX() - location.getX();
@@ -188,13 +186,13 @@ public class Combustion extends BendingActiveAbility {
 		Vector v = new Vector(dx, dy, dz);
 		v = v.normalize();
 
-		v.multiply(distance);
+		v = v.multiply(PUSH_BACK);
 
 		entity.setVelocity(v);
 	}
 
 	private boolean fireball() {
-		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, HITBOX)) {
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 0, 1);
 		}
 		CRIT.display(0, 0, 0, 1, 1, location, 20);
@@ -202,7 +200,7 @@ public class Combustion extends BendingActiveAbility {
 			location.getWorld().playSound(location, Sound.SHOOT_ARROW, 5, 1);
 		}
 		progressed++;
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * radius)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * HITBOX)) {
 			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
 			}
@@ -218,11 +216,11 @@ public class Combustion extends BendingActiveAbility {
 		boolean obsidian = false;
 
 		List<Block> affecteds = new LinkedList<Block>();
-		for (Block block : BlockTools.getBlocksAroundPoint(location, explosionradius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, EXPLOSION_RADIUS)) {
 			if (block.getType() == Material.OBSIDIAN) {
 				obsidian = true;
 			}
-			if (!obsidian || (obsidian && location.distance(block.getLocation()) < explosionradius / 2.0)) {
+			if (!obsidian || (obsidian && location.distance(block.getLocation()) < EXPLOSION_RADIUS / 2.0)) {
 				if (!ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Combustion, block.getLocation()) && !ProtectionManager.isRegionProtectedFromExplosion(player, BendingAbilities.Combustion, block.getLocation())) {
 					affecteds.add(block);
 				}
@@ -253,17 +251,21 @@ public class Combustion extends BendingActiveAbility {
 		}
 		location.getWorld().playSound(location, Sound.EXPLODE, SOUND_RADIUS / 16.0f, 1);
 		EXPLODE.display(0, 0, 0, 1, 1, location, 20);
-		double radius = explosionradius;
-		if (obsidian) {
-			radius = explosionradius / 2.0;
-		}
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius);
+		
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, EXPLOSION_RADIUS);
 		for (LivingEntity entity : entities) {
 			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
 				continue;
 			}
-			this.dealDamage(entity);
-			this.knockBack(entity);
+			dealDamage(entity);
+		}
+		
+		entities = EntityTools.getLivingEntitiesAroundPoint(location, PUSH_BACK);
+		for (LivingEntity entity : entities) {
+			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				continue;
+			}
+			knockBack(entity);
 		}
 	}
 
@@ -279,7 +281,7 @@ public class Combustion extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		BendingPlayer.getBendingPlayer(player).cooldown(BendingAbilities.Combustion, COOLDOWN);
+		bender.cooldown(BendingAbilities.Combustion, COOLDOWN);
 	}
 
 	public static void removeFireballsAroundPoint(Location location, double radius) {
