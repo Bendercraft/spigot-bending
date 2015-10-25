@@ -286,13 +286,23 @@ public class BendingPlayerListener implements Listener {
 					&& EntityTools.canBendPassive(player, BendingElement.Water) 
 					&& !WaterSpout.isBending(player)) {
 				FastSwimming ab = new FastSwimming(player);
-				ab.start();
-				return;
+				if(ab.canBeInitialized()) {
+					ab.start();
+					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+						AbilityManager.getManager().addInstance(ab);
+						return;
+					}
+				}
 			}
 			if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
 				AirGlide ab = new AirGlide(player);
-				ab.start();
-				return;
+				if(ab.canBeInitialized()) {
+					ab.start();
+					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+						AbilityManager.getManager().addInstance(ab);
+						return;
+					}
+				}
 			}
 		}
 
@@ -326,14 +336,25 @@ public class BendingPlayerListener implements Listener {
 		if (!player.isSprinting()) {
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 			if (bender.isBender(BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
-				AirSpeed sp = new AirSpeed(player);
-				sp.start();
+				AirSpeed ab = new AirSpeed(player);
+				if(ab.canBeInitialized()) {
+					ab.start();
+					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+						AbilityManager.getManager().addInstance(ab);
+						return;
+					}
+				}
 			}
 
-			if (bender.isBender(BendingElement.ChiBlocker) 
-					&& EntityTools.canBendPassive(player, BendingElement.ChiBlocker)) {
-				ChiSpeed sp = new ChiSpeed(player);
-				sp.start();
+			if (bender.isBender(BendingElement.ChiBlocker) && EntityTools.canBendPassive(player, BendingElement.ChiBlocker)) {
+				ChiSpeed ab = new ChiSpeed(player);
+				if(ab.canBeInitialized()) {
+					ab.start();
+					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+						AbilityManager.getManager().addInstance(ab);
+						return;
+					}
+				}
 			}
 		}
 	}
