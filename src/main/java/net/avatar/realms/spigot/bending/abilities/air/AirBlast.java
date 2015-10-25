@@ -82,7 +82,9 @@ public class AirBlast extends BendingActiveAbility {
 		if(getState() == BendingAbilityState.Start) {
 			this.origin = this.player.getEyeLocation();
 			setState(BendingAbilityState.Preparing);
-		} else if(getState() == BendingAbilityState.Preparing) {
+		}
+		//It is NORMAL that both if could follow in same click
+		if(getState() == BendingAbilityState.Preparing) {
 			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
 			if (this.bender.hasPath(BendingPath.Mobile)) {
 				entity = null;
