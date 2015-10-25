@@ -58,8 +58,6 @@ public class AirScooter extends BendingActiveAbility {
 	public boolean swing() {
 		if (getState() == BendingAbilityState.Start) {
 			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
-			this.player.setAllowFlight(true);
-			this.player.setFlying(true);
 			this.player.setSprinting(false);
 
 			setState(BendingAbilityState.Progressing);
