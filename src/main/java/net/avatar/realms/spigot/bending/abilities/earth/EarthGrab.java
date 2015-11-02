@@ -94,7 +94,7 @@ public class EarthGrab extends BendingActiveAbility {
 	public boolean grabEntity(Player player, Entity entity) {
 		if (entity != null) {
 			if (entity instanceof LivingEntity) {
-				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtected(entity)) {
 					return false;
 				}
 

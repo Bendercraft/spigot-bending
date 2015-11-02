@@ -254,7 +254,7 @@ public class Combustion extends BendingActiveAbility {
 		
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, EXPLOSION_RADIUS);
 		for (LivingEntity entity : entities) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
 			dealDamage(entity);
@@ -262,7 +262,7 @@ public class Combustion extends BendingActiveAbility {
 		
 		entities = EntityTools.getLivingEntitiesAroundPoint(location, PUSH_BACK);
 		for (LivingEntity entity : entities) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
 			knockBack(entity);

@@ -114,7 +114,7 @@ public class ProtectionManager {
 		}
 	}
 
-	public static boolean isEntityProtectedByCitizens(Entity entity) {
+	public static boolean isEntityProtected(Entity entity) {
 		if (useCitizens) {
 			if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
 				for (Trait trait : CitizensAPI.getNPCRegistry().getNPC(entity).getTraits()) {
@@ -124,7 +124,7 @@ public class ProtectionManager {
 				}
 			}
 		}
-		return false;
+		return entity.hasPermission("bending.immune");
 	}
 
 	public static boolean isRegionProtectedFromExplosion(Player player, BendingAbilities ability, Location loc) {

@@ -120,7 +120,7 @@ public class Tornado extends BendingActiveAbility {
 			this.origin.setY(this.origin.getY() - ((1. / 10.) * this.height));
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.origin, this.height)) {
-				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
 				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirBlast, entity.getLocation())) {

@@ -320,7 +320,7 @@ public class AirBurst extends BendingActiveAbility {
 		}
 
 		private void affect(Entity entity) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			if (ProtectionManager.isEntityProtected(entity)) {
 				return;
 			}
 

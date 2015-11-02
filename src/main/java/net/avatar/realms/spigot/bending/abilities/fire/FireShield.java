@@ -101,7 +101,7 @@ public class FireShield extends BendingActiveAbility {
 			}
 
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(location, radius)) {
-				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
 				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.FireShield, entity.getLocation())) {

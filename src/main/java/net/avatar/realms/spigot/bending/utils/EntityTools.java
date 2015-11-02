@@ -353,7 +353,7 @@ public class EntityTools {
 
 	@SuppressWarnings("deprecation")
 	public static void damageEntity(Player player, Entity entity, double damage) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 		if (entity instanceof LivingEntity) {

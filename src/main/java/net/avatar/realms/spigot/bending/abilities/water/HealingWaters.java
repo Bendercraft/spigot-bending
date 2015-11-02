@@ -68,7 +68,7 @@ public class HealingWaters extends BendingActiveAbility {
 		if (entity == null) {
 			entity = this.player;
 		}
-		if (ProtectionManager.isEntityProtectedByCitizens(entity) 
+		if (ProtectionManager.isEntityProtected(entity) 
 				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.HealingWaters, entity.getLocation())) {
 			remove();
 			return;

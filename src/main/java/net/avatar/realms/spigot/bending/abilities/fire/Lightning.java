@@ -185,7 +185,7 @@ public class Lightning extends BendingActiveAbility {
 	}
 
 	public void dealDamage(Entity entity) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 		if (this.strike == null) {

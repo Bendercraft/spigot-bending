@@ -36,7 +36,7 @@ public class Enflamed {
 		this.time = System.currentTimeMillis();
 		this.secondsLeft = seconds;
 
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 		this.bender = BendingPlayer.getBendingPlayer(source);

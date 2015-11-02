@@ -231,7 +231,7 @@ public class FireBlast extends BendingActiveAbility {
 	}
 
 	private boolean affect(LivingEntity entity) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return false;
 		}
 		if (entity.getEntityId() != this.player.getEntityId()) {

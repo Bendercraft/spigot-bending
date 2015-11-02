@@ -147,7 +147,7 @@ public class Catapult extends BendingActiveAbility {
 			if (location.distance(origin) < .5) {
 				boolean remove = false;
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, 2)) {
-					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
 					if (entity instanceof Player) {

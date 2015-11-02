@@ -63,7 +63,7 @@ public class Bloodbending extends BendingActiveAbility {
 	public boolean sneak() {
 		if (AvatarState.isAvatarState(this.player)) {
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.player.getLocation(), this.range)) {
-				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
 				if (entity instanceof Player) {
@@ -79,7 +79,7 @@ public class Bloodbending extends BendingActiveAbility {
 				return false;
 			}
 			Entity target = EntityTools.getTargettedEntity(this.player, this.range);
-			if (ProtectionManager.isEntityProtectedByCitizens(target)) {
+			if (ProtectionManager.isEntityProtected(target)) {
 				return false;
 			}
 			if (target == null) {
@@ -142,7 +142,7 @@ public class Bloodbending extends BendingActiveAbility {
 		if (AvatarState.isAvatarState(this.player)) {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.player.getLocation(), this.range)) {
-				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
 				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Bloodbending, entity.getLocation())) {

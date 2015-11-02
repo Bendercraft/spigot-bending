@@ -128,7 +128,7 @@ public class OctopusForm extends BendingActiveAbility {
 
 	private void affect(Location location) {
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.5)) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
 			if (entity.getEntityId() == player.getEntityId()) {

@@ -189,7 +189,7 @@ public class AirSuction extends BendingActiveAbility {
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, affectingradius)) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
 

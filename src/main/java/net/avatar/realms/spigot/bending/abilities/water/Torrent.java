@@ -341,7 +341,7 @@ public class Torrent extends BendingActiveAbility {
 		}
 		Location targetloc = EntityTools.getTargetBlock(this.player, this.range, BlockTools.getTransparentEarthbending()).getLocation();
 
-		if ((target != null) && !ProtectionManager.isEntityProtectedByCitizens(target)) {
+		if ((target != null) && !ProtectionManager.isEntityProtected(target)) {
 			targetloc = target.getLocation();
 		}
 
@@ -423,7 +423,7 @@ public class Torrent extends BendingActiveAbility {
 			} else {
 				newblocks.add(block);
 				for (LivingEntity entity : entities) {
-					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
 					if (entity.getWorld() != block.getBlock().getWorld()) {
@@ -470,7 +470,7 @@ public class Torrent extends BendingActiveAbility {
 					this.blocks.add(new TempBlock(block, Material.WATER, full));
 					doneblocks.add(block);
 					for (LivingEntity entity : entities) {
-						if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+						if (ProtectionManager.isEntityProtected(entity)) {
 							continue;
 						}
 						if (entity.getWorld() != blockloc.getWorld()) {
@@ -532,7 +532,7 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	private void deflect(LivingEntity entity) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 		if (entity.getEntityId() == this.player.getEntityId()) {
@@ -580,7 +580,7 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	private void affect(LivingEntity entity, Vector direction) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 		if (entity.getEntityId() == this.player.getEntityId()) {

@@ -66,7 +66,7 @@ public class SpikeField {
 			Entity target = null;
 			Block targetblock = null;
 			for (Entity entity : entities) {
-				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
 				if (entity.getEntityId() != p.getEntityId()) {

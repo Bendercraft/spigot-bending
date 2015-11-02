@@ -175,7 +175,7 @@ public class WallOfFire extends BendingActiveAbility {
 		}
 
 		for (LivingEntity entity : entities) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
 			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.WallOfFire, entity.getLocation())) {
@@ -191,7 +191,7 @@ public class WallOfFire extends BendingActiveAbility {
 	}
 
 	private void affect(LivingEntity entity) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 		entity.setVelocity(new Vector(0, 0, 0));

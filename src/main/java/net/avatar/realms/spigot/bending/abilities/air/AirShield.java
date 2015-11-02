@@ -126,7 +126,7 @@ public class AirShield extends BendingActiveAbility {
 		FireBlast.removeFireBlastsAroundPoint(origin, this.radius);
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, this.radius)) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)
+			if (ProtectionManager.isEntityProtected(entity)
 					|| (entity instanceof ExperienceOrb) 
 					|| (entity instanceof FallingBlock) 
 					|| (entity instanceof ItemFrame) 

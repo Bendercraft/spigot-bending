@@ -164,7 +164,7 @@ public class Wave {
 			this.factor = AvatarState.getValue(this.factor);
 		}
 		Entity target = EntityTools.getTargettedEntity(this.player, this.range);
-		if ((target == null) || ProtectionManager.isEntityProtectedByCitizens(target)) {
+		if ((target == null) || ProtectionManager.isEntityProtected(target)) {
 			this.targetdestination = EntityTools.getTargetBlock(this.player, this.range, BlockTools.getTransparentEarthbending()).getLocation();
 		} else {
 			this.targetdestination = ((LivingEntity) target).getEyeLocation();
@@ -292,7 +292,7 @@ public class Wave {
 				}
 
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, 2 * this.radius)) {
-					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
 					boolean knockback = false;

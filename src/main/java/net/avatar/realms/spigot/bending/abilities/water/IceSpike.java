@@ -227,7 +227,7 @@ public class IceSpike extends BendingActiveAbility {
 			}
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, affectingradius)) {
-				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
 				if (entity.getEntityId() != this.player.getEntityId()) {
@@ -251,7 +251,7 @@ public class IceSpike extends BendingActiveAbility {
 	}
 
 	private void affect(LivingEntity entity) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);

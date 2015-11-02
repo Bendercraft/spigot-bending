@@ -253,7 +253,7 @@ public class Ripple {
 	}
 
 	private void affect(Entity entity) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 

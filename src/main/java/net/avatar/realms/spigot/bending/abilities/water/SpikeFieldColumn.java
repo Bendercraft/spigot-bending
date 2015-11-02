@@ -96,7 +96,7 @@ public class SpikeFieldColumn {
 	}
 
 	private void affect(LivingEntity entity) {
-		if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
 		entity.setVelocity(this.thrown);

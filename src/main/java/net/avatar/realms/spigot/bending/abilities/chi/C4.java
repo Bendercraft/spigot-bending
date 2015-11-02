@@ -304,7 +304,7 @@ public class C4 extends BendingActiveAbility {
 
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(this.location, RADIUS + 1);
 		for (LivingEntity entity : entities) {
-			if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
 			this.dealDamage(entity);

@@ -333,7 +333,7 @@ public class EarthBlast extends BendingActiveAbility {
 				}
 			}
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, FireBlast.AFFECTING_RADIUS)) {
-				if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
 				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.EarthBlast, entity.getLocation())) {

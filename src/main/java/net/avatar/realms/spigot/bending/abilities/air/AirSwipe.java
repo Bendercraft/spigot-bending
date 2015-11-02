@@ -278,7 +278,7 @@ public class AirSwipe extends BendingActiveAbility {
 				// Check affected people
 				PluginTools.removeSpouts(location, this.player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, AFFECTING_RADIUS)) {
-					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
 					if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSwipe, entity.getLocation())) {

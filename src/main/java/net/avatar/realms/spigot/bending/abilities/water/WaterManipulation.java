@@ -230,7 +230,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			target = EntityTools.getTargettedEntity(player, range);
 		}
 		Location result = null;
-		if ((target == null) || ProtectionManager.isEntityProtectedByCitizens(target)) {
+		if ((target == null) || ProtectionManager.isEntityProtected(target)) {
 			result = EntityTools.getTargetedLocation(player, range, BlockTools.getTransparentEarthBending());
 		} else {
 			result = ((LivingEntity) target).getEyeLocation();
@@ -338,7 +338,7 @@ public class WaterManipulation extends BendingActiveAbility {
 				}
 
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, FireBlast.AFFECTING_RADIUS)) {
-					if (ProtectionManager.isEntityProtectedByCitizens(entity)) {
+					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
 					if (entity.getEntityId() != this.player.getEntityId()) {
