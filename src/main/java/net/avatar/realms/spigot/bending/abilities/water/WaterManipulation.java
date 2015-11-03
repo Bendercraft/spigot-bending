@@ -501,7 +501,15 @@ public class WaterManipulation extends BendingActiveAbility {
 	}
 
 	public static boolean canBubbleWater(Block block) {
-		return canPhysicsChange(block);
+		if (affectedblocks.containsKey(block) 
+				|| WaterSpout.isWaterSpoutBlock(block) 
+				|| WaterWall.isAffectedByWaterWall(block) 
+				|| WaterWall.isWaterWallPart(block) 
+				|| Wave.isBlockWave(block) 
+				|| TempBlock.isTempBlock(block)) {
+			return false;
+		}
+		return true;
 	}
 
 	public static void removeAroundPoint(Location location, double radius) {
