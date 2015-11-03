@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
@@ -98,7 +99,7 @@ public class Bloodbending extends BendingActiveAbility {
 			this.targetEntities.put(target, target.getLocation().clone());
 		}
 		this.time = System.currentTimeMillis();
-		
+		setState(BendingAbilityState.Progressing);
 		BendingPlayer.getBendingPlayer(this.player).cooldown(this, COOLDOWN);
 		return false;
 	}
