@@ -20,7 +20,6 @@ public enum BendingAbilities {
 	AirBurst(BendingElement.Air, true),
 	AirSpeed(BendingElement.Air, true),
 	AirGlide(BendingElement.Air, true),
-	AirManipulation(BendingElement.Air, true),
 	Tornado(BendingAffinity.Tornado, true),
 	Suffocate (BendingAffinity.Suffocate, true),
 	
