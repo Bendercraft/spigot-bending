@@ -11,7 +11,6 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
@@ -23,20 +22,21 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 public abstract class Bubble extends BendingActiveAbility {
 
 	protected double radius;
 	protected Location lastLocation;
 
-	protected Map<Block, BlockState> origins;
+	protected Map<Block, TempBlock> origins;
 
 	protected Set<Material> pushedMaterials;
 
 	public Bubble(Player player) {
 		super(player);
 		this.lastLocation = player.getLocation();
-		this.origins = new HashMap<Block, BlockState>();
+		this.origins = new HashMap<Block, TempBlock>();
 		this.pushedMaterials = new HashSet<Material>();
 	}
 
@@ -81,7 +81,7 @@ public abstract class Bubble extends BendingActiveAbility {
 		if (!BlockTools.locationEquals(this.lastLocation, location)) {
 
 			List<Block> toRemove = new LinkedList<Block>();
-			for (Entry<Block, BlockState> entry : this.origins.entrySet()) {
+			for (Entry<Block, TempBlock> entry : this.origins.entrySet()) {
 				if (entry.getKey().getWorld() != location.getWorld()) {
 					toRemove.add(entry.getKey());
 				} else if (entry.getKey().getLocation().distance(location) > this.radius) {
@@ -91,9 +91,9 @@ public abstract class Bubble extends BendingActiveAbility {
 
 			for (Block block : toRemove) {
 				if ((block.getType() == Material.AIR) || this.pushedMaterials.contains(block.getType())) {
-					this.origins.get(block).update(true, false);
+					origins.get(block).revertBlock();
 				}
-				this.origins.remove(block);
+				origins.remove(block);
 			}
 
 			for (Block block : BlockTools.getBlocksAroundPoint(location, this.radius)) {
@@ -105,8 +105,7 @@ public abstract class Bubble extends BendingActiveAbility {
 				}
 				if (this.pushedMaterials.contains(block.getType())) {
 					if (WaterManipulation.canBubbleWater(block)) {
-						this.origins.put(block, block.getState());
-						block.setType(Material.AIR);
+						this.origins.put(block, new TempBlock(block, Material.AIR, (byte) 0x0));
 					}
 				}
 			}
@@ -140,9 +139,9 @@ public abstract class Bubble extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		for (Entry<Block, BlockState> entry : this.origins.entrySet()) {
+		for (Entry<Block, TempBlock> entry : this.origins.entrySet()) {
 			if ((entry.getKey().getType() == Material.AIR) || entry.getKey().isLiquid()) {
-				entry.getValue().update(true);
+				entry.getValue().revertBlock();
 			}
 		}
 	}
