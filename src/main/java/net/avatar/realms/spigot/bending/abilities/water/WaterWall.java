@@ -181,6 +181,7 @@ public class WaterWall extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
+		breakBlock();
 		finalRemoveWater(sourceblock);
 		if (drainedBlock != null) {
 			drainedBlock.revertBlock();
@@ -249,8 +250,6 @@ public class WaterWall extends BendingActiveAbility {
 			return;
 		}
 
-		// TODO : Try to find why sometimes, the watersource is going far in the
-		// sky.
 		if (player.isDead() || !player.isOnline()) {
 			breakBlock();
 			remove();
