@@ -541,6 +541,8 @@ public class EarthBlast extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		
+		if(source != null) {
+			source.revertBlock();
+		}
 	}
 }
