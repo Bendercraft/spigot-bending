@@ -173,7 +173,7 @@ public class HeatControl extends BendingActiveAbility {
 	}
 
 	private void cook() {
-		ItemStack newitem = getCooked(this.items.getType());
+		ItemStack newitem = getCooked(this.items);
 
 		HashMap<Integer, ItemStack> cantfit = this.player.getInventory().addItem(newitem);
 		for (int id : cantfit.keySet()) {
@@ -187,15 +187,16 @@ public class HeatControl extends BendingActiveAbility {
 		}
 	}
 
-	private ItemStack getCooked(Material material) {
+	private ItemStack getCooked(ItemStack in) {
 		ItemStack cooked = new ItemStack(Material.AIR);
-		switch (material) {
+		switch (in.getType()) {
 			case RAW_BEEF:
 				cooked.setType(Material.COOKED_BEEF);
 				cooked.setAmount(1);
 				break;
 			case RAW_FISH:
 				cooked.setType(Material.COOKED_FISH);
+				cooked.setData(in.getData());
 				cooked.setAmount(1);
 				break;
 			case RAW_CHICKEN:
