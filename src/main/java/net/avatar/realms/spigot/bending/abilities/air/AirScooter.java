@@ -23,6 +23,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @ABendingAbility(name = "Air Scooter", bind = BendingAbilities.AirScooter, element = BendingElement.Air)
 public class AirScooter extends BendingActiveAbility {
@@ -103,7 +104,11 @@ public class AirScooter extends BendingActiveAbility {
 			remove();
 			return;
 		}
-
+		
+		if(EntityTools.isWeapon(player.getItemInHand().getType())) {
+			remove();
+			return;
+		}
 		Vector velocity = this.player.getEyeLocation().getDirection().clone();
 		velocity.setY(0);
 		velocity = velocity.clone().normalize().multiply(this.speed);
