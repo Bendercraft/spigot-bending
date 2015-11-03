@@ -266,7 +266,7 @@ public class AirBurst extends BendingActiveAbility {
 			this.origin = location.clone();
 			this.direction = direction.clone();
 			this.location = location.clone();
-			this.pushfactor *= factorpush;
+			this.pushfactor = PUSHFACTOR * factorpush;
 			this.range = BLAST_RANGE;
 		}
 		
@@ -359,15 +359,15 @@ public class AirBurst extends BendingActiveAbility {
 
 			double comp = velocity.dot(push.clone().normalize());
 			if (comp > factor) {
-				velocity.multiply(.5);
-				velocity.add(push.clone().normalize().multiply(velocity.clone().dot(push.clone().normalize())));
+				velocity = velocity.multiply(.5);
+				velocity = velocity.add(push.clone().normalize().multiply(velocity.clone().dot(push.clone().normalize())));
 			} else if ((comp + (factor * .5)) > factor) {
-				velocity.add(push.clone().multiply(factor - comp));
+				velocity = velocity.add(push.clone().multiply(factor - comp));
 			} else {
-				velocity.add(push.clone().multiply(factor * .5));
+				velocity = velocity.add(push.clone().multiply(factor * .5));
 			}
 			if (isUser) {
-				velocity.multiply(1.0 / 2.2);
+				velocity = velocity.multiply(1.0 / 2.2);
 			}
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);
