@@ -32,7 +32,7 @@ public class OctopusForm extends BendingActiveAbility {
 	private static long interval = 50;
 
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 2;
+	private static int DAMAGE = 5;
 
 	private Block sourceblock;
 	private Location sourcelocation;
