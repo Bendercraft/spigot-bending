@@ -22,6 +22,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
@@ -164,7 +165,7 @@ public class AirBlast extends BendingActiveAbility {
 			}
 		}
 		if(BlockTools.isSolid(block) || block.isLiquid()) {
-			if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
+			if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !TempBlock.isTempBlock(block))) {
 				if (block.getData() == BlockTools.FULL) {
 					block.setType(Material.OBSIDIAN);
 				} else {

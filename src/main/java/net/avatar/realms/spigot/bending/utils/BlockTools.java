@@ -22,11 +22,8 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
-import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
-import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
-import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class BlockTools {
@@ -148,24 +145,6 @@ public class BlockTools {
 	
 	private BlockTools() {
 		
-	}
-
-	public static boolean isTempBlock(Block block) {
-		// TODO : Check in almost every ability that the block isn't a block
-		// state
-
-		if (WaterSpout.isWaterSpoutBlock(block)) {
-			return true;
-		}
-
-		if (Illumination.isIlluminated(block)) {
-			return true;
-		}
-
-		if (LavaTrain.isLavaPart(block)) {
-			return true;
-		}
-		return false;
 	}
 
 	public static Set<Material> getTransparentEarthbending() {

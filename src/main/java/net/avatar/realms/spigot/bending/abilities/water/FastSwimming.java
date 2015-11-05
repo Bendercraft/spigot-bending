@@ -11,6 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 @ABendingAbility(name = "Dolphin", bind = BendingAbilities.FastSwimming, element = BendingElement.Water)
 public class FastSwimming extends BendingPassiveAbility {
@@ -52,7 +53,7 @@ public class FastSwimming extends BendingPassiveAbility {
 
 	@Override
 	public void progress() {
-		if (BlockTools.isWater(this.player.getLocation().getBlock()) && !BlockTools.isTempBlock(this.player.getLocation().getBlock())) {
+		if (BlockTools.isWater(this.player.getLocation().getBlock()) && !TempBlock.isTempBlock(this.player.getLocation().getBlock())) {
 			swimFast();
 		}
 	}

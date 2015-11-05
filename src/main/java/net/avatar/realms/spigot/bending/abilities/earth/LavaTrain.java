@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -22,6 +22,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 /**
  * State Preparing : The lava train is growing State Progressing : The lava
@@ -61,7 +62,7 @@ public class LavaTrain extends BendingActiveAbility {
 	private Vector direction;
 	private long interval;
 
-	private Map<Block, BlockState> affecteds = new HashMap<Block, BlockState>();
+	private Map<Block, TempBlock> affecteds = new HashMap<Block, TempBlock>();
 
 	private long time;
 
@@ -158,12 +159,12 @@ public class LavaTrain extends BendingActiveAbility {
 			}
 
 			for (Block potentialsBlock : potentialsBlocks) {
-				if (BlockTools.isEarthbendable(this.player, BendingAbilities.LavaTrain, potentialsBlock) && !BlockTools.isTempBlock(potentialsBlock)) {
+				if (BlockTools.isEarthbendable(this.player, BendingAbilities.LavaTrain, potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
 					// Do not let block behind bender to be bend, this whill be
 					// stupid
 					if (!safe.contains(potentialsBlock)) {
-						this.affecteds.put(potentialsBlock, potentialsBlock.getState());
-						potentialsBlock.setType(Material.LAVA);
+						this.affecteds.put(potentialsBlock, new TempBlock(potentialsBlock, Material.LAVA));
+						player.getWorld().playEffect(potentialsBlock.getLocation(), Effect.EXTINGUISH, 0);
 					}
 				}
 			}
@@ -172,25 +173,11 @@ public class LavaTrain extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		for (BlockState affected : this.affecteds.values()) {
-			affected.update(true);
+		for (TempBlock affected : this.affecteds.values()) {
+			affected.revertBlock();
 		}
 		this.affecteds.clear();
 		this.bender.cooldown(BendingAbilities.LavaTrain, DURATION * COOLDOWN_FACTOR);
-	}
-
-	public static boolean isLavaPart(Block block) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
-		if (instances == null) {
-			return false;
-		}
-		for (BendingAbility ab : instances.values()) {
-			LavaTrain train = (LavaTrain) ab;
-			if (train.affecteds.containsKey(block)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static LavaTrain getLavaTrain(Block b) {

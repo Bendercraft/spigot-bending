@@ -19,6 +19,10 @@ public class TempBlock {
 	private byte newdata;
 	private BlockState state;
 
+	public TempBlock(Block block, Material newtype) {
+		this(block, newtype, (byte) 0x0);
+	}
+	
 	@SuppressWarnings("deprecation")
 	public TempBlock(Block block, Material newtype, byte newdata) {
 		this.block = block;

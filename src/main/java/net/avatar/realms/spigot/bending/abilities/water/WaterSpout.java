@@ -111,7 +111,7 @@ public class WaterSpout extends BendingActiveAbility {
 		location = block.getLocation();
 		for (int i = 0, cardinalPoint = this.currentCardinalPoint / SPEED; i < (this.height + 1); i++, cardinalPoint--) {
 			Location loc = location.clone().add(0, -i, 0);
-			if (!BlockTools.isTempBlock(loc.getBlock())) {
+			if (!TempBlock.isTempBlock(loc.getBlock())) {
 				this.blocks.add(new TempBlock(loc.getBlock(), Material.STATIONARY_WATER, (byte) 0x0));
 			}
 

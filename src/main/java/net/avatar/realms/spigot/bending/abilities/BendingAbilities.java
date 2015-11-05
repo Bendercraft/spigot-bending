@@ -35,6 +35,7 @@ public enum BendingAbilities {
 	EarthArmor(BendingElement.Earth, true),
 	Shockwave(BendingElement.Earth, true),
 	LavaTrain(BendingAffinity.Lavabend, true),
+	LavaFlow(BendingAffinity.Lavabend, true),
 	MetalBending(BendingAffinity.Metalbend, true),
 	
 	/*

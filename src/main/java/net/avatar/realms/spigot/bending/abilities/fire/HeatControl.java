@@ -15,7 +15,6 @@ import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
@@ -103,7 +102,7 @@ public class HeatControl extends BendingActiveAbility {
 				continue;
 			}
 			// Do not allow firebender to completly negate lavabend
-			if (LavaTrain.isLavaPart(block)) {
+			if (BlockTools.isLava(block) && TempBlock.isTempBlock(block)) {
 				continue;
 			}
 			if (block.getType() == Material.FIRE) {

@@ -78,9 +78,9 @@ import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 public class BendingPlayerListener implements Listener {
 	private Bending plugin;
@@ -429,7 +429,7 @@ public class BendingPlayerListener implements Listener {
 				event.setCancelled(!Enflamed.canBurn(player));
 			}
 
-			if (EntityTools.isBender(player, BendingElement.Earth) && ((event.getCause() == DamageCause.SUFFOCATION) && BlockTools.isTempBlock(player.getEyeLocation().getBlock()))) {
+			if (EntityTools.isBender(player, BendingElement.Earth) && ((event.getCause() == DamageCause.SUFFOCATION) && TempBlock.isTempBlock(player.getEyeLocation().getBlock()))) {
 				event.setDamage(0);
 				event.setCancelled(true);
 			}

@@ -23,6 +23,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 @ABendingAbility(name = "Air Slice", bind = BendingAbilities.AirSlice, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiAir)
 public class AirSlice extends BendingActiveAbility {
@@ -152,7 +153,7 @@ public class AirSlice extends BendingActiveAbility {
 					}
 				}
 				if (BlockTools.isSolid(block) || block.isLiquid()) {
-					if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !BlockTools.isTempBlock(block))) {
+					if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !TempBlock.isTempBlock(block))) {
 						if (block.getData() == FULL) {
 							block.setType(Material.OBSIDIAN);
 						} else {

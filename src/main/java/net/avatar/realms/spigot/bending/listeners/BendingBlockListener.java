@@ -20,7 +20,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.chi.C4;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
-import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
@@ -76,10 +75,8 @@ public class BendingBlockListener implements Listener {
 				}
 			}
 		}
-		if (BlockTools.isLava(fromblock)) {
-			if (LavaTrain.isLavaPart(fromblock)) {
-				event.setCancelled(true);
-			}
+		if (BlockTools.isLava(fromblock) && TempBlock.isTempBlock(fromblock)) {
+			event.setCancelled(true);
 		}
 	}
 
@@ -157,7 +154,7 @@ public class BendingBlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockForm(BlockFormEvent event) {
-		if (BlockTools.isTempBlock(event.getBlock())) {
+		if (TempBlock.isTempBlock(event.getBlock())) {
 			event.setCancelled(true);
 		}
 		if (!WaterManipulation.canPhysicsChange(event.getBlock())) {

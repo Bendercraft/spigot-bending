@@ -22,6 +22,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 @ABendingAbility(name = "Healing Waters", bind = BendingAbilities.HealingWaters, element = BendingElement.Water)
 public class HealingWaters extends BendingActiveAbility {
@@ -148,7 +149,7 @@ public class HealingWaters extends BendingActiveAbility {
 
 	private static boolean inWater(final Entity entity) {
 		final Block block = entity.getLocation().getBlock();
-		if (BlockTools.isWater(block) && !BlockTools.isTempBlock(block)) {
+		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block)) {
 			return true;
 		}
 		return false;
