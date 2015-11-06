@@ -36,6 +36,7 @@ public enum BendingAbilities {
 	Shockwave(BendingElement.Earth, true),
 	LavaTrain(BendingAffinity.Lavabend, true),
 	LavaFlow(BendingAffinity.Lavabend, true),
+	LavaSpin(BendingAffinity.Lavabend, true),
 	MetalBending(BendingAffinity.Metalbend, true),
 	
 	/*

@@ -620,6 +620,16 @@ public class BlockTools {
 		}
 		return false;
 	}
+	
+	public static boolean blockEquals(Block a, Block b) {
+		if(a.getX() == b.getX() 
+				&& a.getY() == b.getY() 
+				&& a.getZ() == b.getZ()
+				&& a.getWorld().getUID().equals(b.getWorld().getUID())) {
+			return true;
+		}
+		return false;
+	}
 
 	public static boolean locationEquals(Location la, Location lb) {
 		// Difference with the class method : Do not bother the pitch and the

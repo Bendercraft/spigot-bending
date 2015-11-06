@@ -48,6 +48,7 @@ import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthWall;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaFlow;
+import net.avatar.realms.spigot.bending.abilities.earth.LavaSpin;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
@@ -237,6 +238,7 @@ public class AbilityManager {
 		register(EarthWall.class);
 		register(LavaTrain.class);
 		register(LavaFlow.class);
+		register(LavaSpin.class);
 		register(MetalBending.class);
 		register(Shockwave.class);
 
