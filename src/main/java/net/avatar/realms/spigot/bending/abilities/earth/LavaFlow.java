@@ -89,7 +89,9 @@ public class LavaFlow extends BendingActiveAbility {
 			List<Block> test = BlockTools.getBlocksOnPlane(block.getLocation(), AREA);
 			for(Block temp : test) {
 				if(temp.getType() == Material.LAVA || temp.getType() == Material.STATIONARY_LAVA) {
-					streams.add(temp.getLocation());
+					if(!TempBlock.isTempBlock(block) || LavaTrain.getLavaTrain(block) != null) {
+						streams.add(temp.getLocation());
+					}
 				}
 			}
 			if(streams.isEmpty()) {
@@ -106,7 +108,7 @@ public class LavaFlow extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.LavaFlow, this.current)) {
+		if (current != null && ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.LavaFlow, current)) {
 			return false;
 		}
 		return true;
