@@ -29,7 +29,6 @@ public class LearningExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-
 		if (args.isEmpty()) {
 			printUsage(sender);
 			return true;

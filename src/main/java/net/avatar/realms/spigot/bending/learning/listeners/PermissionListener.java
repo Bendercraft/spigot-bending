@@ -6,6 +6,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 
 public class PermissionListener implements Listener {
@@ -18,29 +19,20 @@ public class PermissionListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		this.plugin.lease(event.getPlayer());
+		plugin.lease(event.getPlayer());
 
-		// Add default perm to allow base ability to be used
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.AirBlast);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.AirSpout);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.AirSwipe);
-
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.WaterManipulation);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.WaterSpout);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.HealingWaters);
-
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.FireBlast);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.Blaze);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.HeatControl);
-
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.EarthBlast);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.RaiseEarth);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.Collapse);
-
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.DirectHit);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.VitalPoint);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.HighJump);
-		this.plugin.addPermission(event.getPlayer(), BendingAbilities.Count);
+		for(BendingAbilities ab : BendingAbilities.values()) {
+			// Add default perm to allow base ability to be used
+			if(plugin.isBasicBendingAbility(ab)) {
+				plugin.addPermission(event.getPlayer(), ab);
+			}
+			
+			// Also allow all abilities if it is link to an affinity and player has it
+			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
+			if(ab.getAffinity() != null && bPlayer != null && bPlayer.hasAffinity(ab.getAffinity())) {
+				plugin.addPermission(event.getPlayer(), ab);
+			}
+		}
 	}
 
 	@EventHandler

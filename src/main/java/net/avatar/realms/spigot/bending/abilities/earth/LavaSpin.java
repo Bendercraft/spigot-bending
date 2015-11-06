@@ -26,10 +26,10 @@ import net.avatar.realms.spigot.bending.utils.TempBlock;
 @ABendingAbility(name = "Lavaspin", bind = BendingAbilities.LavaSpin, element = BendingElement.Earth, affinity = BendingAffinity.Lavabend)
 public class LavaSpin extends BendingActiveAbility {
 	@ConfigurationParameter("Speed")
-	public static double SPEED = 12;
+	public static double SPEED = 14;
 	
 	@ConfigurationParameter("Damage")
-	public static double DAMAGE = 6;
+	public static double DAMAGE = 4;
 	
 	@ConfigurationParameter("Radius")
 	public static double AFFECTING_RADIUS = 2;
@@ -165,6 +165,7 @@ public class LavaSpin extends BendingActiveAbility {
 	}
 	
 	private void affect(LivingEntity entity) {
+		entity.setFireTicks(0);
 		if (!ProtectionManager.isEntityProtected(entity) 
 				&& entity.getEntityId() != player.getEntityId()
 				&& !affecteds.contains(entity)) {
