@@ -301,7 +301,6 @@ public class EarthBlast extends BendingActiveAbility {
 			if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
 				BlockTools.breakBlock(block);
 			} else if (!this.settingup) {
-				breakBlock();
 				remove();
 				return;
 			} else {
@@ -312,8 +311,7 @@ public class EarthBlast extends BendingActiveAbility {
 				PluginTools.removeSpouts(this.location, this.player);
 				double radius = FireBlast.AFFECTING_RADIUS;
 				Player source = this.player;
-				if (EarthBlast.shouldAnnihilateBlasts(this.location, radius, source, false) || WaterManipulation.annihilateBlasts(this.location, radius, source) || FireBlast.annihilateBlasts(this.location, radius, source)) {
-					breakBlock();
+				if (EarthBlast.shouldAnnihilateBlasts(this.location, radius, source) || WaterManipulation.annihilateBlasts(this.location, radius, source) || FireBlast.annihilateBlasts(this.location, radius, source)) {
 					remove();
 					return;
 				}
@@ -327,7 +325,6 @@ public class EarthBlast extends BendingActiveAbility {
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
 					BlockTools.breakBlock(block);
 				} else {
-					breakBlock();
 					remove();
 					return;
 				}
@@ -351,7 +348,6 @@ public class EarthBlast extends BendingActiveAbility {
 			}
 
 			if (getState() != BendingAbilityState.Progressing) {
-				breakBlock();
 				remove();
 				return;
 			}
@@ -382,25 +378,9 @@ public class EarthBlast extends BendingActiveAbility {
 					source.revertBlock();
 					source = null;
 				}
-				breakBlock();
 				remove();
 				return;
 			}
-		}
-	}
-
-	/**
-	 * Should remove() after this method
-	 */
-	private void breakBlock() {
-		if(source != null) {
-			source.revertBlock();
-			source = null;
-		}
-		if (REVERT) {
-			BlockTools.addTempAirBlock(this.sourceblock);
-		} else {
-			this.sourceblock.breakNaturally();
 		}
 	}
 
@@ -481,7 +461,6 @@ public class EarthBlast extends BendingActiveAbility {
 			Vector vector = location.getDirection();
 			Location mloc = blast.location;
 			if ((mloc.distance(location) <= RANGE) && (Tools.getDistanceFromLine(vector, location, blast.location) < deflectrange) && (mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1))))) {
-				blast.breakBlock();
 				toRemove.add(blast);
 			}
 		}
@@ -496,7 +475,6 @@ public class EarthBlast extends BendingActiveAbility {
 			EarthBlast blast = (EarthBlast) ab;
 			if (blast.location.getWorld().equals(location.getWorld())) {
 				if (blast.location.distance(location) <= radius) {
-					blast.breakBlock();
 					toRemove.add(blast);
 				}
 			}
@@ -506,7 +484,7 @@ public class EarthBlast extends BendingActiveAbility {
 		}
 	}
 
-	public static boolean shouldAnnihilateBlasts(Location location, double radius, Player source, boolean remove) {
+	public static boolean shouldAnnihilateBlasts(Location location, double radius, Player source) {
 		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
 		boolean broke = false;
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.EarthBlast).values()) {
@@ -516,22 +494,19 @@ public class EarthBlast extends BendingActiveAbility {
 			}
 			if (blast.location.getWorld().equals(location.getWorld()) && !source.equals(blast.player)) {
 				if (blast.location.distance(location) <= radius) {
-					blast.breakBlock();
 					broke = true;
 					toRemove.add(blast);
 				}
 			}
 		}
-		if (remove) {
-			for (EarthBlast blast : toRemove) {
-				blast.remove();
-			}
+		for (EarthBlast blast : toRemove) {
+			blast.remove();
 		}
 		return broke;
 	}
 
 	public static boolean annihilateBlasts(Location location, double radius, Player source) {
-		return shouldAnnihilateBlasts(location, radius, source, true);
+		return shouldAnnihilateBlasts(location, radius, source);
 	}
 
 	@Override
@@ -543,6 +518,12 @@ public class EarthBlast extends BendingActiveAbility {
 	public void stop() {
 		if(source != null) {
 			source.revertBlock();
+			source = null;
+		}
+		if (REVERT) {
+			BlockTools.addTempAirBlock(this.sourceblock);
+		} else {
+			this.sourceblock.breakNaturally();
 		}
 	}
 }
