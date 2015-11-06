@@ -149,7 +149,7 @@ public class LavaSpin extends BendingActiveAbility {
 					}
 				}
 			} else if(getState() == BendingAbilityState.Progressing) {
-				Vector direction = EntityTools.getTargetedLocation(player, REACH+4, BlockTools.getNonOpaque()).subtract(current).toVector();
+				Vector direction = player.getEyeLocation().getDirection().normalize().multiply(REACH+4);
 				if(!move(direction)) {
 					remove();
 					return;
