@@ -124,7 +124,10 @@ public class EarthArmor extends BendingActiveAbility {
 				testloc = testloc.clone().add(0, -1, 0);
 				if (BlockTools.isEarthbendable(this.player, testloc.getBlock())) {
 					if (!blocks.contains(testloc.getBlock())) {
-						this.columns.add(new EarthColumn(this.player, testloc, height1+y-1));
+						EarthColumn ec = new EarthColumn();
+						if(ec.init(this.player, testloc, height1+y-1)) {
+							this.columns.add(ec);
+						}
 					}
 					blocks.add(testloc.getBlock());
 					break;
@@ -136,7 +139,10 @@ public class EarthArmor extends BendingActiveAbility {
 				testloc2 = testloc2.clone().add(0, -1, 0);
 				if (BlockTools.isEarthbendable(this.player, testloc2.getBlock())) {
 					if (!blocks.contains(testloc2.getBlock())) {
-						this.columns.add(new EarthColumn(this.player, testloc2, height2+y-1));
+						EarthColumn ec = new EarthColumn();
+						if(ec.init(this.player, testloc2, height2+y-1)) {
+							this.columns.add(ec);
+						}
 					}
 					blocks.add(testloc2.getBlock());
 					break;
@@ -153,7 +159,7 @@ public class EarthArmor extends BendingActiveAbility {
 	}
 
 	private boolean moveBlocks() {
-		if (this.player.getWorld() != this.headblock.getWorld()) {
+		if (headblock == null || player.getWorld() != this.headblock.getWorld()) {
 			cancel();
 			return false;
 		}

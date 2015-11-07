@@ -49,16 +49,16 @@ public class EarthColumn {
 	private List<Block> affectedBlocks = new ArrayList<Block>();
 	private EarthGrab earthGrab = null;
 
-	public EarthColumn(Player player) {
+	public boolean init(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
 		if (bPlayer.isOnCooldown(BendingAbilities.RaiseEarth)) {
-			return;
+			return false;
 		}
 
 		block = BlockTools.getEarthSourceBlock(player, BendingAbilities.RaiseEarth, RANGE);
 		if (block == null)
-			return;
+			return  false;
 		origin = block.getLocation();
 		location = origin.clone();
 		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), height);
@@ -77,26 +77,28 @@ public class EarthColumn {
 				}
 				ID++;
 				time = System.currentTimeMillis() - interval;
+				return true;
 			}
 		}
+		return true;
 	}
 
-	public EarthColumn(Player player, Location origin) {
-		this(player, origin, HEIGHT);
+	public boolean init(Player player, Location origin) {
+		return init(player, origin, HEIGHT);
 	}
 
-	public EarthColumn(Player player, Location origin, int height) {
-		this(player, origin, height, null);
+	public boolean init(Player player, Location origin, int height) {
+		return init(player, origin, height, null);
 	}
 
-	public EarthColumn(Player player, Location origin, int height, EarthGrab grab) {
+	public boolean init(Player player, Location origin, int height, EarthGrab grab) {
 		this.height = height;
 		this.origin = origin;
 		location = origin.clone();
 		block = location.getBlock();
 		this.player = player;
 		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), height);
-
+		this.earthGrab = grab;
 		loadAffectedBlocks();
 
 		if (distance != 0) {
@@ -108,9 +110,10 @@ public class EarthColumn {
 				}
 				ID++;
 				time = System.currentTimeMillis() - interval;
+				return true;
 			}
 		}
-		this.earthGrab = grab;
+		return false;
 	}
 
 	public EarthGrab getEarthGrab() {
@@ -178,9 +181,6 @@ public class EarthColumn {
 	}
 
 	private boolean moveEarth() {
-		if(location == null) {
-			return false;
-		}
 		Block block = location.getBlock();
 		location = location.add(direction);
 		BlockTools.moveEarth(player, block, direction, distance);

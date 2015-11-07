@@ -58,8 +58,10 @@ public class EarthWall extends BendingActiveAbility {
 		if (this.bender.isOnCooldown(BendingAbilities.RaiseEarth)) {
 			return false;
 		}
-
-		this.columns.add(new EarthColumn(this.player));
+		EarthColumn ec = new EarthColumn();
+		if(ec.init(player)) {
+			this.columns.add(ec);
+		}
 		setState(BendingAbilityState.Progressing);
 		
 		return false;
@@ -104,7 +106,10 @@ public class EarthWall extends BendingActiveAbility {
 					block = block.getRelative(BlockFace.DOWN);
 					if (BlockTools.isEarthbendable(this.player, BendingAbilities.RaiseEarth, block)) {
 						cooldown = true;
-						this.columns.add(new EarthColumn(this.player, block.getLocation(), this.height));
+						EarthColumn ec = new EarthColumn();
+						if(ec.init(this.player, block.getLocation(), this.height)) {
+							this.columns.add(ec);
+						}
 						// } else if (block.getType() != Material.AIR
 						// && !block.isLiquid()) {
 					} else if (!BlockTools.isTransparentToEarthbending(this.player, block)) {
@@ -117,14 +122,20 @@ public class EarthWall extends BendingActiveAbility {
 
 					if (BlockTools.isTransparentToEarthbending(this.player, block)) {
 						cooldown = true;
-						this.columns.add(new EarthColumn(this.player, block.getRelative(BlockFace.DOWN).getLocation(), this.height));
+						EarthColumn ec = new EarthColumn();
+						if(ec.init(this.player, block.getRelative(BlockFace.DOWN).getLocation(), this.height)) {
+							this.columns.add(ec);
+						}
 					} else if (!BlockTools.isEarthbendable(this.player, block)) {
 						break;
 					}
 				}
 			} else if (BlockTools.isEarthbendable(this.player, block)) {
 				cooldown = true;
-				this.columns.add(new EarthColumn(this.player, block.getLocation(), this.height));
+				EarthColumn ec = new EarthColumn();
+				if(ec.init(this.player, block.getLocation(), this.height)) {
+					this.columns.add(ec);
+				}
 			}
 		}
 		if (cooldown) {
