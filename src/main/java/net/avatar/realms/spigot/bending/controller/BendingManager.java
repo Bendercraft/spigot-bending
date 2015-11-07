@@ -51,9 +51,13 @@ public class BendingManager implements Runnable {
 			manageGlobalTempBlock();
 			handleDayNight();
 		} catch (Exception e) {
-			AbilityManager.getManager().stopAllAbilities();
-			PluginTools.stopAllBending();
-			this.plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
+			try {
+				AbilityManager.getManager().stopAllAbilities();
+				PluginTools.stopAllBending();
+				plugin.getLogger().log(Level.SEVERE, "Exception in bending loop", e);
+			} catch (Exception e1) {
+				plugin.getLogger().log(Level.SEVERE, "Exception in exception bending loop : this is really bad", e1);
+			}
 		}
 
 	}
