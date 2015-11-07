@@ -64,9 +64,6 @@ public class EarthBlast extends BendingActiveAbility {
 	private static double PUSHFACTOR = 0.3;
 
 	@ConfigurationParameter("Revert")
-	private static boolean REVERT = true;
-
-	@ConfigurationParameter("Revert")
 	private static long COOLDOWN = 500;
 
 	private int damage;
@@ -352,23 +349,17 @@ public class EarthBlast extends BendingActiveAbility {
 				return;
 			}
 
-			if (REVERT) {
-				if(source != null) {
-					source.revertBlock();
-					source = null;
-				}
-				BlockTools.moveEarthBlock(this.sourceblock, block);
-				if (block.getType() == Material.SAND) {
-					block.setType(Material.SANDSTONE);
-				}
+			if(source != null) {
+				source.revertBlock();
+				source = null;
+			}
+			BlockTools.moveEarthBlock(this.sourceblock, block);
+			if (block.getType() == Material.SAND) {
+				block.setType(Material.SANDSTONE);
+			}
 
-				if (block.getType() == Material.GRAVEL) {
-					block.setType(Material.STONE);
-				}
-
-			} else {
-				block.setType(this.sourceblock.getType());
-				this.sourceblock.setType(Material.AIR);
+			if (block.getType() == Material.GRAVEL) {
+				block.setType(Material.STONE);
 			}
 
 			this.sourceblock = block;
@@ -520,10 +511,8 @@ public class EarthBlast extends BendingActiveAbility {
 			source.revertBlock();
 			source = null;
 		}
-		if (REVERT) {
+		if(sourceblock != null) {
 			BlockTools.addTempAirBlock(this.sourceblock);
-		} else {
-			this.sourceblock.breakNaturally();
 		}
 	}
 }
