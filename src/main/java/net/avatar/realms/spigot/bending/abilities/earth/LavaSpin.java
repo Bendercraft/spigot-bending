@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -73,8 +74,8 @@ public class LavaSpin extends BendingActiveAbility {
 			//Send
 			lava = true;
 			setState(BendingAbilityState.Progressing);
+			current.getWorld().playEffect(current, Effect.EXTINGUISH, 10);
 		} else if(getState() == BendingAbilityState.Progressing) {
-			lava = true;
 			setState(BendingAbilityState.Prepared);
 		}
 		return false;
@@ -93,6 +94,7 @@ public class LavaSpin extends BendingActiveAbility {
 				block = new TempBlock(current.getBlock(), MATERIAL_REST);
 				Vector direction = player.getEyeLocation().subtract(current).toVector().normalize();
 				if(move(direction)) {
+					current.getWorld().playEffect(current, Effect.GHAST_SHOOT, 0, 10);
 					setState(BendingAbilityState.Prepared);
 					bender.cooldown(this, COOLDOWN);
 				}
@@ -146,6 +148,7 @@ public class LavaSpin extends BendingActiveAbility {
 					lava = false;
 					if(block.getBlock().getType() != MATERIAL_REST) {
 						block = new TempBlock(current.getBlock(), MATERIAL_REST);
+						current.getWorld().playEffect(current, Effect.EXTINGUISH, 10);
 					}
 				}
 			} else if(getState() == BendingAbilityState.Progressing) {

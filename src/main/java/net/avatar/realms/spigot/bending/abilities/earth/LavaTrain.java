@@ -164,7 +164,7 @@ public class LavaTrain extends BendingActiveAbility {
 					// stupid
 					if (!safe.contains(potentialsBlock)) {
 						this.affecteds.put(potentialsBlock, new TempBlock(potentialsBlock, Material.LAVA));
-						player.getWorld().playEffect(potentialsBlock.getLocation(), Effect.EXTINGUISH, 0);
+						potentialsBlock.getWorld().playEffect(potentialsBlock.getLocation(), Effect.EXTINGUISH, 10);
 					}
 				}
 			}
