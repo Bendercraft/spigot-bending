@@ -70,7 +70,11 @@ public class BendingPlayer {
 	}
 
 	public static BendingPlayer getBendingPlayer(Player player) {
-		return Bending.getInstance().getBendingDatabase().get(player.getUniqueId());
+		return getBendingPlayer(player.getUniqueId());
+	}
+	
+	public static BendingPlayer getBendingPlayer(UUID player) {
+		return Bending.getInstance().getBendingDatabase().get(player);
 	}
 
 	public boolean isOnGlobalCooldown() {
