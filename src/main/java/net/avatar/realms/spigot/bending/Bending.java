@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.citizens.UnbendableTrait;
+import net.avatar.realms.spigot.bending.citizens.BendableTrait;
 import net.avatar.realms.spigot.bending.commands.BendingCommandExecutor;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -79,7 +79,7 @@ public class Bending extends JavaPlugin {
 
 		// Citizens
 		if ((getServer().getPluginManager().getPlugin("Citizens") != null) && getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
-			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(UnbendableTrait.class).withName("unbendable"));
+			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(BendableTrait.class).withName("bendable"));
 		}
 	}
 

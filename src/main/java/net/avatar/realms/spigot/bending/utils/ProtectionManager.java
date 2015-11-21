@@ -118,8 +118,8 @@ public class ProtectionManager {
 		if (useCitizens) {
 			if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
 				for (Trait trait : CitizensAPI.getNPCRegistry().getNPC(entity).getTraits()) {
-					if (trait.getName().equals("unbendable")) {
-						return true;
+					if (trait.getName().equals("bendable")) {
+						return false;
 					}
 				}
 			}
