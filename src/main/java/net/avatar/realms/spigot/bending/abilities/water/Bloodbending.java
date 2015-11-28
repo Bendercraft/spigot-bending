@@ -54,10 +54,7 @@ public class Bloodbending extends BendingActiveAbility {
 	public Bloodbending(Player player) {
 		super(player);
 
-		this.range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
-		if (AvatarState.isAvatarState(player)) {
-			this.range = AvatarState.getValue(this.range);
-		}
+		range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
 	}
 
 	@Override
