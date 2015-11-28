@@ -64,7 +64,7 @@ public class Lightning extends BendingActiveAbility {
 
 		this.warmup = WARMUP;
 		if (AvatarState.isAvatarState(this.player)) {
-			this.warmup = 0;
+			this.warmup *= 0.5;
 		} else if (Tools.isDay(this.player.getWorld())) {
 			this.warmup /= Settings.NIGHT_FACTOR;
 		}
@@ -84,9 +84,6 @@ public class Lightning extends BendingActiveAbility {
 
 	private void strike() {
 		Location targetlocation = getTargetLocation();
-		if (AvatarState.isAvatarState(this.player)) {
-			this.damage = AvatarState.getValue(this.damage);
-		}
 
 		if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Lightning, targetlocation)) {
 			this.strike = this.player.getWorld().strikeLightning(targetlocation);
