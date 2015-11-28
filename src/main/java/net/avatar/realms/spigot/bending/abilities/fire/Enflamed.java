@@ -26,6 +26,7 @@ public class Enflamed {
 
 	private long time;
 	private BendingPlayer bender;
+	private double damage;
 
 	public Enflamed(Player source, Entity entity, int seconds) {
 		if (entity.getEntityId() == source.getEntityId()) {
@@ -35,6 +36,10 @@ public class Enflamed {
 		this.source = source;
 		this.time = System.currentTimeMillis();
 		this.secondsLeft = seconds;
+		this.damage = DAMAGE;
+		if (this.bender.hasPath(BendingPath.Nurture)) {
+			damage *= 0.5;
+		}
 
 		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
@@ -82,7 +87,7 @@ public class Enflamed {
 		this.target.setFireTicks(this.secondsLeft * 20);
 		this.secondsLeft -= 1;
 		
-		EntityTools.damageEntity(this.source, this.target, DAMAGE);
+		EntityTools.damageEntity(this.source, this.target, damage);
 		return true;
 	}
 
