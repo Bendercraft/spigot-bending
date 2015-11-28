@@ -366,7 +366,7 @@ public class BendingPlayerListener implements Listener {
 			BendingAbilities ability = EntityTools.getBendingAbility(player);
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 			if (bender != null && bender.hasPath(BendingPath.Tough)) {
-				event.setDamage(event.getDamage() * 0.8);
+				event.setDamage(event.getDamage() * 0.9);
 			}
 
 			if (event.getCause() == DamageCause.FALL) {
