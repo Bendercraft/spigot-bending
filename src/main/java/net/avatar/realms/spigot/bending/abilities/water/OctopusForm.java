@@ -12,6 +12,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.MathUtils;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
@@ -230,7 +231,7 @@ public class OctopusForm extends BendingActiveAbility {
 					remove();
 					return;
 				}
-				if (y == 2) {
+				if (MathUtils.doubleEquals(y, 2)) {
 					incrementStep();
 				}
 				return;
@@ -320,7 +321,7 @@ public class OctopusForm extends BendingActiveAbility {
 
 		}
 
-		if (y == 2) {
+		if (MathUtils.doubleEquals(y, 2)) {
 
 			Block baseblock = base.clone().add(0, 2, 0).getBlock();
 

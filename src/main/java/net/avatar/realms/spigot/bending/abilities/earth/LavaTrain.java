@@ -21,6 +21,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.MathUtils;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
@@ -106,7 +107,7 @@ public class LavaTrain extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if ((this.direction.getX() == 0) && (this.direction.getZ() == 0)) {
+		if (MathUtils.doubleEquals(this.direction.getX(), 0) && MathUtils.doubleEquals(this.direction.getZ(), 0)) {
 			if (!getState().equals(BendingAbilityState.Progressing)) {
 				this.affectBlocks(this.current, REACH_WIDTH);
 				setState(BendingAbilityState.Progressing);

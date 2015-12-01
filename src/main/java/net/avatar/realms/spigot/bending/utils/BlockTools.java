@@ -419,9 +419,9 @@ public class BlockTools {
 			boolean up = false;
 			boolean down = false;
 			Vector norm = direction.clone().normalize();
-			if (norm.dot(new Vector(0, 1, 0)) == 1) {
+			if (MathUtils.doubleEquals(norm.dot(new Vector(0, 1, 0)), 1)) {
 				up = true;
-			} else if (norm.dot(new Vector(0, -1, 0)) == 1) {
+			} else if (MathUtils.doubleEquals(norm.dot(new Vector(0, -1, 0)), 1)) {
 				down = true;
 			}
 			Vector negnorm = norm.clone().multiply(-1);
@@ -635,7 +635,9 @@ public class BlockTools {
 		// Difference with the class method : Do not bother the pitch and the
 		// yaw
 
-		if ((la.getX() == lb.getX()) && (la.getY() == lb.getY()) && (la.getZ() == lb.getZ())) {
+		if (MathUtils.doubleEquals(la.getX(), lb.getX()) 
+				&& MathUtils.doubleEquals(la.getY(), lb.getY()) 
+				&& MathUtils.doubleEquals(la.getZ(), lb.getZ())) {
 			return true;
 		}
 		return false;

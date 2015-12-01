@@ -25,6 +25,7 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.MathUtils;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
@@ -74,7 +75,7 @@ public class AirBurst extends BendingActiveAbility {
 		blasts = new LinkedList<BurstBlast>();
 		chargetime = DEFAULT_CHARGETIME;
 		
-		if (AvatarState.isAvatarState(player) && AvatarState.FACTOR != 0) {
+		if (AvatarState.isAvatarState(player) && !MathUtils.doubleEquals(AvatarState.FACTOR, 0)) {
 			this.chargetime = (long) (DEFAULT_CHARGETIME / AvatarState.FACTOR);
 		}
 	}

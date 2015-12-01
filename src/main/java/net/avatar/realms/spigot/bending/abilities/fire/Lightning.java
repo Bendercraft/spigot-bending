@@ -26,6 +26,7 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.MathUtils;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
@@ -130,7 +131,7 @@ public class Lightning extends BendingActiveAbility {
 			targetlocation.add(0, -1, 0);
 		}
 
-		if ((MISS_CHANCE != 0) && !AvatarState.isAvatarState(this.player)) {
+		if (!MathUtils.doubleEquals(MISS_CHANCE, 0) && !AvatarState.isAvatarState(this.player)) {
 			double A = Math.random() * Math.PI * MISS_CHANCE * MISS_CHANCE;
 			double theta = Math.random() * Math.PI * 2;
 			double r = Math.sqrt(A) / Math.PI;

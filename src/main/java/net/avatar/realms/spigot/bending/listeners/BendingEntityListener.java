@@ -42,6 +42,7 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.MathUtils;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
 public class BendingEntityListener implements Listener {
@@ -97,7 +98,7 @@ public class BendingEntityListener implements Listener {
 			Player targetplayer = (Player) entity;
 			if (EntityTools.canBendPassive(sourceplayer, BendingElement.ChiBlocker)
 					&& EntityTools.isBender(sourceplayer, BendingElement.ChiBlocker)
-					&& (event.getCause() == DamageCause.ENTITY_ATTACK) && (event.getDamage() == 1)
+					&& (event.getCause() == DamageCause.ENTITY_ATTACK) && MathUtils.doubleEquals(event.getDamage(), 1)
 					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= DirectHit.RANGE)) {
 				EntityTools.blockChi(targetplayer, 500);
 			}
