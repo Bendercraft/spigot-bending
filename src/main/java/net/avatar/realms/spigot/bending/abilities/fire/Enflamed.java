@@ -28,25 +28,37 @@ public class Enflamed {
 	private BendingPlayer bender;
 	private double damage;
 
-	public Enflamed(Player source, Entity entity, int seconds) {
-		if (entity.getEntityId() == source.getEntityId()) {
+	public static void enflame(Player source, Entity target, int seconds) {
+		if (target.getEntityId() == source.getEntityId()) {
 			return;
 		}
-		this.target = entity;
-		this.source = source;
+		if (ProtectionManager.isEntityProtected(target)) {
+			return;
+		}
+		
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(source);
+		if (BendingPlayer.getBendingPlayer(source).hasPath(BendingPath.Lifeless)) {
+			return;
+		}
+		
+		if (bender.hasPath(BendingPath.Nurture)) {
+			if (instances.containsKey(target) && instances.get(target).bender == bender) {
+				instances.get(target).addSeconds(seconds);
+				return;
+			}
+		}
+		instances.put(target, new Enflamed(bender, target, seconds));
+	}
+	
+	private Enflamed(BendingPlayer bender, Entity target, int seconds) {
+		this.target = target;
+		this.source = bender.getPlayer();
 		this.time = System.currentTimeMillis();
 		this.secondsLeft = seconds;
 		this.damage = DAMAGE;
+		this.bender = bender;
 		if (this.bender.hasPath(BendingPath.Nurture)) {
 			damage *= 0.5;
-		}
-
-		if (ProtectionManager.isEntityProtected(entity)) {
-			return;
-		}
-		this.bender = BendingPlayer.getBendingPlayer(source);
-		if (this.bender.hasPath(BendingPath.Lifeless)) {
-			return;
 		}
 
 		if (this.bender.hasPath(BendingPath.Nurture)) {
@@ -55,8 +67,7 @@ public class Enflamed {
 				return;
 			}
 		}
-		entity.setFireTicks(secondsLeft*20);
-		instances.put(entity, this);
+		target.setFireTicks(secondsLeft*20);
 	}
 
 	public void addSeconds(int amount) {

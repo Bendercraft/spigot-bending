@@ -98,7 +98,7 @@ public class FireProtection {
 					if (!(entity instanceof LivingEntity)) {
 						entity.remove();
 					} else {
-						new Enflamed(player, entity, 5);
+						Enflamed.enflame(player, entity, 5);
 					}
 				}
 			}

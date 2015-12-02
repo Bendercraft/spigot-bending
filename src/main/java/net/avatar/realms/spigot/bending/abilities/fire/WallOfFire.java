@@ -195,7 +195,7 @@ public class WallOfFire extends BendingActiveAbility {
 			return;
 		}
 		entity.setVelocity(new Vector(0, 0, 0));
-		new Enflamed(this.player, entity, 1);
+		Enflamed.enflame(this.player, entity, 1);
 		EntityTools.damageEntity(this.player, entity, this.damage);	
 	}
 
