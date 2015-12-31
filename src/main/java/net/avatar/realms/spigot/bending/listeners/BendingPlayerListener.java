@@ -373,6 +373,7 @@ public class BendingPlayerListener implements Listener {
 				BendingPassiveAbility ab = null;
 				if (EntityTools.isBender(player, BendingElement.Earth)) {
 					ab = new EarthPassive(player);
+					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
 						player.setFallDistance(0);
 						event.setDamage(0);
@@ -401,6 +402,7 @@ public class BendingPlayerListener implements Listener {
 
 				if (!event.isCancelled() && EntityTools.isBender(player, BendingElement.Water)) {
 					ab = new WaterPassive(player);
+					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
 						player.setFallDistance(0);
 						event.setDamage(0);
