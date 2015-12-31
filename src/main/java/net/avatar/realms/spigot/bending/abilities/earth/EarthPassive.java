@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -123,7 +124,7 @@ public class EarthPassive extends BendingPassiveAbility {
 
 	@Override
 	public Object getIdentifier() {
-		return player;
+		return UUID.randomUUID();
 	}
 
 	@Override
