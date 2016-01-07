@@ -122,6 +122,7 @@ public class ProtectionManager {
 						return false;
 					}
 				}
+				return true;
 			}
 		}
 		return entity.hasPermission("bending.immune");
