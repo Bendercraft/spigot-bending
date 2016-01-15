@@ -72,9 +72,9 @@ public class Ripple {
 		for (int i : new int[] { 1, 2, 3, 0, -1 }) {
 			Location loc;
 			loc = location.clone().add(0, i, 0);
-			Block topblock = loc.getBlock();
-			Block botblock = loc.clone().add(0, -1, 0).getBlock();
-			if (BlockTools.isTransparentToEarthbending(player, topblock) && BlockTools.isEarthbendable(player, botblock)) {
+			Block topBlock = loc.getBlock();
+			Block botBlock = loc.clone().add(0, -1, 0).getBlock();
+			if (BlockTools.isTransparentToEarthbending(player, topBlock) && BlockTools.isEarthbendable(player, botBlock)) {
 				location = loc.clone().add(0, -1, 0);
 				return location;
 			}
@@ -93,10 +93,10 @@ public class Ripple {
 		}
 		blocks.clear();
 		if (step < maxstep) {
-			Location newlocation = locations.get(step);
+			Location newLocation = locations.get(step);
 			Block block = location.getBlock();
-			location = newlocation.clone();
-			if (!newlocation.getBlock().equals(block)) {
+			location = newLocation.clone();
+			if (!newLocation.getBlock().equals(block)) {
 				// if (block2 != null)
 				// block1 = block2;
 				// if (block3 != null)
@@ -106,7 +106,7 @@ public class Ripple {
 				block1 = block2;
 				block2 = block3;
 				block3 = block4;
-				block4 = newlocation.getBlock();
+				block4 = newLocation.getBlock();
 
 				if (block1 != null)
 					if (hasAnyMoved(block1)) {
@@ -200,9 +200,9 @@ public class Ripple {
 			for (int i : new int[] { 1, 2, 3, 0, -1 }) {
 				Location loc;
 				loc = location.clone().add(0, i, 0);
-				Block topblock = loc.getBlock();
-				Block botblock = loc.clone().add(0, -1, 0).getBlock();
-				if (BlockTools.isTransparentToEarthbending(player, topblock) && !topblock.isLiquid() && BlockTools.isEarthbendable(player, botblock)) {
+				Block topBlock = loc.getBlock();
+				Block botBlock = loc.clone().add(0, -1, 0).getBlock();
+				if (BlockTools.isTransparentToEarthbending(player, topBlock) && !topBlock.isLiquid() && BlockTools.isEarthbendable(player, botBlock)) {
 					location = loc.clone().add(0, -1, 0);
 					locations.add(location);
 					break;
@@ -219,11 +219,11 @@ public class Ripple {
 		if (hasAnyMoved(block))
 			return false;
 		setMoved(block);
-		Block botblock = block.getRelative(BlockFace.DOWN);
+		Block botBlock = block.getRelative(BlockFace.DOWN);
 		int length = 1;
-		if (BlockTools.isEarthbendable(player, botblock)) {
+		if (BlockTools.isEarthbendable(player, botBlock)) {
 			length = 2;
-			block = botblock;
+			block = botBlock;
 		}
 		return BlockTools.moveEarth(player, block, new Vector(0, -1, 0), length, false);
 	}
@@ -273,7 +273,6 @@ public class Ripple {
 		Vector vector = direction.clone();
 		vector.setY(.5);
 		entity.setVelocity(vector);
-
 	}
 
 	private void setMoved(Block block) {
