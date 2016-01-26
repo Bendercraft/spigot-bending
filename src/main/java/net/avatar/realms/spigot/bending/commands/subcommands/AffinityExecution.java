@@ -27,26 +27,24 @@ public class AffinityExecution extends BendingCommand {
 			printUsage(sender);
 			return true;
 		}
+		String subCommand = args.remove(0).toUpperCase();
 
-		String subCommand = args.remove(0);
-		switch (subCommand) {
-			case "set":
-				set(sender, args);
-				return true;
-			case "add":
-				add(sender, args);
-				return true;
-			case "remove":
-			case "rem":
-				remove(sender, args);
-				return true;
-			case "clear":
-				clear(sender, args);
-				return true;
-			default:
-				printUsage(sender);
-				return true;
+		if (subCommand.equals("SET")) {
+			set(sender, args);
 		}
+		else if (subCommand.equals("ADD")) {
+			add(sender, args);
+		}
+		else if (subCommand.equals("REMOVE") || subCommand.equals("REM")) {
+			remove(sender, args);
+		}
+		else if (subCommand.equals("CLEAR")) {
+			clear(sender, args);
+		}
+		else {
+			printUsage(sender);
+		}
+		return true;
 	}
 
 	@Override
