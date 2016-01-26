@@ -12,86 +12,92 @@ commands:
 permissions:
   bending.air.*:
     description: Allows all air bending.
+    default: false
     children:
       bending.air: true
-      bending.air.AirSwipe: false
-      bending.air.AirBubble: false
-      bending.air.AirShield: false
-      bending.air.AirSuction: false
+      bending.air.AirSwipe: true
+      bending.air.AirBubble: true
+      bending.air.AirShield: true
+      bending.air.AirSuction: true
       bending.air.AirSpeed: true
-      bending.air.Tornado: false
-      bending.air.AirBlast: false
-      bending.air.Passive: false
-      bending.air.AirSpout: false
-      bending.air.AirBurst: false
-      bending.air.AirScooter: false
-      bending.air.AirManipulation: false
-      bending.air.Suffocate: false
+      bending.air.Tornado: true
+      bending.air.AirBlast: true
+      bending.air.Passive: true
+      bending.air.AirSpout: true
+      bending.air.AirBurst: true
+      bending.air.AirScooter: true
+      bending.air.AirManipulation: true
+      bending.air.Suffocate: true
   bending.fire.*:
     description: Allows all fire bending.
+    default: false
     children:
       bending.message.daymessage: true
       bending.fire: true
-      bending.fire.Blaze: false
-      bending.fire.HeatControl: false
-      bending.fire.FireJet: false
-      bending.fire.FireBlast: false
+      bending.fire.Blaze: true
+      bending.fire.HeatControl: true
+      bending.fire.FireJet: true
+      bending.fire.FireBlast: true
       bending.fire.Passive: true
-      bending.fire.Illumination: false
-      bending.fire.WallOfFire: false
-      bending.fire.Lightning: false
-      bending.fire.FireBurst: false
-      bending.fire.FireShield: false
-      bending.fire.FireBlade: false
-      bending.fire.Combustion: false
+      bending.fire.Illumination: true
+      bending.fire.WallOfFire: true
+      bending.fire.Lightning: true
+      bending.fire.FireBurst: true
+      bending.fire.FireShield: true
+      bending.fire.FireBlade: true
+      bending.fire.Combustion: true
   bending.water.*:
     description: Allows all water bending.
+    default: false
     children:
       bending.message.nightmessage: true
       bending.water: true
-      bending.water.PhaseChange: false
-      bending.water.HealingWaters: false
-      bending.water.Plantbending: false
-      bending.water.WaterBubble: false
-      bending.water.WaterManipulation: false
-      bending.water.Surge: false
+      bending.water.PhaseChange: true
+      bending.water.HealingWaters: true
+      bending.water.Plantbending: true
+      bending.water.WaterBubble: true
+      bending.water.WaterManipulation: true
+      bending.water.Surge: true
       bending.water.Passive: true
       bending.water.WaterPassive: true
       bending.water.FastSwimming: true
-      bending.water.WaterSpout: false
-      bending.water.IceSpike: false
-      bending.water.Torrent: false
-      bending.water.OctopusForm: false
-      bending.water.IceSwipe: false
+      bending.water.WaterSpout: true
+      bending.water.IceSpike: true
+      bending.water.Torrent: true
+      bending.water.OctopusForm: true
+      bending.water.IceSwipe: true
   bending.earth.*:
     description: Allows all earth bending.
+    default: false
     children:
       bending.earth: true
-      bending.earth.Catapult: false
-      bending.earth.EarthBlast: false
-      bending.earth.RaiseEarth: false
-      bending.earth.EarthGrab: false
-      bending.earth.EarthTunnel: false
-      bending.earth.Collapse: false
+      bending.earth.Catapult: true
+      bending.earth.EarthBlast: true
+      bending.earth.RaiseEarth: true
+      bending.earth.EarthGrab: true
+      bending.earth.EarthTunnel: true
+      bending.earth.Collapse: true
       bending.earth.Passive: true
-      bending.earth.Tremorsense: false
-      bending.earth.EarthArmor: false
-      bending.earth.Shockwave: false
-      bending.earth.MetalBending: false
-      bending.earth.LavaTrain: false
+      bending.earth.Tremorsense: true
+      bending.earth.EarthArmor: true
+      bending.earth.Shockwave: true
+      bending.earth.MetalBending: true
+      bending.earth.LavaTrain: true
   bending.chiblocker.*:
     description: Allows all chiblocking abilities.
+    default: false
     children:
       bending.chiblocker: true
-      bending.chiblocker.RapidPunch: false
-      bending.chiblocker.HighJump: false
-      bending.chiblocker.Paralyze: false
-      bending.chiblocker.SmokeBomb: false
-      bending.chiblocker.Dash: false
-      bending.chiblocker.PoisonnedDart: false
-      bending.chiblocker.PlasticBomb: false
+      bending.chiblocker.RapidPunch: true
+      bending.chiblocker.HighJump: true
+      bending.chiblocker.Paralyze: true
+      bending.chiblocker.SmokeBomb: true
+      bending.chiblocker.Dash: true
+      bending.chiblocker.PoisonnedDart: true
+      bending.chiblocker.PlasticBomb: true
   bending.*:
     description: Allows all bending.
+    default: false
     children:
       bending.earth.*: true
       bending.water.*: true
@@ -101,54 +107,44 @@ permissions:
       
   bending.admin:
     description: Allows all commands.
+    default: op
     children:
-      bending.energy.AstralProjection: true
-      bending.energy.AvatarState: true
       bending.command.remove: true
-      bending.admin.reload: true
-      bending.admin.permaremove: true
-      bending.command.choose: true
-      bending.admin.rechoose: true
-      bending.admin.choose: true
+      bending.command.reload: true
+      bending.command.choose.other: true
+      bending.command.rechoose: true
       bending.command.add: true
       bending.command.add.other: true
-      bending.command.displayelement: true
-      bending.command.clear: true
-      bending.command.display: true
-      bending.command.bind: true
-      bending.water.Bloodbending: true
-      bending.command.toggle: true
       bending.command.who: true
-      bending.command.toggle: true
-      bending.command.language: true
-      bending.command.save: true
-      bending.command.getback: true
+      bending.command.affinity: true
+      bending.command.path: true
+      bending.command.learning: true
+      bending.command: true
       
   bending.command:
     description: Allows all user commands.
+    default: true
     children:
-      bending.command.choose.other: true
       bending.command.choose: true
-      bending.command.displayelement: true
       bending.command.clear: true
       bending.command.display: true
       bending.command.bind: true
       bending.command.help: true
       bending.command.toggle: true
-      bending.command.who: true
-      bending.command.language: true
-      bending.command.bindmode: true
       bending.command.version: true
-      bending.command.save : true
-      bending.command.getback : true
+      bending.command.available: true
+      bending.command.cooldown: true
+      bending.command.deck: true
 
 # AIRBENDING PERMISSIONS
   bending.air:
     description: Allows being an Airbender.
     default: true
+    children:
+      bending.air.passive: true
   bending.air.AirSwipe:
     description: Allows the use of AirSwipe.
-    default: true
+    default: false
   bending.air.AirBubble:
     description: Allows the use of AirBubble.
     default: false
@@ -266,7 +262,7 @@ permissions:
     default: false
   bending.water.Bloodbending:
     description: Allows the use of Bloodbending.
-    default: op
+    default: false
   bending.water.OctopusForm:
     description: Allows the use of OctopusForm.
     default: false
@@ -360,13 +356,10 @@ permissions:
     default: true
 
 # ENERGY PERMISSIONS
-  bending.energy.astralproject:
-    description: Allows the use of AstralProject
-    default: op
   bending.energy.avatarstate:
     description: Allows the use of the AvatarState
     default: op
-    
+
 # ADMIN PERMISSIONS
   bending.command.remove: 
     description: Allows the use of /bending remove <player>
@@ -374,9 +367,6 @@ permissions:
   bending.command.reload:
     description: Allows the use of /bending reload
     default: op
-  bending.command.choose:
-    description: Allows the use of /bending choose <element>
-    default: true
   bending.admin.rechoose:
     description: Allows the use of /bending choose <element> after choosing one.
     default: op
@@ -389,8 +379,29 @@ permissions:
   bending.command.add.other:
     description: Allows to add elements to other player
     default: op
-    
+  bending.command.path:
+    description: Allows to list path
+    default: op
+  bending.command.path.admin:
+    description: Allows to manage path
+    default: op
+  bending.command.affinity:
+    description: Allows to choose an affinity
+    default: op
+  bending.command.affinity.other:
+    description: Allows to use affinity command on other people
+    default: op
+  bending.command.who:
+    description: Allows the use of /bending who
+    default: op
+  bending.command.learning:
+    default: op
+    description: Allows the use of /bending learning
+
 # COMMAND PERMISSIONS
+  bending.command.choose:
+    description: Allows the use of /bending choose <element>
+    default: true
   bending.command.display: 
     description: Allows the use of /bending display <element>
     default: true
@@ -409,27 +420,12 @@ permissions:
   bending.command.toggle:
     description: Allows the use of /bending toggle
     default: true
-  bending.command.who:
-    description: Allows the use of /bending who
-    default: true
   bending.command.version:
     description: Allows the use of /bending version
     default: true
   bending.command.cooldown:
     description: Allows the use of /bending cooldown
     default: true
-  bending.command.path:
-    description: Allows to list path
-    default: true
-  bending.command.path.admin:
-    description: Allows to manage path
-    default: op
-  bending.command.affinity:
-    description: Allows to choose an affinity
-    default: op
-  bending.command.affinity.other:
-    description: Allows to use affinity command on other people
-    default: op
   bending.command.available:
     description: Allows the use of available command
     default: true
