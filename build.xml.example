@@ -8,7 +8,7 @@
         <property name="libdir" value="libs" />
         <property name="jarname" value="spigot-bending" />
         <property name="config" value="config/" />
-        <property name="dist" value="/home/minecraft/" />
+        <property name="dist" value="/home/minecraft" />
     </target>
     <target name="clean" depends="init">
         <delete dir="${outputDir}" />

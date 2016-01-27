@@ -392,7 +392,10 @@ public class BendingPlayerListener implements Listener {
 				if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
 					if (ability == BendingAbilities.AirBurst) {
 						BendingActiveAbility burst = new AirBurst(player);
-						burst.fall();
+						if (burst.canBeInitialized()) {
+							AbilityManager.getManager().addInstance(burst);
+							burst.fall();
+						}
 					}
 					player.setFallDistance(0);
 					event.setDamage(0);
