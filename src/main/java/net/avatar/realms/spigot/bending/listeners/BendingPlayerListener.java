@@ -393,8 +393,10 @@ public class BendingPlayerListener implements Listener {
 					if (ability == BendingAbilities.AirBurst) {
 						BendingActiveAbility burst = new AirBurst(player);
 						if (burst.canBeInitialized()) {
-							AbilityManager.getManager().addInstance(burst);
 							burst.fall();
+							if(burst.getState() != BendingAbilityState.Start && burst.getState() != BendingAbilityState.Ended) {
+								AbilityManager.getManager().addInstance(burst);
+							}
 						}
 					}
 					player.setFallDistance(0);
