@@ -74,7 +74,7 @@ public class VitalPoint extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.Start) {
-			this.target = EntityTools.getTargettedEntity(this.player, MAX_RANGE);
+			this.target = EntityTools.getTargetedEntity(this.player, MAX_RANGE);
 			if (this.target == null) {
 				return false;
 			}

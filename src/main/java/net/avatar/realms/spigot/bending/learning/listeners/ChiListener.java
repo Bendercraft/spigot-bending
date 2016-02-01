@@ -40,7 +40,7 @@ public class ChiListener implements Listener {
 
 	@EventHandler
 	public void unlockDash(PlayerToggleSprintEvent event) {
-		Player pl = (Player) event.getPlayer();
+		Player pl = event.getPlayer();
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(pl);
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.ChiBlocker)) {

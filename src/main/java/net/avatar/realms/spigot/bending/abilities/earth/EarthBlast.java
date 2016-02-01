@@ -159,7 +159,7 @@ public class EarthBlast extends BendingActiveAbility {
 	}
 
 	private static Location getTargetLocation(Player player) {
-		Entity target = EntityTools.getTargettedEntity(player, RANGE);
+		Entity target = EntityTools.getTargetedEntity(player, RANGE);
 		Location location;
 		if (target == null) {
 			location = EntityTools.getTargetedLocation(player, RANGE);
@@ -196,7 +196,7 @@ public class EarthBlast extends BendingActiveAbility {
 		//		// Tools.removeEarthbendedBlockIndex(sourceblock);
 		//	}
 		//}
-		LivingEntity target = EntityTools.getTargettedEntity(this.player, RANGE);
+		LivingEntity target = EntityTools.getTargetedEntity(this.player, RANGE);
 		// Tools.verbose(target);
 		if (target == null) {
 			this.destination = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();

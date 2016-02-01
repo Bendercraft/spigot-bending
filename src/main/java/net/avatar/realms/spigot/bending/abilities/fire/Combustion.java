@@ -308,9 +308,9 @@ public class Combustion extends BendingActiveAbility {
 		}
 		for (BendingAbility ab : instances.values()) {
 			Combustion fireball = ((Combustion) ab);
-			Location fireblastlocation = fireball.location;
-			if (location.getWorld() == fireblastlocation.getWorld() && !source.equals(fireball.player)) {
-				if (location.distance(fireblastlocation) <= radius) {
+			Location fireblastLocation = fireball.location;
+			if (location.getWorld() == fireblastLocation.getWorld() && !source.equals(fireball.player)) {
+				if (location.distance(fireblastLocation) <= radius) {
 					fireball.explode();
 					fireball.remove();
 					broke = true;

@@ -37,7 +37,7 @@ public class DirectHit extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		LivingEntity target = EntityTools.getTargettedEntity(this.player, RANGE);
+		LivingEntity target = EntityTools.getTargetedEntity(this.player, RANGE);
 		if(target == null) {
 			remove();
 			return false;

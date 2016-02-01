@@ -163,7 +163,7 @@ public class Wave {
 		if (AvatarState.isAvatarState(this.player)) {
 			this.factor = AvatarState.getValue(this.factor);
 		}
-		Entity target = EntityTools.getTargettedEntity(this.player, this.range);
+		Entity target = EntityTools.getTargetedEntity(this.player, this.range);
 		if ((target == null) || ProtectionManager.isEntityProtected(target)) {
 			this.targetdestination = EntityTools.getTargetBlock(this.player, this.range, BlockTools.getTransparentEarthbending()).getLocation();
 		} else {

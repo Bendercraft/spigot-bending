@@ -227,7 +227,7 @@ public class WaterManipulation extends BendingActiveAbility {
 	private Location getTargetLocation(Player player) {
 		Entity target = null;
 		if (!bender.hasPath(BendingPath.Flowless)) {
-			target = EntityTools.getTargettedEntity(player, range);
+			target = EntityTools.getTargetedEntity(player, range);
 		}
 		Location result = null;
 		if ((target == null) || ProtectionManager.isEntityProtected(target)) {

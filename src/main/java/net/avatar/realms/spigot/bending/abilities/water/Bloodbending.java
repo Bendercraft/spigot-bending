@@ -76,15 +76,14 @@ public class Bloodbending extends BendingActiveAbility {
 			if (BendingPlayer.getBendingPlayer(this.player).isOnCooldown(BendingAbilities.Bloodbending)) {
 				return false;
 			}
-			Entity target = EntityTools.getTargettedEntity(this.player, this.range);
-			if (target == null 
-					|| !(target instanceof LivingEntity) 
+			LivingEntity target = EntityTools.getTargetedEntity(this.player, this.range);
+			if (target == null
 					|| ProtectionManager.isEntityProtected(target)
 					|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Bloodbending, target.getLocation())) {
 				return false;
 			}
 			if (target instanceof Player) {
-				if (EntityTools.canBend((Player) target, BendingAbilities.Bloodbending) || AvatarState.isAvatarState((Player) target) || ((Player) target).isOp()) {
+				if (EntityTools.canBend((Player) target, BendingAbilities.Bloodbending) || AvatarState.isAvatarState((Player) target) || target.isOp()) {
 					return false;
 				}
 

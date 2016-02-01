@@ -62,7 +62,7 @@ public class AirListener implements Listener {
 
 	@EventHandler
 	public void unlockAirScooter(PlayerToggleSprintEvent event) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getPlayer());
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.Air)) {
 				Player pl = bPlayer.getPlayer();
@@ -97,7 +97,7 @@ public class AirListener implements Listener {
 
 	@EventHandler
 	public void unlockAirSuction(PlayerVelocityEvent event) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getPlayer());
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.Air)) {
 				Player player = bPlayer.getPlayer();

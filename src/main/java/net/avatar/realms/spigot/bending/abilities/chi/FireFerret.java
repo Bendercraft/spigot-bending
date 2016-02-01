@@ -96,7 +96,7 @@ public class FireFerret extends BendingActiveAbility {
 			return;
 		}
 
-		location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 0, (int) RANGE + 4);
+		location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 0, RANGE + 4);
 		
 		if(target.getLocation().distance(location) < AFFECTING_RADIUS) {
 			affect(target);

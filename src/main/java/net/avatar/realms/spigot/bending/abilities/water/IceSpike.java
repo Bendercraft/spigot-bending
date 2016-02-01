@@ -90,7 +90,7 @@ public class IceSpike extends BendingActiveAbility {
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
 
-					LivingEntity target = EntityTools.getTargettedEntity(this.player, defaultrange);
+					LivingEntity target = EntityTools.getTargetedEntity(this.player, defaultrange);
 					Location destination;
 					if (target == null) {
 						destination = EntityTools.getTargetedLocation(this.player, defaultrange, BlockTools.getTransparentEarthBending());
@@ -117,7 +117,7 @@ public class IceSpike extends BendingActiveAbility {
 		if (!this.prepared) {
 			return;
 		}
-		LivingEntity target = EntityTools.getTargettedEntity(this.player, this.range);
+		LivingEntity target = EntityTools.getTargetedEntity(this.player, this.range);
 		if (target == null) {
 			this.destination = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.getTransparentEarthBending());
 		} else {
@@ -285,7 +285,7 @@ public class IceSpike extends BendingActiveAbility {
 
 			if (ice.player.equals(player)) {
 				Location location;
-				Entity target = EntityTools.getTargettedEntity(player, defaultrange);
+				Entity target = EntityTools.getTargetedEntity(player, defaultrange);
 				if (target == null) {
 					location = EntityTools.getTargetedLocation(player, defaultrange);
 				} else {
@@ -303,7 +303,7 @@ public class IceSpike extends BendingActiveAbility {
 			}
 			if ((mloc.distance(location) <= defaultrange) && (Tools.getDistanceFromLine(vector, location, ice.location) < deflectrange) && (mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1))))) {
 				Location loc;
-				Entity target = EntityTools.getTargettedEntity(player, defaultrange);
+				Entity target = EntityTools.getTargetedEntity(player, defaultrange);
 				if (target == null) {
 					loc = EntityTools.getTargetedLocation(player, defaultrange);
 				} else {

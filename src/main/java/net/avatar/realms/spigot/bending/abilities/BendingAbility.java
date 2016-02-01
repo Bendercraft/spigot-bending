@@ -23,8 +23,6 @@ public abstract class BendingAbility {
 	 * 
 	 * @param player
 	 *            The player that launches this ability
-	 * @param parent
-	 *            The ability that generates this ability. null if none
 	 */
 	public BendingAbility(Player player) {
 		this.player = player;

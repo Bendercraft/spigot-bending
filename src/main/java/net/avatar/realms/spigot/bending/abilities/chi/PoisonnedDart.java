@@ -117,7 +117,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 				}
 				break;
 			default:
-				this.effects.add(new PotionEffect(PotionEffectType.POISON, 20 * 1, 0));
+				this.effects.add(new PotionEffect(PotionEffectType.POISON, 20, 0));
 				break;
 		}
 

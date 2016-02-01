@@ -76,7 +76,7 @@ public class Suffocate extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.Start) {
-			Entity target = EntityTools.getTargettedEntity(this.player, RANGE);
+			Entity target = EntityTools.getTargetedEntity(this.player, RANGE);
 
 			if (!(target instanceof Player)) {
 				return false;

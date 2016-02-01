@@ -227,7 +227,7 @@ public class EarthListener implements Listener {
 
 	@EventHandler
 	public void unlockCatapult(PlayerVelocityEvent event) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getPlayer());
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.Earth)) {
 				Vector down = new Vector(0, 1, 0);

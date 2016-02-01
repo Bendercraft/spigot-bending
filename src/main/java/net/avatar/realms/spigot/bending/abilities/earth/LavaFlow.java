@@ -69,7 +69,7 @@ public class LavaFlow extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.Prepared) {
-			direction = player.getEyeLocation().getDirection().normalize().setY(-(double)((double)COLUMN_HEIGHT/(double)STREAM_REACH));
+			direction = player.getEyeLocation().getDirection().normalize().setY(-((double)COLUMN_HEIGHT/(double)STREAM_REACH));
 			player.getWorld().playEffect(player.getLocation(), Effect.EXTINGUISH, 2);
 			time = System.currentTimeMillis();
 			setState(BendingAbilityState.Progressing);

@@ -413,7 +413,7 @@ public class BlockTools {
 		moveEarth(player, block, direction, chainlength, true);
 	}
 
-	public static boolean moveEarth(Player player, Block block, Vector direction, int chainlength, boolean throwplayer) {
+	public static boolean moveEarth(Player player, Block block, Vector direction, int chainLength, boolean throwplayer) {
 		if (isEarthbendable(player, block) 
 				&& !ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.RaiseEarth, block.getLocation())) {
 			boolean up = false;
@@ -429,7 +429,7 @@ public class BlockTools {
 			Location location = block.getLocation();
 
 			List<Block> blocks = new LinkedList<Block>();
-			for (double j = -2; j <= chainlength; j++) {
+			for (double j = -2; j <= chainLength; j++) {
 				Block checkblock = location.clone().add(negnorm.clone().multiply(j)).getBlock();
 				if (!tempnophysics.contains(checkblock)) {
 					blocks.add(checkblock);
@@ -479,7 +479,7 @@ public class BlockTools {
 				moveEarthBlock(block, affectedblock);
 				block.getWorld().playEffect(block.getLocation(), Effect.GHAST_SHOOT, 0, 4);
 
-				for (double i = 1; i < chainlength; i++) {
+				for (double i = 1; i < chainLength; i++) {
 					affectedblock = location.clone().add(negnorm.getX() * i, negnorm.getY() * i, negnorm.getZ() * i).getBlock();
 					if (!isEarthbendable(player, affectedblock)) {
 						// verbose(affectedblock.getType());
@@ -494,8 +494,8 @@ public class BlockTools {
 						EarthPassive.revertSand(affectedblock);
 					}
 					if (block == null) {
-						for (Block checkblock : blocks) {
-							tempnophysics.remove(checkblock);
+						for (Block checkBlock : blocks) {
+							tempnophysics.remove(checkBlock);
 						}
 						return false;
 					}
@@ -503,8 +503,7 @@ public class BlockTools {
 					block = affectedblock;
 				}
 
-				int i = chainlength;
-				affectedblock = location.clone().add(negnorm.getX() * i, negnorm.getY() * i, negnorm.getZ() * i).getBlock();
+				affectedblock = location.clone().add(negnorm.getX() * chainLength, negnorm.getY() * chainLength, negnorm.getZ() * chainLength).getBlock();
 				if (!isEarthbendable(player, affectedblock) 
 						&& down 
 						&& isTransparentToEarthbending(player, affectedblock) 
@@ -513,13 +512,13 @@ public class BlockTools {
 				}
 
 			} else {
-				for (Block checkblock : blocks) {
-					tempnophysics.remove(checkblock);
+				for (Block checkBlock : blocks) {
+					tempnophysics.remove(checkBlock);
 				}
 				return false;
 			}
-			for (Block checkblock : blocks) {
-				tempnophysics.remove(checkblock);
+			for (Block checkBlock : blocks) {
+				tempnophysics.remove(checkBlock);
 			}
 			return true;
 		}

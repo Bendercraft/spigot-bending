@@ -65,7 +65,7 @@ public class EarthGrab extends BendingActiveAbility {
 			return false;
 		}
 		this.self = false;
-		Entity closestentity = EntityTools.getTargettedEntity(this.player, range);
+		Entity closestentity = EntityTools.getTargetedEntity(this.player, range);
 		boolean done = grabEntity(this.player, closestentity);
 		if (this.target != null && done == true) {
 			this.id = ID++;

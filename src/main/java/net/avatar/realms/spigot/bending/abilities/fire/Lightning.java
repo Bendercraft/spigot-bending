@@ -95,25 +95,25 @@ public class Lightning extends BendingActiveAbility {
 	private Location getTargetLocation() {
 		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
 
-		Location targetlocation;
-		targetlocation = EntityTools.getTargetedLocation(this.player, distance);
-		Entity target = EntityTools.getTargettedEntity(this.player, distance);
+		Location targetLocation;
+		targetLocation = EntityTools.getTargetedLocation(this.player, distance);
+		LivingEntity target = EntityTools.getTargetedEntity(this.player, distance);
 		if (target != null) {
-			if ((target instanceof LivingEntity) && (this.player.getLocation().distance(targetlocation) > target.getLocation().distance(this.player.getLocation()))) {
+			if ((this.player.getLocation().distance(targetLocation) > target.getLocation().distance(this.player.getLocation()))) {
 				// Check redirection
 				if (target instanceof Player) {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) target);
 					if ((bPlayer != null) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.Lightning)) {
 						// Redirection !
-						targetlocation = EntityTools.getTargetedLocation((Player) target, distance);
+						targetLocation = EntityTools.getTargetedLocation((Player) target, distance);
 					} else {
-						targetlocation = target.getLocation();
+						targetLocation = target.getLocation();
 						if (target.getVelocity().length() < threshold) {
 							MISS_CHANCE = 0;
 						}
 					}
 				} else {
-					targetlocation = target.getLocation();
+					targetLocation = target.getLocation();
 					if (target.getVelocity().length() < threshold) {
 						MISS_CHANCE = 0;
 					}
@@ -124,11 +124,11 @@ public class Lightning extends BendingActiveAbility {
 			MISS_CHANCE = 0;
 		}
 
-		if (targetlocation.getBlock().getType() == Material.AIR) {
-			targetlocation.add(0, -1, 0);
+		if (targetLocation.getBlock().getType() == Material.AIR) {
+			targetLocation.add(0, -1, 0);
 		}
-		if (targetlocation.getBlock().getType() == Material.AIR) {
-			targetlocation.add(0, -1, 0);
+		if (targetLocation.getBlock().getType() == Material.AIR) {
+			targetLocation.add(0, -1, 0);
 		}
 
 		if (!MathUtils.doubleEquals(MISS_CHANCE, 0) && !AvatarState.isAvatarState(this.player)) {
@@ -138,10 +138,10 @@ public class Lightning extends BendingActiveAbility {
 			double x = r * Math.cos(theta);
 			double z = r * Math.sin(theta);
 
-			targetlocation = targetlocation.add(x, 0, z);
+			targetLocation = targetLocation.add(x, 0, z);
 		}
 
-		return targetlocation;
+		return targetLocation;
 	}
 
 	@Override

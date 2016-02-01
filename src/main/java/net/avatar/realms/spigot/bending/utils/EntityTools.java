@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending.utils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -310,12 +309,12 @@ public class EntityTools {
 		return block;
 	}
 
-	public static LivingEntity getTargettedEntity(Player player, double range) {
-		return getTargettedEntity(player, range, new LinkedList<Entity>());
+	public static LivingEntity getTargetedEntity(Player player, double range) {
+		return getTargetedEntity(player, range, new LinkedList<Entity>());
 	}
 
-	public static LivingEntity getTargettedEntity(Player player, double range, List<Entity> avoid) {
-		double longestr = range + 1;
+	public static LivingEntity getTargetedEntity(Player player, double range, List<Entity> avoid) {
+		double longestRange = range + 1;
 		LivingEntity target = null;
 		Location origin = player.getEyeLocation();
 		Vector direction = player.getEyeLocation().getDirection().normalize();
@@ -323,9 +322,9 @@ public class EntityTools {
 			if (avoid.contains(entity)) {
 				continue;
 			}
-			if ((entity.getLocation().distance(origin) < longestr) && (Tools.getDistanceFromLine(direction, origin, entity.getLocation()) < 2) && (entity.getEntityId() != player.getEntityId()) && (entity.getLocation().distance(origin.clone().add(direction)) < entity.getLocation().distance(origin.clone().add(direction.clone().multiply(-1))))) {
+			if ((entity.getLocation().distance(origin) < longestRange) && (Tools.getDistanceFromLine(direction, origin, entity.getLocation()) < 2) && (entity.getEntityId() != player.getEntityId()) && (entity.getLocation().distance(origin.clone().add(direction)) < entity.getLocation().distance(origin.clone().add(direction.clone().multiply(-1))))) {
 				target = entity;
-				longestr = entity.getLocation().distance(origin);
+				longestRange = entity.getLocation().distance(origin);
 			}
 		}
 		return target;
@@ -336,7 +335,7 @@ public class EntityTools {
 	}
 
 	public static LivingEntity getNearestLivingEntity(Location location, double radius, LivingEntity exclude) {
-		return getNearestLivingEntity(location, radius, Arrays.asList(exclude));
+		return getNearestLivingEntity(location, radius, Collections.singletonList(exclude));
 	}
 
 	public static LivingEntity getNearestLivingEntity(Location location, double radius, List<LivingEntity> excludes) {
@@ -362,7 +361,7 @@ public class EntityTools {
 			}
 
 			((LivingEntity) entity).damage(damage, player);
-			((LivingEntity) entity).setLastDamageCause(new EntityDamageByEntityEvent(player, entity, DamageCause.CUSTOM, damage));
+			entity.setLastDamageCause(new EntityDamageByEntityEvent(player, entity, DamageCause.CUSTOM, damage));
 		}
 	}
 

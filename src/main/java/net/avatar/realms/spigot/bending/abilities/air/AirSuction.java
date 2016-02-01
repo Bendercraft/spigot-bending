@@ -116,7 +116,7 @@ public class AirSuction extends BendingActiveAbility {
 		}
 
 		if (getState() == BendingAbilityState.Preparing) {
-			Entity entity = EntityTools.getTargettedEntity(this.player, this.range);
+			Entity entity = EntityTools.getTargetedEntity(this.player, this.range);
 			if (entity != null) {
 				this.direction = Tools.getDirection(entity.getLocation(), this.origin).normalize();
 				this.location = getLocation(this.origin, this.direction.clone().multiply(-1));

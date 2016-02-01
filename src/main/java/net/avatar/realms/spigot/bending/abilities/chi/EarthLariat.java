@@ -48,7 +48,7 @@ public class EarthLariat extends BendingActiveAbility {
 					return false;
 				}
 				
-				target = EntityTools.getTargettedEntity(player, RANGE);
+				target = EntityTools.getTargetedEntity(player, RANGE);
 				if(target == null) {
 					remove();
 					return false;

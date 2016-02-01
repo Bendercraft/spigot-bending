@@ -41,7 +41,7 @@ public class HealingWaters extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.Start) {
-			LivingEntity temp = EntityTools.getTargettedEntity(this.player, RANGE);
+			LivingEntity temp = EntityTools.getTargetedEntity(this.player, RANGE);
 			if (temp == null) {
 				temp = this.player;
 			}
@@ -65,7 +65,7 @@ public class HealingWaters extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		LivingEntity entity = EntityTools.getTargettedEntity(this.player, RANGE);
+		LivingEntity entity = EntityTools.getTargetedEntity(this.player, RANGE);
 		if (entity == null) {
 			entity = this.player;
 		}

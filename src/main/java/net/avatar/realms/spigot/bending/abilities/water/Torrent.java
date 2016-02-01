@@ -337,7 +337,7 @@ public class Torrent extends BendingActiveAbility {
 
 		Entity target = null;
 		if (!this.bender.hasPath(BendingPath.Flowless)) {
-			target = EntityTools.getTargettedEntity(this.player, this.range, this.hurtentities);
+			target = EntityTools.getTargetedEntity(this.player, this.range, this.hurtentities);
 		}
 		Location targetloc = EntityTools.getTargetBlock(this.player, this.range, BlockTools.getTransparentEarthbending()).getLocation();
 
@@ -455,9 +455,9 @@ public class Torrent extends BendingActiveAbility {
 		clearRing();
 		this.startangle += 30;
 		Location loc = this.player.getEyeLocation();
-		ArrayList<Block> doneblocks = new ArrayList<Block>();
+		ArrayList<Block> doneBlocks = new ArrayList<Block>();
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(loc, radius + 2);
-		List<Entity> affectedentities = new ArrayList<Entity>();
+		List<Entity> affectedEntities = new ArrayList<Entity>();
 		for (double theta = this.startangle; theta < (this.angle + this.startangle); theta += 20) {
 			double phi = Math.toRadians(theta);
 			double dx = Math.cos(phi) * radius;
@@ -465,10 +465,10 @@ public class Torrent extends BendingActiveAbility {
 			double dz = Math.sin(phi) * radius;
 			Location blockloc = loc.clone().add(dx, dy, dz);
 			Block block = blockloc.getBlock();
-			if (!doneblocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, blockloc)) {
+			if (!doneBlocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, blockloc)) {
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
 					this.blocks.add(new TempBlock(block, Material.WATER, full));
-					doneblocks.add(block);
+					doneBlocks.add(block);
 					for (LivingEntity entity : entities) {
 						if (ProtectionManager.isEntityProtected(entity)) {
 							continue;
@@ -476,7 +476,7 @@ public class Torrent extends BendingActiveAbility {
 						if (entity.getWorld() != blockloc.getWorld()) {
 							continue;
 						}
-						if (!affectedentities.contains(entity) && (entity.getLocation().distance(blockloc) <= 1.5)) {
+						if (!affectedEntities.contains(entity) && (entity.getLocation().distance(blockloc) <= 1.5)) {
 							deflect(entity);
 						}
 					}
