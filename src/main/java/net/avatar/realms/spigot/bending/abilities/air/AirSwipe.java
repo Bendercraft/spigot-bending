@@ -163,7 +163,7 @@ public class AirSwipe extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSwipe)) {
+		if (!getState().equals(BendingAbilityState.Progressing) && (EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSwipe)) {
 			return false;
 		}
 		return true;
