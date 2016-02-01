@@ -1,9 +1,6 @@
 package net.avatar.realms.spigot.bending.controller;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -152,9 +149,7 @@ public class BendingManager implements Runnable {
 	
 	public void addGlobalTempBlock(long life, TempBlock... blocks) {
 		List<TempBlock> temp = new LinkedList<TempBlock>();
-		for(TempBlock block : blocks) {
-			temp.add(block);
-		}
+		Collections.addAll(temp, blocks);
 		addGlobalTempBlock(life, temp);
 	}
 	

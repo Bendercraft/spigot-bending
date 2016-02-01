@@ -34,7 +34,7 @@ public class AirScooter extends BendingActiveAbility {
 	private static final long INTERVAL = 100;
 	private static final double SCOOTER_RADIUS = 1;
 
-	private Block floorblock;
+	private Block floorBlock;
 	private long time;
 	private List<Double> angles = new LinkedList<Double>();
 
@@ -87,20 +87,25 @@ public class AirScooter extends BendingActiveAbility {
 
 	@Override
 	public boolean canTick() {
-		if(!super.canTick() 
-				|| this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)
-				// TODO: Remove Scooter when using another ability instead of this
+		if(!super.canTick()
 				|| this.player.isSneaking() 
 				|| !this.player.isFlying()) {
 			return false;
 		}
+
+		for (BendingAbilities ability : this.bender.getAbilities().values()) {
+			if (!ability.equals(BendingAbilities.AirScooter) && AbilityManager.getManager().isUsingAbility(this.player, ability)) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 
 	@Override
 	public void progress() {
 		getFloor();
-		if (this.floorblock == null) {
+		if (this.floorBlock == null) {
 			remove();
 			return;
 		}
@@ -120,7 +125,7 @@ public class AirScooter extends BendingActiveAbility {
 			}
 			spinScooter();
 		}
-		double distance = this.player.getLocation().getY() - this.floorblock.getY();
+		double distance = this.player.getLocation().getY() - this.floorBlock.getY();
 		double dx = Math.abs(distance - 2.4);
 		if (distance > 2.75) {
 			velocity.setY(-.25 * dx * dx);
@@ -130,7 +135,7 @@ public class AirScooter extends BendingActiveAbility {
 			velocity.setY(0);
 		}
 		Location loc = this.player.getLocation();
-		loc.setY(this.floorblock.getY() + 1.5);
+		loc.setY(this.floorBlock.getY() + 1.5);
 		this.player.setSprinting(false);
 		this.player.removePotionEffect(PotionEffectType.SPEED);
 		this.player.setVelocity(velocity);
@@ -151,28 +156,14 @@ public class AirScooter extends BendingActiveAbility {
 	}
 
 	private void getFloor() {
-		this.floorblock = null;
+		this.floorBlock = null;
 		for (int i = 0; i <= 7; i++) {
 			Block block = this.player.getEyeLocation().getBlock().getRelative(BlockFace.DOWN, i);
 			if (BlockTools.isSolid(block) || block.isLiquid()) {
-				this.floorblock = block;
+				this.floorBlock = block;
 				return;
 			}
 		}
-	}
-
-	public static List<Player> getPlayers() {
-		List<Player> players = new LinkedList<Player>();
-
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirScooter);
-		if ((instances == null) || instances.isEmpty()) {
-			return players;
-		}
-
-		for (Object player : instances.keySet()) {
-			players.add((Player) player);
-		}
-		return players;
 	}
 
 	@Override

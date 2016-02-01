@@ -81,6 +81,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
 public class AbilityManager {
 
+	//Singleton
 	private static AbilityManager manager = null;
 
 	private Map<BendingAbilities, RegisteredAbility> binds;
@@ -174,16 +175,12 @@ public class AbilityManager {
 	}
 
 	public boolean isUsingAbility(Player player, BendingAbilities ability) {
-		if (player == null) {
-			return false;
-		}
-
-		if (ability == null) {
+		if (player == null || ability == null) {
 			return false;
 		}
 
 		Map<Object, BendingAbility> instances = getInstances(ability);
-		if (instances == null) {
+		if (instances == null || instances.isEmpty()) {
 			return false;
 		}
 

@@ -65,7 +65,7 @@ public class C4 extends BendingActiveAbility {
 	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
 
 	private int id;
-	private Block bomb = null;;
+	private Block bomb = null;
 	private Location location;
 	private Material previousType;
 	private Block hitBlock = null;
