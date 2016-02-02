@@ -159,8 +159,7 @@ public class AirSuction extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirSuction)) {
-			// Info : This is checking the position of the suction and not the position of the bender
+		if (!getState().equals(BendingAbilityState.Progressing) && (bender.getAbility() != BendingAbilities.AirSuction)) {
 			return false;
 		}
 		return true;

@@ -136,7 +136,7 @@ public class AirBlast extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (getState() == BendingAbilityState.Preparing && this.bender.getAbility() != AbilityManager.getManager().getAbilityType(this)) {
+		if (getState() == BendingAbilityState.Preparing && this.bender.getAbility() != BendingAbilities.AirBlast) {
 			return false;
 		}
 		return true;
