@@ -67,7 +67,7 @@ public class BendingLearning {
 		if (!EntityTools.hasPermission(player, ability)) {
 			// Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
-			String perm = EntityTools.getPermissionKey(ability);
+			String perm = ability.getPermission();
 			attachment.setPermission(perm, true);
 			if (!permissions.containsKey(player.getUniqueId())) {
 				permissions.put(player.getUniqueId(), new LinkedList<String>());
@@ -87,15 +87,14 @@ public class BendingLearning {
 		if (EntityTools.hasPermission(player, ability)) {
 			// Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
-			String perm = EntityTools.getPermissionKey(ability);
-			attachment.unsetPermission(perm);
+			attachment.unsetPermission(ability.getPermission());
 			if (permissions.containsKey(player.getUniqueId())) {
-				permissions.get(player.getUniqueId()).remove(perm);
+				permissions.get(player.getUniqueId()).remove(ability.getPermission());
 			}
 			try {
 				this.save();
 			} catch (Exception e) {
-				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not have saved permission " + perm + " for player " + player.getName(), e);
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not have saved permission " + ability.getPermission() + " for player " + player.getName(), e);
 			}
 			return true;
 		}

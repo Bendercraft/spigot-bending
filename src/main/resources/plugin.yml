@@ -433,6 +433,9 @@ permissions:
   bending.immune:
     description: Make the player that has that permission to be immune to bending abilities
     default: false
+  bending.protection.bypass:
+    description: Players with this permission are not affected by world guard protection
+    default: false
     
   bending.message.daymessage:
     description: Allows receipt of the sun rising and falling for firebenders

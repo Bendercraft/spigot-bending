@@ -158,7 +158,7 @@ public class ProtectionManager {
 			return false;
 		}
 
-		if (player.isOp()) {
+		if (player.hasPermission("bending.protection.bypass")) {
 			return false;
 		}
 

@@ -61,14 +61,6 @@ public class EntityTools {
 		return true;
 	}
 
-	public static List<BendingElement> getBendingTypes(Player player) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer == null) {
-			return null;
-		}
-		return bPlayer.getBendingTypes();
-	}
-
 	public static BendingAbilities getBendingAbility(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
@@ -89,10 +81,6 @@ public class EntityTools {
 		}
 
 		return true;
-	}
-
-	public static String getPermissionKey(BendingAbilities ability) {
-		return "bending." + ability.getElement().name().toLowerCase() + "." + ability.name().toLowerCase();
 	}
 
 	public static boolean hasPermission(Player player, BendingAbilities ability) {

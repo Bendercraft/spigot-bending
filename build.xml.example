@@ -1,4 +1,4 @@
-<project basedir="." default="deploy" name="spigot-bending"> 
+<project basedir="." default="deploy" name="spigot-bending">
     <target name="init">
         <property name="launcher" value="run.bat" />
         <property name="sourceDir" value="src" />
