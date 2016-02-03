@@ -44,9 +44,15 @@ public abstract class Bubble extends BendingActiveAbility {
 	public void progress() {
 		if (EntityTools.getBendingAbility(this.player) == AbilityManager.getManager().getAbilityType(this)) {
 			pushWater();
-			return;
 		}
-		remove();
+		else {
+			remove();
+		}
+	}
+
+	@Override
+	public boolean canBeUsedWithTools() {
+		return true;
 	}
 
 	@Override
@@ -59,7 +65,11 @@ public abstract class Bubble extends BendingActiveAbility {
 		if (!getState().equals(BendingAbilityState.Progressing)) {
 			return false;
 		}
-		remove();
+
+		if (!EntityTools.isTool(player.getItemInHand().getType())) {
+			remove();
+		}
+
 		return false;
 	}
 
@@ -82,9 +92,7 @@ public abstract class Bubble extends BendingActiveAbility {
 
 			List<Block> toRemove = new LinkedList<Block>();
 			for (Entry<Block, TempBlock> entry : this.origins.entrySet()) {
-				if (entry.getKey().getWorld() != location.getWorld()) {
-					toRemove.add(entry.getKey());
-				} else if (entry.getKey().getLocation().distance(location) > this.radius) {
+				if (!blockInBubble(entry.getKey())) {
 					toRemove.add(entry.getKey());
 				}
 			}

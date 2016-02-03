@@ -175,7 +175,7 @@ public class SmokeBomb extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.isWeapon(this.player.getItemInHand().getType())) {
+		if (EntityTools.isTool(this.player.getItemInHand().getType())) {
 			return false;
 		}
 		return true;

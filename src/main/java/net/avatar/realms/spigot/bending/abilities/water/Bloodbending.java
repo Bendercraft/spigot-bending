@@ -243,7 +243,7 @@ public class Bloodbending extends BendingActiveAbility {
 		}
 
 		ItemStack i = this.player.getItemInHand();
-		if (EntityTools.isWeapon(i.getType())) {
+		if (EntityTools.isTool(i.getType())) {
 			return false;
 		}
 

@@ -247,21 +247,21 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (!EntityTools.isWeapon(player.getItemInHand().getType()) && EntityTools.canBend(player, ability)) {
+		if (EntityTools.canBend(player, ability)) {
 			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			boolean shouldCreateNew = true;
 			for (BendingAbility a : abilities.values()) {
-				if (a.getPlayer().equals(player) && !((BendingActiveAbility) a).swing()) {
+				if (playerCanSwingAbility(player, a) && !((BendingActiveAbility) a).swing()) {
 					shouldCreateNew = false;
 				}
 			}
 			if (shouldCreateNew) {
 				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
 				if(ab == null) {
-					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
+					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability " + ability + " failed to construct with buildAbility for player " + player.getName());
 					return;
 				}
-				if(ab.canBeInitialized()) {
+				if(ab.canBeInitialized() && playerCanSwingAbility(player, ab)) {
 					ab.swing();
 					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
 						AbilityManager.getManager().addInstance(ab);
@@ -269,6 +269,11 @@ public class BendingPlayerListener implements Listener {
 				}
 			}
 		}
+	}
+
+	private boolean playerCanSwingAbility(Player player, BendingAbility ability) {
+		return (ability.getPlayer().equals(player) &&
+				(ability.canBeUsedWithTools() || EntityTools.isTool(player.getItemInHand().getType())));
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

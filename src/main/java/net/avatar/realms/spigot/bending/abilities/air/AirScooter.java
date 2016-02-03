@@ -110,7 +110,7 @@ public class AirScooter extends BendingActiveAbility {
 			return;
 		}
 		
-		if(EntityTools.isWeapon(player.getItemInHand().getType())) {
+		if(EntityTools.isTool(player.getItemInHand().getType())) {
 			remove();
 			return;
 		}
