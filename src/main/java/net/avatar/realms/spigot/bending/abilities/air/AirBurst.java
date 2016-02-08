@@ -107,6 +107,20 @@ public class AirBurst extends BendingActiveAbility {
 		
 		return true;
 	}
+
+	@Override
+	public boolean canTick() {
+		if(!super.canTick()) {
+			return false;
+		}
+		if(getState().equals(BendingAbilityState.Preparing) && !this.player.isSneaking()) {
+			return false;
+		}
+		if (!getState().equals(BendingAbilityState.Progressing) && (bender.getAbility() != BendingAbilities.AirBurst)) {
+			return false;
+		}
+		return true;
+	}
 	
 	@Override
 	public void progress() {
@@ -137,29 +151,6 @@ public class AirBurst extends BendingActiveAbility {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.SMOKE, Tools.getIntCardinalDirection(location.getDirection()), 3);
 		}
-	}
-	
-	public static boolean isAirBursting(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBurst);
-		if ((instances == null) || instances.isEmpty()) {
-			return false;
-		}
-		return instances.containsKey(player);
-	}
-	
-	public boolean isCharged() {
-		return getState() == BendingAbilityState.Prepared;
-	}
-	
-	public static AirBurst getAirBurst(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBurst);
-		if ((instances == null) || instances.isEmpty()) {
-			return null;
-		}
-		if (!instances.containsKey(player)) {
-			return null;
-		}
-		return (AirBurst) instances.get(player);
 	}
 	
 	private void sphereBurst() {
@@ -233,11 +224,11 @@ public class AirBurst extends BendingActiveAbility {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
-		if (isAirBursting(this.player)) {
+
+		if (AbilityManager.getManager().isUsingAbility(this.player, BendingAbilities.AirBurst)) {
 			return false;
 		}
-		
+
 		return true;
 	}
 	
