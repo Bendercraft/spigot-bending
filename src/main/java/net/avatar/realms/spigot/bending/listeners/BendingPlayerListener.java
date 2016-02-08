@@ -273,7 +273,7 @@ public class BendingPlayerListener implements Listener {
 
 	private boolean playerCanSwingAbility(Player player, BendingAbility ability) {
 		return (ability.getPlayer().equals(player) &&
-				(ability.canBeUsedWithTools() || EntityTools.isTool(player.getItemInHand().getType())));
+				(ability.canBeUsedWithTools() || !EntityTools.isTool(player.getItemInHand().getType())));
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
