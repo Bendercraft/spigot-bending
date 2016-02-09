@@ -65,8 +65,8 @@ public class EarthGrab extends BendingActiveAbility {
 			return false;
 		}
 		this.self = false;
-		Entity closestentity = EntityTools.getTargetedEntity(this.player, range);
-		boolean done = grabEntity(this.player, closestentity);
+		Entity closestEntity = EntityTools.getTargetedEntity(this.player, range);
+		boolean done = grabEntity(this.player, closestEntity);
 		if (this.target != null && done == true) {
 			this.id = ID++;
 			setState(BendingAbilityState.Progressing);
@@ -182,7 +182,8 @@ public class EarthGrab extends BendingActiveAbility {
 						}
 						Material t = loc.getBlock().getType();
 						for (int i = 0; i < h; i++) {
-							this.affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
+							//this.affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
+							this.affectedBlocks.add(TempBlock.makeTemporary(loc.add(0, 1, 0).getBlock(), t));
 						}
 					}
 

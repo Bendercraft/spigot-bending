@@ -201,12 +201,14 @@ public class EarthArmor extends BendingActiveAbility {
 		}
 
 		if (!newheadblock.equals(this.headblock)) {
-			new TempBlock(newheadblock, this.headtype, this.headdata);
+			//new TempBlock(newheadblock, this.headtype, this.headdata);
+			TempBlock.makeTemporary(newheadblock, headtype, headdata);
 			TempBlock.revertBlock(this.headblock);
 		}
 
 		if (!newlegsblock.equals(this.legsblock)) {
-			new TempBlock(newlegsblock, this.legstype, this.legsdata);
+			//new TempBlock(newlegsblock, this.legstype, this.legsdata);
+			TempBlock.makeTemporary(newlegsblock, this.legstype, this.legsdata);
 			TempBlock.revertBlock(this.legsblock);
 		}
 

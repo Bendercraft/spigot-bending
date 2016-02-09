@@ -106,7 +106,8 @@ public class Wave {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
-				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
 				this.sourceblock = block;
 				focusBlock();
 				// Range and max radius is halfed for Drainbending
@@ -120,7 +121,8 @@ public class Wave {
 		if (WaterReturn.hasWaterBottle(player)) {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-			this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+			//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+			this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
 			this.sourceblock = block;
 			focusBlock();
 			WaterReturn.emptyWaterBottle(player);
@@ -368,7 +370,8 @@ public class Wave {
 			return;
 		}
 		if (!TempBlock.isTempBlock(block)) {
-			new TempBlock(block, Material.WATER, full);
+			//new TempBlock(block, Material.WATER, full);
+			TempBlock.makeTemporary(block, Material.WATER);
 			// new TempBlock(block, Material.ICE, (byte) 0);
 			this.wave.put(block, block);
 		}
@@ -409,8 +412,8 @@ public class Wave {
 				continue;
 			}
 			if ((block.getType() == Material.AIR) || (block.getType() == Material.SNOW)) {
-				// block.setType(Material.ICE);
-				new TempBlock(block, Material.ICE, (byte) 0);
+				//new TempBlock(block, Material.ICE, (byte) 0);
+				TempBlock.makeTemporary(block, Material.ICE);
 				this.frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
@@ -418,8 +421,8 @@ public class Wave {
 			}
 			if (BlockTools.isPlant(block) && (block.getType() != Material.LEAVES)) {
 				block.breakNaturally();
-				// block.setType(Material.ICE);
-				new TempBlock(block, Material.ICE, (byte) 0);
+				//new TempBlock(block, Material.ICE, (byte) 0);
+				TempBlock.makeTemporary(block, Material.ICE);
 				this.frozenblocks.put(block, block);
 			}
 		}

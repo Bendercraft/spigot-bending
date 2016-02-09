@@ -83,7 +83,8 @@ public class OctopusForm extends BendingActiveAbility {
 		} else if (!BlockTools.adjacentToThreeOrMoreSources(sourceblock)) {
 			sourceblock.setType(Material.AIR);
 		}
-		source = new TempBlock(sourceblock, Material.WATER, full);
+		//source = new TempBlock(sourceblock, Material.WATER, full);
+		source = TempBlock.makeTemporary(sourceblock, Material.WATER);
 
 		setState(BendingAbilityState.Prepared);
 		return false;
@@ -94,10 +95,11 @@ public class OctopusForm extends BendingActiveAbility {
 		if (getState() == BendingAbilityState.Start) {
 			sourceblock = BlockTools.getWaterSourceBlock(player, range, EntityTools.canPlantbend(player));
 			if (sourceblock == null && WaterReturn.hasWaterBottle(player)) {
-				Location eyeloc = player.getEyeLocation();
-				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-				if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
-					this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				Location eyeLoc = player.getEyeLocation();
+				Block block = eyeLoc.add(eyeLoc.getDirection().normalize()).getBlock();
+				if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeLoc.getBlock())) {
+					//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+					this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
 					sourceblock = block;
 					WaterReturn.emptyWaterBottle(player);
 				}
@@ -177,11 +179,12 @@ public class OctopusForm extends BendingActiveAbility {
 				if (sourceblock.getY() < location.getBlockY()) {
 					source.revertBlock();
 					source = null;
-					Block newblock = sourceblock.getRelative(BlockFace.UP);
-					sourcelocation = newblock.getLocation();
-					if (!BlockTools.isSolid(newblock)) {
-						source = new TempBlock(newblock, Material.WATER, full);
-						sourceblock = newblock;
+					Block newBlock = sourceblock.getRelative(BlockFace.UP);
+					sourcelocation = newBlock.getLocation();
+					if (!BlockTools.isSolid(newBlock)) {
+						//source = new TempBlock(newBlock, Material.WATER, full);
+						source = TempBlock.makeTemporary(newBlock, Material.WATER);
+						sourceblock = newBlock;
 					} else {
 						returnWater();
 						return;
@@ -189,11 +192,12 @@ public class OctopusForm extends BendingActiveAbility {
 				} else if (sourceblock.getY() > location.getBlockY()) {
 					source.revertBlock();
 					source = null;
-					Block newblock = sourceblock.getRelative(BlockFace.DOWN);
-					sourcelocation = newblock.getLocation();
-					if (!BlockTools.isSolid(newblock)) {
-						source = new TempBlock(newblock, Material.WATER, full);
-						sourceblock = newblock;
+					Block newBlock = sourceblock.getRelative(BlockFace.DOWN);
+					sourcelocation = newBlock.getLocation();
+					if (!BlockTools.isSolid(newBlock)) {
+						//source = new TempBlock(newBlock, Material.WATER, full);
+						source = TempBlock.makeTemporary(newBlock, Material.WATER);
+						sourceblock = newBlock;
 					} else {
 						returnWater();
 						return;
@@ -201,15 +205,16 @@ public class OctopusForm extends BendingActiveAbility {
 				} else if (sourcelocation.distance(location) > radius) {
 					Vector vector = Tools.getDirection(sourcelocation, location.getBlock().getLocation()).normalize();
 					sourcelocation.add(vector);
-					Block newblock = sourcelocation.getBlock();
-					if (!newblock.equals(sourceblock)) {
+					Block newBlock = sourcelocation.getBlock();
+					if (!newBlock.equals(sourceblock)) {
 						if (source != null) {
 							source.revertBlock();
 						}
 						source = null;
-						if (!BlockTools.isSolid(newblock)) {
-							source = new TempBlock(newblock, Material.WATER, full);
-							sourceblock = newblock;
+						if (!BlockTools.isSolid(newBlock)) {
+							//source = new TempBlock(newBlock, Material.WATER, full);
+							source = TempBlock.makeTemporary(newBlock, Material.WATER);
+							sourceblock = newBlock;
 						}
 					}
 				} else {
@@ -339,29 +344,20 @@ public class OctopusForm extends BendingActiveAbility {
 	}
 
 	private void addWater(Block block) {
-		clearNearbyWater(block);
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.OctopusForm, block.getLocation()))
+		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.OctopusForm, block.getLocation())) {
 			return;
+		}
+
 		if (TempBlock.isTempBlock(block)) {
-			TempBlock tblock = TempBlock.get(block);
-			if (!newblocks.contains(tblock)) {
-				if (!blocks.contains(tblock))
-					tblock.setType(Material.WATER, full);
-				newblocks.add(tblock);
+			TempBlock tBlock = TempBlock.get(block);
+			if (!newblocks.contains(tBlock)) {
+				if (!blocks.contains(tBlock))
+					tBlock.setType(Material.WATER, full);
+				newblocks.add(tBlock);
 			}
 		} else if (BlockTools.isWaterbendable(block, player) || block.getType() == Material.FIRE || block.getType() == Material.AIR) {
-			newblocks.add(new TempBlock(block, Material.WATER, full));
-		}
-	}
-
-	private void clearNearbyWater(Block block) {
-		BlockFace[] faces = { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST, BlockFace.DOWN };
-		for (BlockFace face : faces) {
-			Block rel = block.getRelative(face);
-			if (BlockTools.isWater(rel) && !TempBlock.isTempBlock(rel)) {
-				//new PhaseChange(player, this, rel);
-				// water.add(new TempBlock(rel, Material.AIR, (byte) 0));
-			}
+			//newblocks.add(new TempBlock(block, Material.WATER, full));
+			newblocks.add(TempBlock.makeTemporary(block, Material.WATER));
 		}
 	}
 

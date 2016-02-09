@@ -15,41 +15,69 @@ public class TempBlock {
 	private static Map<Block, TempBlock> instances = new HashMap<Block, TempBlock>();
 
 	private Block block;
-	private Material newtype;
-	private byte newdata;
+	private Material newType;
+	private byte newData;
 	private BlockState state;
 
-	public TempBlock(Block block, Material newtype) {
-		this(block, newtype, (byte) 0x0);
+	public static TempBlock makeTemporary(Block block, Material newType) {
+		return makeTemporary(block, newType, (byte) 0x0);
 	}
-	
-	@SuppressWarnings("deprecation")
-	public TempBlock(Block block, Material newtype, byte newdata) {
+
+	public static TempBlock makeTemporary(Block block, Material newType, byte newData) {
+		TempBlock temp = null;
+		if (instances.containsKey(block)) {
+			temp = instances.get(block);
+		}
+		else {
+			temp = new TempBlock(block);
+			instances.put(block, temp);
+		}
+		temp.newType = newType;
+		temp.newData = newData;
+		temp.block.setType(newType);
+		temp.block.setData(newData);
+		if (temp.state.getType() == Material.FIRE) {
+			temp.state.setType(Material.AIR);
+		}
+		return temp;
+	}
+
+	private TempBlock(Block block) {
 		this.block = block;
-		this.newdata = newdata;
-		this.newtype = newtype;
+		this.state = block.getState();
+	}
+
+	/*public TempBlock(Block block, Material newType) {
+		this(block, newType, (byte) 0x0);
+	}
+
+	@SuppressWarnings("deprecation")
+	public TempBlock(Block block, Material newType, byte newData) {
+		this.block = block;
+		this.newData = newData;
+		this.newType = newType;
 		if (instances.containsKey(block)) {
 			TempBlock temp = instances.get(block);
-			if (newtype != temp.newtype) {
-				temp.block.setType(newtype);
-				temp.newtype = newtype;
+			if (newType != temp.newType) {
+				temp.block.setType(newType);
+				temp.newType = newType;
 			}
-			if (newdata != temp.newdata) {
-				temp.block.setData(newdata);
-				temp.newdata = newdata;
+			if (newData != temp.newData) {
+				temp.block.setData(newData);
+				temp.newData = newData;
 			}
 			this.state = temp.state;
 			instances.put(block, temp);
 		} else {
 			this.state = block.getState();
-			block.setType(newtype);
-			block.setData(newdata);
+			block.setType(newType);
+			block.setData(newData);
 			instances.put(block, this);
 		}
 		if (this.state.getType() == Material.FIRE) {
 			this.state.setType(Material.AIR);
 		}
-	}
+	}*/
 
 	public void revertBlock() {
 		this.state.update(true);
@@ -101,13 +129,13 @@ public class TempBlock {
 	}
 
 	public void setType(Material material) {
-		setType(material, this.newdata);
+		setType(material, this.newData);
 	}
 
 	@SuppressWarnings("deprecation")
 	public void setType(Material material, byte data) {
-		this.newtype = material;
-		this.newdata = data;
+		this.newType = material;
+		this.newData = data;
 		this.block.setType(material);
 		this.block.setData(data);
 	}

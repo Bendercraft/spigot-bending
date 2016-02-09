@@ -97,12 +97,6 @@ public class Ripple {
 			Block block = location.getBlock();
 			location = newLocation.clone();
 			if (!newLocation.getBlock().equals(block)) {
-				// if (block2 != null)
-				// block1 = block2;
-				// if (block3 != null)
-				// block2 = block3;
-				// if (block4 != null)
-				// block3 = block4;
 				block1 = block2;
 				block2 = block3;
 				block3 = block4;

@@ -118,7 +118,8 @@ public class Torrent extends BendingActiveAbility {
 					}
 				}
 				if(safe) {
-					iceds.add(new TempBlock(block, Material.ICE, (byte) 0));
+					//iceds.add(new TempBlock(block, Material.ICE, (byte) 0));
+					iceds.add(TempBlock.makeTemporary(block, Material.ICE));
 				}
 			}
 		}
@@ -134,7 +135,8 @@ public class Torrent extends BendingActiveAbility {
 				Location eyeloc = this.player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
-					this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+					//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+					this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
 					this.sourceblock = block;
 					WaterReturn.emptyWaterBottle(this.player);
 				}
@@ -200,7 +202,8 @@ public class Torrent extends BendingActiveAbility {
 					} else if (!BlockTools.adjacentToThreeOrMoreSources(this.sourceblock)) {
 						this.sourceblock.setType(Material.AIR);
 					}
-					this.source = new TempBlock(this.sourceblock, Material.WATER, full);
+					//this.source = new TempBlock(this.sourceblock, Material.WATER, full);
+					this.source = TempBlock.makeTemporary(sourceblock, Material.WATER);
 					this.location = this.sourceblock.getLocation();
 				} else {
 					Tools.playFocusWaterEffect(this.sourceblock);
@@ -251,7 +254,8 @@ public class Torrent extends BendingActiveAbility {
 							remove();
 							return;
 						}
-						this.source = new TempBlock(this.location.getBlock(), Material.WATER, full);
+						//this.source = new TempBlock(this.location.getBlock(), Material.WATER, full);
+						this.source = TempBlock.makeTemporary(this.location.getBlock(), Material.WATER);
 					}
 				}
 			}
@@ -322,7 +326,8 @@ public class Torrent extends BendingActiveAbility {
 				Block block = blockloc.getBlock();
 				if (!doneblocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, blockloc)) {
 					if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
-						this.launchblocks.add(new TempBlock(block, Material.WATER, full));
+						//this.launchblocks.add(new TempBlock(block, Material.WATER, full));
+						this.launchblocks.add(TempBlock.makeTemporary(block, Material.WATER));
 						doneblocks.add(block);
 					} else if (!BlockTools.isTransparentToEarthbending(this.player, block)) {
 						break;
@@ -400,7 +405,8 @@ public class Torrent extends BendingActiveAbility {
 				return true;
 			}
 			if (b.getLocation().distance(targetloc) > 1) {
-				newblocks.add(new TempBlock(b, Material.WATER, full));
+				//newblocks.add(new TempBlock(b, Material.WATER, full));
+				newblocks.add(TempBlock.makeTemporary(b, Material.WATER));
 			} else {
 				if (this.layer < maxlayer) {
 					if (this.layer == 0) {
@@ -467,7 +473,8 @@ public class Torrent extends BendingActiveAbility {
 			Block block = blockloc.getBlock();
 			if (!doneBlocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, blockloc)) {
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
-					this.blocks.add(new TempBlock(block, Material.WATER, full));
+					//this.blocks.add(new TempBlock(block, Material.WATER, full));
+					this.blocks.add(TempBlock.makeTemporary(block, Material.WATER));
 					doneBlocks.add(block);
 					for (LivingEntity entity : entities) {
 						if (ProtectionManager.isEntityProtected(entity)) {

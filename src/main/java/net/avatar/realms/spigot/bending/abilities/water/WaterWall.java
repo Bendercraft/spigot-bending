@@ -136,7 +136,8 @@ public class WaterWall extends BendingActiveAbility {
 		frozen = true;
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				new TempBlock(block, Material.ICE, (byte) 0);
+				//new TempBlock(block, Material.ICE, (byte) 0);
+				TempBlock.makeTemporary(block, Material.ICE);
 			}
 		}
 	}
@@ -145,7 +146,8 @@ public class WaterWall extends BendingActiveAbility {
 		frozen = false;
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				new TempBlock(block, Material.WATER, full);
+				//new TempBlock(block, Material.WATER, full);
+				TempBlock.makeTemporary(block, Material.WATER);
 			}
 		}
 	}
@@ -167,7 +169,8 @@ public class WaterWall extends BendingActiveAbility {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
-				drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				//drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
+				drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
 				sourceblock = block;
 				focusBlock();
 				// Radius is thirded for Drainbending
@@ -366,9 +369,11 @@ public class WaterWall extends BendingActiveAbility {
 
 	private void addWallBlock(Block block) {
 		if (frozen) {
-			new TempBlock(block, Material.ICE, (byte) 0);
+			//new TempBlock(block, Material.ICE, (byte) 0);
+			TempBlock.makeTemporary(block, Material.ICE);
 		} else {
-			new TempBlock(block, Material.WATER, full);
+			//new TempBlock(block, Material.WATER, full);
+			TempBlock.makeTemporary(block, Material.WATER);
 		}
 	}
 
@@ -413,16 +418,10 @@ public class WaterWall extends BendingActiveAbility {
 			return;
 
 		if (!TempBlock.isTempBlock(block)) {
-			new TempBlock(block, Material.WATER, full);
-			// new TempBlock(block, Material.ICE, (byte) 0);
+			//new TempBlock(block, Material.WATER, full);
+			TempBlock.makeTemporary(block, Material.WATER);
 			affectedblocks.put(block, block);
 		}
-	}
-
-	public static boolean canThaw(Block block) {
-		if (wallblocks.keySet().contains(block))
-			return false;
-		return true;
 	}
 
 	public static void thaw(Block block) {

@@ -35,8 +35,8 @@ public class EarthColumn {
 
 	private static int ID = Integer.MIN_VALUE;
 
-	private static Map<Block, Block> alreadydoneblocks = new HashMap<Block, Block>();
-	private static Map<Block, Integer> baseblocks = new HashMap<Block, Integer>();
+	private static Map<Block, Block> alreadyDoneBlocks = new HashMap<Block, Block>();
+	private static Map<Block, Integer> baseBlocks = new HashMap<Block, Integer>();
 
 	private Location origin;
 	private Location location;
@@ -47,7 +47,6 @@ public class EarthColumn {
 	private long time;
 	private int height = HEIGHT;
 	private List<Block> affectedBlocks = new ArrayList<Block>();
-	private EarthGrab earthGrab = null;
 
 	public boolean init(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -83,22 +82,13 @@ public class EarthColumn {
 		return true;
 	}
 
-	public boolean init(Player player, Location origin) {
-		return init(player, origin, HEIGHT);
-	}
-
 	public boolean init(Player player, Location origin, int height) {
-		return init(player, origin, height, null);
-	}
-
-	public boolean init(Player player, Location origin, int height, EarthGrab grab) {
 		this.height = height;
 		this.origin = origin;
 		location = origin.clone();
 		block = location.getBlock();
 		this.player = player;
 		distance = BlockTools.getEarthbendableBlocksLength(player, block, direction.clone().multiply(-1), height);
-		this.earthGrab = grab;
 		loadAffectedBlocks();
 
 		if (distance != 0) {
@@ -116,20 +106,16 @@ public class EarthColumn {
 		return false;
 	}
 
-	public EarthGrab getEarthGrab() {
-		return earthGrab;
-	}
-
 	private void loadAffectedBlocks() {
 		affectedBlocks.clear();
-		Block thisblock;
+		Block thisBlock;
 		for (int i = 0; i <= distance; i++) {
-			thisblock = block.getWorld().getBlockAt(location.clone().add(direction.clone().multiply(-i)));
-			if (thisblock.getType() != Material.ANVIL) {
-				affectedBlocks.add(thisblock);
+			thisBlock = block.getWorld().getBlockAt(location.clone().add(direction.clone().multiply(-i)));
+			if (thisBlock.getType() != Material.ANVIL) {
+				affectedBlocks.add(thisBlock);
 			}
-			if (CompactColumn.blockInAllAffectedBlocks(thisblock))
-				CompactColumn.revertBlock(thisblock);
+			if (CompactColumn.blockInAllAffectedBlocks(thisBlock))
+				CompactColumn.revertBlock(thisBlock);
 		}
 	}
 
@@ -158,7 +144,7 @@ public class EarthColumn {
 
 	private boolean canInstantiate() {
 		for (Block block : affectedBlocks) {
-			if (blockInAllAffectedBlocks(block) || alreadydoneblocks.containsKey(block)) {
+			if (blockInAllAffectedBlocks(block) || alreadyDoneBlocks.containsKey(block)) {
 				return false;
 			}
 		}
@@ -170,9 +156,9 @@ public class EarthColumn {
 			time = System.currentTimeMillis();
 			if (!moveEarth()) {
 				for (Block block : affectedBlocks) {
-					alreadydoneblocks.put(block, block);
+					alreadyDoneBlocks.put(block, block);
 				}
-				baseblocks.put(location.clone().add(direction.clone().multiply(-1 * (distance - 1))).getBlock(), (distance - 1));
+				baseBlocks.put(location.clone().add(direction.clone().multiply(-1 * (distance - 1))).getBlock(), (distance - 1));
 
 				return false;
 			}
@@ -197,26 +183,9 @@ public class EarthColumn {
 		instances.remove(id);
 	}
 
-	public static boolean blockIsBase(Block block) {
-		if (baseblocks.containsKey(block)) {
-			return true;
-		}
-		return false;
-	}
-
-	public static void removeBlockBase(Block block) {
-		if (baseblocks.containsKey(block)) {
-			baseblocks.remove(block);
-		}
-	}
-
 	public static void resetBlock(Block block) {
-		if (alreadydoneblocks.containsKey(block)) {
-			alreadydoneblocks.remove(block);
+		if (alreadyDoneBlocks.containsKey(block)) {
+			alreadyDoneBlocks.remove(block);
 		}
-	}
-
-	public List<Block> getAffectedBlocks() {
-		return affectedBlocks;
 	}
 }

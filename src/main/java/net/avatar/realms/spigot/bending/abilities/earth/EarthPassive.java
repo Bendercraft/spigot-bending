@@ -43,16 +43,18 @@ public class EarthPassive extends BendingPassiveAbility {
 			if (!BlockTools.isTransparentToEarthbending(player, block)) {
 				if (BlockTools.isSolid(block.getRelative(BlockFace.DOWN))) {
 					if (!isPassiveSand(block)) {
-						blocks.add(new TempBlock(block, Material.SAND, (byte) 0x0));
+						//blocks.add(new TempBlock(block, Material.SAND, (byte) 0x0));
+						blocks.add(TempBlock.makeTemporary(block, Material.SAND));
 					}
 				}
 			}
 
-			for (Block affectedblock : BlockTools.getBlocksAroundPoint(block.getLocation(), 2)) {
-				if (BlockTools.isEarthbendable(player, affectedblock) && !BlockTools.isIronBendable(player, affectedblock.getType())) {
-					if (BlockTools.isSolid(affectedblock.getRelative(BlockFace.DOWN))) {
-						if (!isPassiveSand(affectedblock) && !block.getLocation().equals(affectedblock.getLocation())) {
-							blocks.add(new TempBlock(affectedblock, Material.SAND, (byte) 0x0));
+			for (Block affectedBlock : BlockTools.getBlocksAroundPoint(block.getLocation(), 2)) {
+				if (BlockTools.isEarthbendable(player, affectedBlock) && !BlockTools.isIronBendable(player, affectedBlock.getType())) {
+					if (BlockTools.isSolid(affectedBlock.getRelative(BlockFace.DOWN))) {
+						if (!isPassiveSand(affectedBlock) && !block.getLocation().equals(affectedBlock.getLocation())) {
+							//blocks.add(new TempBlock(affectedBlock, Material.SAND, (byte) 0x0));
+							blocks.add(TempBlock.makeTemporary(affectedBlock, Material.SAND));
 						}
 					}
 				}

@@ -136,7 +136,8 @@ public class WaterManipulation extends BendingActiveAbility {
 			Vector vector = drainLocation.getDirection().clone().normalize();
 			block = drainLocation.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
-				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, BlockTools.FULL);
+				//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, BlockTools.FULL);
+				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
 			} else {
 				block = null;
 			}
@@ -149,7 +150,8 @@ public class WaterManipulation extends BendingActiveAbility {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 			if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
-				this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, BlockTools.FULL);
+				//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, BlockTools.FULL);
+				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
 				WaterReturn.emptyWaterBottle(player);
 			} else {
 				block = null;
@@ -369,7 +371,8 @@ public class WaterManipulation extends BendingActiveAbility {
 					this.trail2 = this.trail;
 					this.trail2.setType(Material.WATER, (byte) 2);
 				}
-				this.trail = new TempBlock(this.sourceblock, Material.WATER, (byte) 1);
+				//this.trail = new TempBlock(this.sourceblock, Material.WATER, (byte) 1);
+				this.trail = TempBlock.makeTemporary(sourceblock, Material.WATER, (byte) 1);
 				this.sourceblock = block;
 
 				if ((this.location.distance(this.targetdestination) <= 1) || (this.location.distance(this.firstdestination) > range)) {

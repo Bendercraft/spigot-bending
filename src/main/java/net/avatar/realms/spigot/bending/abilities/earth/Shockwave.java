@@ -72,7 +72,8 @@ public class Shockwave extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!EntityTools.canBend(player, BendingAbilities.Shockwave) || EntityTools.getBendingAbility(player) != BendingAbilities.Shockwave) {
+		if (!EntityTools.canBend(player, BendingAbilities.Shockwave) ||
+				(bender.getAbility() != BendingAbilities.Shockwave && !getState().equals(BendingAbilityState.Progressing))) {
 			return false;
 		}
 		return true;
