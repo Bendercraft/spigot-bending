@@ -218,6 +218,13 @@ public class BlockTools {
 
 		Material material = block.getType();
 
+		if (material == Material.STONE) {
+			byte data = block.getData();
+			if (data == 0x2 || data == 0x4 || data == 0x6) {
+				return false;
+			}
+		}
+
 		for (String s : Settings.getEarthBendablesBlocksNames()) {
 			if (material == Material.getMaterial(s)) {
 				return true;
