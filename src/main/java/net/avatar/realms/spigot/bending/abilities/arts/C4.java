@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.arts;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +36,7 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
-@ABendingAbility(name = "Plastic Bomb", bind = BendingAbilities.PlasticBomb, element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
+@ABendingAbility(name = "Plastic Bomb", bind = BendingAbilities.PlasticBomb, element = BendingElement.Master, affinity = BendingAffinity.Chi)
 public class C4 extends BendingActiveAbility {
 
 	private static int ID = Integer.MIN_VALUE;

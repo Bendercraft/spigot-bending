@@ -54,7 +54,7 @@ public abstract class BendingCommand implements IBendingCommand {
 
 		for (String alias : Settings.CHI_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingElement.ChiBlocker;
+				return BendingElement.Master;
 			}
 		}
 

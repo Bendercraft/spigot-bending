@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.arts;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = "High Jump", bind = BendingAbilities.HighJump, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "High Jump", bind = BendingAbilities.HighJump, element = BendingElement.Master)
 public class HighJump extends BendingActiveAbility {
 
 	@ConfigurationParameter("Height")
@@ -31,8 +31,6 @@ public class HighJump extends BendingActiveAbility {
 		if (makeJump()) {
 			this.bender.cooldown(BendingAbilities.HighJump, COOLDOWN);
 		}
-
-		ComboPoints.addComboPoint(this.player, null);
 		return true;
 	}
 
@@ -48,10 +46,6 @@ public class HighJump extends BendingActiveAbility {
 
 		if(this.bender.hasPath(BendingPath.Restless)) {
 			height *= 1.2;
-		}
-
-		if (ComboPoints.getComboPointAmount(this.player) >= 2) {
-			height++;
 		}
 		Vector vec = Tools.getVectorForPoints(this.player.getLocation(), this.player.getLocation().add(this.player.getVelocity()).add(0, height, 0));
 		this.player.setVelocity(vec);

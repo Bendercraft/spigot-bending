@@ -29,9 +29,6 @@ public class TorrentBurst {
 	private static double defaultfactor = 1.5;
 	private static long interval = Torrent.interval;
 
-	private static final byte full = 0x0;
-	// private static final Vector reference = new Vector(1, 0, 0);
-
 	private Player player;
 	private long time;
 	private Location origin;

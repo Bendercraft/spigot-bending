@@ -20,6 +20,7 @@ public enum BendingAbilities {
 	AirBurst(BendingElement.Air, true),
 	AirSpeed(BendingElement.Air, true),
 	AirGlide(BendingElement.Air, true),
+	AirSlice(BendingElement.Air, true),
 	Tornado(BendingAffinity.Tornado, true),
 	Suffocate (BendingAffinity.Suffocate, true),
 	
@@ -34,6 +35,7 @@ public enum BendingAbilities {
 	Collapse(BendingElement.Earth, true),
 	EarthArmor(BendingElement.Earth, true),
 	Shockwave(BendingElement.Earth, true),
+	EarthLariat(BendingElement.Earth, true),
 	LavaTrain(BendingAffinity.Lavabend, true),
 	LavaFlow(BendingAffinity.Lavabend, true),
 	LavaSpin(BendingAffinity.Lavabend, true),
@@ -51,6 +53,7 @@ public enum BendingAbilities {
 	FireBurst(BendingElement.Fire, true),
 	FireShield(BendingElement.Fire, true),
 	FireBlade(BendingElement.Fire, false),
+	FireFerret(BendingElement.Fire, true),
 	Combustion(BendingAffinity.Combustion, true),
 	Lightning(BendingAffinity.Lightning, true),
 	
@@ -66,26 +69,30 @@ public enum BendingAbilities {
 	IceSpike(BendingElement.Water, true),
 	OctopusForm(BendingElement.Water, true),
 	Torrent(BendingElement.Water, true),
+	WaterTurret(BendingElement.Water, true),
 	Bloodbending(BendingAffinity.Bloodbend, true),
 	Drainbending(BendingAffinity.DrainBend, false),
 	
 	/*
-	 * CHI-BLOCKERS Abilities
+	 * MASTER Abilities
 	 */
-	Release(BendingElement.ChiBlocker, false),
-	Count(BendingElement.ChiBlocker, false),
-	HighJump(BendingElement.ChiBlocker, false),
-	ChiSpeed(BendingElement.ChiBlocker, false),
-	VitalPoint(BendingElement.ChiBlocker, false),
-	SmokeBomb(BendingElement.ChiBlocker, false),
-	Dash(BendingElement.ChiBlocker, true),
-	DirectHit(BendingElement.ChiBlocker, false),
-	PoisonnedDart(BendingAffinity.Inventor, false),
-	PlasticBomb(BendingAffinity.Inventor, true),
-	AirSlice(BendingAffinity.ChiAir, true),
-	WaterTurret(BendingAffinity.ChiWater, true),
-	EarthLariat(BendingAffinity.ChiEarth, true),
-	FireFerret(BendingAffinity.ChiFire, true),
+	HighJump(BendingElement.Master, false),
+	ChiSpeed(BendingElement.Master, false),
+	VitalPoint(BendingElement.Master, false),
+	
+	Dash(BendingElement.Master, true),
+	DirectHit(BendingElement.Master, false),
+	
+	SmokeBomb(BendingAffinity.Chi, false),
+	PoisonnedDart(BendingAffinity.Chi, false),
+	PlasticBomb(BendingAffinity.Chi, true),
+	
+	
+	Aim(BendingAffinity.Bowman, false),
+	ExplosiveShot(BendingAffinity.Bowman, false),
+	StraightShot (BendingAffinity.Bowman, false),
+	PowerShot (BendingAffinity.Bowman, false),
+	
 	
 	/*
 	 * AVATAR Abilities
@@ -96,7 +103,7 @@ public enum BendingAbilities {
 	 * PASSIVE Abilities
 	 */
 	AirPassive(BendingElement.Air, false),
-	ChiPassive(BendingElement.ChiBlocker, false),
+	ChiPassive(BendingElement.Master, false),
 	EarthPassive(BendingElement.Earth, false),
 	FirePassive(BendingElement.Fire, false),
 	FastSwimming(BendingElement.Water, true),
@@ -220,7 +227,7 @@ public enum BendingAbilities {
 	}
 	
 	public boolean isChiblocking() {
-		return getElement().equals(BendingElement.ChiBlocker);
+		return getElement().equals(BendingElement.Master);
 	}
 	
 	public static List<BendingAbilities> getChiBlockingAbilities() {

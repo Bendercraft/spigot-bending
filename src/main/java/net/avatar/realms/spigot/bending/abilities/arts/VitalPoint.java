@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.arts;
 
 import java.util.Map;
 
@@ -13,6 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -25,7 +26,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * get slown.
  *
  */
-@ABendingAbility(name = "Vital Point", bind = BendingAbilities.VitalPoint, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Vital Point", bind = BendingAbilities.VitalPoint, element = BendingElement.Master, affinity=BendingAffinity.Chi)
 public class VitalPoint extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
@@ -79,34 +80,17 @@ public class VitalPoint extends BendingActiveAbility {
 				return false;
 			}
 
-			int combo = ComboPoints.getComboPointAmount(this.player);
 			this.cooldown = 1000;
-			if (this.player.isSneaking() && (combo > 0)) {
-				this.damage += combo * DAMAGE_INCREMENT;
+			if (this.player.isSneaking()) {
+				this.damage += DAMAGE_INCREMENT;
 				this.target.damage(this.damage, this.player);
-				if (combo == 5) {
-					if (this.target instanceof Player) {
-						EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
-					}
-					this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
+				if (this.target instanceof Player) {
+					EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
 				}
-				else {
-					this.amplifier = combo - 1;
-					if (combo == 4) {
-						if (this.target instanceof Player) {
-							EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
-						}
-					}
-					else if (combo == 1) {
-						this.amplifier = 1;
-					}
-					this.target.addPotionEffect(new PotionEffect(TYPE, SLOW_DURATION / 20, this.amplifier));
-				}
-				this.cooldown += COOLDOWN / (6 - combo);
-				ComboPoints.consume(this.player);
+				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
+				this.cooldown += COOLDOWN / (6);
 			}
 			else {
-				ComboPoints.addComboPoint(this.player, this.target);
 				this.target.damage(this.damage, this.player);
 				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
 			}

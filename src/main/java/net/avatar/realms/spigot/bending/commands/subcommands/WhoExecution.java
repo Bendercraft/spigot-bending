@@ -67,7 +67,7 @@ public class WhoExecution extends BendingCommand {
 		for (BendingElement element : bender.getBendingTypes()) {
 			color = PluginTools.getColor(Settings.getColorString(element.name()));
 			String msg;
-			if (element == BendingElement.ChiBlocker) {
+			if (element == BendingElement.Master) {
 				msg = Messages.WHO_IS_CHI;
 			} else {
 				msg = Messages.WHO_IS_BENDING;

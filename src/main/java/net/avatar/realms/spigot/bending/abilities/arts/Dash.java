@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.arts;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@ABendingAbility(name = "Dash", bind = BendingAbilities.Dash, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Dash", bind = BendingAbilities.Dash, element = BendingElement.Master)
 public class Dash extends BendingActiveAbility {
 
 	@ConfigurationParameter("Length")
@@ -83,12 +83,7 @@ public class Dash extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		long cd = COOLDOWN;
-		if ((ComboPoints.getComboPointAmount(this.player) < 1)) {
-			cd *= 1.5;
-		}
-		this.bender.cooldown(BendingAbilities.Dash, cd);
-		ComboPoints.addComboPoint(this.player, null);
+		this.bender.cooldown(BendingAbilities.Dash, COOLDOWN);
 	}
 
 	@Override

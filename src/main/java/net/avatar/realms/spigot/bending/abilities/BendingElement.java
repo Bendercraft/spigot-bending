@@ -2,7 +2,7 @@ package net.avatar.realms.spigot.bending.abilities;
 
 public enum BendingElement {
 
-	None, Air, Water, Earth, Fire, ChiBlocker, Energy;
+	None, Air, Water, Earth, Fire, Master, Energy;
 
 	public static BendingElement getType(String string) {
 		for (BendingElement type : BendingElement.values()) {
@@ -23,7 +23,7 @@ public enum BendingElement {
 				return BendingPath.Balanced;
 			case Fire:
 				return BendingPath.Control;
-			case ChiBlocker:
+			case Master:
 				return BendingPath.Equality;
 			default:
 				return BendingPath.None;

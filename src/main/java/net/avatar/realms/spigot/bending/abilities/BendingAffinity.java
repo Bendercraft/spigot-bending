@@ -11,7 +11,7 @@ public enum BendingAffinity {
 
 	Metalbend(BendingElement.Earth), Lavabend(BendingElement.Earth),
 
-	Inventor(BendingElement.ChiBlocker), ChiAir(BendingElement.ChiBlocker), ChiEarth(BendingElement.ChiBlocker), ChiFire(BendingElement.ChiBlocker), ChiWater(BendingElement.ChiBlocker);
+	Chi(BendingElement.Master), Bowman(BendingElement.Master);
 
 	private BendingElement element;
 

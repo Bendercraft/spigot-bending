@@ -38,26 +38,19 @@ public class WaterWall extends BendingActiveAbility {
 	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 	private static Map<Block, Player> wallblocks = new HashMap<Block, Player>();
 
-	private static final byte full = 0x0;
-	// private static final byte half = 0x4;
-
 	@ConfigurationParameter("Range")
 	private static double RANGE = 5;
 
 	@ConfigurationParameter("Radius")
 	private static double RADIUS = 2;
 
-	// private static double speed = 1.5;
-
 	private Location location = null;
 	private Block sourceblock = null;
-	// private Block oldwater = null;
 	private boolean progressing = false;
 	private Location firstdestination = null;
 	private Location targetdestination = null;
 	private Vector firstdirection = null;
 	private Vector targetdirection = null;
-	// private boolean falling = false;
 	private boolean settingup = false;
 	private boolean forming = false;
 	private boolean frozen = false;

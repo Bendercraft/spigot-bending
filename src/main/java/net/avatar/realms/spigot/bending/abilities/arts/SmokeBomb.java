@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.arts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,14 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "Smoke Bomb", bind = BendingAbilities.SmokeBomb, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Smoke Bomb", bind = BendingAbilities.SmokeBomb, element = BendingElement.Master, affinity = BendingAffinity.Chi)
 public class SmokeBomb extends BendingActiveAbility {
 
 	@ConfigurationParameter("Radius")
@@ -46,9 +47,6 @@ public class SmokeBomb extends BendingActiveAbility {
 	private Location origin;
 	private int ticksRemaining;
 	private List<Location> locs;
-
-	private boolean blind = false;
-	private boolean invisibility = false;
 
 	private Integer id;
 
@@ -92,15 +90,6 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST, (SOUND_RADIUS / 16.0f), 1.1f);
 		this.player.addPotionEffect(blindnessBomber);
 
-		int combo = ComboPoints.getComboPointAmount(this.player);
-		if (combo >= 1) {
-			this.blind = true;
-			if (combo >= 2) {
-				this.invisibility = true;
-				ComboPoints.consume(this.player, 1);
-			}
-		}
-
 		this.bender.cooldown(BendingAbilities.SmokeBomb, this.cooldown);
 
 		if (getState() == BendingAbilityState.Prepared) {
@@ -119,32 +108,26 @@ public class SmokeBomb extends BendingActiveAbility {
 
 		this.blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS, this.ticksRemaining, 2);
 
-		if (this.blind || this.invisibility) {
-			for (LivingEntity targ : this.targets) {
-				if (!newTargets.contains(targ)) {
-					if (targ.getEntityId() != this.player.getEntityId()) {
-						targ.removePotionEffect(PotionEffectType.BLINDNESS);
-					}
-					else {
-						targ.removePotionEffect(PotionEffectType.INVISIBILITY);
-					}
+		for (LivingEntity targ : this.targets) {
+			if (!newTargets.contains(targ)) {
+				if (targ.getEntityId() != this.player.getEntityId()) {
+					targ.removePotionEffect(PotionEffectType.BLINDNESS);
+				}
+				else {
+					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
 				}
 			}
 		}
-
 		this.targets.clear();
 
-		if (this.blind || this.invisibility) {
-			for (LivingEntity targ : newTargets) {
-				if (targ.getEntityId() != this.player.getEntityId()) {
-					targ.addPotionEffect(this.blindnessTarget);
-				}
-				else if (this.invisibility) {
-					PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
-					targ.addPotionEffect(invisibilityLauncher);
-				}
-				this.targets.add(targ);
+		for (LivingEntity targ : newTargets) {
+			if (targ.getEntityId() != this.player.getEntityId()) {
+				targ.addPotionEffect(this.blindnessTarget);
+			} else {
+				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
+				targ.addPotionEffect(invisibilityLauncher);
 			}
+			this.targets.add(targ);
 		}
 
 		if ((this.ticksRemaining % 16) == 0) {

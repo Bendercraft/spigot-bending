@@ -49,8 +49,6 @@ public class Torrent extends BendingActiveAbility {
 	private static int maxlayer = 3;
 	private static double ylimit = 0.2;
 
-	private static final byte full = 0x0;
-
 	private double startangle = 0;
 	private Block sourceblock;
 	private TempBlock source;

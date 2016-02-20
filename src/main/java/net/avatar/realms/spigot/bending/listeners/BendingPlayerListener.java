@@ -62,8 +62,8 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
-import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
-import net.avatar.realms.spigot.bending.abilities.chi.Dash;
+import net.avatar.realms.spigot.bending.abilities.arts.Speed;
+import net.avatar.realms.spigot.bending.abilities.arts.Dash;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
@@ -351,8 +351,8 @@ public class BendingPlayerListener implements Listener {
 				}
 			}
 
-			if (bender.isBender(BendingElement.ChiBlocker) && EntityTools.canBendPassive(player, BendingElement.ChiBlocker)) {
-				ChiSpeed ab = new ChiSpeed(player);
+			if (bender.isBender(BendingElement.Master) && EntityTools.canBendPassive(player, BendingElement.Master)) {
+				Speed ab = new Speed(player);
 				if(ab.canBeInitialized()) {
 					ab.start();
 					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
@@ -422,8 +422,8 @@ public class BendingPlayerListener implements Listener {
 				}
 
 				if (!event.isCancelled() 
-						&& EntityTools.isBender(player, BendingElement.ChiBlocker) 
-						&& EntityTools.canBendPassive(player, BendingElement.ChiBlocker)) {
+						&& EntityTools.isBender(player, BendingElement.Master) 
+						&& EntityTools.canBendPassive(player, BendingElement.Master)) {
 					event.setDamage((int) (event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
 					if (event.getEntity().getFallDistance() < 10) {
 						event.setCancelled(true);

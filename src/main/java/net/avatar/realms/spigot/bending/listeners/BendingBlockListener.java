@@ -18,7 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
-import net.avatar.realms.spigot.bending.abilities.chi.C4;
+import net.avatar.realms.spigot.bending.abilities.arts.C4;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;

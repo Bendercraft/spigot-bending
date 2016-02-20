@@ -22,7 +22,6 @@ import org.bukkit.util.Vector;
 
 public class WaterReturn {
 	private static long interval = 50;
-	private static final byte full = 0x0;
 	private static double range = 30;
 
 	private Location location;

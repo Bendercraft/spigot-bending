@@ -31,8 +31,6 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 public class Wave {
 	private static final long interval = 30;
 
-	private static final byte full = 0x0;
-
 	@ConfigurationParameter("Radius")
 	private static final double RADIUS = 3;
 

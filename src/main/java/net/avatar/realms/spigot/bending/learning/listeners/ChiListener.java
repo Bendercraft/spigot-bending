@@ -43,7 +43,7 @@ public class ChiListener implements Listener {
 		Player pl = event.getPlayer();
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(pl);
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.ChiBlocker)) {
+			if (bPlayer.isBender(BendingElement.Master)) {
 				if (!pl.isSprinting()) {
 					sprintLastLocationDash.put(pl.getUniqueId(), pl.getLocation().clone());
 				} else {
@@ -88,13 +88,13 @@ public class ChiListener implements Listener {
 	public void unlockSmokeBomb(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.ChiBlocker) && event.getAbility().equals(BendingAbilities.SmokeBomb)) {
+			if (bPlayer.isBender(BendingElement.Master) && event.getAbility().equals(BendingAbilities.SmokeBomb)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 				for (LivingEntity entity : entities) {
 					if (entity instanceof Player) {
 						Player p = (Player) entity;
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
-						if (trainee.isBender(BendingElement.ChiBlocker)) {
+						if (trainee.isBender(BendingElement.Master)) {
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
 								if (plugin.addPermission(p, BendingAbilities.SmokeBomb)) {
 									String message = "By analizing and another smoke bomb from " + bPlayer.getPlayer().getName() + " you think you can reproduce it";

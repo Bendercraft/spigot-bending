@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.arts;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * knockback You must be sneaking when clicking to activate this technique.
  *
  */
-@ABendingAbility(name = "Direct Hit", bind = BendingAbilities.DirectHit, element = BendingElement.ChiBlocker)
+@ABendingAbility(name = "Direct Hit", bind = BendingAbilities.DirectHit, element = BendingElement.Master)
 public class DirectHit extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
@@ -48,12 +48,8 @@ public class DirectHit extends BendingActiveAbility {
 					.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
 
 			this.bender.cooldown(this, COOLDOWN * 2);
-		}
-		else {
-			if (ComboPoints.getComboPointAmount(this.player) < 3) {
-				ComboPoints.addComboPoint(this.player, target);
-				this.bender.cooldown(this, COOLDOWN);
-			}
+		} else {
+			this.bender.cooldown(this, COOLDOWN);
 		}
 		return false;
 	}

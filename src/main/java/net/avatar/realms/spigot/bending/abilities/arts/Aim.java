@@ -1,18 +1,11 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.arts;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
@@ -37,8 +30,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  *
  */
 
-@ABendingAbility(name = "Poisonned Dart", bind = BendingAbilities.PoisonnedDart, element = BendingElement.ChiBlocker, affinity = BendingAffinity.Inventor)
-public class PoisonnedDart extends BendingActiveAbility {
+@ABendingAbility(name = "Aim", bind = BendingAbilities.Aim, element = BendingElement.Master, affinity = BendingAffinity.Bowman)
+public class Aim extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 2;
@@ -54,9 +47,8 @@ public class PoisonnedDart extends BendingActiveAbility {
 	private Location origin;
 	private Location location;
 	private Vector direction;
-	private List<PotionEffect> effects;
 
-	public PoisonnedDart(Player player) {
+	public Aim(Player player) {
 		super(player);
 	}
 
@@ -75,61 +67,6 @@ public class PoisonnedDart extends BendingActiveAbility {
 		this.direction = this.origin.getDirection().normalize();
 
 		setState(BendingAbilityState.Preparing);
-
-		ItemStack is = this.player.getItemInHand();
-		this.effects = new LinkedList<PotionEffect>();
-		switch (is.getType()) {
-			case MILK_BUCKET:
-				this.effects = null;
-				is.setType(Material.BUCKET);
-				is.setAmount(1);
-				break;
-			case POTION:
-				Potion potion = Potion.fromItemStack(is);
-				this.effects.addAll(potion.getEffects());
-				this.player.getInventory().removeItem(is);
-				this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
-				break;
-			case EYE_OF_ENDER:
-				this.effects.add(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 10, 1));
-				if (is.getAmount() == 1) {
-					this.player.getInventory().removeItem(is);
-				} else {
-					is.setAmount(is.getAmount() - 1);
-				}
-				break;
-			case MUSHROOM_SOUP:
-				this.effects.add(new PotionEffect(PotionEffectType.CONFUSION, 20 * 12, 1));
-				is.setType(Material.BOWL);
-				is.setAmount(1);
-				break;
-			case SKULL_ITEM:
-				@SuppressWarnings("deprecation")
-				byte data = is.getData().getData();
-				// If this is a wither skull
-				if (data == 1) {
-					this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 60, 0));
-					if (is.getAmount() == 1) {
-						this.player.getInventory().removeItem(is);
-					} else {
-						is.setAmount(is.getAmount() - 1);
-					}
-				}
-				break;
-			default:
-				this.effects.add(new PotionEffect(PotionEffectType.POISON, 20, 0));
-				break;
-		}
-
-		if (this.effects != null && ComboPoints.getComboPointAmount(this.player) >= 3) {
-			ComboPoints.consume(this.player, 2);
-			List<PotionEffect> newEffects = new LinkedList<PotionEffect>();
-			for (PotionEffect effect : this.effects) {
-				newEffects.add(new PotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier() + 1));
-			}
-			this.effects.clear();
-			this.effects = newEffects;
-		}
 
 		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
 		this.bender.cooldown(BendingAbilities.PoisonnedDart, COOLDOWN);
@@ -165,25 +102,11 @@ public class PoisonnedDart extends BendingActiveAbility {
 			return false;
 		}
 		int cptEnt = 0;
-		boolean health = areHealthEffects();
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, 2.1)) {
 			if (entity.getEntityId() == this.player.getEntityId()) {
 				continue;
 			}
-
-			if (this.effects == null) {
-				for (PotionEffect effect : entity.getActivePotionEffects()) {
-					entity.removePotionEffect(effect.getType());
-				}
-				entity.getActivePotionEffects().clear();
-			} else {
-				for (PotionEffect effect : this.effects) {
-					entity.addPotionEffect(effect);
-				}
-			}
-			if (!health && (this.effects != null)) {
-				EntityTools.damageEntity(this.player, entity, DAMAGE);
-			}
+			EntityTools.damageEntity(this.player, entity, DAMAGE);
 			cptEnt++;
 			break;
 		}
@@ -192,20 +115,6 @@ public class PoisonnedDart extends BendingActiveAbility {
 			return false;
 		}
 		return true;
-	}
-
-	private boolean areHealthEffects() {
-		if (this.effects == null) {
-			return false;
-		}
-		LinkedList<PotionEffect> healthEffects = new LinkedList<PotionEffect>();
-		for (PotionEffect effect : this.effects) {
-			if (effect.getType().equals(PotionEffectType.HEAL) || effect.getType().equals(PotionEffectType.HEALTH_BOOST) || effect.getType().equals(PotionEffectType.REGENERATION)) {
-				healthEffects.add(effect);
-			}
-		}
-
-		return !healthEffects.isEmpty();
 	}
 
 	private void advanceLocation() {

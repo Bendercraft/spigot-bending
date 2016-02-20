@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.air;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +17,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -25,7 +24,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = "Air Slice", bind = BendingAbilities.AirSlice, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiAir)
+@ABendingAbility(name = "Air Slice", bind = BendingAbilities.AirSlice, element = BendingElement.Air)
 public class AirSlice extends BendingActiveAbility {
 
 	@ConfigurationParameter("Select-Range")
@@ -68,11 +67,6 @@ public class AirSlice extends BendingActiveAbility {
 				return false;
 			}
 
-			if(!ComboPoints.consume(this.player,1)) {
-				remove();
-				return false;
-			}
-
 			this.direction = this.player.getEyeLocation().getDirection();
 			this.origin = this.first.clone().add(this.second).multiply(0.5);
 			double distance = this.second.distance(this.first);
@@ -97,10 +91,6 @@ public class AirSlice extends BendingActiveAbility {
 			if (this.first == null || this.first.getBlock().isLiquid() || BlockTools.isSolid(this.first.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSlice, this.first)) {
 				return false;
 			}
-			if(!ComboPoints.consume(this.player,1)) {
-				remove();
-				return false;
-			}
 			setState(BendingAbilityState.Preparing);
 		} else if(getState() == BendingAbilityState.Preparing || getState() == BendingAbilityState.Prepared) {
 			this.second = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
@@ -116,10 +106,6 @@ public class AirSlice extends BendingActiveAbility {
 			}
 			if(getState() == BendingAbilityState.Preparing) {
 				setState(BendingAbilityState.Prepared);
-			}
-			if(!ComboPoints.consume(this.player,1)) {
-				remove();
-				return false;
 			}
 		}
 		return false;

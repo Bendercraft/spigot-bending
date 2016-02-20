@@ -15,8 +15,8 @@ public enum BendingPath {
 	Patient(BendingElement.Earth), // Default
 	Tough(BendingElement.Earth), Reckless(BendingElement.Earth),
 
-	Equality(BendingElement.ChiBlocker), // Default
-	Seeker(BendingElement.ChiBlocker), Restless(BendingElement.ChiBlocker);
+	Equality(BendingElement.Master), // Default
+	Seeker(BendingElement.Master), Restless(BendingElement.Master);
 
 	private BendingElement element;
 

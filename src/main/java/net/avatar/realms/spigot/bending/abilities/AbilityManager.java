@@ -19,31 +19,31 @@ import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirGlide;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
+import net.avatar.realms.spigot.bending.abilities.air.AirSlice;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
-import net.avatar.realms.spigot.bending.abilities.chi.AirSlice;
-import net.avatar.realms.spigot.bending.abilities.chi.C4;
-import net.avatar.realms.spigot.bending.abilities.chi.ChiSpeed;
-import net.avatar.realms.spigot.bending.abilities.chi.Count;
-import net.avatar.realms.spigot.bending.abilities.chi.Dash;
-import net.avatar.realms.spigot.bending.abilities.chi.DirectHit;
-import net.avatar.realms.spigot.bending.abilities.chi.EarthLariat;
-import net.avatar.realms.spigot.bending.abilities.chi.FireFerret;
-import net.avatar.realms.spigot.bending.abilities.chi.HighJump;
-import net.avatar.realms.spigot.bending.abilities.chi.PoisonnedDart;
-import net.avatar.realms.spigot.bending.abilities.chi.Release;
-import net.avatar.realms.spigot.bending.abilities.chi.SmokeBomb;
-import net.avatar.realms.spigot.bending.abilities.chi.VitalPoint;
-import net.avatar.realms.spigot.bending.abilities.chi.WaterTurret;
+import net.avatar.realms.spigot.bending.abilities.arts.Aim;
+import net.avatar.realms.spigot.bending.abilities.arts.C4;
+import net.avatar.realms.spigot.bending.abilities.arts.Speed;
+import net.avatar.realms.spigot.bending.abilities.arts.StraightShot;
+import net.avatar.realms.spigot.bending.abilities.arts.Dash;
+import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
+import net.avatar.realms.spigot.bending.abilities.arts.ExplosiveShot;
+import net.avatar.realms.spigot.bending.abilities.arts.HighJump;
+import net.avatar.realms.spigot.bending.abilities.arts.PoisonnedDart;
+import net.avatar.realms.spigot.bending.abilities.arts.PowerShot;
+import net.avatar.realms.spigot.bending.abilities.arts.SmokeBomb;
+import net.avatar.realms.spigot.bending.abilities.arts.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthLariat;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthWall;
@@ -58,6 +58,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
+import net.avatar.realms.spigot.bending.abilities.fire.FireFerret;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
@@ -75,6 +76,7 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterPassive;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
+import net.avatar.realms.spigot.bending.abilities.water.WaterTurret;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -197,8 +199,6 @@ public class AbilityManager {
 
 		register(AvatarState.class);
 
-		register(Release.class);
-		register(Count.class);
 		register(PoisonnedDart.class);
 		register(C4.class);
 		register(Dash.class);
@@ -206,11 +206,11 @@ public class AbilityManager {
 		register(VitalPoint.class);
 		register(DirectHit.class);
 		register(SmokeBomb.class);
-		register(ChiSpeed.class);
-		register(AirSlice.class);
-		register(WaterTurret.class);
-		register(EarthLariat.class);
-		register(FireFerret.class);
+		register(Speed.class);
+		register(Aim.class);
+		register(ExplosiveShot.class);
+		register(StraightShot.class);
+		register(PowerShot.class);
 
 		register(AirBlast.class);
 		register(AirBubble.class);
@@ -222,6 +222,7 @@ public class AbilityManager {
 		register(AirSuction.class);
 		register(AirSwipe.class);
 		register(AirSpeed.class);
+		register(AirSlice.class);
 		register(Suffocate.class);
 		register(Tornado.class);
 
@@ -233,6 +234,7 @@ public class AbilityManager {
 		register(EarthPassive.class);
 		register(EarthTunnel.class);
 		register(EarthWall.class);
+		register(EarthLariat.class);
 		register(LavaTrain.class);
 		register(LavaFlow.class);
 		register(LavaSpin.class);
@@ -248,6 +250,7 @@ public class AbilityManager {
 		register(FireJet.class);
 		register(FireShield.class);
 		register(Illumination.class);
+		register(FireFerret.class);
 		register(Lightning.class);
 		register(WallOfFire.class);
 
@@ -261,6 +264,7 @@ public class AbilityManager {
 		register(WaterBubble.class);
 		register(WaterManipulation.class);
 		register(WaterPassive.class);
+		register(WaterTurret.class);
 		register(WaterSpout.class);
 		register(WaterWall.class);
 	}

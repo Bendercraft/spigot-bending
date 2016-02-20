@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.fire;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -11,13 +11,12 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = "Fire Ferret", bind = BendingAbilities.FireFerret, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiFire)
+@ABendingAbility(name = "Fire Ferret", bind = BendingAbilities.FireFerret, element = BendingElement.Fire)
 public class FireFerret extends BendingActiveAbility {
 	@ConfigurationParameter("Search-Radius")
 	public static double SEARCH_RADIUS = 20;
@@ -56,11 +55,6 @@ public class FireFerret extends BendingActiveAbility {
 	public boolean swing() {
 		if(getState() == BendingAbilityState.Start) {
 			if(player.isSneaking()) {
-				if(!ComboPoints.consume(player,2)) {
-					remove();
-					return false;
-				}
-				
 				origin = player.getEyeLocation().clone();
 				location = origin.clone();
 				target = EntityTools.getNearestLivingEntity(location, SEARCH_RADIUS, player);

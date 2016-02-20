@@ -31,8 +31,8 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
-import net.avatar.realms.spigot.bending.abilities.chi.C4;
-import net.avatar.realms.spigot.bending.abilities.chi.DirectHit;
+import net.avatar.realms.spigot.bending.abilities.arts.C4;
+import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
@@ -96,15 +96,15 @@ public class BendingEntityListener implements Listener {
 		if ((source instanceof Player) && (entity instanceof Player)) {
 			Player sourceplayer = (Player) source;
 			Player targetplayer = (Player) entity;
-			if (EntityTools.canBendPassive(sourceplayer, BendingElement.ChiBlocker)
-					&& EntityTools.isBender(sourceplayer, BendingElement.ChiBlocker)
+			if (EntityTools.canBendPassive(sourceplayer, BendingElement.Master)
+					&& EntityTools.isBender(sourceplayer, BendingElement.Master)
 					&& (event.getCause() == DamageCause.ENTITY_ATTACK) && MathUtils.doubleEquals(event.getDamage(), 1)
 					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= DirectHit.RANGE)) {
 				EntityTools.blockChi(targetplayer, 500);
 			}
 		}
 		if (entity instanceof Player) {
-			if (((event.getCause() == DamageCause.ENTITY_ATTACK) || (event.getCause() == DamageCause.ENTITY_EXPLOSION) || (event.getCause() == DamageCause.PROJECTILE)) && EntityTools.isBender(((Player) event.getEntity()), BendingElement.ChiBlocker) && EntityTools.canBendPassive((Player) event.getEntity(), BendingElement.ChiBlocker)) {
+			if (((event.getCause() == DamageCause.ENTITY_ATTACK) || (event.getCause() == DamageCause.ENTITY_EXPLOSION) || (event.getCause() == DamageCause.PROJECTILE)) && EntityTools.isBender(((Player) event.getEntity()), BendingElement.Master) && EntityTools.canBendPassive((Player) event.getEntity(), BendingElement.Master)) {
 				double rand = Math.random();
 
 				if (rand <= (Settings.CHI_DODGE_CHANCE / 100.)) {

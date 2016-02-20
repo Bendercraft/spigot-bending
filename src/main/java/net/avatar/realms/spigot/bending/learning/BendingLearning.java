@@ -173,8 +173,6 @@ public class BendingLearning {
 			case HealingWaters:
 			case WaterSpout:
 				
-			case Release:
-			case Count:
 			case VitalPoint:
 			case Dash:
 			case HighJump:

@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.abilities.chi;
+package net.avatar.realms.spigot.bending.abilities.earth;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -13,13 +13,12 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "Earth Lariat", bind = BendingAbilities.EarthLariat, element = BendingElement.ChiBlocker, affinity = BendingAffinity.ChiEarth)
+@ABendingAbility(name = "Earth Lariat", bind = BendingAbilities.EarthLariat, element = BendingElement.Earth)
 public class EarthLariat extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	private static double RANGE = 15;
@@ -43,11 +42,6 @@ public class EarthLariat extends BendingActiveAbility {
 	public boolean swing() {
 		if(getState() == BendingAbilityState.Start) {
 			if(!player.isSneaking()) {
-				if(!ComboPoints.consume(player,1)) {
-					remove();
-					return false;
-				}
-				
 				target = EntityTools.getTargetedEntity(player, RANGE);
 				if(target == null) {
 					remove();
