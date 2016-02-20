@@ -15,7 +15,6 @@ public class TempBlock {
 	private static Map<Block, TempBlock> instances = new HashMap<Block, TempBlock>();
 
 	private Block block;
-	private Material newType;
 	private byte newData;
 	private BlockState state;
 
@@ -23,6 +22,7 @@ public class TempBlock {
 		return makeTemporary(block, newType, (byte) 0x0);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static TempBlock makeTemporary(Block block, Material newType, byte newData) {
 		TempBlock temp = null;
 		if (instances.containsKey(block)) {
@@ -32,7 +32,6 @@ public class TempBlock {
 			temp = new TempBlock(block);
 			instances.put(block, temp);
 		}
-		temp.newType = newType;
 		temp.newData = newData;
 		temp.block.setType(newType);
 		temp.block.setData(newData);
@@ -134,7 +133,6 @@ public class TempBlock {
 
 	@SuppressWarnings("deprecation")
 	public void setType(Material material, byte data) {
-		this.newType = material;
 		this.newData = data;
 		this.block.setType(material);
 		this.block.setData(data);

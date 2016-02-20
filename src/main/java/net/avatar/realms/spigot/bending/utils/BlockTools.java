@@ -211,6 +211,7 @@ public class BlockTools {
 		return isEarthbendable(player, BendingAbilities.RaiseEarth, block);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean isEarthbendable(Player player, BendingAbilities ability, Block block) {
 		if (ProtectionManager.isRegionProtectedFromBending(player, ability, block.getLocation())) {
 			return false;
