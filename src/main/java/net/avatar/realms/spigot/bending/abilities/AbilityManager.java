@@ -285,6 +285,9 @@ public class AbilityManager {
 			return;
 		}
 		if (annotation.affinity() != BendingAffinity.NONE) {
+			if (annotation.element() != BendingElement.NONE) {
+				Bending.getInstance().getLogger().warning("Register ability : " + ability + " affinity is set to "+annotation.affinity()+"("+annotation.affinity().getElement()+") and element is set as well to "+annotation.element()+". Affinity's element will prevail in case of difference.");
+			}
 			register(annotation.name(), ability, annotation.affinity().getElement(), annotation.affinity(), annotation.shift());
 		} else {
 			if (annotation.element() == BendingElement.NONE) {
