@@ -12,20 +12,21 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = "Lavaspin", bind = BendingAbilities.LavaSpin, element = BendingElement.Earth, affinity = BendingAffinity.Lavabend)
+@ABendingAbility(name = LavaSpin.NAME, affinity = BendingAffinity.Lavabend)
 public class LavaSpin extends BendingActiveAbility {
+	public final static String NAME = "LavaSpin";
+	
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 14;
 	
@@ -59,8 +60,8 @@ public class LavaSpin extends BendingActiveAbility {
 	
 	private TempBlock block;
 	private boolean lava;
-	public LavaSpin(Player player) {
-		super(player);
+	public LavaSpin(RegisteredAbility register, Player player) {
+		super(register, player);
 		
 		interval = (long) (1000. / SPEED);
 		time = this.startedTime;
@@ -128,7 +129,7 @@ public class LavaSpin extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.LavaSpin, this.current)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.current)) {
 			return false;
 		}
 		return true;

@@ -12,18 +12,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 //import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "Fire Blade", bind = BendingAbilities.FireBlade, element = BendingElement.Fire)
+@ABendingAbility(name = FireBlade.NAME, element = BendingElement.Fire, shift=false)
 public class FireBlade extends BendingActiveAbility {
+	public final static String NAME = "FireBlade";
+	
 	private static String LORE_NAME = "FireBlade";
 
 	private static final Enchantment SHARP = Enchantment.DAMAGE_ALL;
@@ -44,8 +46,8 @@ public class FireBlade extends BendingActiveAbility {
 
 	private ItemStack blade;
 
-	public FireBlade(Player player) {
-		super(player);
+	public FireBlade(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -65,7 +67,7 @@ public class FireBlade extends BendingActiveAbility {
 		}
 		if (this.blade == null 
 				|| !isFireBlade(this.player.getItemInHand()) 
-				|| EntityTools.getBendingAbility(this.player) != BendingAbilities.FireBlade) {
+				|| !EntityTools.getBendingAbility(this.player).equals(NAME)) {
 			return false;
 		}
 		return true;
@@ -91,12 +93,12 @@ public class FireBlade extends BendingActiveAbility {
 		this.player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
 		long now = System.currentTimeMillis();
 		long realDuration = now - this.startedTime;
-		this.bender.cooldown(BendingAbilities.FireBlade, (long) (realDuration * COOLDOWN_FACTOR));
+		this.bender.cooldown(NAME, (long) (realDuration * COOLDOWN_FACTOR));
 	}
 
 	public static void removeFireBlade(ItemStack is) {
 		FireBlade toRemove = null;
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return;
 		}
@@ -127,7 +129,7 @@ public class FireBlade extends BendingActiveAbility {
 	}
 
 	public static boolean isFireBlading(Player p) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return false;
 		}
@@ -135,7 +137,7 @@ public class FireBlade extends BendingActiveAbility {
 	}
 
 	public static FireBlade getFireBlading(Player p) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBlade);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return null;
 		}

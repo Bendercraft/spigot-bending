@@ -1,10 +1,10 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -16,8 +16,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = "Catapult", bind = BendingAbilities.Catapult, element = BendingElement.Earth)
+@ABendingAbility(name = Catapult.NAME, element = BendingElement.Earth)
 public class Catapult extends BendingActiveAbility {
+	public final static String NAME = "Catapult";
+	
 	@ConfigurationParameter("Length")
 	private static int length = 6;
 
@@ -43,8 +45,8 @@ public class Catapult extends BendingActiveAbility {
 	private long starttime;
 	private int ticks = 0;
 
-	public Catapult(Player player) {
-		super(player);
+	public Catapult(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class Catapult extends BendingActiveAbility {
 		for (int i = 0; i <= length; i++) {
 			location = origin.clone().add(neg.clone().multiply((double) i));
 			block = location.getBlock();
-			if (BlockTools.isEarthbendable(player, BendingAbilities.Catapult, block)) {
+			if (BlockTools.isEarthbendable(player, NAME, block)) {
 				distance = BlockTools.getEarthbendableBlocksLength(player, block, neg, length - i);
 				break;
 			} else if (!BlockTools.isTransparentToEarthbending(player, block)) {
@@ -78,7 +80,7 @@ public class Catapult extends BendingActiveAbility {
 			starttime = System.currentTimeMillis();
 			moving = true;
 			
-			bender.cooldown(BendingAbilities.Catapult, COOLDOWN);
+			bender.cooldown(NAME, COOLDOWN);
 		}
 
 		return false;

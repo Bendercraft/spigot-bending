@@ -6,8 +6,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 public abstract class BendingActiveAbility extends BendingAbility {
 
-	public BendingActiveAbility(Player player) {
-		super(player);
+	public BendingActiveAbility(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	/**
@@ -56,7 +56,7 @@ public abstract class BendingActiveAbility extends BendingAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, AbilityManager.getManager().getAbilityType(this), this.player.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, getName(), this.player.getLocation())) {
 			return false;
 		}
 		return true;

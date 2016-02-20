@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -68,7 +67,7 @@ public class DeckExecution extends BendingCommand {
 				sender.sendMessage(ChatColor.RED + Messages.ALREADY_DECK_NAME);
 			}
 			else {
-				Map<Integer, BendingAbilities> deck = bender.getDecks().remove(deckName);
+				Map<Integer, String> deck = bender.getDecks().remove(deckName);
 				bender.getDecks().put(newName, deck);
 				sender.sendMessage(ChatColor.GREEN + Messages.DECK_RENAMED + newName);
 			}
@@ -93,7 +92,7 @@ public class DeckExecution extends BendingCommand {
 				sender.sendMessage(ChatColor.RED + Messages.MAX_DECKS_REACHED);
 			}
 			else {
-				Map<Integer, BendingAbilities> deck = new TreeMap<Integer, BendingAbilities>();
+				Map<Integer, String> deck = new TreeMap<Integer, String>();
 				bender.getDecks().put(deckName, deck);
 				bender.setCurrentDeck(deckName);
 				String msg = Messages.DECK_SET;

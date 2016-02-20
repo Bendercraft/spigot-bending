@@ -9,7 +9,7 @@ public class BendingPlayerData {
 	private List<BendingElement> bendings;
 	private List<BendingAffinity> affinities;
 	private List<BendingPath> paths;
-	private Map<String, Map<Integer, BendingAbilities>> decks;
+	private Map<String, Map<Integer, String>> decks;
 	private String currentDeck;
 	private long lastTime;
 
@@ -29,11 +29,11 @@ public class BendingPlayerData {
 		this.bendings = bending;
 	}
 
-	public Map<String, Map<Integer, BendingAbilities>> getDecks() {
+	public Map<String, Map<Integer, String>> getDecks() {
 		return this.decks;
 	}
 
-	public void setDecks(Map<String, Map<Integer, BendingAbilities>> slotAbilities) {
+	public void setDecks(Map<String, Map<Integer, String>> slotAbilities) {
 		this.decks = slotAbilities;
 	}
 

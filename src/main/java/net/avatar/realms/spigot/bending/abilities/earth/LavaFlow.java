@@ -10,20 +10,21 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = "Lavaflow", bind = BendingAbilities.LavaFlow, element = BendingElement.Earth, affinity = BendingAffinity.Lavabend)
+@ABendingAbility(name = LavaFlow.NAME, affinity = BendingAffinity.Lavabend)
 public class LavaFlow extends BendingActiveAbility {
+	public final static String NAME = "LavaFlow";
+	
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 10;
 	
@@ -55,8 +56,8 @@ public class LavaFlow extends BendingActiveAbility {
 	
 	private List<TempBlock> blocks;
 	
-	public LavaFlow(Player player) {
-		super(player);
+	public LavaFlow(RegisteredAbility register, Player player) {
+		super(register, player);
 		
 		interval = (long) (1000. / SPEED);
 		columnHeight = 0;
@@ -108,7 +109,7 @@ public class LavaFlow extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (current != null && ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.LavaFlow, current)) {
+		if (current != null && ProtectionManager.isRegionProtectedFromBending(this.player, NAME, current)) {
 			return false;
 		}
 		return true;

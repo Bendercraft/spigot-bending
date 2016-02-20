@@ -13,12 +13,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -27,8 +27,9 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = "Water Spout", bind = BendingAbilities.WaterSpout, element = BendingElement.Water)
+@ABendingAbility(name = WaterSpout.NAME, element = BendingElement.Water, shift=false)
 public class WaterSpout extends BendingActiveAbility {
+	public final static String NAME = "WaterSpout";
 
 	private static final Vector[] vectors = { new Vector(0, 0, -1), new Vector(1, 0, -1), new Vector(1, 0, 0), new Vector(1, 0, 1), new Vector(0, 0, 1), new Vector(-1, 0, 1), new Vector(-1, 0, 0), new Vector(-1, 0, -1) };
 
@@ -47,8 +48,8 @@ public class WaterSpout extends BendingActiveAbility {
 	private FlyingPlayer flying;
 	private int height;
 
-	public WaterSpout(Player player) {
-		super(player);
+	public WaterSpout(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public class WaterSpout extends BendingActiveAbility {
 	public void stop() {
 		revertSpout();
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
-		this.bender.cooldown(BendingAbilities.WaterSpout, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 	}
 
 	private void revertSpout() {
@@ -147,7 +148,7 @@ public class WaterSpout extends BendingActiveAbility {
 		}
 		for (int i = 0; i <= (height + 1); i++) {
 			Location locToTest = loc.add(0, -1, 0);
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.WaterSpout, locToTest)) {
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, locToTest)) {
 				return -1;
 			}
 			Block block = locToTest.getBlock();
@@ -175,7 +176,7 @@ public class WaterSpout extends BendingActiveAbility {
 	}
 
 	public static boolean isWaterSpoutBlock(Block block) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.WaterSpout);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
@@ -192,7 +193,7 @@ public class WaterSpout extends BendingActiveAbility {
 	}
 
 	public static void removeSpouts(Location loc0, double radius, Player sourceplayer) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.WaterSpout);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return;
 		}
@@ -216,7 +217,7 @@ public class WaterSpout extends BendingActiveAbility {
 	}
 
 	public static boolean isBending(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.WaterSpout);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return false;
 		}

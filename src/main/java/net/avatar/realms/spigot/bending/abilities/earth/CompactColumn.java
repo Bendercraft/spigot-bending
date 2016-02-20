@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 
 public class CompactColumn {
@@ -32,7 +31,7 @@ public class CompactColumn {
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 
 	public CompactColumn(Player player) {
-		this.block = BlockTools.getEarthSourceBlock(player, BendingAbilities.Collapse, Collapse.RANGE);
+		this.block = BlockTools.getEarthSourceBlock(player, Collapse.NAME, Collapse.RANGE);
 		if (this.block == null) {
 			return;
 		}

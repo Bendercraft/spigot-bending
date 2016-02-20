@@ -17,8 +17,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
+import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
+import net.avatar.realms.spigot.bending.abilities.fire.FireBurst;
+import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
+import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
+import net.avatar.realms.spigot.bending.abilities.fire.FireWall;
+import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
@@ -48,7 +54,7 @@ public class FireListener implements Listener {
 		if (event.getDamager() instanceof Player) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getDamager());
 			if (bPlayer != null) {
-				if (bPlayer.isBender(BendingElement.Fire) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.FireBlast)) {
+				if (bPlayer.isBender(BendingElement.Fire) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(FireBlast.NAME)) {
 					boolean ok = false;
 					Player p = (Player) event.getDamager();
 					if (p.getInventory().getItemInHand().getType().equals(Material.WOOD_SWORD)) {
@@ -71,10 +77,10 @@ public class FireListener implements Listener {
 						damaged = damaged + 1;
 
 						if (damaged >= 50) {
-							if (this.plugin.addPermission(p, BendingAbilities.FireBlade)) {
+							if (this.plugin.addPermission(p, FireBlade.NAME)) {
 								String message = "Your combat experience allowed you to create a sword from your fire bending";
 								p.sendMessage(color + message);
-								message = "Congratulations, you have unlocked " + BendingAbilities.FireBlade.name();
+								message = "Congratulations, you have unlocked " + FireBlade.NAME;
 								p.sendMessage(color + message);
 							}
 
@@ -92,7 +98,7 @@ public class FireListener implements Listener {
 	public void unlockFireBurst(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Fire) && event.getAbility().equals(BendingAbilities.FireBlast)) {
+			if (bPlayer.isBender(BendingElement.Fire) && event.getAbility().equals(FireBlast.NAME)) {
 				Player p = bPlayer.getPlayer();
 				long lastTime = -1;
 				long currentTime = System.currentTimeMillis();
@@ -111,10 +117,10 @@ public class FireListener implements Listener {
 				success = success + 1;
 
 				if (success > 20) {
-					if (this.plugin.addPermission(p, BendingAbilities.FireBurst)) {
+					if (this.plugin.addPermission(p, FireBurst.NAME)) {
 						String message = "Your skill at fire blasting has improved enough for you to burst 3 in one";
 						p.sendMessage(color + message);
-						message = "Congratulations, you have unlocked " + BendingAbilities.FireBurst.name();
+						message = "Congratulations, you have unlocked " + FireBurst.NAME;
 						p.sendMessage(color + message);
 					}
 
@@ -132,7 +138,7 @@ public class FireListener implements Listener {
 	public void unlockFireShield(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Fire) && event.getAbility().equals(BendingAbilities.FireShield)) {
+			if (bPlayer.isBender(BendingElement.Fire) && event.getAbility().equals(FireShield.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 				for (Entity entity : entities) {
@@ -141,10 +147,10 @@ public class FireListener implements Listener {
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
 						if (trainee.isBender(BendingElement.Fire)) {
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
-								if (this.plugin.addPermission(p, BendingAbilities.FireShield)) {
+								if (this.plugin.addPermission(p, FireShield.NAME)) {
 									String message = "After seeing " + bPlayer.getPlayer().getName() + " doing a fire shield, you are able to copy it for yourself.";
 									p.sendMessage(color + message);
-									message = "Congratulations, you have unlocked " + BendingAbilities.FireShield.name();
+									message = "Congratulations, you have unlocked " + FireShield.NAME;
 									p.sendMessage(color + message);
 								}
 							}
@@ -159,7 +165,7 @@ public class FireListener implements Listener {
 	public void unlockWallOfFire(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Fire) && event.getAbility().equals(BendingAbilities.FireShield)) {
+			if (bPlayer.isBender(BendingElement.Fire) && event.getAbility().equals(FireShield.NAME)) {
 				Player p = bPlayer.getPlayer();
 				int done = 0;
 				if (this.wallOfFire.containsKey(p.getUniqueId())) {
@@ -168,10 +174,10 @@ public class FireListener implements Listener {
 				done = done + 1;
 
 				if (done > 100) {
-					if (this.plugin.addPermission(p, BendingAbilities.WallOfFire)) {
+					if (this.plugin.addPermission(p, FireWall.NAME)) {
 						String message = "By doing so much fire shield, you wonder if you could turn this ability into an offensive one";
 						p.sendMessage(color + message);
-						message = "Congratulations, you have unlocked " + BendingAbilities.WallOfFire.name();
+						message = "Congratulations, you have unlocked " + FireWall.NAME;
 						p.sendMessage(color + message);
 					}
 
@@ -190,10 +196,10 @@ public class FireListener implements Listener {
 			if (bPlayer != null) {
 				if (bPlayer.isBender(BendingElement.Fire)) {
 					Player p = event.getPlayer();
-					if (this.plugin.addPermission(p, BendingAbilities.Illumination)) {
+					if (this.plugin.addPermission(p, Illumination.NAME)) {
 						String message = "As you tried to light up, you realize that your firebending can already sustain that task";
 						p.sendMessage(color + message);
-						message = "Congratulations, you have unlocked " + BendingAbilities.Illumination.name();
+						message = "Congratulations, you have unlocked " + Illumination.NAME;
 						p.sendMessage(color + message);
 					}
 				}
@@ -209,12 +215,12 @@ public class FireListener implements Listener {
 				if (bPlayer.isBender(BendingElement.Fire)) {
 					// Check fireburst
 					Player p = (Player) event.getEntity();
-					if (EntityTools.canBend(p, BendingAbilities.FireBurst)) {
-						if (EntityTools.canBend(p, BendingAbilities.WallOfFire)) {
-							if (this.plugin.addPermission(p, BendingAbilities.FireJet)) {
+					if (EntityTools.canBend(p, FireBurst.NAME)) {
+						if (EntityTools.canBend(p, FireWall.NAME)) {
+							if (this.plugin.addPermission(p, FireJet.NAME)) {
 								String message = "An idea came up to you, by combining a fire burst and a wall of fire, you think you will be able to fly temporary into the air";
 								p.sendMessage(color + message);
-								message = "Congratulations, you have unlocked " + BendingAbilities.FireJet.name();
+								message = "Congratulations, you have unlocked " + FireJet.NAME;
 								p.sendMessage(color + message);
 							}
 						}

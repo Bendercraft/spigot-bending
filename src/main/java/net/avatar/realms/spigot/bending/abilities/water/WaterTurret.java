@@ -12,18 +12,21 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = "Water turret", bind = BendingAbilities.WaterTurret, element = BendingElement.Water)
+@ABendingAbility(name = WaterTurret.NAME, element = BendingElement.Water)
 public class WaterTurret extends BendingActiveAbility {
+	public final static String NAME = "WaterTurret";
+	
+	
 	@ConfigurationParameter("Select-Range")
 	private static double SELECT_RANGE = 15;
 	
@@ -48,8 +51,8 @@ public class WaterTurret extends BendingActiveAbility {
 	private List<TempBlock> turrets = new LinkedList<TempBlock>();
 	private Location head;
 	private long interval;
-	public WaterTurret(Player player) {
-		super(player);
+	public WaterTurret(RegisteredAbility register, Player player) {
+		super(register, player);
 		
 		interval = (long) (1000. / SPEED);
 	}

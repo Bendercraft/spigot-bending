@@ -13,7 +13,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -75,7 +74,7 @@ public class SpikeFieldColumn {
 					return true;
 				}
 				this.location = affectedblock.getLocation();
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.IceSpike, this.location)) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, IceSpike.NAME, this.location)) {
 					return false;
 				}
 				for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(this.location, 1.4)) {

@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.arts.Dash;
+import net.avatar.realms.spigot.bending.abilities.arts.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
@@ -56,11 +57,11 @@ public class ChiListener implements Listener {
 								distance = sprintDistanceTraveledDash.get(pl.getUniqueId()) + distance;
 							}
 							if (distance >= distanceNeededDash) {
-								if (plugin.addPermission(pl, BendingAbilities.Dash)) {
+								if (plugin.addPermission(pl, Dash.NAME)) {
 
 									String message = "Wooo !";
 									pl.sendMessage(color + message);
-									message = "Congratulations, you have unlocked " + BendingAbilities.Dash.name();
+									message = "Congratulations, you have unlocked " + Dash.NAME;
 									pl.sendMessage(color + message);
 								}
 								sprintDistanceTraveledDash.remove(pl.getUniqueId());
@@ -88,7 +89,7 @@ public class ChiListener implements Listener {
 	public void unlockSmokeBomb(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Master) && event.getAbility().equals(BendingAbilities.SmokeBomb)) {
+			if (bPlayer.isBender(BendingElement.Master) && event.getAbility().equals(SmokeBomb.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 				for (LivingEntity entity : entities) {
 					if (entity instanceof Player) {
@@ -96,10 +97,10 @@ public class ChiListener implements Listener {
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
 						if (trainee.isBender(BendingElement.Master)) {
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
-								if (plugin.addPermission(p, BendingAbilities.SmokeBomb)) {
+								if (plugin.addPermission(p, SmokeBomb.NAME)) {
 									String message = "By analizing and another smoke bomb from " + bPlayer.getPlayer().getName() + " you think you can reproduce it";
 									p.sendMessage(color + message);
-									message = "Congratulations, you have unlocked " + BendingAbilities.SmokeBomb.name();
+									message = "Congratulations, you have unlocked " + SmokeBomb.NAME;
 									p.sendMessage(color + message);
 								}
 							}

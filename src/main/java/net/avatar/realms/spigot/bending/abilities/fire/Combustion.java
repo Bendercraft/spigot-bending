@@ -4,14 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -34,8 +33,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = "Combustion", bind = BendingAbilities.Combustion, element = BendingElement.Fire, affinity = BendingAffinity.Combustion)
+@ABendingAbility(name = Combustion.NAME, affinity = BendingAffinity.Combustion)
 public class Combustion extends BendingActiveAbility {
+	public final static String NAME = "Combustion";
+	
 	private static long interval = 25;
 
 	@ConfigurationParameter("Radius")
@@ -80,8 +81,8 @@ public class Combustion extends BendingActiveAbility {
 	private double range = RANGE;
 	private double damage = DAMAGE;
 
-	public Combustion(Player player) {
-		super(player);
+	public Combustion(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		time = startedTime;
 		if (AvatarState.isAvatarState(player)) {
@@ -105,7 +106,7 @@ public class Combustion extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if ((EntityTools.getBendingAbility(player) != BendingAbilities.Combustion)) {
+		if (!EntityTools.getBendingAbility(player).equals(NAME)) {
 			return false;
 		}
 		return true;
@@ -131,7 +132,7 @@ public class Combustion extends BendingActiveAbility {
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
-			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Combustion, location)) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, location)) {
 				remove();
 				return;
 			}
@@ -221,7 +222,8 @@ public class Combustion extends BendingActiveAbility {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && location.distance(block.getLocation()) < EXPLOSION_RADIUS / 2.0)) {
-				if (!ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Combustion, block.getLocation()) && !ProtectionManager.isRegionProtectedFromExplosion(player, BendingAbilities.Combustion, block.getLocation())) {
+				if (!ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation()) 
+						&& !ProtectionManager.isRegionProtectedFromExplosion(player, NAME, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}
@@ -281,11 +283,11 @@ public class Combustion extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		bender.cooldown(BendingAbilities.Combustion, COOLDOWN);
+		bender.cooldown(NAME, COOLDOWN);
 	}
 
 	public static void removeFireballsAroundPoint(Location location, double radius) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Combustion);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return;
 		}
@@ -302,7 +304,7 @@ public class Combustion extends BendingActiveAbility {
 
 	public static boolean annihilateBlasts(Location location, double radius, Player source) {
 		boolean broke = false;
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Combustion);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return broke;
 		}

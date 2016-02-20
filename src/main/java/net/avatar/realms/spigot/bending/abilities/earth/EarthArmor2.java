@@ -5,7 +5,6 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,8 +21,9 @@ import org.bukkit.potion.PotionEffectType;
  *
  * State prepared = Earth Shield
  */
-@ABendingAbility(name = "Earth Armor", bind = BendingAbilities.EarthArmor, element = BendingElement.Earth)
+@ABendingAbility(name = EarthArmor2.NAME, element = BendingElement.Earth)
 public class EarthArmor2 extends BendingActiveAbility{
+	public final static String NAME = "EarthArmor2";
 
     private static final String EARTH_LORE = "Earth Armor";
     private static final String IRON_LORE = "Iron Armor";
@@ -55,8 +55,8 @@ public class EarthArmor2 extends BendingActiveAbility{
     private ItemStack[] oldArmors;
     private ItemStack[] earthArmors;
 
-    public EarthArmor2(Player player) {
-        super(player);
+    public EarthArmor2(RegisteredAbility register, Player player) {
+        super(register, player);
         earthArmors = new ItemStack[4];
     }
 
@@ -134,7 +134,8 @@ public class EarthArmor2 extends BendingActiveAbility{
         return this.player;
     }
 
-    private void formArmor() {
+    @SuppressWarnings("unused")
+	private void formArmor() {
         oldArmors = player.getInventory().getArmorContents();
         boolean ironArmor = false;
         if (headBlockSave != null) {

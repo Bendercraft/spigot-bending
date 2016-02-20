@@ -1,8 +1,5 @@
 package net.avatar.realms.spigot.bending.utils;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -19,18 +16,16 @@ import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.Trait;
 
 public class ProtectionManager {
-
-	private static Set<BendingAbilities> allowedEverywhereAbilities = new HashSet<BendingAbilities>();
-	static {
-		allowedEverywhereAbilities.add(BendingAbilities.HealingWaters);
-	}
-
 	private static PluginManager pm;
 
 	private static WorldGuardPlugin worldguard = null;
@@ -128,7 +123,7 @@ public class ProtectionManager {
 		return entity.hasPermission("bending.immune");
 	}
 
-	public static boolean isRegionProtectedFromExplosion(Player player, BendingAbilities ability, Location loc) {
+	public static boolean isRegionProtectedFromExplosion(Player player, String ability, Location loc) {
 		if (isRegionProtectedFromBending(player, ability, loc)) {
 			return true;
 		}
@@ -149,7 +144,7 @@ public class ProtectionManager {
 		return false;
 	}
 
-	public static boolean isRegionProtectedFromBending(Player player, BendingAbilities ability, Location loc) {
+	public static boolean isRegionProtectedFromBending(Player player, String ability, Location loc) {
 		if (!useWG) {
 			return false;
 		}
@@ -157,19 +152,19 @@ public class ProtectionManager {
 		if (ability == null) {
 			return false;
 		}
+		
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
 
 		if (player.hasPermission("bending.protection.bypass")) {
 			return false;
 		}
 
-		if (isAllowedEverywhereAbility(ability)) {
-			return false;
-		}
 		LocalPlayer localPlayer = worldguard.wrapPlayer(player);
 		RegionContainer container = worldguard.getRegionContainer();
 		RegionQuery query = container.createQuery();
 
-		if (ability.isPassiveAbility()) {
+		// If passive
+		if (BendingPassiveAbility.isPassive(register)) {
 			if (!query.testState(loc, localPlayer, BENDING_PASSIVES)) {
 				return true;
 			}
@@ -180,31 +175,31 @@ public class ProtectionManager {
 			return true;
 		}
 
-		if (ability.isAffinity() && !query.testState(loc, localPlayer, BENDING_SPE)) {
+		if (register.getAffinity() != BendingAffinity.None && !query.testState(loc, localPlayer, BENDING_SPE)) {
 			return true;
 		}
 
-		if ((ability == BendingAbilities.AvatarState) && !query.testState(loc, localPlayer, BENDING_ENERGY)) {
+		if (register.getElement() == BendingElement.Energy && !query.testState(loc, localPlayer, BENDING_ENERGY)) {
 			return true;
 		}
 
-		if (ability.isAirbending() && !query.testState(loc, localPlayer, BENDING_AIR)) {
+		if (register.getElement() == BendingElement.Air && !query.testState(loc, localPlayer, BENDING_AIR)) {
 			return true;
 		}
 
-		if (ability.isChiblocking() && !query.testState(loc, localPlayer, BENDING_CHI)) {
+		if (register.getElement() == BendingElement.Master && !query.testState(loc, localPlayer, BENDING_CHI)) {
 			return true;
 		}
 
-		if (ability.isEarthbending() && !query.testState(loc, localPlayer, BENDING_EARTH)) {
+		if (register.getElement() == BendingElement.Earth && !query.testState(loc, localPlayer, BENDING_EARTH)) {
 			return true;
 		}
 
-		if (ability.isFirebending() && !query.testState(loc, localPlayer, BENDING_FIRE)) {
+		if (register.getElement() == BendingElement.Fire && !query.testState(loc, localPlayer, BENDING_FIRE)) {
 			return true;
 		}
 
-		if (ability.isWaterbending() && !query.testState(loc, localPlayer, BENDING_WATER)) {
+		if (register.getElement() == BendingElement.Water && !query.testState(loc, localPlayer, BENDING_WATER)) {
 			return true;
 		}
 
@@ -219,9 +214,5 @@ public class ProtectionManager {
 			return !query.testState(loc, localPlayer, BENDING_PASSIVES);
 		}
 		return false;
-	}
-
-	public static boolean isAllowedEverywhereAbility(BendingAbilities ability) {
-		return allowedEverywhereAbilities.contains(ability);
 	}
 }

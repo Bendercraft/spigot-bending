@@ -17,12 +17,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
@@ -40,9 +40,10 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  * State Preparing = Player is charging his Airswipe State Prepared = Player has
  * charged his Airswipe State Progressing = Player has thrown his Airswipe
  */
-@ABendingAbility(name = "Air Swipe", bind = BendingAbilities.AirSwipe, element = BendingElement.Air)
+@ABendingAbility(name = AirSwipe.NAME, element = BendingElement.Air)
 public class AirSwipe extends BendingActiveAbility {
-
+	public final static String NAME = "AirSwipe";
+	
 	private static int ID = Integer.MIN_VALUE;
 	private static List<Material> breakables = new ArrayList<Material>();
 	static {
@@ -102,8 +103,8 @@ public class AirSwipe extends BendingActiveAbility {
 	private double range;
 	private int arc;
 
-	public AirSwipe(Player player) {
-		super(player);
+	public AirSwipe(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.id = ID++;
 		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
@@ -155,7 +156,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 			this.elements.put(direction, this.origin);
 		}
-		this.bender.cooldown(BendingAbilities.AirSwipe, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 	}
 	
 	@Override
@@ -163,7 +164,7 @@ public class AirSwipe extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!getState().equals(BendingAbilityState.Progressing) && (bender.getAbility() != BendingAbilities.AirSwipe)) {
+		if (!getState().equals(BendingAbilityState.Progressing) && (!bender.getAbility().equals(NAME))) {
 			return false;
 		}
 		return true;
@@ -226,7 +227,7 @@ public class AirSwipe extends BendingActiveAbility {
 				// For each elements, we calculate the next one and check
 				// afterwards if it is still in range
 				Location newlocation = location.clone().add(direction.clone().multiply(this.speedfactor));
-				if ((newlocation.distance(this.origin) <= this.range) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSwipe, newlocation)) {
+				if ((newlocation.distance(this.origin) <= this.range) && !ProtectionManager.isRegionProtectedFromBending(this.player, NAME, newlocation)) {
 					// If new location is still valid, we add it
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
 						toAdd.put(direction, newlocation);
@@ -282,7 +283,7 @@ public class AirSwipe extends BendingActiveAbility {
 					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
-					if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSwipe, entity.getLocation())) {
+					if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, entity.getLocation())) {
 						continue;
 					}
 

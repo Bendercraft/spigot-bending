@@ -11,13 +11,13 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -25,8 +25,10 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = "Ice Spikes", bind = BendingAbilities.IceSpike, element = BendingElement.Water)
+@ABendingAbility(name = IceSpike.NAME, element = BendingElement.Water)
 public class IceSpike extends BendingActiveAbility {
+	public final static String NAME = "IceSpike";
+	
 	private static double defaultrange = 20;
 	private static int defaultdamage = 1;
 	private static int defaultmod = 2;
@@ -54,8 +56,8 @@ public class IceSpike extends BendingActiveAbility {
 	private SpikeField field = null;
 	private WaterReturn waterReturn;
 
-	public IceSpike(Player player) {
-		super(player);
+	public IceSpike(RegisteredAbility register, Player player) {
+		super(register, player);
 		if (EntityTools.canPlantbend(player)) {
 			this.plantbending = true;
 		}
@@ -174,7 +176,7 @@ public class IceSpike extends BendingActiveAbility {
 			return;
 		}
 
-		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.IceSpike) && this.prepared) {
+		if (!EntityTools.getBendingAbility(this.player).equals(NAME) && this.prepared) {
 			remove();
 			return;
 		}
@@ -222,7 +224,7 @@ public class IceSpike extends BendingActiveAbility {
 				return;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.IceSpike, this.location)) {
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.location)) {
 				returnWater();
 				return;
 			}
@@ -274,7 +276,7 @@ public class IceSpike extends BendingActiveAbility {
 	}
 
 	private static void redirect(Player player) {
-		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			IceSpike ice = (IceSpike) ab;
 
 			if (!ice.progressing) {
@@ -300,7 +302,7 @@ public class IceSpike extends BendingActiveAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = ice.location;
-			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.IceSpike, mloc)) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, mloc)) {
 				continue;
 			}
 			if ((mloc.distance(location) <= defaultrange) && (Tools.getDistanceFromLine(vector, location, ice.location) < deflectrange) && (mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1))))) {
@@ -320,7 +322,6 @@ public class IceSpike extends BendingActiveAbility {
 
 	private void redirect(Location destination, Player player) {
 		this.destination = destination;
-		this.player = player;
 	}
 
 	/**
@@ -352,7 +353,7 @@ public class IceSpike extends BendingActiveAbility {
 	}
 
 	public static boolean isBending(Player player) {
-		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.IceSpike).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			IceSpike ice = (IceSpike) ab;
 			if (ice.player.equals(player)) {
 				return true;

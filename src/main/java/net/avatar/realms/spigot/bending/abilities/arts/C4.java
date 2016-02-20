@@ -22,13 +22,12 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -36,8 +35,9 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
-@ABendingAbility(name = "Plastic Bomb", bind = BendingAbilities.PlasticBomb, element = BendingElement.Master, affinity = BendingAffinity.Chi)
+@ABendingAbility(name = C4.NAME, affinity = BendingAffinity.Chi)
 public class C4 extends BendingActiveAbility {
+	public final static String NAME = "C4";
 
 	private static int ID = Integer.MIN_VALUE;
 
@@ -73,15 +73,15 @@ public class C4 extends BendingActiveAbility {
 	
 	private Arrow arrow;
 
-	public C4(Player player) {
-		super(player);
+	public C4(RegisteredAbility register, Player player) {
+		super(register, player);
 		loadBlockByDir(player.getEyeLocation(), player.getEyeLocation().getDirection());
 		this.previousType = this.location.getBlock().getType();
 	}
-
-	public C4(Player player, Arrow arrow) {
-		super(player);
+	
+	public void setArrow(Arrow arrow) {
 		this.arrow = arrow;
+		this.previousType = null;
 		loadBlockByDir(arrow.getLocation(), arrow.getVelocity().normalize());
 	}
 
@@ -92,7 +92,7 @@ public class C4 extends BendingActiveAbility {
 		}
 		
 		if(arrow != null) {
-			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PlasticBomb, this.location)) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, this.location)) {
 				return false;
 			}
 			if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
@@ -102,7 +102,7 @@ public class C4 extends BendingActiveAbility {
 			if (!hasDetonator(this.player)) {
 				return false;
 			}
-			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PlasticBomb, this.location)) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, this.location)) {
 				return false;
 			}
 			if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
@@ -110,7 +110,7 @@ public class C4 extends BendingActiveAbility {
 			}
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}
@@ -223,7 +223,7 @@ public class C4 extends BendingActiveAbility {
 
 		explode();
 
-		this.bender.cooldown(BendingAbilities.PlasticBomb, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 		remove();
 	}
 
@@ -266,7 +266,7 @@ public class C4 extends BendingActiveAbility {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && (this.location.distance(block.getLocation()) < (RADIUS / 2.0)))) {
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.PlasticBomb, block.getLocation()) && !ProtectionManager.isRegionProtectedFromExplosion(this.player, BendingAbilities.PlasticBomb, block.getLocation())) {
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, NAME, block.getLocation()) && !ProtectionManager.isRegionProtectedFromExplosion(this.player, NAME, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}
@@ -362,7 +362,7 @@ public class C4 extends BendingActiveAbility {
 			return null;
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		for (Object obj : instances.keySet()) {
 			if (((C4) instances.get(obj)).bomb.equals(block)) {
 				return obj;
@@ -388,7 +388,7 @@ public class C4 extends BendingActiveAbility {
 
 	public static C4 getCFour(Object id) {
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PlasticBomb);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances != null) && !instances.isEmpty()) {
 			return (C4) instances.get(id);
 		}

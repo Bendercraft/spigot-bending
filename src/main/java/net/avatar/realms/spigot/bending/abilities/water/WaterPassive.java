@@ -6,18 +6,19 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "Water Passive", bind = BendingAbilities.WaterPassive, element = BendingElement.Water)
+@ABendingAbility(name = "WaterPassive", element = BendingElement.Water)
 public class WaterPassive extends BendingPassiveAbility {
+	public final static String NAME = "WaterPassive";
 
-	public WaterPassive(Player player) {
-		super(player);
+	public WaterPassive(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	public static Vector handle(Player player, Vector velocity) {

@@ -48,7 +48,6 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
@@ -56,6 +55,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
 import net.avatar.realms.spigot.bending.abilities.air.AirGlide;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
@@ -182,14 +182,14 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerFish(PlayerFishEvent event) {
 		Player player = event.getPlayer();
 
-		BendingAbilities ability = EntityTools.getBendingAbility(player);
+		String ability = EntityTools.getBendingAbility(player);
 
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 			return;
 		}
 
-		if ((ability == BendingAbilities.MetalBending) && EntityTools.canBend(player, ability)) {
+		if (ability.equals(MetalBending.NAME) && EntityTools.canBend(player, ability)) {
 			MetalWire.pull(player, event.getHook());
 		}
 	}
@@ -242,7 +242,7 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 		}
 
-		BendingAbilities ability = EntityTools.getBendingAbility(player);
+		String ability = EntityTools.getBendingAbility(player);
 		if (ability == null) {
 			return;
 		}
@@ -283,14 +283,17 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 		}
 
-		BendingAbilities ability = EntityTools.getBendingAbility(player);
+		String ability = EntityTools.getBendingAbility(player);
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+		
 		if (!player.isSneaking() 
-				&& ((ability == null) || !ability.isShiftAbility()) 
+				&& ((ability == null) || !register.isShift()) 
 				&& (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying())) {
 			if (EntityTools.isBender(player, BendingElement.Water) 
 					&& EntityTools.canBendPassive(player, BendingElement.Water) 
 					&& !WaterSpout.isBending(player)) {
-				FastSwimming ab = new FastSwimming(player);
+				
+				FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
 					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
@@ -300,7 +303,7 @@ public class BendingPlayerListener implements Listener {
 				}
 			}
 			if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
-				AirGlide ab = new AirGlide(player);
+				AirGlide ab = new AirGlide(AbilityManager.getManager().getRegisteredAbility(AirGlide.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
 					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
@@ -341,7 +344,7 @@ public class BendingPlayerListener implements Listener {
 		if (!player.isSprinting()) {
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 			if (bender.isBender(BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
-				AirSpeed ab = new AirSpeed(player);
+				AirSpeed ab = new AirSpeed(AbilityManager.getManager().getRegisteredAbility(AirSpeed.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
 					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
@@ -352,7 +355,7 @@ public class BendingPlayerListener implements Listener {
 			}
 
 			if (bender.isBender(BendingElement.Master) && EntityTools.canBendPassive(player, BendingElement.Master)) {
-				Speed ab = new Speed(player);
+				Speed ab = new Speed(AbilityManager.getManager().getRegisteredAbility(Speed.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
 					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
@@ -368,7 +371,7 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			BendingAbilities ability = EntityTools.getBendingAbility(player);
+			String ability = EntityTools.getBendingAbility(player);
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 			if (bender != null && bender.hasPath(BendingPath.Tough)) {
 				event.setDamage(event.getDamage() * 0.9);
@@ -377,7 +380,7 @@ public class BendingPlayerListener implements Listener {
 			if (event.getCause() == DamageCause.FALL) {
 				BendingPassiveAbility ab = null;
 				if (EntityTools.isBender(player, BendingElement.Earth)) {
-					ab = new EarthPassive(player);
+					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
 					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
 						player.setFallDistance(0);
@@ -395,8 +398,8 @@ public class BendingPlayerListener implements Listener {
 				}
 
 				if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
-					if (ability == BendingAbilities.AirBurst) {
-						BendingActiveAbility burst = new AirBurst(player);
+					if (ability.equals(AirBurst.NAME)) {
+						BendingActiveAbility burst = AbilityManager.getManager().buildAbility(AirBurst.NAME, player);
 						if (burst.canBeInitialized()) {
 							burst.fall();
 							if(burst.getState() != BendingAbilityState.Start && burst.getState() != BendingAbilityState.Ended) {
@@ -411,7 +414,7 @@ public class BendingPlayerListener implements Listener {
 				}
 
 				if (!event.isCancelled() && EntityTools.isBender(player, BendingElement.Water)) {
-					ab = new WaterPassive(player);
+					ab = new WaterPassive(AbilityManager.getManager().getRegisteredAbility(WaterPassive.NAME), player);
 					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
 						player.setFallDistance(0);

@@ -6,17 +6,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@ABendingAbility(name = "Dash", bind = BendingAbilities.Dash, element = BendingElement.Master)
+@ABendingAbility(name = Dash.NAME, element = BendingElement.Master, shift=false)
 public class Dash extends BendingActiveAbility {
-
+	public final static String NAME = "Dash";
+	
 	@ConfigurationParameter("Length")
 	private static double LENGTH = 1.95;
 
@@ -28,8 +29,8 @@ public class Dash extends BendingActiveAbility {
 
 	private Vector direction;
 
-	public Dash(Player player) {
-		super(player);
+	public Dash(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class Dash extends BendingActiveAbility {
 	}
 
 	public static boolean isDashing(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Dash);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}
@@ -50,7 +51,7 @@ public class Dash extends BendingActiveAbility {
 	}
 
 	public static Dash getDash(Player pl) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Dash);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		return (Dash) instances.get(pl);
 	}
 
@@ -83,7 +84,7 @@ public class Dash extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		this.bender.cooldown(BendingAbilities.Dash, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 	}
 
 	@Override

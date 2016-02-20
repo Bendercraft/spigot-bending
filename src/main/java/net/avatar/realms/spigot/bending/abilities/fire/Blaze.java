@@ -7,18 +7,19 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@ABendingAbility(name = "Blaze", bind = BendingAbilities.Blaze, element = BendingElement.Fire)
+@ABendingAbility(name = Blaze.NAME, element = BendingElement.Fire)
 public class Blaze extends BendingActiveAbility {
-
+	public final static String NAME = "Blaze";
+	
 	@ConfigurationParameter("Arc")
 	private static int DEFAULT_ARC = 20;
 
@@ -38,8 +39,8 @@ public class Blaze extends BendingActiveAbility {
 
 	private List<FireStream> firestreams = new LinkedList<FireStream>();
 
-	public Blaze(Player player) {
-		super(player);
+	public Blaze(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class Blaze extends BendingActiveAbility {
 
 			firestreams.add(new FireStream(location, direction, this.player, range));
 		}
-		this.bender.cooldown(BendingAbilities.Blaze, ARC_COOLDOWN);
+		this.bender.cooldown(NAME, ARC_COOLDOWN);
 		setState(BendingAbilityState.Progressing);
 		return false;
 	}
@@ -107,7 +108,7 @@ public class Blaze extends BendingActiveAbility {
 			firestreams.add(new FireStream(location, direction, this.player, range));
 		}
 
-		this.bender.cooldown(BendingAbilities.Blaze, RING_COOLDOWN);
+		this.bender.cooldown(NAME, RING_COOLDOWN);
 		
 		setState(BendingAbilityState.Progressing);
 		return false;

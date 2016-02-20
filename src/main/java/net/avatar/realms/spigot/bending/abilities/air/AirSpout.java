@@ -9,22 +9,23 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
-@ABendingAbility(name = "Air Spout", bind = BendingAbilities.AirSpout, element = BendingElement.Air)
+@ABendingAbility(name = AirSpout.NAME, element = BendingElement.Air, shift=false)
 public class AirSpout extends BendingActiveAbility {
-
+	public final static String NAME = "AirSpout";
+	
 	@ConfigurationParameter("Height")
 	private static double HEIGHT = 20.0;
 
@@ -42,8 +43,8 @@ public class AirSpout extends BendingActiveAbility {
 
 	private double height;
 
-	public AirSpout(Player player) {
-		super(player);
+	public AirSpout(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.time = this.startedTime;
 
@@ -71,7 +72,7 @@ public class AirSpout extends BendingActiveAbility {
 
 	public static List<Player> getPlayers() {
 		List<Player> players = new ArrayList<Player>();
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirSpout);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return players;
@@ -127,7 +128,7 @@ public class AirSpout extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
-		this.bender.cooldown(BendingAbilities.AirSpout, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 	}
 
 	private void rotateAirColumn(Block block) {
@@ -160,7 +161,7 @@ public class AirSpout extends BendingActiveAbility {
 	}
 
 	public static void removeSpouts(Location loc, double radius, Player sourceplayer) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirSpout);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances == null) || instances.isEmpty()) {
 			return;
 		}
@@ -189,7 +190,7 @@ public class AirSpout extends BendingActiveAbility {
 	}
 
 	public static boolean isSpouting(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirSpout);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return false;

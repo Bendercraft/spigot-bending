@@ -8,11 +8,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -24,8 +24,9 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 /**
  * State Preparing = Origin Set State Progressing = AirSuction thrown
  */
-@ABendingAbility(name = "Air Suction", bind = BendingAbilities.AirSuction, element = BendingElement.Air)
+@ABendingAbility(name = AirSuction.NAME, element = BendingElement.Air)
 public class AirSuction extends BendingActiveAbility {
+	public final static String NAME = "AirSuction";
 
 	static final long soonesttime = Tools.timeinterval;
 
@@ -59,8 +60,8 @@ public class AirSuction extends BendingActiveAbility {
 
 	private double speedfactor;
 
-	public AirSuction(Player player) {
-		super(player);
+	public AirSuction(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.); // Really used ?
 
@@ -134,7 +135,7 @@ public class AirSuction extends BendingActiveAbility {
 		Location location = origin.clone();
 		for (double i = 1; i <= this.range; i++) {
 			location = origin.clone().add(direction.clone().multiply(i));
-			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction, location)) {
+			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, AirSuction.NAME, location)) {
 				return origin.clone().add(direction.clone().multiply(i - 1));
 			}
 		}
@@ -147,7 +148,7 @@ public class AirSuction extends BendingActiveAbility {
 			return null;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.AirSuction, location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, AirSuction.NAME, location)) {
 			return null;
 		}
 
@@ -159,7 +160,7 @@ public class AirSuction extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!getState().equals(BendingAbilityState.Progressing) && (bender.getAbility() != BendingAbilities.AirSuction)) {
+		if (!getState().equals(BendingAbilityState.Progressing) && !bender.getAbility().equals(AirSuction.NAME)) {
 			return false;
 		}
 		return true;
@@ -183,7 +184,7 @@ public class AirSuction extends BendingActiveAbility {
 			return;
 		}
 		
-		if(ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSuction, this.location)) {
+		if(ProtectionManager.isRegionProtectedFromBending(this.player, AirSuction.NAME, this.location)) {
 			remove();
 			return;
 		}
@@ -244,7 +245,7 @@ public class AirSuction extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		this.bender.cooldown(BendingAbilities.AirSuction, COOLDOWN);
+		this.bender.cooldown(AirSuction.NAME, COOLDOWN);
 	}
 
 	private void advanceLocation() {

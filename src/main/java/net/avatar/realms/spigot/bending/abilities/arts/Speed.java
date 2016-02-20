@@ -4,18 +4,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 
-@ABendingAbility(name = "ChiSpeed", bind = BendingAbilities.ChiSpeed, element = BendingElement.Master)
+@ABendingAbility(name = Speed.NAME, element = BendingElement.Master, shift=false)
 public class Speed extends BendingPassiveAbility {
+	public final static String NAME = "Speed";
 
 	private int speedAmplifier = 0;
-	public Speed(Player player) {
-		super(player);
+	public Speed(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override

@@ -10,9 +10,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -37,14 +38,15 @@ public class DisplayExecution extends BendingCommand {
 		if (args.isEmpty()) {
 			Player player = (Player) sender;
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-			Map<Integer, BendingAbilities> abilities = bender.getAbilities();
+			Map<Integer, String> abilities = bender.getAbilities();
 			player.sendMessage("You currently use deck : " + bender.getCurrentDeck());
 			player.sendMessage("Slots :");
 			if (abilities != null && !abilities.isEmpty()) {
 				ChatColor white = ChatColor.WHITE;
-				for (Entry<Integer, BendingAbilities> slot : abilities.entrySet()) {
-					ChatColor color = PluginTools.getColor(Settings.getColorString(slot.getValue().getElement().name()));
-					player.sendMessage("--" + color + (slot.getKey() + 1) + white + " : " + color + slot.getValue().name());
+				for (Entry<Integer, String> slot : abilities.entrySet()) {
+					RegisteredAbility ab = AbilityManager.getManager().getRegisteredAbility(slot.getValue());
+					ChatColor color = PluginTools.getColor(Settings.getColorString(ab.getElement().name()));
+					player.sendMessage("--" + color + (slot.getKey() + 1) + white + " : " + color + ab.getName());
 				}
 			} else {
 				player.sendMessage("-" + Messages.NOTHING_BOUND);
@@ -57,8 +59,10 @@ public class DisplayExecution extends BendingCommand {
 			}
 			ChatColor color = PluginTools.getColor(Settings.getColorString(element.name()));
 			sender.sendMessage(color + element.name() + ":");
-			for (BendingAbilities ability : BendingAbilities.getElementAbilities(element)) {
-				sender.sendMessage(color + ability.name());
+			for(RegisteredAbility ab : AbilityManager.getManager().getRegisteredAbilities()) {
+				if(ab.getElement() == element) {
+					sender.sendMessage(color + ab.getName());
+				}
 			}
 		}
 

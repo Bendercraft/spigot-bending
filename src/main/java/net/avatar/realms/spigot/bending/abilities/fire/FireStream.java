@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -58,7 +57,7 @@ public class FireStream {
 	}
 
 	public boolean progress() {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Blaze, this.location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, Blaze.NAME, this.location)) {
 			return false;
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
@@ -94,7 +93,7 @@ public class FireStream {
 	}
 
 	public static boolean isIgnitable(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.Blaze, block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, Blaze.NAME, block.getLocation())) {
 			return false;
 		}
 
@@ -157,7 +156,7 @@ public class FireStream {
 
 	public static void removeAroundPoint(Location location, double radius) {
 		List<FireStream> toRemove = new LinkedList<FireStream>();
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Blaze);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(Blaze.NAME);
 		for (BendingAbility ability : instances.values()) {
 			Blaze blaze = (Blaze) ability;
 			for (FireStream stream : blaze.getFirestreams()) {

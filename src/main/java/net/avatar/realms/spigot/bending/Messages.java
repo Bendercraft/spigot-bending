@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.controller.LanguageParameter;
 
 // TODO : Load all messages. Note that there will be custom messages in the Plugin Data folder and
@@ -221,8 +220,8 @@ public class Messages {
 
 	}
 
-	public static String getAbilityDescription(BendingAbilities ability) {
-		return lines.getProperty("abilities." + ability.getElement().name().toLowerCase() + "." + ability.name().toLowerCase());
+	public static String getAbilityDescription(String ability) {
+		return lines.getProperty("abilities." + ability.toLowerCase());
 	}
 
 	public static String getString(String string) {

@@ -15,20 +15,22 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = "Earth Grab", bind = BendingAbilities.EarthGrab, element = BendingElement.Earth)
+@ABendingAbility(name = EarthGrab.NAME, element = BendingElement.Earth)
 public class EarthGrab extends BendingActiveAbility {
+	public final static String NAME = "EarthGrab";
+	
 	@ConfigurationParameter("Range")
 	private static double range = 15;
 
@@ -41,8 +43,6 @@ public class EarthGrab extends BendingActiveAbility {
 	@ConfigurationParameter("Self-Duration")
 	private static int SELF_DURATION = 5;
 
-	private static final byte full = 0x0;
-
 	private static Integer ID = Integer.MIN_VALUE;
 	private int id;
 	private boolean self;
@@ -52,8 +52,8 @@ public class EarthGrab extends BendingActiveAbility {
 	private boolean toKeep = true;
 	private List<TempBlock> affectedBlocks = new ArrayList<TempBlock>(8);
 
-	public EarthGrab(Player player) {
-		super(player);
+	public EarthGrab(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class EarthGrab extends BendingActiveAbility {
 		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
-		if (this.bender.isOnCooldown(BendingAbilities.EarthGrab)) {
+		if (this.bender.isOnCooldown(NAME)) {
 			return false;
 		}
 		this.self = false;
@@ -79,7 +79,7 @@ public class EarthGrab extends BendingActiveAbility {
 		if (getState() != BendingAbilityState.Start) {
 			return false;
 		}
-		if (this.bender.isOnCooldown(BendingAbilities.EarthGrab)) {
+		if (this.bender.isOnCooldown(NAME)) {
 			return false;
 		}
 		this.self = true;
@@ -111,7 +111,7 @@ public class EarthGrab extends BendingActiveAbility {
 
 				this.origin = new Location(entity.getLocation().getWorld(), x, y, z, entity.getLocation().getYaw(), entity.getLocation().getPitch());
 
-				if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.RaiseEarth, this.origin)) {
+				if (ProtectionManager.isRegionProtectedFromBending(player, EarthWall.NAME, this.origin)) {
 					return false;
 				}
 
@@ -190,7 +190,7 @@ public class EarthGrab extends BendingActiveAbility {
 					if (this.target instanceof Player && this.target.getEntityId() != player.getEntityId()) {
 						EntityTools.grab((Player) this.target, this.time);
 					}
-					this.bender.cooldown(BendingAbilities.EarthGrab, COOLDOWN);
+					this.bender.cooldown(NAME, COOLDOWN);
 				}
 			}
 		}
@@ -250,7 +250,7 @@ public class EarthGrab extends BendingActiveAbility {
 	}
 
 	public static EarthGrab blockInEarthGrab(Block block) {
-		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.EarthGrab).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			EarthGrab grab = (EarthGrab) ab;
 			if (grab.locInEarthGrab(block.getLocation())) {
 				return grab;

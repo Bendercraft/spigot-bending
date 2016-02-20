@@ -11,10 +11,13 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * Represent the base class for bending abilities
  */
 public abstract class BendingAbility {
-	protected BendingPlayer bender;
-	protected Player player;
+	protected final BendingPlayer bender;
+	protected final Player player;
 
 	protected long startedTime;
+	
+	// For performance
+	private final RegisteredAbility register;
 
 	private BendingAbilityState state = BendingAbilityState.Start;
 
@@ -24,7 +27,8 @@ public abstract class BendingAbility {
 	 * @param player
 	 *            The player that launches this ability
 	 */
-	public BendingAbility(Player player) {
+	public BendingAbility(RegisteredAbility register, Player player) {
+		this.register = register;
 		this.player = player;
 		this.bender = BendingPlayer.getBendingPlayer(player);
 		this.startedTime = System.currentTimeMillis();
@@ -64,7 +68,7 @@ public abstract class BendingAbility {
 			return false;
 		}
 		
-		if (this.bender.isOnCooldown(AbilityManager.getManager().getAbilityType(this))) {
+		if (this.bender.isOnCooldown(getName())) {
 			return false;
 		}
 
@@ -72,12 +76,12 @@ public abstract class BendingAbility {
 			return false;
 		}
 
-		if (!EntityTools.canBend(this.player, AbilityManager.getManager().getAbilityType(this))) {
+		if (!EntityTools.canBend(this.player, getName())) {
 			// Also check region protection at player location
 			return false;
 		}
 		
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(AbilityManager.getManager().getAbilityType(this));
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(getName());
 		if(instances != null && instances.containsKey(this.getIdentifier())) {
 			return false;
 		}
@@ -90,7 +94,7 @@ public abstract class BendingAbility {
 				|| this.player.isDead()
 				|| this.state.equals(BendingAbilityState.Ended)
 				|| (getMaxMillis() > 0 && System.currentTimeMillis() > (this.startedTime + getMaxMillis()))
-				|| !EntityTools.canBend(this.player, AbilityManager.getManager().getAbilityType(this))) {
+				|| !EntityTools.canBend(this.player, getName())) {
 			return false;
 		}
 		return true;
@@ -145,5 +149,9 @@ public abstract class BendingAbility {
 	
 	public final BendingAbilityState getState() {
 		return state;
+	}
+	
+	public String getName() {
+		return register.getName();
 	}
 }

@@ -2,8 +2,6 @@ package net.avatar.realms.spigot.bending.abilities.air;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,13 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -30,8 +27,9 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = "Air Burst", bind = BendingAbilities.AirBurst, element = BendingElement.Air)
+@ABendingAbility(name = AirBurst.NAME, element = BendingElement.Air)
 public class AirBurst extends BendingActiveAbility {
+	public final static String NAME = "AirBurst";
 	
 	@ConfigurationParameter("Charge-Time")
 	public static long DEFAULT_CHARGETIME = 1750;
@@ -69,8 +67,8 @@ public class AirBurst extends BendingActiveAbility {
 	private long chargetime;
 	private List<BurstBlast> blasts;
 	
-	public AirBurst(Player player) {
-		super(player);
+	public AirBurst(RegisteredAbility register, Player player) {
+		super(register, player);
 		
 		blasts = new LinkedList<BurstBlast>();
 		chargetime = DEFAULT_CHARGETIME;
@@ -116,7 +114,7 @@ public class AirBurst extends BendingActiveAbility {
 		if(getState().equals(BendingAbilityState.Preparing) && !this.player.isSneaking()) {
 			return false;
 		}
-		if (!getState().equals(BendingAbilityState.Progressing) && (bender.getAbility() != BendingAbilities.AirBurst)) {
+		if (!getState().equals(BendingAbilityState.Progressing) && !bender.getAbility().equals(NAME)) {
 			return false;
 		}
 		return true;
@@ -142,7 +140,7 @@ public class AirBurst extends BendingActiveAbility {
 				sphereBurst();
 			}
 		} else if (!getState().equals(BendingAbilityState.Prepared) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
-			if (EntityTools.getBendingAbility(this.player) != BendingAbilities.AirBurst) {
+			if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
 				remove();
 				return;
 			}
@@ -225,7 +223,7 @@ public class AirBurst extends BendingActiveAbility {
 			return false;
 		}
 
-		if (AbilityManager.getManager().isUsingAbility(this.player, BendingAbilities.AirBurst)) {
+		if (AbilityManager.getManager().isUsingAbility(this.player, NAME)) {
 			return false;
 		}
 

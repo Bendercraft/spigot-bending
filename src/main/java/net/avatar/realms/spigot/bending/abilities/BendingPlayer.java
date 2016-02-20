@@ -21,13 +21,13 @@ public class BendingPlayer {
 	private UUID player;
 
 	private String currentDeck = "default";
-	private Map<String, Map<Integer, BendingAbilities>> decks = new HashMap<String, Map<Integer, BendingAbilities>>();
+	private Map<String, Map<Integer, String>> decks = new HashMap<String, Map<Integer, String>>();
 
 	private List<BendingElement> bendings = new LinkedList<BendingElement>();
 	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
 	private List<BendingPath> paths = new LinkedList<BendingPath>();
 
-	private Map<BendingAbilities, Long> cooldowns = new HashMap<BendingAbilities, Long>();
+	private Map<String, Long> cooldowns = new HashMap<String, Long>();
 
 	private long paralyzeTime = 0;
 	private long slowTime = 0;
@@ -37,7 +37,7 @@ public class BendingPlayer {
 	public BendingPlayer(UUID id) {
 		this.player = id;
 		this.lastTime = System.currentTimeMillis();
-		this.decks.put(this.currentDeck, new TreeMap<Integer, BendingAbilities>());
+		this.decks.put(this.currentDeck, new TreeMap<Integer, String>());
 	}
 
 	public String getCurrentDeck() {
@@ -48,7 +48,7 @@ public class BendingPlayer {
 		return this.decks.keySet();
 	}
 
-	public Map<String, Map<Integer, BendingAbilities>> getDecks() {
+	public Map<String, Map<Integer, String>> getDecks() {
 		return this.decks;
 	}
 
@@ -81,7 +81,7 @@ public class BendingPlayer {
 		return System.currentTimeMillis() <= (this.lastTime + Settings.GLOBAL_COOLDOWN);
 	}
 
-	public boolean isOnCooldown(BendingAbilities ability) {
+	public boolean isOnCooldown(String ability) {
 
 		if (isOnGlobalCooldown()) {
 			return true;
@@ -101,10 +101,10 @@ public class BendingPlayer {
 	}
 
 	public void cooldown(BendingAbility ability, long cooldownTime) {
-		cooldown(AbilityManager.getManager().getAbilityType(ability), cooldownTime);
+		cooldown(ability.getName(), cooldownTime);
 	}
 
-	public void cooldown(BendingAbilities ability, long cooldownTime) {
+	public void cooldown(String ability, long cooldownTime) {
 		long time = System.currentTimeMillis();
 		if (ability != null) {
 			this.cooldowns.put(ability, time + cooldownTime);
@@ -115,11 +115,11 @@ public class BendingPlayer {
 		}
 	}
 
-	public Map<BendingAbilities, Long> getCooldowns() {
-		Map<BendingAbilities, Long> result = new HashMap<BendingAbilities, Long>();
+	public Map<String, Long> getCooldowns() {
+		Map<String, Long> result = new HashMap<String, Long>();
 		long now = System.currentTimeMillis();
-		List<BendingAbilities> toRemove = new LinkedList<BendingAbilities>();
-		for (BendingAbilities ab : cooldowns.keySet()) {
+		List<String> toRemove = new LinkedList<String>();
+		for (String ab : cooldowns.keySet()) {
 			long remain = cooldowns.get(ab) - now;
 			if (remain <= 0) {
 				toRemove.add(ab);
@@ -128,7 +128,7 @@ public class BendingPlayer {
 			}
 		}
 
-		for (BendingAbilities ab : toRemove) {
+		for (String ab : toRemove) {
 			result.remove(ab);
 		}
 
@@ -244,7 +244,7 @@ public class BendingPlayer {
 	}
 
 	public void clearAbilities() {
-		this.decks.put(this.currentDeck, new HashMap<Integer, BendingAbilities>());
+		this.decks.put(this.currentDeck, new HashMap<Integer, String>());
 		Bending.getInstance().getBendingDatabase().save(this.player);
 	}
 
@@ -256,7 +256,7 @@ public class BendingPlayer {
 		Bending.getInstance().getBendingDatabase().save(this.player);
 	}
 
-	public BendingAbilities getAbility() {
+	public String getAbility() {
 		Player playerEntity = getPlayer();
 		if (playerEntity == null) {
 			return null;
@@ -269,18 +269,18 @@ public class BendingPlayer {
 		return getAbility(slot);
 	}
 
-	public Map<Integer, BendingAbilities> getAbilities() {
+	public Map<Integer, String> getAbilities() {
 		return this.decks.get(this.currentDeck);
 	}
 
-	public BendingAbilities getAbility(int slot) {
+	public String getAbility(int slot) {
 		if(!this.decks.containsKey(this.currentDeck)) {
 			return null;
 		}
 		return this.decks.get(this.currentDeck).get(slot);
 	}
 
-	public void setAbility(int slot, BendingAbilities ability) {
+	public void setAbility(int slot, String ability) {
 		if(!this.decks.containsKey(this.currentDeck)) {
 			Bending.getInstance().getLogger().warning("Player "+this.player+" tried to bind an ability on unknown deck "+this.currentDeck);
 			return;

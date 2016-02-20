@@ -3,12 +3,12 @@ package net.avatar.realms.spigot.bending.abilities.water;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -25,8 +25,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = "Octopus Form", bind = BendingAbilities.OctopusForm, element = BendingElement.Water)
+@ABendingAbility(name = OctopusForm.NAME, element = BendingElement.Water)
 public class OctopusForm extends BendingActiveAbility {
+	public final static String NAME = "OctopusForm";
+	
 	private static int range = 10;
 	static final double radius = 3;
 	private static final byte full = 0x0;
@@ -53,8 +55,8 @@ public class OctopusForm extends BendingActiveAbility {
 	private WaterReturn waterReturn;
 	private TempBlock drainedBlock;
 
-	public OctopusForm(Player player) {
-		super(player);
+	public OctopusForm(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	private void incrementStep() {
@@ -138,7 +140,7 @@ public class OctopusForm extends BendingActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.OctopusForm, entity.getLocation())) {
+			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, entity.getLocation())) {
 				continue;
 			}
 
@@ -159,9 +161,9 @@ public class OctopusForm extends BendingActiveAbility {
 			return;
 		}
 
-		if (!EntityTools.canBend(player, BendingAbilities.OctopusForm) 
+		if (!EntityTools.canBend(player, NAME) 
 				|| (!player.isSneaking() && !sourceselected) 
-				|| EntityTools.getBendingAbility(player) != BendingAbilities.OctopusForm 
+				|| !EntityTools.getBendingAbility(player).equals(NAME) 
 				|| !sourceblock.getWorld().equals(player.getWorld()) 
 				|| (sourceblock.getLocation().distance(player.getLocation()) > range && sourceselected)) {
 			remove();
@@ -344,7 +346,7 @@ public class OctopusForm extends BendingActiveAbility {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.OctopusForm, block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation())) {
 			return;
 		}
 
@@ -363,7 +365,7 @@ public class OctopusForm extends BendingActiveAbility {
 
 	public static boolean wasBrokenFor(Player player, Block block) {
 		if (isOctopus(player)) {
-			OctopusForm form = (OctopusForm) AbilityManager.getManager().getInstances(BendingAbilities.OctopusForm).get(player);
+			OctopusForm form = (OctopusForm) AbilityManager.getManager().getInstances(NAME).get(player);
 			if (form.sourceblock == null)
 				return false;
 			if (form.sourceblock.equals(block))
@@ -405,7 +407,7 @@ public class OctopusForm extends BendingActiveAbility {
 	}
 
 	public static boolean isOctopus(Player player) {
-		return AbilityManager.getManager().getInstances(BendingAbilities.OctopusForm).containsKey(player);
+		return AbilityManager.getManager().getInstances(NAME).containsKey(player);
 	}
 
 	@Override

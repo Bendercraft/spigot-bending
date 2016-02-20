@@ -13,15 +13,14 @@ import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -31,8 +30,10 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = "Lightning", bind = BendingAbilities.Lightning, element = BendingElement.Fire, affinity = BendingAffinity.Lightning)
+@ABendingAbility(name = Lightning.NAME, affinity = BendingAffinity.Lightning)
 public class Lightning extends BendingActiveAbility {
+	public final static String NAME = "Lightning";
+	
 	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();
 
 	@ConfigurationParameter("Range")
@@ -60,8 +61,8 @@ public class Lightning extends BendingActiveAbility {
 	private LightningStrike strike = null;
 	private List<Entity> hitentities = new LinkedList<Entity>();
 
-	public Lightning(Player player) {
-		super(player);
+	public Lightning(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.warmup = WARMUP;
 		if (AvatarState.isAvatarState(this.player)) {
@@ -86,7 +87,7 @@ public class Lightning extends BendingActiveAbility {
 	private void strike() {
 		Location targetlocation = getTargetLocation();
 
-		if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Lightning, targetlocation)) {
+		if (!ProtectionManager.isRegionProtectedFromBending(this.player, NAME, targetlocation)) {
 			this.strike = this.player.getWorld().strikeLightning(targetlocation);
 			strikes.put(this.strike, this);
 		}
@@ -103,7 +104,7 @@ public class Lightning extends BendingActiveAbility {
 				// Check redirection
 				if (target instanceof Player) {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) target);
-					if ((bPlayer != null) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.Lightning)) {
+					if ((bPlayer != null) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(NAME)) {
 						// Redirection !
 						targetLocation = EntityTools.getTargetedLocation((Player) target, distance);
 					} else {
@@ -146,7 +147,7 @@ public class Lightning extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		this.bender.cooldown(BendingAbilities.Lightning, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 	}
 	
 	@Override
@@ -154,7 +155,7 @@ public class Lightning extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.Lightning) {
+		if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
 			return false;
 		}
 		return true;
@@ -203,7 +204,7 @@ public class Lightning extends BendingActiveAbility {
 
 	public static boolean isNearbyChannel(Location location) {
 		boolean isNearby = false;
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Lightning);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 
 		for (Object obj : instances.keySet()) {
 			if (!instances.get(obj).getPlayer().getWorld().equals(location.getWorld())) {
@@ -228,7 +229,7 @@ public class Lightning extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.Lightning);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 
 		if (instances == null) {
 			return true;

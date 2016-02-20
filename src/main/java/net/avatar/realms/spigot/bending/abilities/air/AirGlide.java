@@ -5,16 +5,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "AirGlide", bind = BendingAbilities.AirGlide, element = BendingElement.Air)
+@ABendingAbility(name = AirGlide.NAME, element = BendingElement.Air)
 public class AirGlide extends BendingPassiveAbility {
+	public final static String NAME = "AirGlide";
 
 	@ConfigurationParameter("Fall-Factor")
 	private static double FALL_FACTOR = 0.45;
@@ -24,8 +26,8 @@ public class AirGlide extends BendingPassiveAbility {
 	private double y;
 	private double z;
 
-	public AirGlide(Player player) {
-		super(player);
+	public AirGlide(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -70,8 +72,9 @@ public class AirGlide extends BendingPassiveAbility {
 				|| !(EntityTools.canBendPassive(this.player, BendingElement.Air) && this.player.isSneaking())) {
 			return false;
 		}
-		BendingAbilities ability = EntityTools.getBendingAbility(this.player);
-		if ((ability != null) && ability.isShiftAbility()) {
+		String ability = EntityTools.getBendingAbility(this.player);
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+		if ((ability != null) && register.isShift()) {
 			return false;
 		}
 		return true;

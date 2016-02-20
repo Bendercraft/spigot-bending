@@ -16,13 +16,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -37,8 +36,9 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  *
  */
 
-@ABendingAbility(name = "Poisonned Dart", bind = BendingAbilities.PoisonnedDart, element = BendingElement.Master, affinity = BendingAffinity.Chi)
+@ABendingAbility(name = PoisonnedDart.NAME, affinity = BendingAffinity.Chi, shift=false)
 public class PoisonnedDart extends BendingActiveAbility {
+	public final static String NAME = "PoisonnedDart";
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 2;
@@ -56,8 +56,8 @@ public class PoisonnedDart extends BendingActiveAbility {
 	private Vector direction;
 	private List<PotionEffect> effects;
 
-	public PoisonnedDart(Player player) {
-		super(player);
+	public PoisonnedDart(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 		}
 
 		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
-		this.bender.cooldown(BendingAbilities.PoisonnedDart, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 
 		return false;
 	}
@@ -160,7 +160,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 	}
 
 	private boolean affectAround() {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.PoisonnedDart, this.location)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.location)) {
 			return false;
 		}
 		int cptEnt = 0;
@@ -222,7 +222,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PoisonnedDart);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}

@@ -19,10 +19,12 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
@@ -61,7 +63,7 @@ public class EntityTools {
 		return true;
 	}
 
-	public static BendingAbilities getBendingAbility(Player player) {
+	public static String getBendingAbility(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 		if (bPlayer == null) {
 			return null;
@@ -83,20 +85,20 @@ public class EntityTools {
 		return true;
 	}
 
-	public static boolean hasPermission(Player player, BendingAbilities ability) {
-
-		if (ability.isAffinity() && !EntityTools.isSpecialized(player, ability.getAffinity())) {
+	public static boolean hasPermission(Player player, String ability) {
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+		if (register.getAffinity() != BendingAffinity.None && !EntityTools.isSpecialized(player, register.getAffinity())) {
 			return false;
 		}
 
-		if (player.hasPermission(ability.getPermission())) {
+		if (player.hasPermission(register.getPermission())) {
 			return true;
 		}
 
 		return false;
 	}
 
-	public static boolean canBend(Player player, BendingAbilities ability) {
+	public static boolean canBend(Player player, String ability) {
 		if (ability == null) {
 			return false;
 		}
@@ -108,12 +110,14 @@ public class EntityTools {
 		if (!hasPermission(player, ability)) {
 			return false;
 		}
+		
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
 
-		if (ability == BendingAbilities.AvatarState) {
+		if (register.getElement() == BendingElement.Energy) {
 			return true;
 		}
 
-		if (toggledBending(player) && !ability.isPassiveAbility()) {
+		if (toggledBending(player) && !BendingPassiveAbility.isPassive(register)) {
 			return false;
 		}
 
@@ -121,21 +125,17 @@ public class EntityTools {
 			return false;
 		}
 
-		if (!isBender(player, ability.getElement())) {
+		if (!isBender(player, register.getElement())) {
 			return false;
 		}
 
-		if (ability.isAffinity()) {
-			if (!isSpecialized(player, ability.getAffinity())) {
+		if (register.getAffinity() != BendingAffinity.None) {
+			if (!isSpecialized(player, register.getAffinity())) {
 				return false;
 			}
 			if (speToggled(player)) {
 				return false;
 			}
-		}
-
-		if (ProtectionManager.isAllowedEverywhereAbility(ability)) {
-			return true;
 		}
 
 		return !ProtectionManager.isRegionProtectedFromBending(player, ability, player.getLocation());
@@ -218,7 +218,7 @@ public class EntityTools {
 			return true;
 		}
 
-		if (canBend(player, BendingAbilities.Bloodbending) && !toggledBending(player)) {
+		if (canBend(player, Bloodbending.NAME) && !toggledBending(player)) {
 			return false;
 		}
 

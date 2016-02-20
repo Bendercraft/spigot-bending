@@ -7,13 +7,12 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -25,8 +24,9 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  *
  */
 
-@ABendingAbility(name = "StraightShot", bind = BendingAbilities.StraightShot, element = BendingElement.Master, affinity = BendingAffinity.Bowman)
+@ABendingAbility(name = StraightShot.NAME, affinity = BendingAffinity.Bowman)
 public class StraightShot extends BendingActiveAbility {
+	public final static String NAME = "StraightShot";
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 2;
@@ -37,8 +37,8 @@ public class StraightShot extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2000;
 
-	public StraightShot(Player player) {
-		super(player);
+	public StraightShot(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class StraightShot extends BendingActiveAbility {
 		}
 
 		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
-		bender.cooldown(BendingAbilities.PoisonnedDart, COOLDOWN);
+		bender.cooldown(NAME, COOLDOWN);
 
 		return false;
 	}
@@ -82,7 +82,7 @@ public class StraightShot extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.PoisonnedDart);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances == null) || instances.isEmpty()) {
 			return true;
 		}

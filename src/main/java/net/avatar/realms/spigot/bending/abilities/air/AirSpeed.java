@@ -4,18 +4,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "AirSpeed", bind = BendingAbilities.AirSpeed, element = BendingElement.Air)
+@ABendingAbility(name = AirSpeed.NAME, element = BendingElement.Air)
 public class AirSpeed extends BendingPassiveAbility {
+	public final static String NAME = "AirSpeed";
 
-	public AirSpeed(Player player) {
-		super(player);
+	public AirSpeed(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class AirSpeed extends BendingPassiveAbility {
 		PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, 1);
 
 		this.player.addPotionEffect(speed);
-		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.AirScooter) {
+		if (!EntityTools.getBendingAbility(this.player).equals(AirScooter.NAME)) {
 			PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 2);
 			this.player.addPotionEffect(jump);
 		}

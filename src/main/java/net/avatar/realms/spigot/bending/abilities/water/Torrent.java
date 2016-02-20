@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
@@ -22,6 +21,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -31,8 +31,10 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = "Torrent", bind = BendingAbilities.Torrent, element = BendingElement.Water)
+@ABendingAbility(name = Torrent.NAME, element = BendingElement.Water)
 public class Torrent extends BendingActiveAbility {
+	public final static String NAME = "Torrent";
+	
 	static long interval = 30;
 	private static int defaultrange = 20;
 	private static int selectrange = 10;
@@ -81,12 +83,11 @@ public class Torrent extends BendingActiveAbility {
 	
 	private List<TempBlock> iceds = new LinkedList<TempBlock>();
 
-	public Torrent(Player player) {
-		super(player);
+	public Torrent(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.damage = DAMAGE;
 		this.range = RANGE;
-		this.bender = BendingPlayer.getBendingPlayer(player);
 		if (this.bender.hasPath(BendingPath.Marksman)) {
 			this.range *= 1.3;
 			this.damage *= 0.8;
@@ -101,7 +102,7 @@ public class Torrent extends BendingActiveAbility {
 		if (this.layer == 0) {
 			return;
 		}
-		if (!EntityTools.canBend(this.player, BendingAbilities.PhaseChange)) {
+		if (!EntityTools.canBend(this.player, PhaseChange.NAME)) {
 			return;
 		}
 		List<Block> ice = BlockTools.getBlocksAroundPoint(this.location, this.layer);
@@ -158,7 +159,7 @@ public class Torrent extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (EntityTools.getBendingAbility(this.player) != BendingAbilities.Torrent) {
+		if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
 			if (this.location != null) {
 				returnWater(this.location);
 			}
@@ -322,7 +323,7 @@ public class Torrent extends BendingActiveAbility {
 					this.location = blockloc.clone();
 				}
 				Block block = blockloc.getBlock();
-				if (!doneblocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, blockloc)) {
+				if (!doneblocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, Torrent.NAME, blockloc)) {
 					if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
 						//this.launchblocks.add(new TempBlock(block, Material.WATER, full));
 						this.launchblocks.add(TempBlock.makeTemporary(block, Material.WATER));
@@ -370,7 +371,7 @@ public class Torrent extends BendingActiveAbility {
 
 		// player.sendBlockChange(location, 20, (byte) 0);
 
-		if ((this.location.distance(this.player.getLocation()) > this.range) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, this.location)) {
+		if ((this.location.distance(this.player.getLocation()) > this.range) || ProtectionManager.isRegionProtectedFromBending(this.player, Torrent.NAME, this.location)) {
 			if (this.layer < maxlayer) {
 				if (this.freeze || (this.layer < 1)) {
 					this.layer++;
@@ -469,7 +470,7 @@ public class Torrent extends BendingActiveAbility {
 			double dz = Math.sin(phi) * radius;
 			Location blockloc = loc.clone().add(dx, dy, dz);
 			Block block = blockloc.getBlock();
-			if (!doneBlocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Torrent, blockloc)) {
+			if (!doneBlocks.contains(block) && !ProtectionManager.isRegionProtectedFromBending(this.player, Torrent.NAME, blockloc)) {
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
 					//this.blocks.add(new TempBlock(block, Material.WATER, full));
 					this.blocks.add(TempBlock.makeTemporary(block, Material.WATER));
@@ -621,7 +622,7 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	public static void thaw(TempBlock block) {
-		for(BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Torrent).values()) {
+		for(BendingAbility ab : AbilityManager.getManager().getInstances(Torrent.NAME).values()) {
 			Torrent torrent = (Torrent) ab;
 			block.revertBlock();
 			torrent.iceds.remove(block);
@@ -631,7 +632,7 @@ public class Torrent extends BendingActiveAbility {
 	public static boolean canThaw(Block block) {
 		if (TempBlock.isTempBlock(block)) {
 			TempBlock tblock = TempBlock.get(block);
-			for(BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.Torrent).values()) {
+			for(BendingAbility ab : AbilityManager.getManager().getInstances(Torrent.NAME).values()) {
 				Torrent torrent = (Torrent) ab;
 				if(torrent.iceds.contains(tblock)) {
 					return true;
@@ -642,8 +643,8 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	public static boolean wasBrokenFor(Player player, Block block) {
-		if (AbilityManager.getManager().getInstances(BendingAbilities.Torrent).containsKey(player)) {
-			Torrent torrent = (Torrent) AbilityManager.getManager().getInstances(BendingAbilities.Torrent).get(player);
+		if (AbilityManager.getManager().getInstances(Torrent.NAME).containsKey(player)) {
+			Torrent torrent = (Torrent) AbilityManager.getManager().getInstances(Torrent.NAME).get(player);
 			if (torrent.sourceblock == null) {
 				return false;
 			}

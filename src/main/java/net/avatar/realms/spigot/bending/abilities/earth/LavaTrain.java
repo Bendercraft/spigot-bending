@@ -12,13 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.MathUtils;
@@ -31,8 +30,10 @@ import net.avatar.realms.spigot.bending.utils.TempBlock;
  * duration
  */
 
-@ABendingAbility(name = "Lavatrain", bind = BendingAbilities.LavaTrain, element = BendingElement.Earth, affinity = BendingAffinity.Lavabend)
+@ABendingAbility(name = LavaTrain.NAME, affinity = BendingAffinity.Lavabend)
 public class LavaTrain extends BendingActiveAbility {
+	public final static String NAME = "Lavatrain";
+	
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 5;
 
@@ -67,8 +68,8 @@ public class LavaTrain extends BendingActiveAbility {
 
 	private long time;
 
-	public LavaTrain(Player player) {
-		super(player);
+	public LavaTrain(RegisteredAbility register, Player player) {
+		super(register, player);
 		interval = (long) (1000. / SPEED);
 	}
 
@@ -99,7 +100,7 @@ public class LavaTrain extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.LavaTrain, this.current)) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.current)) {
 			return false;
 		}
 		return true;
@@ -160,7 +161,7 @@ public class LavaTrain extends BendingActiveAbility {
 			}
 
 			for (Block potentialsBlock : potentialsBlocks) {
-				if (BlockTools.isEarthbendable(this.player, BendingAbilities.LavaTrain, potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
+				if (BlockTools.isEarthbendable(this.player, NAME, potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
 					// Do not let block behind bender to be bend, this whill be
 					// stupid
 					if (!safe.contains(potentialsBlock)) {
@@ -179,11 +180,11 @@ public class LavaTrain extends BendingActiveAbility {
 			affected.revertBlock();
 		}
 		this.affecteds.clear();
-		this.bender.cooldown(BendingAbilities.LavaTrain, DURATION * COOLDOWN_FACTOR);
+		this.bender.cooldown(NAME, DURATION * COOLDOWN_FACTOR);
 	}
 
 	public static LavaTrain getLavaTrain(Block b) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return null;
 		}
@@ -203,7 +204,7 @@ public class LavaTrain extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.LavaTrain);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return true;
 		}

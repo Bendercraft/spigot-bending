@@ -14,13 +14,13 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
@@ -28,8 +28,9 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = "Air Shield", bind = BendingAbilities.AirShield, element = BendingElement.Air)
+@ABendingAbility(name = AirShield.NAME, element = BendingElement.Air)
 public class AirShield extends BendingActiveAbility {
+	public final static String NAME = "AirShield";
 
 	@ConfigurationParameter("Max-Radius")
 	private static double MAX_RADIUS = 5.0;
@@ -49,8 +50,8 @@ public class AirShield extends BendingActiveAbility {
 
 	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
 
-	public AirShield(Player player) {
-		super(player);
+	public AirShield(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		int angle = 0;
 		int di = (int) ((maxRadius * 2) / numberOfStreams);
@@ -112,7 +113,7 @@ public class AirShield extends BendingActiveAbility {
 		if (this.player.getEyeLocation().getBlock().isLiquid()) {
 			return false;
 		}
-		if (((EntityTools.getBendingAbility(this.player) != BendingAbilities.AirShield) || (!this.player.isSneaking())) 
+		if ((!EntityTools.getBendingAbility(this.player).equals(NAME) || !this.player.isSneaking()) 
 				&& !AvatarState.isAvatarState(this.player)) {
 			return false;
 		}
@@ -131,7 +132,7 @@ public class AirShield extends BendingActiveAbility {
 					|| (entity instanceof FallingBlock) 
 					|| (entity instanceof ItemFrame) 
 					|| (entity instanceof Item)
-					|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirShield, entity.getLocation())) {
+					|| ProtectionManager.isRegionProtectedFromBending(this.player, NAME, entity.getLocation())) {
 				continue;
 			}
 
@@ -193,7 +194,7 @@ public class AirShield extends BendingActiveAbility {
 			z = origin.getZ() + (this.radius * Math.sin(angle) * f);
 
 			Location effect = new Location(origin.getWorld(), x, y, z);
-			if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirShield, effect)) {
+			if (!ProtectionManager.isRegionProtectedFromBending(this.player, NAME, effect)) {
 				origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
 			}
 
@@ -215,7 +216,7 @@ public class AirShield extends BendingActiveAbility {
 		if (bender.hasPath(BendingPath.Renegade)) {
 			cooldown *= 1.2;
 		}
-		this.bender.cooldown(BendingAbilities.AirShield, cooldown);
+		this.bender.cooldown(NAME, cooldown);
 	}
 
 
@@ -225,7 +226,7 @@ public class AirShield extends BendingActiveAbility {
 	}
 
 	public static boolean isShielded(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirShield);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}

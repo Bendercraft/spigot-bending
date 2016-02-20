@@ -14,19 +14,20 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "Air Scooter", bind = BendingAbilities.AirScooter, element = BendingElement.Air)
+@ABendingAbility(name = AirScooter.NAME, element = BendingElement.Air, shift=false)
 public class AirScooter extends BendingActiveAbility {
+	public final static String NAME = "AirScooter";
 
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 0.675;
@@ -40,8 +41,8 @@ public class AirScooter extends BendingActiveAbility {
 
 	private double speed;
 
-	public AirScooter(Player player) {
-		super(player);
+	public AirScooter(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.time = this.startedTime;
 		for (int i = 0; i < 5; i++) {
@@ -93,8 +94,8 @@ public class AirScooter extends BendingActiveAbility {
 			return false;
 		}
 
-		for (BendingAbilities ability : this.bender.getAbilities().values()) {
-			if (!ability.equals(BendingAbilities.AirScooter) && AbilityManager.getManager().isUsingAbility(this.player, ability)) {
+		for (String ability : this.bender.getAbilities().values()) {
+			if (!ability.equals(AirScooter.NAME) && AbilityManager.getManager().isUsingAbility(this.player, ability)) {
 				return false;
 			}
 		}
@@ -177,7 +178,7 @@ public class AirScooter extends BendingActiveAbility {
 	}
 
 	public static boolean isOnScooter(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirScooter);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(AirScooter.NAME);
 		if ((instances == null) || instances.isEmpty()) {
 			return false;
 		}

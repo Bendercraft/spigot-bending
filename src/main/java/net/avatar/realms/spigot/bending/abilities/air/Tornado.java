@@ -15,19 +15,21 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = "Tornado", bind = BendingAbilities.Tornado, element = BendingElement.Air, affinity = BendingAffinity.Tornado)
+@ABendingAbility(name = Tornado.NAME, element = BendingElement.Air, affinity = BendingAffinity.Tornado)
 public class Tornado extends BendingActiveAbility {
+	public final static String NAME = "Tornado";
+	
 	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 
 	@ConfigurationParameter("Fall-Imunity")
@@ -63,8 +65,8 @@ public class Tornado extends BendingActiveAbility {
 
 	private FlyingPlayer flying;
 
-	public Tornado(Player player) {
-		super(player);
+	public Tornado(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.origin = EntityTools.getTargetBlock(player, RANGE).getLocation();
 		this.origin.setY(this.origin.getY() - ((1. / 10.) * this.height));
@@ -102,8 +104,8 @@ public class Tornado extends BendingActiveAbility {
 		}
 		if (this.player.getEyeLocation().getBlock().isLiquid() 
 				|| !this.player.isSneaking()
-				|| EntityTools.getBendingAbility(this.player) != BendingAbilities.Tornado
-				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirBlast, this.origin)) {
+				|| !EntityTools.getBendingAbility(this.player).equals(NAME)
+				|| ProtectionManager.isRegionProtectedFromBending(this.player, AirBlast.NAME, this.origin)) {
 			return false;
 		}
 		return true;
@@ -123,7 +125,7 @@ public class Tornado extends BendingActiveAbility {
 				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirBlast, entity.getLocation())) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, AirBlast.NAME, entity.getLocation())) {
 					continue;
 				}
 
@@ -203,7 +205,7 @@ public class Tornado extends BendingActiveAbility {
 				z = this.origin.getZ() + (timefactor * factor * this.radius * Math.sin(angle));
 
 				Location effect = new Location(this.origin.getWorld(), x, y, z);
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirBlast, effect)) {
+				if (!ProtectionManager.isRegionProtectedFromBending(this.player, AirBlast.NAME, effect)) {
 					this.origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
 				}
 

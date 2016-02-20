@@ -3,11 +3,10 @@ package net.avatar.realms.spigot.bending.abilities.arts;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -17,8 +16,9 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * knockback You must be sneaking when clicking to activate this technique.
  *
  */
-@ABendingAbility(name = "PowerShot", bind = BendingAbilities.DirectHit, element = BendingElement.Master, affinity=BendingAffinity.Bowman)
+@ABendingAbility(name = PowerShot.NAME, affinity=BendingAffinity.Bowman)
 public class PowerShot extends BendingActiveAbility {
+	public final static String NAME = "PowerShot";
 
 	@ConfigurationParameter("Damage")
 	public static long DAMAGE = 5;
@@ -32,8 +32,8 @@ public class PowerShot extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
 
-	public PowerShot(Player player) {
-		super(player);
+	public PowerShot(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override

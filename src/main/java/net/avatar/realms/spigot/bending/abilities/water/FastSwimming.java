@@ -3,24 +3,26 @@ package net.avatar.realms.spigot.bending.abilities.water;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = "Dolphin", bind = BendingAbilities.FastSwimming, element = BendingElement.Water)
+@ABendingAbility(name = FastSwimming.NAME, element = BendingElement.Water)
 public class FastSwimming extends BendingPassiveAbility {
+	public final static String NAME = "Dolphin";
 
 	@ConfigurationParameter("Speed-Factor")
 	private static double FACTOR = 0.7;
 
-	public FastSwimming(Player player) {
-		super(player);
+	public FastSwimming(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -39,8 +41,9 @@ public class FastSwimming extends BendingPassiveAbility {
 		if (!(EntityTools.canBendPassive(this.player, BendingElement.Water) && this.player.isSneaking())) {
 			return false;
 		}
-		BendingAbilities ability = EntityTools.getBendingAbility(this.player);
-		if ((ability != null) && ability.isShiftAbility() && (ability != BendingAbilities.WaterSpout)) {
+		String ability = EntityTools.getBendingAbility(this.player);
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+		if ((ability != null) && register.isShift() && !ability.equals(WaterSpout.NAME)) {
 			return false;
 		}
 

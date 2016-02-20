@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -51,11 +50,11 @@ public class EarthColumn {
 	public boolean init(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
-		if (bPlayer.isOnCooldown(BendingAbilities.RaiseEarth)) {
+		if (bPlayer.isOnCooldown(EarthWall.NAME)) {
 			return false;
 		}
 
-		block = BlockTools.getEarthSourceBlock(player, BendingAbilities.RaiseEarth, RANGE);
+		block = BlockTools.getEarthSourceBlock(player, EarthWall.NAME, RANGE);
 		if (block == null)
 			return  false;
 		origin = block.getLocation();
@@ -70,7 +69,7 @@ public class EarthColumn {
 			if (canInstantiate()) {
 				id = ID;
 				instances.put(id, this);
-				bPlayer.cooldown(BendingAbilities.RaiseEarth, COOLDOWN);
+				bPlayer.cooldown(EarthWall.NAME, COOLDOWN);
 				if (ID >= Integer.MAX_VALUE) {
 					ID = Integer.MIN_VALUE;
 				}

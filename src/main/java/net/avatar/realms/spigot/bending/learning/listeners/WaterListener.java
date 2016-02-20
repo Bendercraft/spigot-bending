@@ -14,8 +14,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.water.IceSpike;
+import net.avatar.realms.spigot.bending.abilities.water.OctopusForm;
+import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
+import net.avatar.realms.spigot.bending.abilities.water.Torrent;
+import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
+import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
+import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
@@ -41,7 +47,7 @@ public class WaterListener implements Listener {
 	public void unlockTorrent(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Water) && event.getAbility().equals(BendingAbilities.Torrent)) {
+			if (bPlayer.isBender(BendingElement.Water) && event.getAbility().equals(Torrent.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 				for (Entity entity : entities) {
@@ -50,10 +56,10 @@ public class WaterListener implements Listener {
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
 						if (trainee.isBender(BendingElement.Water)) {
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
-								if (this.plugin.addPermission(p, BendingAbilities.Torrent)) {
+								if (this.plugin.addPermission(p, Torrent.NAME)) {
 									String message = "You saw " + bPlayer.getPlayer().getName() + " bending a continuous torrent of water, and you copied it's mouvement";
 									p.sendMessage(color + message);
-									message = "Congratulations, you have unlocked " + BendingAbilities.Torrent.name();
+									message = "Congratulations, you have unlocked " + Torrent.NAME;
 									p.sendMessage(color + message);
 								}
 							}
@@ -71,10 +77,10 @@ public class WaterListener implements Listener {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 			if (bPlayer != null) {
 				if (bPlayer.isBender(BendingElement.Water)) {
-					if (this.plugin.addPermission(p, BendingAbilities.WaterBubble)) {
+					if (this.plugin.addPermission(p, WaterBubble.NAME)) {
 						String message = "Your suffocation made your realize that you can bend water arround you to prevent your own death";
 						p.sendMessage(color + message);
-						message = "Congratulations, you have unlocked " + BendingAbilities.WaterBubble.name();
+						message = "Congratulations, you have unlocked " + WaterBubble.NAME;
 						p.sendMessage(color + message);
 					}
 				}
@@ -86,7 +92,7 @@ public class WaterListener implements Listener {
 	public void unlockSurge(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Water) && event.getAbility().equals(BendingAbilities.WaterManipulation)) {
+			if (bPlayer.isBender(BendingElement.Water) && event.getAbility().equals(WaterManipulation.NAME)) {
 				int blasted = 0;
 				Player p = bPlayer.getPlayer();
 				if (this.surge.containsKey(p.getUniqueId())) {
@@ -94,10 +100,10 @@ public class WaterListener implements Listener {
 				}
 				blasted = blasted + 1;
 				if (blasted >= 250) {
-					if (this.plugin.addPermission(p, BendingAbilities.Surge)) {
+					if (this.plugin.addPermission(p, WaterWall.NAME)) {
 						String message = "Your water manipulation has improved enough for you to concentrate multiple water source at the same time";
 						p.sendMessage(color + message);
-						message = "Congratulations, you have unlocked " + BendingAbilities.Surge.name();
+						message = "Congratulations, you have unlocked " + WaterWall.NAME;
 						p.sendMessage(color + message);
 					}
 					this.surge.remove(p.getUniqueId());
@@ -113,13 +119,13 @@ public class WaterListener implements Listener {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			// Check if player has unlocked PhaseChange here
-			if (bPlayer.isBender(BendingElement.Water) && event.getAbility().equals(BendingAbilities.WaterManipulation)) {
+			if (bPlayer.isBender(BendingElement.Water) && event.getAbility().equals(WaterManipulation.NAME)) {
 				Player p = bPlayer.getPlayer();
-				if (EntityTools.canBend(p, BendingAbilities.PhaseChange)) {
-					if (this.plugin.addPermission(p, BendingAbilities.IceSpike)) {
+				if (EntityTools.canBend(p, PhaseChange.NAME)) {
+					if (this.plugin.addPermission(p, IceSpike.NAME)) {
 						String message = "Turning water into water also made you realize that you can bend directly ice";
 						p.sendMessage(color + message);
-						message = "Congratulations, you have unlocked " + BendingAbilities.IceSpike.name();
+						message = "Congratulations, you have unlocked " + IceSpike.NAME;
 						p.sendMessage(color + message);
 					}
 				}
@@ -133,8 +139,8 @@ public class WaterListener implements Listener {
 		if (bPlayer != null) {
 			// Check if player knows surge
 			Player p = bPlayer.getPlayer();
-			if (bPlayer.isBender(BendingElement.Water) && EntityTools.canBend(p, BendingAbilities.Surge)) {
-				if (event.getAbility().equals(BendingAbilities.WaterManipulation)) {
+			if (bPlayer.isBender(BendingElement.Water) && EntityTools.canBend(p, WaterWall.NAME)) {
+				if (event.getAbility().equals(WaterManipulation.NAME)) {
 					long lastTime = -1;
 					long currentTime = System.currentTimeMillis();
 					if (this.waterManipulationlastTime.containsKey(p.getUniqueId())) {
@@ -152,10 +158,10 @@ public class WaterListener implements Listener {
 					success = success + 1;
 
 					if (success > 25) {
-						if (this.plugin.addPermission(p, BendingAbilities.OctopusForm)) {
+						if (this.plugin.addPermission(p, OctopusForm.NAME)) {
 							String message = "By launching so much water manipulation, you think you are able to manage both defense and attack by combining a water wall on yourself, and multiple water manipulation at the same time";
 							p.sendMessage(color + message);
-							message = "Congratulations, you have unlocked " + BendingAbilities.OctopusForm.name();
+							message = "Congratulations, you have unlocked " + OctopusForm.NAME;
 							p.sendMessage(color + message);
 						}
 

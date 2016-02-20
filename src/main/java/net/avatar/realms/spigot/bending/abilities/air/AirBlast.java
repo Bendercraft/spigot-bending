@@ -11,12 +11,11 @@ import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -28,8 +27,10 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 /**
  * Preparing state = Origin set Progressing state = Airblast thrown
  */
-@ABendingAbility(name = "Air Blast", bind = BendingAbilities.AirBlast, element = BendingElement.Air)
+@ABendingAbility(name = AirBlast.NAME, element = BendingElement.Air)
 public class AirBlast extends BendingActiveAbility {
+	public final static String NAME = "AirBlast";
+	
 	private static int ID = Integer.MIN_VALUE;
 
 	@ConfigurationParameter("Speed")
@@ -61,8 +62,8 @@ public class AirBlast extends BendingActiveAbility {
 	private double pushfactor = PUSH_FACTOR;
 	private boolean otherOrigin = false;
 
-	public AirBlast(Player player) {
-		super(player);
+	public AirBlast(RegisteredAbility register, Player player) {
+		super(register, player);
 		this.id = ID++;
 		if (this.bender.hasPath(BendingPath.Renegade)) {
 			this.range = this.range * 0.6;
@@ -103,7 +104,7 @@ public class AirBlast extends BendingActiveAbility {
 			if (this.bender.hasPath(BendingPath.Mobile)) {
 				cooldown *= 0.8;
 			}
-			this.bender.cooldown(BendingAbilities.AirBlast, cooldown);
+			this.bender.cooldown(NAME, cooldown);
 			setState(BendingAbilityState.Progressing);
 			return false;
 		}
@@ -119,7 +120,7 @@ public class AirBlast extends BendingActiveAbility {
 				return false;
 			}
 
-			if ((originLocation == null) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirBlast, originLocation)) {
+			if ((originLocation == null) || ProtectionManager.isRegionProtectedFromBending(this.player, NAME, originLocation)) {
 				return false;
 			}
 
@@ -136,7 +137,7 @@ public class AirBlast extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (getState() == BendingAbilityState.Preparing && this.bender.getAbility() != BendingAbilities.AirBlast) {
+		if (getState() == BendingAbilityState.Preparing && !this.bender.getAbility().equals(NAME)) {
 			return false;
 		}
 		return true;

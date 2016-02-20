@@ -10,11 +10,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
@@ -32,8 +32,9 @@ import net.avatar.realms.spigot.bending.utils.TempBlock;
  *
  * @author Noko
  */
-@ABendingAbility(name = "HeatControl", bind = BendingAbilities.HeatControl, element = BendingElement.Fire)
+@ABendingAbility(name = HeatControl.NAME, element = BendingElement.Fire)
 public class HeatControl extends BendingActiveAbility {
+	public final static String NAME = "HeatControl";
 
 	@ConfigurationParameter("Extinguish-Range")
 	private static double EXT_RANGE = 20;
@@ -64,8 +65,8 @@ public class HeatControl extends BendingActiveAbility {
 	private ItemStack items;
 	private long time;
 
-	public HeatControl(Player player) {
-		super(player);
+	public HeatControl(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class HeatControl extends BendingActiveAbility {
 				extinguish(range);
 			}
 
-			this.bender.cooldown(BendingAbilities.HeatControl, EXT_COOLDOWN);
+			this.bender.cooldown(NAME, EXT_COOLDOWN);
 		}
 		return false;
 	}
@@ -98,7 +99,7 @@ public class HeatControl extends BendingActiveAbility {
 		double radius = PluginTools.firebendingDayAugment(RADIUS, this.player.getWorld());
 
 		for (Block block : BlockTools.getBlocksAroundPoint(EntityTools.getTargetBlock(this.player, range).getLocation(), radius)) {
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Blaze, block.getLocation())) {
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, block.getLocation())) {
 				continue;
 			}
 			// Do not allow firebender to completly negate lavabend
@@ -237,7 +238,7 @@ public class HeatControl extends BendingActiveAbility {
 	// Copy from Melt (now deleted)
 	@SuppressWarnings("deprecation")
 	public static void melt(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.PhaseChange, block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, PhaseChange.NAME, block.getLocation())) {
 			return;
 		}
 
@@ -264,7 +265,7 @@ public class HeatControl extends BendingActiveAbility {
 	}
 
 	public static void evaporate(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.HeatControl, block.getLocation())) {
+		if (ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation())) {
 			return;
 		}
 		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block) && WaterManipulation.canPhysicsChange(block)) {

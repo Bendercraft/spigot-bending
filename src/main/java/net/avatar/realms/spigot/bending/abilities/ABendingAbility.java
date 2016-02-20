@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 public @interface ABendingAbility {
 	public String name();
 
-	public BendingAbilities bind();
-
-	public BendingElement element();
+	public BendingElement element() default BendingElement.None;
 
 	public BendingAffinity affinity() default BendingAffinity.None;
+	
+	public boolean shift() default true;
 }

@@ -8,14 +8,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -26,8 +25,9 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * get slown.
  *
  */
-@ABendingAbility(name = "Vital Point", bind = BendingAbilities.VitalPoint, element = BendingElement.Master, affinity=BendingAffinity.Chi)
+@ABendingAbility(name = VitalPoint.NAME, affinity=BendingAffinity.Chi, shift=false)
 public class VitalPoint extends BendingActiveAbility {
+	public final static String NAME = "VitalPoint";
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 1;
@@ -57,8 +57,8 @@ public class VitalPoint extends BendingActiveAbility {
 	private LivingEntity target;
 	private int amplifier;
 
-	public VitalPoint(Player player) {
-		super(player);
+	public VitalPoint(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.amplifier = 0;
 		this.damage = DAMAGE;
@@ -101,7 +101,7 @@ public class VitalPoint extends BendingActiveAbility {
 			if (this.bender.hasPath(BendingPath.Restless)) {
 				this.cooldown *= 0.5;
 			}
-			this.bender.cooldown(BendingAbilities.VitalPoint, this.cooldown);
+			this.bender.cooldown(NAME, this.cooldown);
 		}
 		return true;
 	}
@@ -116,7 +116,7 @@ public class VitalPoint extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.VitalPoint);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 
 		if ((instances == null) || instances.isEmpty()) {
 			return true;

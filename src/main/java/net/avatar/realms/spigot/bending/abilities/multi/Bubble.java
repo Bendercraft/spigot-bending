@@ -14,10 +14,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
+import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
+import net.avatar.realms.spigot.bending.abilities.water.WaterBubble;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -33,8 +35,8 @@ public abstract class Bubble extends BendingActiveAbility {
 
 	protected Set<Material> pushedMaterials;
 
-	public Bubble(Player player) {
-		super(player);
+	public Bubble(RegisteredAbility register, Player player) {
+		super(register, player);
 		this.lastLocation = player.getLocation();
 		this.origins = new HashMap<Block, TempBlock>();
 		this.pushedMaterials = new HashSet<Material>();
@@ -42,7 +44,8 @@ public abstract class Bubble extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (EntityTools.getBendingAbility(this.player) == AbilityManager.getManager().getAbilityType(this)) {
+		if (EntityTools.getBendingAbility(this.player).equals(AirBubble.NAME)
+				|| EntityTools.getBendingAbility(this.player).equals(WaterBubble.NAME)) {
 			pushWater();
 		}
 		else {
@@ -108,7 +111,10 @@ public abstract class Bubble extends BendingActiveAbility {
 				if (this.origins.containsKey(block)) {
 					continue;
 				}
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, AbilityManager.getManager().getAbilityType(this), block.getLocation())) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, WaterBubble.NAME, block.getLocation())) {
+					continue;
+				}
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, AirBubble.NAME, block.getLocation())) {
 					continue;
 				}
 				if (this.pushedMaterials.contains(block.getType())) {
@@ -123,11 +129,11 @@ public abstract class Bubble extends BendingActiveAbility {
 	}
 
 	public static boolean canFlowTo(Block block) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.AirBubble);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(AirBubble.NAME);
 		if (instances == null) {
 			instances = new HashMap<Object, BendingAbility>();
 		}
-		Map<Object, BendingAbility> insts = AbilityManager.getManager().getInstances(BendingAbilities.WaterBubble);
+		Map<Object, BendingAbility> insts = AbilityManager.getManager().getInstances(WaterBubble.NAME);
 
 		if (insts != null) {
 			instances.putAll(insts);

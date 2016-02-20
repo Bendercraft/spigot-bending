@@ -7,17 +7,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = "Fire Ferret", bind = BendingAbilities.FireFerret, element = BendingElement.Fire)
+@ABendingAbility(name = FireFerret.NAME, element = BendingElement.Fire)
 public class FireFerret extends BendingActiveAbility {
+	public final static String NAME = "FireFerret";
+	
 	@ConfigurationParameter("Search-Radius")
 	public static double SEARCH_RADIUS = 20;
 	
@@ -45,8 +47,8 @@ public class FireFerret extends BendingActiveAbility {
 
 	private double speedfactor;
 	
-	public FireFerret(Player player) {
-		super(player);
+	public FireFerret(RegisteredAbility register, Player player) {
+		super(register, player);
 		
 		speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 	}

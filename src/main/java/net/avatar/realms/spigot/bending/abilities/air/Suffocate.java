@@ -15,18 +15,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = "Suffocate", bind = BendingAbilities.Suffocate, element = BendingElement.Air, affinity = BendingAffinity.Suffocate)
+@ABendingAbility(name = Suffocate.NAME, affinity = BendingAffinity.Suffocate)
 public class Suffocate extends BendingActiveAbility {
+	public final static String NAME = "Suffocate";
+	
 	private static Map<Player, Suffocate> instances = new HashMap<Player, Suffocate>();
 	private static String LORE_NAME = "Suffocation";
 
@@ -49,8 +50,8 @@ public class Suffocate extends BendingActiveAbility {
 	private ItemStack temp;
 	private long time;
 
-	public Suffocate(Player player) {
-		super(player);
+	public Suffocate(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.time = this.startedTime;
 
@@ -85,7 +86,7 @@ public class Suffocate extends BendingActiveAbility {
 			this.target = (Player) target;
 			this.targetLocation = this.target.getLocation().getBlock();
 
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Suffocate, this.target.getLocation())) {
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.target.getLocation())) {
 				return false;
 			}
 
@@ -100,7 +101,7 @@ public class Suffocate extends BendingActiveAbility {
 	@Override
 	public boolean canTick() {
 		if(!super.canTick() 
-				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.Suffocate, this.target.getLocation()) 
+				|| ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.target.getLocation()) 
 				|| this.target.isDead() 
 				|| !getState().equals(BendingAbilityState.Progressing) 
 				|| !this.player.hasLineOfSight(this.target) 
@@ -146,7 +147,7 @@ public class Suffocate extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		this.restoreTargetHelmet();
-		this.bender.cooldown(BendingAbilities.Suffocate, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 	}
 
 	public static boolean isTempHelmet(ItemStack is) {

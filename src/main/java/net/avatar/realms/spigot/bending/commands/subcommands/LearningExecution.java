@@ -9,10 +9,11 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -77,9 +78,9 @@ public class LearningExecution extends BendingCommand {
 				sender.sendMessage(Messages.INVALID_AFFINITY);
 				return;
 			}
-			for (BendingAbilities ability : BendingAbilities.values()) {
-				if (affinity.equals(ability.getAffinity())) {
-					Bending.getInstance().getLearning().removePermission(target, ability);
+			for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
+				if (affinity == ability.getAffinity()) {
+					Bending.getInstance().getLearning().removePermission(target, ability.getName());
 				}
 			}
 			bender.removeAffinity(affinity);
@@ -91,15 +92,15 @@ public class LearningExecution extends BendingCommand {
 	}
 
 	private void freeAbility(CommandSender sender, Player target, BendingPlayer bender, String name) {
-		BendingAbilities ability = BendingAbilities.getAbility(name);
+		RegisteredAbility ability = AbilityManager.getManager().getRegisteredAbility(name);
 		if (ability == null) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
 			return;
 		}
 
-		if (Bending.getInstance().getLearning().removePermission(target, ability)) {
+		if (Bending.getInstance().getLearning().removePermission(target, ability.getName())) {
 			bender.clearAbilities();
-			sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has lost " + ability.name() + ".");
+			sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has lost " + ability.getName() + ".");
 		}
 	}
 
@@ -148,9 +149,9 @@ public class LearningExecution extends BendingCommand {
 			return;
 		}
 		bender.setBender(element);
-		for (BendingAbilities ability : BendingAbilities.values()) {
-			if (ability.getElement().equals(element) && !ability.isAffinity()) {
-				Bending.getInstance().getLearning().addPermission(target, ability);
+		for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
+			if (ability.getElement() == element && ability.getAffinity() == BendingAffinity.None) {
+				Bending.getInstance().getLearning().addPermission(target, ability.getName());
 			}
 		}
 		sender.sendMessage(ChatColor.DARK_GREEN + "Player " + target.getPlayer().getName() + " has lost all element except : " + element.name());
@@ -173,10 +174,10 @@ public class LearningExecution extends BendingCommand {
 			ChatColor color = PluginTools.getColor(Settings.getColorString(element.name()));
 			String message = "Congratulations, you can now bend " + element.name();
 			target.getPlayer().sendMessage(color + message);
-			for (BendingAbilities ability : BendingAbilities.values()) {
-				if (ability.getElement().equals(element) && !ability.isAffinity()) {
-					Bending.getInstance().getLearning().addPermission(target, ability);
-					message = "You can now use " + ability.name();
+			for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
+				if (ability.getElement().equals(element) && ability.getAffinity() == BendingAffinity.None) {
+					Bending.getInstance().getLearning().addPermission(target, ability.getName());
+					message = "You can now use " + ability.getName();
 					target.getPlayer().sendMessage(color + message);
 				}
 			}
@@ -185,7 +186,7 @@ public class LearningExecution extends BendingCommand {
 	}
 
 	private void unlockAbility(CommandSender sender, Player target, BendingPlayer bender, String abilityName) {
-		BendingAbilities ability = BendingAbilities.getAbility(abilityName);
+		RegisteredAbility ability = AbilityManager.getManager().getRegisteredAbility(abilityName);
 		if (ability == null) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
 			return;
@@ -195,11 +196,11 @@ public class LearningExecution extends BendingCommand {
 			return;
 		}
 
-		if (Bending.getInstance().getLearning().addPermission(target, ability)) {
+		if (Bending.getInstance().getLearning().addPermission(target, ability.getName())) {
 			ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
-			String message = Messages.ABILITY_LEARNED + ability.name();
+			String message = Messages.ABILITY_LEARNED + ability.getName();
 			target.getPlayer().sendMessage(color + message);
-			sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has received " + ability.name() + ".");
+			sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has received " + ability.getName() + ".");
 		}
 	}
 
@@ -222,9 +223,9 @@ public class LearningExecution extends BendingCommand {
 		}
 		if (canLearn) {
 			bender.addAffinity(affinity);
-			for (BendingAbilities ability : BendingAbilities.values()) {
+			for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
 				if (ability.getAffinity() == affinity) {
-					Bending.getInstance().getLearning().addPermission(target, ability);
+					Bending.getInstance().getLearning().addPermission(target, ability.getName());
 				}
 			}
 			String msg = Messages.AFFINITY_SET;

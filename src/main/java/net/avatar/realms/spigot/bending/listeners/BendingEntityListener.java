@@ -28,13 +28,15 @@ import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.arts.C4;
 import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
+import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
+import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
@@ -116,7 +118,7 @@ public class BendingEntityListener implements Listener {
 		if (source instanceof Player) {
 			if (event.getCause().equals(DamageCause.ENTITY_ATTACK)) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) source);
-				if ((bPlayer.getAbility() != null) && bPlayer.getAbility().equals(BendingAbilities.FireBlade)) {
+				if ((bPlayer.getAbility() != null) && bPlayer.getAbility().equals(FireBlade.NAME)) {
 					// 20ticks per seconds
 					entity.setFireTicks(20 * 3);
 				}
@@ -219,7 +221,7 @@ public class BendingEntityListener implements Listener {
 			if (pr instanceof Arrow) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
 				if (bPlayer.isBender(BendingElement.Fire)) {
-					if (p.isSneaking() && (bPlayer.getAbility() == BendingAbilities.HeatControl)) {
+					if (p.isSneaking() && bPlayer.getAbility().equals(HeatControl.NAME)) {
 						pr.setFireTicks(200);
 					}
 				}
@@ -239,9 +241,10 @@ public class BendingEntityListener implements Listener {
 				if (bPlayer == null) {
 					return;
 				}
-				BendingAbilities ability = bPlayer.getAbility();
-				if ((ability == BendingAbilities.PlasticBomb) && EntityTools.canBend(player, ability)) {
-					C4 bomb = new C4(player, arrow);
+				String ability = bPlayer.getAbility();
+				if (ability.equals(C4.NAME) && EntityTools.canBend(player, ability)) {
+					C4 bomb = (C4) AbilityManager.getManager().buildAbility(C4.NAME, player);
+					bomb.setArrow(arrow);
 					bomb.swing();
 				}
 			}

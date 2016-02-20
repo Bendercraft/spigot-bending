@@ -11,21 +11,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = "Healing Waters", bind = BendingAbilities.HealingWaters, element = BendingElement.Water)
+@ABendingAbility(name = HealingWaters.NAME, element = BendingElement.Water)
 public class HealingWaters extends BendingActiveAbility {
+	public final static String NAME = "HealingWaters";
 
 	@ConfigurationParameter("Range")
 	private static double RANGE = 5.0;
@@ -33,8 +34,8 @@ public class HealingWaters extends BendingActiveAbility {
 	private long time = 0;
 	private LivingEntity target;
 
-	public HealingWaters(final Player player) {
-		super(player);
+	public HealingWaters(RegisteredAbility register, Player player) {
+		super(register, player);
 		this.time = this.startedTime;
 	}
 
@@ -57,7 +58,7 @@ public class HealingWaters extends BendingActiveAbility {
 			return false;
 		}
 		if (!this.player.isSneaking()
-				|| this.bender.getAbility() != BendingAbilities.HealingWaters) {
+				|| !this.bender.getAbility().equals(NAME)) {
 			return false;
 		}
 		return true;
@@ -70,7 +71,7 @@ public class HealingWaters extends BendingActiveAbility {
 			entity = this.player;
 		}
 		if (ProtectionManager.isEntityProtected(entity) 
-				|| ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.HealingWaters, entity.getLocation())) {
+				|| ProtectionManager.isRegionProtectedFromBending(this.player, NAME, entity.getLocation())) {
 			remove();
 			return;
 		}
@@ -174,7 +175,7 @@ public class HealingWaters extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.HealingWaters);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances == null) {
 			return true;
 		}

@@ -3,10 +3,10 @@ package net.avatar.realms.spigot.bending.abilities.arts;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
@@ -16,8 +16,9 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * knockback You must be sneaking when clicking to activate this technique.
  *
  */
-@ABendingAbility(name = "Direct Hit", bind = BendingAbilities.DirectHit, element = BendingElement.Master)
+@ABendingAbility(name = DirectHit.NAME, element = BendingElement.Master, shift=false)
 public class DirectHit extends BendingActiveAbility {
+	public final static String NAME = "DirectHit";
 
 	@ConfigurationParameter("Damage")
 	public static long DAMAGE = 5;
@@ -31,8 +32,8 @@ public class DirectHit extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
 
-	public DirectHit(Player player) {
-		super(player);
+	public DirectHit(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override

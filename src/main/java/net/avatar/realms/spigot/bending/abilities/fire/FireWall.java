@@ -10,11 +10,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -23,8 +23,9 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = "Wall of Fire", bind = BendingAbilities.WallOfFire, element = BendingElement.Fire)
-public class WallOfFire extends BendingActiveAbility {
+@ABendingAbility(name = FireWall.NAME, element = BendingElement.Fire, shift=false)
+public class FireWall extends BendingActiveAbility {
+	public final static String NAME = "FireWall";
 
 	private static double maxangle = 50;
 	private static long interval = 250;
@@ -60,8 +61,8 @@ public class WallOfFire extends BendingActiveAbility {
 	private int height;
 	private long duration;
 
-	public WallOfFire(Player player) {
-		super(player);
+	public FireWall(RegisteredAbility register, Player player) {
+		super(register, player);
 		this.origin = EntityTools.getTargetedLocation(player, RANGE);
 	}
 	
@@ -146,7 +147,7 @@ public class WallOfFire extends BendingActiveAbility {
 			for (double j = -h; j <= h; j++) {
 				Location location = this.origin.clone().add(orthoud.clone().multiply(j));
 				location = location.add(ortholr.clone().multiply(i));
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.WallOfFire, location)) {
+				if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, location)) {
 					continue;
 				}
 				Block block = location.getBlock();
@@ -178,7 +179,7 @@ public class WallOfFire extends BendingActiveAbility {
 			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.WallOfFire, entity.getLocation())) {
+			if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, entity.getLocation())) {
 				continue;
 			}
 			for (Block block : this.blocks) {

@@ -13,7 +13,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
@@ -23,6 +22,7 @@ import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
@@ -40,8 +40,10 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  *
  * @author Noko
  */
-@ABendingAbility(name = "Fire Burst", bind = BendingAbilities.FireBurst, element = BendingElement.Fire)
+@ABendingAbility(name = FireBurst.NAME, element = BendingElement.Fire)
 public class FireBurst extends BendingActiveAbility {
+	public final static String NAME = "FireBurst";
+	
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 2500;
 
@@ -74,8 +76,8 @@ public class FireBurst extends BendingActiveAbility {
 	
 	private List<BurstBlast> blasts;
 
-	public FireBurst(Player player) {
-		super(player);
+	public FireBurst(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		if (Tools.isDay(player.getWorld())) {
 			this.chargetime /= Settings.DAY_FACTOR;
@@ -132,7 +134,7 @@ public class FireBurst extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if ((EntityTools.getBendingAbility(this.player) != BendingAbilities.FireBurst)) {
+		if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
 			return false;
 		}
 		return true;
@@ -197,7 +199,7 @@ public class FireBurst extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		this.bender.cooldown(BendingAbilities.FireBurst, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 	}
 
 	public boolean isCharged() {
@@ -205,12 +207,12 @@ public class FireBurst extends BendingActiveAbility {
 	}
 
 	public static boolean isFireBursting(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		return instances.containsKey(player);
 	}
 
 	public static FireBurst getFireBurst(Player player) {
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		return (FireBurst) instances.get(player);
 	}
 
@@ -220,7 +222,7 @@ public class FireBurst extends BendingActiveAbility {
 			return false;
 		}
 
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(BendingAbilities.FireBurst);
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if (instances.containsKey(this.player)) {
 			return false;
 		}

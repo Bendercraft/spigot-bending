@@ -3,12 +3,12 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -20,8 +20,10 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@ABendingAbility(name = "Metalbending", bind = BendingAbilities.MetalBending, element = BendingElement.Earth, affinity = BendingAffinity.Metalbend)
+@ABendingAbility(name = MetalBending.NAME, affinity = BendingAffinity.Metalbend)
 public class MetalBending extends BendingActiveAbility {
+	public final static String NAME = "Metalbending";
+	
 	@ConfigurationParameter("Melt-Time")
 	private static long MELT_TIME = 2000;
 
@@ -51,8 +53,8 @@ public class MetalBending extends BendingActiveAbility {
 	private long time;
 	private ItemStack items;
 
-	public MetalBending(Player player) {
-		super(player);
+	public MetalBending(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -72,14 +74,14 @@ public class MetalBending extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	public static void use(Player pl, Block bl) {
 		// Don't really like it, magic value
-		if (EntityTools.isBender(pl, BendingElement.Earth) && EntityTools.getBendingAbility(pl) == BendingAbilities.MetalBending) {
-			if (EntityTools.canBend(pl, BendingAbilities.MetalBending)) {
+		if (EntityTools.isBender(pl, BendingElement.Earth) && EntityTools.getBendingAbility(pl).equals(NAME)) {
+			if (EntityTools.canBend(pl, NAME)) {
 				if (bl.getType() == Material.IRON_DOOR_BLOCK) {
 					if (bl.getData() >= 8) {
 						bl = bl.getRelative(BlockFace.DOWN);
 					}
 					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
-						if (!ProtectionManager.isRegionProtectedFromBending(pl, BendingAbilities.MetalBending, bl.getLocation())) {
+						if (!ProtectionManager.isRegionProtectedFromBending(pl, NAME, bl.getLocation())) {
 							if (bl.getData() < 4) {
 								bl.setData((byte) (bl.getData() + 4));
 								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);
@@ -103,7 +105,7 @@ public class MetalBending extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!player.isSneaking() || EntityTools.getBendingAbility(player) != BendingAbilities.MetalBending) {
+		if (!player.isSneaking() || !EntityTools.getBendingAbility(player).equals(NAME)) {
 			return false;
 		}
 		return true;

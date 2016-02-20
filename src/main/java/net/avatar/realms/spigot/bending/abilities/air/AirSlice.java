@@ -13,19 +13,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = "Air Slice", bind = BendingAbilities.AirSlice, element = BendingElement.Air)
+@ABendingAbility(name = AirSlice.NAME, element = BendingElement.Air)
 public class AirSlice extends BendingActiveAbility {
+	public final static String NAME = "AirSlice";
 
 	@ConfigurationParameter("Select-Range")
 	private static double SELECT_RANGE = 6;
@@ -54,8 +55,8 @@ public class AirSlice extends BendingActiveAbility {
 	private Location origin = null;
 	private List<Location> onGoing = new LinkedList<Location>();
 
-	public AirSlice(Player player) {
-		super(player);
+	public AirSlice(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -88,7 +89,7 @@ public class AirSlice extends BendingActiveAbility {
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.Start) {
 			this.first = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
-			if (this.first == null || this.first.getBlock().isLiquid() || BlockTools.isSolid(this.first.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSlice, this.first)) {
+			if (this.first == null || this.first.getBlock().isLiquid() || BlockTools.isSolid(this.first.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.first)) {
 				return false;
 			}
 			setState(BendingAbilityState.Preparing);
@@ -97,7 +98,7 @@ public class AirSlice extends BendingActiveAbility {
 			if(this.second != null && this.second.distance(this.first) > DISTANCE) {
 				this.second = null;
 			}
-			if (this.second == null || this.second.getBlock().isLiquid() || BlockTools.isSolid(this.second.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, BendingAbilities.AirSlice, this.second)) {
+			if (this.second == null || this.second.getBlock().isLiquid() || BlockTools.isSolid(this.second.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.second)) {
 				this.second = null;
 				if(getState() == BendingAbilityState.Prepared) {
 					setState(BendingAbilityState.Preparing);

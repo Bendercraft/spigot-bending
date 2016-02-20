@@ -4,6 +4,8 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,7 +66,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireShield;
 import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
-import net.avatar.realms.spigot.bending.abilities.fire.WallOfFire;
+import net.avatar.realms.spigot.bending.abilities.fire.FireWall;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
@@ -80,7 +82,6 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterTurret;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
 import net.avatar.realms.spigot.bending.event.BendingRegisterEvent;
 
 public class AbilityManager {
@@ -88,15 +89,15 @@ public class AbilityManager {
 	//Singleton
 	private static AbilityManager manager = null;
 
-	private Map<BendingAbilities, RegisteredAbility> binds;
-	private Map<Class<? extends BendingAbility>, BendingAbilities> reverseBinds;
+	private Map<String, RegisteredAbility> binds;
+	private Map<Class<? extends BendingAbility>, String> reverseBinds;
 	
-	private Map<BendingAbilities, Map<Object, BendingAbility>> runnings;
+	private Map<String, Map<Object, BendingAbility>> runnings;
 
 	private AbilityManager() {
-		this.runnings = new HashMap<BendingAbilities, Map<Object, BendingAbility>>();
-		this.binds = new HashMap<BendingAbilities, RegisteredAbility>();
-		this.reverseBinds = new HashMap<Class<? extends BendingAbility>, BendingAbilities>();
+		this.runnings = new HashMap<String, Map<Object, BendingAbility>>();
+		this.binds = new HashMap<String, RegisteredAbility>();
+		this.reverseBinds = new HashMap<Class<? extends BendingAbility>, String>();
 	}
 	
 	public static AbilityManager getManager() {
@@ -135,8 +136,8 @@ public class AbilityManager {
 		}
 	}
 
-	public BendingActiveAbility buildAbility(BendingAbilities abilityType, Player player) {
-		RegisteredAbility registered = this.binds.get(abilityType);
+	public BendingActiveAbility buildAbility(String name, Player player) {
+		RegisteredAbility registered = this.binds.get(name);
 		if (registered == null) {
 			return null; // Invalid bind
 		}
@@ -145,45 +146,45 @@ public class AbilityManager {
 			return null; // Invalid bind
 		}
 		try {
-			BendingActiveAbility ab = (BendingActiveAbility) contructor.newInstance(player);
+			BendingActiveAbility ab = (BendingActiveAbility) contructor.newInstance(registered, player);
 			if (ab == null) {
-				Bending.getInstance().getLogger().warning("Invalid class for ability " + abilityType);
+				Bending.getInstance().getLogger().warning("Invalid class for ability " + name);
 			}
 			return ab;
 		} catch (Exception e) {
-			Bending.getInstance().getLogger().log(Level.SEVERE, "Invalid constructor for ability " + abilityType, e);
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Invalid constructor for ability " + name, e);
 		}
 		return null;
 	}
 
-	public BendingAbilities getAbilityType(BendingAbility instance) {
+	public String getName(BendingAbility instance) {
 		return reverseBinds.get(instance.getClass());
 	}
 
 	public void addInstance(BendingAbility instance) {
-		BendingAbilities bind = getAbilityType(instance);
-		Map<Object, BendingAbility> map = runnings.get(bind);
+		String name = getName(instance);
+		Map<Object, BendingAbility> map = runnings.get(name);
 		if(map == null) {
 			map = new HashMap<Object, BendingAbility>();
-			runnings.put(bind, map);
+			runnings.put(name, map);
 		}
 		map.put(instance.getIdentifier(), instance);
 	}
 
-	public Map<Object, BendingAbility> getInstances(BendingAbilities type) {
-		Map<Object, BendingAbility> result = runnings.get(type);
+	public Map<Object, BendingAbility> getInstances(String name) {
+		Map<Object, BendingAbility> result = runnings.get(name);
 		if(result == null) {
 			result = new HashMap<Object, BendingAbility>();
 		}
 		return result;
 	}
 
-	public boolean isUsingAbility(Player player, BendingAbilities ability) {
-		if (player == null || ability == null) {
+	public boolean isUsingAbility(Player player, String name) {
+		if (player == null || name == null) {
 			return false;
 		}
 
-		Map<Object, BendingAbility> instances = getInstances(ability);
+		Map<Object, BendingAbility> instances = getInstances(name);
 		if (instances == null || instances.isEmpty()) {
 			return false;
 		}
@@ -254,7 +255,7 @@ public class AbilityManager {
 		register(Illumination.class);
 		register(FireFerret.class);
 		register(Lightning.class);
-		register(WallOfFire.class);
+		register(FireWall.class);
 
 		register(Bloodbending.class);
 		register(FastSwimming.class);
@@ -284,34 +285,52 @@ public class AbilityManager {
 			return;
 		}
 		if (annotation.affinity() != BendingAffinity.None) {
-			register(annotation.name(), annotation.bind(), ability, annotation.affinity().getElement(), annotation.affinity());
+			register(annotation.name(), ability, annotation.affinity().getElement(), annotation.affinity(), annotation.shift());
 		} else {
 			if (annotation.element() == BendingElement.None) {
-				Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but element&specilization are not set ! Aborting this registration...");
+				Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but element & affinity are not set ! Aborting this registration...");
 				return;
 			}
-			register(annotation.name(), annotation.bind(), ability, annotation.element(), null);
+			register(annotation.name(), ability, annotation.element(), BendingAffinity.None, annotation.shift());
 		}
 	}
 
-	private void register(String name, BendingAbilities bind, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity specialization) {
+	private void register(String name, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity affinity, boolean shift) {
+		if(!name.matches("^[a-zA-Z0-9_]*$")) {
+			// Nope !
+			Bending.getInstance().getLogger().severe("Ability " + name + " is not a valid name ([a-zA-Z0-9_]) ! Aborting registration...");
+			return;
+		}
+		
 		if (this.binds.containsKey(name)) {
 			// Nope !
-			Bending.getInstance().getLogger().severe("Ability " + bind + "(" + name + ") is already register with class " + this.binds.get(name) + " ! Aborting registration...");
+			Bending.getInstance().getLogger().severe("Ability " + name + " is already register with class " + this.binds.get(name) + " ! Aborting registration...");
+			return;
+		}
+		
+		if(element == null || element == BendingElement.None) {
+			// Nope !
+			Bending.getInstance().getLogger().severe("Ability " + name + " has no element on its annotation ! Aborting registration...");
+			return;
+		}
+		
+		if(affinity != null && affinity != BendingAffinity.None && affinity.getElement() != element) {
+			// Nope !
+			Bending.getInstance().getLogger().severe("Ability " + name + " affinity and element are not matching (element is "+ element +" - affinity element is "+ affinity.getElement() +") ! Aborting registration...");
 			return;
 		}
 
 		try {
-			Constructor<? extends BendingAbility> constructor = ability.getConstructor(Player.class);
+			Constructor<? extends BendingAbility> constructor = ability.getConstructor(RegisteredAbility.class, Player.class);
 			if (constructor == null) {
-				Bending.getInstance().getLogger().severe("Bind " + bind + " associated with class " + ability + " has no valid constructor with just one player.");
+				Bending.getInstance().getLogger().severe("Bind " + name + " associated with class " + ability + " has no valid constructor <RegisteredAbility, Player>.");
 				return;
 			}
-			RegisteredAbility ra = new RegisteredAbility(name, ability, element, specialization, constructor);
-			this.binds.put(bind, ra);
-			this.reverseBinds.put(ra.getAbility(), bind);
+			RegisteredAbility ra = new RegisteredAbility(name, ability, element, affinity, shift, constructor);
+			this.binds.put(name, ra);
+			this.reverseBinds.put(ra.getAbility(), name);
 		} catch (Exception e) {
-			Bending.getInstance().getLogger().log(Level.SEVERE, "Bind " + bind + " associated with class " + ability + " threw exception when getting constructor", e);
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Bind " + name + " associated with class " + ability + " threw exception when getting constructor", e);
 		}
 
 	}
@@ -332,5 +351,13 @@ public class AbilityManager {
 			}
 		}
 		ConfigurationManager.applyConfiguration(configFile, fields);
+	}
+	
+	public RegisteredAbility getRegisteredAbility(String name) {
+		return binds.get(name);
+	}
+	
+	public Collection<RegisteredAbility> getRegisteredAbilities() {
+		return Collections.unmodifiableCollection(binds.values());
 	}
 }

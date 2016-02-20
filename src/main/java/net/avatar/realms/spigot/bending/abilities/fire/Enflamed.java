@@ -8,7 +8,6 @@ import java.util.Map;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
@@ -107,7 +106,7 @@ public class Enflamed {
 	}
 
 	public static boolean canBurn(Player player) {
-		if ((EntityTools.getBendingAbility(player) == BendingAbilities.HeatControl) || FireJet.checkTemporaryImmunity(player)) {
+		if (EntityTools.getBendingAbility(player).equals(HeatControl.NAME) || FireJet.checkTemporaryImmunity(player)) {
 			player.setFireTicks(0);
 			return false;
 		}

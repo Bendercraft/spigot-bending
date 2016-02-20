@@ -7,8 +7,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -21,7 +23,6 @@ public class AvailableExecution extends BendingCommand {
 		this.aliases.add("availables");
 		this.aliases.add("avail");
 		this.basePermission = "bending.command.available";
-
 	}
 
 	@Override
@@ -35,11 +36,11 @@ public class AvailableExecution extends BendingCommand {
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 
 		sender.sendMessage("Available abilities : ");
-		for (BendingAbilities ability : BendingAbilities.values()) {
+		for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
 			if (player.hasPermission(ability.getPermission()) && bender.isBender(ability.getElement())
-					&& (!ability.isAffinity() || bender.hasAffinity(ability.getAffinity()))) {
+					&& (ability.getAffinity() == BendingAffinity.None || bender.hasAffinity(ability.getAffinity()))) {
 				ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
-				sender.sendMessage("--" + color + ability.name());
+				sender.sendMessage("--" + color + ability.getName());
 			}
 		}
 		return true;

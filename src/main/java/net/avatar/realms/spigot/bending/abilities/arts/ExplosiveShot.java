@@ -1,17 +1,17 @@
 package net.avatar.realms.spigot.bending.abilities.arts;
 
 import org.bukkit.entity.Player;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 
-@ABendingAbility(name = "ExplosiveShot", bind = BendingAbilities.AirSlice, element = BendingElement.Master, affinity = BendingAffinity.Bowman)
+@ABendingAbility(name = ExplosiveShot.NAME, affinity = BendingAffinity.Bowman)
 public class ExplosiveShot extends BendingActiveAbility {
+	public final static String NAME = "ExplosiveShot";
 
-	public ExplosiveShot(Player player) {
-		super(player);
+	public ExplosiveShot(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override

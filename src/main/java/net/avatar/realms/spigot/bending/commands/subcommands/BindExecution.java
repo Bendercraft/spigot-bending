@@ -8,9 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -38,15 +39,15 @@ public class BindExecution extends BendingCommand {
 		}
 
 		final String a = args.get(0);
-		final BendingAbilities ability = BendingAbilities.getAbility(a);
-		if ((ability == null) || !ability.isBindable()) {
+		RegisteredAbility ability = AbilityManager.getManager().getRegisteredAbility(a);
+		if ((ability == null) || BendingPassiveAbility.isPassive(ability)) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_ABILITY);
 			return true;
 		}
 
 		Player player = (Player) sender;
 
-		if (!EntityTools.hasPermission(player, ability)) {
+		if (!EntityTools.hasPermission(player, ability.getName())) {
 			player.sendMessage(ChatColor.RED + Messages.NO_BIND_PERMISSION);
 			return true;
 		}
@@ -74,9 +75,9 @@ public class BindExecution extends BendingCommand {
 			player.sendMessage(color + Messages.NOT_HAVE_ELEMENT + ability.getElement().name());
 			return true;
 		}
-		bender.setAbility(slot, ability);
+		bender.setAbility(slot, ability.getName());
 		String boundMessage = Messages.ABILITY_BOUND;
-		boundMessage = boundMessage.replaceAll("\\{0\\}", ability.name());
+		boundMessage = boundMessage.replaceAll("\\{0\\}", ability.getName());
 		boundMessage = boundMessage.replaceAll("\\{1\\}", "" + (slot + 1));
 		player.sendMessage(color + boundMessage);
 		return true;
@@ -111,11 +112,9 @@ public class BindExecution extends BendingCommand {
 			return values;
 		}
 
-		for (BendingElement element : bender.getBendingTypes()) {
-			for (BendingAbilities ability : BendingAbilities.getElementAbilities(element)) {
-				if (player.hasPermission(ability.getPermission())) {
-					values.add(ability.name());
-				}
+		for(RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
+			if (player.hasPermission(ability.getPermission())) {
+				values.add(ability.getName());
 			}
 		}
 

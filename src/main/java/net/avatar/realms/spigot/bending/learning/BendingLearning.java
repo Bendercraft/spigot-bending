@@ -13,7 +13,22 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
+import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
+import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
+import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
+import net.avatar.realms.spigot.bending.abilities.arts.Dash;
+import net.avatar.realms.spigot.bending.abilities.arts.HighJump;
+import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthWall;
+import net.avatar.realms.spigot.bending.abilities.fire.Blaze;
+import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
+import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
+import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
+import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
+import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.learning.listeners.AirListener;
 import net.avatar.realms.spigot.bending.learning.listeners.ChiListener;
 import net.avatar.realms.spigot.bending.learning.listeners.EarthListener;
@@ -63,11 +78,12 @@ public class BendingLearning {
 		}
 	}
 
-	public boolean addPermission(Player player, BendingAbilities ability) {
+	public boolean addPermission(Player player, String ability) {
 		if (!EntityTools.hasPermission(player, ability)) {
 			// Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
-			String perm = ability.getPermission();
+			RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+			String perm = register.getPermission();
 			attachment.setPermission(perm, true);
 			if (!permissions.containsKey(player.getUniqueId())) {
 				permissions.put(player.getUniqueId(), new LinkedList<String>());
@@ -83,18 +99,19 @@ public class BendingLearning {
 		return false;
 	}
 
-	public boolean removePermission(Player player, BendingAbilities ability) {
+	public boolean removePermission(Player player, String ability) {
 		if (EntityTools.hasPermission(player, ability)) {
 			// Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
-			attachment.unsetPermission(ability.getPermission());
+			RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+			attachment.unsetPermission(register.getPermission());
 			if (permissions.containsKey(player.getUniqueId())) {
-				permissions.get(player.getUniqueId()).remove(ability.getPermission());
+				permissions.get(player.getUniqueId()).remove(register.getPermission());
 			}
 			try {
 				this.save();
 			} catch (Exception e) {
-				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not have saved permission " + ability.getPermission() + " for player " + player.getName(), e);
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not have saved permission " + register.getPermission() + " for player " + player.getName(), e);
 			}
 			return true;
 		}
@@ -155,31 +172,28 @@ public class BendingLearning {
 		actuals.remove(p);
 	}
 
-	public boolean isBasicBendingAbility(BendingAbilities ability) {
-		switch (ability) {
-			case AirBlast:
-			case AirSpout:
-			case AirSwipe:
+	public boolean isBasicBendingAbility(String ability) {
+		if(ability.equals(AirBlast.NAME) 
+				|| ability.equals(AirSpout.NAME)
+				|| ability.equals(AirSwipe.NAME)
 				
-			case FireBlast:
-			case Blaze:
-			case HeatControl:
+				|| ability.equals(FireBlast.NAME)
+				|| ability.equals(Blaze.NAME)
+				|| ability.equals(HeatControl.NAME)
 				
-			case EarthBlast:
-			case Collapse:
-			case RaiseEarth:
+				|| ability.equals(EarthBlast.NAME)
+				|| ability.equals(Collapse.NAME)
+				|| ability.equals(EarthWall.NAME)
 				
-			case WaterManipulation:
-			case HealingWaters:
-			case WaterSpout:
+				|| ability.equals(WaterManipulation.NAME)
+				|| ability.equals(HealingWaters.NAME)
+				|| ability.equals(WaterSpout.NAME)
 				
-			case VitalPoint:
-			case Dash:
-			case HighJump:
-				return true;
-			default:
-				return false;
+				|| ability.equals(Dash.NAME)
+				|| ability.equals(HighJump.NAME)) {
+			return true;
 		}
+		return false;
 	}
 
 	private class LearningPermissions {

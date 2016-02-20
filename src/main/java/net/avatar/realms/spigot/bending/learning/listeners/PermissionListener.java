@@ -5,8 +5,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 
 public class PermissionListener implements Listener {
@@ -21,16 +22,16 @@ public class PermissionListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		plugin.lease(event.getPlayer());
 
-		for(BendingAbilities ab : BendingAbilities.values()) {
+		for(RegisteredAbility ab : AbilityManager.getManager().getRegisteredAbilities()) {
 			// Add default perm to allow base ability to be used
-			if(plugin.isBasicBendingAbility(ab)) {
-				plugin.addPermission(event.getPlayer(), ab);
+			if(plugin.isBasicBendingAbility(ab.getName())) {
+				plugin.addPermission(event.getPlayer(), ab.getName());
 			}
 			
 			// Also allow all abilities if it is link to an affinity and player has it
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 			if(ab.getAffinity() != null && bPlayer != null && bPlayer.hasAffinity(ab.getAffinity())) {
-				plugin.addPermission(event.getPlayer(), ab);
+				plugin.addPermission(event.getPlayer(), ab.getName());
 			}
 		}
 	}

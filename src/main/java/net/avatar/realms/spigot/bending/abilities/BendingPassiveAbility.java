@@ -6,8 +6,8 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 public abstract class BendingPassiveAbility extends BendingAbility {
 
-	public BendingPassiveAbility(Player player) {
-		super(player);
+	public BendingPassiveAbility(RegisteredAbility register, Player player) {
+		super(register, player);
 	}
 
 	@Override
@@ -46,5 +46,9 @@ public abstract class BendingPassiveAbility extends BendingAbility {
 	@Override
 	protected long getMaxMillis() {
 		return 0;
+	}
+	
+	public static boolean isPassive(RegisteredAbility register) {
+		return BendingPassiveAbility.class.isAssignableFrom(register.getAbility());
 	}
 }

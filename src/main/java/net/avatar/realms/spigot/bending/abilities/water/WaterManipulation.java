@@ -16,7 +16,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
@@ -24,6 +23,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
@@ -36,8 +36,10 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = "Water Manipulation", bind = BendingAbilities.WaterManipulation, element = BendingElement.Water)
+@ABendingAbility(name = WaterManipulation.NAME, element = BendingElement.Water)
 public class WaterManipulation extends BendingActiveAbility {
+	public final static String NAME = "WaterManipulation";
+	
 	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 
 	private static int ID = Integer.MIN_VALUE;
@@ -80,19 +82,16 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	private WaterReturn waterReturn;
 
-	public WaterManipulation(Player player) {
-		super(player);
+	public WaterManipulation(RegisteredAbility register, Player player) {
+		super(register, player);
 		if (water.isEmpty()) {
 			water.add((byte) 0);
 			water.add((byte) 8);
 			water.add((byte) 9);
 		}
-		this.player = player;
 
 		damage = DAMAGE;
 		range = RANGE;
-
-		bender = BendingPlayer.getBendingPlayer(player);
 
 		if (bender.hasPath(BendingPath.Marksman)) {
 			damage *= 0.8;
@@ -131,7 +130,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		
 
 		// If no block available, check if bender can drainbend !
-		if (block == null && Drainbending.canDrainBend(this.player) && !bender.isOnCooldown(BendingAbilities.Drainbending)) {
+		if (block == null && Drainbending.canDrainBend(this.player) && !bender.isOnCooldown(Drainbending.NAME)) {
 			Location drainLocation = this.player.getEyeLocation();
 			Vector vector = drainLocation.getDirection().clone().normalize();
 			block = drainLocation.clone().add(vector.clone().multiply(2)).getBlock();
@@ -141,11 +140,11 @@ public class WaterManipulation extends BendingActiveAbility {
 			} else {
 				block = null;
 			}
-			bender.cooldown(BendingAbilities.Drainbending, Drainbending.COOLDOWN/2);
+			bender.cooldown(Drainbending.NAME, Drainbending.COOLDOWN/2);
 		}
 
 		// Check for bottle too !
-		if (block == null && !bender.isOnCooldown(BendingAbilities.WaterManipulation) 
+		if (block == null && !bender.isOnCooldown(NAME) 
 				&& getState() != BendingAbilityState.Prepared && WaterReturn.hasWaterBottle(player)) {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
@@ -220,7 +219,7 @@ public class WaterManipulation extends BendingActiveAbility {
 				addWater(this.sourceblock);
 				setState(BendingAbilityState.Progressing);
 			}
-			BendingPlayer.getBendingPlayer(this.player).cooldown(BendingAbilities.WaterManipulation, COOLDOWN);
+			BendingPlayer.getBendingPlayer(this.player).cooldown(NAME, COOLDOWN);
 		}
 
 		return false;
@@ -257,7 +256,6 @@ public class WaterManipulation extends BendingActiveAbility {
 				this.targetdirection = Tools.getDirection(this.location, targetlocation).normalize();
 			}
 			this.targetdestination = targetlocation;
-			this.player = player;
 		}
 	}
 
@@ -272,7 +270,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			this.time = System.currentTimeMillis();
 
-			if (!this.progressing && !this.falling && (EntityTools.getBendingAbility(this.player) != BendingAbilities.WaterManipulation)) {
+			if (!this.progressing && !this.falling && (!EntityTools.getBendingAbility(this.player).equals(NAME))) {
 				remove();
 				return;
 			}
@@ -423,11 +421,11 @@ public class WaterManipulation extends BendingActiveAbility {
 	}
 
 	private static void redirectTargettedBlasts(Player player) {
-		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (!manip.progressing 
 					|| !manip.location.getWorld().equals(player.getWorld()) 
-					|| ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.WaterManipulation, manip.location)) {
+					|| ProtectionManager.isRegionProtectedFromBending(player, NAME, manip.location)) {
 				continue;
 			}
 
@@ -447,12 +445,12 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	private static void block(Player player) {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.player.equals(player) 
 					|| !manip.location.getWorld().equals(player.getWorld()) 
 					|| !manip.progressing 
-					|| ProtectionManager.isRegionProtectedFromBending(player, BendingAbilities.WaterManipulation, manip.location)) {
+					|| ProtectionManager.isRegionProtectedFromBending(player, NAME, manip.location)) {
 				continue;
 			}
 
@@ -517,7 +515,7 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	public static void removeAroundPoint(Location location, double radius) {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.location.getWorld().equals(location.getWorld()) 
 					&& manip.location.distance(location) <= radius) {
@@ -532,7 +530,7 @@ public class WaterManipulation extends BendingActiveAbility {
 	private static boolean shouldAnnihilateBlasts(Location location, double radius, Player source, boolean remove) {
 		boolean broke = false;
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
-		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.location.getWorld().equals(location.getWorld()) 
 					&& !source.equals(manip.player) 
@@ -554,7 +552,7 @@ public class WaterManipulation extends BendingActiveAbility {
 	}
 
 	public static boolean isWaterManipulater(Player player) {
-		for (BendingAbility ab : AbilityManager.getManager().getInstances(BendingAbilities.WaterManipulation).values()) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.player.equals(player)) {
 				return true;

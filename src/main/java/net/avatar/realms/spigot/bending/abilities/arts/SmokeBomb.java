@@ -12,19 +12,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "Smoke Bomb", bind = BendingAbilities.SmokeBomb, element = BendingElement.Master, affinity = BendingAffinity.Chi)
+@ABendingAbility(name = SmokeBomb.NAME, affinity = BendingAffinity.Chi, shift=false)
 public class SmokeBomb extends BendingActiveAbility {
+	public final static String NAME = "SmokeBomb";
 
 	@ConfigurationParameter("Radius")
 	public static int RADIUS = 5;
@@ -52,8 +52,8 @@ public class SmokeBomb extends BendingActiveAbility {
 
 	private long cooldown;
 
-	public SmokeBomb(Player player) {
-		super(player);
+	public SmokeBomb(RegisteredAbility register, Player player) {
+		super(register, player);
 
 		this.origin = player.getLocation();
 		this.id = ID++;
@@ -90,7 +90,7 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST, (SOUND_RADIUS / 16.0f), 1.1f);
 		this.player.addPotionEffect(blindnessBomber);
 
-		this.bender.cooldown(BendingAbilities.SmokeBomb, this.cooldown);
+		this.bender.cooldown(SmokeBomb.NAME, this.cooldown);
 
 		if (getState() == BendingAbilityState.Prepared) {
 			setState(BendingAbilityState.Progressing);

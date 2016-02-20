@@ -9,8 +9,10 @@ import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.Messages;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
 import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -41,19 +43,20 @@ public class CooldownExecution extends BendingCommand {
 			return true;
 		}
 
-		Map<BendingAbilities, Long> cooldowns = bender.getCooldowns();
+		Map<String, Long> cooldowns = bender.getCooldowns();
 		player.sendMessage("-Cooldowns :");
 		if ((cooldowns == null) || cooldowns.isEmpty()) {
 			player.sendMessage("--- None");
 		} else {
-			for (BendingAbilities ab : cooldowns.keySet()) {
+			for (String ab : cooldowns.keySet()) {
 				ChatColor col = ChatColor.WHITE;
 				int min = (int) ((cooldowns.get(ab) / 1000) / 60);
 				int sec = (int) ((((cooldowns.get(ab) / 1000.0) / 60.0) - min) * 60);
-				if (!ab.isEnergyAbility()) {
-					col = PluginTools.getColor(Settings.getColorString(ab.getElement().name()));
+				RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ab);
+				if (register.getElement() != BendingElement.Energy) {
+					col = PluginTools.getColor(Settings.getColorString(register.getElement().name()));
 				}
-				player.sendMessage(col + "--- " + ab.name() + " ~ " + min + ":" + ((sec < 10) ? "0" + sec : sec));
+				player.sendMessage(col + "--- " + register.getName() + " ~ " + min + ":" + ((sec < 10) ? "0" + sec : sec));
 			}
 		}
 		return true;

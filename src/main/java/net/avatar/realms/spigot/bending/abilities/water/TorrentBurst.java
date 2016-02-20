@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilities;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -68,7 +67,7 @@ public class TorrentBurst {
 			return false;
 		}
 
-		if (!EntityTools.canBend(player, BendingAbilities.Torrent)) {
+		if (!EntityTools.canBend(player, Torrent.NAME)) {
 			return false;
 		}
 
@@ -119,7 +118,7 @@ public class TorrentBurst {
 				Block block = location.getBlock();
 				if (torrentblocks.contains(block))
 					continue;
-				if (BlockTools.isTransparentToEarthbending(player, BendingAbilities.Torrent, block)) {
+				if (BlockTools.isTransparentToEarthbending(player, Torrent.NAME, block)) {
 					//TempBlock tempBlock = new TempBlock(block, Material.WATER, full);
 					TempBlock tempBlock = TempBlock.makeTemporary(block, Material.WATER);
 					blocks.add(tempBlock);
