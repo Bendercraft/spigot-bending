@@ -7,7 +7,6 @@ import org.bukkit.util.Vector;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -40,14 +39,6 @@ public class HighJump extends BendingActiveAbility {
 			return false;
 		}
 		int height = JUMP_HEIGHT;
-
-		if(this.bender.hasPath(BendingPath.SEEKER)) {
-			height *= 0.8;
-		}
-
-		if(this.bender.hasPath(BendingPath.RESTLESS)) {
-			height *= 1.2;
-		}
 		Vector vec = Tools.getVectorForPoints(this.player.getLocation(), this.player.getLocation().add(this.player.getVelocity()).add(0, height, 0));
 		this.player.setVelocity(vec);
 		return true;

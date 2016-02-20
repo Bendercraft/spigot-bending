@@ -13,7 +13,6 @@ import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -63,13 +62,6 @@ public class VitalPoint extends BendingActiveAbility {
 		this.amplifier = 0;
 		this.damage = DAMAGE;
 		this.cooldown = COOLDOWN;
-		
-		if(this.bender.hasPath(BendingPath.SEEKER)) {
-			this.damage *= 1.5;
-		}
-		if(this.bender.hasPath(BendingPath.RESTLESS)) {
-			this.damage *= 0.6;
-		}
 	}
 
 	@Override
@@ -93,13 +85,6 @@ public class VitalPoint extends BendingActiveAbility {
 			else {
 				this.target.damage(this.damage, this.player);
 				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
-			}
-
-			if (this.bender.hasPath(BendingPath.SEEKER)) {
-				this.cooldown *= 1.4;
-			}
-			if (this.bender.hasPath(BendingPath.RESTLESS)) {
-				this.cooldown *= 0.5;
 			}
 			this.bender.cooldown(NAME, this.cooldown);
 		}

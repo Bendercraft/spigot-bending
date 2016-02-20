@@ -24,7 +24,7 @@ public enum BendingElement {
 			case FIRE:
 				return BendingPath.CONTROL;
 			case MASTER:
-				return BendingPath.EQUALITY;
+				return BendingPath.FREE;
 			default:
 				return BendingPath.NONE;
 				

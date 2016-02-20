@@ -15,8 +15,8 @@ public enum BendingPath {
 	PATIENT(BendingElement.EARTH), // Default
 	TOUGH(BendingElement.EARTH), RECKLESS(BendingElement.EARTH),
 
-	EQUALITY(BendingElement.MASTER), // Default
-	SEEKER(BendingElement.MASTER), RESTLESS(BendingElement.MASTER);
+	FREE(BendingElement.MASTER), // Default
+	STAMINA(BendingElement.MASTER), ORDER(BendingElement.MASTER);
 
 	private BendingElement element;
 
