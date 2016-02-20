@@ -80,6 +80,8 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterTurret;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.controller.ConfigurationManager;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
+import net.avatar.realms.spigot.bending.event.BendingRegisterEvent;
 
 public class AbilityManager {
 
@@ -267,6 +269,8 @@ public class AbilityManager {
 		register(WaterTurret.class);
 		register(WaterSpout.class);
 		register(WaterWall.class);
+		
+		Bending.callEvent(new BendingRegisterEvent());
 	}
 
 	protected void register(Class<? extends BendingAbility> ability) {
