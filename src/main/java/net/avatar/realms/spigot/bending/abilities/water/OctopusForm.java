@@ -25,7 +25,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = OctopusForm.NAME, element = BendingElement.Water)
+@ABendingAbility(name = OctopusForm.NAME, element = BendingElement.WATER)
 public class OctopusForm extends BendingActiveAbility {
 	public final static String NAME = "OctopusForm";
 	
@@ -74,7 +74,7 @@ public class OctopusForm extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.Preparing) {
+		if (getState() != BendingAbilityState.PREPARING) {
 			return false;
 		}
 
@@ -88,13 +88,13 @@ public class OctopusForm extends BendingActiveAbility {
 		//source = new TempBlock(sourceblock, Material.WATER, full);
 		source = TempBlock.makeTemporary(sourceblock, Material.WATER);
 
-		setState(BendingAbilityState.Prepared);
+		setState(BendingAbilityState.PREPARED);
 		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			sourceblock = BlockTools.getWaterSourceBlock(player, range, EntityTools.canPlantbend(player));
 			if (sourceblock == null && WaterReturn.hasWaterBottle(player)) {
 				Location eyeLoc = player.getEyeLocation();
@@ -115,7 +115,7 @@ public class OctopusForm extends BendingActiveAbility {
 
 			sourcelocation = sourceblock.getLocation();
 			sourceselected = true;
-			setState(BendingAbilityState.Preparing);
+			setState(BendingAbilityState.PREPARING);
 			return false;
 		}
 

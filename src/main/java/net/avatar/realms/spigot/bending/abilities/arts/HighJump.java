@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = HighJump.NAME, element = BendingElement.Master, shift=false)
+@ABendingAbility(name = HighJump.NAME, element = BendingElement.MASTER, shift=false)
 public class HighJump extends BendingActiveAbility {
 	public final static String NAME = "HighJump";
 
@@ -41,11 +41,11 @@ public class HighJump extends BendingActiveAbility {
 		}
 		int height = JUMP_HEIGHT;
 
-		if(this.bender.hasPath(BendingPath.Seeker)) {
+		if(this.bender.hasPath(BendingPath.SEEKER)) {
 			height *= 0.8;
 		}
 
-		if(this.bender.hasPath(BendingPath.Restless)) {
+		if(this.bender.hasPath(BendingPath.RESTLESS)) {
 			height *= 1.2;
 		}
 		Vector vec = Tools.getVectorForPoints(this.player.getLocation(), this.player.getLocation().add(this.player.getVelocity()).add(0, height, 0));

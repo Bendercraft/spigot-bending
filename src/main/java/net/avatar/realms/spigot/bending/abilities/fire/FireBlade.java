@@ -22,7 +22,7 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = FireBlade.NAME, element = BendingElement.Fire, shift=false)
+@ABendingAbility(name = FireBlade.NAME, element = BendingElement.FIRE, shift=false)
 public class FireBlade extends BendingActiveAbility {
 	public final static String NAME = "FireBlade";
 	
@@ -52,10 +52,10 @@ public class FireBlade extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			giveFireBlade();
 			
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}

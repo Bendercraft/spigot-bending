@@ -31,7 +31,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = Bloodbending.NAME, affinity = BendingAffinity.Bloodbend)
+@ABendingAbility(name = Bloodbending.NAME, affinity = BendingAffinity.BLOOD)
 public class Bloodbending extends BendingActiveAbility {
 	public final static String NAME = "BloodBend";
 	
@@ -98,7 +98,7 @@ public class Bloodbending extends BendingActiveAbility {
 			this.targetEntities.put(target, target.getLocation().clone());
 		}
 		this.time = System.currentTimeMillis();
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		BendingPlayer.getBendingPlayer(this.player).cooldown(this, COOLDOWN);
 		return false;
 	}

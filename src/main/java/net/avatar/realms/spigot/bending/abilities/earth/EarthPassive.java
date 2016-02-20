@@ -22,7 +22,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = EarthPassive.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = EarthPassive.NAME, element = BendingElement.EARTH)
 public class EarthPassive extends BendingPassiveAbility {
 	public final static String NAME = "EarthPassive";
 
@@ -61,7 +61,7 @@ public class EarthPassive extends BendingPassiveAbility {
 				}
 			}
 			
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 			return true;
 		}
 
@@ -109,11 +109,11 @@ public class EarthPassive extends BendingPassiveAbility {
 			return false;
 		}
 
-		if (!bender.isBender(BendingElement.Earth)) {
+		if (!bender.isBender(BendingElement.EARTH)) {
 			return false;
 		}
 
-		if (!EntityTools.canBendPassive(player, BendingElement.Earth)) {
+		if (!EntityTools.canBendPassive(player, BendingElement.EARTH)) {
 			return false;
 		}
 

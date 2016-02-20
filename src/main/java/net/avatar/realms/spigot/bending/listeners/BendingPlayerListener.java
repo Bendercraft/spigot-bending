@@ -198,7 +198,7 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerChangeVelocity(PlayerVelocityEvent event) {
 		Player player = event.getPlayer();
 		// TODO : Check if this is useful ?
-		if (EntityTools.isBender(player, BendingElement.Water) && EntityTools.canBendPassive(player, BendingElement.Water)) {
+		if (EntityTools.isBender(player, BendingElement.WATER) && EntityTools.canBendPassive(player, BendingElement.WATER)) {
 			event.setVelocity(WaterPassive.handle(player, event.getVelocity()));
 		}
 	}
@@ -263,7 +263,7 @@ public class BendingPlayerListener implements Listener {
 				}
 				if(ab.canBeInitialized() && playerCanSwingAbility(player, ab)) {
 					ab.swing();
-					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
 					}
 				}
@@ -289,24 +289,24 @@ public class BendingPlayerListener implements Listener {
 		if (!player.isSneaking() 
 				&& ((ability == null) || !register.isShift()) 
 				&& (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying())) {
-			if (EntityTools.isBender(player, BendingElement.Water) 
-					&& EntityTools.canBendPassive(player, BendingElement.Water) 
+			if (EntityTools.isBender(player, BendingElement.WATER) 
+					&& EntityTools.canBendPassive(player, BendingElement.WATER) 
 					&& !WaterSpout.isBending(player)) {
 				
 				FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
-					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
 						return;
 					}
 				}
 			}
-			if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
+			if (EntityTools.isBender(player, BendingElement.AIR) && EntityTools.canBendPassive(player, BendingElement.AIR)) {
 				AirGlide ab = new AirGlide(AbilityManager.getManager().getRegisteredAbility(AirGlide.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
-					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
 						return;
 					}
@@ -330,7 +330,7 @@ public class BendingPlayerListener implements Listener {
 				}
 				if(ab.canBeInitialized()) {
 					ab.sneak();
-					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
 					}
 				}
@@ -343,22 +343,22 @@ public class BendingPlayerListener implements Listener {
 		Player player = event.getPlayer();
 		if (!player.isSprinting()) {
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-			if (bender.isBender(BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
+			if (bender.isBender(BendingElement.AIR) && EntityTools.canBendPassive(player, BendingElement.AIR)) {
 				AirSpeed ab = new AirSpeed(AbilityManager.getManager().getRegisteredAbility(AirSpeed.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
-					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
 						return;
 					}
 				}
 			}
 
-			if (bender.isBender(BendingElement.Master) && EntityTools.canBendPassive(player, BendingElement.Master)) {
+			if (bender.isBender(BendingElement.MASTER) && EntityTools.canBendPassive(player, BendingElement.MASTER)) {
 				Speed ab = new Speed(AbilityManager.getManager().getRegisteredAbility(Speed.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
-					if(ab.getState() != BendingAbilityState.Start && ab.getState() != BendingAbilityState.Ended) {
+					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
 						return;
 					}
@@ -373,13 +373,13 @@ public class BendingPlayerListener implements Listener {
 			Player player = (Player) event.getEntity();
 			String ability = EntityTools.getBendingAbility(player);
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-			if (bender != null && bender.hasPath(BendingPath.Tough)) {
+			if (bender != null && bender.hasPath(BendingPath.TOUGH)) {
 				event.setDamage(event.getDamage() * 0.9);
 			}
 
 			if (event.getCause() == DamageCause.FALL) {
 				BendingPassiveAbility ab = null;
-				if (EntityTools.isBender(player, BendingElement.Earth)) {
+				if (EntityTools.isBender(player, BendingElement.EARTH)) {
 					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
 					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
@@ -397,12 +397,12 @@ public class BendingPlayerListener implements Listener {
 					}
 				}
 
-				if (EntityTools.isBender(player, BendingElement.Air) && EntityTools.canBendPassive(player, BendingElement.Air)) {
+				if (EntityTools.isBender(player, BendingElement.AIR) && EntityTools.canBendPassive(player, BendingElement.AIR)) {
 					if (ability.equals(AirBurst.NAME)) {
 						BendingActiveAbility burst = AbilityManager.getManager().buildAbility(AirBurst.NAME, player);
 						if (burst.canBeInitialized()) {
 							burst.fall();
-							if(burst.getState() != BendingAbilityState.Start && burst.getState() != BendingAbilityState.Ended) {
+							if(burst.getState() != BendingAbilityState.START && burst.getState() != BendingAbilityState.ENDED) {
 								AbilityManager.getManager().addInstance(burst);
 							}
 						}
@@ -413,7 +413,7 @@ public class BendingPlayerListener implements Listener {
 					return;
 				}
 
-				if (!event.isCancelled() && EntityTools.isBender(player, BendingElement.Water)) {
+				if (!event.isCancelled() && EntityTools.isBender(player, BendingElement.WATER)) {
 					ab = new WaterPassive(AbilityManager.getManager().getRegisteredAbility(WaterPassive.NAME), player);
 					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
@@ -425,8 +425,8 @@ public class BendingPlayerListener implements Listener {
 				}
 
 				if (!event.isCancelled() 
-						&& EntityTools.isBender(player, BendingElement.Master) 
-						&& EntityTools.canBendPassive(player, BendingElement.Master)) {
+						&& EntityTools.isBender(player, BendingElement.MASTER) 
+						&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
 					event.setDamage((int) (event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
 					if (event.getEntity().getFallDistance() < 10) {
 						event.setCancelled(true);
@@ -440,11 +440,11 @@ public class BendingPlayerListener implements Listener {
 				}
 			}
 			
-			if (EntityTools.canBendPassive(player, BendingElement.Fire) && EntityTools.isBender(player, BendingElement.Fire) && ((event.getCause() == DamageCause.FIRE) || (event.getCause() == DamageCause.FIRE_TICK))) {
+			if (EntityTools.canBendPassive(player, BendingElement.FIRE) && EntityTools.isBender(player, BendingElement.FIRE) && ((event.getCause() == DamageCause.FIRE) || (event.getCause() == DamageCause.FIRE_TICK))) {
 				event.setCancelled(!Enflamed.canBurn(player));
 			}
 
-			if (EntityTools.isBender(player, BendingElement.Earth) && ((event.getCause() == DamageCause.SUFFOCATION) && TempBlock.isTempBlock(player.getEyeLocation().getBlock()))) {
+			if (EntityTools.isBender(player, BendingElement.EARTH) && ((event.getCause() == DamageCause.SUFFOCATION) && TempBlock.isTempBlock(player.getEyeLocation().getBlock()))) {
 				event.setDamage(0);
 				event.setCancelled(true);
 			}

@@ -58,7 +58,7 @@ public class EarthListener implements Listener {
 	public void unlockEarthGrab(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Earth)) {
+			if (bPlayer.isBender(BendingElement.EARTH)) {
 				if (event.getAbility().equals(EarthWall.NAME)) {
 					int raised = 0;
 					Player p = bPlayer.getPlayer();
@@ -88,7 +88,7 @@ public class EarthListener implements Listener {
 							Player p = (Player) entity;
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
 								BendingPlayer bSeen = BendingPlayer.getBendingPlayer(p);
-								if (bSeen.isBender(BendingElement.Earth)) {
+								if (bSeen.isBender(BendingElement.EARTH)) {
 									int raised = 0;
 									UUID id = bSeen.getPlayer().getUniqueId();
 									if (raiseAmountGrab.containsKey(id)) {
@@ -119,7 +119,7 @@ public class EarthListener implements Listener {
 	public void unlockEarthArmor(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Earth) && event.getAbility().equals(EarthGrab.NAME)) {
+			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equals(EarthGrab.NAME)) {
 				int grabs = 0;
 				Player p = bPlayer.getPlayer();
 				UUID id = p.getUniqueId();
@@ -146,7 +146,7 @@ public class EarthListener implements Listener {
 	public void unlockEarthTunel(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Earth)) {
+			if (bPlayer.isBender(BendingElement.EARTH)) {
 				if (event.getAbility().equals(Collapse.NAME)) {
 					int comps = 0;
 					Player p = bPlayer.getPlayer();
@@ -176,7 +176,7 @@ public class EarthListener implements Listener {
 	public void unlockEarthTunnel(BlockBreakEvent event) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Earth)) {
+			if (bPlayer.isBender(BendingElement.EARTH)) {
 				if (event.getBlock().getType().equals(Material.DIRT) || event.getBlock().getType().equals(Material.GRASS) || event.getBlock().getType().equals(Material.STONE) || event.getBlock().getType().equals(Material.GRAVEL)) {
 					int dug = 0;
 					Player p = bPlayer.getPlayer();
@@ -206,7 +206,7 @@ public class EarthListener implements Listener {
 	public void unlockCatapult(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Earth) && event.getAbility().equals(EarthWall.NAME)) {
+			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equals(EarthWall.NAME)) {
 				int raised = 0;
 				Player p = bPlayer.getPlayer();
 				UUID id = p.getUniqueId();
@@ -234,7 +234,7 @@ public class EarthListener implements Listener {
 	public void unlockCatapult(PlayerVelocityEvent event) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Earth)) {
+			if (bPlayer.isBender(BendingElement.EARTH)) {
 				Vector down = new Vector(0, 1, 0);
 				float angleToDirectFall = event.getVelocity().angle(down);
 				if (-Math.PI / 2 < angleToDirectFall && angleToDirectFall < Math.PI / 2) {

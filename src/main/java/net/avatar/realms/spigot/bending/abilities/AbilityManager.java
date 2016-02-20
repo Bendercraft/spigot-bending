@@ -111,7 +111,7 @@ public class AbilityManager {
 		for (Map<Object, BendingAbility> abilities : this.runnings.values()) {
 			Map<Object, BendingAbility> pendings = new HashMap<Object, BendingAbility>(abilities);
 			for (Entry<Object, BendingAbility> entry : pendings.entrySet()) {
-				if(entry.getValue().getState().equals(BendingAbilityState.Ended)) {
+				if(entry.getValue().getState().equals(BendingAbilityState.ENDED)) {
 					abilities.remove(entry.getKey());
 				} else {
 					entry.getValue().tick();
@@ -284,14 +284,14 @@ public class AbilityManager {
 			Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
 			return;
 		}
-		if (annotation.affinity() != BendingAffinity.None) {
+		if (annotation.affinity() != BendingAffinity.NONE) {
 			register(annotation.name(), ability, annotation.affinity().getElement(), annotation.affinity(), annotation.shift());
 		} else {
-			if (annotation.element() == BendingElement.None) {
+			if (annotation.element() == BendingElement.NONE) {
 				Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but element & affinity are not set ! Aborting this registration...");
 				return;
 			}
-			register(annotation.name(), ability, annotation.element(), BendingAffinity.None, annotation.shift());
+			register(annotation.name(), ability, annotation.element(), BendingAffinity.NONE, annotation.shift());
 		}
 	}
 
@@ -308,13 +308,13 @@ public class AbilityManager {
 			return;
 		}
 		
-		if(element == null || element == BendingElement.None) {
+		if(element == null || element == BendingElement.NONE) {
 			// Nope !
 			Bending.getInstance().getLogger().severe("Ability " + name + " has no element on its annotation ! Aborting registration...");
 			return;
 		}
 		
-		if(affinity != null && affinity != BendingAffinity.None && affinity.getElement() != element) {
+		if(affinity != null && affinity != BendingAffinity.NONE && affinity.getElement() != element) {
 			// Nope !
 			Bending.getInstance().getLogger().severe("Ability " + name + " affinity and element are not matching (element is "+ element +" - affinity element is "+ affinity.getElement() +") ! Aborting registration...");
 			return;

@@ -36,7 +36,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  *
  */
 
-@ABendingAbility(name = PoisonnedDart.NAME, affinity = BendingAffinity.Chi, shift=false)
+@ABendingAbility(name = PoisonnedDart.NAME, affinity = BendingAffinity.CHI, shift=false)
 public class PoisonnedDart extends BendingActiveAbility {
 	public final static String NAME = "PoisonnedDart";
 
@@ -62,11 +62,11 @@ public class PoisonnedDart extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState().equals(BendingAbilityState.Preparing)) {
+		if (getState().equals(BendingAbilityState.PREPARING)) {
 			return true;
 		}
 
-		if (!getState().equals(BendingAbilityState.Start)) {
+		if (!getState().equals(BendingAbilityState.START)) {
 			return false;
 		}
 
@@ -74,7 +74,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 		this.location = this.origin.clone();
 		this.direction = this.origin.getDirection().normalize();
 
-		setState(BendingAbilityState.Preparing);
+		setState(BendingAbilityState.PREPARING);
 
 		ItemStack is = this.player.getItemInHand();
 		this.effects = new LinkedList<PotionEffect>();
@@ -138,11 +138,11 @@ public class PoisonnedDart extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.Preparing) {
-			setState(BendingAbilityState.Progressing);
+		if (getState() == BendingAbilityState.PREPARING) {
+			setState(BendingAbilityState.PROGRESSING);
 		}
 
-		if (getState() != BendingAbilityState.Progressing) {
+		if (getState() != BendingAbilityState.PROGRESSING) {
 			return;
 		}
 

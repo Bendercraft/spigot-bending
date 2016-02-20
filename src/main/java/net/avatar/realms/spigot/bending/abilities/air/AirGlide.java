@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = AirGlide.NAME, element = BendingElement.Air)
+@ABendingAbility(name = AirGlide.NAME, element = BendingElement.AIR)
 public class AirGlide extends BendingPassiveAbility {
 	public final static String NAME = "AirGlide";
 
@@ -40,7 +40,7 @@ public class AirGlide extends BendingPassiveAbility {
 			return false;
 		}
 
-		if (!EntityTools.canBendPassive(this.player, BendingElement.Air)) {
+		if (!EntityTools.canBendPassive(this.player, BendingElement.AIR)) {
 			return false;
 		}
 
@@ -53,7 +53,7 @@ public class AirGlide extends BendingPassiveAbility {
 		this.y = this.player.getVelocity().getY() * FALL_FACTOR;
 		this.z = this.player.getVelocity().getZ();
 
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		this.fly = FlyingPlayer.addFlyingPlayer(this.player, this, 60 * 1000L);
 		this.bender.cooldown(this, 500);
 		return true;
@@ -69,7 +69,7 @@ public class AirGlide extends BendingPassiveAbility {
 	@Override
 	public boolean canTick() {
 		if(!super.canTick() 
-				|| !(EntityTools.canBendPassive(this.player, BendingElement.Air) && this.player.isSneaking())) {
+				|| !(EntityTools.canBendPassive(this.player, BendingElement.AIR) && this.player.isSneaking())) {
 			return false;
 		}
 		String ability = EntityTools.getBendingAbility(this.player);

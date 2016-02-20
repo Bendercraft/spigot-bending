@@ -175,31 +175,31 @@ public class ProtectionManager {
 			return true;
 		}
 
-		if (register.getAffinity() != BendingAffinity.None && !query.testState(loc, localPlayer, BENDING_SPE)) {
+		if (register.getAffinity() != BendingAffinity.NONE && !query.testState(loc, localPlayer, BENDING_SPE)) {
 			return true;
 		}
 
-		if (register.getElement() == BendingElement.Energy && !query.testState(loc, localPlayer, BENDING_ENERGY)) {
+		if (register.getElement() == BendingElement.ENERGY && !query.testState(loc, localPlayer, BENDING_ENERGY)) {
 			return true;
 		}
 
-		if (register.getElement() == BendingElement.Air && !query.testState(loc, localPlayer, BENDING_AIR)) {
+		if (register.getElement() == BendingElement.AIR && !query.testState(loc, localPlayer, BENDING_AIR)) {
 			return true;
 		}
 
-		if (register.getElement() == BendingElement.Master && !query.testState(loc, localPlayer, BENDING_CHI)) {
+		if (register.getElement() == BendingElement.MASTER && !query.testState(loc, localPlayer, BENDING_CHI)) {
 			return true;
 		}
 
-		if (register.getElement() == BendingElement.Earth && !query.testState(loc, localPlayer, BENDING_EARTH)) {
+		if (register.getElement() == BendingElement.EARTH && !query.testState(loc, localPlayer, BENDING_EARTH)) {
 			return true;
 		}
 
-		if (register.getElement() == BendingElement.Fire && !query.testState(loc, localPlayer, BENDING_FIRE)) {
+		if (register.getElement() == BendingElement.FIRE && !query.testState(loc, localPlayer, BENDING_FIRE)) {
 			return true;
 		}
 
-		if (register.getElement() == BendingElement.Water && !query.testState(loc, localPlayer, BENDING_WATER)) {
+		if (register.getElement() == BendingElement.WATER && !query.testState(loc, localPlayer, BENDING_WATER)) {
 			return true;
 		}
 

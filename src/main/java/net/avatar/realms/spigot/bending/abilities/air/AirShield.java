@@ -28,7 +28,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = AirShield.NAME, element = BendingElement.Air)
+@ABendingAbility(name = AirShield.NAME, element = BendingElement.AIR)
 public class AirShield extends BendingActiveAbility {
 	public final static String NAME = "AirShield";
 
@@ -81,9 +81,9 @@ public class AirShield extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if (AvatarState.isAvatarState(this.player)) {
-			if (getState() == BendingAbilityState.Start) {
-				setState(BendingAbilityState.Progressing);
-			} else if (getState() == BendingAbilityState.Progressing) {
+			if (getState() == BendingAbilityState.START) {
+				setState(BendingAbilityState.PROGRESSING);
+			} else if (getState() == BendingAbilityState.PROGRESSING) {
 				remove();
 			}
 		}
@@ -93,12 +93,12 @@ public class AirShield extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Progressing);
+		if (getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PROGRESSING);
 			return false;
 		}
 
-		if (getState() == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.PROGRESSING) {
 			return false;
 		}
 
@@ -164,14 +164,14 @@ public class AirShield extends BendingActiveAbility {
 
 				velocity.multiply(this.radius / maxRadius);
 
-				if (bender.hasPath(BendingPath.Renegade)) {
+				if (bender.hasPath(BendingPath.RENEGADE)) {
 					EntityTools.damageEntity(player, entity, 1);
 					velocity.multiply(2);
 				}
 				entity.setVelocity(velocity);
 				entity.setFallDistance(0);
 
-				if (bender.hasPath(BendingPath.Renegade)) {
+				if (bender.hasPath(BendingPath.RENEGADE)) {
 					remove();
 					return;
 				}
@@ -213,7 +213,7 @@ public class AirShield extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		long cooldown = COOLDOWN;
-		if (bender.hasPath(BendingPath.Renegade)) {
+		if (bender.hasPath(BendingPath.RENEGADE)) {
 			cooldown *= 1.2;
 		}
 		this.bender.cooldown(NAME, cooldown);

@@ -20,7 +20,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@ABendingAbility(name = MetalBending.NAME, affinity = BendingAffinity.Metalbend)
+@ABendingAbility(name = MetalBending.NAME, affinity = BendingAffinity.METAL)
 public class MetalBending extends BendingActiveAbility {
 	public final static String NAME = "Metalbending";
 	
@@ -59,14 +59,14 @@ public class MetalBending extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 
 		this.time = System.currentTimeMillis();
 		this.items = player.getItemInHand();
 		if (isMeltable(this.items.getType())) {
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
@@ -74,7 +74,7 @@ public class MetalBending extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	public static void use(Player pl, Block bl) {
 		// Don't really like it, magic value
-		if (EntityTools.isBender(pl, BendingElement.Earth) && EntityTools.getBendingAbility(pl).equals(NAME)) {
+		if (EntityTools.isBender(pl, BendingElement.EARTH) && EntityTools.getBendingAbility(pl).equals(NAME)) {
 			if (EntityTools.canBend(pl, NAME)) {
 				if (bl.getType() == Material.IRON_DOOR_BLOCK) {
 					if (bl.getData() >= 8) {

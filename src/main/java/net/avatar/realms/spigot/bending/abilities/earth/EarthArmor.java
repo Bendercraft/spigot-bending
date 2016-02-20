@@ -26,7 +26,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = EarthArmor.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = EarthArmor.NAME, element = BendingElement.EARTH)
 public class EarthArmor extends BendingActiveAbility {
 	public final static String NAME = "EarthArmor";
 	
@@ -92,7 +92,7 @@ public class EarthArmor extends BendingActiveAbility {
 				BlockTools.removeBlock(oldlegsblock);
 			}
 			
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
@@ -101,7 +101,7 @@ public class EarthArmor extends BendingActiveAbility {
 	public boolean sneak() {
 		// EarthShield
 
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 
@@ -154,7 +154,7 @@ public class EarthArmor extends BendingActiveAbility {
 
 		if (!this.columns.isEmpty()) {
 			this.bender.cooldown(NAME, COOLDOWN);
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 
 		return false;
@@ -282,7 +282,7 @@ public class EarthArmor extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if(getState() != BendingAbilityState.Progressing) {
+		if(getState() != BendingAbilityState.PROGRESSING) {
 			remove();
 			return;
 		}

@@ -25,7 +25,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = IceSpike.NAME, element = BendingElement.Water)
+@ABendingAbility(name = IceSpike.NAME, element = BendingElement.WATER)
 public class IceSpike extends BendingActiveAbility {
 	public final static String NAME = "IceSpike";
 	
@@ -70,15 +70,15 @@ public class IceSpike extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start || getState() == BendingAbilityState.Prepared) {
+		if(getState() == BendingAbilityState.START || getState() == BendingAbilityState.PREPARED) {
 			this.sourceblock = BlockTools.getWaterSourceBlock(this.player, this.range, this.plantbending);
 			if (this.sourceblock == null) {
 				this.field = new SpikeField(this.player, this);
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			} else {
 				this.location = this.sourceblock.getLocation();
 				this.prepared = true;
-				setState(BendingAbilityState.Prepared);
+				setState(BendingAbilityState.PREPARED);
 			}
 		}
 		return false;
@@ -86,7 +86,7 @@ public class IceSpike extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Prepared) {
+		if(getState() == BendingAbilityState.PREPARED) {
 			if (WaterReturn.hasWaterBottle(this.player)) {
 				Location eyeloc = this.player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
@@ -108,7 +108,7 @@ public class IceSpike extends BendingActiveAbility {
 				}
 			}
 			throwIce();
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		} else {
 			redirect(this.player);
 		}

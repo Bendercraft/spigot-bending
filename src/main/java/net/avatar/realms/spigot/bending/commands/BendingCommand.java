@@ -48,31 +48,31 @@ public abstract class BendingCommand implements IBendingCommand {
 
 		for (String alias : Settings.AIR_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingElement.Air;
+				return BendingElement.AIR;
 			}
 		}
 
 		for (String alias : Settings.CHI_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingElement.Master;
+				return BendingElement.MASTER;
 			}
 		}
 
 		for (String alias : Settings.EARTH_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingElement.Earth;
+				return BendingElement.EARTH;
 			}
 		}
 
 		for (String alias : Settings.FIRE_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingElement.Fire;
+				return BendingElement.FIRE;
 			}
 		}
 
 		for (String alias : Settings.WATER_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
-				return BendingElement.Water;
+				return BendingElement.WATER;
 			}
 		}
 

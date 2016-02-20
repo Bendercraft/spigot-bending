@@ -17,7 +17,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@ABendingAbility(name = AvatarState.NAME, element = BendingElement.Energy)
+@ABendingAbility(name = AvatarState.NAME, element = BendingElement.ENERGY)
 public class AvatarState extends BendingActiveAbility {
 	public final static String NAME = "AvatarState";
 
@@ -38,13 +38,13 @@ public class AvatarState extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.PROGRESSING) {
 			remove();
 			return false;
 		}
 
-		if (getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Progressing);
+		if (getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PROGRESSING);
 		}
 
 		return false;
@@ -52,7 +52,7 @@ public class AvatarState extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.PROGRESSING) {
 			addPotionEffects();
 			return;
 		}

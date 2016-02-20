@@ -23,7 +23,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = PhaseChange.NAME, element = BendingElement.Water)
+@ABendingAbility(name = PhaseChange.NAME, element = BendingElement.WATER)
 public class PhaseChange extends BendingActiveAbility {
 	public final static String NAME = "PhaseChange";
 	
@@ -49,8 +49,8 @@ public class PhaseChange extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Progressing);
+		if(getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		
 		if (bender.isOnCooldown(NAME)) {
@@ -86,8 +86,8 @@ public class PhaseChange extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Progressing);
+		if(getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		
 		if (bender.isOnCooldown(NAME)) {

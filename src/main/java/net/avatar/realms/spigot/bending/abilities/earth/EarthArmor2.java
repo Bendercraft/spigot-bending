@@ -21,7 +21,7 @@ import org.bukkit.potion.PotionEffectType;
  *
  * State prepared = Earth Shield
  */
-@ABendingAbility(name = EarthArmor2.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = EarthArmor2.NAME, element = BendingElement.EARTH)
 public class EarthArmor2 extends BendingActiveAbility{
 	public final static String NAME = "EarthArmor2";
 
@@ -82,9 +82,9 @@ public class EarthArmor2 extends BendingActiveAbility{
             return false;
         }
 
-        if (!getState().equals(BendingAbilityState.Preparing)
-                && !getState().equals(BendingAbilityState.Progressing)
-                && !getState().equals(BendingAbilityState.Prepared)) {
+        if (!getState().equals(BendingAbilityState.PREPARING)
+                && !getState().equals(BendingAbilityState.PROGRESSING)
+                && !getState().equals(BendingAbilityState.PREPARED)) {
             return false;
         }
 
@@ -93,10 +93,10 @@ public class EarthArmor2 extends BendingActiveAbility{
 
     @Override
     public void progress() {
-        if (getState().equals(BendingAbilityState.Preparing)) {
+        if (getState().equals(BendingAbilityState.PREPARING)) {
 
         }
-        else if (getState().equals(BendingAbilityState.Progressing)) {
+        else if (getState().equals(BendingAbilityState.PROGRESSING)) {
 
         }
         else {
@@ -181,7 +181,7 @@ public class EarthArmor2 extends BendingActiveAbility{
         }
 
         this.startedTime = System.currentTimeMillis();
-        setState(BendingAbilityState.Progressing);
+        setState(BendingAbilityState.PROGRESSING);
     }
 
     private Color getColor (BlockState blockSave) {

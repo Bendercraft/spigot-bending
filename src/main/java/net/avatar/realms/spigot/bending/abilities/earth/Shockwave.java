@@ -19,7 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = Shockwave.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = Shockwave.NAME, element = BendingElement.EARTH)
 public class Shockwave extends BendingActiveAbility {
 	public final static String NAME = "Shockwave";
 	
@@ -48,7 +48,7 @@ public class Shockwave extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.PREPARED) {
 			double dtheta = 360. / (2 * Math.PI * Ripple.RADIUS) - 1;
 			for (double theta = 0; theta < 360; theta += dtheta) {
 				double rtheta = Math.toRadians(theta);
@@ -56,15 +56,15 @@ public class Shockwave extends BendingActiveAbility {
 				if (vector.angle(player.getEyeLocation().getDirection()) < angle)
 					ripples.add(new Ripple(player, vector.normalize()));
 			}
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if (getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Preparing);
+		if (getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PREPARING);
 		}
 		return false;
 	}
@@ -75,7 +75,7 @@ public class Shockwave extends BendingActiveAbility {
 			return false;
 		}
 		if (!EntityTools.canBend(player, NAME) ||
-				(!bender.getAbility().equals(NAME) && !getState().equals(BendingAbilityState.Progressing))) {
+				(!bender.getAbility().equals(NAME) && !getState().equals(BendingAbilityState.PROGRESSING))) {
 			return false;
 		}
 		return true;
@@ -83,15 +83,15 @@ public class Shockwave extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.Preparing) {
+		if (getState() == BendingAbilityState.PREPARING) {
 			if (!player.isSneaking()) {
 				remove();
 				return;
 			}
 			if (System.currentTimeMillis() > starttime + chargetime) {
-				setState(BendingAbilityState.Prepared);
+				setState(BendingAbilityState.PREPARED);
 			}
-		} else if (getState() == BendingAbilityState.Prepared) {
+		} else if (getState() == BendingAbilityState.PREPARED) {
 			Location location = player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.SMOKE, Tools.getIntCardinalDirection(player.getEyeLocation().getDirection()), 3);
 
@@ -103,9 +103,9 @@ public class Shockwave extends BendingActiveAbility {
 					Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
 					ripples.add(new Ripple(player, vector.normalize()));
 				}
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			}
-		} else if (getState() == BendingAbilityState.Progressing) {
+		} else if (getState() == BendingAbilityState.PROGRESSING) {
 			List<Ripple> toRemove = new LinkedList<Ripple>();
 			for (Ripple ripple : ripples) {
 				if (!ripple.progress()) {

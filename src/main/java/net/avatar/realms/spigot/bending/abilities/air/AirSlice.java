@@ -24,7 +24,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = AirSlice.NAME, element = BendingElement.Air)
+@ABendingAbility(name = AirSlice.NAME, element = BendingElement.AIR)
 public class AirSlice extends BendingActiveAbility {
 	public final static String NAME = "AirSlice";
 
@@ -61,9 +61,9 @@ public class AirSlice extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Preparing) {
+		if(getState() == BendingAbilityState.PREPARING) {
 			remove();
-		} else if(getState() == BendingAbilityState.Prepared) {
+		} else if(getState() == BendingAbilityState.PREPARED) {
 			if(this.first == null || this.second == null) {
 				return false;
 			}
@@ -79,7 +79,7 @@ public class AirSlice extends BendingActiveAbility {
 				temp = temp.add(dir);
 			}
 
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 
 		return false;
@@ -87,26 +87,26 @@ public class AirSlice extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			this.first = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
 			if (this.first == null || this.first.getBlock().isLiquid() || BlockTools.isSolid(this.first.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.first)) {
 				return false;
 			}
-			setState(BendingAbilityState.Preparing);
-		} else if(getState() == BendingAbilityState.Preparing || getState() == BendingAbilityState.Prepared) {
+			setState(BendingAbilityState.PREPARING);
+		} else if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
 			this.second = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
 			if(this.second != null && this.second.distance(this.first) > DISTANCE) {
 				this.second = null;
 			}
 			if (this.second == null || this.second.getBlock().isLiquid() || BlockTools.isSolid(this.second.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.second)) {
 				this.second = null;
-				if(getState() == BendingAbilityState.Prepared) {
-					setState(BendingAbilityState.Preparing);
+				if(getState() == BendingAbilityState.PREPARED) {
+					setState(BendingAbilityState.PREPARING);
 				}
 				return false;
 			}
-			if(getState() == BendingAbilityState.Preparing) {
-				setState(BendingAbilityState.Prepared);
+			if(getState() == BendingAbilityState.PREPARING) {
+				setState(BendingAbilityState.PREPARED);
 			}
 		}
 		return false;
@@ -115,14 +115,14 @@ public class AirSlice extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void progress() {
-		if(getState() == BendingAbilityState.Preparing || getState() == BendingAbilityState.Prepared) {
+		if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
 			if(this.first != null) {
 				this.first.getWorld().playEffect(this.first, Effect.SMOKE, 4, (int) SELECT_RANGE+4);
 			}
 			if(this.second != null) {
 				this.second.getWorld().playEffect(this.second, Effect.SMOKE, 4, (int) SELECT_RANGE+4);
 			}
-		} else if(getState() == BendingAbilityState.Progressing) {
+		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			if(this.direction == null || this.origin == null || this.onGoing.isEmpty()) {
 				remove();
 				return;

@@ -31,7 +31,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = WaterWall.NAME, element = BendingElement.Water)
+@ABendingAbility(name = WaterWall.NAME, element = BendingElement.WATER)
 public class WaterWall extends BendingActiveAbility {
 	public final static String NAME = "Surge";
 	
@@ -72,22 +72,22 @@ public class WaterWall extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			if (bender.isOnCooldown(NAME)) {
 				return false;
 			}
 			wave = new Wave(player);
 			if (wave.prepare()) {
-				setState(BendingAbilityState.Prepared);
+				setState(BendingAbilityState.PREPARED);
 			}
-		} else if (getState() == BendingAbilityState.Prepared) {
+		} else if (getState() == BendingAbilityState.PREPARED) {
 			if (wave == null) {
 				moveWater(); // Build wall
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			} else {
 				remove();
 			}
-		} else if (getState() == BendingAbilityState.Progressing) {
+		} else if (getState() == BendingAbilityState.PROGRESSING) {
 			if (wave != null) {
 				wave.freeze();
 			}
@@ -98,20 +98,20 @@ public class WaterWall extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			if (bender.isOnCooldown(NAME)) {
 				return false;
 			}
 			// WaterWall !
 			if (prepare()) {
-				setState(BendingAbilityState.Prepared);
+				setState(BendingAbilityState.PREPARED);
 			}
-		} else if (getState() == BendingAbilityState.Prepared) {
+		} else if (getState() == BendingAbilityState.PREPARED) {
 			if (wave != null) {
 				wave.moveWater();
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			}
-		} else if (getState() == BendingAbilityState.Progressing) {
+		} else if (getState() == BendingAbilityState.PROGRESSING) {
 			if (wave == null) {
 				freezeThaw();
 			}

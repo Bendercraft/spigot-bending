@@ -20,7 +20,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = Collapse.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = Collapse.NAME, element = BendingElement.EARTH)
 public class Collapse extends BendingActiveAbility {
 	public final static String NAME = "Collapse";
 	
@@ -51,19 +51,19 @@ public class Collapse extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 		this.bender.cooldown(NAME, COOLDOWN);
 		this.columns.add(new CompactColumn(this.player));
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 
@@ -87,7 +87,7 @@ public class Collapse extends BendingActiveAbility {
 		for (Block block : this.baseblocks.keySet()) {
 			this.columns.add(new CompactColumn(this.player, block.getLocation()));
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
 	
@@ -96,7 +96,7 @@ public class Collapse extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (getState() == BendingAbilityState.Progressing && this.columns.isEmpty()) {
+		if (getState() == BendingAbilityState.PROGRESSING && this.columns.isEmpty()) {
 			return false;
 		}
 		return true;

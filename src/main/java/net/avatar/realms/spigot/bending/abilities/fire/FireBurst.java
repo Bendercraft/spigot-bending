@@ -40,7 +40,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  *
  * @author Noko
  */
-@ABendingAbility(name = FireBurst.NAME, element = BendingElement.Fire)
+@ABendingAbility(name = FireBurst.NAME, element = BendingElement.FIRE)
 public class FireBurst extends BendingActiveAbility {
 	public final static String NAME = "FireBurst";
 	
@@ -91,15 +91,15 @@ public class FireBurst extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState().equals(BendingAbilityState.Start)) {
-			setState(BendingAbilityState.Preparing);
+		if (getState().equals(BendingAbilityState.START)) {
+			setState(BendingAbilityState.PREPARING);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.PREPARED) {
 			coneBurst();
 		}
 		return false;
@@ -126,7 +126,7 @@ public class FireBurst extends BendingActiveAbility {
 				}
 			}
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 	}
 	
 	@Override
@@ -142,7 +142,7 @@ public class FireBurst extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if(getState() == BendingAbilityState.Progressing) {
+		if(getState() == BendingAbilityState.PROGRESSING) {
 			List<BurstBlast> toRemove = new LinkedList<BurstBlast>();
 			for(BurstBlast blast : blasts) {
 				if(!blast.progress()) {
@@ -157,19 +157,19 @@ public class FireBurst extends BendingActiveAbility {
 		}
 		
 		if (!this.player.isSneaking()) {
-			if (getState().equals(BendingAbilityState.Prepared)) {
+			if (getState().equals(BendingAbilityState.PREPARED)) {
 				sphereBurst();
 			}
 			return;
 		}
 
-		if (getState() != BendingAbilityState.Prepared) {
+		if (getState() != BendingAbilityState.PREPARED) {
 			if (System.currentTimeMillis() > (this.startedTime + this.chargetime)) {
-				setState(BendingAbilityState.Prepared);
+				setState(BendingAbilityState.PREPARED);
 			}
 		}
 
-		if (getState() == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.PREPARED) {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
 		}
@@ -194,7 +194,7 @@ public class FireBurst extends BendingActiveAbility {
 			}
 		}
 		
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class FireBurst extends BendingActiveAbility {
 	}
 
 	public boolean isCharged() {
-		return getState() == BendingAbilityState.Prepared;
+		return getState() == BendingAbilityState.PREPARED;
 	}
 
 	public static boolean isFireBursting(Player player) {
@@ -257,10 +257,10 @@ public class FireBurst extends BendingActiveAbility {
 			this.direction = direction.clone().normalize();
 			this.damage = damage*1.5;
 			this.speedfactor = BLAST_SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
-			if (this.bender.hasPath(BendingPath.Nurture)) {
+			if (this.bender.hasPath(BendingPath.NURTURE)) {
 				this.damage *= 0.8;
 			}
-			if (this.bender.hasPath(BendingPath.Lifeless)) {
+			if (this.bender.hasPath(BendingPath.LIFELESS)) {
 				this.damage *= 1.1;
 			}
 		}

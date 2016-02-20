@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.multi.Bubble;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@ABendingAbility(name = AirBubble.NAME, element = BendingElement.Air, shift=false)
+@ABendingAbility(name = AirBubble.NAME, element = BendingElement.AIR, shift=false)
 public class AirBubble extends Bubble {
 	public final static String NAME = "AirBubble";
 

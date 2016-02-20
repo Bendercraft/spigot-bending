@@ -16,7 +16,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = Catapult.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = Catapult.NAME, element = BendingElement.EARTH)
 public class Catapult extends BendingActiveAbility {
 	public final static String NAME = "Catapult";
 	
@@ -51,10 +51,10 @@ public class Catapult extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		origin = player.getEyeLocation().clone();
 		direction = origin.getDirection().clone().normalize();
 		Vector neg = direction.clone().multiply(-1);

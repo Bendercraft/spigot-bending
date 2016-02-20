@@ -22,7 +22,7 @@ import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
-@ABendingAbility(name = AirSpout.NAME, element = BendingElement.Air, shift=false)
+@ABendingAbility(name = AirSpout.NAME, element = BendingElement.AIR, shift=false)
 public class AirSpout extends BendingActiveAbility {
 	public final static String NAME = "AirSpout";
 	
@@ -49,19 +49,19 @@ public class AirSpout extends BendingActiveAbility {
 		this.time = this.startedTime;
 
 		height = HEIGHT;
-		if (bender.hasPath(BendingPath.Mobile)) {
+		if (bender.hasPath(BendingPath.MOBILE)) {
 			height *= 1.2;
 		}
 	}
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			if (this.flying != null) {
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			}
-		} else if (getState() == BendingAbilityState.Progressing) {
+		} else if (getState() == BendingAbilityState.PROGRESSING) {
 			long now = System.currentTimeMillis();
 			if (now >= (this.startedTime + 200)) {
 				remove();

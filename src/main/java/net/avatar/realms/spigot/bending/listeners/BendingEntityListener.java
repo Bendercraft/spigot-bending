@@ -98,15 +98,15 @@ public class BendingEntityListener implements Listener {
 		if ((source instanceof Player) && (entity instanceof Player)) {
 			Player sourceplayer = (Player) source;
 			Player targetplayer = (Player) entity;
-			if (EntityTools.canBendPassive(sourceplayer, BendingElement.Master)
-					&& EntityTools.isBender(sourceplayer, BendingElement.Master)
+			if (EntityTools.canBendPassive(sourceplayer, BendingElement.MASTER)
+					&& EntityTools.isBender(sourceplayer, BendingElement.MASTER)
 					&& (event.getCause() == DamageCause.ENTITY_ATTACK) && MathUtils.doubleEquals(event.getDamage(), 1)
 					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= DirectHit.RANGE)) {
 				EntityTools.blockChi(targetplayer, 500);
 			}
 		}
 		if (entity instanceof Player) {
-			if (((event.getCause() == DamageCause.ENTITY_ATTACK) || (event.getCause() == DamageCause.ENTITY_EXPLOSION) || (event.getCause() == DamageCause.PROJECTILE)) && EntityTools.isBender(((Player) event.getEntity()), BendingElement.Master) && EntityTools.canBendPassive((Player) event.getEntity(), BendingElement.Master)) {
+			if (((event.getCause() == DamageCause.ENTITY_ATTACK) || (event.getCause() == DamageCause.ENTITY_EXPLOSION) || (event.getCause() == DamageCause.PROJECTILE)) && EntityTools.isBender(((Player) event.getEntity()), BendingElement.MASTER) && EntityTools.canBendPassive((Player) event.getEntity(), BendingElement.MASTER)) {
 				double rand = Math.random();
 
 				if (rand <= (Settings.CHI_DODGE_CHANCE / 100.)) {
@@ -220,7 +220,7 @@ public class BendingEntityListener implements Listener {
 			Player p = (Player) entity;
 			if (pr instanceof Arrow) {
 				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(p);
-				if (bPlayer.isBender(BendingElement.Fire)) {
+				if (bPlayer.isBender(BendingElement.FIRE)) {
 					if (p.isSneaking() && bPlayer.getAbility().equals(HeatControl.NAME)) {
 						pr.setFireTicks(200);
 					}

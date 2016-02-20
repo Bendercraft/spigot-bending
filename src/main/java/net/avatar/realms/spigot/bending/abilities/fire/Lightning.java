@@ -30,7 +30,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = Lightning.NAME, affinity = BendingAffinity.Lightning)
+@ABendingAbility(name = Lightning.NAME, affinity = BendingAffinity.LIGHTNING)
 public class Lightning extends BendingActiveAbility {
 	public final static String NAME = "Lightning";
 	
@@ -74,8 +74,8 @@ public class Lightning extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Preparing);
+		if(getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PREPARING);
 		}
 		return false;
 	}
@@ -165,11 +165,11 @@ public class Lightning extends BendingActiveAbility {
 	public void progress() {
 		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
 
-		if (System.currentTimeMillis() > (this.startedTime + this.warmup) && getState() == BendingAbilityState.Preparing) {
-			setState(BendingAbilityState.Prepared);
+		if (System.currentTimeMillis() > (this.startedTime + this.warmup) && getState() == BendingAbilityState.PREPARING) {
+			setState(BendingAbilityState.PREPARED);
 		}
 
-		if (getState().equals(BendingAbilityState.Prepared)) {
+		if (getState().equals(BendingAbilityState.PREPARED)) {
 			if (this.player.isSneaking()) {
 				this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE, Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), distance);
 			} else {

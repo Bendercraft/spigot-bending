@@ -25,7 +25,7 @@ import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = AirScooter.NAME, element = BendingElement.Air, shift=false)
+@ABendingAbility(name = AirScooter.NAME, element = BendingElement.AIR, shift=false)
 public class AirScooter extends BendingActiveAbility {
 	public final static String NAME = "AirScooter";
 
@@ -51,23 +51,23 @@ public class AirScooter extends BendingActiveAbility {
 
 		this.speed = SPEED;
 
-		if (this.bender.hasPath(BendingPath.Mobile)) {
+		if (this.bender.hasPath(BendingPath.MOBILE)) {
 			this.speed *= 1.2;
 		}
 	}
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			this.player.setSprinting(false);
 
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 
 			return false;
 		}
 
-		if (getState() == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.PROGRESSING) {
 			remove();
 			return false;
 		}

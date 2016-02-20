@@ -20,7 +20,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = EarthWall.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = EarthWall.NAME, element = BendingElement.EARTH)
 public class EarthWall extends BendingActiveAbility {
 	public final static String NAME = "RaiseEarth";
 	
@@ -53,7 +53,7 @@ public class EarthWall extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		// One column
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 
@@ -64,14 +64,14 @@ public class EarthWall extends BendingActiveAbility {
 		if(ec.init(player)) {
 			this.columns.add(ec);
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 
@@ -143,13 +143,13 @@ public class EarthWall extends BendingActiveAbility {
 		if (cooldown) {
 			this.bender.cooldown(NAME, COOLDOWN);
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.Progressing && this.columns.isEmpty()) {
+		if (getState() == BendingAbilityState.PROGRESSING && this.columns.isEmpty()) {
 			remove();
 			return;
 		}

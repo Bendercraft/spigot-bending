@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * knockback You must be sneaking when clicking to activate this technique.
  *
  */
-@ABendingAbility(name = PowerShot.NAME, affinity=BendingAffinity.Bowman)
+@ABendingAbility(name = PowerShot.NAME, affinity=BendingAffinity.BOW)
 public class PowerShot extends BendingActiveAbility {
 	public final static String NAME = "PowerShot";
 

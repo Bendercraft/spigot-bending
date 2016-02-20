@@ -30,7 +30,7 @@ import net.avatar.realms.spigot.bending.utils.TempBlock;
  * duration
  */
 
-@ABendingAbility(name = LavaTrain.NAME, affinity = BendingAffinity.Lavabend)
+@ABendingAbility(name = LavaTrain.NAME, affinity = BendingAffinity.LAVA)
 public class LavaTrain extends BendingActiveAbility {
 	public final static String NAME = "Lavatrain";
 	
@@ -75,7 +75,7 @@ public class LavaTrain extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			if (!this.player.isSneaking()) {
 				return false;
 			}
@@ -89,7 +89,7 @@ public class LavaTrain extends BendingActiveAbility {
 			this.origin.setY(this.origin.getY() - 1);
 			this.current = this.origin.clone();
 
-			setState(BendingAbilityState.Preparing);
+			setState(BendingAbilityState.PREPARING);
 			
 		}
 		return false;
@@ -109,9 +109,9 @@ public class LavaTrain extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		if (MathUtils.doubleEquals(this.direction.getX(), 0) && MathUtils.doubleEquals(this.direction.getZ(), 0)) {
-			if (!getState().equals(BendingAbilityState.Progressing)) {
+			if (!getState().equals(BendingAbilityState.PROGRESSING)) {
 				this.affectBlocks(this.current, REACH_WIDTH);
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			} else {
 				if ((System.currentTimeMillis() - this.time) > DURATION) {
 					remove();
@@ -121,9 +121,9 @@ public class LavaTrain extends BendingActiveAbility {
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			if (this.origin.distance(this.current) >= RANGE) {
-				if (!getState().equals(BendingAbilityState.Progressing)) {
+				if (!getState().equals(BendingAbilityState.PROGRESSING)) {
 					this.affectBlocks(this.current, REACH_WIDTH);
-					setState(BendingAbilityState.Progressing);
+					setState(BendingAbilityState.PROGRESSING);
 				} else {
 					if ((System.currentTimeMillis() - this.time) > DURATION) {
 						remove();

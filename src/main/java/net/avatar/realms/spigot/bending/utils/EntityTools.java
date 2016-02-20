@@ -87,7 +87,7 @@ public class EntityTools {
 
 	public static boolean hasPermission(Player player, String ability) {
 		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
-		if (register.getAffinity() != BendingAffinity.None && !EntityTools.isSpecialized(player, register.getAffinity())) {
+		if (register.getAffinity() != BendingAffinity.NONE && !EntityTools.isSpecialized(player, register.getAffinity())) {
 			return false;
 		}
 
@@ -113,7 +113,7 @@ public class EntityTools {
 		
 		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
 
-		if (register.getElement() == BendingElement.Energy) {
+		if (register.getElement() == BendingElement.ENERGY) {
 			return true;
 		}
 
@@ -129,7 +129,7 @@ public class EntityTools {
 			return false;
 		}
 
-		if (register.getAffinity() != BendingAffinity.None) {
+		if (register.getAffinity() != BendingAffinity.NONE) {
 			if (!isSpecialized(player, register.getAffinity())) {
 				return false;
 			}
@@ -159,7 +159,7 @@ public class EntityTools {
 		if (bPlayer == null) {
 			return false;
 		}
-		if (EntityTools.isSpecialized(player, BendingAffinity.DrainBend)) {
+		if (EntityTools.isSpecialized(player, BendingAffinity.DRAIN)) {
 			return true;
 		}
 		return false;

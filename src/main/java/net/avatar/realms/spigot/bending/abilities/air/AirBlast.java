@@ -27,7 +27,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 /**
  * Preparing state = Origin set Progressing state = Airblast thrown
  */
-@ABendingAbility(name = AirBlast.NAME, element = BendingElement.Air)
+@ABendingAbility(name = AirBlast.NAME, element = BendingElement.AIR)
 public class AirBlast extends BendingActiveAbility {
 	public final static String NAME = "AirBlast";
 	
@@ -65,7 +65,7 @@ public class AirBlast extends BendingActiveAbility {
 	public AirBlast(RegisteredAbility register, Player player) {
 		super(register, player);
 		this.id = ID++;
-		if (this.bender.hasPath(BendingPath.Renegade)) {
+		if (this.bender.hasPath(BendingPath.RENEGADE)) {
 			this.range = this.range * 0.6;
 		}
 	}
@@ -81,14 +81,14 @@ public class AirBlast extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			this.origin = this.player.getEyeLocation();
-			setState(BendingAbilityState.Preparing);
+			setState(BendingAbilityState.PREPARING);
 		}
 		//It is NORMAL that both if could follow in same click
-		if(getState() == BendingAbilityState.Preparing) {
+		if(getState() == BendingAbilityState.PREPARING) {
 			Entity entity = EntityTools.getTargetedEntity(this.player, this.range);
-			if (this.bender.hasPath(BendingPath.Mobile)) {
+			if (this.bender.hasPath(BendingPath.MOBILE)) {
 				entity = null;
 			}
 			if (entity != null) {
@@ -98,14 +98,14 @@ public class AirBlast extends BendingActiveAbility {
 			}
 			this.location = this.origin.clone();
 			long cooldown = COOLDOWN;
-			if (this.bender.hasPath(BendingPath.Renegade)) {
+			if (this.bender.hasPath(BendingPath.RENEGADE)) {
 				cooldown *= 1.2;
 			}
-			if (this.bender.hasPath(BendingPath.Mobile)) {
+			if (this.bender.hasPath(BendingPath.MOBILE)) {
 				cooldown *= 0.8;
 			}
 			this.bender.cooldown(NAME, cooldown);
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 			return false;
 		}
 		return true;
@@ -113,8 +113,8 @@ public class AirBlast extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start 
-				|| getState() == BendingAbilityState.Preparing) {
+		if(getState() == BendingAbilityState.START 
+				|| getState() == BendingAbilityState.PREPARING) {
 			Location originLocation = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
 			if (originLocation.getBlock().isLiquid() || BlockTools.isSolid(originLocation.getBlock())) {
 				return false;
@@ -126,7 +126,7 @@ public class AirBlast extends BendingActiveAbility {
 
 			this.origin = originLocation;
 			this.otherOrigin = true;
-			setState(BendingAbilityState.Preparing);
+			setState(BendingAbilityState.PREPARING);
 			return false;
 		}
 		return true;
@@ -137,7 +137,7 @@ public class AirBlast extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (getState() == BendingAbilityState.Preparing && !this.bender.getAbility().equals(NAME)) {
+		if (getState() == BendingAbilityState.PREPARING && !this.bender.getAbility().equals(NAME)) {
 			return false;
 		}
 		return true;
@@ -146,12 +146,12 @@ public class AirBlast extends BendingActiveAbility {
 	@Override
 	@SuppressWarnings("deprecation")
 	public void progress() {
-		if (getState() == BendingAbilityState.Preparing) {
+		if (getState() == BendingAbilityState.PREPARING) {
 			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) SELECT_RANGE);
 			return;
 		}
 
-		if (getState() != BendingAbilityState.Progressing) {
+		if (getState() != BendingAbilityState.PROGRESSING) {
 			remove();
 			return;
 		}
@@ -248,7 +248,7 @@ public class AirBlast extends BendingActiveAbility {
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);
 
-		if (this.bender.hasPath(BendingPath.Renegade) && !entity.getUniqueId().equals(player.getUniqueId())) {
+		if (this.bender.hasPath(BendingPath.RENEGADE) && !entity.getUniqueId().equals(player.getUniqueId())) {
 			EntityTools.damageEntity(this.player, entity, 1);
 		}
 	}

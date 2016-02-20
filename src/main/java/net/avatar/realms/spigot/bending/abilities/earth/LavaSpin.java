@@ -23,7 +23,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = LavaSpin.NAME, affinity = BendingAffinity.Lavabend)
+@ABendingAbility(name = LavaSpin.NAME, affinity = BendingAffinity.LAVA)
 public class LavaSpin extends BendingActiveAbility {
 	public final static String NAME = "LavaSpin";
 	
@@ -71,20 +71,20 @@ public class LavaSpin extends BendingActiveAbility {
 	
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Prepared) {
+		if(getState() == BendingAbilityState.PREPARED) {
 			//Send
 			lava = true;
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 			current.getWorld().playEffect(current, Effect.EXTINGUISH, 10);
-		} else if(getState() == BendingAbilityState.Progressing) {
-			setState(BendingAbilityState.Prepared);
+		} else if(getState() == BendingAbilityState.PROGRESSING) {
+			setState(BendingAbilityState.PREPARED);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			Block target = EntityTools.getTargetBlock(player, SELECT_RANGE, BlockTools.getTransparentEarthBending());
 			if(target == null) {
 				return false;
@@ -97,7 +97,7 @@ public class LavaSpin extends BendingActiveAbility {
 				Vector direction = player.getEyeLocation().subtract(current).toVector().normalize();
 				if(move(direction)) {
 					current.getWorld().playEffect(current, Effect.GHAST_SHOOT, 0, 10);
-					setState(BendingAbilityState.Prepared);
+					setState(BendingAbilityState.PREPARED);
 					bender.cooldown(this, COOLDOWN);
 				}
 			}
@@ -140,7 +140,7 @@ public class LavaSpin extends BendingActiveAbility {
 		long now = System.currentTimeMillis();
 		if (now - time >= interval) {
 			time = now;
-			if(getState() == BendingAbilityState.Prepared) {
+			if(getState() == BendingAbilityState.PREPARED) {
 				if(current.distance(player.getEyeLocation()) >= REST_DISTANCE) {
 					Vector direction = player.getEyeLocation().subtract(current).toVector().normalize();
 					if(!move(direction)) {
@@ -156,7 +156,7 @@ public class LavaSpin extends BendingActiveAbility {
 						current.getWorld().playEffect(current, Effect.EXTINGUISH, 10);
 					}
 				}
-			} else if(getState() == BendingAbilityState.Progressing) {
+			} else if(getState() == BendingAbilityState.PROGRESSING) {
 				Vector direction = player.getEyeLocation().getDirection().normalize().multiply(REACH+4);
 				if(!move(direction)) {
 					remove();
@@ -166,7 +166,7 @@ public class LavaSpin extends BendingActiveAbility {
 					affect(entity);
 				}
 				if(current.distance(player.getEyeLocation()) >= REACH) {
-					setState(BendingAbilityState.Prepared);
+					setState(BendingAbilityState.PREPARED);
 				}
 			}
 		}

@@ -22,7 +22,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = WaterTurret.NAME, element = BendingElement.Water)
+@ABendingAbility(name = WaterTurret.NAME, element = BendingElement.WATER)
 public class WaterTurret extends BendingActiveAbility {
 	public final static String NAME = "WaterTurret";
 	
@@ -65,12 +65,12 @@ public class WaterTurret extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			origin = BlockTools.getWaterSourceBlock(this.player, SELECT_RANGE, EntityTools.canPlantbend(this.player));
 			if(origin == null) {
 				return false;
 			}
-			setState(BendingAbilityState.Prepared);
+			setState(BendingAbilityState.PREPARED);
 			time = System.currentTimeMillis();
 			
 		}
@@ -79,17 +79,17 @@ public class WaterTurret extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if(getState() == BendingAbilityState.Prepared) {
+		if(getState() == BendingAbilityState.PREPARED) {
 			long now = System.currentTimeMillis();
 			if(now - time > 100) {
 				time = now;
 				target = EntityTools.getNearestLivingEntity(origin.getLocation(), ACTIVATION_RANGE, player);
 				if(target != null) {
-					setState(BendingAbilityState.Progressing);
+					setState(BendingAbilityState.PROGRESSING);
 				}
 			}
 			origin.getWorld().playEffect(origin.getLocation(), Effect.SMOKE, 4, (int) ACTIVATION_RANGE);
-		} else if(getState() == BendingAbilityState.Progressing) {
+		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			if(target.isDead()) {
 				remove();
 				return;

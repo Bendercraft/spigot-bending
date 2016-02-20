@@ -36,11 +36,11 @@ public class Enflamed {
 		}
 		
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(source);
-		if (BendingPlayer.getBendingPlayer(source).hasPath(BendingPath.Lifeless)) {
+		if (BendingPlayer.getBendingPlayer(source).hasPath(BendingPath.LIFELESS)) {
 			return;
 		}
 		
-		if (bender.hasPath(BendingPath.Nurture)) {
+		if (bender.hasPath(BendingPath.NURTURE)) {
 			if (instances.containsKey(target) && instances.get(target).bender == bender) {
 				instances.get(target).addSeconds(seconds);
 				return;
@@ -56,11 +56,11 @@ public class Enflamed {
 		this.secondsLeft = seconds;
 		this.damage = DAMAGE;
 		this.bender = bender;
-		if (this.bender.hasPath(BendingPath.Nurture)) {
+		if (this.bender.hasPath(BendingPath.NURTURE)) {
 			damage *= 0.5;
 		}
 
-		if (this.bender.hasPath(BendingPath.Nurture)) {
+		if (this.bender.hasPath(BendingPath.NURTURE)) {
 			if (instances.containsKey(this.target) && instances.get(this.target).bender == bender) {
 				instances.get(this.target).addSeconds(seconds);
 				return;
@@ -86,7 +86,7 @@ public class Enflamed {
 		if(secondsLeft <= 0) {
 			return false;
 		}
-		if (this.target.getFireTicks() == 0 && !this.bender.hasPath(BendingPath.Nurture)) {
+		if (this.target.getFireTicks() == 0 && !this.bender.hasPath(BendingPath.NURTURE)) {
 			return false;
 		}
 		
@@ -111,7 +111,7 @@ public class Enflamed {
 			return false;
 		}
 
-		if ((player.getFireTicks() > 80) && EntityTools.canBendPassive(player, BendingElement.Fire)) {
+		if ((player.getFireTicks() > 80) && EntityTools.canBendPassive(player, BendingElement.FIRE)) {
 			player.setFireTicks(80);
 		}
 

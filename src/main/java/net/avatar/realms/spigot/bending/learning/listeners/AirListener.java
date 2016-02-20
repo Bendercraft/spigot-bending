@@ -53,7 +53,7 @@ public class AirListener implements Listener {
 		if (event.getEntity() instanceof Player && event.getCause().equals(DamageCause.DROWNING)) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getEntity());
 			if (bPlayer != null) {
-				if (bPlayer.isBender(BendingElement.Air)) {
+				if (bPlayer.isBender(BendingElement.AIR)) {
 					if (plugin.addPermission(bPlayer.getPlayer(), AirBubble.NAME)) {
 						String message = "After running out of air, you realise that you could use your AirBending to grap air before sinking";
 						bPlayer.getPlayer().sendMessage(color + message);
@@ -69,7 +69,7 @@ public class AirListener implements Listener {
 	public void unlockAirScooter(PlayerToggleSprintEvent event) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Air)) {
+			if (bPlayer.isBender(BendingElement.AIR)) {
 				Player pl = bPlayer.getPlayer();
 				if (!event.getPlayer().isSprinting()) {
 					airScooterLastLocation.put(pl.getUniqueId(), pl.getLocation().clone());
@@ -104,7 +104,7 @@ public class AirListener implements Listener {
 	public void unlockAirSuction(PlayerVelocityEvent event) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(event.getPlayer());
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Air)) {
+			if (bPlayer.isBender(BendingElement.AIR)) {
 				Player player = bPlayer.getPlayer();
 				Vector down = new Vector(0, 1, 0);
 				float angleToDirectFall = event.getVelocity().angle(down);
@@ -136,7 +136,7 @@ public class AirListener implements Listener {
 	public void unlockAirBurst(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Air) && event.getAbility().equals(AirBlast.NAME)) {
+			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equals(AirBlast.NAME)) {
 				Player player = bPlayer.getPlayer();
 				int blasted = 0;
 				if (airBurst.containsKey(player.getUniqueId())) {
@@ -162,14 +162,14 @@ public class AirListener implements Listener {
 	public void unlockAirShield(AbilityCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.Air) && event.getAbility().equals(AirShield.NAME)) {
+			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equals(AirShield.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 				for (Entity entity : entities) {
 					if (entity instanceof Player) {
 						Player p = (Player) entity;
 						BendingPlayer trainee = BendingPlayer.getBendingPlayer(p);
-						if (trainee.isBender(BendingElement.Air)) {
+						if (trainee.isBender(BendingElement.AIR)) {
 							if (p.hasLineOfSight(bPlayer.getPlayer())) {
 								if (plugin.addPermission(p, AirShield.NAME)) {
 									String message = "After seeing " + bPlayer.getPlayer().getName() + " doing an air shield, you are able to copy it for yourself.";

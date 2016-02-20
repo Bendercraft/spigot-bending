@@ -6,7 +6,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 
-@ABendingAbility(name = ExplosiveShot.NAME, affinity = BendingAffinity.Bowman)
+@ABendingAbility(name = ExplosiveShot.NAME, affinity = BendingAffinity.BOW)
 public class ExplosiveShot extends BendingActiveAbility {
 	public final static String NAME = "ExplosiveShot";
 

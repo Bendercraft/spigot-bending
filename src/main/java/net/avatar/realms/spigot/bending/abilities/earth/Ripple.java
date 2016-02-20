@@ -252,11 +252,11 @@ public class Ripple {
 		}
 
 		double damage = DAMAGE;
-		if (bender.hasPath(BendingPath.Tough)) {
+		if (bender.hasPath(BendingPath.TOUGH)) {
 			damage *= 0.85;
 		}
 
-		if (bender.hasPath(BendingPath.Reckless)) {
+		if (bender.hasPath(BendingPath.RECKLESS)) {
 			damage *= 1.15;
 		}
 

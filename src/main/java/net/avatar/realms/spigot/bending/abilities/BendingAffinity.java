@@ -1,17 +1,17 @@
 package net.avatar.realms.spigot.bending.abilities;
 
 public enum BendingAffinity {
-	None(BendingElement.None),
+	NONE(BendingElement.NONE),
 
-	Tornado(BendingElement.Air), Suffocate(BendingElement.Air),
+	TORNADO(BendingElement.AIR), SUFFOCATE(BendingElement.AIR),
 
-	Bloodbend(BendingElement.Water), DrainBend(BendingElement.Water),
+	BLOOD(BendingElement.WATER), DRAIN(BendingElement.WATER),
 
-	Lightning(BendingElement.Fire), Combustion(BendingElement.Fire),
+	LIGHTNING(BendingElement.FIRE), COMBUSTION(BendingElement.FIRE),
 
-	Metalbend(BendingElement.Earth), Lavabend(BendingElement.Earth),
+	METAL(BendingElement.EARTH), LAVA(BendingElement.EARTH),
 
-	Chi(BendingElement.Master), Bowman(BendingElement.Master);
+	CHI(BendingElement.MASTER), BOW(BendingElement.MASTER), SWORD(BendingElement.MASTER);
 
 	private BendingElement element;
 

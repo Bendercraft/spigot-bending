@@ -25,7 +25,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * get slown.
  *
  */
-@ABendingAbility(name = VitalPoint.NAME, affinity=BendingAffinity.Chi, shift=false)
+@ABendingAbility(name = VitalPoint.NAME, affinity=BendingAffinity.CHI, shift=false)
 public class VitalPoint extends BendingActiveAbility {
 	public final static String NAME = "VitalPoint";
 
@@ -64,17 +64,17 @@ public class VitalPoint extends BendingActiveAbility {
 		this.damage = DAMAGE;
 		this.cooldown = COOLDOWN;
 		
-		if(this.bender.hasPath(BendingPath.Seeker)) {
+		if(this.bender.hasPath(BendingPath.SEEKER)) {
 			this.damage *= 1.5;
 		}
-		if(this.bender.hasPath(BendingPath.Restless)) {
+		if(this.bender.hasPath(BendingPath.RESTLESS)) {
 			this.damage *= 0.6;
 		}
 	}
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			this.target = EntityTools.getTargetedEntity(this.player, MAX_RANGE);
 			if (this.target == null) {
 				return false;
@@ -95,10 +95,10 @@ public class VitalPoint extends BendingActiveAbility {
 				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
 			}
 
-			if (this.bender.hasPath(BendingPath.Seeker)) {
+			if (this.bender.hasPath(BendingPath.SEEKER)) {
 				this.cooldown *= 1.4;
 			}
-			if (this.bender.hasPath(BendingPath.Restless)) {
+			if (this.bender.hasPath(BendingPath.RESTLESS)) {
 				this.cooldown *= 0.5;
 			}
 			this.bender.cooldown(NAME, this.cooldown);

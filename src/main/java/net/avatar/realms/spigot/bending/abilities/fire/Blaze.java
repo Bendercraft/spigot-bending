@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@ABendingAbility(name = Blaze.NAME, element = BendingElement.Fire)
+@ABendingAbility(name = Blaze.NAME, element = BendingElement.FIRE)
 public class Blaze extends BendingActiveAbility {
 	public final static String NAME = "Blaze";
 	
@@ -45,7 +45,7 @@ public class Blaze extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() != BendingAbilityState.Start) {
+		if(getState() != BendingAbilityState.START) {
 			return false;
 		}
 		
@@ -75,13 +75,13 @@ public class Blaze extends BendingActiveAbility {
 			firestreams.add(new FireStream(location, direction, this.player, range));
 		}
 		this.bender.cooldown(NAME, ARC_COOLDOWN);
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if(getState() != BendingAbilityState.Start) {
+		if(getState() != BendingAbilityState.START) {
 			return false;
 		}
 		Location location = this.player.getLocation();
@@ -110,13 +110,13 @@ public class Blaze extends BendingActiveAbility {
 
 		this.bender.cooldown(NAME, RING_COOLDOWN);
 		
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
 
 	@Override
 	public void progress() {
-		if(getState() == BendingAbilityState.Progressing) {
+		if(getState() == BendingAbilityState.PROGRESSING) {
 			List<FireStream> test = new LinkedList<FireStream>(firestreams);
 			for(FireStream stream : test) {
 				if(!stream.progress()) {

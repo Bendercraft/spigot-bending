@@ -24,7 +24,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
 /**
  * State Preparing = Origin Set State Progressing = AirSuction thrown
  */
-@ABendingAbility(name = AirSuction.NAME, element = BendingElement.Air)
+@ABendingAbility(name = AirSuction.NAME, element = BendingElement.AIR)
 public class AirSuction extends BendingActiveAbility {
 	public final static String NAME = "AirSuction";
 
@@ -67,7 +67,7 @@ public class AirSuction extends BendingActiveAbility {
 
 		this.id = ID++;
 
-		if (this.bender.hasPath(BendingPath.Renegade)) {
+		if (this.bender.hasPath(BendingPath.RENEGADE)) {
 			this.range *= 0.6;
 		}
 	}
@@ -87,18 +87,18 @@ public class AirSuction extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			Location loc = getNewOriginLocation(this.player);
 			if (loc == null) {
 				return false;
 			}
 			this.origin = loc;
-			setState(BendingAbilityState.Preparing);
+			setState(BendingAbilityState.PREPARING);
 			this.otherorigin = true;
 			return false;
 		}
 
-		if (getState() == BendingAbilityState.Preparing) {
+		if (getState() == BendingAbilityState.PREPARING) {
 			Location loc = getNewOriginLocation(this.player);
 			if (loc != null) {
 				this.origin = loc;
@@ -111,12 +111,12 @@ public class AirSuction extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			this.origin = this.player.getEyeLocation();
-			setState(BendingAbilityState.Preparing);
+			setState(BendingAbilityState.PREPARING);
 		}
 
-		if (getState() == BendingAbilityState.Preparing) {
+		if (getState() == BendingAbilityState.PREPARING) {
 			Entity entity = EntityTools.getTargetedEntity(this.player, this.range);
 			if (entity != null) {
 				this.direction = Tools.getDirection(entity.getLocation(), this.origin).normalize();
@@ -125,7 +125,7 @@ public class AirSuction extends BendingActiveAbility {
 				this.location = EntityTools.getTargetedLocation(this.player, this.range, BlockTools.getNonOpaque());
 				this.direction = Tools.getDirection(this.location, this.origin).normalize();
 			}
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 			return false;
 		}
 		return true;
@@ -160,7 +160,7 @@ public class AirSuction extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!getState().equals(BendingAbilityState.Progressing) && !bender.getAbility().equals(AirSuction.NAME)) {
+		if (!getState().equals(BendingAbilityState.PROGRESSING) && !bender.getAbility().equals(AirSuction.NAME)) {
 			return false;
 		}
 		return true;
@@ -168,7 +168,7 @@ public class AirSuction extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (getState().equals(BendingAbilityState.Preparing)) {
+		if (getState().equals(BendingAbilityState.PREPARING)) {
 			if (!this.origin.getWorld().equals(this.player.getWorld()) 
 					|| this.origin.distance(this.player.getEyeLocation()) > SELECT_RANGE) {
 				remove();
@@ -177,7 +177,7 @@ public class AirSuction extends BendingActiveAbility {
 			return;
 		}
 		
-		if (!getState().equals(BendingAbilityState.Progressing) 
+		if (!getState().equals(BendingAbilityState.PROGRESSING) 
 				|| this.location.distance(this.origin) > this.range 
 				|| this.location.distance(this.origin) <= 1) {
 			remove();

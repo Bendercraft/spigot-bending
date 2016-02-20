@@ -99,7 +99,7 @@ public class BendingManager implements Runnable {
 			boolean day = this.days.get(world);
 			if (Tools.isDay(world) && !day) {
 				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingElement.Fire) && player.hasPermission("bending.message.daymessage")) {
+					if (EntityTools.isBender(player, BendingElement.FIRE) && player.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Fire"));
 						player.sendMessage(color + "You feel the strength of the rising sun empowering your firebending.");
@@ -110,7 +110,7 @@ public class BendingManager implements Runnable {
 
 			if (!Tools.isDay(world) && day) {
 				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingElement.Fire) && player.hasPermission("bending.message.daymessage")) {
+					if (EntityTools.isBender(player, BendingElement.FIRE) && player.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Fire"));
 						player.sendMessage(color + "You feel the empowering of your firebending subside as the sun sets.");
@@ -121,7 +121,7 @@ public class BendingManager implements Runnable {
 
 			if (Tools.isNight(world) && !night) {
 				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingElement.Water) && player.hasPermission("bending.message.nightmessage")) {
+					if (EntityTools.isBender(player, BendingElement.WATER) && player.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Water"));
 						player.sendMessage(color + "You feel the strength of the rising moon empowering your waterbending.");
@@ -132,7 +132,7 @@ public class BendingManager implements Runnable {
 
 			if (!Tools.isNight(world) && night) {
 				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingElement.Water) && player.hasPermission("bending.message.nightmessage")) {
+					if (EntityTools.isBender(player, BendingElement.WATER) && player.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
 						color = PluginTools.getColor(Settings.getColorString("Water"));
 						player.sendMessage(color + "You feel the empowering of your waterbending subside as the moon sets.");

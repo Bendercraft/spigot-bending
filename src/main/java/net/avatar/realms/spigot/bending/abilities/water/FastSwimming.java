@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = FastSwimming.NAME, element = BendingElement.Water)
+@ABendingAbility(name = FastSwimming.NAME, element = BendingElement.WATER)
 public class FastSwimming extends BendingPassiveAbility {
 	public final static String NAME = "Dolphin";
 
@@ -27,7 +27,7 @@ public class FastSwimming extends BendingPassiveAbility {
 
 	@Override
 	public boolean start() {
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		return true;
 	}
 	
@@ -38,7 +38,7 @@ public class FastSwimming extends BendingPassiveAbility {
 			return false;
 		}
 		
-		if (!(EntityTools.canBendPassive(this.player, BendingElement.Water) && this.player.isSneaking())) {
+		if (!(EntityTools.canBendPassive(this.player, BendingElement.WATER) && this.player.isSneaking())) {
 			return false;
 		}
 		String ability = EntityTools.getBendingAbility(this.player);

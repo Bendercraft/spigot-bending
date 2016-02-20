@@ -35,7 +35,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = FireBlast.NAME, element = BendingElement.Fire)
+@ABendingAbility(name = FireBlast.NAME, element = BendingElement.FIRE)
 public class FireBlast extends BendingActiveAbility {
 	public final static String NAME = "FireBlast";
 	
@@ -83,10 +83,10 @@ public class FireBlast extends BendingActiveAbility {
 	public FireBlast(RegisteredAbility register, Player player) {
 		super(register, player);
 
-		if (this.bender.hasPath(BendingPath.Nurture)) {
+		if (this.bender.hasPath(BendingPath.NURTURE)) {
 			this.damage *= 0.8;
 		}
-		if (this.bender.hasPath(BendingPath.Lifeless)) {
+		if (this.bender.hasPath(BendingPath.LIFELESS)) {
 			this.damage *= 1.1;
 		}
 
@@ -99,23 +99,23 @@ public class FireBlast extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Preparing);
+		if (getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PREPARING);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			launchSingle();
 			this.bender.cooldown(NAME, COOLDOWN);
 			return false;
-		} else if(getState() == BendingAbilityState.Preparing) {
+		} else if(getState() == BendingAbilityState.PREPARING) {
 			launchSingle();
 			this.bender.cooldown(NAME, COOLDOWN);
 			return false;
-		} else if(getState() == BendingAbilityState.Prepared) {
+		} else if(getState() == BendingAbilityState.PREPARED) {
 			this.damage *= 1.30;
 			this.range *= 1.20;
 			launchSingle();
@@ -139,7 +139,7 @@ public class FireBlast extends BendingActiveAbility {
 		this.origin = this.player.getEyeLocation();
 		this.direction = this.player.getEyeLocation().getDirection().normalize();
 		this.location = this.location.add(this.direction.clone());
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 	}
 	
 	@Override
@@ -156,12 +156,12 @@ public class FireBlast extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		long now = System.currentTimeMillis();
-		if (getState() == BendingAbilityState.Preparing) {
+		if (getState() == BendingAbilityState.PREPARING) {
 			if ((now - this.startedTime) > CHARGE_TIME) {
-				setState(BendingAbilityState.Prepared);
+				setState(BendingAbilityState.PREPARED);
 			}
 			return;
-		} else if (getState() == BendingAbilityState.Prepared) {
+		} else if (getState() == BendingAbilityState.PREPARED) {
 			Location location = this.player.getEyeLocation();
 			//location.getWorld().playEffect(location, Effect.FLAME, Tools.getIntCardinalDirection(location.getDirection()), 3);
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
@@ -169,7 +169,7 @@ public class FireBlast extends BendingActiveAbility {
 				remove();
 				return;
 			}
-		} else if (getState() == BendingAbilityState.Progressing) {
+		} else if (getState() == BendingAbilityState.PROGRESSING) {
 			if (this.location.distance(this.origin) > this.range) {
 				remove();
 				return;

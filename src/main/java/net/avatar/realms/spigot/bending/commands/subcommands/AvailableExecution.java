@@ -38,7 +38,7 @@ public class AvailableExecution extends BendingCommand {
 		sender.sendMessage("Available abilities : ");
 		for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
 			if (player.hasPermission(ability.getPermission()) && bender.isBender(ability.getElement())
-					&& (ability.getAffinity() == BendingAffinity.None || bender.hasAffinity(ability.getAffinity()))) {
+					&& (ability.getAffinity() == BendingAffinity.NONE || bender.hasAffinity(ability.getAffinity()))) {
 				ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
 				sender.sendMessage("--" + color + ability.getName());
 			}

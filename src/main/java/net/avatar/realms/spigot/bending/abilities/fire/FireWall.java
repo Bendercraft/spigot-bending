@@ -23,7 +23,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = FireWall.NAME, element = BendingElement.Fire, shift=false)
+@ABendingAbility(name = FireWall.NAME, element = BendingElement.FIRE, shift=false)
 public class FireWall extends BendingActiveAbility {
 	public final static String NAME = "FireWall";
 
@@ -79,7 +79,7 @@ public class FireWall extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			World world = this.player.getWorld();
 
 			this.width = (int) PluginTools.firebendingDayAugment(WIDTH, world);
@@ -87,10 +87,10 @@ public class FireWall extends BendingActiveAbility {
 			this.duration = (long) PluginTools.firebendingDayAugment(DURATION, world);
 			this.damage = (int) PluginTools.firebendingDayAugment(DAMAGE, world);
 
-			if (this.bender.hasPath(BendingPath.Nurture)) {
+			if (this.bender.hasPath(BendingPath.NURTURE)) {
 				this.damage *= 0.8;
 			}
-			if (this.bender.hasPath(BendingPath.Lifeless)) {
+			if (this.bender.hasPath(BendingPath.LIFELESS)) {
 				this.damage *= 1.1;
 			}
 
@@ -105,7 +105,7 @@ public class FireWall extends BendingActiveAbility {
 			}
 
 			initializeBlocks();
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}

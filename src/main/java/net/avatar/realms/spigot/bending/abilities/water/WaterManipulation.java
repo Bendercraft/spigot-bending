@@ -36,7 +36,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = WaterManipulation.NAME, element = BendingElement.Water)
+@ABendingAbility(name = WaterManipulation.NAME, element = BendingElement.WATER)
 public class WaterManipulation extends BendingActiveAbility {
 	public final static String NAME = "WaterManipulation";
 	
@@ -93,12 +93,12 @@ public class WaterManipulation extends BendingActiveAbility {
 		damage = DAMAGE;
 		range = RANGE;
 
-		if (bender.hasPath(BendingPath.Marksman)) {
+		if (bender.hasPath(BendingPath.MARKSMAN)) {
 			damage *= 0.8;
 			range *= 1.4;
 		}
 
-		if (bender.hasPath(BendingPath.Flowless)) {
+		if (bender.hasPath(BendingPath.FLOWLESS)) {
 			damage *= 1.15;
 		}
 
@@ -114,7 +114,7 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.Start && getState() != BendingAbilityState.Prepared) {
+		if (getState() != BendingAbilityState.START && getState() != BendingAbilityState.PREPARED) {
 			return true;
 		}
 		
@@ -123,7 +123,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			this.drainedBlock = null;
 		}
 		
-		setState(BendingAbilityState.Preparing);
+		setState(BendingAbilityState.PREPARING);
 		Block block = BlockTools.getWaterSourceBlock(this.player, range, EntityTools.canPlantbend(this.player));
 
 		block(this.player);
@@ -145,7 +145,7 @@ public class WaterManipulation extends BendingActiveAbility {
 
 		// Check for bottle too !
 		if (block == null && !bender.isOnCooldown(NAME) 
-				&& getState() != BendingAbilityState.Prepared && WaterReturn.hasWaterBottle(player)) {
+				&& getState() != BendingAbilityState.PREPARED && WaterReturn.hasWaterBottle(player)) {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 			if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
@@ -160,7 +160,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		if (block != null) {
 			this.sourceblock = block;
 			this.location = this.sourceblock.getLocation();
-			setState(BendingAbilityState.Prepared);
+			setState(BendingAbilityState.PREPARED);
 			return false;
 		}
 		
@@ -191,12 +191,12 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Start || getState() == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.START || getState() == BendingAbilityState.PROGRESSING) {
 			redirectTargettedBlasts(player);
 			return false;
 		}
 
-		if (getState() == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.PREPARED) {
 			if (this.sourceblock == null) {
 				return false;
 			}
@@ -217,7 +217,7 @@ public class WaterManipulation extends BendingActiveAbility {
 				this.targetdestination = Tools.getPointOnLine(this.firstdestination, this.targetdestination, range);
 				this.targetdirection = Tools.getDirection(this.firstdestination, this.targetdestination).normalize();
 				addWater(this.sourceblock);
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			}
 			BendingPlayer.getBendingPlayer(this.player).cooldown(NAME, COOLDOWN);
 		}
@@ -227,7 +227,7 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	private Location getTargetLocation(Player player) {
 		Entity target = null;
-		if (!bender.hasPath(BendingPath.Flowless)) {
+		if (!bender.hasPath(BendingPath.FLOWLESS)) {
 			target = EntityTools.getTargetedEntity(player, range);
 		}
 		Location result = null;

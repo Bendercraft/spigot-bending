@@ -32,7 +32,7 @@ import net.avatar.realms.spigot.bending.utils.TempBlock;
  *
  * @author Noko
  */
-@ABendingAbility(name = HeatControl.NAME, element = BendingElement.Fire)
+@ABendingAbility(name = HeatControl.NAME, element = BendingElement.FIRE)
 public class HeatControl extends BendingActiveAbility {
 	public final static String NAME = "HeatControl";
 
@@ -71,7 +71,7 @@ public class HeatControl extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			double range = PluginTools.firebendingDayAugment(EXT_RANGE, this.player.getWorld());
 			Block block = EntityTools.getTargetBlock(this.player, range);
 			if (BlockTools.isMeltable(block)) {
@@ -125,12 +125,12 @@ public class HeatControl extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			this.items = this.player.getItemInHand();
 			if (isCookable(this.items.getType())) {
 				this.time = this.startedTime;
 				
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			}
 		}
 		return false;

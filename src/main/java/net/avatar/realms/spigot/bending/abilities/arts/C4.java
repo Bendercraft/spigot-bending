@@ -35,7 +35,7 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
 
-@ABendingAbility(name = C4.NAME, affinity = BendingAffinity.Chi)
+@ABendingAbility(name = C4.NAME, affinity = BendingAffinity.CHI)
 public class C4 extends BendingActiveAbility {
 	public final static String NAME = "C4";
 
@@ -145,7 +145,7 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState().equals(BendingAbilityState.Progressing)) {
+		if (getState().equals(BendingAbilityState.PROGRESSING)) {
 			// The block has already been posed
 
 			long now = System.currentTimeMillis();
@@ -159,14 +159,14 @@ public class C4 extends BendingActiveAbility {
 		this.generateCFour(this.location.getBlock(), this.hitFace);
 		this.id = ID++;
 
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
 
-		if (!getState().equals(BendingAbilityState.Progressing)) {
+		if (!getState().equals(BendingAbilityState.PROGRESSING)) {
 			return false;
 		}
 
@@ -193,7 +193,7 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (!getState().equals(BendingAbilityState.Progressing)) {
+		if (!getState().equals(BendingAbilityState.PROGRESSING)) {
 			return;
 		}
 

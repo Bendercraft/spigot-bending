@@ -59,7 +59,7 @@ public class WhoExecution extends BendingCommand {
 
 		ChatColor color = ChatColor.WHITE;
 		if (bender.getBendingTypes().size() > 1) {
-			color = PluginTools.getColor(Settings.getColorString(BendingElement.Energy.name()));
+			color = PluginTools.getColor(Settings.getColorString(BendingElement.ENERGY.name()));
 		} else {
 			color = PluginTools.getColor(Settings.getColorString(bender.getBendingTypes().get(0).name()));
 		}
@@ -67,7 +67,7 @@ public class WhoExecution extends BendingCommand {
 		for (BendingElement element : bender.getBendingTypes()) {
 			color = PluginTools.getColor(Settings.getColorString(element.name()));
 			String msg;
-			if (element == BendingElement.Master) {
+			if (element == BendingElement.MASTER) {
 				msg = Messages.WHO_IS_CHI;
 			} else {
 				msg = Messages.WHO_IS_BENDING;

@@ -27,7 +27,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = EarthGrab.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = EarthGrab.NAME, element = BendingElement.EARTH)
 public class EarthGrab extends BendingActiveAbility {
 	public final static String NAME = "EarthGrab";
 	
@@ -58,7 +58,7 @@ public class EarthGrab extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 		if (this.bender.isOnCooldown(NAME)) {
@@ -69,14 +69,14 @@ public class EarthGrab extends BendingActiveAbility {
 		boolean done = grabEntity(this.player, closestEntity);
 		if (this.target != null && done == true) {
 			this.id = ID++;
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 		if (this.bender.isOnCooldown(NAME)) {
@@ -86,7 +86,7 @@ public class EarthGrab extends BendingActiveAbility {
 		boolean done = grabEntity(this.player, this.player);
 		if (this.target != null && done == true) {
 			this.id = ID++;
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}

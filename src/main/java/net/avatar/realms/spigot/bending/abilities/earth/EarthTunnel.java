@@ -15,7 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = EarthTunnel.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = EarthTunnel.NAME, element = BendingElement.EARTH)
 public class EarthTunnel extends BendingActiveAbility {
 	public final static String NAME = "EarthTunnel";
 	
@@ -46,7 +46,7 @@ public class EarthTunnel extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.Start) {
+		if (getState() != BendingAbilityState.START) {
 			return false;
 		}
 		location = player.getEyeLocation().clone();
@@ -60,7 +60,7 @@ public class EarthTunnel extends BendingActiveAbility {
 		radius = radiusinc;
 		time = System.currentTimeMillis();
 
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
 

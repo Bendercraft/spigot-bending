@@ -1,22 +1,22 @@
 package net.avatar.realms.spigot.bending.abilities;
 
 public enum BendingPath {
-	None(BendingElement.None),
+	NONE(BendingElement.NONE),
 
-	Spiritual(BendingElement.Air), // Default
-	Mobile(BendingElement.Air), Renegade(BendingElement.Air),
+	SPIRITUAL(BendingElement.AIR), // Default
+	MOBILE(BendingElement.AIR), RENEGADE(BendingElement.AIR),
 
-	Balanced(BendingElement.Water), // Default
-	Marksman(BendingElement.Water), Flowless(BendingElement.Water),
+	BALANCED(BendingElement.WATER), // Default
+	MARKSMAN(BendingElement.WATER), FLOWLESS(BendingElement.WATER),
 
-	Control(BendingElement.Fire), // Default
-	Nurture(BendingElement.Fire), Lifeless(BendingElement.Fire),
+	CONTROL(BendingElement.FIRE), // Default
+	NURTURE(BendingElement.FIRE), LIFELESS(BendingElement.FIRE),
 
-	Patient(BendingElement.Earth), // Default
-	Tough(BendingElement.Earth), Reckless(BendingElement.Earth),
+	PATIENT(BendingElement.EARTH), // Default
+	TOUGH(BendingElement.EARTH), RECKLESS(BendingElement.EARTH),
 
-	Equality(BendingElement.Master), // Default
-	Seeker(BendingElement.Master), Restless(BendingElement.Master);
+	EQUALITY(BendingElement.MASTER), // Default
+	SEEKER(BendingElement.MASTER), RESTLESS(BendingElement.MASTER);
 
 	private BendingElement element;
 

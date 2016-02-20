@@ -27,7 +27,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = AirBurst.NAME, element = BendingElement.Air)
+@ABendingAbility(name = AirBurst.NAME, element = BendingElement.AIR)
 public class AirBurst extends BendingActiveAbility {
 	public final static String NAME = "AirBurst";
 	
@@ -80,15 +80,15 @@ public class AirBurst extends BendingActiveAbility {
 	
 	@Override
 	public boolean sneak() {
-		if (getState().equals(BendingAbilityState.Start)) {
-			setState(BendingAbilityState.Preparing);
+		if (getState().equals(BendingAbilityState.START)) {
+			setState(BendingAbilityState.PREPARING);
 		}
 		return false;
 	}
 	
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.PREPARED) {
 			coneBurst();
 			return false;
 		}
@@ -111,10 +111,10 @@ public class AirBurst extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if(getState().equals(BendingAbilityState.Preparing) && !this.player.isSneaking()) {
+		if(getState().equals(BendingAbilityState.PREPARING) && !this.player.isSneaking()) {
 			return false;
 		}
-		if (!getState().equals(BendingAbilityState.Progressing) && !bender.getAbility().equals(NAME)) {
+		if (!getState().equals(BendingAbilityState.PROGRESSING) && !bender.getAbility().equals(NAME)) {
 			return false;
 		}
 		return true;
@@ -122,7 +122,7 @@ public class AirBurst extends BendingActiveAbility {
 	
 	@Override
 	public void progress() {
-		if(getState() == BendingAbilityState.Progressing) {
+		if(getState() == BendingAbilityState.PROGRESSING) {
 			List<BurstBlast> toRemove = new LinkedList<BurstBlast>();
 			for(BurstBlast blast : blasts) {
 				if(!blast.progress()) {
@@ -136,16 +136,16 @@ public class AirBurst extends BendingActiveAbility {
 			return;
 		}
 		if (!this.player.isSneaking()) {
-			if (getState().equals(BendingAbilityState.Prepared)) {
+			if (getState().equals(BendingAbilityState.PREPARED)) {
 				sphereBurst();
 			}
-		} else if (!getState().equals(BendingAbilityState.Prepared) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
+		} else if (!getState().equals(BendingAbilityState.PREPARED) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
 			if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
 				remove();
 				return;
 			}
-			setState(BendingAbilityState.Prepared);
-		} else if (getState() == BendingAbilityState.Prepared) {
+			setState(BendingAbilityState.PREPARED);
+		} else if (getState() == BendingAbilityState.PREPARED) {
 			Location location = this.player.getEyeLocation();
 			location.getWorld().playEffect(location, Effect.SMOKE, Tools.getIntCardinalDirection(location.getDirection()), 3);
 		}
@@ -167,7 +167,7 @@ public class AirBurst extends BendingActiveAbility {
 				blasts.add(new BurstBlast(location, direction.normalize(), AirBurst.PUSHFACTOR, player));
 			}
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 	}
 	
 	private void coneBurst() {
@@ -190,7 +190,7 @@ public class AirBurst extends BendingActiveAbility {
 				}
 			}
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 	}
 	
 	private void fallBurst() {
@@ -209,7 +209,7 @@ public class AirBurst extends BendingActiveAbility {
 				blasts.add(new BurstBlast(location, direction.normalize(), AirBurst.PUSHFACTOR, player));
 			}
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 	}
 	
 	@Override
@@ -263,12 +263,12 @@ public class AirBurst extends BendingActiveAbility {
 		
 		@SuppressWarnings("deprecation")
 		public boolean progress() {
-			if (getState() == BendingAbilityState.Preparing) {
+			if (getState() == BendingAbilityState.PREPARING) {
 				this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) BLAST_SELECT_RANGE);
 				return true;
 			}
 
-			if (getState() != BendingAbilityState.Progressing) {
+			if (getState() != BendingAbilityState.PROGRESSING) {
 				return false;
 			}
 

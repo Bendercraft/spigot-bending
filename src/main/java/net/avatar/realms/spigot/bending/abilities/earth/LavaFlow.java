@@ -21,7 +21,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = LavaFlow.NAME, affinity = BendingAffinity.Lavabend)
+@ABendingAbility(name = LavaFlow.NAME, affinity = BendingAffinity.LAVA)
 public class LavaFlow extends BendingActiveAbility {
 	public final static String NAME = "LavaFlow";
 	
@@ -69,11 +69,11 @@ public class LavaFlow extends BendingActiveAbility {
 	
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Prepared) {
+		if(getState() == BendingAbilityState.PREPARED) {
 			direction = player.getEyeLocation().getDirection().normalize().setY(-((double)COLUMN_HEIGHT/(double)STREAM_REACH));
 			player.getWorld().playEffect(player.getLocation(), Effect.EXTINGUISH, 2);
 			time = System.currentTimeMillis();
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		} else { 
 			remove();
 		}
@@ -82,7 +82,7 @@ public class LavaFlow extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			Block block = EntityTools.getTargetBlock(player, SELECT_RANGE);
 			if(block == null) {
 				return false;
@@ -98,7 +98,7 @@ public class LavaFlow extends BendingActiveAbility {
 			if(streams.isEmpty()) {
 				return false;
 			}
-			setState(BendingAbilityState.Preparing);
+			setState(BendingAbilityState.PREPARING);
 			bender.cooldown(this, COOLDOWN);
 		}
 		return false;
@@ -118,7 +118,7 @@ public class LavaFlow extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		long now = System.currentTimeMillis();
-		if(getState() == BendingAbilityState.Preparing) {
+		if(getState() == BendingAbilityState.PREPARING) {
 			if (now - time >= interval) {
 				time = now;
 				List<Location> futurStreams = new LinkedList<Location>();
@@ -136,14 +136,14 @@ public class LavaFlow extends BendingActiveAbility {
 				columnHeight++;
 				
 				if(columnHeight >= COLUMN_HEIGHT) {
-					setState(BendingAbilityState.Prepared);
+					setState(BendingAbilityState.PREPARED);
 				}
 			}
-		} else if(getState() == BendingAbilityState.Prepared) {
+		} else if(getState() == BendingAbilityState.PREPARED) {
 			if(now > time + TIME_TO_ACT*1000) {
 				remove();
 			}
-		} else if(getState() == BendingAbilityState.Progressing) {
+		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			if (now - time >= interval) {
 				time = now;
 				

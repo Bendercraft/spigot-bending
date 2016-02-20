@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  * knockback You must be sneaking when clicking to activate this technique.
  *
  */
-@ABendingAbility(name = DirectHit.NAME, element = BendingElement.Master, shift=false)
+@ABendingAbility(name = DirectHit.NAME, element = BendingElement.MASTER, shift=false)
 public class DirectHit extends BendingActiveAbility {
 	public final static String NAME = "DirectHit";
 

@@ -33,7 +33,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = Combustion.NAME, affinity = BendingAffinity.Combustion)
+@ABendingAbility(name = Combustion.NAME, affinity = BendingAffinity.COMBUSTION)
 public class Combustion extends BendingActiveAbility {
 	public final static String NAME = "Combustion";
 	
@@ -93,9 +93,9 @@ public class Combustion extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			if (!player.getEyeLocation().getBlock().isLiquid()) {
-				setState(BendingAbilityState.Preparing);
+				setState(BendingAbilityState.PREPARING);
 			}
 		}
 		return false;
@@ -114,7 +114,7 @@ public class Combustion extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.Preparing) {
+		if (getState() == BendingAbilityState.PREPARING) {
 			if (!player.isSneaking()) {
 				remove();
 				return;
@@ -126,7 +126,7 @@ public class Combustion extends BendingActiveAbility {
 				location = player.getEyeLocation();
 				origin = location.clone();
 				direction = location.getDirection().normalize().multiply(HITBOX);
-				setState(BendingAbilityState.Prepared);
+				setState(BendingAbilityState.PREPARED);
 			}
 			return;
 		}

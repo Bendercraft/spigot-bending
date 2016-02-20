@@ -53,7 +53,7 @@ public class CooldownExecution extends BendingCommand {
 				int min = (int) ((cooldowns.get(ab) / 1000) / 60);
 				int sec = (int) ((((cooldowns.get(ab) / 1000.0) / 60.0) - min) * 60);
 				RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ab);
-				if (register.getElement() != BendingElement.Energy) {
+				if (register.getElement() != BendingElement.ENERGY) {
 					col = PluginTools.getColor(Settings.getColorString(register.getElement().name()));
 				}
 				player.sendMessage(col + "--- " + register.getName() + " ~ " + min + ":" + ((sec < 10) ? "0" + sec : sec));

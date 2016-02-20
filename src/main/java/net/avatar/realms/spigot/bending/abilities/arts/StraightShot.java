@@ -24,7 +24,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
  *
  */
 
-@ABendingAbility(name = StraightShot.NAME, affinity = BendingAffinity.Bowman)
+@ABendingAbility(name = StraightShot.NAME, affinity = BendingAffinity.BOW)
 public class StraightShot extends BendingActiveAbility {
 	public final static String NAME = "StraightShot";
 
@@ -43,17 +43,17 @@ public class StraightShot extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState().equals(BendingAbilityState.Preparing)) {
+		if (getState().equals(BendingAbilityState.PREPARING)) {
 			return true;
 		}
 
-		if (!getState().equals(BendingAbilityState.Start)) {
+		if (!getState().equals(BendingAbilityState.START)) {
 			return false;
 		}
 
 		Location origin = this.player.getEyeLocation();
 
-		setState(BendingAbilityState.Preparing);
+		setState(BendingAbilityState.PREPARING);
 		
 		LivingEntity entity = EntityTools.getTargetedEntity(player, RANGE);
 		

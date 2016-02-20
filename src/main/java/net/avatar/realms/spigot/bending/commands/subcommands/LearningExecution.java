@@ -150,7 +150,7 @@ public class LearningExecution extends BendingCommand {
 		}
 		bender.setBender(element);
 		for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
-			if (ability.getElement() == element && ability.getAffinity() == BendingAffinity.None) {
+			if (ability.getElement() == element && ability.getAffinity() == BendingAffinity.NONE) {
 				Bending.getInstance().getLearning().addPermission(target, ability.getName());
 			}
 		}
@@ -175,7 +175,7 @@ public class LearningExecution extends BendingCommand {
 			String message = "Congratulations, you can now bend " + element.name();
 			target.getPlayer().sendMessage(color + message);
 			for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
-				if (ability.getElement().equals(element) && ability.getAffinity() == BendingAffinity.None) {
+				if (ability.getElement().equals(element) && ability.getAffinity() == BendingAffinity.NONE) {
 					Bending.getInstance().getLearning().addPermission(target, ability.getName());
 					message = "You can now use " + ability.getName();
 					target.getPlayer().sendMessage(color + message);

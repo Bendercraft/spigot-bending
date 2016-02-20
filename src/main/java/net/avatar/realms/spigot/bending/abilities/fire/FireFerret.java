@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = FireFerret.NAME, element = BendingElement.Fire)
+@ABendingAbility(name = FireFerret.NAME, element = BendingElement.FIRE)
 public class FireFerret extends BendingActiveAbility {
 	public final static String NAME = "FireFerret";
 	
@@ -55,7 +55,7 @@ public class FireFerret extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			if(player.isSneaking()) {
 				origin = player.getEyeLocation().clone();
 				location = origin.clone();
@@ -64,7 +64,7 @@ public class FireFerret extends BendingActiveAbility {
 					return false;
 				}
 				time = System.currentTimeMillis();
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			}
 		}
 		return false;

@@ -116,7 +116,7 @@ public class FlyingPlayer {
 		long now = System.currentTimeMillis();
 		List<BendingAbility> toRemove = new LinkedList<BendingAbility>();
 		for (BendingAbility ab : this.causes.keySet()) {
-			if (now > this.causes.get(ab) || ab.getState() == BendingAbilityState.Ended) {
+			if (now > this.causes.get(ab) || ab.getState() == BendingAbilityState.ENDED) {
 				toRemove.add(ab);
 			}
 		}

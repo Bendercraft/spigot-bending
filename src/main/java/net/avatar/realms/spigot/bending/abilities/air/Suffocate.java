@@ -24,7 +24,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = Suffocate.NAME, affinity = BendingAffinity.Suffocate)
+@ABendingAbility(name = Suffocate.NAME, affinity = BendingAffinity.SUFFOCATE)
 public class Suffocate extends BendingActiveAbility {
 	public final static String NAME = "Suffocate";
 	
@@ -76,7 +76,7 @@ public class Suffocate extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			Entity target = EntityTools.getTargetedEntity(this.player, RANGE);
 
 			if (!(target instanceof Player)) {
@@ -93,7 +93,7 @@ public class Suffocate extends BendingActiveAbility {
 			this.helmet = this.target.getInventory().getHelmet();
 			this.target.getInventory().setHelmet(this.temp);
 
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
@@ -103,7 +103,7 @@ public class Suffocate extends BendingActiveAbility {
 		if(!super.canTick() 
 				|| ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.target.getLocation()) 
 				|| this.target.isDead() 
-				|| !getState().equals(BendingAbilityState.Progressing) 
+				|| !getState().equals(BendingAbilityState.PROGRESSING) 
 				|| !this.player.hasLineOfSight(this.target) 
 				|| this.target.getLocation().getWorld() != this.player.getLocation().getWorld() 
 				|| this.target.getLocation().distance(this.player.getLocation()) > (2 * RANGE)) {

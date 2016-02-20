@@ -37,7 +37,7 @@ import net.avatar.realms.spigot.bending.utils.Tools;
  *
  * @author Koudja
  */
-@ABendingAbility(name = EarthBlast.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = EarthBlast.NAME, element = BendingElement.EARTH)
 public class EarthBlast extends BendingActiveAbility {
 	public final static String NAME = "EarthBlast";
 	
@@ -92,7 +92,7 @@ public class EarthBlast extends BendingActiveAbility {
 		this.time = this.startedTime;
 
 		double speed = SPEED;
-		if (this.bender.hasPath(BendingPath.Reckless)) {
+		if (this.bender.hasPath(BendingPath.RECKLESS)) {
 			speed *= 0.8;
 		}
 
@@ -101,16 +101,16 @@ public class EarthBlast extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.Start 
-				&& getState() != BendingAbilityState.Preparing 
-				&& getState() != BendingAbilityState.Prepared) {
+		if (getState() != BendingAbilityState.START 
+				&& getState() != BendingAbilityState.PREPARING 
+				&& getState() != BendingAbilityState.PREPARED) {
 			return true;
 		}
 		
 		cancel();
 		Block block = BlockTools.getEarthSourceBlock(this.player, NAME, SELECT_RANGE);
 
-		setState(BendingAbilityState.Preparing);
+		setState(BendingAbilityState.PREPARING);
 
 		block(this.player);
 		if (block != null) {
@@ -149,14 +149,14 @@ public class EarthBlast extends BendingActiveAbility {
 			}
 			this.location = this.sourceBlock.getLocation();
 
-			if (this.bender.hasPath(BendingPath.Tough)) {
+			if (this.bender.hasPath(BendingPath.TOUGH)) {
 				this.damage *= 0.85;
 			}
-			if (this.bender.hasPath(BendingPath.Reckless)) {
+			if (this.bender.hasPath(BendingPath.RECKLESS)) {
 				this.damage *= 1.15;
 			}
 
-			setState(BendingAbilityState.Prepared);
+			setState(BendingAbilityState.PREPARED);
 		}
 		return false;
 	}
@@ -165,7 +165,7 @@ public class EarthBlast extends BendingActiveAbility {
 	public boolean swing() {
 		List<EarthBlast> ignore = null;
 		if (!this.bender.isOnCooldown(NAME)) {
-			if (getState() == BendingAbilityState.Prepared) {
+			if (getState() == BendingAbilityState.PREPARED) {
 				throwEarth();
 				this.bender.cooldown(NAME, COOLDOWN);
 				ignore = Collections.singletonList(this);
@@ -228,7 +228,7 @@ public class EarthBlast extends BendingActiveAbility {
 			remove();
 			return;
 		} else {
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 			this.sourceBlock.getWorld().playEffect(this.sourceBlock.getLocation(), Effect.GHAST_SHOOT, 0, 10);
 			if (source != null && (source.getState().getType() != Material.SAND) && (source.getState().getType() != Material.GRAVEL)) {
 				source.revertBlock();
@@ -239,7 +239,7 @@ public class EarthBlast extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (getState().isBefore(BendingAbilityState.Prepared)) {
+		if (getState().isBefore(BendingAbilityState.PREPARED)) {
 			remove();
 			return;
 		}
@@ -252,7 +252,7 @@ public class EarthBlast extends BendingActiveAbility {
 				return;
 			}
 
-			if (getState() == BendingAbilityState.Prepared) {
+			if (getState() == BendingAbilityState.PREPARED) {
 				if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
 					cancel();
 					remove();
@@ -345,7 +345,7 @@ public class EarthBlast extends BendingActiveAbility {
 				}
 			}
 
-			if (getState() != BendingAbilityState.Progressing) {
+			if (getState() != BendingAbilityState.PROGRESSING) {
 				remove();
 				return;
 			}
@@ -379,7 +379,7 @@ public class EarthBlast extends BendingActiveAbility {
 	private static void redirectTargetedBlasts(Player player, List<EarthBlast> ignore) {
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			EarthBlast blast = (EarthBlast) ab;
-			if ((blast.getState() != BendingAbilityState.Progressing) || ignore.contains(blast)) {
+			if ((blast.getState() != BendingAbilityState.PROGRESSING) || ignore.contains(blast)) {
 				continue;
 			}
 
@@ -406,7 +406,7 @@ public class EarthBlast extends BendingActiveAbility {
 	}
 
 	private void redirect(Player player, Location targetlocation) {
-		if (getState() == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.PROGRESSING) {
 			if (this.location.distance(player.getLocation()) <= RANGE) {
 				this.settingUp = false;
 				this.destination = targetlocation;
@@ -426,7 +426,7 @@ public class EarthBlast extends BendingActiveAbility {
 				continue;
 			}
 
-			if (blast.getState() == BendingAbilityState.Prepared) {
+			if (blast.getState() == BendingAbilityState.PREPARED) {
 				continue;
 			}
 

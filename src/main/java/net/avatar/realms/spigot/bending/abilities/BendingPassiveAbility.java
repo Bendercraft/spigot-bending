@@ -37,7 +37,7 @@ public abstract class BendingPassiveAbility extends BendingAbility {
 			return false;
 		}
 		if (ProtectionManager.isRegionProtectedFromBendingPassives(this.player, this.player.getLocation()) 
-				|| !getState().equals(BendingAbilityState.Progressing)) {
+				|| !getState().equals(BendingAbilityState.PROGRESSING)) {
 			return false;
 		}
 		return true;

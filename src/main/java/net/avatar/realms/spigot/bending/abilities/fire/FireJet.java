@@ -23,7 +23,7 @@ import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@ABendingAbility(name = FireJet.NAME, element = BendingElement.Fire, shift=false)
+@ABendingAbility(name = FireJet.NAME, element = BendingElement.FIRE, shift=false)
 public class FireJet extends BendingActiveAbility {
 	public final static String NAME = "FireJet";
 
@@ -46,15 +46,15 @@ public class FireJet extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			Block block = this.player.getLocation().getBlock();
 			if (FireStream.isIgnitable(this.player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(this.player)) {
 				FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 				this.player.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor));
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 				
 			}
-		} else if(getState() == BendingAbilityState.Progressing) {
+		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			remove();
 		}
 		return false;

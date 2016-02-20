@@ -19,7 +19,7 @@ public abstract class BendingAbility {
 	// For performance
 	private final RegisteredAbility register;
 
-	private BendingAbilityState state = BendingAbilityState.Start;
+	private BendingAbilityState state = BendingAbilityState.START;
 
 	/**
 	 * Construct the bases of a new ability instance
@@ -44,7 +44,7 @@ public abstract class BendingAbility {
 	 * </pre>
 	 */
 	protected final void setState(BendingAbilityState newState) {
-		if(newState == BendingAbilityState.Ended) {
+		if(newState == BendingAbilityState.ENDED) {
 			Bending.getInstance().getLogger().warning(this+" tried to change its state to ended directly");
 			return;
 		}
@@ -92,7 +92,7 @@ public abstract class BendingAbility {
 	public boolean canTick() {
 		if (!this.player.isOnline()
 				|| this.player.isDead()
-				|| this.state.equals(BendingAbilityState.Ended)
+				|| this.state.equals(BendingAbilityState.ENDED)
 				|| (getMaxMillis() > 0 && System.currentTimeMillis() > (this.startedTime + getMaxMillis()))
 				|| !EntityTools.canBend(this.player, getName())) {
 			return false;
@@ -110,7 +110,7 @@ public abstract class BendingAbility {
 	
 	public final void remove() {
 		stop();
-		state = BendingAbilityState.Ended;
+		state = BendingAbilityState.ENDED;
 	}
 
 	/**

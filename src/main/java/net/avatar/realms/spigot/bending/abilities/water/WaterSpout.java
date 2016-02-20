@@ -27,7 +27,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = WaterSpout.NAME, element = BendingElement.Water, shift=false)
+@ABendingAbility(name = WaterSpout.NAME, element = BendingElement.WATER, shift=false)
 public class WaterSpout extends BendingActiveAbility {
 	public final static String NAME = "WaterSpout";
 
@@ -54,17 +54,17 @@ public class WaterSpout extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			if (canWaterSpout(this.player)) {
 				this.height = 0;
 				this.blocks = new LinkedList<TempBlock>();
 				this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 				if (this.flying != null) {
 					spout();
-					setState(BendingAbilityState.Progressing);
+					setState(BendingAbilityState.PROGRESSING);
 				}
 			}
-		} else if(getState() == BendingAbilityState.Progressing) {
+		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			remove();
 		}
 		return false;

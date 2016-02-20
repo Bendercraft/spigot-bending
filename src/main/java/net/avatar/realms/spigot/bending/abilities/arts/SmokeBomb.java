@@ -22,7 +22,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = SmokeBomb.NAME, affinity = BendingAffinity.Chi, shift=false)
+@ABendingAbility(name = SmokeBomb.NAME, affinity = BendingAffinity.CHI, shift=false)
 public class SmokeBomb extends BendingActiveAbility {
 	public final static String NAME = "SmokeBomb";
 
@@ -59,10 +59,10 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.id = ID++;
 		this.cooldown = COOLDOWN;
 		this.ticksRemaining = DURATION * 20;
-		if(this.bender.hasPath(BendingPath.Seeker)) {
+		if(this.bender.hasPath(BendingPath.SEEKER)) {
 			this.ticksRemaining *= 1.2;
 		}
-		if(this.bender.hasPath(BendingPath.Restless)) {
+		if(this.bender.hasPath(BendingPath.RESTLESS)) {
 			this.ticksRemaining *= 0.9;
 			this.cooldown *= 1.2; 
 		}
@@ -77,30 +77,30 @@ public class SmokeBomb extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Prepared) {
+		if (getState() == BendingAbilityState.PREPARED) {
 			return true;
 		}
 
-		if (!getState().equals(BendingAbilityState.Start)) {
+		if (!getState().equals(BendingAbilityState.START)) {
 			return false;
 		}
 
-		setState(BendingAbilityState.Prepared);
+		setState(BendingAbilityState.PREPARED);
 
 		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST, (SOUND_RADIUS / 16.0f), 1.1f);
 		this.player.addPotionEffect(blindnessBomber);
 
 		this.bender.cooldown(SmokeBomb.NAME, this.cooldown);
 
-		if (getState() == BendingAbilityState.Prepared) {
-			setState(BendingAbilityState.Progressing);
+		if (getState() == BendingAbilityState.PREPARED) {
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
 
 	@Override
 	public void progress() {
-		if (getState() != BendingAbilityState.Progressing) {
+		if (getState() != BendingAbilityState.PROGRESSING) {
 			remove();
 			return;
 		}

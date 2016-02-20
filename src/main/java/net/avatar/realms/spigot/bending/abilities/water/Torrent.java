@@ -31,7 +31,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = Torrent.NAME, element = BendingElement.Water)
+@ABendingAbility(name = Torrent.NAME, element = BendingElement.WATER)
 public class Torrent extends BendingActiveAbility {
 	public final static String NAME = "Torrent";
 	
@@ -88,12 +88,12 @@ public class Torrent extends BendingActiveAbility {
 
 		this.damage = DAMAGE;
 		this.range = RANGE;
-		if (this.bender.hasPath(BendingPath.Marksman)) {
+		if (this.bender.hasPath(BendingPath.MARKSMAN)) {
 			this.range *= 1.3;
 			this.damage *= 0.8;
 		}
 
-		if (this.bender.hasPath(BendingPath.Flowless)) {
+		if (this.bender.hasPath(BendingPath.FLOWLESS)) {
 			this.damage *= 1.2;
 		}
 	}
@@ -126,7 +126,7 @@ public class Torrent extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			this.time = System.currentTimeMillis();
 			this.sourceblock = BlockTools.getWaterSourceBlock(this.player, selectrange, EntityTools.canPlantbend(this.player));
 
@@ -143,7 +143,7 @@ public class Torrent extends BendingActiveAbility {
 
 			if (this.sourceblock != null) {
 				this.sourceselected = true;
-				setState(BendingAbilityState.Preparing);
+				setState(BendingAbilityState.PREPARING);
 			}
 
 			return false;
@@ -340,7 +340,7 @@ public class Torrent extends BendingActiveAbility {
 		}
 
 		Entity target = null;
-		if (!this.bender.hasPath(BendingPath.Flowless)) {
+		if (!this.bender.hasPath(BendingPath.FLOWLESS)) {
 			target = EntityTools.getTargetedEntity(this.player, this.range, this.hurtentities);
 		}
 		Location targetloc = EntityTools.getTargetBlock(this.player, this.range, BlockTools.getTransparentEarthbending()).getLocation();
@@ -567,7 +567,7 @@ public class Torrent extends BendingActiveAbility {
 			velocity.setZ(vec.getY());
 		}
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(this.player);
-		if (bender.hasPath(BendingPath.Marksman)) {
+		if (bender.hasPath(BendingPath.MARKSMAN)) {
 			velocity = velocity.multiply(1.5);
 		}
 		entity.setVelocity(velocity);
@@ -575,7 +575,7 @@ public class Torrent extends BendingActiveAbility {
 
 		World world = this.player.getWorld();
 
-		if (!bender.hasPath(BendingPath.Marksman)) {
+		if (!bender.hasPath(BendingPath.MARKSMAN)) {
 			double damagedealt = DEFLECT_DAMAGE;
 			if (Tools.isNight(world)) {
 				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * DEFLECT_DAMAGE);

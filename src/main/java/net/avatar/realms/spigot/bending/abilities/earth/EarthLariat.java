@@ -17,7 +17,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = EarthLariat.NAME, element = BendingElement.Earth)
+@ABendingAbility(name = EarthLariat.NAME, element = BendingElement.EARTH)
 public class EarthLariat extends BendingActiveAbility {
 	public final static String NAME = "EarthLariat";
 	
@@ -41,7 +41,7 @@ public class EarthLariat extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			if(!player.isSneaking()) {
 				target = EntityTools.getTargetedEntity(player, RANGE);
 				if(target == null) {
@@ -59,10 +59,10 @@ public class EarthLariat extends BendingActiveAbility {
 					player.setVelocity(middle.toVector().clone().subtract(player.getLocation().toVector()).multiply(0.5));
 					target.setVelocity(middle.toVector().clone().subtract(target.getLocation().toVector()).multiply(0.5));
 					
-					setState(BendingAbilityState.Progressing);
+					setState(BendingAbilityState.PROGRESSING);
 				}
 			}
-		} else if(getState() == BendingAbilityState.Progressing) {
+		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			if(player.getLocation().distance(target.getLocation()) < DISTANCE) {
 				target.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, CONFUSION_DURATION, 1));
 			}

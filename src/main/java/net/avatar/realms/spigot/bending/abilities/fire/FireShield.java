@@ -22,7 +22,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-@ABendingAbility(name = FireShield.NAME, element = BendingElement.Fire)
+@ABendingAbility(name = FireShield.NAME, element = BendingElement.FIRE)
 public class FireShield extends BendingActiveAbility {
 	public final static String NAME = "FireShield";
 
@@ -39,9 +39,9 @@ public class FireShield extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			this.time = System.currentTimeMillis();
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 			
 		}
 		return false;
@@ -49,9 +49,9 @@ public class FireShield extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.Start) {
+		if (getState() == BendingAbilityState.START) {
 			protect = new FireProtection(this.player);
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 			
 		}
 		return false;
@@ -109,7 +109,7 @@ public class FireShield extends BendingActiveAbility {
 					continue;
 				}
 				if ((this.player.getEntityId() != entity.getEntityId()) && ignite) {
-					if (this.bender.hasPath(BendingPath.Lifeless)) {
+					if (this.bender.hasPath(BendingPath.LIFELESS)) {
 						EntityTools.damageEntity(this.player, entity, 2);
 					}
 					Enflamed.enflame(this.player, entity, 3);

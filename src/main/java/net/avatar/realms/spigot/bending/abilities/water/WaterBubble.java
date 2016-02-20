@@ -12,7 +12,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = WaterBubble.NAME, element = BendingElement.Water, shift=false)
+@ABendingAbility(name = WaterBubble.NAME, element = BendingElement.WATER, shift=false)
 public class WaterBubble extends Bubble {
 	public final static String NAME = "WaterBubble";
 

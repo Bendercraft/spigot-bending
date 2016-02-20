@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@ABendingAbility(name = Dash.NAME, element = BendingElement.Master, shift=false)
+@ABendingAbility(name = Dash.NAME, element = BendingElement.MASTER, shift=false)
 public class Dash extends BendingActiveAbility {
 	public final static String NAME = "Dash";
 	
@@ -35,8 +35,8 @@ public class Dash extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Preparing);
+		if (getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PREPARING);
 		}
 
 		return false;
@@ -57,7 +57,7 @@ public class Dash extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.Progressing) {
+		if (getState() == BendingAbilityState.PROGRESSING) {
 			dash();
 		}
 	}
@@ -71,7 +71,7 @@ public class Dash extends BendingActiveAbility {
 	// This should be called in OnMoveEvent to set the direction dash the same
 	// as the player
 	public void setDirection(Vector d) {
-		if (getState() != BendingAbilityState.Preparing) {
+		if (getState() != BendingAbilityState.PREPARING) {
 			return;
 		}
 		if (Double.isNaN(d.getX()) || Double.isNaN(d.getY()) || Double.isNaN(d.getZ()) || (((d.getX() < 0.005) && (d.getX() > -0.005)) && ((d.getZ() < 0.005) && (d.getZ() > -0.005)))) {
@@ -79,7 +79,7 @@ public class Dash extends BendingActiveAbility {
 		} else {
 			this.direction = d.normalize();
 		}
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 	}
 
 	@Override

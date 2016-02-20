@@ -24,7 +24,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = HealingWaters.NAME, element = BendingElement.Water)
+@ABendingAbility(name = HealingWaters.NAME, element = BendingElement.WATER)
 public class HealingWaters extends BendingActiveAbility {
 	public final static String NAME = "HealingWaters";
 
@@ -41,13 +41,13 @@ public class HealingWaters extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			LivingEntity temp = EntityTools.getTargetedEntity(this.player, RANGE);
 			if (temp == null) {
 				temp = this.player;
 			}
 			this.target = temp;
-			setState(BendingAbilityState.Progressing);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}

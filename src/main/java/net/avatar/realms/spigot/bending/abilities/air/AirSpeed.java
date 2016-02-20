@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = AirSpeed.NAME, element = BendingElement.Air)
+@ABendingAbility(name = AirSpeed.NAME, element = BendingElement.AIR)
 public class AirSpeed extends BendingPassiveAbility {
 	public final static String NAME = "AirSpeed";
 
@@ -26,15 +26,15 @@ public class AirSpeed extends BendingPassiveAbility {
 
 	@Override
 	public boolean start() {
-		setState(BendingAbilityState.Progressing);
+		setState(BendingAbilityState.PROGRESSING);
 		return true;
 	}
 
 	@Override
 	public void progress() {
 		if (this.player.isSprinting() 
-				&& this.bender.isBender(BendingElement.Air)
-				&& EntityTools.canBendPassive(this.player, BendingElement.Air)) {
+				&& this.bender.isBender(BendingElement.AIR)
+				&& EntityTools.canBendPassive(this.player, BendingElement.AIR)) {
 			applySpeed();
 		} else {
 			remove();
@@ -57,7 +57,7 @@ public class AirSpeed extends BendingPassiveAbility {
 			return false;
 		}
 
-		if (!(this.bender.isBender(BendingElement.Air))) {
+		if (!(this.bender.isBender(BendingElement.AIR))) {
 			return false;
 		}
 

@@ -19,7 +19,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 
-@ABendingAbility(name = Illumination.NAME, element = BendingElement.Fire, shift=false)
+@ABendingAbility(name = Illumination.NAME, element = BendingElement.FIRE, shift=false)
 public class Illumination extends BendingActiveAbility {
 	public final static String NAME = "Illumination";
 
@@ -38,9 +38,9 @@ public class Illumination extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
-			setState(BendingAbilityState.Progressing);
-		} else if(getState() == BendingAbilityState.Progressing) {
+		if(getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PROGRESSING);
+		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			remove();
 		}
 		return false;

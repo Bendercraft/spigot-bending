@@ -2,7 +2,7 @@ package net.avatar.realms.spigot.bending.abilities;
 
 public enum BendingElement {
 
-	None, Air, Water, Earth, Fire, Master, Energy;
+	NONE, MASTER, AIR, WATER, EARTH, FIRE, ENERGY;
 
 	public static BendingElement getType(String string) {
 		for (BendingElement type : BendingElement.values()) {
@@ -15,18 +15,18 @@ public enum BendingElement {
 	
 	public BendingPath getDefaultPath () {
 		switch (this) {
-			case Air:
-				return BendingPath.Spiritual;
-			case Earth:
-				return BendingPath.Patient;
-			case Water:
-				return BendingPath.Balanced;
-			case Fire:
-				return BendingPath.Control;
-			case Master:
-				return BendingPath.Equality;
+			case AIR:
+				return BendingPath.SPIRITUAL;
+			case EARTH:
+				return BendingPath.PATIENT;
+			case WATER:
+				return BendingPath.BALANCED;
+			case FIRE:
+				return BendingPath.CONTROL;
+			case MASTER:
+				return BendingPath.EQUALITY;
 			default:
-				return BendingPath.None;
+				return BendingPath.NONE;
 				
 		}
 	}

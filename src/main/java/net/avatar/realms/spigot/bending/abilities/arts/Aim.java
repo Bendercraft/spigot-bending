@@ -29,7 +29,7 @@ import net.avatar.realms.spigot.bending.utils.ProtectionManager;
  *
  */
 
-@ABendingAbility(name = Aim.NAME, affinity = BendingAffinity.Bowman)
+@ABendingAbility(name = Aim.NAME, affinity = BendingAffinity.BOW)
 public class Aim extends BendingActiveAbility {
 	public final static String NAME = "Aim";
 
@@ -54,11 +54,11 @@ public class Aim extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState().equals(BendingAbilityState.Preparing)) {
+		if (getState().equals(BendingAbilityState.PREPARING)) {
 			return true;
 		}
 
-		if (!getState().equals(BendingAbilityState.Start)) {
+		if (!getState().equals(BendingAbilityState.START)) {
 			return false;
 		}
 
@@ -66,7 +66,7 @@ public class Aim extends BendingActiveAbility {
 		this.location = this.origin.clone();
 		this.direction = this.origin.getDirection().normalize();
 
-		setState(BendingAbilityState.Preparing);
+		setState(BendingAbilityState.PREPARING);
 
 		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
 		this.bender.cooldown(NAME, COOLDOWN);
@@ -76,11 +76,11 @@ public class Aim extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.Preparing) {
-			setState(BendingAbilityState.Progressing);
+		if (getState() == BendingAbilityState.PREPARING) {
+			setState(BendingAbilityState.PROGRESSING);
 		}
 
-		if (getState() != BendingAbilityState.Progressing) {
+		if (getState() != BendingAbilityState.PROGRESSING) {
 			return;
 		}
 

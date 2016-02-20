@@ -26,7 +26,7 @@ import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = Tornado.NAME, element = BendingElement.Air, affinity = BendingAffinity.Tornado)
+@ABendingAbility(name = Tornado.NAME, element = BendingElement.AIR, affinity = BendingAffinity.TORNADO)
 public class Tornado extends BendingActiveAbility {
 	public final static String NAME = "Tornado";
 	
@@ -83,10 +83,10 @@ public class Tornado extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if(getState() == BendingAbilityState.Start) {
+		if(getState() == BendingAbilityState.START) {
 			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 			if (this.flying != null) {
-				setState(BendingAbilityState.Progressing);
+				setState(BendingAbilityState.PROGRESSING);
 			}
 		}
 		return false;
