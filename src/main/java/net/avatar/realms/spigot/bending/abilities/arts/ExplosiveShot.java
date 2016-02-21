@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -16,16 +17,24 @@ import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
 @ABendingAbility(name = ExplosiveShot.NAME, affinity = BendingAffinity.BOW)
 public class ExplosiveShot extends BendingActiveAbility {
 	public final static String NAME = "ExplosiveShot";
 	
+	@ConfigurationParameter("Range-Damage")
+	private static int RANGE_DAMAGE = 3;
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 2;
+	
 	@ConfigurationParameter("Range")
-	private static int RANGE = 8;
+	private static int RANGE = 7;
 	@ConfigurationParameter("Sound-Radius")
 	private static int SOUND_RADIUS = 35;
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 3000;
 	
 	private static final ParticleEffect EXPLODE = ParticleEffect.SPELL;
 	
@@ -42,6 +51,7 @@ public class ExplosiveShot extends BendingActiveAbility {
 	public void shot(Arrow arrow) {
 		this.arrow = arrow;
 		setState(BendingAbilityState.PREPARED);
+		bender.cooldown(NAME, COOLDOWN);
 	}
 	
 	/**
@@ -52,6 +62,10 @@ public class ExplosiveShot extends BendingActiveAbility {
 			return;
 		}
 		Location location = arrow.getLocation();
+		
+		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, RANGE_DAMAGE)) {
+			EntityTools.damageEntity(player, entity, DAMAGE);
+		}
 
 		for (double degrees = 0; degrees < 360; degrees += 10) {
 			double angle = Math.toRadians(degrees);
