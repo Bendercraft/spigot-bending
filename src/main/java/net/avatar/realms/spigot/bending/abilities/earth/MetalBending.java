@@ -74,7 +74,9 @@ public class MetalBending extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	public static void use(Player pl, Block bl) {
 		// Don't really like it, magic value
-		if (EntityTools.isBender(pl, BendingElement.EARTH) && EntityTools.getBendingAbility(pl).equals(NAME)) {
+		if (EntityTools.isBender(pl, BendingElement.EARTH) 
+				&& EntityTools.getBendingAbility(pl) != null 
+				&& EntityTools.getBendingAbility(pl).equals(NAME)) {
 			if (EntityTools.canBend(pl, NAME)) {
 				if (bl.getType() == Material.IRON_DOOR_BLOCK) {
 					if (bl.getData() >= 8) {
