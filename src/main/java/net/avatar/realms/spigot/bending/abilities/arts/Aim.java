@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.abilities.arts;
 
 import java.util.Map;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
@@ -20,6 +21,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
+import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
  * 
@@ -34,66 +36,84 @@ public class Aim extends BendingActiveAbility {
 	public final static String NAME = "Aim";
 
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 2;
+	private static int DAMAGE = 8;
+	
+	@ConfigurationParameter("Focus-Damage")
+	private static int FOCUS_DAMAGE = 4;
 
 	@ConfigurationParameter("Range")
-	private static int RANGE = 20;
+	private static int RANGE = 40;
 
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 2000;
+	private static long COOLDOWN = 3000;
+	
+	@ConfigurationParameter("Charge")
+	private static long CHARGE = 2000;
 
-	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
+	private static final ParticleEffect VISUAL = ParticleEffect.SPELL_INSTANT;
 
 	private Location origin;
 	private Location location;
 	private Vector direction;
+	private int damage;
 
 	public Aim(RegisteredAbility register, Player player) {
 		super(register, player);
+		damage = DAMAGE;
+	}
+	
+	@Override
+	public boolean sneak() {
+		if(getState() == BendingAbilityState.START) {
+			setState(BendingAbilityState.PREPARING);
+		}
+		return false;
 	}
 
 	@Override
 	public boolean swing() {
-		if (getState().equals(BendingAbilityState.PREPARING)) {
-			return true;
+		if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
+			this.origin = this.player.getEyeLocation();
+			this.location = this.origin.clone();
+			this.direction = this.origin.getDirection().normalize();
+
+			setState(BendingAbilityState.PROGRESSING);
+
+			this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
+			this.bender.cooldown(NAME, COOLDOWN);
 		}
-
-		if (!getState().equals(BendingAbilityState.START)) {
-			return false;
-		}
-
-		this.origin = this.player.getEyeLocation();
-		this.location = this.origin.clone();
-		this.direction = this.origin.getDirection().normalize();
-
-		setState(BendingAbilityState.PREPARING);
-
-		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
-		this.bender.cooldown(NAME, COOLDOWN);
 
 		return false;
 	}
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.PREPARING) {
-			setState(BendingAbilityState.PROGRESSING);
-		}
+		if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
+			if(!player.isSneaking()) {
+				remove();
+				return;
+			}
+			if(getState() == BendingAbilityState.PREPARING && startedTime + CHARGE < System.currentTimeMillis()) {
+				damage += FOCUS_DAMAGE;
+				setState(BendingAbilityState.PREPARED);
+			}
+			if(getState() == BendingAbilityState.PREPARED) {
+				player.getWorld().playEffect(player.getEyeLocation(), 
+						Effect.SMOKE, 
+						Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 3);
+			}
+		} else if (getState() == BendingAbilityState.PROGRESSING) {
+			if (!this.player.getWorld().equals(this.location.getWorld()) 
+					|| this.location.distance(this.origin) > RANGE 
+					|| BlockTools.isSolid(this.location.getBlock())) {
+				remove();
+				return;
+			}
 
-		if (getState() != BendingAbilityState.PROGRESSING) {
-			return;
-		}
-
-		if (!this.player.getWorld().equals(this.location.getWorld()) 
-				|| this.location.distance(this.origin) > RANGE 
-				|| BlockTools.isSolid(this.location.getBlock())) {
-			remove();
-			return;
-		}
-
-		advanceLocation();
-		if (!affectAround()) {
-			remove();
+			advanceLocation();
+			if (!affectAround()) {
+				remove();
+			}
 		}
 	}
 
@@ -101,17 +121,11 @@ public class Aim extends BendingActiveAbility {
 		if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.location)) {
 			return false;
 		}
-		int cptEnt = 0;
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, 2.1)) {
 			if (entity.getEntityId() == this.player.getEntityId()) {
 				continue;
 			}
-			EntityTools.damageEntity(this.player, entity, DAMAGE);
-			cptEnt++;
-			break;
-		}
-
-		if (cptEnt > 0) {
+			EntityTools.damageEntity(this.player, entity, damage);
 			return false;
 		}
 		return true;
