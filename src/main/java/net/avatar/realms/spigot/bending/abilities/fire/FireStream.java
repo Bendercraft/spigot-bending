@@ -101,7 +101,7 @@ public class FireStream {
 			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	public static void removeAll() {
