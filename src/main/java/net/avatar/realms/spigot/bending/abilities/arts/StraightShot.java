@@ -6,15 +6,19 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import net.avatar.realms.spigot.bending.utils.ParticleEffect;
+import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 /**
  * 
@@ -35,7 +39,9 @@ public class StraightShot extends BendingActiveAbility {
 	private static int RANGE = 20;
 
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 2000;
+	private static long COOLDOWN = 10000;
+	
+	private static final ParticleEffect VISUAL = ParticleEffect.SPELL_WITCH;
 
 	public StraightShot(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -43,28 +49,36 @@ public class StraightShot extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState().equals(BendingAbilityState.PREPARING)) {
-			return true;
-		}
-
-		if (!getState().equals(BendingAbilityState.START)) {
-			return false;
-		}
-
-		Location origin = this.player.getEyeLocation();
-
-		setState(BendingAbilityState.PREPARING);
+		Location origin = player.getEyeLocation();
+		Location current = origin.clone();
+		Vector direction = origin.getDirection().normalize();
 		
-		LivingEntity entity = EntityTools.getTargetedEntity(player, RANGE);
-		
-		if(entity != null) {
-			EntityTools.damageEntity(this.player, entity, DAMAGE);
+		while(affectAround(current) 
+				&& player.getWorld().equals(current.getWorld()) 
+				&& current.distance(origin) < RANGE 
+				&& !BlockTools.isSolid(current.getBlock())) {
+			current = current.add(direction.multiply(1.1));
+			VISUAL.display(0, 0, 0, 1, 1, current, 20);
 		}
 
 		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
-		bender.cooldown(NAME, COOLDOWN);
+		this.bender.cooldown(NAME, COOLDOWN);
 
 		return false;
+	}
+	
+	private boolean affectAround(Location location) {
+		if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, location)) {
+			return false;
+		}
+		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.1)) {
+			if (entity.getEntityId() == player.getEntityId()) {
+				continue;
+			}
+			EntityTools.damageEntity(player, entity, DAMAGE);
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -78,7 +92,7 @@ public class StraightShot extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.isTool(this.player.getItemInHand().getType())) {
+		if (EntityTools.isTool(player.getItemInHand().getType())) {
 			return false;
 		}
 
@@ -87,7 +101,7 @@ public class StraightShot extends BendingActiveAbility {
 			return true;
 		}
 
-		if (instances.containsKey(this.player)) {
+		if (instances.containsKey(player)) {
 			return false;
 		}
 
@@ -96,7 +110,7 @@ public class StraightShot extends BendingActiveAbility {
 
 	@Override
 	public Object getIdentifier() {
-		return this.player;
+		return player;
 	}
 
 	@Override
