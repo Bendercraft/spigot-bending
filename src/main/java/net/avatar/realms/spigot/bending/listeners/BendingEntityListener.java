@@ -1,5 +1,7 @@
 package net.avatar.realms.spigot.bending.listeners;
 
+import java.util.logging.Level;
+
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,10 +31,12 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.arts.C4;
 import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
+import net.avatar.realms.spigot.bending.abilities.arts.ExplosiveShot;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
@@ -193,6 +197,30 @@ public class BendingEntityListener implements Listener {
 		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
+		
+		// ExplosiveShot
+		if(!(entity instanceof Player)) {
+			return;
+		}
+		Player player = (Player) entity;
+		String ability = EntityTools.getBendingAbility(player);
+		if (ability == null || !ability.equals(ExplosiveShot.NAME)) {
+			return;
+		}
+
+		if (EntityTools.canBend(player, ExplosiveShot.NAME)) {
+			ExplosiveShot ab = (ExplosiveShot) AbilityManager.getManager().buildAbility(ExplosiveShot.NAME, player);
+			if(ab == null) {
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Ability " + ability + " failed to construct with buildAbility for player " + player.getName());
+				return;
+			}
+			if(ab.canBeInitialized()) {
+				ab.shot((Arrow) event.getProjectile());
+				if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
+					AbilityManager.getManager().addInstance(ab);
+				}
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -241,8 +269,14 @@ public class BendingEntityListener implements Listener {
 				if (bPlayer == null) {
 					return;
 				}
+				
+				ExplosiveShot explosiveShot = (ExplosiveShot) AbilityManager.getManager().getInstances(ExplosiveShot.NAME).get(player);
+				if(explosiveShot != null) {
+					explosiveShot.explode();
+				}
+				
 				String ability = bPlayer.getAbility();
-				if (ability.equals(C4.NAME) && EntityTools.canBend(player, ability)) {
+				if (ability != null && ability.equals(C4.NAME) && EntityTools.canBend(player, ability)) {
 					C4 bomb = (C4) AbilityManager.getManager().buildAbility(C4.NAME, player);
 					bomb.setArrow(arrow);
 					bomb.swing();

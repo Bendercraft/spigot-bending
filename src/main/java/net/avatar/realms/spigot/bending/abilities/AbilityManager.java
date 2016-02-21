@@ -29,6 +29,7 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.arts.Aim;
+import net.avatar.realms.spigot.bending.abilities.arts.BlankPoint;
 import net.avatar.realms.spigot.bending.abilities.arts.C4;
 import net.avatar.realms.spigot.bending.abilities.arts.Speed;
 import net.avatar.realms.spigot.bending.abilities.arts.StraightShot;
@@ -36,8 +37,10 @@ import net.avatar.realms.spigot.bending.abilities.arts.Dash;
 import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.arts.ExplosiveShot;
 import net.avatar.realms.spigot.bending.abilities.arts.HighJump;
+import net.avatar.realms.spigot.bending.abilities.arts.PanicDagger;
 import net.avatar.realms.spigot.bending.abilities.arts.PoisonnedDart;
 import net.avatar.realms.spigot.bending.abilities.arts.PowerShot;
+import net.avatar.realms.spigot.bending.abilities.arts.Slice;
 import net.avatar.realms.spigot.bending.abilities.arts.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.arts.VitalPoint;
 import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
@@ -201,19 +204,22 @@ public class AbilityManager {
 	public void registerAllAbilities() {
 
 		register(AvatarState.class);
-
-		register(PoisonnedDart.class);
-		register(C4.class);
+		
 		register(Dash.class);
 		register(HighJump.class);
-		register(VitalPoint.class);
 		register(DirectHit.class);
-		register(SmokeBomb.class);
 		register(Speed.class);
 		register(Aim.class);
 		register(ExplosiveShot.class);
 		register(StraightShot.class);
 		register(PowerShot.class);
+		register(BlankPoint.class);
+		register(Slice.class);
+		register(PanicDagger.class);
+		register(PoisonnedDart.class);
+		register(C4.class);
+		register(SmokeBomb.class);
+		register(VitalPoint.class);
 
 		register(AirBlast.class);
 		register(AirBubble.class);
