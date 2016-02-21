@@ -27,8 +27,6 @@ public class FireStream {
 
 	private static final Material[] overwriteable = { Material.SAPLING, Material.LONG_GRASS, Material.DEAD_BUSH, Material.YELLOW_FLOWER, Material.RED_ROSE, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.FIRE, Material.SNOW, Material.TORCH };
 
-	private static final Material[] ignitables = { Material.BEDROCK, Material.BOOKSHELF, Material.BRICK, Material.CLAY, Material.CLAY_BRICK, Material.COAL_ORE, Material.COBBLESTONE, Material.DIAMOND_ORE, Material.DIAMOND_BLOCK, Material.DIRT, Material.ENDER_STONE, Material.GLOWING_REDSTONE_ORE, Material.GOLD_BLOCK, Material.GRAVEL, Material.GRASS, Material.HUGE_MUSHROOM_1, Material.HUGE_MUSHROOM_2, Material.LAPIS_BLOCK, Material.LAPIS_ORE, Material.LOG, Material.MOSSY_COBBLESTONE, Material.MYCEL, Material.NETHER_BRICK, Material.NETHERRACK, Material.OBSIDIAN, Material.REDSTONE_ORE, Material.SAND, Material.SANDSTONE, Material.SMOOTH_BRICK, Material.STONE, Material.SOUL_SAND, Material.SNOW_BLOCK, Material.WOOD, Material.WOOL, Material.LEAVES };
-
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 15;
 
@@ -101,11 +99,6 @@ public class FireStream {
 			return true;
 		} else if (block.getType() != Material.AIR) {
 			return false;
-		}
-
-		Block belowblock = block.getRelative(BlockFace.DOWN);
-		if (Arrays.asList(ignitables).contains(belowblock.getType())) {
-			return true;
 		}
 
 		return false;
