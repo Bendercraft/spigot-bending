@@ -19,14 +19,13 @@ import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = Tornado.NAME, element = BendingElement.AIR, affinity = BendingAffinity.TORNADO)
+@ABendingAbility(name = Tornado.NAME, affinity = BendingAffinity.TORNADO)
 public class Tornado extends BendingActiveAbility {
 	public final static String NAME = "Tornado";
 	
