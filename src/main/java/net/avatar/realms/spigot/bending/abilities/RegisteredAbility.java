@@ -42,7 +42,7 @@ public class RegisteredAbility {
 	}
 
 	public String getPermission() {
-		return "bending.ability." + this.name.toLowerCase();
+		return "bending." + this.element.name().toLowerCase() + "." + this.name.toLowerCase();
 	}
 
 	public String getConfigPath() {
