@@ -296,7 +296,7 @@ public class WaterWall extends BendingActiveAbility {
 						// loc.getBlock().setType(Material.GLOWSTONE);
 						vec = Tools.getOrthogonalVector(dir.clone(), angle, i);
 						block = loc.clone().add(vec).getBlock();
-						if (ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation()))
+						if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation()))
 							continue;
 						if (wallblocks.containsKey(block)) {
 							blocks.add(block);
@@ -409,7 +409,7 @@ public class WaterWall extends BendingActiveAbility {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation()))
+		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation()))
 			return;
 
 		if (!TempBlock.isTempBlock(block)) {

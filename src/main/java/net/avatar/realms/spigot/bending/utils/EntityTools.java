@@ -138,7 +138,7 @@ public class EntityTools {
 			}
 		}
 
-		return !ProtectionManager.isRegionProtectedFromBending(player, ability, player.getLocation());
+		return !ProtectionManager.isLocationProtectedFromBending(player, ability, player.getLocation());
 	}
 
 	public static boolean canBendPassive(Player player, BendingElement element) {

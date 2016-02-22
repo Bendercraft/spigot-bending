@@ -294,17 +294,17 @@ public class AbilityManager {
 			if (annotation.element() != BendingElement.NONE) {
 				Bending.getInstance().getLogger().warning("Register ability : " + ability + " affinity is set to "+annotation.affinity()+"("+annotation.affinity().getElement()+") and element is set as well to "+annotation.element()+". Affinity's element will prevail in case of difference.");
 			}
-			register(annotation.name(), ability, annotation.affinity().getElement(), annotation.affinity(), annotation.shift());
+			register(annotation.name(), ability, annotation.affinity().getElement(), annotation.affinity(), annotation.shift(), annotation.passive());
 		} else {
 			if (annotation.element() == BendingElement.NONE) {
 				Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but element & affinity are not set ! Aborting this registration...");
 				return;
 			}
-			register(annotation.name(), ability, annotation.element(), BendingAffinity.NONE, annotation.shift());
+			register(annotation.name(), ability, annotation.element(), BendingAffinity.NONE, annotation.shift(), annotation.passive());
 		}
 	}
 
-	private void register(String name, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity affinity, boolean shift) {
+	private void register(String name, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity affinity, boolean shift, boolean passive) {
 		if(!name.matches("^[a-zA-Z0-9_]*$")) {
 			// Nope !
 			Bending.getInstance().getLogger().severe("Ability " + name + " is not a valid name ([a-zA-Z0-9_]) ! Aborting registration...");
@@ -335,7 +335,7 @@ public class AbilityManager {
 				Bending.getInstance().getLogger().severe("Bind " + name + " associated with class " + ability + " has no valid constructor <RegisteredAbility, Player>.");
 				return;
 			}
-			RegisteredAbility ra = new RegisteredAbility(name, ability, element, affinity, shift, constructor);
+			RegisteredAbility ra = new RegisteredAbility(name, ability, element, affinity, shift, passive, constructor);
 			this.binds.put(name, ra);
 			this.reverseBinds.put(ra.getAbility(), name);
 		} catch (Exception e) {

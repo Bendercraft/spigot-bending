@@ -55,7 +55,7 @@ public class FireStream {
 	}
 
 	public boolean progress() {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, Blaze.NAME, this.location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, Blaze.NAME, this.location)) {
 			return false;
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
@@ -91,7 +91,7 @@ public class FireStream {
 	}
 
 	public static boolean isIgnitable(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, Blaze.NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, Blaze.NAME, block.getLocation())) {
 			return false;
 		}
 

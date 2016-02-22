@@ -135,7 +135,7 @@ public class AirSuction extends BendingActiveAbility {
 		Location location = origin.clone();
 		for (double i = 1; i <= this.range; i++) {
 			location = origin.clone().add(direction.clone().multiply(i));
-			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock()) || ProtectionManager.isRegionProtectedFromBending(this.player, AirSuction.NAME, location)) {
+			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock()) || ProtectionManager.isLocationProtectedFromBending(this.player, AirSuction.NAME, location)) {
 				return origin.clone().add(direction.clone().multiply(i - 1));
 			}
 		}
@@ -148,7 +148,7 @@ public class AirSuction extends BendingActiveAbility {
 			return null;
 		}
 
-		if (ProtectionManager.isRegionProtectedFromBending(player, AirSuction.NAME, location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, AirSuction.NAME, location)) {
 			return null;
 		}
 
@@ -184,7 +184,7 @@ public class AirSuction extends BendingActiveAbility {
 			return;
 		}
 		
-		if(ProtectionManager.isRegionProtectedFromBending(this.player, AirSuction.NAME, this.location)) {
+		if(ProtectionManager.isLocationProtectedFromBending(this.player, AirSuction.NAME, this.location)) {
 			remove();
 			return;
 		}

@@ -118,7 +118,7 @@ public class Aim extends BendingActiveAbility {
 	}
 
 	private boolean affectAround() {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, this.location)) {
 			return false;
 		}
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, 2.1)) {

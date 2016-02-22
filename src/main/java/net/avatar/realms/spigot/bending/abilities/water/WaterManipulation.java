@@ -425,7 +425,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (!manip.progressing 
 					|| !manip.location.getWorld().equals(player.getWorld()) 
-					|| ProtectionManager.isRegionProtectedFromBending(player, NAME, manip.location)) {
+					|| ProtectionManager.isLocationProtectedFromBending(player, NAME, manip.location)) {
 				continue;
 			}
 
@@ -450,7 +450,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			if (manip.player.equals(player) 
 					|| !manip.location.getWorld().equals(player.getWorld()) 
 					|| !manip.progressing 
-					|| ProtectionManager.isRegionProtectedFromBending(player, NAME, manip.location)) {
+					|| ProtectionManager.isLocationProtectedFromBending(player, NAME, manip.location)) {
 				continue;
 			}
 

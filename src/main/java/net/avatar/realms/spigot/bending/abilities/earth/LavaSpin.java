@@ -129,7 +129,7 @@ public class LavaSpin extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.current)) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, this.current)) {
 			return false;
 		}
 		return true;

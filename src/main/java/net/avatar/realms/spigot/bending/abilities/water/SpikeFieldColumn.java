@@ -74,7 +74,7 @@ public class SpikeFieldColumn {
 					return true;
 				}
 				this.location = affectedblock.getLocation();
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, IceSpike.NAME, this.location)) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, IceSpike.NAME, this.location)) {
 					return false;
 				}
 				for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(this.location, 1.4)) {

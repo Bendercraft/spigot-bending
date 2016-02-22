@@ -104,7 +104,7 @@ public class Tornado extends BendingActiveAbility {
 		if (this.player.getEyeLocation().getBlock().isLiquid() 
 				|| !this.player.isSneaking()
 				|| !EntityTools.getBendingAbility(this.player).equals(NAME)
-				|| ProtectionManager.isRegionProtectedFromBending(this.player, AirBlast.NAME, this.origin)) {
+				|| ProtectionManager.isLocationProtectedFromBending(this.player, AirBlast.NAME, this.origin)) {
 			return false;
 		}
 		return true;
@@ -124,7 +124,7 @@ public class Tornado extends BendingActiveAbility {
 				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, AirBlast.NAME, entity.getLocation())) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, AirBlast.NAME, entity.getLocation())) {
 					continue;
 				}
 
@@ -204,7 +204,7 @@ public class Tornado extends BendingActiveAbility {
 				z = this.origin.getZ() + (timefactor * factor * this.radius * Math.sin(angle));
 
 				Location effect = new Location(this.origin.getWorld(), x, y, z);
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, AirBlast.NAME, effect)) {
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, AirBlast.NAME, effect)) {
 					this.origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
 				}
 

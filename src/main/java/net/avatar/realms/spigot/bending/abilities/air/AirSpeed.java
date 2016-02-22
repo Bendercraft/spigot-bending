@@ -11,7 +11,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = AirSpeed.NAME, element = BendingElement.AIR)
+@ABendingAbility(name = AirSpeed.NAME, element = BendingElement.AIR, passive = true)
 public class AirSpeed extends BendingPassiveAbility {
 	public final static String NAME = "AirSpeed";
 

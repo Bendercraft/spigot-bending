@@ -160,7 +160,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 	}
 
 	private boolean affectAround() {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, this.location)) {
 			return false;
 		}
 		int cptEnt = 0;

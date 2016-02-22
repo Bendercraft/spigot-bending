@@ -227,7 +227,7 @@ public class AirSwipe extends BendingActiveAbility {
 				// For each elements, we calculate the next one and check
 				// afterwards if it is still in range
 				Location newlocation = location.clone().add(direction.clone().multiply(this.speedfactor));
-				if ((newlocation.distance(this.origin) <= this.range) && !ProtectionManager.isRegionProtectedFromBending(this.player, NAME, newlocation)) {
+				if ((newlocation.distance(this.origin) <= this.range) && !ProtectionManager.isLocationProtectedFromBending(this.player, NAME, newlocation)) {
 					// If new location is still valid, we add it
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
 						toAdd.put(direction, newlocation);
@@ -283,7 +283,7 @@ public class AirSwipe extends BendingActiveAbility {
 					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
-					if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, entity.getLocation())) {
+					if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, entity.getLocation())) {
 						continue;
 					}
 

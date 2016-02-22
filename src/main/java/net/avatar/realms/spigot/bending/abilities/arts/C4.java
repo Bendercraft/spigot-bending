@@ -92,7 +92,7 @@ public class C4 extends BendingActiveAbility {
 		}
 		
 		if(arrow != null) {
-			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, this.location)) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, this.location)) {
 				return false;
 			}
 			if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
@@ -102,7 +102,7 @@ public class C4 extends BendingActiveAbility {
 			if (!hasDetonator(this.player)) {
 				return false;
 			}
-			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, this.location)) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, this.location)) {
 				return false;
 			}
 			if (!BlockTools.isFluid(this.location.getBlock()) && !BlockTools.isPlant(this.location.getBlock())) {
@@ -266,7 +266,7 @@ public class C4 extends BendingActiveAbility {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && (this.location.distance(block.getLocation()) < (RADIUS / 2.0)))) {
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, NAME, block.getLocation()) && !ProtectionManager.isRegionProtectedFromExplosion(this.player, NAME, block.getLocation())) {
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, NAME, block.getLocation()) && !ProtectionManager.isLocationProtectedFromExplosion(this.player, NAME, block.getLocation())) {
 					affecteds.add(block);
 				}
 			}

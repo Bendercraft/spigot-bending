@@ -140,7 +140,7 @@ public class OctopusForm extends BendingActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, entity.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, entity.getLocation())) {
 				continue;
 			}
 
@@ -346,7 +346,7 @@ public class OctopusForm extends BendingActiveAbility {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation())) {
 			return;
 		}
 

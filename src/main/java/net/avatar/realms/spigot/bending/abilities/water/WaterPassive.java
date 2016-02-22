@@ -13,7 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = "WaterPassive", element = BendingElement.WATER)
+@ABendingAbility(name = "WaterPassive", element = BendingElement.WATER, passive = true)
 public class WaterPassive extends BendingPassiveAbility {
 	public final static String NAME = "WaterPassive";
 

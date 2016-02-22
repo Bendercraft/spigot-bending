@@ -121,7 +121,7 @@ public class PhaseChange extends BendingActiveAbility {
 	}
 
 	private static boolean isFreezable(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation())) {
 			return false;
 		}
 		if ((block.getType() == Material.WATER) || (block.getType() == Material.STATIONARY_WATER)) {
@@ -134,7 +134,7 @@ public class PhaseChange extends BendingActiveAbility {
 	}
 	
 	private static boolean isThawable(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation())) {
 			return false;
 		}
 		if (block.getType() == Material.ICE) {

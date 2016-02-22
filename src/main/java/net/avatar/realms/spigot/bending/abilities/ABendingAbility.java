@@ -15,4 +15,6 @@ public @interface ABendingAbility {
 	public BendingAffinity affinity() default BendingAffinity.NONE;
 	
 	public boolean shift() default true;
+
+	public boolean passive() default false;
 }
