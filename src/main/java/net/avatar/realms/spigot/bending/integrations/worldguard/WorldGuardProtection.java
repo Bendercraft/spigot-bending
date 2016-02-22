@@ -60,6 +60,7 @@ public class WorldGuardProtection {
             if (worldguard != null) {
                 generateFlags();
                 addFlags();
+                Bending.getInstance().getLogger().info("Add BENDING FLAGS to Worldguard");
             }
         }
     }
