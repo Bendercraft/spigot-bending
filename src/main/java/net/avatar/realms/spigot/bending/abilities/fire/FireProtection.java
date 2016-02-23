@@ -67,7 +67,7 @@ public class FireProtection {
 			Vector direction = location.getDirection();
 			location = location.clone().add(direction.multiply(radius));
 
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, FireShield.NAME, location)) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, FireShield.NAME, location)) {
 				return false;
 			}
 
@@ -80,7 +80,7 @@ public class FireProtection {
 			}
 
 			for (Block block : blocks) {
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, FireShield.NAME, block.getLocation())) {
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, FireShield.NAME, block.getLocation())) {
 					block.getWorld().playEffect(block.getLocation(), Effect.MOBSPAWNER_FLAMES, 0, 20);
 				}
 			}
@@ -89,7 +89,7 @@ public class FireProtection {
 				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, FireShield.NAME, entity.getLocation())) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, FireShield.NAME, entity.getLocation())) {
 					continue;
 				}
 

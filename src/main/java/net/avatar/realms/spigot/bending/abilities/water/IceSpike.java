@@ -224,7 +224,7 @@ public class IceSpike extends BendingActiveAbility {
 				return;
 			}
 
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, this.location)) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, this.location)) {
 				returnWater();
 				return;
 			}
@@ -302,7 +302,7 @@ public class IceSpike extends BendingActiveAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = ice.location;
-			if (ProtectionManager.isRegionProtectedFromBending(player, NAME, mloc)) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, mloc)) {
 				continue;
 			}
 			if ((mloc.distance(location) <= defaultrange) && (Tools.getDistanceFromLine(vector, location, ice.location) < deflectrange) && (mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1))))) {

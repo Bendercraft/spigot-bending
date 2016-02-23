@@ -256,7 +256,7 @@ public class Wave {
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!ProtectionManager.isRegionProtectedFromBending(this.player, WaterWall.NAME, this.location) && ((((blockl.getType() == Material.AIR) || (blockl.getType() == Material.FIRE) || BlockTools.isPlant(blockl) || BlockTools.isWater(blockl) || BlockTools.isWaterbendable(blockl, this.player))) && (blockl.getType() != Material.LEAVES))) {
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, WaterWall.NAME, this.location) && ((((blockl.getType() == Material.AIR) || (blockl.getType() == Material.FIRE) || BlockTools.isPlant(blockl) || BlockTools.isWater(blockl) || BlockTools.isWaterbendable(blockl, this.player))) && (blockl.getType() != Material.LEAVES))) {
 
 					for (double i = 0; i <= this.radius; i += .5) {
 						for (double angle = 0; angle < 360; angle += 10) {
@@ -363,7 +363,7 @@ public class Wave {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, WaterWall.NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, WaterWall.NAME, block.getLocation())) {
 			return;
 		}
 		if (!TempBlock.isTempBlock(block)) {
@@ -402,8 +402,8 @@ public class Wave {
 		}
 
 		for (Block block : BlockTools.getBlocksAroundPoint(this.frozenlocation, freezeradius)) {
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, WaterWall.NAME, block.getLocation()) 
-					|| ProtectionManager.isRegionProtectedFromBending(this.player, WaterWall.NAME, block.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, WaterWall.NAME, block.getLocation())
+					|| ProtectionManager.isLocationProtectedFromBending(this.player, WaterWall.NAME, block.getLocation())) {
 				continue;
 			}
 			if (TempBlock.isTempBlock(block)) {

@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPassiveAbility;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 
-@ABendingAbility(name = Speed.NAME, element = BendingElement.MASTER, shift=false)
+@ABendingAbility(name = Speed.NAME, element = BendingElement.MASTER, shift = false, passive = true)
 public class Speed extends BendingPassiveAbility {
 	public final static String NAME = "Speed";
 

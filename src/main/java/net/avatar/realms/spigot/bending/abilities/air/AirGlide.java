@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = AirGlide.NAME, element = BendingElement.AIR)
+@ABendingAbility(name = AirGlide.NAME, element = BendingElement.AIR, passive = true)
 public class AirGlide extends BendingPassiveAbility {
 	public final static String NAME = "AirGlide";
 

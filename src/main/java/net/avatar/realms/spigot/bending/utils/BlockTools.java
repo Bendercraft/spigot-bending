@@ -162,7 +162,7 @@ public class BlockTools {
 	}
 
 	public static boolean isTransparentToEarthbending(Player player, String ability, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, ability, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, ability, block.getLocation())) {
 			return false;
 		}
 
@@ -215,7 +215,7 @@ public class BlockTools {
 
 	@SuppressWarnings("deprecation")
 	public static boolean isEarthbendable(Player player, String ability, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, ability, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, ability, block.getLocation())) {
 			return false;
 		}
 
@@ -427,7 +427,7 @@ public class BlockTools {
 
 	public static boolean moveEarth(Player player, Block block, Vector direction, int chainLength, boolean throwplayer) {
 		if (isEarthbendable(player, block) 
-				&& !ProtectionManager.isRegionProtectedFromBending(player, EarthWall.NAME, block.getLocation())) {
+				&& !ProtectionManager.isLocationProtectedFromBending(player, EarthWall.NAME, block.getLocation())) {
 			boolean up = false;
 			boolean down = false;
 			Vector norm = direction.clone().normalize();
@@ -573,7 +573,7 @@ public class BlockTools {
 		Vector vector = location.getDirection().clone().normalize();
 		for (double i = 0; i <= range; i++) {
 			Block block = location.clone().add(vector.clone().multiply(i)).getBlock();
-			if (ProtectionManager.isRegionProtectedFromBending(player, ability, location)) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, ability, location)) {
 				continue;
 			}
 			if (isEarthbendable(player, ability, block)) {
@@ -588,7 +588,7 @@ public class BlockTools {
 		Vector vector = location.getDirection().clone().normalize();
 		for (double i = 0; i <= range; i++) {
 			Block block = location.clone().add(vector.clone().multiply(i)).getBlock();
-			if (ProtectionManager.isRegionProtectedFromBending(player, WaterManipulation.NAME, location)) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, WaterManipulation.NAME, location)) {
 				continue;
 			}
 

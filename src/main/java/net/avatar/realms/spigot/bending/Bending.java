@@ -1,11 +1,11 @@
 package net.avatar.realms.spigot.bending;
 
+import net.avatar.realms.spigot.bending.integrations.citizens.BendableTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.citizens.BendableTrait;
 import net.avatar.realms.spigot.bending.commands.BendingCommandExecutor;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
 import net.avatar.realms.spigot.bending.controller.Settings;

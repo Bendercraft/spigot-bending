@@ -56,7 +56,7 @@ public abstract class BendingActiveAbility extends BendingAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (ProtectionManager.isRegionProtectedFromBending(this.player, getName(), this.player.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, getName(), this.player.getLocation())) {
 			return false;
 		}
 		return true;

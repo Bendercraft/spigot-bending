@@ -99,7 +99,7 @@ public class HeatControl extends BendingActiveAbility {
 		double radius = PluginTools.firebendingDayAugment(RADIUS, this.player.getWorld());
 
 		for (Block block : BlockTools.getBlocksAroundPoint(EntityTools.getTargetBlock(this.player, range).getLocation(), radius)) {
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, block.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, block.getLocation())) {
 				continue;
 			}
 			// Do not allow firebender to completly negate lavabend
@@ -238,7 +238,7 @@ public class HeatControl extends BendingActiveAbility {
 	// Copy from Melt (now deleted)
 	@SuppressWarnings("deprecation")
 	public static void melt(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, PhaseChange.NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, PhaseChange.NAME, block.getLocation())) {
 			return;
 		}
 
@@ -265,7 +265,7 @@ public class HeatControl extends BendingActiveAbility {
 	}
 
 	public static void evaporate(Player player, Block block) {
-		if (ProtectionManager.isRegionProtectedFromBending(player, NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation())) {
 			return;
 		}
 		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block) && WaterManipulation.canPhysicsChange(block)) {

@@ -9,18 +9,20 @@ public class RegisteredAbility {
 	private final BendingAffinity affinity;
 	private final Constructor<? extends BendingAbility> constructor;
 	private final boolean shift;
+	private final boolean passive;
 
-	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, boolean shift, Constructor<? extends BendingAbility> constructor) {
-		this(name, ability, element, null, shift, constructor);
+	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, boolean shift, boolean passive, Constructor<? extends BendingAbility> constructor) {
+		this(name, ability, element, null, shift, passive,  constructor);
 	}
 
-	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity affinity, boolean shift, Constructor<? extends BendingAbility> constructor) {
+	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity affinity, boolean shift, boolean passive, Constructor<? extends BendingAbility> constructor) {
 		this.name = name;
 		this.ability = ability;
 		this.element = element;
 		this.affinity = affinity;
 		this.constructor = constructor;
 		this.shift = shift;
+		this.passive = passive;
 	}
 
 	public Class<? extends BendingAbility> getAbility() {
@@ -40,7 +42,7 @@ public class RegisteredAbility {
 	}
 
 	public String getPermission() {
-		return "bending.ability." + this.name.toLowerCase();
+		return "bending." + this.element.name().toLowerCase() + "." + this.name.toLowerCase();
 	}
 
 	public String getConfigPath() {
@@ -53,5 +55,9 @@ public class RegisteredAbility {
 
 	public boolean isShift() {
 		return shift;
+	}
+
+	public boolean isPassive() {
+		return passive;
 	}
 }

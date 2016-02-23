@@ -82,7 +82,7 @@ public class MetalBending extends BendingActiveAbility {
 						bl = bl.getRelative(BlockFace.DOWN);
 					}
 					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
-						if (!ProtectionManager.isRegionProtectedFromBending(pl, NAME, bl.getLocation())) {
+						if (!ProtectionManager.isLocationProtectedFromBending(pl, NAME, bl.getLocation())) {
 							if (bl.getData() < 4) {
 								bl.setData((byte) (bl.getData() + 4));
 								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);

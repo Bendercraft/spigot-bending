@@ -87,7 +87,7 @@ public class Lightning extends BendingActiveAbility {
 	private void strike() {
 		Location targetlocation = getTargetLocation();
 
-		if (!ProtectionManager.isRegionProtectedFromBending(this.player, NAME, targetlocation)) {
+		if (!ProtectionManager.isLocationProtectedFromBending(this.player, NAME, targetlocation)) {
 			this.strike = this.player.getWorld().strikeLightning(targetlocation);
 			strikes.put(this.strike, this);
 		}

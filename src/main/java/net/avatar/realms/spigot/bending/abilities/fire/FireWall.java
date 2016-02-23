@@ -147,7 +147,7 @@ public class FireWall extends BendingActiveAbility {
 			for (double j = -h; j <= h; j++) {
 				Location location = this.origin.clone().add(orthoud.clone().multiply(j));
 				location = location.add(ortholr.clone().multiply(i));
-				if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, location)) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, location)) {
 					continue;
 				}
 				Block block = location.getBlock();
@@ -179,7 +179,7 @@ public class FireWall extends BendingActiveAbility {
 			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
-			if (ProtectionManager.isRegionProtectedFromBending(this.player, NAME, entity.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, entity.getLocation())) {
 				continue;
 			}
 			for (Block block : this.blocks) {
