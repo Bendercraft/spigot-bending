@@ -32,6 +32,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.arts.C4;
@@ -81,10 +82,23 @@ public class BendingEntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageByEntityEvent event) {
-
 		Entity source = event.getDamager();
 		Entity entity = event.getEntity();
 		Lightning lightning = Lightning.getLightning(source);
+		
+		//Reduce all damage coming from BOW if not BOWMAN
+		if(event.getCause() == DamageCause.PROJECTILE
+			&& event.getDamager() instanceof Arrow) {
+			Arrow arrow = (Arrow) event.getDamager();
+			if(arrow.getShooter() instanceof Player) {
+				Player shooter = (Player) arrow.getShooter();
+				BendingPlayer bender = BendingPlayer.getBendingPlayer(shooter);
+				if(bender == null || !bender.hasAffinity(BendingAffinity.BOW)) {
+					event.setDamage(event.getDamage()*0.5);
+				}
+			}
+			
+		}
 
 		if (event.getCause() == DamageCause.LIGHTNING) {
 			if (Lightning.isNearbyChannel(source.getLocation())) {
