@@ -13,6 +13,7 @@ import net.avatar.realms.spigot.bending.db.DBUtils;
 import net.avatar.realms.spigot.bending.db.IBendingDB;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.listeners.BendingBlockListener;
+import net.avatar.realms.spigot.bending.listeners.BendingDenyItem;
 import net.avatar.realms.spigot.bending.listeners.BendingEntityListener;
 import net.avatar.realms.spigot.bending.listeners.BendingPlayerListener;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -68,6 +69,9 @@ public class Bending extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(this.listener, this);
 		getServer().getPluginManager().registerEvents(this.bpListener, this);
 		getServer().getPluginManager().registerEvents(this.blListener, this);
+		if(Settings.DENY_ITEMS) {
+			getServer().getPluginManager().registerEvents(new BendingDenyItem(), this);
+		}
 
 		getCommand("bending").setExecutor(this.commandExecutor);
 		getCommand("bending").setTabCompleter(this.commandExecutor);

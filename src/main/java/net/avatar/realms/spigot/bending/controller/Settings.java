@@ -103,6 +103,9 @@ public class Settings {
 	@ConfigurationParameter("bending.max-decks-amount")
 	public static int MAX_DECKS_AMOUNT = 5;
 	
+	@ConfigurationParameter("bending.deny-items")
+	public static boolean DENY_ITEMS = true;
+	
 	
 	public static void applyConfiguration(File configDir) {
 		configDir.mkdirs();
