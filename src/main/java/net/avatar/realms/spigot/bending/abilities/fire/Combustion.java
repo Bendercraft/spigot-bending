@@ -198,7 +198,7 @@ public class Combustion extends BendingActiveAbility {
 		}
 		CRIT.display(0, 0, 0, 1, 1, location, 20);
 		if (progressed % 5 == 0) {
-			location.getWorld().playSound(location, Sound.SHOOT_ARROW, 5, 1);
+			location.getWorld().playSound(location, Sound.ENTITY_ARROW_SHOOT, 5, 1);
 		}
 		progressed++;
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(location, 2 * HITBOX)) {
@@ -251,7 +251,7 @@ public class Combustion extends BendingActiveAbility {
 				}
 			}
 		}
-		location.getWorld().playSound(location, Sound.EXPLODE, SOUND_RADIUS / 16.0f, 1);
+		location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, SOUND_RADIUS / 16.0f, 1);
 		EXPLODE.display(0, 0, 0, 1, 1, location, 20);
 		
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, EXPLOSION_RADIUS);

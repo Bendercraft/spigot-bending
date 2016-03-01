@@ -16,6 +16,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
@@ -350,6 +351,10 @@ public class EntityTools {
 
 			((LivingEntity) entity).damage(damage, player);
 			entity.setLastDamageCause(new EntityDamageByEntityEvent(player, entity, DamageCause.CUSTOM, damage));
+			Map<DamageModifier, Double> damages = new HashMap<DamageModifier, Double>();
+			damages.put(DamageModifier.BASE, damage);
+			
+			
 		}
 	}
 

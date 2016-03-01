@@ -214,7 +214,7 @@ public class C4 extends BendingActiveAbility {
 
 	private void activate() {
 
-		this.location.getWorld().playSound(this.location, Sound.EXPLODE, 10, 1);
+		this.location.getWorld().playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 10, 1);
 		EXPLODE.display(0, 0, 0, 1, 1, this.location, 20);
 
 		if ((this.bomb != null) && (this.previousType != null)) {
@@ -254,7 +254,7 @@ public class C4 extends BendingActiveAbility {
 		skull.setOwner("MHF_TNT");
 		skull.update();
 		this.bomb.getDrops().clear();
-		this.location.getWorld().playSound(this.location, Sound.STEP_GRAVEL, 10, 1);
+		this.location.getWorld().playSound(this.location, Sound.BLOCK_GRAVEL_STEP, 10, 1);
 	}
 
 	private void explode() {
