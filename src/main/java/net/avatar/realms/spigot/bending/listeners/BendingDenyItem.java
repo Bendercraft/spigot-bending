@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -21,8 +22,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
+
+import net.avatar.realms.spigot.bending.Bending;
 
 public class BendingDenyItem implements Listener {
 	
@@ -148,6 +152,20 @@ public class BendingDenyItem implements Listener {
 				item.setItemMeta(corrected.getItemMeta());
 				item.setType(corrected.getType());
 			}
+		}
+		if(item.getType() == Material.SHIELD) {
+			item.setType(Material.WOOD);
+			item.setAmount(item.getAmount());
+			try {
+				item.setData(Material.WOOD.getData().newInstance());
+			} catch (InstantiationException e) {
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Cannot instanciate WOOD default MaterialData", e);
+			} catch (IllegalAccessException e) {
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Cannot instanciate WOOD default MaterialData", e);
+			}
+			item.setDurability(Material.WOOD.getMaxDurability());
+			item.setItemMeta(null);
+			
 		}
 	}
 }
