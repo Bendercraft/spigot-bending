@@ -91,7 +91,8 @@ public class BendingDenyItem implements Listener {
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
 		if(event.getDamager() instanceof Player) {
 			Player p = (Player) event.getDamager();
-			sanitize(p.getItemInHand());
+			sanitize(p.getInventory().getItemInMainHand());
+			sanitize(p.getInventory().getItemInOffHand());
 		}
 	}
 	
@@ -108,7 +109,8 @@ public class BendingDenyItem implements Listener {
 	
 	private void sanitize(Player player) {
 		sanitize(player.getItemOnCursor());
-		sanitize(player.getItemInHand());
+		sanitize(player.getInventory().getItemInMainHand());
+		sanitize(player.getInventory().getItemInOffHand());
 		for(ItemStack itemstack : player.getInventory().getContents()) {
 			sanitize(itemstack);
 		}
