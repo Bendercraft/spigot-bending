@@ -3,7 +3,9 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import net.avatar.realms.spigot.bending.abilities.*;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.integrations.ProtocolLib.CustomPacket;
+import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -17,8 +19,8 @@ public class TremorSense extends BendingActiveAbility {
 
     public static final String NAME = "TremorSense";
 
-    private static final PotionEffect BLIND = new PotionEffect(PotionEffectType.BLINDNESS, 1, 0);
-    private static final PotionEffect GLOW = new PotionEffect(PotionEffectType.BLINDNESS, 2, 2);
+    private static final PotionEffect BLIND = new PotionEffect(PotionEffectType.BLINDNESS, 20, 0);
+    private static final PotionEffect GLOW = new PotionEffect(PotionEffectType.GLOWING, 20, 2);
 
     @ConfigurationParameter("Base-Distance")
     private static int BASE_DISTANCE = 5;
@@ -39,7 +41,11 @@ public class TremorSense extends BendingActiveAbility {
 
     @Override
     public boolean sneak() {
-        if (getState().equals(BendingAbilityState.ENDED) || getState().equals(BendingAbilityState.START)) {
+        if (getState().equals(BendingAbilityState.ENDED)) {
+            return false;
+        }
+
+        if (!isOnEarth(player)) {
             return false;
         }
 
@@ -79,8 +85,12 @@ public class TremorSense extends BendingActiveAbility {
         if (!getState().equals(BendingAbilityState.PROGRESSING)) {
             return;
         }
+        if (!player.isSneaking()) {
+            remove();
+            return;
+        }
         long now = System.currentTimeMillis();
-        if (now - lastIncrementTime >= 1000) {
+        if (now - lastIncrementTime >= 2000) {
             if (currentDistance < MAX_DISTANCE) {
                 currentDistance += DISTANCE_INC;
                 if (currentDistance > MAX_DISTANCE) {
@@ -92,12 +102,20 @@ public class TremorSense extends BendingActiveAbility {
         }
 
         for (LivingEntity livingEntity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), currentDistance)) {
-            CustomPacket.sendAddPotionEffect(player, GLOW, livingEntity);
+            if (isOnEarth(livingEntity)) {
+                livingEntity.addPotionEffect(GLOW);
+                CustomPacket.sendAddPotionEffect(player, GLOW, livingEntity);
+            }
         }
     }
 
     @Override
     public void stop() {
+        //TODO : Cooldown
+    }
 
+    public boolean isOnEarth(LivingEntity entity) {
+        Block block = entity.getLocation().clone().add(0, -1, 0).getBlock();
+        return BlockTools.isEarthbendable(player, block);
     }
 }
