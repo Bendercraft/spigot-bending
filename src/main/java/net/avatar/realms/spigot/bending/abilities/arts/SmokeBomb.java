@@ -79,7 +79,7 @@ public class SmokeBomb extends BendingActiveAbility {
 
 		setState(BendingAbilityState.PREPARED);
 
-		this.origin.getWorld().playSound(this.origin, Sound.FIREWORK_BLAST, (SOUND_RADIUS / 16.0f), 1.1f);
+		this.origin.getWorld().playSound(this.origin, Sound.ENTITY_FIREWORK_BLAST, (SOUND_RADIUS / 16.0f), 1.1f);
 		this.player.addPotionEffect(blindnessBomber);
 
 		this.bender.cooldown(SmokeBomb.NAME, this.cooldown);

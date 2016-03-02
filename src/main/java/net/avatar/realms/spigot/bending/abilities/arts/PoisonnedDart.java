@@ -130,7 +130,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 			this.effects = newEffects;
 		}
 
-		this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
+		this.origin.getWorld().playSound(this.origin, Sound.ENTITY_ARROW_SHOOT, 10, 1);
 		this.bender.cooldown(NAME, COOLDOWN);
 
 		return false;

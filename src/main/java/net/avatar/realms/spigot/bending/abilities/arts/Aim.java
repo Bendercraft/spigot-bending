@@ -79,7 +79,7 @@ public class Aim extends BendingActiveAbility {
 
 			setState(BendingAbilityState.PROGRESSING);
 
-			this.origin.getWorld().playSound(this.origin, Sound.SHOOT_ARROW, 10, 1);
+			this.origin.getWorld().playSound(this.origin, Sound.ENTITY_ARROW_SHOOT, 10, 1);
 			this.bender.cooldown(NAME, COOLDOWN);
 		}
 

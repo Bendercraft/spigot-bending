@@ -61,7 +61,7 @@ public class StraightShot extends BendingActiveAbility {
 			VISUAL.display(0, 0, 0, 1, 1, current, 20);
 		}
 
-		origin.getWorld().playSound(origin, Sound.SHOOT_ARROW, 10, 1);
+		origin.getWorld().playSound(origin, Sound.ENTITY_ARROW_SHOOT, 10, 1);
 		this.bender.cooldown(NAME, COOLDOWN);
 
 		return false;
