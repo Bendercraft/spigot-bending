@@ -159,7 +159,8 @@ public class Torrent extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
+		String abilityName = EntityTools.getBendingAbility(this.player);
+		if (abilityName == null || !abilityName.equals(NAME)) {
 			if (this.location != null) {
 				returnWater(this.location);
 			}

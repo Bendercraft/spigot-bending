@@ -126,8 +126,10 @@ public class Bloodbending extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!this.player.isSneaking() 
-				|| !EntityTools.getBendingAbility(this.player).equals(NAME)
+		String abilityName = EntityTools.getBendingAbility(this.player);
+		if (!this.player.isSneaking()
+				|| abilityName == null
+				|| !abilityName.equals(NAME)
 				|| !EntityTools.canBend(this.player, NAME) 
 				|| System.currentTimeMillis() - this.time > MAX_DURATION) {
 			return false;

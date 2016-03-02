@@ -270,7 +270,8 @@ public class WaterManipulation extends BendingActiveAbility {
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			this.time = System.currentTimeMillis();
 
-			if (!this.progressing && !this.falling && (!EntityTools.getBendingAbility(this.player).equals(NAME))) {
+			String abilityName = EntityTools.getBendingAbility(this.player);
+			if (!this.progressing && !this.falling && (abilityName == null || !abilityName.equals(NAME))) {
 				remove();
 				return;
 			}

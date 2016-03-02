@@ -155,7 +155,8 @@ public class Lightning extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
+		String abilityName = EntityTools.getBendingAbility(this.player);
+		if (abilityName == null || !abilityName.equals(NAME)) {
 			return false;
 		}
 		return true;

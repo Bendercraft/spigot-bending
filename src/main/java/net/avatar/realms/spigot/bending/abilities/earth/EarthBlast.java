@@ -253,7 +253,8 @@ public class EarthBlast extends BendingActiveAbility {
 			}
 
 			if (getState() == BendingAbilityState.PREPARED) {
-				if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
+				String abilityName = EntityTools.getBendingAbility(this.player);
+				if (abilityName == null || !abilityName.equals(NAME)) {
 					cancel();
 					remove();
 					return;

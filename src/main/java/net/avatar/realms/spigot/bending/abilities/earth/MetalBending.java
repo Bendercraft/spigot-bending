@@ -74,8 +74,9 @@ public class MetalBending extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	public static void use(Player pl, Block bl) {
 		// Don't really like it, magic value
+		String abilityName = EntityTools.getBendingAbility(pl);
 		if (EntityTools.isBender(pl, BendingElement.EARTH) 
-				&& NAME.equals(EntityTools.getBendingAbility(pl))) {
+				&& (abilityName == null || NAME.equals(abilityName))) {
 			if (EntityTools.canBend(pl, NAME)) {
 				if (bl.getType() == Material.IRON_DOOR_BLOCK) {
 					if (bl.getData() >= 8) {
@@ -106,7 +107,8 @@ public class MetalBending extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!player.isSneaking() || !EntityTools.getBendingAbility(player).equals(NAME)) {
+		String abilityName = EntityTools.getBendingAbility(player);
+		if (!player.isSneaking() || abilityName == null || !abilityName.equals(NAME)) {
 			return false;
 		}
 		return true;

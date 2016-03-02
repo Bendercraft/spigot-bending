@@ -210,7 +210,8 @@ public class Wave {
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			this.time = System.currentTimeMillis();
 
-			if (!this.progressing && !EntityTools.getBendingAbility(this.player).equals(WaterWall.NAME)) {
+			String abilityName = EntityTools.getBendingAbility(this.player);
+			if (!this.progressing && (abilityName == null || !abilityName.equals(WaterWall.NAME))) {
 				return false;
 			}
 
@@ -232,7 +233,7 @@ public class Wave {
 					breakBlock();
 					return false;
 				}
-				if (!EntityTools.canBend(this.player, PhaseChange.NAME) && !EntityTools.getBendingAbility(this.player).equals(PhaseChange.NAME)) {
+				if (!EntityTools.canBend(this.player, PhaseChange.NAME) && (abilityName == null || !abilityName.equals(PhaseChange.NAME))) {
 					this.progressing = false;
 					thaw();
 					breakBlock();
