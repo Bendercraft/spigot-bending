@@ -35,7 +35,6 @@ public abstract  class CustomPacket {
         //
         try {
             ProtocolLibrary.getProtocolManager().sendServerPacket(p, packet);
-            System.out.println("Sending packet");
         } catch (InvocationTargetException e) {
             Bending.getInstance().getLogger().log(Level.WARNING, "Was not able to send a potion adding packet", e);
         }

@@ -34,6 +34,7 @@ public class TremorSense extends BendingActiveAbility {
     private int currentDistance;
 
     private long lastIncrementTime;
+    private boolean shouldBlind;
 
     public TremorSense(RegisteredAbility register, Player player) {
         super(register, player);
@@ -55,6 +56,7 @@ public class TremorSense extends BendingActiveAbility {
 
         currentDistance = BASE_DISTANCE;
         lastIncrementTime = startedTime;
+        shouldBlind = true;
 
         setState(BendingAbilityState.PROGRESSING);
         return true;
@@ -90,7 +92,7 @@ public class TremorSense extends BendingActiveAbility {
             return;
         }
         long now = System.currentTimeMillis();
-        if (now - lastIncrementTime >= 2000) {
+        if (now - lastIncrementTime >= 1000) {
             if (currentDistance < MAX_DISTANCE) {
                 currentDistance += DISTANCE_INC;
                 if (currentDistance > MAX_DISTANCE) {
@@ -98,12 +100,18 @@ public class TremorSense extends BendingActiveAbility {
                 }
             }
             lastIncrementTime = now;
-            CustomPacket.sendAddPotionEffect(player, BLIND, player);
+            if (shouldBlind) {
+                CustomPacket.sendAddPotionEffect(player, BLIND, player);
+                shouldBlind = false;
+            }
+            else {
+                shouldBlind = true;
+            }
         }
 
         for (LivingEntity livingEntity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), currentDistance)) {
-            if (isOnEarth(livingEntity)) {
-                livingEntity.addPotionEffect(GLOW);
+            if (player.getEntityId() != livingEntity.getEntityId() && isOnEarth(livingEntity)) {
+                //livingEntity.addPotionEffect(GLOW);
                 CustomPacket.sendAddPotionEffect(player, GLOW, livingEntity);
             }
         }
@@ -111,7 +119,7 @@ public class TremorSense extends BendingActiveAbility {
 
     @Override
     public void stop() {
-        //TODO : Cooldown
+        bender.cooldown(NAME, (System.currentTimeMillis() - startedTime) / 10);
     }
 
     public boolean isOnEarth(LivingEntity entity) {
