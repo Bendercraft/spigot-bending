@@ -37,6 +37,7 @@ import net.avatar.realms.spigot.bending.abilities.arts.Dash;
 import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.arts.ExplosiveShot;
 import net.avatar.realms.spigot.bending.abilities.arts.HighJump;
+import net.avatar.realms.spigot.bending.abilities.arts.Mark;
 import net.avatar.realms.spigot.bending.abilities.arts.PanicDagger;
 import net.avatar.realms.spigot.bending.abilities.arts.PoisonnedDart;
 import net.avatar.realms.spigot.bending.abilities.arts.PowerShot;
@@ -213,6 +214,7 @@ public class AbilityManager {
 		register(ExplosiveShot.class);
 		register(StraightShot.class);
 		register(PowerShot.class);
+		register(Mark.class);
 		register(BlankPoint.class);
 		register(Slice.class);
 		register(PanicDagger.class);
