@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import net.avatar.realms.spigot.bending.abilities.earth.*;
 import org.bukkit.entity.Player;
 
 import net.avatar.realms.spigot.bending.Bending;
@@ -44,20 +45,6 @@ import net.avatar.realms.spigot.bending.abilities.arts.PowerShot;
 import net.avatar.realms.spigot.bending.abilities.arts.Slice;
 import net.avatar.realms.spigot.bending.abilities.arts.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.arts.VitalPoint;
-import net.avatar.realms.spigot.bending.abilities.earth.Catapult;
-import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthLariat;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthPassive;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthTunnel;
-import net.avatar.realms.spigot.bending.abilities.earth.EarthWall;
-import net.avatar.realms.spigot.bending.abilities.earth.LavaFlow;
-import net.avatar.realms.spigot.bending.abilities.earth.LavaSpin;
-import net.avatar.realms.spigot.bending.abilities.earth.LavaTrain;
-import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
-import net.avatar.realms.spigot.bending.abilities.earth.Shockwave;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Blaze;
 import net.avatar.realms.spigot.bending.abilities.fire.Combustion;
@@ -251,6 +238,7 @@ public class AbilityManager {
 		register(LavaSpin.class);
 		register(MetalBending.class);
 		register(Shockwave.class);
+		register(TremorSense.class);
 
 		register(HeatControl.class);
 		register(Blaze.class);
