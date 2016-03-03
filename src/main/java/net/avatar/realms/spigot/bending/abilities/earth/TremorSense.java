@@ -21,7 +21,7 @@ public class TremorSense extends BendingActiveAbility {
 
     private static final PotionEffect BLIND = new PotionEffect(PotionEffectType.BLINDNESS, 20, 0);
     private static final PotionEffect GLOW = new PotionEffect(PotionEffectType.GLOWING, 20, 2);
-
+    private static final int[][] RELATIVES = {{1,0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
     @ConfigurationParameter("Base-Distance")
     private static int BASE_DISTANCE = 5;
 
@@ -111,8 +111,8 @@ public class TremorSense extends BendingActiveAbility {
 
         for (LivingEntity livingEntity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), currentDistance)) {
             if (player.getEntityId() != livingEntity.getEntityId() && isOnEarth(livingEntity)) {
-                //livingEntity.addPotionEffect(GLOW);
-                CustomPacket.sendAddPotionEffect(player, GLOW, livingEntity);
+                livingEntity.addPotionEffect(GLOW);
+                //CustomPacket.sendAddPotionEffect(player, GLOW, livingEntity);
             }
         }
     }
@@ -123,7 +123,19 @@ public class TremorSense extends BendingActiveAbility {
     }
 
     public boolean isOnEarth(LivingEntity entity) {
+        if (!entity.isOnGround()) {
+            return false;
+        }
         Block block = entity.getLocation().clone().add(0, -1, 0).getBlock();
-        return BlockTools.isEarthbendable(player, block);
+        if (BlockTools.isEarthbendable(player, block)) {
+            return true;
+        }
+        for (int[] rel : RELATIVES) {
+            Block relative = block.getRelative(rel[0], 0, rel[1]);
+            if (BlockTools.isEarthbendable(player, relative)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
