@@ -2,7 +2,7 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 
 import net.avatar.realms.spigot.bending.abilities.*;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.integrations.ProtocolLib.CustomPacket;
+import net.avatar.realms.spigot.bending.integrations.protocollib.CustomPacket;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import org.bukkit.block.Block;

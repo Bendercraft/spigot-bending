@@ -1,4 +1,4 @@
-package net.avatar.realms.spigot.bending.integrations.ProtocolLib;
+package net.avatar.realms.spigot.bending.integrations.protocollib;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
