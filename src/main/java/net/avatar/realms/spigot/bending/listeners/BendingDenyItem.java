@@ -78,12 +78,12 @@ public class BendingDenyItem implements Listener {
 	}
 	
 	@EventHandler
-    public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {  
+    public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {
 		sanitize(event.getItem().getItemStack());
 	}
 	
 	@EventHandler
-    public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {  
+    public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
 		sanitize(event.getPlayer().getInventory().getItem(event.getNewSlot()));
 	}
 	
@@ -103,7 +103,7 @@ public class BendingDenyItem implements Listener {
 	
 	
 	@EventHandler
-    public void onPlayerJoinEvent(PlayerJoinEvent event) {  
+    public void onPlayerJoinEvent(PlayerJoinEvent event) {
 		sanitize(event.getPlayer());
 	}
 	
