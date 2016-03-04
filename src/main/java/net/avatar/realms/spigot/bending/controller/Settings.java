@@ -106,6 +106,9 @@ public class Settings {
 	@ConfigurationParameter("bending.deny-items")
 	public static boolean DENY_ITEMS = true;
 	
+	@ConfigurationParameter("bending.enderpearl-cooldown")
+	public static long ENDERPEARL_COOLDOWN = 20000;
+	
 	
 	public static void applyConfiguration(File configDir) {
 		configDir.mkdirs();

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -27,13 +29,17 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class BendingDenyItem implements Listener {
+	
+	private Map<UUID, Long> enderpearls;
 	
 	private Map<Enchantment, Integer> deniedEnchantments;
 	private List<PotionType> deniedPotions;
 	
 	public BendingDenyItem() {
+		enderpearls = new HashMap<UUID, Long>();
 		deniedEnchantments = new HashMap<Enchantment, Integer>();
 		deniedPotions = new LinkedList<PotionType>();
 		
@@ -99,6 +105,23 @@ public class BendingDenyItem implements Listener {
 	@EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		sanitize(event.getItem());
+		
+		//Ender pearl ?
+		if(event.getItem() != null 
+				&& event.getItem().getType() == Material.ENDER_PEARL
+				&& event.getAction() != Action.LEFT_CLICK_AIR
+				&& event.getAction() != Action.LEFT_CLICK_BLOCK) {
+			long now = System.currentTimeMillis();
+			
+			if(enderpearls.containsKey(event.getPlayer().getUniqueId())) {
+				if(enderpearls.get(event.getPlayer().getUniqueId()) + Settings.ENDERPEARL_COOLDOWN > now) {
+					event.setCancelled(true);
+				}
+			}
+			if(!event.isCancelled()) {
+				enderpearls.put(event.getPlayer().getUniqueId(), now);
+			}
+		}
 	}
 	
 	
