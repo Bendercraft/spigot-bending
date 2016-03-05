@@ -128,7 +128,7 @@ public class AbilityManager {
 	}
 
 	public BendingActiveAbility buildAbility(String name, Player player) {
-		RegisteredAbility registered = this.binds.get(name);
+		RegisteredAbility registered = this.binds.get(name.toLowerCase());
 		if (registered == null) {
 			return null; // Invalid bind
 		}
@@ -301,7 +301,7 @@ public class AbilityManager {
 			return;
 		}
 		
-		if (this.binds.containsKey(name)) {
+		if (this.binds.containsKey(name.toLowerCase())) {
 			// Nope !
 			Bending.getInstance().getLogger().severe("Ability " + name + " is already register with class " + this.binds.get(name) + " ! Aborting registration...");
 			return;
@@ -326,8 +326,8 @@ public class AbilityManager {
 				return;
 			}
 			RegisteredAbility ra = new RegisteredAbility(name, ability, element, affinity, shift, passive, constructor);
-			this.binds.put(name, ra);
-			this.reverseBinds.put(ra.getAbility(), name);
+			this.binds.put(name.toLowerCase(), ra);
+			this.reverseBinds.put(ra.getAbility(), name.toLowerCase());
 		} catch (Exception e) {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Bind " + name + " associated with class " + ability + " threw exception when getting constructor", e);
 		}
@@ -353,7 +353,7 @@ public class AbilityManager {
 	}
 	
 	public RegisteredAbility getRegisteredAbility(String name) {
-		return binds.get(name);
+		return binds.get(name.toLowerCase());
 	}
 	
 	public Collection<RegisteredAbility> getRegisteredAbilities() {

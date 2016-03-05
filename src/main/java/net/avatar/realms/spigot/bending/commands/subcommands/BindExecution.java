@@ -114,7 +114,7 @@ public class BindExecution extends BendingCommand {
 
 		for(RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
 			if (player.hasPermission(ability.getPermission())) {
-				values.add(ability.getName());
+				values.add(ability.getName().toLowerCase());
 			}
 		}
 
