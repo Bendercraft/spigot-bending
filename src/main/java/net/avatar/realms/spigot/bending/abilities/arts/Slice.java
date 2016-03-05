@@ -96,7 +96,6 @@ public class Slice extends BendingActiveAbility {
 			}
 			EntityTools.damageEntity(player, target, DAMAGE_BLEED);
 			ticks++;
-			Bending.getInstance().getLogger().info("blbl "+ticks);
 		}
 	}
 	
