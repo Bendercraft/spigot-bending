@@ -66,7 +66,7 @@ public class FireBlade extends BendingActiveAbility {
 			return false;
 		}
 		if (this.blade == null 
-				|| !isFireBlade(this.player.getItemInHand()) 
+				|| !isFireBlade(this.player.getInventory().getItemInMainHand()) 
 				|| !EntityTools.getBendingAbility(this.player).equals(NAME)) {
 			return false;
 		}

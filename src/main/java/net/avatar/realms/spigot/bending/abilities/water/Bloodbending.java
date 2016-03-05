@@ -12,7 +12,6 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -248,8 +247,7 @@ public class Bloodbending extends BendingActiveAbility {
 			return false;
 		}
 
-		ItemStack i = this.player.getItemInHand();
-		if (EntityTools.isTool(i.getType())) {
+		if (EntityTools.holdsTool(player)) {
 			return false;
 		}
 

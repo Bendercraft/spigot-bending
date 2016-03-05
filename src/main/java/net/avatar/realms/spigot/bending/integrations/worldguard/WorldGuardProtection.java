@@ -37,11 +37,7 @@ public class WorldGuardProtection {
     private WorldGuardPlugin worldguard = null;
     private WGCustomFlagsPlugin wgCustomFlags = null;
 
-    private Bending plugin;
-
     public WorldGuardProtection (Bending plugin) {
-        this.plugin = plugin;
-
         initialize();
     }
 

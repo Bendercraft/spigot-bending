@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -23,13 +24,6 @@ import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-/**
- * 
- * This ability throws a poisonned dart to straight foward. If the dart hit an
- * entity, this entity gets poisonned. The type of poisonned can change if
- * specifics items are hold in hand.
- *
- */
 
 @ABendingAbility(name = Aim.NAME, affinity = BendingAffinity.BOW)
 public class Aim extends BendingActiveAbility {
@@ -142,7 +136,7 @@ public class Aim extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.isTool(this.player.getItemInHand().getType())) {
+		if (EntityTools.holdsTool(player)) {
 			return false;
 		}
 
@@ -151,7 +145,7 @@ public class Aim extends BendingActiveAbility {
 			return true;
 		}
 
-		if (instances.containsKey(this.player)) {
+		if (instances.containsKey(player)) {
 			return false;
 		}
 

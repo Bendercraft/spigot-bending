@@ -126,7 +126,7 @@ public class HeatControl extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.START) {
-			this.items = this.player.getItemInHand();
+			this.items = this.player.getInventory().getItemInMainHand();
 			if (isCookable(this.items.getType())) {
 				this.time = this.startedTime;
 				
@@ -150,9 +150,9 @@ public class HeatControl extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		long now = System.currentTimeMillis();
-		if (!this.items.equals(this.player.getItemInHand())) {
+		if (!this.items.equals(this.player.getInventory().getItemInMainHand())) {
 			this.time = now;
-			this.items = this.player.getItemInHand();
+			this.items = this.player.getInventory().getItemInMainHand();
 		}
 
 		if (!isCookable(this.items.getType())) {

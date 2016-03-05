@@ -184,7 +184,7 @@ public class C4 extends BendingActiveAbility {
 	}
 
 	private boolean hasDetonator(Player player) {
-		ItemStack held = player.getItemInHand();
+		ItemStack held = player.getInventory().getItemInMainHand();
 		if ((held.getType() == Material.LEVER) || (held.getType() == Material.BOW)) {
 			return true;
 		}

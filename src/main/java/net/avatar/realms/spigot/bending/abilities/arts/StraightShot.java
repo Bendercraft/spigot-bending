@@ -92,7 +92,7 @@ public class StraightShot extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.isTool(player.getItemInHand().getType())) {
+		if (EntityTools.holdsTool(player)) {
 			return false;
 		}
 

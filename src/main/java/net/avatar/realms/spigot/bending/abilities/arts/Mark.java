@@ -2,27 +2,17 @@ package net.avatar.realms.spigot.bending.abilities.arts;
 
 import java.util.Map;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
-
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
-import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ParticleEffect;
-import net.avatar.realms.spigot.bending.utils.ProtectionManager;
-import net.avatar.realms.spigot.bending.utils.Tools;
 
 /**
  * 
@@ -75,7 +65,7 @@ public class Mark extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.isTool(this.player.getItemInHand().getType())) {
+		if (EntityTools.holdsTool(player)) {
 			return false;
 		}
 
@@ -84,7 +74,7 @@ public class Mark extends BendingActiveAbility {
 			return true;
 		}
 
-		if (instances.containsKey(this.player)) {
+		if (instances.containsKey(player)) {
 			return false;
 		}
 

@@ -76,7 +76,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 
 		setState(BendingAbilityState.PREPARING);
 
-		ItemStack is = this.player.getItemInHand();
+		ItemStack is = this.player.getInventory().getItemInMainHand();
 		this.effects = new LinkedList<PotionEffect>();
 		switch (is.getType()) {
 			case MILK_BUCKET:
@@ -218,7 +218,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.isTool(this.player.getItemInHand().getType())) {
+		if (EntityTools.holdsTool(player)) {
 			return false;
 		}
 

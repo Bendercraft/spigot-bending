@@ -393,6 +393,13 @@ public class EntityTools {
 		}
 	}
 	
+	public static boolean holdsTool(Player player) {
+		if(player.getInventory().getItemInMainHand() == null) {
+			return false;
+		}
+		return isTool(player.getInventory().getItemInMainHand().getType());
+	}
+	
 	public static List<UUID> getToggledBendings() {
 		return toggledBending;
 	}

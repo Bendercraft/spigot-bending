@@ -160,7 +160,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {
+		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getInventory().getItemInMainHand())) {
 			event.setCancelled(true);
 		}
 
@@ -172,7 +172,7 @@ public class BendingPlayerListener implements Listener {
 		Entity ent = e.getRightClicked();
 		Player p = e.getPlayer();
 		if (FireBlade.isFireBlading(p) 
-				&& FireBlade.isFireBlade(p.getItemInHand()) 
+				&& FireBlade.isFireBlade(p.getInventory().getItemInMainHand()) 
 				&& ent instanceof ItemFrame) {
 			e.setCancelled(true);
 		}
@@ -273,7 +273,7 @@ public class BendingPlayerListener implements Listener {
 
 	private boolean playerCanSwingAbility(Player player, BendingAbility ability) {
 		return (ability.getPlayer().equals(player) &&
-				(ability.canBeUsedWithTools() || !EntityTools.isTool(player.getItemInHand().getType())));
+				(ability.canBeUsedWithTools() || !EntityTools.isTool(player.getInventory().getItemInMainHand().getType())));
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

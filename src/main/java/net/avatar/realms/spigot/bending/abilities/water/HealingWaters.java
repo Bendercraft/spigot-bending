@@ -82,7 +82,7 @@ public class HealingWaters extends BendingActiveAbility {
 		}
 
 		this.target = entity;
-		if (isWaterPotion(this.player.getItemInHand())) {
+		if (isWaterPotion(this.player.getInventory().getItemInMainHand())) {
 			giveHPToEntity(this.target);
 		} else if (inWater(this.player)) {
 			if (!inWater(this.target)) {
@@ -171,7 +171,7 @@ public class HealingWaters extends BendingActiveAbility {
 			return false;
 		}
 
-		if (!inWater(this.player) && !(isWaterPotion(this.player.getItemInHand()))) {
+		if (!inWater(this.player) && !(isWaterPotion(this.player.getInventory().getItemInMainHand()))) {
 			return false;
 		}
 
