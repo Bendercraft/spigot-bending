@@ -34,8 +34,8 @@ public class Settings {
 	@ConfigurationParameter("aliases.air")
 	public static String[] AIR_ALIASES = { "air", "airbending", "airbender" };
 	
-	@ConfigurationParameter("aliases.chi")
-	public static String[] CHI_ALIASES = { "chi", "chiblocker", "chiblocking" };
+	@ConfigurationParameter("aliases.master")
+	public static String[] MASTER_ALIASES = { "master" };
 	
 	@ConfigurationParameter("aliases.earth")
 	public static String[] EARTH_ALIASES = { "earth", "earthbender", "earthbending" };
@@ -46,17 +46,8 @@ public class Settings {
 	@ConfigurationParameter("aliases.water")
 	public static String[] WATER_ALIASES = { "water", "waterbender", "waterbender" };
 	
-	@ConfigurationParameter("chi.fall-damage-reduction")
-	public static double CHI_FALL_REDUCTION = 1.0;
-	
-	@ConfigurationParameter("chi.dodge-chance")
-	public static double CHI_DODGE_CHANCE = 10.0;
-	
-	@ConfigurationParameter("chi.comboreset")
-	public static long CHI_COMBO_RESET = 8500;
-	
-	@ConfigurationParameter("server.sea-level")
-	public static int SEA_LEVEL = 63;
+	@ConfigurationParameter("master.fall-damage-reduction")
+	public static double MASTER_FALL_REDUCTION = 1.0;
 	
 	@ConfigurationParameter("server.respect-worldguard")
 	public static boolean RESPECT_WORLDGUARD = true;
@@ -97,8 +88,8 @@ public class Settings {
 	@ConfigurationParameter("chat-colors.water")
 	public static String WATER_COLOR = "BLUE";
 	
-	@ConfigurationParameter("chat-colors.chi")
-	public static String CHI_COLOR = "YELLOW";
+	@ConfigurationParameter("chat-colors.master")
+	public static String MASTER_COLOR = "YELLOW";
 	
 	@ConfigurationParameter("bending.max-decks-amount")
 	public static int MAX_DECKS_AMOUNT = 5;
@@ -130,7 +121,7 @@ public class Settings {
 		if (name.equals("Energy")) {
 			return AVATAR_COLOR;
 		} else if (name.equals("ChiBlocker")) {
-			return CHI_COLOR;
+			return MASTER_COLOR;
 		} else if (name.equals("Fire")) {
 			return FIRE_COLOR;
 		} else if (name.equals("Water")) {

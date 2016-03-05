@@ -427,7 +427,7 @@ public class BendingPlayerListener implements Listener {
 				if (!event.isCancelled() 
 						&& EntityTools.isBender(player, BendingElement.MASTER) 
 						&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
-					event.setDamage((int) (event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
+					event.setDamage((int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.)));
 					if (event.getEntity().getFallDistance() < 10) {
 						event.setCancelled(true);
 						return;
