@@ -95,7 +95,21 @@ public class BendingEntityListener implements Listener {
 					event.setDamage(event.getDamage()*0.5);
 				}
 			}
-			
+		}
+		//Reduce all damage coming from SWORD if not SWORDMAN
+		if(event.getCause() == DamageCause.ENTITY_ATTACK
+			&& event.getDamager() instanceof Player) {
+			Player attacker = (Player) event.getDamager();
+			if(attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.GOLD_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.IRON_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.STONE_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.WOOD_SWORD) {
+				BendingPlayer bender = BendingPlayer.getBendingPlayer(attacker);
+				if(bender == null || !bender.hasAffinity(BendingAffinity.SWORD)) {
+					event.setDamage(event.getDamage()*0.5);
+				}
+			}
 		}
 
 		if (event.getCause() == DamageCause.LIGHTNING) {
