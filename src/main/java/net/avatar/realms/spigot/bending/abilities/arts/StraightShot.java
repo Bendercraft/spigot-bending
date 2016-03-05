@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities.arts;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,7 +18,6 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 /**
@@ -41,7 +41,7 @@ public class StraightShot extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 10000;
 	
-	private static final ParticleEffect VISUAL = ParticleEffect.SPELL_WITCH;
+	private static final Particle VISUAL = Particle.SPELL_WITCH;
 
 	public StraightShot(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -58,17 +58,17 @@ public class StraightShot extends BendingActiveAbility {
 				&& current.distance(origin) < RANGE 
 				&& !BlockTools.isSolid(current.getBlock())) {
 			current = current.add(direction.multiply(1.1));
-			VISUAL.display(0, 0, 0, 1, 1, current, 20);
+			current.getWorld().spawnParticle(VISUAL, current, 1, 0, 0, 0);
 		}
 
 		origin.getWorld().playSound(origin, Sound.ENTITY_ARROW_SHOOT, 10, 1);
-		this.bender.cooldown(NAME, COOLDOWN);
+		bender.cooldown(NAME, COOLDOWN);
 
 		return false;
 	}
 	
 	private boolean affectAround(Location location) {
-		if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, location)) {
 			return false;
 		}
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.1)) {

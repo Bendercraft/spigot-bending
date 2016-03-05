@@ -15,7 +15,6 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
@@ -25,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -69,8 +69,8 @@ public class Combustion extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 2000;
 
-	private static final ParticleEffect CRIT = ParticleEffect.CRIT;
-	private static final ParticleEffect EXPLODE = ParticleEffect.EXPLOSION_HUGE;
+	private static final Particle CRIT = Particle.CRIT;
+	private static final Particle EXPLODE = Particle.EXPLOSION_HUGE;
 
 	private Location origin;
 	private Location location;
@@ -121,7 +121,7 @@ public class Combustion extends BendingActiveAbility {
 			}
 			player.getWorld().playEffect(player.getEyeLocation(), 
 					Effect.SMOKE, 
-					Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 3);
+					Tools.getIntCardinalDirection(player.getEyeLocation().getDirection()), 3);
 			if (System.currentTimeMillis() > time + CHARGE_TIME) {
 				location = player.getEyeLocation();
 				origin = location.clone();
@@ -196,7 +196,7 @@ public class Combustion extends BendingActiveAbility {
 		for (Block block : BlockTools.getBlocksAroundPoint(location, HITBOX)) {
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 0, 1);
 		}
-		CRIT.display(0, 0, 0, 1, 1, location, 20);
+		location.getWorld().spawnParticle(CRIT, location, 1, 0, 0, 0);
 		if (progressed % 5 == 0) {
 			location.getWorld().playSound(location, Sound.ENTITY_ARROW_SHOOT, 5, 1);
 		}
@@ -241,18 +241,18 @@ public class Combustion extends BendingActiveAbility {
 
 					if (affecteds.containsAll(adjacent)) {
 						// Explosion ok
-						this.removeBlock(block);
+						removeBlock(block);
 					} else {
 						double rand = Math.random();
 						if (rand < 0.8) {
-							this.removeBlock(block);
+							removeBlock(block);
 						}
 					}
 				}
 			}
 		}
 		location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, SOUND_RADIUS / 16.0f, 1);
-		EXPLODE.display(0, 0, 0, 1, 1, location, 20);
+		location.getWorld().spawnParticle(EXPLODE, location, 1, 0, 0, 0);
 		
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, EXPLOSION_RADIUS);
 		for (LivingEntity entity : entities) {

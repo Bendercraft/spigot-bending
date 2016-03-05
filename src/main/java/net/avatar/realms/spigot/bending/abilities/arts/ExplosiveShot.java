@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
@@ -18,7 +19,6 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
 @ABendingAbility(name = ExplosiveShot.NAME, affinity = BendingAffinity.BOW)
 public class ExplosiveShot extends BendingActiveAbility {
@@ -36,7 +36,7 @@ public class ExplosiveShot extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 3000;
 	
-	private static final ParticleEffect EXPLODE = ParticleEffect.SPELL;
+	private static final Particle EXPLODE = Particle.SPELL;
 	
 	private Arrow arrow;
 	private List<FireStream> firestreams = new LinkedList<FireStream>();
@@ -85,7 +85,7 @@ public class ExplosiveShot extends BendingActiveAbility {
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		location.getWorld().playSound(location, Sound.BLOCK_GLASS_BREAK, SOUND_RADIUS / 16.0f, 1);
-		EXPLODE.display(0, 0, 0, 1, 1, location, 20);
+		location.getWorld().spawnParticle(EXPLODE, location, 1, 0, 0, 0);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class ExplosiveShot extends BendingActiveAbility {
 	
 	@Override
 	public Object getIdentifier() {
-		return this.player;
+		return player;
 	}
 
 	@Override
