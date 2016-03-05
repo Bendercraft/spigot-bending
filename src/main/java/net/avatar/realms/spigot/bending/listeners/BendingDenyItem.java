@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.logging.Level;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -25,7 +23,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
-import net.avatar.realms.spigot.bending.Bending;
+import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class BendingDenyItem implements Listener {
@@ -50,7 +49,7 @@ public class BendingDenyItem implements Listener {
 		deniedEnchantments.put(Enchantment.DAMAGE_ALL, 2);
 		deniedEnchantments.put(Enchantment.DAMAGE_UNDEAD, 5);
 		deniedEnchantments.put(Enchantment.DAMAGE_ARTHROPODS, 5);
-		deniedEnchantments.put(Enchantment.KNOCKBACK, 2);
+		deniedEnchantments.put(Enchantment.KNOCKBACK, 1);
 		deniedEnchantments.put(Enchantment.FIRE_ASPECT, 0);
 		deniedEnchantments.put(Enchantment.LOOT_BONUS_MOBS, 3);
 		deniedEnchantments.put(Enchantment.DIG_SPEED, 5);
@@ -66,11 +65,12 @@ public class BendingDenyItem implements Listener {
 		
 		deniedPotions.add(PotionType.STRENGTH);
 		deniedPotions.add(PotionType.FIRE_RESISTANCE);
+		deniedPotions.add(PotionType.INVISIBILITY);
 	}
 	
 	@EventHandler
     public void onEnchantItemEvent(EnchantItemEvent event) {  
-		sanitize(event.getItem());
+		sanitize(BendingPlayer.getBendingPlayer(event.getEnchanter()), event.getItem());
 	}
 	
 	@EventHandler
@@ -82,26 +82,27 @@ public class BendingDenyItem implements Listener {
 	
 	@EventHandler
     public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {
-		sanitize(event.getItem().getItemStack());
+		sanitize(BendingPlayer.getBendingPlayer(event.getPlayer()), event.getItem().getItemStack());
 	}
 	
 	@EventHandler
     public void onPlayerItemHeldEvent(PlayerItemHeldEvent event) {
-		sanitize(event.getPlayer().getInventory().getItem(event.getNewSlot()));
+		sanitize(BendingPlayer.getBendingPlayer(event.getPlayer()), event.getPlayer().getInventory().getItem(event.getNewSlot()));
 	}
 	
 	@EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
 		if(event.getDamager() instanceof Player) {
 			Player p = (Player) event.getDamager();
-			sanitize(p.getInventory().getItemInMainHand());
-			sanitize(p.getInventory().getItemInOffHand());
+			BendingPlayer bender = BendingPlayer.getBendingPlayer(p);
+			sanitize(bender, p.getInventory().getItemInMainHand());
+			sanitize(bender, p.getInventory().getItemInOffHand());
 		}
 	}
 	
 	@EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		sanitize(event.getItem());
+		sanitize(BendingPlayer.getBendingPlayer(event.getPlayer()), event.getItem());
 		
 		//Ender pearl ?
 		if(event.getItem() != null 
@@ -128,21 +129,22 @@ public class BendingDenyItem implements Listener {
 	}
 	
 	private void sanitize(Player player) {
-		sanitize(player.getItemOnCursor());
-		sanitize(player.getInventory().getItemInMainHand());
-		sanitize(player.getInventory().getItemInOffHand());
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		sanitize(bender, player.getItemOnCursor());
+		sanitize(bender, player.getInventory().getItemInMainHand());
+		sanitize(bender, player.getInventory().getItemInOffHand());
 		for(ItemStack itemstack : player.getInventory().getContents()) {
-			sanitize(itemstack);
+			sanitize(bender, itemstack);
 		}
 		for(ItemStack itemstack : player.getInventory().getArmorContents()) {
-			sanitize(itemstack);
+			sanitize(bender, itemstack);
 		}
 		for(ItemStack itemstack : player.getEnderChest()) {
-			sanitize(itemstack);
+			sanitize(bender, itemstack);
 		}
 	}
 	
-	private void sanitize(ItemStack item) {
+	private void sanitize(BendingPlayer bender, ItemStack item) {
 		if(item == null) {
 			return;
 		}
@@ -175,19 +177,37 @@ public class BendingDenyItem implements Listener {
 				item.setType(corrected.getType());
 			}
 		}
-		if(item.getType() == Material.SHIELD) {
-			item.setType(Material.WOOD);
-			item.setAmount(item.getAmount());
-			try {
-				item.setData(Material.WOOD.getData().newInstance());
-			} catch (InstantiationException e) {
-				Bending.getInstance().getLogger().log(Level.SEVERE, "Cannot instanciate WOOD default MaterialData", e);
-			} catch (IllegalAccessException e) {
-				Bending.getInstance().getLogger().log(Level.SEVERE, "Cannot instanciate WOOD default MaterialData", e);
+		
+		if(item.getType() == Material.GOLDEN_APPLE 
+				|| item.getType() == Material.DIAMOND_SWORD
+				|| item.getType() == Material.DIAMOND_BOOTS
+				|| item.getType() == Material.DIAMOND_CHESTPLATE
+				|| item.getType() == Material.DIAMOND_HELMET
+				|| item.getType() == Material.DIAMOND_LEGGINGS
+				|| item.getType() == Material.GOLD_SWORD
+				|| item.getType() == Material.GOLD_BOOTS
+				|| item.getType() == Material.GOLD_CHESTPLATE
+				|| item.getType() == Material.GOLD_HELMET
+				|| item.getType() == Material.GOLD_LEGGINGS) {
+			bender.getPlayer().getInventory().remove(item);
+		}
+		
+		// Swordman might keep extra items
+		if(bender == null || !bender.hasAffinity(BendingAffinity.SWORD)) {
+			if(item.getType() == Material.SHIELD 
+					|| item.getType() == Material.IRON_SWORD) {
+				bender.getPlayer().getInventory().remove(item);
 			}
-			item.setDurability(Material.WOOD.getMaxDurability());
-			item.setItemMeta(null);
-			
+		}
+		
+		// Metal bender might keep extra items
+		if(bender == null || !bender.hasAffinity(BendingAffinity.METAL)) {
+			if(item.getType() == Material.IRON_BOOTS 
+					|| item.getType() == Material.IRON_CHESTPLATE
+					|| item.getType() == Material.IRON_HELMET
+					|| item.getType() == Material.IRON_LEGGINGS) {
+				bender.getPlayer().getInventory().remove(item);
+			}
 		}
 	}
 }
