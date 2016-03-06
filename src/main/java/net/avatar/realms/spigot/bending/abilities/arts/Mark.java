@@ -1,12 +1,8 @@
 package net.avatar.realms.spigot.bending.abilities.arts;
 
-import java.util.Map;
-
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
@@ -43,13 +39,11 @@ public class Mark extends BendingActiveAbility {
 	
 	@Override
 	public boolean sneak() {
-		
 		target = EntityTools.getTargetedEntity(player, RANGE);
-		
 		if(target != null) {
 			target.addPotionEffect(PotionEffectType.GLOWING.createEffect(DURATION, 1));
+			bender.cooldown(this, DURATION);
 		}
-		
 		return false;
 	}
 
@@ -57,28 +51,6 @@ public class Mark extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		if (EntityTools.holdsTool(player)) {
-			return false;
-		}
-
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
-		if ((instances == null) || instances.isEmpty()) {
-			return true;
-		}
-
-		if (instances.containsKey(player)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override
