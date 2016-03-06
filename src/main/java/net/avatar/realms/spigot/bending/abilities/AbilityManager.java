@@ -353,6 +353,9 @@ public class AbilityManager {
 	}
 	
 	public RegisteredAbility getRegisteredAbility(String name) {
+		if(name == null) {
+			return null;
+		}
 		return binds.get(name.toLowerCase());
 	}
 	
