@@ -1,16 +1,22 @@
 package net.avatar.realms.spigot.bending.controller;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Team;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityCooldown;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
@@ -47,6 +53,40 @@ public class BendingManager implements Runnable {
 
 			manageGlobalTempBlock();
 			handleDayNight();
+			
+			if(Settings.USE_SCOREBOARD) {
+				//One scoreboard per player
+				//One team per scoreboard (team name = player name)
+				//Team's entries = ability's name (case sensitive) (not player !)
+				//Entry's score = cooldown left
+				for(Player player : plugin.getServer().getOnlinePlayers()) {
+					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+					if(bender != null && bender.isUsingScoreboard()) {
+						Team team = player.getScoreboard().getTeam(player.getName());
+						Objective objective = player.getScoreboard().getObjective("cooldowns");
+						
+						Map<String, BendingAbilityCooldown> cooldowns = bender.getCooldowns();
+						for(Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
+							if(!team.hasEntry(entry.getKey())) {
+								team.addEntry(entry.getKey());
+							}
+							
+							Score score = objective.getScore(entry.getKey());
+						    score.setScore((int) (entry.getValue().timeLeft(now)/1000));
+						}
+						
+						List<String> toRemove = new LinkedList<String>();
+						for(String entry : team.getEntries()) {
+							if(!cooldowns.containsKey(entry)) {
+								toRemove.add(entry);
+							}
+						}
+						for(String entry : toRemove) {
+							player.getScoreboard().resetScores(entry);
+						}
+					}
+				}
+			}
 		} catch (Exception e) {
 			try {
 				AbilityManager.getManager().stopAllAbilities();

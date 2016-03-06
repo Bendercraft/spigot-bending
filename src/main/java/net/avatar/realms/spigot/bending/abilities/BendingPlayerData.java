@@ -12,6 +12,7 @@ public class BendingPlayerData {
 	private Map<String, Map<Integer, String>> decks;
 	private String currentDeck;
 	private long lastTime;
+	private boolean usingScoreboard;
 
 	public UUID getPlayer() {
 		return this.player;
@@ -67,5 +68,13 @@ public class BendingPlayerData {
 
 	public void setCurrentDeck(String currentDeck) {
 		this.currentDeck = currentDeck;
+	}
+
+	public boolean isUsingScoreboard() {
+		return usingScoreboard;
+	}
+
+	public void setUsingScoreboard(boolean usingScoreboard) {
+		this.usingScoreboard = usingScoreboard;
 	}
 }

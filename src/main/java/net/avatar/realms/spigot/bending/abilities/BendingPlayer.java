@@ -5,12 +5,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -27,12 +32,16 @@ public class BendingPlayer {
 	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
 	private List<BendingPath> paths = new LinkedList<BendingPath>();
 
-	private Map<String, Long> cooldowns = new HashMap<String, Long>();
+	private Map<String, BendingAbilityCooldown> cooldowns = new HashMap<String, BendingAbilityCooldown>();
 
 	private long paralyzeTime = 0;
 	private long slowTime = 0;
 
 	private long lastTime = 0;
+	
+	private boolean usingScoreboard;
+	
+	private Scoreboard scoreboard;
 
 	public BendingPlayer(UUID id) {
 		this.player = id;
@@ -67,6 +76,8 @@ public class BendingPlayer {
 		this.currentDeck = data.getCurrentDeck();
 
 		this.lastTime = data.getLastTime();
+		
+		this.usingScoreboard = data.isUsingScoreboard();
 	}
 
 	public static BendingPlayer getBendingPlayer(Player player) {
@@ -82,15 +93,12 @@ public class BendingPlayer {
 	}
 
 	public boolean isOnCooldown(String ability) {
-
 		if (isOnGlobalCooldown()) {
 			return true;
 		}
 
 		if (this.cooldowns.containsKey(ability)) {
-			long time = System.currentTimeMillis();
-			return time <= this.cooldowns.get(ability);
-
+			return cooldowns.get(ability).timeLeft(System.currentTimeMillis()) > 0;
 		} else {
 			return false;
 		}
@@ -105,34 +113,31 @@ public class BendingPlayer {
 	}
 
 	public void cooldown(String ability, long cooldownTime) {
-		long time = System.currentTimeMillis();
+		long now = System.currentTimeMillis();
 		if (ability != null) {
-			this.cooldowns.put(ability, time + cooldownTime);
+			BendingAbilityCooldown cd = new BendingAbilityCooldown(ability, now, cooldownTime);
+			this.cooldowns.put(ability, cd);
 		}
-		this.lastTime = time;
+		this.lastTime = now;
 		if (ability != null) {
 			Bending.callEvent(new AbilityCooldownEvent(this, ability));
 		}
 	}
 
-	public Map<String, Long> getCooldowns() {
-		Map<String, Long> result = new HashMap<String, Long>();
+	public Map<String, BendingAbilityCooldown> getCooldowns() {
 		long now = System.currentTimeMillis();
+		
 		List<String> toRemove = new LinkedList<String>();
-		for (String ab : cooldowns.keySet()) {
-			long remain = cooldowns.get(ab) - now;
-			if (remain <= 0) {
-				toRemove.add(ab);
-			} else {
-				result.put(ab, remain);
+		for(Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
+			if(entry.getValue().timeLeft(now) <= 0) {
+				toRemove.add(entry.getKey());
 			}
 		}
-
-		for (String ab : toRemove) {
-			result.remove(ab);
+		for(String ability : toRemove) {
+			cooldowns.remove(ability);
 		}
-
-		return result;
+		
+		return cooldowns;
 	}
 
 	public UUID getPlayerID() {
@@ -279,6 +284,30 @@ public class BendingPlayer {
 		}
 		return this.decks.get(this.currentDeck).get(slot);
 	}
+	
+	public void loadScoreboard() {
+		if(isUsingScoreboard() && scoreboard == null) {
+			ScoreboardManager manager = Bukkit.getScoreboardManager();
+			scoreboard = manager.getNewScoreboard();
+			scoreboard.registerNewTeam(getPlayer().getName());
+		    Objective objective = scoreboard.registerNewObjective("cooldowns", "dummy");
+		    objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		    objective.setDisplayName("Cooldowns");
+		    getPlayer().setScoreboard(scoreboard);
+		}
+	}
+	
+	public void unloadScoreboard() {
+		if(!isUsingScoreboard() && scoreboard != null) {
+			ScoreboardManager manager = Bukkit.getScoreboardManager();
+			getPlayer().setScoreboard(manager.getNewScoreboard());
+			scoreboard = null;
+		}
+	}
+	
+	public Scoreboard getScoreboard() {
+		return scoreboard;
+	}
 
 	public void setAbility(int slot, String ability) {
 		if(!this.decks.containsKey(this.currentDeck)) {
@@ -379,6 +408,14 @@ public class BendingPlayer {
 		return this.paths;
 	}
 
+	public boolean isUsingScoreboard() {
+		return usingScoreboard;
+	}
+
+	public void setUsingScoreboard(boolean usingScoreboard) {
+		this.usingScoreboard = usingScoreboard;
+	}
+
 	public BendingPlayerData serialize() {
 		BendingPlayerData result = new BendingPlayerData();
 		result.setBendings(this.bendings);
@@ -388,6 +425,7 @@ public class BendingPlayer {
 		result.setDecks(this.decks);
 		result.setCurrentDeck(this.currentDeck);
 		result.setPaths(this.paths);
+		result.setUsingScoreboard(this.usingScoreboard);
 		return result;
 	}
 

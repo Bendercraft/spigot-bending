@@ -34,6 +34,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -148,6 +149,16 @@ public class BendingPlayerListener implements Listener {
 			dc.save(sv);
 		} catch (IOException e) {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Failed to save armors file", e);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onPlayerScoreboard(PlayerJoinEvent event) {
+		if(Settings.USE_SCOREBOARD) {
+			BendingPlayer bender = BendingPlayer.getBendingPlayer(event.getPlayer());
+			if(bender != null) {
+				bender.loadScoreboard();
+			}
 		}
 	}
 

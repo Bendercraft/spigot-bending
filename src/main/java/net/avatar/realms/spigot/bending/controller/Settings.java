@@ -100,6 +100,9 @@ public class Settings {
 	@ConfigurationParameter("bending.enderpearl-cooldown")
 	public static long ENDERPEARL_COOLDOWN = 20000;
 	
+	@ConfigurationParameter("bending.use-scoreboard")
+	public static boolean USE_SCOREBOARD = true;
+	
 	
 	public static void applyConfiguration(File configDir) {
 		configDir.mkdirs();
