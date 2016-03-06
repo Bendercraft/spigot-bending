@@ -163,7 +163,7 @@ public class AbilityManager {
 	}
 
 	public Map<Object, BendingAbility> getInstances(String name) {
-		Map<Object, BendingAbility> result = runnings.get(name);
+		Map<Object, BendingAbility> result = runnings.get(name.toLowerCase());
 		if(result == null) {
 			result = new HashMap<Object, BendingAbility>();
 		}

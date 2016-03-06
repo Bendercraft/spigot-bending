@@ -67,10 +67,9 @@ public class ExplosiveShot extends BendingActiveAbility {
 			EntityTools.damageEntity(player, entity, DAMAGE);
 		}
 
+		Vector direction = arrow.getLocation().getDirection().clone();
 		for (double degrees = 0; degrees < 360; degrees += 10) {
 			double angle = Math.toRadians(degrees);
-			Vector direction = arrow.getLocation().getDirection().clone();
-
 			double x, z, vx, vz;
 			x = direction.getX();
 			z = direction.getZ();
@@ -82,6 +81,8 @@ public class ExplosiveShot extends BendingActiveAbility {
 			direction.setZ(vz);
 
 			firestreams.add(new FireStream(location, direction, player, RANGE));
+			firestreams.add(new FireStream(location.add(0, 1, 0), direction, player, RANGE));
+			firestreams.add(new FireStream(location.add(0, -1, 0), direction, player, RANGE));
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		location.getWorld().playSound(location, Sound.BLOCK_GLASS_BREAK, SOUND_RADIUS / 16.0f, 1);
