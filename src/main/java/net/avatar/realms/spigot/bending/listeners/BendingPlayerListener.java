@@ -34,6 +34,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -150,6 +151,16 @@ public class BendingPlayerListener implements Listener {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Failed to save armors file", e);
 		}
 	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onPlayerScoreboard(PlayerJoinEvent event) {
+		if(Settings.USE_SCOREBOARD) {
+			BendingPlayer bender = BendingPlayer.getBendingPlayer(event.getPlayer());
+			if(bender != null) {
+				bender.loadScoreboard();
+			}
+		}
+	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
@@ -160,7 +171,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getItemInHand())) {
+		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getInventory().getItemInMainHand())) {
 			event.setCancelled(true);
 		}
 
@@ -172,7 +183,7 @@ public class BendingPlayerListener implements Listener {
 		Entity ent = e.getRightClicked();
 		Player p = e.getPlayer();
 		if (FireBlade.isFireBlading(p) 
-				&& FireBlade.isFireBlade(p.getItemInHand()) 
+				&& FireBlade.isFireBlade(p.getInventory().getItemInMainHand()) 
 				&& ent instanceof ItemFrame) {
 			e.setCancelled(true);
 		}
@@ -273,7 +284,7 @@ public class BendingPlayerListener implements Listener {
 
 	private boolean playerCanSwingAbility(Player player, BendingAbility ability) {
 		return (ability.getPlayer().equals(player) &&
-				(ability.canBeUsedWithTools() || !EntityTools.isTool(player.getItemInHand().getType())));
+				(ability.canBeUsedWithTools() || !EntityTools.isTool(player.getInventory().getItemInMainHand().getType())));
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -427,7 +438,7 @@ public class BendingPlayerListener implements Listener {
 				if (!event.isCancelled() 
 						&& EntityTools.isBender(player, BendingElement.MASTER) 
 						&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
-					event.setDamage((int) (event.getDamage() * (Settings.CHI_FALL_REDUCTION / 100.)));
+					event.setDamage((int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.)));
 					if (event.getEntity().getFallDistance() < 10) {
 						event.setCancelled(true);
 						return;

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,7 +26,6 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
-import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
 /**
@@ -49,7 +49,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2000;
 
-	private static final ParticleEffect VISUAL = ParticleEffect.VILLAGER_HAPPY;
+	private static final Particle VISUAL = Particle.VILLAGER_HAPPY;
 
 	private Location origin;
 	private Location location;
@@ -76,7 +76,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 
 		setState(BendingAbilityState.PREPARING);
 
-		ItemStack is = this.player.getItemInHand();
+		ItemStack is = this.player.getInventory().getItemInMainHand();
 		this.effects = new LinkedList<PotionEffect>();
 		switch (is.getType()) {
 			case MILK_BUCKET:
@@ -208,7 +208,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 	}
 
 	private void advanceLocation() {
-		VISUAL.display(0, 0, 0, 1, 1, this.location, 20);
+		location.getWorld().spawnParticle(VISUAL, location, 1, 0, 0, 0);
 		this.location = this.location.add(this.direction.clone().multiply(1.5));
 	}
 
@@ -218,7 +218,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.isTool(this.player.getItemInHand().getType())) {
+		if (EntityTools.holdsTool(player)) {
 			return false;
 		}
 

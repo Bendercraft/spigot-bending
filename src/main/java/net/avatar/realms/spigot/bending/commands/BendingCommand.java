@@ -52,7 +52,7 @@ public abstract class BendingCommand implements IBendingCommand {
 			}
 		}
 
-		for (String alias : Settings.CHI_ALIASES) {
+		for (String alias : Settings.MASTER_ALIASES) {
 			if (alias.equalsIgnoreCase(name)) {
 				return BendingElement.MASTER;
 			}

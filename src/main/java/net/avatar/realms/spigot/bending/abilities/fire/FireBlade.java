@@ -66,8 +66,8 @@ public class FireBlade extends BendingActiveAbility {
 			return false;
 		}
 		String abilityName = EntityTools.getBendingAbility(this.player);
-		if (this.blade == null 
-				|| !isFireBlade(this.player.getItemInHand())
+		if (this.blade == null
+				|| !isFireBlade(this.player.getInventory().getItemInMainHand())
 				|| abilityName == null
 				|| !abilityName.equals(NAME)) {
 			return false;

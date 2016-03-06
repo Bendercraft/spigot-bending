@@ -76,7 +76,7 @@ public class DirectHit extends BendingActiveAbility {
 			return false;
 		}
 
-		if (EntityTools.isTool(this.player.getItemInHand().getType())) {
+		if (EntityTools.holdsTool(player)) {
 			return false;
 		}
 

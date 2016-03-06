@@ -2,7 +2,6 @@ package net.avatar.realms.spigot.bending.listeners;
 
 import java.util.logging.Level;
 
-import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -47,7 +46,6 @@ import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.WaterWall;
 import net.avatar.realms.spigot.bending.abilities.water.Wave;
-import net.avatar.realms.spigot.bending.controller.Settings;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.MathUtils;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
@@ -97,7 +95,21 @@ public class BendingEntityListener implements Listener {
 					event.setDamage(event.getDamage()*0.5);
 				}
 			}
-			
+		}
+		//Reduce all damage coming from SWORD if not SWORDMAN
+		if(event.getCause() == DamageCause.ENTITY_ATTACK
+			&& event.getDamager() instanceof Player) {
+			Player attacker = (Player) event.getDamager();
+			if(attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.GOLD_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.IRON_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.STONE_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.WOOD_SWORD) {
+				BendingPlayer bender = BendingPlayer.getBendingPlayer(attacker);
+				if(bender == null || !bender.hasAffinity(BendingAffinity.SWORD)) {
+					event.setDamage(event.getDamage()*0.5);
+				}
+			}
 		}
 
 		if (event.getCause() == DamageCause.LIGHTNING) {
@@ -121,16 +133,6 @@ public class BendingEntityListener implements Listener {
 					&& (event.getCause() == DamageCause.ENTITY_ATTACK) && MathUtils.doubleEquals(event.getDamage(), 1)
 					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= DirectHit.RANGE)) {
 				EntityTools.blockChi(targetplayer, 500);
-			}
-		}
-		if (entity instanceof Player) {
-			if (((event.getCause() == DamageCause.ENTITY_ATTACK) || (event.getCause() == DamageCause.ENTITY_EXPLOSION) || (event.getCause() == DamageCause.PROJECTILE)) && EntityTools.isBender(((Player) event.getEntity()), BendingElement.MASTER) && EntityTools.canBendPassive((Player) event.getEntity(), BendingElement.MASTER)) {
-				double rand = Math.random();
-
-				if (rand <= (Settings.CHI_DODGE_CHANCE / 100.)) {
-					event.getEntity().getWorld().playEffect(event.getEntity().getLocation(), Effect.SMOKE, 1);
-					event.setCancelled(true);
-				}
 			}
 		}
 		if (source instanceof Player) {

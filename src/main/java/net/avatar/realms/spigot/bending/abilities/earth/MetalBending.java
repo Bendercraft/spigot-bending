@@ -64,7 +64,7 @@ public class MetalBending extends BendingActiveAbility {
 		}
 
 		this.time = System.currentTimeMillis();
-		this.items = player.getItemInHand();
+		this.items = player.getInventory().getItemInMainHand();
 		if (isMeltable(this.items.getType())) {
 			setState(BendingAbilityState.PROGRESSING);
 		}
@@ -115,9 +115,9 @@ public class MetalBending extends BendingActiveAbility {
 	}
 
 	public void progress() {
-		if (!items.equals(player.getItemInHand())) {
+		if (!items.equals(player.getInventory().getItemInMainHand())) {
 			time = System.currentTimeMillis();
-			items = player.getItemInHand();
+			items = player.getInventory().getItemInMainHand();
 		}
 
 		if (!isMeltable(items.getType())) {

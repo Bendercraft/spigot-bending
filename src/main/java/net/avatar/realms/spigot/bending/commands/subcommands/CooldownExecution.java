@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.commands.subcommands;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.BendingAbilityCooldown;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
@@ -35,37 +37,71 @@ public class CooldownExecution extends BendingCommand {
 		}
 
 		Player player = (Player) sender;
-
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (bender == null) {
 			Bending.getInstance().getLogger().warning("Cooldown command was not able to find bending player for " + player.getName());
 			sender.sendMessage(ChatColor.RED + Messages.YOU_NO_EXIST);
 			return true;
 		}
-
-		Map<String, Long> cooldowns = bender.getCooldowns();
-		player.sendMessage("-Cooldowns :");
-		if ((cooldowns == null) || cooldowns.isEmpty()) {
-			player.sendMessage("--- None");
-		} else {
-			for (String ab : cooldowns.keySet()) {
-				ChatColor col = ChatColor.WHITE;
-				int min = (int) ((cooldowns.get(ab) / 1000) / 60);
-				int sec = (int) ((((cooldowns.get(ab) / 1000.0) / 60.0) - min) * 60);
-				RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ab);
-				if (register.getElement() != BendingElement.ENERGY) {
-					col = PluginTools.getColor(Settings.getColorString(register.getElement().name()));
+		
+		if(args.isEmpty()) {
+			Map<String, BendingAbilityCooldown> cooldowns = bender.getCooldowns();
+			player.sendMessage("-Cooldowns :");
+			if ((cooldowns == null) || cooldowns.isEmpty()) {
+				player.sendMessage("--- None");
+			} else {
+				long now = System.currentTimeMillis();
+				for (Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
+					ChatColor col = ChatColor.WHITE;
+					RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(entry.getKey());
+					if (register.getElement() != BendingElement.ENERGY) {
+						col = PluginTools.getColor(Settings.getColorString(register.getElement().name()));
+					}
+					player.sendMessage(col + "--- " + register.getName() + " ~ " + entry.getValue().timeLeft(now));
 				}
-				player.sendMessage(col + "--- " + register.getName() + " ~ " + min + ":" + ((sec < 10) ? "0" + sec : sec));
+			}
+			return true;
+		} else if(args.size() == 1) {
+			String choice = args.get(0);
+			if(choice.equalsIgnoreCase("show")) {
+				bender.setUsingScoreboard(true);
+				bender.loadScoreboard();
+				if(Settings.USE_SCOREBOARD) {
+					player.sendMessage(ChatColor.GREEN+"Your cooldowns will be shown as a sidebar scoreboard.");
+				} else {
+					player.sendMessage(ChatColor.RED+"Bending has been configured to not use scoreboard at all, your cooldown will not be shown.");
+				}
+				return true;
+			} else if(choice.equalsIgnoreCase("hide")) {
+				bender.setUsingScoreboard(false);
+				bender.unloadScoreboard();
+				player.sendMessage(ChatColor.GREEN+"Your cooldowns are now hidden.");
+				return true;
+			} else if(choice.equalsIgnoreCase("toggle")) {
+				if(bender.isUsingScoreboard()) {
+					bender.setUsingScoreboard(false);
+					bender.unloadScoreboard();
+					player.sendMessage(ChatColor.GREEN+"Your cooldowns are now hidden.");
+				} else {
+					bender.setUsingScoreboard(true);
+					bender.loadScoreboard();
+					if(Settings.USE_SCOREBOARD) {
+						player.sendMessage(ChatColor.GREEN+"Your cooldowns will be shown as a sidebar scoreboard.");
+					} else {
+						player.sendMessage(ChatColor.RED+"Bending has been configured to not use scoreboard at all, your cooldown will not be shown.");
+					}
+				}
+				return true;
 			}
 		}
-		return true;
+
+		return false;
 	}
 
 	@Override
 	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.cooldown")) {
-			sender.sendMessage("/bending cooldown");
+			sender.sendMessage("/bending cooldown [hide|show|toggle]");
 		}
 		else if (permission) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);

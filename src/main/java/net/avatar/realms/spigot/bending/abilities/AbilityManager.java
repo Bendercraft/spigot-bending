@@ -30,7 +30,7 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
 import net.avatar.realms.spigot.bending.abilities.air.Tornado;
 import net.avatar.realms.spigot.bending.abilities.arts.Aim;
-import net.avatar.realms.spigot.bending.abilities.arts.BlankPoint;
+import net.avatar.realms.spigot.bending.abilities.arts.NebularChain;
 import net.avatar.realms.spigot.bending.abilities.arts.C4;
 import net.avatar.realms.spigot.bending.abilities.arts.Speed;
 import net.avatar.realms.spigot.bending.abilities.arts.StraightShot;
@@ -38,9 +38,10 @@ import net.avatar.realms.spigot.bending.abilities.arts.Dash;
 import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.arts.ExplosiveShot;
 import net.avatar.realms.spigot.bending.abilities.arts.HighJump;
-import net.avatar.realms.spigot.bending.abilities.arts.PanicDagger;
+import net.avatar.realms.spigot.bending.abilities.arts.Mark;
+import net.avatar.realms.spigot.bending.abilities.arts.DaggerFall;
 import net.avatar.realms.spigot.bending.abilities.arts.PoisonnedDart;
-import net.avatar.realms.spigot.bending.abilities.arts.PowerShot;
+import net.avatar.realms.spigot.bending.abilities.arts.BlankPoint;
 import net.avatar.realms.spigot.bending.abilities.arts.Slice;
 import net.avatar.realms.spigot.bending.abilities.arts.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.arts.VitalPoint;
@@ -127,7 +128,7 @@ public class AbilityManager {
 	}
 
 	public BendingActiveAbility buildAbility(String name, Player player) {
-		RegisteredAbility registered = this.binds.get(name);
+		RegisteredAbility registered = this.binds.get(name.toLowerCase());
 		if (registered == null) {
 			return null; // Invalid bind
 		}
@@ -162,7 +163,7 @@ public class AbilityManager {
 	}
 
 	public Map<Object, BendingAbility> getInstances(String name) {
-		Map<Object, BendingAbility> result = runnings.get(name);
+		Map<Object, BendingAbility> result = runnings.get(name.toLowerCase());
 		if(result == null) {
 			result = new HashMap<Object, BendingAbility>();
 		}
@@ -199,10 +200,11 @@ public class AbilityManager {
 		register(Aim.class);
 		register(ExplosiveShot.class);
 		register(StraightShot.class);
-		register(PowerShot.class);
 		register(BlankPoint.class);
+		register(Mark.class);
+		register(NebularChain.class);
 		register(Slice.class);
-		register(PanicDagger.class);
+		register(DaggerFall.class);
 		register(PoisonnedDart.class);
 		register(C4.class);
 		register(SmokeBomb.class);
@@ -299,7 +301,7 @@ public class AbilityManager {
 			return;
 		}
 		
-		if (this.binds.containsKey(name)) {
+		if (this.binds.containsKey(name.toLowerCase())) {
 			// Nope !
 			Bending.getInstance().getLogger().severe("Ability " + name + " is already register with class " + this.binds.get(name) + " ! Aborting registration...");
 			return;
@@ -324,8 +326,8 @@ public class AbilityManager {
 				return;
 			}
 			RegisteredAbility ra = new RegisteredAbility(name, ability, element, affinity, shift, passive, constructor);
-			this.binds.put(name, ra);
-			this.reverseBinds.put(ra.getAbility(), name);
+			this.binds.put(name.toLowerCase(), ra);
+			this.reverseBinds.put(ra.getAbility(), name.toLowerCase());
 		} catch (Exception e) {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Bind " + name + " associated with class " + ability + " threw exception when getting constructor", e);
 		}
@@ -351,7 +353,7 @@ public class AbilityManager {
 	}
 	
 	public RegisteredAbility getRegisteredAbility(String name) {
-		return binds.get(name);
+		return binds.get(name.toLowerCase());
 	}
 	
 	public Collection<RegisteredAbility> getRegisteredAbilities() {

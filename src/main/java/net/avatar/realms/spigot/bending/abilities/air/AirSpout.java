@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -20,7 +21,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
-import net.avatar.realms.spigot.bending.utils.ParticleEffect;
 
 @ABendingAbility(name = AirSpout.NAME, element = BendingElement.AIR, shift=false)
 public class AirSpout extends BendingActiveAbility {
@@ -34,7 +34,7 @@ public class AirSpout extends BendingActiveAbility {
 
 	private static final long interval = 100;
 
-	private static final ParticleEffect VISUAL = ParticleEffect.ENCHANTMENT_TABLE;
+	private static final Particle VISUAL = Particle.ENCHANTMENT_TABLE;
 
 	private int angle = 0;
 
@@ -155,7 +155,7 @@ public class AirSpout extends BendingActiveAbility {
 				if (index >= directions.length) {
 					index = 0;
 				}
-				VISUAL.display(0, 0, 0, 1, 1, new Location(location.getWorld(), location.getX(), block.getY() + i, location.getZ()), 20);
+				location.getWorld().spawnParticle(VISUAL, new Location(location.getWorld(), location.getX(), block.getY() + i, location.getZ()), 1, 0, 0, 0);
 			}
 		}
 	}
