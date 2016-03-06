@@ -24,6 +24,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
@@ -188,11 +189,19 @@ public class BendingDenyItem implements Listener {
 				|| item.getType() == Material.GOLD_BOOTS
 				|| item.getType() == Material.GOLD_CHESTPLATE
 				|| item.getType() == Material.GOLD_HELMET
-				|| item.getType() == Material.GOLD_LEGGINGS) {
+				|| item.getType() == Material.GOLD_LEGGINGS
+				|| item.getType() == Material.SPECTRAL_ARROW) {
 			bender.getPlayer().getInventory().remove(item);
 		}
 		
-		// Swordman might keep extra items
+		//Airbender might keep elytra
+		if(bender == null || !bender.isBender(BendingElement.AIR)) {
+			if(item.getType() == Material.ELYTRA) {
+				bender.getPlayer().getInventory().remove(item);
+			}
+		}
+		
+		// Swordman might keep extra shield & iron sword
 		if(bender == null || !bender.hasAffinity(BendingAffinity.SWORD)) {
 			if(item.getType() == Material.SHIELD 
 					|| item.getType() == Material.IRON_SWORD) {
@@ -200,7 +209,7 @@ public class BendingDenyItem implements Listener {
 			}
 		}
 		
-		// Metal bender might keep extra items
+		// Metal bender might keep iron armors
 		if(bender == null || !bender.hasAffinity(BendingAffinity.METAL)) {
 			if(item.getType() == Material.IRON_BOOTS 
 					|| item.getType() == Material.IRON_CHESTPLATE
