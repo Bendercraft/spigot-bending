@@ -36,7 +36,7 @@ public class WaterListener implements Listener {
 
 	private Map<UUID, Integer> surge = new HashMap<UUID, Integer>();
 
-	private static ChatColor color = PluginTools.getColor(Settings.getColorString("Water"));
+	private static ChatColor color = PluginTools.getColor(Settings.getColor(BendingElement.WATER));
 
 	public WaterListener(BendingLearning plugin) {
 		this.plugin = plugin;

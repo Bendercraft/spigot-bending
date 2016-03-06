@@ -50,7 +50,7 @@ public class PathExecution extends BendingCommand {
 
 		if (args.isEmpty()) {
 			for (BendingPath path : bender.getPath()) {
-				final ChatColor color = PluginTools.getColor(Settings.getColorString(path.getElement().name()));
+				final ChatColor color = PluginTools.getColor(Settings.getColor(path.getElement()));
 				sender.sendMessage(color + "You are " + path.name() + " for element " + path.getElement().name() + ".");
 			}
 		}

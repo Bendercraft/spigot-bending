@@ -45,7 +45,7 @@ public class DisplayExecution extends BendingCommand {
 				ChatColor white = ChatColor.WHITE;
 				for (Entry<Integer, String> slot : abilities.entrySet()) {
 					RegisteredAbility ab = AbilityManager.getManager().getRegisteredAbility(slot.getValue());
-					ChatColor color = PluginTools.getColor(Settings.getColorString(ab.getElement().name()));
+					ChatColor color = PluginTools.getColor(Settings.getColor(ab.getElement()));
 					player.sendMessage("--" + color + (slot.getKey() + 1) + white + " : " + color + ab.getName());
 				}
 			} else {
@@ -57,7 +57,7 @@ public class DisplayExecution extends BendingCommand {
 				sender.sendMessage(ChatColor.RED + Messages.INVALID_ELEMENT);
 				return true;
 			}
-			ChatColor color = PluginTools.getColor(Settings.getColorString(element.name()));
+			ChatColor color = PluginTools.getColor(Settings.getColor(element));
 			sender.sendMessage(color + element.name() + ":");
 			for(RegisteredAbility ab : AbilityManager.getManager().getRegisteredAbilities()) {
 				if(ab.getElement() == element) {

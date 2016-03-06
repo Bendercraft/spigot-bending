@@ -171,7 +171,7 @@ public class LearningExecution extends BendingCommand {
 
 		if (!bender.isBender(element)) {
 			bender.addBender(element);
-			ChatColor color = PluginTools.getColor(Settings.getColorString(element.name()));
+			ChatColor color = PluginTools.getColor(Settings.getColor(element));
 			String message = "Congratulations, you can now bend " + element.name();
 			target.getPlayer().sendMessage(color + message);
 			for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
@@ -197,7 +197,7 @@ public class LearningExecution extends BendingCommand {
 		}
 
 		if (Bending.getInstance().getLearning().addPermission(target, ability.getName())) {
-			ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
+			ChatColor color = PluginTools.getColor(Settings.getColor(ability.getElement()));
 			String message = Messages.ABILITY_LEARNED + ability.getName();
 			target.getPlayer().sendMessage(color + message);
 			sender.sendMessage(ChatColor.GREEN + "Player " + target.getPlayer().getName() + " has received " + ability.getName() + ".");

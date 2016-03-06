@@ -69,7 +69,7 @@ public class BindExecution extends BendingCommand {
 			return true;
 		}
 		ChatColor color = ChatColor.WHITE;
-		color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
+		color = PluginTools.getColor(Settings.getColor(ability.getElement()));
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (!bender.isBender(ability.getElement())) {
 			player.sendMessage(color + Messages.NOT_HAVE_ELEMENT + ability.getElement().name());

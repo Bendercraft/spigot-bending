@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
+
 public class Settings {
 	
 	@ConfigurationParameter("abilities.global-cooldown")
@@ -120,18 +122,18 @@ public class Settings {
 		ConfigurationManager.applyConfiguration(configFile, fields);
 	}
 	
-	public static String getColorString(String name) {
-		if (name.equals("Energy")) {
+	public static String getColor(BendingElement name) {
+		if (name == BendingElement.ENERGY) {
 			return AVATAR_COLOR;
-		} else if (name.equals("ChiBlocker")) {
+		} else if (name == BendingElement.MASTER) {
 			return MASTER_COLOR;
-		} else if (name.equals("Fire")) {
+		} else if (name == BendingElement.FIRE) {
 			return FIRE_COLOR;
-		} else if (name.equals("Water")) {
+		} else if (name == BendingElement.WATER) {
 			return WATER_COLOR;
-		} else if (name.equals("Air")) {
+		} else if (name == BendingElement.AIR) {
 			return AIR_COLOR;
-		} else if (name.equals("Earth")) {
+		} else if (name == BendingElement.EARTH) {
 			return EARTH_COLOR;
 		} else {
 			return "WHITE";

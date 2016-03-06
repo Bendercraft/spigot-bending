@@ -119,12 +119,12 @@ public class BendingPlayerListener implements Listener {
 			ChatColor color = ChatColor.WHITE;
 			if (Settings.CHAT_COLORED) {
 				if (player.hasPermission("bending.avatar")) {
-					color = PluginTools.getColor(Settings.getColorString("Energy"));
+					color = PluginTools.getColor(Settings.getColor(BendingElement.ENERGY));
 				} else {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 					List<BendingElement> els = bender.getBendingTypes();
 					if ((els != null) && !els.isEmpty()) {
-						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
+						color = PluginTools.getColor(Settings.getColor(els.get(0)));
 					}
 				}
 			}
@@ -226,12 +226,12 @@ public class BendingPlayerListener implements Listener {
 
 			if (Settings.CHAT_COLORED) {
 				if (player.hasPermission("bending.admin.avatarstate")) {
-					color = PluginTools.getColor(Settings.getColorString("Energy"));
+					color = PluginTools.getColor(Settings.getColor(BendingElement.ENERGY));
 				} else {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 					List<BendingElement> els = bender.getBendingTypes();
 					if ((els != null) && els.isEmpty()) {
-						color = PluginTools.getColor(Settings.getColorString(els.get(0).name()));
+						color = PluginTools.getColor(Settings.getColor(els.get(0)));
 					}
 				}
 			}

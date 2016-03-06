@@ -41,7 +41,7 @@ public class AirListener implements Listener {
 	private Map<UUID, Integer> airSuctionJump = new HashMap<UUID, Integer>();
 	private Map<UUID, Integer> airBurst = new HashMap<UUID, Integer>();
 
-	private static ChatColor color = PluginTools.getColor(Settings.getColorString("Air"));
+	private static ChatColor color = PluginTools.getColor(Settings.getColor(BendingElement.AIR));
 
 	public AirListener(BendingLearning plugin) {
 		this.plugin = plugin;

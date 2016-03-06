@@ -141,7 +141,7 @@ public class BendingManager implements Runnable {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingElement.FIRE) && player.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(Settings.getColorString("Fire"));
+						color = PluginTools.getColor(Settings.getColor(BendingElement.FIRE));
 						player.sendMessage(color + "You feel the strength of the rising sun empowering your firebending.");
 					}
 				}
@@ -152,7 +152,7 @@ public class BendingManager implements Runnable {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingElement.FIRE) && player.hasPermission("bending.message.daymessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(Settings.getColorString("Fire"));
+						color = PluginTools.getColor(Settings.getColor(BendingElement.FIRE));
 						player.sendMessage(color + "You feel the empowering of your firebending subside as the sun sets.");
 					}
 				}
@@ -163,7 +163,7 @@ public class BendingManager implements Runnable {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingElement.WATER) && player.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(Settings.getColorString("Water"));
+						color = PluginTools.getColor(Settings.getColor(BendingElement.WATER));
 						player.sendMessage(color + "You feel the strength of the rising moon empowering your waterbending.");
 					}
 				}
@@ -174,7 +174,7 @@ public class BendingManager implements Runnable {
 				for (Player player : world.getPlayers()) {
 					if (EntityTools.isBender(player, BendingElement.WATER) && player.hasPermission("bending.message.nightmessage")) {
 						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(Settings.getColorString("Water"));
+						color = PluginTools.getColor(Settings.getColor(BendingElement.WATER));
 						player.sendMessage(color + "You feel the empowering of your waterbending subside as the moon sets.");
 					}
 				}

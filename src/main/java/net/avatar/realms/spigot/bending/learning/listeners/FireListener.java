@@ -42,7 +42,7 @@ public class FireListener implements Listener {
 
 	private Map<UUID, Integer> wallOfFire = new HashMap<UUID, Integer>();
 
-	private static ChatColor color = PluginTools.getColor(Settings.getColorString("Fire"));
+	private static ChatColor color = PluginTools.getColor(Settings.getColor(BendingElement.FIRE));
 
 	public FireListener(BendingLearning plugin) {
 		this.plugin = plugin;

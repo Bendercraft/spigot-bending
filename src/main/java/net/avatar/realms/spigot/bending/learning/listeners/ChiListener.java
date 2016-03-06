@@ -32,7 +32,7 @@ public class ChiListener implements Listener {
 	private Map<UUID, Location> sprintLastLocationDash = new HashMap<UUID, Location>();
 	private static final int distanceNeededDash = 1000;
 
-	private static ChatColor color = PluginTools.getColor(Settings.getColorString("ChiBlocker"));
+	private static ChatColor color = PluginTools.getColor(Settings.getColor(BendingElement.MASTER));
 
 	public ChiListener(BendingLearning plugin) {
 		this.plugin = plugin;

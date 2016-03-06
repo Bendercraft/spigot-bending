@@ -48,7 +48,7 @@ public class EarthListener implements Listener {
 	private static final Integer raiseNeededCatapult = 400,
 			jumpNeededCatapult = 250;
 
-	private static ChatColor color = PluginTools.getColor(Settings.getColorString("Earth"));
+	private static ChatColor color = PluginTools.getColor(Settings.getColor(BendingElement.EARTH));
 
 	public EarthListener(BendingLearning plugin) {
 		this.plugin = plugin;

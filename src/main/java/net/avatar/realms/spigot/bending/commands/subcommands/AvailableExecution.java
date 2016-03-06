@@ -1,6 +1,10 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,6 +13,7 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.Messages;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
+import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.commands.BendingCommand;
@@ -35,14 +40,44 @@ public class AvailableExecution extends BendingCommand {
 		Player player = (Player) sender;
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 
-		sender.sendMessage("Available abilities : ");
+		Map<BendingElement, List<RegisteredAbility>> elements = new HashMap<BendingElement, List<RegisteredAbility>>();
+		Map<BendingAffinity, List<RegisteredAbility>> affinities = new HashMap<BendingAffinity, List<RegisteredAbility>>();
+		
+		
 		for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
 			if (player.hasPermission(ability.getPermission()) && bender.isBender(ability.getElement())
 					&& (ability.getAffinity() == BendingAffinity.NONE || bender.hasAffinity(ability.getAffinity()))) {
-				ChatColor color = PluginTools.getColor(Settings.getColorString(ability.getElement().name()));
-				sender.sendMessage("--" + color + ability.getName());
+				if(ability.getAffinity() == null || ability.getAffinity() == BendingAffinity.NONE) {
+					if(!elements.containsKey(ability.getElement())) {
+						elements.put(ability.getElement(), new LinkedList<RegisteredAbility>());
+					}
+					elements.get(ability.getElement()).add(ability);
+				} else {
+					if(!affinities.containsKey(ability.getAffinity())) {
+						affinities.put(ability.getAffinity(), new LinkedList<RegisteredAbility>());
+					}
+					affinities.get(ability.getAffinity()).add(ability);
+				}
 			}
 		}
+		
+		sender.sendMessage("Available abilities : ");
+		for(Entry<BendingElement, List<RegisteredAbility>> entry : elements.entrySet()) {
+			ChatColor color = PluginTools.getColor(Settings.getColor(entry.getKey()));
+			sender.sendMessage(" - "+color+entry.getKey());
+			for(RegisteredAbility ability : entry.getValue()) {
+				sender.sendMessage("   - "+color+ability.getName());
+			}
+		}
+		for(Entry<BendingAffinity, List<RegisteredAbility>> entry : affinities.entrySet()) {
+			ChatColor color = PluginTools.getColor(Settings.getColor(entry.getKey().getElement()));
+			sender.sendMessage(" - "+color+entry.getKey());
+			for(RegisteredAbility ability : entry.getValue()) {
+				sender.sendMessage("   - "+color+ability.getName());
+			}
+		}
+		
+		
 		return true;
 	}
 

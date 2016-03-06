@@ -55,7 +55,7 @@ public class CooldownExecution extends BendingCommand {
 					ChatColor col = ChatColor.WHITE;
 					RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(entry.getKey());
 					if (register.getElement() != BendingElement.ENERGY) {
-						col = PluginTools.getColor(Settings.getColorString(register.getElement().name()));
+						col = PluginTools.getColor(Settings.getColor(register.getElement()));
 					}
 					player.sendMessage(col + "--- " + register.getName() + " ~ " + entry.getValue().timeLeft(now));
 				}
