@@ -5,6 +5,10 @@ import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.integrations.protocollib.CustomPacket;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -19,7 +23,7 @@ public class TremorSense extends BendingActiveAbility {
 
     public static final String NAME = "TremorSense";
 
-    private static final PotionEffect BLIND = new PotionEffect(PotionEffectType.BLINDNESS, 20, 0);
+    private static final PotionEffect BLIND = new PotionEffect(PotionEffectType.BLINDNESS, 200, 0);
     private static final PotionEffect GLOW = new PotionEffect(PotionEffectType.GLOWING, 20, 2);
     private static final int[][] RELATIVES = {{1,0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
     @ConfigurationParameter("Base-Distance")
@@ -35,12 +39,15 @@ public class TremorSense extends BendingActiveAbility {
 
     private long lastIncrementTime;
     private boolean shouldBlind;
+    
+    private List<Integer> ids;
 
     public TremorSense(RegisteredAbility register, Player player) {
         super(register, player);
+        ids = new LinkedList<Integer>();
     }
 
-    @Override
+	@Override
     public boolean sneak() {
         if (getState().equals(BendingAbilityState.ENDED)) {
             return false;
@@ -101,7 +108,8 @@ public class TremorSense extends BendingActiveAbility {
             }
             lastIncrementTime = now;
             if (shouldBlind) {
-                CustomPacket.sendAddPotionEffect(player, BLIND, player);
+            	player.addPotionEffect(BLIND);
+                //CustomPacket.sendAddPotionEffect(player, BLIND, player);
                 shouldBlind = false;
             }
             else {
@@ -109,9 +117,11 @@ public class TremorSense extends BendingActiveAbility {
             }
         }
 
+        ids.clear();
         for (LivingEntity livingEntity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), currentDistance)) {
             if (player.getEntityId() != livingEntity.getEntityId() && isOnEarth(livingEntity)) {
                 livingEntity.addPotionEffect(GLOW);
+                ids.add(livingEntity.getEntityId());
                 //CustomPacket.sendAddPotionEffect(player, GLOW, livingEntity);
             }
         }
@@ -138,4 +148,9 @@ public class TremorSense extends BendingActiveAbility {
         }
         return false;
     }
+    
+
+    public List<Integer> getIds() {
+		return ids;
+	}
 }
