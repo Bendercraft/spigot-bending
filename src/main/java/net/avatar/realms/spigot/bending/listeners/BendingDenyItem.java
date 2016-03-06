@@ -76,7 +76,8 @@ public class BendingDenyItem implements Listener {
 	
 	@EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
-		if(event.getClickedInventory().getHolder() instanceof Player) {
+		if(event.getClickedInventory() != null 
+				&& event.getClickedInventory().getHolder() instanceof Player) {
 			sanitize((Player) event.getClickedInventory().getHolder());
 		}
 	}
