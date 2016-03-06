@@ -26,7 +26,7 @@ public class Mark extends BendingActiveAbility {
 	private static int RANGE = 50;
 	
 	@ConfigurationParameter("Duration")
-	private static int DURATION = 200;
+	private static int DURATION = 10000;
 	
 	@ConfigurationParameter("Amplifier")
 	private static int AMPLIFIER = 1;
@@ -41,7 +41,7 @@ public class Mark extends BendingActiveAbility {
 	public boolean sneak() {
 		target = EntityTools.getTargetedEntity(player, RANGE);
 		if(target != null) {
-			target.addPotionEffect(PotionEffectType.GLOWING.createEffect(DURATION, 1));
+			target.addPotionEffect(PotionEffectType.GLOWING.createEffect(DURATION*20/1000, 1));
 			bender.cooldown(this, DURATION);
 		}
 		return false;
