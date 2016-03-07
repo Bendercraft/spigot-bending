@@ -128,6 +128,7 @@ public class TremorSense extends BendingActiveAbility {
     	for(LivingEntity entity : entities.values()) {
     		entity.removePotionEffect(PotionEffectType.GLOWING);
     	}
+    	entities.clear();
         bender.cooldown(NAME, (System.currentTimeMillis() - startedTime) / 10);
     }
 
