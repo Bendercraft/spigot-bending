@@ -34,6 +34,10 @@ public abstract class BendingAbility {
 		this.startedTime = System.currentTimeMillis();
 	}
 
+	public long getStartedTime() {
+		return startedTime;
+	}
+
 	/**
 	 * Set the state in which the ability is currently in
 	 * 

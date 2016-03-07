@@ -7,6 +7,8 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -361,5 +363,13 @@ public class AbilityManager {
 	
 	public Collection<RegisteredAbility> getRegisteredAbilities() {
 		return Collections.unmodifiableCollection(binds.values());
+	}
+	
+	public List<BendingAbility> getRunnings() {
+		List<BendingAbility> result = new LinkedList<BendingAbility>();
+		for(Map<Object, BendingAbility> abilities : this.runnings.values()) {
+			result.addAll(abilities.values());
+		}
+		return result;
 	}
 }

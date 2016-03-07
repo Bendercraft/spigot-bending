@@ -63,4 +63,8 @@ public class Mark extends BendingActiveAbility {
 		target.removePotionEffect(PotionEffectType.GLOWING);
 	}
 
+	public LivingEntity getTarget() {
+		return target;
+	}
+
 }

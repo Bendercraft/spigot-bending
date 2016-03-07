@@ -19,6 +19,7 @@ import net.avatar.realms.spigot.bending.commands.subcommands.BindExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.ChooseExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.ClearExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.CooldownExecution;
+import net.avatar.realms.spigot.bending.commands.subcommands.DebugExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.DeckExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.DisplayExecution;
 import net.avatar.realms.spigot.bending.commands.subcommands.HelpExecution;
@@ -49,6 +50,7 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 	private IBendingCommand help;
 	private IBendingCommand available;
 	private IBendingCommand deck;
+	private IBendingCommand debug;
 
 	private List<IBendingCommand> commands;
 
@@ -73,9 +75,11 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		// TODO :
 		this.deck = new DeckExecution();
 		this.available = new AvailableExecution();
+		this.debug = new DebugExecution();
 
 		this.commands.add(this.bind);
 		this.commands.add(this.deck);
+		this.commands.add(this.debug);
 		this.commands.add(this.choose);
 		this.commands.add(this.remove);
 		this.commands.add(this.add);

@@ -1,27 +1,16 @@
 package net.avatar.realms.spigot.bending;
 
 import net.avatar.realms.spigot.bending.integrations.citizens.BendableTrait;
-
-import java.util.List;
-import java.util.Map;
+import net.avatar.realms.spigot.bending.integrations.worldguard.protocollib.BendingPacketAdapter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.events.PacketListener;
-import com.comphenix.protocol.reflect.FieldAccessException;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
-
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
-import net.avatar.realms.spigot.bending.abilities.earth.TremorSense;
 import net.avatar.realms.spigot.bending.commands.BendingCommandExecutor;
 import net.avatar.realms.spigot.bending.controller.BendingManager;
 import net.avatar.realms.spigot.bending.controller.Settings;
@@ -104,54 +93,8 @@ public class Bending extends JavaPlugin {
 		
 		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 		
-		PacketListener listener = new PacketAdapter(this, PacketType.Play.Server.ENTITY_METADATA) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-                Bending.getInstance().onPacketSending(event);
-            }
-        };
+		PacketListener listener = new BendingPacketAdapter(this);
 		manager.addPacketListener(listener);
-	}
-	
-	public void onPacketSending(PacketEvent event) {
-		PacketContainer packet = event.getPacket();
-		// Because we listen for "ENTITY_METADATA", packet we should have is "PacketPlayOutEntityMetadata"
-		// it has one integer filed : entity id
-		int entityID = packet.getIntegers().readSafely(0);
-		
-		boolean suppress = false;
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(TremorSense.NAME);
-		if(instances != null && !instances.isEmpty()) {
-			for(BendingAbility raw : instances.values()) {
-				TremorSense ability = (TremorSense) raw;
-				if(ability.getIds().contains(entityID) && event.getPlayer() != ability.getPlayer()) {
-					suppress = true;
-					break;
-				}
-			}
-		}
-		
-		if(suppress) {
-			//This packet also have a collection of datawatcher with only one on it
-			List<WrappedWatchableObject> metadatas = packet.getWatchableCollectionModifier().readSafely(0);
-			WrappedWatchableObject status = null;
-			for (WrappedWatchableObject metadata : metadatas) {
-				//See http://wiki.vg/Entities for explanation on why index 0
-				try {
-					if (metadata.getIndex() == 0) {
-						status = metadata;
-		                break;
-		            }
-				} catch(FieldAccessException e) {
-					
-				}
-			}
-			if(status != null) {
-				byte mask = (byte) status.getValue(); //0x40 = Glowing effect mask
-				mask &= ~0x40;//0x40 = Glowing effect mask
-				status.setValue(mask);
-			}
-		}
 	}
 
 	@Override
