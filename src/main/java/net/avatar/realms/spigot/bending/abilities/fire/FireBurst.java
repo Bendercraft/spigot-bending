@@ -309,10 +309,10 @@ public class FireBurst extends BendingActiveAbility {
 		}
 
 		private boolean affect(LivingEntity entity) {
-			if (ProtectionManager.isEntityProtected(entity)) {
-				return false;
-			}
 			if (entity.getEntityId() != this.player.getEntityId()) {
+				if (ProtectionManager.isEntityProtected(entity)) {
+					return false;
+				}
 				if (AvatarState.isAvatarState(this.player)) {
 					entity.setVelocity(this.direction.clone().multiply(AvatarState.getValue(BLAST_PUSH_FACTOR)));
 				} else {
