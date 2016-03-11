@@ -36,6 +36,7 @@ import net.avatar.realms.spigot.bending.abilities.arts.NebularChain;
 import net.avatar.realms.spigot.bending.abilities.arts.C4;
 import net.avatar.realms.spigot.bending.abilities.arts.Speed;
 import net.avatar.realms.spigot.bending.abilities.arts.StraightShot;
+import net.avatar.realms.spigot.bending.abilities.arts.Supply;
 import net.avatar.realms.spigot.bending.abilities.arts.Dash;
 import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.arts.ExplosiveShot;
@@ -204,6 +205,7 @@ public class AbilityManager {
 		register(StraightShot.class);
 		register(BlankPoint.class);
 		register(Mark.class);
+		register(Supply.class);
 		register(NebularChain.class);
 		register(Slice.class);
 		register(DaggerFall.class);

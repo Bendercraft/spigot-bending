@@ -57,10 +57,10 @@ public class BendingDenyItem implements Listener {
 		deniedEnchantments.put(Enchantment.SILK_TOUCH, 1);
 		deniedEnchantments.put(Enchantment.DURABILITY, 3);
 		deniedEnchantments.put(Enchantment.LOOT_BONUS_BLOCKS, 3);
-		deniedEnchantments.put(Enchantment.ARROW_DAMAGE, 3);
-		deniedEnchantments.put(Enchantment.ARROW_KNOCKBACK, 2);
+		deniedEnchantments.put(Enchantment.ARROW_DAMAGE, 0);
+		deniedEnchantments.put(Enchantment.ARROW_KNOCKBACK, 0);
 		deniedEnchantments.put(Enchantment.ARROW_FIRE, 0);
-		deniedEnchantments.put(Enchantment.ARROW_INFINITE, 1);
+		deniedEnchantments.put(Enchantment.ARROW_INFINITE, 0);
 		deniedEnchantments.put(Enchantment.LUCK, 3);
 		deniedEnchantments.put(Enchantment.LURE, 3);
 		
@@ -153,7 +153,9 @@ public class BendingDenyItem implements Listener {
 		for(Entry<Enchantment, Integer> entry : deniedEnchantments.entrySet()) {
 			Enchantment enchantment = entry.getKey();
 			int level = entry.getValue();
-			
+			if(enchantment == Enchantment.ARROW_INFINITE && bender.hasAffinity(BendingAffinity.BOW)) {
+				continue;
+			}
 			if(!item.containsEnchantment(enchantment )) {
 				continue;
 			}
