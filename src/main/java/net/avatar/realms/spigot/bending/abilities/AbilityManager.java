@@ -242,7 +242,7 @@ public class AbilityManager {
 		register(LavaSpin.class);
 		register(MetalBending.class);
 		register(Shockwave.class);
-		register(TremorSense.class);
+		//register(TremorSense.class);
 
 		register(HeatControl.class);
 		register(Blaze.class);
