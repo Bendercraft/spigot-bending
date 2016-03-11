@@ -33,6 +33,9 @@ public class EarthLariat extends BendingActiveAbility {
 	@ConfigurationParameter("Confusion-Duration")
 	private static int CONFUSION_DURATION = 5; // In seconds
 	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 5000;
+	
 	private LivingEntity target;
 
 	public EarthLariat(RegisteredAbility register, Player player) {
@@ -60,6 +63,7 @@ public class EarthLariat extends BendingActiveAbility {
 					target.setVelocity(middle.toVector().clone().subtract(target.getLocation().toVector()).multiply(0.5));
 					
 					setState(BendingAbilityState.PROGRESSING);
+					bender.cooldown(this, COOLDOWN);
 				}
 			}
 		} else if(getState() == BendingAbilityState.PROGRESSING) {

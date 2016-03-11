@@ -38,6 +38,9 @@ public class FireFerret extends BendingActiveAbility {
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 3;
 	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 5000;
+	
 	private Location origin;
 	private Location location;
 	
@@ -65,6 +68,7 @@ public class FireFerret extends BendingActiveAbility {
 				}
 				time = System.currentTimeMillis();
 				setState(BendingAbilityState.PROGRESSING);
+				bender.cooldown(this, COOLDOWN);
 			}
 		}
 		return false;

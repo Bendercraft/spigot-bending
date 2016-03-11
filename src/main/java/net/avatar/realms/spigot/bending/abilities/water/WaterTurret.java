@@ -42,6 +42,9 @@ public class WaterTurret extends BendingActiveAbility {
 	@ConfigurationParameter("Radius")
 	public static double AFFECTING_RADIUS = 2;
 	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 5000;
+	
 	@ConfigurationParameter("Damage-Per-Combo")
 	private static int DAMAGE = 1;
 	
@@ -72,6 +75,7 @@ public class WaterTurret extends BendingActiveAbility {
 			}
 			setState(BendingAbilityState.PREPARED);
 			time = System.currentTimeMillis();
+			bender.cooldown(this, COOLDOWN);
 			
 		}
 		return false;

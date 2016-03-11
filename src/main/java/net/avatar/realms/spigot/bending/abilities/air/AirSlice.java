@@ -45,6 +45,9 @@ public class AirSlice extends BendingActiveAbility {
 
 	@ConfigurationParameter("Push-Factor")
 	public static double PUSH_FACTOR = 4.0;
+	
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 5000;
 
 	public static final byte FULL = 0x0;
 
@@ -80,6 +83,7 @@ public class AirSlice extends BendingActiveAbility {
 			}
 
 			setState(BendingAbilityState.PROGRESSING);
+			bender.cooldown(this, COOLDOWN);
 		}
 
 		return false;
