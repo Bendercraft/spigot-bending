@@ -58,7 +58,6 @@ import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
-import net.avatar.realms.spigot.bending.abilities.air.AirGlide;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpeed;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.Suffocate;
@@ -305,16 +304,6 @@ public class BendingPlayerListener implements Listener {
 					&& !WaterSpout.isBending(player)) {
 				
 				FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
-				if(ab.canBeInitialized()) {
-					ab.start();
-					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
-						AbilityManager.getManager().addInstance(ab);
-						return;
-					}
-				}
-			}
-			if (EntityTools.isBender(player, BendingElement.AIR) && EntityTools.canBendPassive(player, BendingElement.AIR)) {
-				AirGlide ab = new AirGlide(AbilityManager.getManager().getRegisteredAbility(AirGlide.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
 					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {

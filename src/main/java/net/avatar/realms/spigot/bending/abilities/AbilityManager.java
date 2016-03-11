@@ -21,7 +21,6 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
 import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.air.AirBurst;
-import net.avatar.realms.spigot.bending.abilities.air.AirGlide;
 import net.avatar.realms.spigot.bending.abilities.air.AirScooter;
 import net.avatar.realms.spigot.bending.abilities.air.AirShield;
 import net.avatar.realms.spigot.bending.abilities.air.AirSlice;
@@ -220,7 +219,6 @@ public class AbilityManager {
 		register(AirScooter.class);
 		register(AirShield.class);
 		register(AirSpout.class);
-		register(AirGlide.class);
 		register(AirSuction.class);
 		register(AirSwipe.class);
 		register(AirSpeed.class);
