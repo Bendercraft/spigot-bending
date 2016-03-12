@@ -1,14 +1,13 @@
 package net.avatar.realms.spigot.bending.abilities.arts;
 
+import net.avatar.realms.spigot.bending.abilities.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
-import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
+
+import java.util.Map;
 
 /**
  * 
@@ -65,6 +64,25 @@ public class Mark extends BendingActiveAbility {
 
 	public LivingEntity getTarget() {
 		return target;
+	}
+
+	public static boolean isMarked(LivingEntity target) {
+		return isMarked(target.getEntityId());
+	}
+
+	public static boolean isMarked(int entityID) {
+		Map<Object, BendingAbility> marks = AbilityManager.getManager().getInstances(NAME);
+		if (marks == null || marks.isEmpty()) {
+			return false;
+		}
+		for(BendingAbility raw : marks.values()) {
+			Mark ability = (Mark) raw;
+			if(ability.getTarget() != null
+					&& ability.getTarget().getEntityId() == entityID) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -300,43 +300,44 @@ public class BendingPlayerListener implements Listener {
 
 		String ability = EntityTools.getBendingAbility(player);
 		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
-		
-		if (!player.isSneaking() 
-				&& ((ability == null) || !register.isShift()) 
-				&& (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying())) {
-			if (bender.isBender(BendingElement.WATER)
-					&& EntityTools.canBendPassive(player, BendingElement.WATER) 
-					&& !WaterSpout.isBending(player)) {
-				
-				FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
-				if(ab.canBeInitialized()) {
-					ab.start();
-					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
-						AbilityManager.getManager().addInstance(ab);
-						return;
+		if (register != null) {
+			if (!player.isSneaking()
+					&& ((ability == null) || !register.isShift())
+					&& (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying())) {
+				if (bender.isBender(BendingElement.WATER)
+						&& EntityTools.canBendPassive(player, BendingElement.WATER)
+						&& !WaterSpout.isBending(player)) {
+
+					FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
+					if(ab.canBeInitialized()) {
+						ab.start();
+						if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
+							AbilityManager.getManager().addInstance(ab);
+							return;
+						}
 					}
 				}
 			}
-		}
 
-		if (EntityTools.canBend(player, ability) && !player.isSneaking()) {
-			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
-			boolean shouldCreateNew = true;
-			for (BendingAbility a : abilities.values()) {
-				if (a.getPlayer().equals(player) && !((BendingActiveAbility) a).sneak()) {
-					shouldCreateNew = false;
+			if (EntityTools.canBend(player, ability) && !player.isSneaking()) {
+				Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
+				boolean shouldCreateNew = true;
+				for (BendingAbility a : abilities.values()) {
+					if (a.getPlayer().equals(player) && !((BendingActiveAbility) a).sneak()) {
+						shouldCreateNew = false;
+					}
 				}
-			}
-			if (shouldCreateNew) {
-				BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
-				if(ab == null) {
-					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
-					return;
-				}
-				if(ab.canBeInitialized()) {
-					ab.sneak();
-					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
-						AbilityManager.getManager().addInstance(ab);
+				if (shouldCreateNew) {
+					BendingActiveAbility ab = AbilityManager.getManager().buildAbility(ability, player);
+					if(ab == null) {
+						Bending.getInstance().getLogger().log(Level.SEVERE, "Ability "+ability+" failed to construct with buildAbility for player "+player.getName());
+						return;
+					}
+					if(ab.canBeInitialized()) {
+						ab.sneak();
+						if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
+							AbilityManager.getManager().addInstance(ab);
+						}
 					}
 				}
 			}

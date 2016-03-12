@@ -1,7 +1,7 @@
 package net.avatar.realms.spigot.bending;
 
 import net.avatar.realms.spigot.bending.integrations.citizens.BendableTrait;
-import net.avatar.realms.spigot.bending.integrations.worldguard.protocollib.BendingPacketAdapter;
+import net.avatar.realms.spigot.bending.integrations.protocollib.BendingPacketAdapter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
