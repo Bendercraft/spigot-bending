@@ -16,19 +16,23 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.air.AirBlast;
+import net.avatar.realms.spigot.bending.abilities.air.AirSlice;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.arts.Dash;
 import net.avatar.realms.spigot.bending.abilities.arts.HighJump;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthLariat;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthWall;
 import net.avatar.realms.spigot.bending.abilities.fire.Blaze;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
+import net.avatar.realms.spigot.bending.abilities.fire.FireFerret;
 import net.avatar.realms.spigot.bending.abilities.fire.HeatControl;
 import net.avatar.realms.spigot.bending.abilities.water.HealingWaters;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
+import net.avatar.realms.spigot.bending.abilities.water.WaterTurret;
 import net.avatar.realms.spigot.bending.learning.listeners.AirListener;
 import net.avatar.realms.spigot.bending.learning.listeners.ChiListener;
 import net.avatar.realms.spigot.bending.learning.listeners.EarthListener;
@@ -176,18 +180,22 @@ public class BendingLearning {
 		if(ability.equals(AirBlast.NAME) 
 				|| ability.equals(AirSpout.NAME)
 				|| ability.equals(AirSwipe.NAME)
+				|| ability.equals(AirSlice.NAME)
 				
 				|| ability.equals(FireBlast.NAME)
 				|| ability.equals(Blaze.NAME)
 				|| ability.equals(HeatControl.NAME)
+				|| ability.equals(FireFerret.NAME)
 				
 				|| ability.equals(EarthBlast.NAME)
 				|| ability.equals(Collapse.NAME)
 				|| ability.equals(EarthWall.NAME)
+				|| ability.equals(EarthLariat.NAME)
 				
 				|| ability.equals(WaterManipulation.NAME)
 				|| ability.equals(HealingWaters.NAME)
 				|| ability.equals(WaterSpout.NAME)
+				|| ability.equals(WaterTurret.NAME)
 				
 				|| ability.equals(Dash.NAME)
 				|| ability.equals(HighJump.NAME)) {

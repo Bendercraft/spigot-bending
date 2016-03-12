@@ -113,7 +113,7 @@ public class AirShield extends BendingActiveAbility {
 		if (this.player.getEyeLocation().getBlock().isLiquid()) {
 			return false;
 		}
-		if ((!EntityTools.getBendingAbility(this.player).equals(NAME) || !this.player.isSneaking()) 
+		if ((!NAME.equals(EntityTools.getBendingAbility(player)) || !this.player.isSneaking()) 
 				&& !AvatarState.isAvatarState(this.player)) {
 			return false;
 		}

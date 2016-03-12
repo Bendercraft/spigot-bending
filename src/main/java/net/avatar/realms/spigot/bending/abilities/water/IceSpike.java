@@ -176,7 +176,7 @@ public class IceSpike extends BendingActiveAbility {
 			return;
 		}
 
-		if (!EntityTools.getBendingAbility(this.player).equals(NAME) && this.prepared) {
+		if (!NAME.equals(EntityTools.getBendingAbility(player)) && this.prepared) {
 			remove();
 			return;
 		}

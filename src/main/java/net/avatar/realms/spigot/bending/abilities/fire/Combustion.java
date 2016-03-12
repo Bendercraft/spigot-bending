@@ -106,7 +106,7 @@ public class Combustion extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!EntityTools.getBendingAbility(player).equals(NAME)) {
+		if (!NAME.equals(EntityTools.getBendingAbility(player))) {
 			return false;
 		}
 		return true;

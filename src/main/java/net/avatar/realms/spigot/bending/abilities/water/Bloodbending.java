@@ -126,7 +126,7 @@ public class Bloodbending extends BendingActiveAbility {
 			return false;
 		}
 		if (!this.player.isSneaking() 
-				|| !EntityTools.getBendingAbility(this.player).equals(NAME)
+				|| !NAME.equals(EntityTools.getBendingAbility(player))
 				|| !EntityTools.canBend(this.player, NAME) 
 				|| System.currentTimeMillis() - this.time > MAX_DURATION) {
 			return false;

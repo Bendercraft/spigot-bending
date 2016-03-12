@@ -140,7 +140,7 @@ public class AirBurst extends BendingActiveAbility {
 				sphereBurst();
 			}
 		} else if (!getState().equals(BendingAbilityState.PREPARED) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
-			if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
+			if (!NAME.equals(EntityTools.getBendingAbility(player))) {
 				remove();
 				return;
 			}

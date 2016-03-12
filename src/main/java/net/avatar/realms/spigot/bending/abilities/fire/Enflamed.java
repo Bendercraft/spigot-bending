@@ -106,7 +106,7 @@ public class Enflamed {
 	}
 
 	public static boolean canBurn(Player player) {
-		if (EntityTools.getBendingAbility(player).equals(HeatControl.NAME) || FireJet.checkTemporaryImmunity(player)) {
+		if (HeatControl.NAME.equals(EntityTools.getBendingAbility(player)) || FireJet.checkTemporaryImmunity(player)) {
 			player.setFireTicks(0);
 			return false;
 		}

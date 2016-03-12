@@ -103,7 +103,7 @@ public class Tornado extends BendingActiveAbility {
 		}
 		if (this.player.getEyeLocation().getBlock().isLiquid() 
 				|| !this.player.isSneaking()
-				|| !EntityTools.getBendingAbility(this.player).equals(NAME)
+				|| !NAME.equals(EntityTools.getBendingAbility(player))
 				|| ProtectionManager.isLocationProtectedFromBending(this.player, AirBlast.NAME, this.origin)) {
 			return false;
 		}

@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
+import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
@@ -156,16 +157,20 @@ public class BendingDenyItem implements Listener {
 			if(enchantment == Enchantment.ARROW_INFINITE && bender.hasAffinity(BendingAffinity.BOW)) {
 				continue;
 			}
-			if(!item.containsEnchantment(enchantment )) {
+			if(!item.containsEnchantment(enchantment)) {
 				continue;
 			}
 			if(level == 0) {
 				item.removeEnchantment(enchantment);
 				continue;
 			}
-			if(item.getEnchantmentLevel(enchantment) >= level) {
-				item.removeEnchantment(enchantment);
-				item.addEnchantment(enchantment, level);
+			try {
+				if(item.getEnchantmentLevel(enchantment) >= level) {
+					item.removeEnchantment(enchantment);
+					item.addEnchantment(enchantment, level);
+				}
+			} catch(IllegalArgumentException e) {
+				Bending.getInstance().getLogger().severe("Player "+bender.getPlayer().getName()+" had item "+item.getType()+" with enchant "+enchantment.getName()+" but... NOPE :o");
 			}
 		}
 		

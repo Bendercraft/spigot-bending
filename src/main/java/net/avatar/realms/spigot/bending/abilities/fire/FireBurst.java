@@ -134,7 +134,7 @@ public class FireBurst extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!EntityTools.getBendingAbility(this.player).equals(NAME)) {
+		if (!NAME.equals(EntityTools.getBendingAbility(player))) {
 			return false;
 		}
 		return true;

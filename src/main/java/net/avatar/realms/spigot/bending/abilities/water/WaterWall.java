@@ -262,12 +262,12 @@ public class WaterWall extends BendingActiveAbility {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 
-			if (!progressing && !EntityTools.getBendingAbility(player).equals(NAME)) {
+			if (!progressing && !NAME.equals(EntityTools.getBendingAbility(player))) {
 				remove();
 				return;
 			}
 
-			if (progressing && (!player.isSneaking() || !EntityTools.getBendingAbility(player).equals(NAME))) {
+			if (progressing && (!player.isSneaking() || !NAME.equals(EntityTools.getBendingAbility(player)))) {
 				breakBlock();
 				returnWater();
 				return;

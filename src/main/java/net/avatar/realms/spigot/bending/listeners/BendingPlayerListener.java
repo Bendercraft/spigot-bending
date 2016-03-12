@@ -199,7 +199,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (ability.equals(MetalBending.NAME) && EntityTools.canBend(player, ability)) {
+		if (MetalBending.NAME.equals(ability) && EntityTools.canBend(player, ability)) {
 			MetalWire.pull(player, event.getHook());
 		}
 	}
