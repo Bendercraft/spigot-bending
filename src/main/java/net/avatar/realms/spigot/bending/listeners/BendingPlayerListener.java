@@ -293,6 +293,7 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSneak(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}
@@ -303,7 +304,7 @@ public class BendingPlayerListener implements Listener {
 		if (!player.isSneaking() 
 				&& ((ability == null) || !register.isShift()) 
 				&& (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying())) {
-			if (EntityTools.isBender(player, BendingElement.WATER) 
+			if (bender.isBender(BendingElement.WATER)
 					&& EntityTools.canBendPassive(player, BendingElement.WATER) 
 					&& !WaterSpout.isBending(player)) {
 				

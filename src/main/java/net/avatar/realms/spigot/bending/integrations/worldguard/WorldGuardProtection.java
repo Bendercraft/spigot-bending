@@ -190,8 +190,14 @@ public class WorldGuardProtection {
         }
 
         com.sk89q.worldguard.LocalPlayer localPlayer = worldguard.wrapPlayer(player);
-        RegionContainer container = worldguard.getRegionContainer();
-        RegionQuery query = container.createQuery();
-        return !query.testState(location, localPlayer, passivesBending);
+        RegionManager manager = worldguard.getRegionManager(location.getWorld());
+        ApplicableRegionSet regions = manager.getApplicableRegions(location);
+        StateFlag.State state = regions.queryState(localPlayer, passivesBending);
+        if (state != null) {
+            return state != StateFlag.State.ALLOW;
+        }
+
+        state = regions.queryState(localPlayer, allBending);
+        return state == StateFlag.State.DENY;
     }
 }
