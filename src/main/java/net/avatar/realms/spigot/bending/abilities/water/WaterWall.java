@@ -34,7 +34,7 @@ import org.bukkit.util.Vector;
 @ABendingAbility(name = WaterWall.NAME, element = BendingElement.WATER)
 public class WaterWall extends BendingActiveAbility {
 	public final static String NAME = "Surge";
-	
+
 	private static final long interval = 30;
 
 	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
@@ -71,52 +71,100 @@ public class WaterWall extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean sneak() {
+	public boolean canTick()
+	{
+		if(!super.canTick())
+		{
+			return false;
+		}
+
+		if (!BendingAbilityState.PROGRESSING.equals(getState()) && !NAME.equals(EntityTools.getBendingAbility(this.player)))
+		{
+			return false;
+		}
+		if (BendingAbilityState.PROGRESSING.equals(getState()) && wave == null && !this.player.isSneaking())
+		{
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean sneak()
+	{
 		if (getState() == BendingAbilityState.START) {
 			if (bender.isOnCooldown(NAME)) {
 				return false;
 			}
 			wave = new Wave(player);
-			if (wave.prepare()) {
+			if (wave.prepare())
+			{
 				setState(BendingAbilityState.PREPARED);
 			}
-		} else if (getState() == BendingAbilityState.PREPARED) {
-			if (wave == null) {
+		}
+		else if (getState() == BendingAbilityState.PREPARED)
+		{
+			if (wave == null)
+			{
 				moveWater(); // Build wall
 				setState(BendingAbilityState.PROGRESSING);
-			} else {
-				remove();
 			}
-		} else if (getState() == BendingAbilityState.PROGRESSING) {
+			else
+			{
+				//Put another source elsewhere
+				wave.remove();
+				remove();
+				setState(BendingAbilityState.START);
+				sneak();
+			}
+		}
+		else if (getState() == BendingAbilityState.PROGRESSING) {
 			if (wave != null) {
 				wave.freeze();
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.START) {
-			if (bender.isOnCooldown(NAME)) {
+		if (getState() == BendingAbilityState.START)
+		{
+			if (bender.isOnCooldown(NAME))
+			{
 				return false;
 			}
 			// WaterWall !
-			if (prepare()) {
+			if (prepare())
+			{
 				setState(BendingAbilityState.PREPARED);
 			}
-		} else if (getState() == BendingAbilityState.PREPARED) {
-			if (wave != null) {
+			else
+				return false;
+		}
+		else if (getState() == BendingAbilityState.PREPARED)
+		{
+			if (wave != null)
+			{
 				wave.moveWater();
 				setState(BendingAbilityState.PROGRESSING);
 			}
-		} else if (getState() == BendingAbilityState.PROGRESSING) {
-			if (wave == null) {
+			else
+			{
+				//Put another source elsewhere
+				remove();
+				setState(BendingAbilityState.START);
+				swing();
+			}
+		} else if (getState() == BendingAbilityState.PROGRESSING)
+		{
+			if (wave == null)
+			{
 				freezeThaw();
 			}
 		}
-		return false;
+		return true;
 	}
 
 	private void freezeThaw() {
@@ -174,6 +222,26 @@ public class WaterWall extends BendingActiveAbility {
 				return true;
 			}
 		}
+		// Check for bottle too !
+		if (block == null && !bender.isOnCooldown(NAME)
+				&& getState() != BendingAbilityState.PREPARED && WaterReturn.hasWaterBottle(player))
+		{
+			Location eyeloc = player.getEyeLocation();
+			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
+			if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock()))
+			{
+				drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
+				sourceblock = block;
+				focusBlock();
+				// Reduce radius ?
+				WaterReturn.emptyWaterBottle(player);
+				return true;
+
+			}
+		}
+
+		//No block ? Remove current instance !
+		remove();
 		return false;
 	}
 
