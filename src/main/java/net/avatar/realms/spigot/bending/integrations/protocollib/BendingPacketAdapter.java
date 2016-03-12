@@ -1,8 +1,6 @@
 package net.avatar.realms.spigot.bending.integrations.protocollib;
 
 import java.util.List;
-import java.util.Map;
-
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
@@ -11,11 +9,8 @@ import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.arts.Mark;
 import net.avatar.realms.spigot.bending.abilities.earth.TremorSense;
-import org.bukkit.entity.Player;
 
 public class BendingPacketAdapter extends PacketAdapter {
 
