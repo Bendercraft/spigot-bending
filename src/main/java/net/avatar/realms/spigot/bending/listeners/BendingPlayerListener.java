@@ -181,10 +181,14 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerInteractWithEntity(PlayerInteractEntityEvent e) {
 		Entity ent = e.getRightClicked();
 		Player p = e.getPlayer();
-		if (FireBlade.isFireBlading(p) 
-				&& FireBlade.isFireBlade(p.getInventory().getItemInMainHand()) 
-				&& ent instanceof ItemFrame) {
-			e.setCancelled(true);
+		if (ent instanceof ItemFrame)  {
+			if (FireBlade.isFireBlading(p)
+					&& FireBlade.isFireBlade(p.getInventory().getItemInMainHand())) {
+				e.setCancelled(true);
+			}
+		}
+		else if (ent instanceof Player) {
+			Player target = (Player) ent;
 		}
 	}
 
@@ -371,15 +375,16 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			String ability = EntityTools.getBendingAbility(player);
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			String ability = bender.getAbility();
+
 			if (bender != null && bender.hasPath(BendingPath.TOUGH)) {
 				event.setDamage(event.getDamage() * 0.9);
 			}
 
 			if (event.getCause() == DamageCause.FALL) {
 				BendingPassiveAbility ab = null;
-				if (EntityTools.isBender(player, BendingElement.EARTH)) {
+				if (bender.isBender(BendingElement.EARTH)) {
 					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
 					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
@@ -397,7 +402,7 @@ public class BendingPlayerListener implements Listener {
 					}
 				}
 
-				if (EntityTools.isBender(player, BendingElement.AIR) && EntityTools.canBendPassive(player, BendingElement.AIR)) {
+				if (bender.isBender(BendingElement.AIR) && EntityTools.canBendPassive(player, BendingElement.AIR)) {
 					if (ability.equals(AirBurst.NAME)) {
 						BendingActiveAbility burst = AbilityManager.getManager().buildAbility(AirBurst.NAME, player);
 						if (burst.canBeInitialized()) {
@@ -425,7 +430,7 @@ public class BendingPlayerListener implements Listener {
 				}
 
 				if (!event.isCancelled() 
-						&& EntityTools.isBender(player, BendingElement.MASTER) 
+						&& bender.isBender(BendingElement.MASTER)
 						&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
 					event.setDamage((int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.)));
 					if (event.getEntity().getFallDistance() < 10) {
