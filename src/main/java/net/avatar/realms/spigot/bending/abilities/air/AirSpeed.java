@@ -45,7 +45,8 @@ public class AirSpeed extends BendingPassiveAbility {
 		PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, 1);
 
 		this.player.addPotionEffect(speed);
-		if (!EntityTools.getBendingAbility(this.player).equals(AirScooter.NAME)) {
+		String abilityName = EntityTools.getBendingAbility(this.player);
+		if (abilityName == null || !abilityName.equals(AirScooter.NAME)) {
 			PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 2);
 			this.player.addPotionEffect(jump);
 		}

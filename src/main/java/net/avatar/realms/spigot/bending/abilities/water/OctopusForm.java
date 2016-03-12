@@ -161,9 +161,11 @@ public class OctopusForm extends BendingActiveAbility {
 			return;
 		}
 
+		String abilityName = EntityTools.getBendingAbility(player);
 		if (!EntityTools.canBend(player, NAME) 
-				|| (!player.isSneaking() && !sourceselected) 
-				|| !EntityTools.getBendingAbility(player).equals(NAME) 
+				|| (!player.isSneaking() && !sourceselected)
+				|| abilityName == null
+				|| !abilityName.equals(NAME)
 				|| !sourceblock.getWorld().equals(player.getWorld()) 
 				|| (sourceblock.getLocation().distance(player.getLocation()) > range && sourceselected)) {
 			remove();

@@ -34,7 +34,7 @@ import org.bukkit.util.Vector;
 @ABendingAbility(name = WaterWall.NAME, element = BendingElement.WATER)
 public class WaterWall extends BendingActiveAbility {
 	public final static String NAME = "Surge";
-	
+
 	private static final long interval = 30;
 
 	private static Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
@@ -262,12 +262,13 @@ public class WaterWall extends BendingActiveAbility {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 
-			if (!progressing && !EntityTools.getBendingAbility(player).equals(NAME)) {
+			String abilityName = EntityTools.getBendingAbility(player);
+			if (!progressing && (abilityName == null || !abilityName.equals(NAME))) {
 				remove();
 				return;
 			}
 
-			if (progressing && (!player.isSneaking() || !EntityTools.getBendingAbility(player).equals(NAME))) {
+			if (progressing && (!player.isSneaking() || abilityName == null || !abilityName.equals(NAME))) {
 				breakBlock();
 				returnWater();
 				return;

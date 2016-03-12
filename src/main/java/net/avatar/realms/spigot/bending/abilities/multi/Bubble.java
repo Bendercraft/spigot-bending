@@ -44,8 +44,9 @@ public abstract class Bubble extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (EntityTools.getBendingAbility(this.player).equals(AirBubble.NAME)
-				|| EntityTools.getBendingAbility(this.player).equals(WaterBubble.NAME)) {
+		String abilityName = EntityTools.getBendingAbility(this.player);
+		if (abilityName != null && (abilityName.equals(AirBubble.NAME)
+				|| abilityName.equals(WaterBubble.NAME))) {
 			pushWater();
 		}
 		else {
