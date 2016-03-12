@@ -91,5 +91,10 @@ public class Dash extends BendingActiveAbility {
 	public Object getIdentifier() {
 		return this.player;
 	}
+	
+	@Override
+	public boolean canBeUsedWithTools() {
+		return true;
+	}
 
 }

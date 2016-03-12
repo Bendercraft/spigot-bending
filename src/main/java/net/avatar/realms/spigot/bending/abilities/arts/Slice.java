@@ -119,5 +119,10 @@ public class Slice extends BendingActiveAbility {
 	public void stop() {
 		
 	}
+	
+	@Override
+	public boolean canBeUsedWithTools() {
+		return true;
+	}
 
 }
