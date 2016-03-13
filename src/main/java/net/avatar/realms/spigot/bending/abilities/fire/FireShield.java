@@ -110,7 +110,7 @@ public class FireShield extends BendingActiveAbility {
 				}
 				if ((this.player.getEntityId() != entity.getEntityId()) && ignite) {
 					if (this.bender.hasPath(BendingPath.LIFELESS)) {
-						EntityTools.damageEntity(this.player, entity, 2);
+						EntityTools.damageEntity(bender, entity, 2);
 					}
 					Enflamed.enflame(this.player, entity, 3);
 				}

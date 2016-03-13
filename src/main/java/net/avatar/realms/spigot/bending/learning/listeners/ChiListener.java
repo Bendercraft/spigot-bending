@@ -10,7 +10,7 @@ import net.avatar.realms.spigot.bending.abilities.arts.Dash;
 import net.avatar.realms.spigot.bending.abilities.arts.SmokeBomb;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
+import net.avatar.realms.spigot.bending.event.BendingCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -86,7 +86,7 @@ public class ChiListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockSmokeBomb(AbilityCooldownEvent event) {
+	public void unlockSmokeBomb(BendingCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.MASTER) && event.getAbility().equals(SmokeBomb.NAME)) {

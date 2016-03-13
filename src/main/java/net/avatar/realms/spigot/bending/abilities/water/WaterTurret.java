@@ -135,7 +135,7 @@ public class WaterTurret extends BendingActiveAbility {
 					if(entity == player) {
 						continue;
 					}
-					EntityTools.damageEntity(player, entity, DAMAGE);
+					EntityTools.damageEntity(bender, entity, DAMAGE);
 					entity.setVelocity(new Vector(0,0,0));
 					consumed = true;
 				}

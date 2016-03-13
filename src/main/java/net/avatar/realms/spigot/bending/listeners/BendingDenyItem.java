@@ -193,7 +193,6 @@ public class BendingDenyItem implements Listener {
 				|| item.getType() == Material.DIAMOND_CHESTPLATE
 				|| item.getType() == Material.DIAMOND_HELMET
 				|| item.getType() == Material.DIAMOND_LEGGINGS
-				|| item.getType() == Material.GOLD_SWORD
 				|| item.getType() == Material.GOLD_BOOTS
 				|| item.getType() == Material.GOLD_CHESTPLATE
 				|| item.getType() == Material.GOLD_HELMET
@@ -203,7 +202,14 @@ public class BendingDenyItem implements Listener {
 			bender.getPlayer().getInventory().remove(item);
 		}
 		
-		//Airbender might keep elytra
+		// Firebender might keep golden sword for FireBlade
+		if(bender == null || !bender.isBender(BendingElement.FIRE)) {
+			if(item.getType() == Material.GOLD_SWORD) {
+				bender.getPlayer().getInventory().remove(item);
+			}
+		}
+		
+		// Airbender might keep elytra
 		if(bender == null || !bender.isBender(BendingElement.AIR)) {
 			if(item.getType() == Material.ELYTRA) {
 				bender.getPlayer().getInventory().remove(item);

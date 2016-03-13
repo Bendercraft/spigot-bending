@@ -261,7 +261,7 @@ public class Ripple {
 		}
 
 		if (entity instanceof LivingEntity) {
-			EntityTools.damageEntity(player, entity, damage);
+			EntityTools.damageEntity(bender, entity, damage);
 		}
 
 		Vector vector = direction.clone();

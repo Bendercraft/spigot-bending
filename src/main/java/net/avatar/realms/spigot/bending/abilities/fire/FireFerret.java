@@ -118,7 +118,7 @@ public class FireFerret extends BendingActiveAbility {
 			return false;
 		}
 		if (entity.getEntityId() != this.player.getEntityId()) {
-			EntityTools.damageEntity(this.player, entity, DAMAGE);
+			EntityTools.damageEntity(bender, entity, DAMAGE);
 			entity.setFireTicks(2);
 			return false;
 		}

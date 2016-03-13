@@ -17,8 +17,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +30,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -71,7 +68,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalWire;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
@@ -170,23 +166,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getInventory().getItemInMainHand())) {
-			event.setCancelled(true);
-		}
-
 		MetalBending.use(player, event.getClickedBlock());
-	}
-
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerInteractWithEntity(PlayerInteractEntityEvent e) {
-		Entity ent = e.getRightClicked();
-		Player p = e.getPlayer();
-		if (ent instanceof ItemFrame)  {
-			if (FireBlade.isFireBlading(p)
-					&& FireBlade.isFireBlade(p.getInventory().getItemInMainHand())) {
-				e.setCancelled(true);
-			}
-		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -504,9 +484,6 @@ public class BendingPlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerDropitem(PlayerDropItemEvent event) {
-		if (FireBlade.isFireBlade(event.getItemDrop().getItemStack())) {
-			event.setCancelled(true);
-		}
 		if (Suffocate.isTempHelmet(event.getItemDrop().getItemStack())) {
 			event.setCancelled(true);
 		}
@@ -515,10 +492,6 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if ((event.getSlotType() == SlotType.ARMOR) && !EarthArmor.canRemoveArmor((Player) event.getWhoClicked())) {
-			event.setCancelled(true);
-		}
-
-		if (FireBlade.isFireBlade(event.getCurrentItem())) {
 			event.setCancelled(true);
 		}
 
@@ -535,9 +508,6 @@ public class BendingPlayerListener implements Listener {
 		}
 		if (Suffocate.isTargeted(event.getPlayer())) {
 			Suffocate.getSuffocateByTarget(event.getPlayer()).remove();
-		}
-		if (FireBlade.isFireBlading(event.getPlayer())) {
-			FireBlade.getFireBlading(event.getPlayer()).remove();
 		}
 
 		Bending.getInstance().getBendingDatabase().release(event.getPlayer().getUniqueId());
@@ -585,7 +555,7 @@ public class BendingPlayerListener implements Listener {
 		// Fireblade & Suffocate
 		List<ItemStack> toRemove = new LinkedList<ItemStack>();
 		for (ItemStack item : event.getDrops()) {
-			if (FireBlade.isFireBlade(item) || Suffocate.isTempHelmet(item)) {
+			if (Suffocate.isTempHelmet(item)) {
 				toRemove.add(item);
 			}
 		}

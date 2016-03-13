@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.air.AirShield;
 import net.avatar.realms.spigot.bending.abilities.air.AirSuction;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
+import net.avatar.realms.spigot.bending.event.BendingCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -133,7 +133,7 @@ public class AirListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockAirBurst(AbilityCooldownEvent event) {
+	public void unlockAirBurst(BendingCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equals(AirBlast.NAME)) {
@@ -159,7 +159,7 @@ public class AirListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockAirShield(AbilityCooldownEvent event) {
+	public void unlockAirShield(BendingCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equals(AirShield.NAME)) {

@@ -20,7 +20,6 @@ public class Enflamed {
 	private static final double DAMAGE = 1;
 
 	private int secondsLeft;
-	private Player source;
 	private Entity target;
 
 	private long time;
@@ -51,7 +50,6 @@ public class Enflamed {
 	
 	private Enflamed(BendingPlayer bender, Entity target, int seconds) {
 		this.target = target;
-		this.source = bender.getPlayer();
 		this.time = System.currentTimeMillis();
 		this.secondsLeft = seconds;
 		this.damage = DAMAGE;
@@ -97,7 +95,7 @@ public class Enflamed {
 		this.target.setFireTicks(this.secondsLeft * 20);
 		this.secondsLeft -= 1;
 		
-		EntityTools.damageEntity(this.source, this.target, damage);
+		EntityTools.damageEntity(bender, this.target, damage);
 		return true;
 	}
 

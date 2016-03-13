@@ -148,7 +148,7 @@ public class OctopusForm extends BendingActiveAbility {
 				continue;
 			}
 			entity.setVelocity(Tools.getDirection(player.getLocation(), location).normalize().multiply(1.75));
-			EntityTools.damageEntity(player, entity, DAMAGE);
+			EntityTools.damageEntity(bender, entity, DAMAGE);
 		}
 	}
 
