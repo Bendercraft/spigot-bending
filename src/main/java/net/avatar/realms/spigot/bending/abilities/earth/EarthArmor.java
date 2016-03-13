@@ -31,7 +31,7 @@ public class EarthArmor extends BendingActiveAbility {
 	public final static String NAME = "EarthArmor";
 	
 	@ConfigurationParameter("Duration")
-	private static long DURATION = 60000;
+	private static long DURATION = 59000;
 
 	@ConfigurationParameter("Strength")
 	private static int STRENGTH = 2;
@@ -63,6 +63,7 @@ public class EarthArmor extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean swing() {
+
 		//EarthArmor
 		
 		if (this.bender.isOnCooldown(NAME)) {
@@ -301,7 +302,11 @@ public class EarthArmor extends BendingActiveAbility {
 		}
 
 		if (this.formed) {
-			if ((System.currentTimeMillis() > (this.starttime + DURATION)) && !this.complete) {
+
+			long testInt = 0;
+			testInt = this.starttime + DURATION;
+
+			if (System.currentTimeMillis() > testInt && !this.complete) {
 				this.complete = true;
 				removeEffect();
 				return;
