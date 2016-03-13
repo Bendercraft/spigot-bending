@@ -13,6 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @ABendingAbility(name = DaggerFall.NAME, affinity = BendingAffinity.SWORD)
 public class DaggerFall extends BendingActiveAbility {
@@ -42,7 +43,7 @@ public class DaggerFall extends BendingActiveAbility {
 		meta.setLore(Arrays.asList("Dagger"));
 		dagger.setItemMeta(meta);
 		
-		player.getInventory().addItem(dagger);
+		EntityTools.giveItemInHand(player, dagger);
 		bender.cooldown(this, COOLDOWN);
 		return false;
 	}

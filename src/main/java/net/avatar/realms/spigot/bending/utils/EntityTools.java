@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
@@ -356,6 +357,19 @@ public class EntityTools {
 			
 			
 		}
+	}
+	
+	public static void giveItemInHand(Player player, ItemStack itemstack) {
+		int slot = player.getInventory().getHeldItemSlot();
+		ItemStack hand = player.getInventory().getItem(slot);
+		if (hand != null) {
+			int i = player.getInventory().firstEmpty();
+			if (i != -1) {
+				// Inventory full ? Player will loose current held item !
+				player.getInventory().setItem(i, hand);
+			}
+		}
+		player.getInventory().setItem(slot, itemstack);
 	}
 
 	public static boolean isTool(Material mat) {

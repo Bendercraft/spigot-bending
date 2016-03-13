@@ -13,6 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @ABendingAbility(name = Supply.NAME, affinity = BendingAffinity.BOW)
 public class Supply extends BendingActiveAbility {
@@ -41,7 +42,7 @@ public class Supply extends BendingActiveAbility {
 		ItemMeta metaBow = bow.getItemMeta();
 		metaBow.setLore(Arrays.asList("Bow"));
 		bow.setItemMeta(metaBow);
-		player.getInventory().addItem(bow);
+		EntityTools.giveItemInHand(player, bow);
 		
 		ItemStack arrow = new ItemStack(Material.ARROW, 1);
 		ItemMeta metaArrow = bow.getItemMeta();

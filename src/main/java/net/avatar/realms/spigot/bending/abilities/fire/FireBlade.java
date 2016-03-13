@@ -1,15 +1,12 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-//import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
@@ -27,16 +24,6 @@ public class FireBlade extends BendingActiveAbility {
 	public final static String NAME = "FireBlade";
 	
 	private static String LORE_NAME = "FireBlade";
-
-	private static final Enchantment SHARP = Enchantment.DAMAGE_ALL;
-	private static final Enchantment DURA = Enchantment.DURABILITY;
-	private static final Enchantment KNOCKBACK = Enchantment.KNOCKBACK;
-
-	@ConfigurationParameter("Sharpness-Level")
-	private static int SHARPNESS_LEVEL = 1;
-
-	@ConfigurationParameter("Durability-Level")
-	private static int DURABILITY_LEVEL = 3;
 
 	@ConfigurationParameter("Duration")
 	private static int DURATION = 40000;
@@ -148,31 +135,11 @@ public class FireBlade extends BendingActiveAbility {
 	}
 
 	public void giveFireBlade() {
-		ItemStack fireB = new ItemStack(Material.GOLD_SWORD);
-		if (SHARPNESS_LEVEL > 0) {
-			fireB.addEnchantment(SHARP, SHARPNESS_LEVEL);
-		}
-		if (DURABILITY_LEVEL > 0) {
-			fireB.addEnchantment(DURA, DURABILITY_LEVEL);
-		}
-		fireB.addEnchantment(KNOCKBACK, 1);
-		List<String> lore = new LinkedList<String>();
-		lore.add(LORE_NAME);
-		ItemMeta meta = fireB.getItemMeta();
-		meta.setLore(lore);
-		fireB.setItemMeta(meta);
-
-		int slot = this.player.getInventory().getHeldItemSlot();
-		ItemStack hand = this.player.getInventory().getItem(slot);
-		if (hand != null) {
-			int i = this.player.getInventory().firstEmpty();
-			if (i != -1) {
-				// else the player will loose his hand item, his bad
-				this.player.getInventory().setItem(i, hand);
-			}
-		}
-		this.player.getInventory().setItem(slot, fireB);
-		this.blade = fireB;
+		blade = new ItemStack(Material.GOLD_SWORD);
+		ItemMeta meta = blade.getItemMeta();
+		meta.setLore(Arrays.asList(LORE_NAME));
+		blade.setItemMeta(meta);
+		EntityTools.giveItemInHand(player, blade);
 	}
 
 	@Override
