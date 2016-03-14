@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -366,7 +367,9 @@ public class EntityTools {
 			BendingDamageEvent event = new BendingDamageEvent(attacker, damagee, modifiers, modifierFunctions);
 			Bending.callEvent(event);
 			
-			if(!event.isCancelled()) {
+			
+			CraftLivingEntity t = (CraftLivingEntity) damagee;
+			if(!event.isCancelled() && !living.isDead() && t.getHandle().noDamageTicks == 0) {
 				living.setLastDamageCause(event);
 				
 				// Make sure we do not set negative health or too much
@@ -380,8 +383,10 @@ public class EntityTools {
 				living.setHealth(health);
 				
 				// See EntityLiving#damageEntity from NMS to get effect ID and standard hurt ticks
-				CraftLivingEntity t = (CraftLivingEntity) damagee;
+				t.getHandle().lastDamage = (float) event.getDamage();
+				t.getHandle().lastDamager = ((CraftPlayer)(attacker.getPlayer())).getHandle();
 				t.getHandle().hurtTicks = t.getHandle().ay = 10;
+				t.getHandle().noDamageTicks = t.getHandle().maxNoDamageTicks;
 				t.getHandle().world.broadcastEntityEffect(t.getHandle(), (byte)33);
 			}
 		}
