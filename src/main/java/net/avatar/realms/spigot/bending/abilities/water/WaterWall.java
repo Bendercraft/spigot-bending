@@ -90,35 +90,27 @@ public class WaterWall extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean sneak()
-	{
+	public boolean sneak() {
 		if (getState() == BendingAbilityState.START) {
 			if (bender.isOnCooldown(NAME)) {
 				return false;
 			}
 			wave = new Wave(player);
-			if (wave.prepare())
-			{
+			if (wave.prepare()) {
 				setState(BendingAbilityState.PREPARED);
 			}
-		}
-		else if (getState() == BendingAbilityState.PREPARED)
-		{
-			if (wave == null)
-			{
+		} else if (getState() == BendingAbilityState.PREPARED) {
+			if (wave == null) {
 				moveWater(); // Build wall
 				setState(BendingAbilityState.PROGRESSING);
-			}
-			else
-			{
+			} else {
 				//Put another source elsewhere
 				wave.remove();
 				remove();
 				setState(BendingAbilityState.START);
 				sneak();
 			}
-		}
-		else if (getState() == BendingAbilityState.PROGRESSING) {
+		} else if (getState() == BendingAbilityState.PROGRESSING) {
 			if (wave != null) {
 				wave.freeze();
 			}
@@ -129,38 +121,29 @@ public class WaterWall extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.START)
-		{
-			if (bender.isOnCooldown(NAME))
-			{
+		if (getState() == BendingAbilityState.START) {
+			if (bender.isOnCooldown(NAME)) {
 				return false;
 			}
 			// WaterWall !
-			if (prepare())
-			{
+			if (prepare()) {
 				setState(BendingAbilityState.PREPARED);
 			}
 			else
 				return false;
-		}
-		else if (getState() == BendingAbilityState.PREPARED)
-		{
-			if (wave != null)
-			{
+		} else if (getState() == BendingAbilityState.PREPARED) {
+			if (wave != null) {
 				wave.moveWater();
 				setState(BendingAbilityState.PROGRESSING);
 			}
-			else
-			{
+			else {
 				//Put another source elsewhere
 				remove();
 				setState(BendingAbilityState.START);
 				swing();
 			}
-		} else if (getState() == BendingAbilityState.PROGRESSING)
-		{
-			if (wave == null)
-			{
+		} else if (getState() == BendingAbilityState.PROGRESSING) {
+			if (wave == null) {
 				freezeThaw();
 			}
 		}
