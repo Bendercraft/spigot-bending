@@ -75,7 +75,7 @@ public class StraightShot extends BendingActiveAbility {
 			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
 			}
-			EntityTools.damageEntity(player, entity, DAMAGE);
+			EntityTools.damageEntity(bender, entity, DAMAGE);
 			return false;
 		}
 		return true;

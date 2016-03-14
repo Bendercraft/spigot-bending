@@ -44,7 +44,7 @@ public class DirectHit extends BendingActiveAbility {
 			return false;
 		}
 		if(this.player.isSneaking()) {
-			EntityTools.damageEntity(this.player, target, DAMAGE);
+			EntityTools.damageEntity(bender, target, DAMAGE);
 			target.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
 					.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
 

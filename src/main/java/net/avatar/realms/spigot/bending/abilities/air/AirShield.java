@@ -165,7 +165,7 @@ public class AirShield extends BendingActiveAbility {
 				velocity.multiply(this.radius / maxRadius);
 
 				if (bender.hasPath(BendingPath.RENEGADE)) {
-					EntityTools.damageEntity(player, entity, 1);
+					EntityTools.damageEntity(bender, entity, 1);
 					velocity.multiply(2);
 				}
 				entity.setVelocity(velocity);

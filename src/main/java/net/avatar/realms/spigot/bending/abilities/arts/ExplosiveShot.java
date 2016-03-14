@@ -64,7 +64,7 @@ public class ExplosiveShot extends BendingActiveAbility {
 		Location location = arrow.getLocation();
 		
 		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, RANGE_DAMAGE)) {
-			EntityTools.damageEntity(player, entity, DAMAGE);
+			EntityTools.damageEntity(bender, entity, DAMAGE);
 		}
 
 		Vector direction = arrow.getLocation().getDirection().clone();

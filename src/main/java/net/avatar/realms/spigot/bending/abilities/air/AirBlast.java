@@ -137,7 +137,7 @@ public class AirBlast extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (getState() == BendingAbilityState.PREPARING && !this.bender.getAbility().equals(NAME)) {
+		if (getState() == BendingAbilityState.PREPARING && !NAME.equals(bender.getAbility())) {
 			return false;
 		}
 		return true;
@@ -249,7 +249,7 @@ public class AirBlast extends BendingActiveAbility {
 		entity.setFallDistance(0);
 
 		if (this.bender.hasPath(BendingPath.RENEGADE) && !entity.getUniqueId().equals(player.getUniqueId())) {
-			EntityTools.damageEntity(this.player, entity, 1);
+			EntityTools.damageEntity(bender, entity, 1);
 		}
 	}
 

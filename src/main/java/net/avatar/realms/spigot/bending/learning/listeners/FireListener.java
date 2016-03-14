@@ -27,7 +27,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireWall;
 import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
+import net.avatar.realms.spigot.bending.event.BendingCooldownEvent;
 import net.avatar.realms.spigot.bending.learning.BendingLearning;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -95,7 +95,7 @@ public class FireListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockFireBurst(AbilityCooldownEvent event) {
+	public void unlockFireBurst(BendingCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireBlast.NAME)) {
@@ -135,7 +135,7 @@ public class FireListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockFireShield(AbilityCooldownEvent event) {
+	public void unlockFireShield(BendingCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireShield.NAME)) {
@@ -162,7 +162,7 @@ public class FireListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockWallOfFire(AbilityCooldownEvent event) {
+	public void unlockWallOfFire(BendingCooldownEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireShield.NAME)) {

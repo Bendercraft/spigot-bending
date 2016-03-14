@@ -19,7 +19,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.controller.Settings;
-import net.avatar.realms.spigot.bending.event.AbilityCooldownEvent;
+import net.avatar.realms.spigot.bending.event.BendingCooldownEvent;
 
 public class BendingPlayer {
 
@@ -120,7 +120,7 @@ public class BendingPlayer {
 		}
 		this.lastTime = now;
 		if (ability != null) {
-			Bending.callEvent(new AbilityCooldownEvent(this, ability));
+			Bending.callEvent(new BendingCooldownEvent(this, ability));
 		}
 	}
 

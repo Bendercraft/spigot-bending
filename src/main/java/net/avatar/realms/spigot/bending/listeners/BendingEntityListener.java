@@ -84,7 +84,23 @@ public class BendingEntityListener implements Listener {
 		Entity entity = event.getEntity();
 		Lightning lightning = Lightning.getLightning(source);
 		
-		//Reduce all damage coming from BOW if not BOWMAN
+		// FireBlade should not deal any damage at all
+		if(event.getCause() == DamageCause.ENTITY_ATTACK 
+				&& event.getDamager() instanceof Player) {
+			Player attacker = (Player) event.getDamager();
+			if(attacker.getInventory().getItemInMainHand().getType() == Material.GOLD_SWORD) {
+				BendingPlayer bender = BendingPlayer.getBendingPlayer(attacker);
+				if(bender != null 
+						&& FireBlade.isFireBlading(attacker) 
+						&& FireBlade.isFireBlade(attacker.getInventory().getItemInMainHand())) {
+					event.setDamage(0);
+					event.setCancelled(true);
+					FireBlade.getFireBlading(attacker).affect(entity);
+				}
+			}
+		}
+		
+		// Reduce all damage coming from BOW if not BOWMAN
 		if(event.getCause() == DamageCause.PROJECTILE
 			&& event.getDamager() instanceof Arrow) {
 			Arrow arrow = (Arrow) event.getDamager();
@@ -96,7 +112,8 @@ public class BendingEntityListener implements Listener {
 				}
 			}
 		}
-		//Reduce all damage coming from SWORD if not SWORDMAN
+		
+		// Reduce all damage coming from SWORD if not SWORDMAN
 		if(event.getCause() == DamageCause.ENTITY_ATTACK
 			&& event.getDamager() instanceof Player) {
 			Player attacker = (Player) event.getDamager();
@@ -133,15 +150,6 @@ public class BendingEntityListener implements Listener {
 					&& (event.getCause() == DamageCause.ENTITY_ATTACK) && MathUtils.doubleEquals(event.getDamage(), 1)
 					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= DirectHit.RANGE)) {
 				EntityTools.blockChi(targetplayer, 500);
-			}
-		}
-		if (source instanceof Player) {
-			if (event.getCause().equals(DamageCause.ENTITY_ATTACK)) {
-				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) source);
-				if ((bPlayer.getAbility() != null) && bPlayer.getAbility().equals(FireBlade.NAME)) {
-					// 20ticks per seconds
-					entity.setFireTicks(20 * 3);
-				}
 			}
 		}
 	}

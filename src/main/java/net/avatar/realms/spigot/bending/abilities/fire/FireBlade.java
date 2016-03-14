@@ -1,17 +1,14 @@
 package net.avatar.realms.spigot.bending.abilities.fire;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-//import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
@@ -20,26 +17,27 @@ import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.listeners.BendingDenyItem;
+import net.avatar.realms.spigot.bending.listeners.BendingPlayerListener;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
+
+/**
+ * FireBlade works by giving player a GOLDEN_SWORD, that is allowed by bending {@link BendingDenyItem}.
+ * This sword does no damage @link {@link BendingPlayerListener} but calls {@link #affect(LivingEntity)}
+ *
+ */
 @ABendingAbility(name = FireBlade.NAME, element = BendingElement.FIRE, shift=false)
 public class FireBlade extends BendingActiveAbility {
 	public final static String NAME = "FireBlade";
 	
 	private static String LORE_NAME = "FireBlade";
 
-	private static final Enchantment SHARP = Enchantment.DAMAGE_ALL;
-	private static final Enchantment DURA = Enchantment.DURABILITY;
-	private static final Enchantment KNOCKBACK = Enchantment.KNOCKBACK;
-
-	@ConfigurationParameter("Sharpness-Level")
-	private static int SHARPNESS_LEVEL = 1;
-
-	@ConfigurationParameter("Durability-Level")
-	private static int DURABILITY_LEVEL = 3;
-
 	@ConfigurationParameter("Duration")
 	private static int DURATION = 40000;
+	
+	@ConfigurationParameter("Damage")
+	private static int DAMAGE = 5;
 
 	@ConfigurationParameter("Cooldown-Factor")
 	public static float COOLDOWN_FACTOR = 0.75f;
@@ -53,7 +51,11 @@ public class FireBlade extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
-			giveFireBlade();
+			blade = new ItemStack(Material.GOLD_SWORD);
+			ItemMeta meta = blade.getItemMeta();
+			meta.setLore(Arrays.asList(LORE_NAME));
+			blade.setItemMeta(meta);
+			EntityTools.giveItemInHand(player, blade);
 			
 			setState(BendingAbilityState.PROGRESSING);
 		}
@@ -65,8 +67,8 @@ public class FireBlade extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (this.blade == null 
-				|| !isFireBlade(this.player.getInventory().getItemInMainHand()) 
+		if (blade == null 
+				|| !isFireBlade(player.getInventory().getItemInMainHand()) 
 				|| !NAME.equals(EntityTools.getBendingAbility(player))) {
 			return false;
 		}
@@ -81,37 +83,17 @@ public class FireBlade extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		ItemStack toRemove = null;
-		for (ItemStack is : this.player.getInventory().getContents()) {
+		for (ItemStack is : player.getInventory().getContents()) {
 			if ((is != null) && isFireBlade(is)) {
 				toRemove = is;
 				break;
 			}
 		}
 		if (toRemove != null) {
-			this.player.getInventory().remove(toRemove);
+			player.getInventory().remove(toRemove);
 		}
-		this.player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-		long now = System.currentTimeMillis();
-		long realDuration = now - this.startedTime;
-		this.bender.cooldown(NAME, (long) (realDuration * COOLDOWN_FACTOR));
-	}
-
-	public static void removeFireBlade(ItemStack is) {
-		FireBlade toRemove = null;
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
-		if (instances == null) {
-			return;
-		}
-		for (BendingAbility ab : instances.values()) {
-			FireBlade blade = (FireBlade) ab;
-			if ((blade.getBlade() != null) && isFireBlade(blade.getBlade())) {
-				toRemove = blade;
-			}
-		}
-
-		if (toRemove != null) {
-			toRemove.remove();
-		}
+		long realDuration = System.currentTimeMillis() - startedTime;
+		bender.cooldown(NAME, (long) (realDuration * COOLDOWN_FACTOR));
 	}
 
 	public ItemStack getBlade() {
@@ -146,33 +128,10 @@ public class FireBlade extends BendingActiveAbility {
 		}
 		return (FireBlade) instances.get(p);
 	}
-
-	public void giveFireBlade() {
-		ItemStack fireB = new ItemStack(Material.GOLD_SWORD);
-		if (SHARPNESS_LEVEL > 0) {
-			fireB.addEnchantment(SHARP, SHARPNESS_LEVEL);
-		}
-		if (DURABILITY_LEVEL > 0) {
-			fireB.addEnchantment(DURA, DURABILITY_LEVEL);
-		}
-		fireB.addEnchantment(KNOCKBACK, 1);
-		List<String> lore = new LinkedList<String>();
-		lore.add(LORE_NAME);
-		ItemMeta meta = fireB.getItemMeta();
-		meta.setLore(lore);
-		fireB.setItemMeta(meta);
-
-		int slot = this.player.getInventory().getHeldItemSlot();
-		ItemStack hand = this.player.getInventory().getItem(slot);
-		if (hand != null) {
-			int i = this.player.getInventory().firstEmpty();
-			if (i != -1) {
-				// else the player will loose his hand item, his bad
-				this.player.getInventory().setItem(i, hand);
-			}
-		}
-		this.player.getInventory().setItem(slot, fireB);
-		this.blade = fireB;
+	
+	public void affect(Entity entity) {
+		EntityTools.damageEntity(bender, entity, DAMAGE);
+		Enflamed.enflame(player, entity, 4);
 	}
 
 	@Override

@@ -17,8 +17,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +30,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -71,7 +68,6 @@ import net.avatar.realms.spigot.bending.abilities.earth.MetalBending;
 import net.avatar.realms.spigot.bending.abilities.earth.MetalWire;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.Enflamed;
-import net.avatar.realms.spigot.bending.abilities.fire.FireBlade;
 import net.avatar.realms.spigot.bending.abilities.fire.FireJet;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.FastSwimming;
@@ -170,22 +166,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (FireBlade.isFireBlading(player) && FireBlade.isFireBlade(player.getInventory().getItemInMainHand())) {
-			event.setCancelled(true);
-		}
-
 		MetalBending.use(player, event.getClickedBlock());
-	}
-
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerInteractWithEntity(PlayerInteractEntityEvent e) {
-		Entity ent = e.getRightClicked();
-		Player p = e.getPlayer();
-		if (FireBlade.isFireBlading(p) 
-				&& FireBlade.isFireBlade(p.getInventory().getItemInMainHand()) 
-				&& ent instanceof ItemFrame) {
-			e.setCancelled(true);
-		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -289,20 +270,20 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSneak(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}
 
 		String ability = EntityTools.getBendingAbility(player);
 		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
-		
-		if (!player.isSneaking() 
-				&& ((ability == null) || !register.isShift()) 
+		if (!player.isSneaking()
+				&& ((ability == null) || !register.isShift())
 				&& (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying())) {
-			if (EntityTools.isBender(player, BendingElement.WATER) 
-					&& EntityTools.canBendPassive(player, BendingElement.WATER) 
+			if (bender.isBender(BendingElement.WATER)
+					&& EntityTools.canBendPassive(player, BendingElement.WATER)
 					&& !WaterSpout.isBending(player)) {
-				
+
 				FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
@@ -371,15 +352,16 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
-			String ability = EntityTools.getBendingAbility(player);
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			String ability = bender.getAbility();
+
 			if (bender != null && bender.hasPath(BendingPath.TOUGH)) {
 				event.setDamage(event.getDamage() * 0.9);
 			}
 
 			if (event.getCause() == DamageCause.FALL) {
 				BendingPassiveAbility ab = null;
-				if (EntityTools.isBender(player, BendingElement.EARTH)) {
+				if (bender != null && bender.isBender(BendingElement.EARTH)) {
 					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
 					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
@@ -397,8 +379,10 @@ public class BendingPlayerListener implements Listener {
 					}
 				}
 
-				if (EntityTools.isBender(player, BendingElement.AIR) && EntityTools.canBendPassive(player, BendingElement.AIR)) {
-					if (ability.equals(AirBurst.NAME)) {
+				if (bender != null 
+						&& bender.isBender(BendingElement.AIR) 
+						&& EntityTools.canBendPassive(player, BendingElement.AIR)) {
+					if (AirBurst.NAME.equals(ability)) {
 						BendingActiveAbility burst = AbilityManager.getManager().buildAbility(AirBurst.NAME, player);
 						if (burst.canBeInitialized()) {
 							burst.fall();
@@ -425,7 +409,7 @@ public class BendingPlayerListener implements Listener {
 				}
 
 				if (!event.isCancelled() 
-						&& EntityTools.isBender(player, BendingElement.MASTER) 
+						&& bender.isBender(BendingElement.MASTER)
 						&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
 					event.setDamage((int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.)));
 					if (event.getEntity().getFallDistance() < 10) {
@@ -500,9 +484,6 @@ public class BendingPlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerDropitem(PlayerDropItemEvent event) {
-		if (FireBlade.isFireBlade(event.getItemDrop().getItemStack())) {
-			event.setCancelled(true);
-		}
 		if (Suffocate.isTempHelmet(event.getItemDrop().getItemStack())) {
 			event.setCancelled(true);
 		}
@@ -511,10 +492,6 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if ((event.getSlotType() == SlotType.ARMOR) && !EarthArmor.canRemoveArmor((Player) event.getWhoClicked())) {
-			event.setCancelled(true);
-		}
-
-		if (FireBlade.isFireBlade(event.getCurrentItem())) {
 			event.setCancelled(true);
 		}
 
@@ -531,9 +508,6 @@ public class BendingPlayerListener implements Listener {
 		}
 		if (Suffocate.isTargeted(event.getPlayer())) {
 			Suffocate.getSuffocateByTarget(event.getPlayer()).remove();
-		}
-		if (FireBlade.isFireBlading(event.getPlayer())) {
-			FireBlade.getFireBlading(event.getPlayer()).remove();
 		}
 
 		Bending.getInstance().getBendingDatabase().release(event.getPlayer().getUniqueId());
@@ -581,7 +555,7 @@ public class BendingPlayerListener implements Listener {
 		// Fireblade & Suffocate
 		List<ItemStack> toRemove = new LinkedList<ItemStack>();
 		for (ItemStack item : event.getDrops()) {
-			if (FireBlade.isFireBlade(item) || Suffocate.isTempHelmet(item)) {
+			if (Suffocate.isTempHelmet(item)) {
 				toRemove.add(item);
 			}
 		}

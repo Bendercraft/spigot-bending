@@ -93,7 +93,7 @@ public class Slice extends BendingActiveAbility {
 				remove();
 				return;
 			}
-			EntityTools.damageEntity(player, target, DAMAGE_BLEED);
+			EntityTools.damageEntity(bender, target, DAMAGE_BLEED);
 			ticks++;
 		}
 	}
@@ -118,6 +118,11 @@ public class Slice extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+	
+	@Override
+	public boolean canBeUsedWithTools() {
+		return true;
 	}
 
 }

@@ -1,10 +1,12 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import net.avatar.realms.spigot.bending.abilities.*;
+import net.avatar.realms.spigot.bending.abilities.arts.Mark;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +25,7 @@ public class TremorSense extends BendingActiveAbility {
     public static final String NAME = "TremorSense";
 
     private static final PotionEffect BLIND = new PotionEffect(PotionEffectType.BLINDNESS, 20, 0);
-    private static final PotionEffect GLOW = new PotionEffect(PotionEffectType.GLOWING, 10000*20/1000, 2);
+    private static final PotionEffect GLOW = new PotionEffect(PotionEffectType.GLOWING, 5*20, 2);
     private static final int[][] RELATIVES = {{1,0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
     @ConfigurationParameter("Base-Distance")
     private static int BASE_DISTANCE = 5;
@@ -37,8 +39,8 @@ public class TremorSense extends BendingActiveAbility {
     private int currentDistance;
 
     private long lastIncrementTime;
-    private boolean shouldBlind;
-    
+    private long lastBlindTime;
+
     private Map<Integer, LivingEntity> entities;
 
     public TremorSense(RegisteredAbility register, Player player) {
@@ -49,8 +51,7 @@ public class TremorSense extends BendingActiveAbility {
 	@Override
     public boolean sneak() {
         currentDistance = BASE_DISTANCE;
-        lastIncrementTime = startedTime;
-        shouldBlind = true;
+        lastBlindTime = lastIncrementTime = startedTime;
 
         setState(BendingAbilityState.PROGRESSING);
         return true;
@@ -67,6 +68,10 @@ public class TremorSense extends BendingActiveAbility {
         }
 
         if (bender.isOnCooldown(NAME)) {
+            return false;
+        }
+
+        if (!getState().equals(BendingAbilityState.PROGRESSING)) {
             return false;
         }
         return true;
@@ -89,15 +94,12 @@ public class TremorSense extends BendingActiveAbility {
 
     @Override
     public void progress() {
-        if (!getState().equals(BendingAbilityState.PROGRESSING)) {
-            return;
-        }
         if (!player.isSneaking()) {
             remove();
             return;
         }
         long now = System.currentTimeMillis();
-        if (now - lastIncrementTime >= 1000) {
+        if (now - lastIncrementTime >= 500) {
             if (currentDistance < MAX_DISTANCE) {
                 currentDistance += DISTANCE_INC;
                 if (currentDistance > MAX_DISTANCE) {
@@ -105,20 +107,27 @@ public class TremorSense extends BendingActiveAbility {
                 }
             }
             lastIncrementTime = now;
-            if (shouldBlind) {
-            	player.addPotionEffect(BLIND);
-                shouldBlind = false;
-            }
-            else {
-                shouldBlind = true;
-            }
         }
 
-        
+        if (now - lastBlindTime >= 2000) {
+            player.addPotionEffect(BLIND);
+            lastBlindTime = now;
+        }
+
+        Collection<LivingEntity> oldEntities = entities.values();
+        entities.clear();
         for (LivingEntity livingEntity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), currentDistance)) {
-            if (player.getEntityId() != livingEntity.getEntityId() && isOnEarth(livingEntity) && !entities.containsKey(livingEntity.getEntityId())) {
-                livingEntity.addPotionEffect(GLOW);
+            if (player.getEntityId() != livingEntity.getEntityId() && isOnEarth(livingEntity)) {
                 entities.put(livingEntity.getEntityId(), livingEntity);
+                livingEntity.addPotionEffect(GLOW);
+                player.sendMessage("Glow effect added");
+            }
+            oldEntities.remove(livingEntity);
+        }
+        for (LivingEntity oldEntity : oldEntities) {
+            if (!Mark.isMarked(oldEntity)) {
+                player.sendMessage("Glow effect removed");
+                oldEntity.removePotionEffect(PotionEffectType.GLOWING);
             }
         }
     }
@@ -152,5 +161,22 @@ public class TremorSense extends BendingActiveAbility {
 	public Map<Integer, LivingEntity> getEntities() {
 		return entities;
 	}
+
+    public static boolean isEntityTremorsensedByPlayer(LivingEntity target, Player player) {
+        return isEntityTremorsensedByPlayer(target.getEntityId(), player);
+    }
+
+    public static boolean isEntityTremorsensedByPlayer(int entityID, Player player) {
+        Map<Object, BendingAbility> tremorsenses = AbilityManager.getManager().getInstances(NAME);
+        if (tremorsenses == null || tremorsenses.isEmpty()) {
+            return false;
+        }
+        if (!tremorsenses.containsKey(player)) {
+            player.sendMessage("No tremorsense for you");
+            return false;
+        }
+        TremorSense sense = (TremorSense) tremorsenses.get(player);
+        return sense.entities.containsKey(entityID);
+    }
     
 }

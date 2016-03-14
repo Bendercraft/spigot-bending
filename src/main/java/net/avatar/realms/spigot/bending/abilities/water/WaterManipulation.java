@@ -348,7 +348,7 @@ public class WaterManipulation extends BendingActiveAbility {
 							this.damage = AvatarState.getValue(this.damage);
 						}
 
-						EntityTools.damageEntity(this.player, entity, PluginTools.waterbendingNightAugment(this.damage, this.player.getWorld()));
+						EntityTools.damageEntity(bender, entity, PluginTools.waterbendingNightAugment(this.damage, this.player.getWorld()));
 						this.progressing = false;
 					}
 				}
