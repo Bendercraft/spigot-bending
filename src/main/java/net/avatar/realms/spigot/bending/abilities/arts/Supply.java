@@ -42,7 +42,7 @@ public class Supply extends BendingActiveAbility {
 		ItemMeta metaBow = bow.getItemMeta();
 		metaBow.setLore(Arrays.asList("Bow"));
 		bow.setItemMeta(metaBow);
-		EntityTools.giveItemInHand(player, bow);
+		EntityTools.giveItemInMainHand(player, bow);
 		
 		ItemStack arrow = new ItemStack(Material.ARROW, 1);
 		ItemMeta metaArrow = bow.getItemMeta();

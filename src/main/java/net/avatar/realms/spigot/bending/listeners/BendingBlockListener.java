@@ -21,7 +21,6 @@ import net.avatar.realms.spigot.bending.abilities.air.AirBubble;
 import net.avatar.realms.spigot.bending.abilities.arts.C4;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
-import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.fire.Lightning;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
 import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
@@ -69,11 +68,6 @@ public class BendingBlockListener implements Listener {
 			if (!event.isCancelled()) {
 				event.setCancelled(!WaterManipulation.canFlowFromTo(fromblock, toblock));
 			}
-			if (!event.isCancelled()) {
-				if (Illumination.isIlluminated(toblock)) {
-					toblock.setType(Material.AIR);
-				}
-			}
 		}
 		if (BlockTools.isLava(fromblock) && TempBlock.isTempBlock(fromblock)) {
 			event.setCancelled(true);
@@ -86,7 +80,6 @@ public class BendingBlockListener implements Listener {
 		if (block.getType() == Material.FIRE) {
 			return;
 		}
-		event.setCancelled(Illumination.isIlluminated(block));
 		if (!event.isCancelled()) {
 			event.setCancelled(!WaterManipulation.canPhysicsChange(block));
 		}
@@ -108,9 +101,6 @@ public class BendingBlockListener implements Listener {
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
 		event.setCancelled(!WaterManipulation.canPhysicsChange(block));
-		if (!event.isCancelled()) {
-			event.setCancelled(Illumination.isIlluminated(block));
-		}
 		if (!event.isCancelled()) {
 			event.setCancelled(BlockTools.isTempNoPhysics(block));
 		}
@@ -142,8 +132,6 @@ public class BendingBlockListener implements Listener {
 			event.setCancelled(true);
 		} else if (WaterWall.isWaterWallPart(block)) {
 			WaterWall.thaw(block);
-			event.setCancelled(true);
-		} else if (Illumination.isIlluminated(block)) {
 			event.setCancelled(true);
 		} else if (!Wave.canThaw(block)) {
 			Wave.thaw(block);

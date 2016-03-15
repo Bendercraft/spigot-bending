@@ -344,7 +344,19 @@ public class EntityTools {
 		DamageTools.damageEntity(attacker, damagee, damage);
 	}
 	
-	public static void giveItemInHand(Player player, ItemStack itemstack) {
+	public static void giveItemInOffHand(Player player, ItemStack itemstack) {
+		ItemStack offhand = player.getInventory().getItemInOffHand();
+		if (offhand != null) {
+			int i = player.getInventory().firstEmpty();
+			if (i != -1) {
+				// Inventory full ? Player will loose current held item !
+				player.getInventory().setItem(i, offhand);
+			}
+		}
+		player.getInventory().setItemInOffHand(itemstack);
+	}
+	
+	public static void giveItemInMainHand(Player player, ItemStack itemstack) {
 		int slot = player.getInventory().getHeldItemSlot();
 		ItemStack hand = player.getInventory().getItem(slot);
 		if (hand != null) {
