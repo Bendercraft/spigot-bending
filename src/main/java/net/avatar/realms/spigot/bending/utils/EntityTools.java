@@ -319,7 +319,11 @@ public class EntityTools {
 			if (avoid.contains(entity)) {
 				continue;
 			}
-			if ((entity.getLocation().distance(origin) < longestRange) && (Tools.getDistanceFromLine(direction, origin, entity.getLocation()) < 2) && (entity.getEntityId() != player.getEntityId()) && (entity.getLocation().distance(origin.clone().add(direction)) < entity.getLocation().distance(origin.clone().add(direction.clone().multiply(-1))))) {
+			if (entity.getLocation().getWorld() == origin.getWorld()
+					&& entity.getLocation().distance(origin) < longestRange
+					&& Tools.getDistanceFromLine(direction, origin, entity.getLocation()) < 2
+					&& entity.getEntityId() != player.getEntityId()
+					&& entity.getLocation().distance(origin.clone().add(direction)) < entity.getLocation().distance(origin.clone().add(direction.clone().multiply(-1)))) {
 				target = entity;
 				longestRange = entity.getLocation().distance(origin);
 			}
