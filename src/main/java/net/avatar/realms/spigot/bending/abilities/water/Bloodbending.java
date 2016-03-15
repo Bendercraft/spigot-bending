@@ -98,7 +98,6 @@ public class Bloodbending extends BendingActiveAbility {
 		}
 		this.time = System.currentTimeMillis();
 		setState(BendingAbilityState.PROGRESSING);
-		BendingPlayer.getBendingPlayer(this.player).cooldown(this, COOLDOWN);
 		return false;
 	}
 
@@ -265,6 +264,6 @@ public class Bloodbending extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		
+		bender.cooldown(this, COOLDOWN);
 	}
 }
