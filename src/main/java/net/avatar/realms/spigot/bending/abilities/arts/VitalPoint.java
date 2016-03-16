@@ -75,7 +75,7 @@ public class VitalPoint extends BendingActiveAbility {
 			this.cooldown = 1000;
 			if (this.player.isSneaking()) {
 				this.damage += DAMAGE_INCREMENT;
-				this.target.damage(this.damage, this.player);
+				EntityTools.damageEntity(bender, target, damage);
 				if (this.target instanceof Player) {
 					EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
 				}
@@ -83,7 +83,7 @@ public class VitalPoint extends BendingActiveAbility {
 				this.cooldown += COOLDOWN / (6);
 			}
 			else {
-				this.target.damage(this.damage, this.player);
+				EntityTools.damageEntity(bender, target, damage);
 				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
 			}
 			this.bender.cooldown(NAME, this.cooldown);

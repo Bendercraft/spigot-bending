@@ -131,7 +131,7 @@ public class Suffocate extends BendingActiveAbility {
 			}
 
 			this.target.getWorld().playEffect(this.target.getEyeLocation(), Effect.SMOKE, 4);
-			this.target.damage(baseDamage + addtionnalDamage, this.player);
+			EntityTools.damageEntity(bender, target, baseDamage + addtionnalDamage);
 
 			this.targetLocation = this.target.getLocation().getBlock();
 		}
