@@ -43,7 +43,7 @@ public class DaggerFall extends BendingActiveAbility {
 		meta.setLore(Arrays.asList("Dagger"));
 		dagger.setItemMeta(meta);
 		
-		EntityTools.giveItemInHand(player, dagger);
+		EntityTools.giveItemInMainHand(player, dagger);
 		bender.cooldown(this, COOLDOWN);
 		return false;
 	}

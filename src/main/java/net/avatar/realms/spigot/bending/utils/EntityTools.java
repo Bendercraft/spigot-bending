@@ -1,31 +1,22 @@
 package net.avatar.realms.spigot.bending.utils;
 
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
-
-import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
@@ -35,11 +26,8 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthGrab;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.water.Bloodbending;
-import net.avatar.realms.spigot.bending.event.BendingDamageEvent;
 
 public class EntityTools {
-	private static final Function<? super Double, Double> ZERO = Functions.constant(-0.0);
-
 	private static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
 	private static Map<Player, Long> grabedPlayers = new HashMap<Player, Long>();
 	private static List<UUID> toggledBending = new LinkedList<UUID>();
@@ -319,7 +307,11 @@ public class EntityTools {
 			if (avoid.contains(entity)) {
 				continue;
 			}
-			if ((entity.getLocation().distance(origin) < longestRange) && (Tools.getDistanceFromLine(direction, origin, entity.getLocation()) < 2) && (entity.getEntityId() != player.getEntityId()) && (entity.getLocation().distance(origin.clone().add(direction)) < entity.getLocation().distance(origin.clone().add(direction.clone().multiply(-1))))) {
+			if (entity.getLocation().getWorld() == origin.getWorld()
+					&& entity.getLocation().distance(origin) < longestRange
+					&& Tools.getDistanceFromLine(direction, origin, entity.getLocation()) < 2
+					&& entity.getEntityId() != player.getEntityId()
+					&& entity.getLocation().distance(origin.clone().add(direction)) < entity.getLocation().distance(origin.clone().add(direction.clone().multiply(-1)))) {
 				target = entity;
 				longestRange = entity.getLocation().distance(origin);
 			}
@@ -347,52 +339,24 @@ public class EntityTools {
 		return result;
 	}
 
-	public static void damageEntity(BendingPlayer attacker, Entity damagee, double damage) {
-		if (ProtectionManager.isEntityProtected(damagee)) {
-			return;
-		}
-		if (damagee instanceof LivingEntity) {
-			LivingEntity living = (LivingEntity) damagee;
-			if (AvatarState.isAvatarState(attacker.getPlayer())) {
-				damage = AvatarState.getValue(damage);
-			}
 
-			//((LivingEntity) entity).damage(damage, player); // This is garbish - spigot do not let us decide damage in the end
-			Map<DamageModifier, Double> modifiers = new EnumMap<DamageModifier, Double>(DamageModifier.class);
-	        Map<DamageModifier, Function<? super Double, Double>> modifierFunctions = new EnumMap<DamageModifier, Function<? super Double, Double>>(DamageModifier.class);
-	        
-	        modifiers.put(DamageModifier.BASE, damage);
-	        modifierFunctions.put(DamageModifier.BASE, ZERO);
-			
-			BendingDamageEvent event = new BendingDamageEvent(attacker, damagee, modifiers, modifierFunctions);
-			Bending.callEvent(event);
-			
-			
-			CraftLivingEntity t = (CraftLivingEntity) damagee;
-			if(!event.isCancelled() && !living.isDead() && t.getHandle().noDamageTicks == 0) {
-				living.setLastDamageCause(event);
-				
-				// Make sure we do not set negative health or too much
-				double health = living.getHealth() - event.getDamage();
-				if(health < 0) {
-					health = 0;
-				}
-				if(health > living.getMaxHealth()) {
-					health = living.getMaxHealth();
-				}
-				living.setHealth(health);
-				
-				// See EntityLiving#damageEntity from NMS to get effect ID and standard hurt ticks
-				t.getHandle().lastDamage = (float) event.getDamage();
-				t.getHandle().lastDamager = ((CraftPlayer)(attacker.getPlayer())).getHandle();
-				t.getHandle().hurtTicks = t.getHandle().ay = 10;
-				t.getHandle().noDamageTicks = t.getHandle().maxNoDamageTicks;
-				t.getHandle().world.broadcastEntityEffect(t.getHandle(), (byte)33);
-			}
-		}
+	public static void damageEntity(BendingPlayer attacker, Entity damagee, double damage) {
+		DamageTools.damageEntity(attacker, damagee, damage);
 	}
 	
-	public static void giveItemInHand(Player player, ItemStack itemstack) {
+	public static void giveItemInOffHand(Player player, ItemStack itemstack) {
+		ItemStack offhand = player.getInventory().getItemInOffHand();
+		if (offhand != null) {
+			int i = player.getInventory().firstEmpty();
+			if (i != -1) {
+				// Inventory full ? Player will loose current held item !
+				player.getInventory().setItem(i, offhand);
+			}
+		}
+		player.getInventory().setItemInOffHand(itemstack);
+	}
+	
+	public static void giveItemInMainHand(Player player, ItemStack itemstack) {
 		int slot = player.getInventory().getHeldItemSlot();
 		ItemStack hand = player.getInventory().getItem(slot);
 		if (hand != null) {

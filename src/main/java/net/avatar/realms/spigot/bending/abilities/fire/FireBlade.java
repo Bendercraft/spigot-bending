@@ -55,7 +55,7 @@ public class FireBlade extends BendingActiveAbility {
 			ItemMeta meta = blade.getItemMeta();
 			meta.setLore(Arrays.asList(LORE_NAME));
 			blade.setItemMeta(meta);
-			EntityTools.giveItemInHand(player, blade);
+			EntityTools.giveItemInMainHand(player, blade);
 			
 			setState(BendingAbilityState.PROGRESSING);
 		}

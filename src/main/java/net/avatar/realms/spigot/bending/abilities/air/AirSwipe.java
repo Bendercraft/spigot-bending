@@ -26,7 +26,6 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
-import net.avatar.realms.spigot.bending.abilities.fire.Illumination;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -322,7 +321,7 @@ public class AirSwipe extends BendingActiveAbility {
 	}
 
 	private boolean isBlockBreakable(Block block) {
-		if (breakables.contains(block.getType()) && !Illumination.isIlluminated(block)) {
+		if (breakables.contains(block.getType())) {
 			return true;
 		}
 		return false;
