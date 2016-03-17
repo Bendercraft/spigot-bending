@@ -54,11 +54,6 @@ public abstract class Bubble extends BendingActiveAbility {
 	}
 
 	@Override
-	public boolean canBeUsedWithTools() {
-		return true;
-	}
-
-	@Override
 	public boolean swing() {
 		if (getState().equals(BendingAbilityState.START)) {
 			setState(BendingAbilityState.PROGRESSING);

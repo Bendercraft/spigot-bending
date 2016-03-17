@@ -15,7 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = EarthTunnel.NAME, element = BendingElement.EARTH)
+@ABendingAbility(name = EarthTunnel.NAME, element = BendingElement.EARTH, canBeUsedWithTools = true)
 public class EarthTunnel extends BendingActiveAbility {
 	public final static String NAME = "EarthTunnel";
 	

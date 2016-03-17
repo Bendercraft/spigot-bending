@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 /**
  * Created by Nokorbis on 02/03/2016.
  */
-@ABendingAbility(name = TremorSense.NAME, element = BendingElement.EARTH, shift = true)
+@ABendingAbility(name = TremorSense.NAME, element = BendingElement.EARTH, shift = true, canBeUsedWithTools = true)
 public class TremorSense extends BendingActiveAbility {
 
     public static final String NAME = "TremorSense";
@@ -80,11 +80,6 @@ public class TremorSense extends BendingActiveAbility {
     @Override
     protected long getMaxMillis() {
         return 1000 * 60 * 5; // 5 minutes
-    }
-
-    @Override
-    public boolean canBeUsedWithTools() {
-        return true;
     }
 
     @Override

@@ -30,7 +30,7 @@ import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.Tools;
 
-@ABendingAbility(name = Lightning.NAME, affinity = BendingAffinity.LIGHTNING)
+@ABendingAbility(name = Lightning.NAME, affinity = BendingAffinity.LIGHTNING, canBeUsedWithTools = true)
 public class Lightning extends BendingActiveAbility {
 	public final static String NAME = "Lightning";
 	

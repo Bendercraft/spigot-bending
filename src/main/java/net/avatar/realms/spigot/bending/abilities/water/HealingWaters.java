@@ -24,7 +24,7 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = HealingWaters.NAME, element = BendingElement.WATER)
+@ABendingAbility(name = HealingWaters.NAME, element = BendingElement.WATER, canBeUsedWithTools = true)
 public class HealingWaters extends BendingActiveAbility {
 	public final static String NAME = "HealingWaters";
 
