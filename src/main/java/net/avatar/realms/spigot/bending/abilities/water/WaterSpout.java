@@ -142,6 +142,7 @@ public class WaterSpout extends BendingActiveAbility {
 		if (loc.getBlock().getType() != Material.AIR && !BlockTools.isWaterBased(loc.getBlock())) {
 			return -1;
 		}
+		loc = loc.add(0, 1, 0);
 		int height = HEIGHT;
 		if (Tools.isNight(loc.getWorld())) {
 			height = (int) (Settings.NIGHT_FACTOR * HEIGHT) + 1;
