@@ -25,7 +25,7 @@ import net.avatar.realms.spigot.bending.controller.FlyingPlayer;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
-@ABendingAbility(name = Tornado.NAME, affinity = BendingAffinity.TORNADO)
+@ABendingAbility(name = Tornado.NAME, affinity = BendingAffinity.TORNADO, canBeUsedWithTools = true)
 public class Tornado extends BendingActiveAbility {
 	public final static String NAME = "Tornado";
 	

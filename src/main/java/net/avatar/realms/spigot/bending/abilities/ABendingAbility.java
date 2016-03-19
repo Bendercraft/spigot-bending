@@ -17,4 +17,6 @@ public @interface ABendingAbility {
 	public boolean shift() default true;
 
 	public boolean passive() default false;
+
+	public boolean canBeUsedWithTools() default false;
 }

@@ -33,7 +33,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@ABendingAbility(name = Combustion.NAME, affinity = BendingAffinity.COMBUSTION)
+@ABendingAbility(name = Combustion.NAME, affinity = BendingAffinity.COMBUSTION, canBeUsedWithTools = true)
 public class Combustion extends BendingActiveAbility {
 	public final static String NAME = "Combustion";
 	

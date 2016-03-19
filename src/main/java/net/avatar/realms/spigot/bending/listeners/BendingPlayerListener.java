@@ -234,15 +234,17 @@ public class BendingPlayerListener implements Listener {
 		}
 
 		String ability = EntityTools.getBendingAbility(player);
-		if (ability == null) {
+		RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(ability);
+		if (registered == null) {
 			return;
 		}
 
-		if (EntityTools.canBend(player, ability)) {
+		if (EntityTools.canBend(player, ability) &&
+				(registered.canBeUsedWithTools() ||!EntityTools.isTool(player.getInventory().getItemInMainHand().getType()))) {
 			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			boolean shouldCreateNew = true;
 			for (BendingAbility a : abilities.values()) {
-				if (playerCanSwingAbility(player, a) && !((BendingActiveAbility) a).swing()) {
+				if (player.equals(a.getPlayer()) && !((BendingActiveAbility) a).swing()) {
 					shouldCreateNew = false;
 				}
 			}
@@ -252,7 +254,7 @@ public class BendingPlayerListener implements Listener {
 					Bending.getInstance().getLogger().log(Level.SEVERE, "Ability " + ability + " failed to construct with buildAbility for player " + player.getName());
 					return;
 				}
-				if(ab.canBeInitialized() && playerCanSwingAbility(player, ab)) {
+				if(ab.canBeInitialized()) {
 					ab.swing();
 					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
@@ -262,10 +264,6 @@ public class BendingPlayerListener implements Listener {
 		}
 	}
 
-	private boolean playerCanSwingAbility(Player player, BendingAbility ability) {
-		return (ability.getPlayer().equals(player) &&
-				(ability.canBeUsedWithTools() || !EntityTools.isTool(player.getInventory().getItemInMainHand().getType())));
-	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSneak(PlayerToggleSneakEvent event) {

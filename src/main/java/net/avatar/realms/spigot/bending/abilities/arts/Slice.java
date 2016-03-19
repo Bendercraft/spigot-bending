@@ -16,7 +16,7 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
-@ABendingAbility(name = Slice.NAME, affinity = BendingAffinity.SWORD)
+@ABendingAbility(name = Slice.NAME, affinity = BendingAffinity.SWORD, canBeUsedWithTools = true)
 public class Slice extends BendingActiveAbility {
 	public final static String NAME = "Slice";
 	
@@ -118,11 +118,6 @@ public class Slice extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
-	}
-	
-	@Override
-	public boolean canBeUsedWithTools() {
-		return true;
 	}
 
 }

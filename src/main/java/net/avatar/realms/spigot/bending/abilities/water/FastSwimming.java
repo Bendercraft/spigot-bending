@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
 
-@ABendingAbility(name = FastSwimming.NAME, element = BendingElement.WATER, passive = true)
+@ABendingAbility(name = FastSwimming.NAME, element = BendingElement.WATER, passive = true, canBeUsedWithTools = true)
 public class FastSwimming extends BendingPassiveAbility {
 	public final static String NAME = "Dolphin";
 

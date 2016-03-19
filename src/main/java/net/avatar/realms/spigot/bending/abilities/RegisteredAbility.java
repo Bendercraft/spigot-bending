@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities;
 import java.lang.reflect.Constructor;
 
 public class RegisteredAbility {
+
 	private final Class<? extends BendingAbility> ability;
 	private final String name;
 	private final BendingElement element;
@@ -10,12 +11,13 @@ public class RegisteredAbility {
 	private final Constructor<? extends BendingAbility> constructor;
 	private final boolean shift;
 	private final boolean passive;
+	private final boolean useWithTools;
 
-	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, boolean shift, boolean passive, Constructor<? extends BendingAbility> constructor) {
-		this(name, ability, element, null, shift, passive,  constructor);
+	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, boolean shift, boolean passive, boolean tools, Constructor<? extends BendingAbility> constructor) {
+		this(name, ability, element, null, shift, passive, tools,  constructor);
 	}
 
-	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity affinity, boolean shift, boolean passive, Constructor<? extends BendingAbility> constructor) {
+	public RegisteredAbility(String name, Class<? extends BendingAbility> ability, BendingElement element, BendingAffinity affinity, boolean shift, boolean passive, boolean tools, Constructor<? extends BendingAbility> constructor) {
 		this.name = name;
 		this.ability = ability;
 		this.element = element;
@@ -23,6 +25,7 @@ public class RegisteredAbility {
 		this.constructor = constructor;
 		this.shift = shift;
 		this.passive = passive;
+		this.useWithTools = tools;
 	}
 
 	public Class<? extends BendingAbility> getAbility() {
@@ -59,5 +62,9 @@ public class RegisteredAbility {
 
 	public boolean isPassive() {
 		return passive;
+	}
+
+	public boolean canBeUsedWithTools() {
+		return useWithTools;
 	}
 }

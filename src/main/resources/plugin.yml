@@ -136,6 +136,15 @@ permissions:
       bending.command.cooldown: true
       bending.command.deck: true
 
+  bending.canequip.*:
+    description: Allow user to equip stuff that have been denied for players
+    default: false
+    children:
+      bending.canequip.elytra: true
+  bending.canequip.elytra:
+    description: Allow user to equip elytra
+    default: false
+
 # AIRBENDING PERMISSIONS
   bending.air:
     description: Allows being an Airbender.

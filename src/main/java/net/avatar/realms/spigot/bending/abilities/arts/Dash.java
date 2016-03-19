@@ -14,7 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 
-@ABendingAbility(name = Dash.NAME, element = BendingElement.MASTER, shift=false)
+@ABendingAbility(name = Dash.NAME, element = BendingElement.MASTER, shift = false, canBeUsedWithTools = true)
 public class Dash extends BendingActiveAbility {
 	public final static String NAME = "Dash";
 	
@@ -90,11 +90,6 @@ public class Dash extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
-	}
-	
-	@Override
-	public boolean canBeUsedWithTools() {
-		return true;
 	}
 
 }

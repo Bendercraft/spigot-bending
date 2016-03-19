@@ -138,11 +138,6 @@ public abstract class BendingAbility {
 
 	public abstract void stop();
 
-	public boolean canBeUsedWithTools() {
-		return false;
-	}
-	
-
 	public final Player getPlayer() {
 		return this.player;
 	}
