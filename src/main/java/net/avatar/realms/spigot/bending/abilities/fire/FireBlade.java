@@ -53,6 +53,7 @@ public class FireBlade extends BendingActiveAbility {
 		if(getState() == BendingAbilityState.START) {
 			blade = new ItemStack(Material.GOLD_SWORD);
 			ItemMeta meta = blade.getItemMeta();
+			meta.setDisplayName("§cFireBlade");
 			meta.setLore(Arrays.asList(LORE_NAME));
 			blade.setItemMeta(meta);
 			EntityTools.giveItemInMainHand(player, blade);

@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -31,7 +32,7 @@ public class BendingManager implements Runnable {
 	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
 	private Map<World, Boolean> days = new HashMap<World, Boolean>();
 	private long timestep = 1; // in ms
-	
+
 	private List<Queue> revertQueue = new LinkedList<Queue>();
 
 	public BendingManager(Bending bending) {
@@ -41,6 +42,9 @@ public class BendingManager implements Runnable {
 
 	@Override
 	public void run() {
+		//Nerf the regen heal
+		nerfRegen();
+
 		try {
 			long now = System.currentTimeMillis();
 			timestep = now - this.time;
@@ -48,40 +52,40 @@ public class BendingManager implements Runnable {
 
 			AbilityManager.getManager().progressAllAbilities();
 			FlyingPlayer.handleAll();
-			
+
 			manageFirebending();
 
 			manageGlobalTempBlock();
 			handleDayNight();
-			
-			if(Settings.USE_SCOREBOARD) {
+
+			if (Settings.USE_SCOREBOARD) {
 				//One scoreboard per player
 				//One team per scoreboard (team name = player name)
 				//Team's entries = ability's name (case sensitive) (not player !)
 				//Entry's score = cooldown left
-				for(Player player : plugin.getServer().getOnlinePlayers()) {
+				for (Player player : plugin.getServer().getOnlinePlayers()) {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-					if(bender != null && bender.isUsingScoreboard()) {
+					if (bender != null && bender.isUsingScoreboard()) {
 						Team team = player.getScoreboard().getTeam(player.getName());
 						Objective objective = player.getScoreboard().getObjective("cooldowns");
-						
+
 						Map<String, BendingAbilityCooldown> cooldowns = bender.getCooldowns();
-						for(Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
-							if(!team.hasEntry(entry.getKey())) {
+						for (Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
+							if (!team.hasEntry(entry.getKey())) {
 								team.addEntry(entry.getKey());
 							}
-							
+
 							Score score = objective.getScore(entry.getKey());
-						    score.setScore((int) (entry.getValue().timeLeft(now)/1000));
+							score.setScore((int) (entry.getValue().timeLeft(now) / 1000));
 						}
-						
+
 						List<String> toRemove = new LinkedList<String>();
-						for(String entry : team.getEntries()) {
-							if(!cooldowns.containsKey(entry)) {
+						for (String entry : team.getEntries()) {
+							if (!cooldowns.containsKey(entry)) {
 								toRemove.add(entry);
 							}
 						}
-						for(String entry : toRemove) {
+						for (String entry : toRemove) {
 							player.getScoreboard().resetScores(entry);
 						}
 					}
@@ -102,9 +106,9 @@ public class BendingManager implements Runnable {
 	private void manageGlobalTempBlock() {
 		long now = System.currentTimeMillis();
 		List<Queue> toRemove = new LinkedList<Queue>();
-		for(Queue queue : revertQueue) {
-			if(queue.started+queue.life < now) {
-				for(TempBlock block : queue.blocks) {
+		for (Queue queue : revertQueue) {
+			if (queue.started + queue.life < now) {
+				for (TempBlock block : queue.blocks) {
 					block.revertBlock();
 				}
 				toRemove.add(queue);
@@ -186,24 +190,73 @@ public class BendingManager implements Runnable {
 			this.worlds.remove(world);
 		}
 	}
-	
+
 	public void addGlobalTempBlock(long life, TempBlock... blocks) {
 		List<TempBlock> temp = new LinkedList<TempBlock>();
 		Collections.addAll(temp, blocks);
 		addGlobalTempBlock(life, temp);
 	}
-	
+
 	public void addGlobalTempBlock(long life, List<TempBlock> blocks) {
 		Queue queue = new Queue();
 		queue.started = System.currentTimeMillis();
 		queue.life = life;
 		queue.blocks = blocks;
-		
+
 		revertQueue.add(queue);
 	}
 
 	public long getTimestep() {
 		return timestep;
+	}
+
+	public static Map<UUID, Integer> nerfRegen = new HashMap<>();
+
+	public void nerfRegen() {
+		for (World w : Bukkit.getWorlds()) {
+			for (Player player : w.getPlayers()) {
+				if (player.isOnline() && !player.isDead() && player.getHealth() < player.getMaxHealth()) {
+					if (player.getFoodLevel() >= 18 && !(player.getHealth() == player.getMaxHealth())) {
+						int regenTime = getTimeToNerfRegen(player.getUniqueId());
+						if (regenTime >= 4 * 20) {
+							setTimeToNerfRegen(player.getUniqueId(), 0);
+							player.setHealth(getValidHealth(player.getHealth() + 1, player));
+						} else {
+							addTimeToNerfRegen(player.getUniqueId(), 1);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static int getTimeToNerfRegen(UUID id) {
+		if (nerfRegen.containsKey(id))
+			return nerfRegen.get(id);
+		return 0;
+	}
+
+	public static void addTimeToNerfRegen(UUID id, int time) {
+		if (nerfRegen.containsKey(id)) {
+			time = time + nerfRegen.get(id);
+			nerfRegen.remove(id);
+		}
+
+		nerfRegen.put(id, time);
+	}
+
+	public static void setTimeToNerfRegen(UUID id, int time) {
+		if (nerfRegen.containsKey(id)) {
+			nerfRegen.remove(id);
+		}
+
+		nerfRegen.put(id, time);
+	}
+
+	public static double getValidHealth(double health, Player player){
+		if (health > player.getMaxHealth())
+			return player.getMaxHealth();
+		return health;
 	}
 
 	private class Queue {

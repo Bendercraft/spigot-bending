@@ -40,6 +40,7 @@ public class Supply extends BendingActiveAbility {
 		ItemStack bow = new ItemStack(Material.BOW, 1);
 		bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
 		ItemMeta metaBow = bow.getItemMeta();
+		metaBow.setDisplayName("§5Infinity Bow");
 		metaBow.setLore(Arrays.asList("Bow"));
 		bow.setItemMeta(metaBow);
 		EntityTools.giveItemInMainHand(player, bow);
