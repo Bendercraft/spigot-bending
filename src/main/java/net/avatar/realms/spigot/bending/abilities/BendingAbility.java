@@ -150,6 +150,10 @@ public abstract class BendingAbility {
 		return state;
 	}
 	
+	public boolean isState(BendingAbilityState test) {
+		return state != null && state.equals(test);
+	}
+	
 	public String getName() {
 		return register.getName();
 	}
