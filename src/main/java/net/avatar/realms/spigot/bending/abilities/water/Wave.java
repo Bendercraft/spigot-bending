@@ -104,7 +104,7 @@ public class Wave {
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
 				//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
+				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
 				this.sourceblock = block;
 				focusBlock();
 				// Range and max radius is halfed for Drainbending
@@ -119,7 +119,7 @@ public class Wave {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 			//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-			this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER);
+			this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
 			this.sourceblock = block;
 			focusBlock();
 			WaterReturn.emptyWaterBottle(player);
@@ -368,7 +368,7 @@ public class Wave {
 		}
 		if (!TempBlock.isTempBlock(block)) {
 			//new TempBlock(block, Material.WATER, full);
-			TempBlock.makeTemporary(block, Material.WATER);
+			TempBlock.makeTemporary(block, Material.WATER, false);
 			// new TempBlock(block, Material.ICE, (byte) 0);
 			this.wave.put(block, block);
 		}
@@ -411,7 +411,7 @@ public class Wave {
 			}
 			if ((block.getType() == Material.AIR) || (block.getType() == Material.SNOW)) {
 				//new TempBlock(block, Material.ICE, (byte) 0);
-				TempBlock.makeTemporary(block, Material.ICE);
+				TempBlock.makeTemporary(block, Material.ICE, true);
 				this.frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
@@ -420,7 +420,7 @@ public class Wave {
 			if (BlockTools.isPlant(block) && (block.getType() != Material.LEAVES)) {
 				block.breakNaturally();
 				//new TempBlock(block, Material.ICE, (byte) 0);
-				TempBlock.makeTemporary(block, Material.ICE);
+				TempBlock.makeTemporary(block, Material.ICE, true);
 				this.frozenblocks.put(block, block);
 			}
 		}

@@ -84,7 +84,7 @@ public class SpikeFieldColumn {
 					}
 				}
 				//affectedblocks.add(new TempBlock(affectedblock, Material.ICE, (byte) 0x0));
-				affectedblocks.add(TempBlock.makeTemporary(affectedblock, Material.ICE));
+				affectedblocks.add(TempBlock.makeTemporary(affectedblock, Material.ICE, true));
 
 				return true;
 			}

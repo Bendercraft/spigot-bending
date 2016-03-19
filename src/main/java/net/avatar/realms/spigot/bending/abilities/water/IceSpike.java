@@ -148,7 +148,7 @@ public class IceSpike extends BendingActiveAbility {
 		}
 
 		//this.source = new TempBlock(this.sourceblock, Material.ICE, (byte) 0x0);
-		this.source = TempBlock.makeTemporary(sourceblock, Material.ICE);
+		this.source = TempBlock.makeTemporary(sourceblock, Material.ICE, true);
 	}
 
 	@Override
@@ -247,7 +247,7 @@ public class IceSpike extends BendingActiveAbility {
 
 			this.sourceblock = block;
 			//this.source = new TempBlock(this.sourceblock, Material.ICE, (byte) 0x0);
-			this.source = TempBlock.makeTemporary(sourceblock, Material.ICE);
+			this.source = TempBlock.makeTemporary(sourceblock, Material.ICE, true);
 
 		} else if (this.prepared) {
 			Tools.playFocusWaterEffect(this.sourceblock);

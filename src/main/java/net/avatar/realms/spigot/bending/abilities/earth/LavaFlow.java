@@ -127,7 +127,7 @@ public class LavaFlow extends BendingActiveAbility {
 					if(loc.getBlock().getType() == Material.AIR) {
 						futurStreams.add(loc);
 						//blocks.add(new TempBlock(loc.getBlock(), Material.LAVA));
-						blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.LAVA));
+						blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.LAVA, false));
 					}
 				}
 				player.getWorld().playEffect(player.getLocation(), Effect.EXTINGUISH, 2);
@@ -153,7 +153,7 @@ public class LavaFlow extends BendingActiveAbility {
 					if(loc.getBlock().getType() == Material.AIR || (TempBlock.isTempBlock(loc.getBlock()) && blocks.contains(TempBlock.get(loc.getBlock())))) {
 						futurStreams.add(loc);
 						//blocks.add(new TempBlock(loc.getBlock(), Material.LAVA));
-						blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.LAVA));
+						blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.LAVA, false));
 					}
 				}
 				streams = futurStreams;

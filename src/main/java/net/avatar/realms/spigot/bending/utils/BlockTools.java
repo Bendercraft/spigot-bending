@@ -546,19 +546,19 @@ public class BlockTools {
 		TempBlock tempTarget = null;
 		if (target.getType() == Material.SAND) {
 			//tempTarget = new TempBlock(target, Material.SANDSTONE, source.getData());
-			tempTarget = TempBlock.makeTemporary(target, Material.SANDSTONE, source.getData());
+			tempTarget = TempBlock.makeTemporary(target, Material.SANDSTONE, source.getData(), true);
 		} else {
 			//tempTarget = new TempBlock(target, source.getType(), source.getData());
-			tempTarget = TempBlock.makeTemporary(target, source.getType(), source.getData());
+			tempTarget = TempBlock.makeTemporary(target, source.getType(), source.getData(), true);
 		}
 		
 		TempBlock tempSource = null;
 		if (adjacentToThreeOrMoreSources(source)) {
 			//tempSource = new TempBlock(source, Material.WATER, (byte) 0x0);
-			tempSource = TempBlock.makeTemporary(source, Material.WATER);
+			tempSource = TempBlock.makeTemporary(source, Material.WATER, false);
 		} else {
 			//tempSource = new TempBlock(source, Material.AIR, (byte) 0x0);
-			tempSource = TempBlock.makeTemporary(source, Material.AIR);
+			tempSource = TempBlock.makeTemporary(source, Material.AIR, false);
 		}
 		
 		Bending.getInstance().getManager().addGlobalTempBlock(Settings.REVERSE_TIME, tempSource, tempTarget);
@@ -604,7 +604,7 @@ public class BlockTools {
 
 	public static void addTempAirBlock(Block block) {
 		//Bending.getInstance().getManager().addGlobalTempBlock(Settings.REVERSE_TIME, new TempBlock(block, Material.AIR, (byte) 0x0));
-		Bending.getInstance().getManager().addGlobalTempBlock(Settings.REVERSE_TIME, TempBlock.makeTemporary(block, Material.AIR));
+		Bending.getInstance().getManager().addGlobalTempBlock(Settings.REVERSE_TIME, TempBlock.makeTemporary(block, Material.AIR, true));
 	}
 	
 	public static void breakBlock(Block block) {

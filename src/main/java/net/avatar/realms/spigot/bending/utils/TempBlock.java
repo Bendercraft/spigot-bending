@@ -17,13 +17,14 @@ public class TempBlock {
 	private Block block;
 	private byte newData;
 	private BlockState state;
+	private boolean bendAllowed;
 
-	public static TempBlock makeTemporary(Block block, Material newType) {
-		return makeTemporary(block, newType, (byte) 0x0);
+	public static TempBlock makeTemporary(Block block, Material newType, boolean bendAllowed) {
+		return makeTemporary(block, newType, (byte) 0x0, bendAllowed);
 	}
 
 	@SuppressWarnings("deprecation")
-	public static TempBlock makeTemporary(Block block, Material newType, byte newData) {
+	public static TempBlock makeTemporary(Block block, Material newType, byte newData, boolean bendAllowed) {
 		TempBlock temp = null;
 		if (instances.containsKey(block)) {
 			temp = instances.get(block);
@@ -32,6 +33,7 @@ public class TempBlock {
 			temp = new TempBlock(block);
 			instances.put(block, temp);
 		}
+		temp.bendAllowed = bendAllowed;
 		temp.newData = newData;
 		temp.block.setType(newType);
 		temp.block.setData(newData);
@@ -45,38 +47,6 @@ public class TempBlock {
 		this.block = block;
 		this.state = block.getState();
 	}
-
-	/*public TempBlock(Block block, Material newType) {
-		this(block, newType, (byte) 0x0);
-	}
-
-	@SuppressWarnings("deprecation")
-	public TempBlock(Block block, Material newType, byte newData) {
-		this.block = block;
-		this.newData = newData;
-		this.newType = newType;
-		if (instances.containsKey(block)) {
-			TempBlock temp = instances.get(block);
-			if (newType != temp.newType) {
-				temp.block.setType(newType);
-				temp.newType = newType;
-			}
-			if (newData != temp.newData) {
-				temp.block.setData(newData);
-				temp.newData = newData;
-			}
-			this.state = temp.state;
-			instances.put(block, temp);
-		} else {
-			this.state = block.getState();
-			block.setType(newType);
-			block.setData(newData);
-			instances.put(block, this);
-		}
-		if (this.state.getType() == Material.FIRE) {
-			this.state.setType(Material.AIR);
-		}
-	}*/
 
 	public void revertBlock() {
 		this.state.update(true);
@@ -136,6 +106,14 @@ public class TempBlock {
 		this.newData = data;
 		this.block.setType(material);
 		this.block.setData(data);
+	}
+
+	public boolean isBendAllowed() {
+		return bendAllowed;
+	}
+
+	public void setBendAllowed(boolean bendAllowed) {
+		this.bendAllowed = bendAllowed;
 	}
 
 }

@@ -183,7 +183,7 @@ public class EarthGrab extends BendingActiveAbility {
 						Material t = loc.getBlock().getType();
 						for (int i = 0; i < h; i++) {
 							//this.affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
-							this.affectedBlocks.add(TempBlock.makeTemporary(loc.add(0, 1, 0).getBlock(), t));
+							this.affectedBlocks.add(TempBlock.makeTemporary(loc.add(0, 1, 0).getBlock(), t, false));
 						}
 					}
 

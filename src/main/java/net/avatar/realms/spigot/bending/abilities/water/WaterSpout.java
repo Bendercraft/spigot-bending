@@ -114,7 +114,7 @@ public class WaterSpout extends BendingActiveAbility {
 			Location loc = location.clone().add(0, -i, 0);
 			if (!TempBlock.isTempBlock(loc.getBlock())) {
 				//this.blocks.add(new TempBlock(loc.getBlock(), Material.STATIONARY_WATER, (byte) 0x0));
-				this.blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.STATIONARY_WATER));
+				this.blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.STATIONARY_WATER, false));
 			}
 
 			if (cardinalPoint == -1) {
@@ -124,7 +124,7 @@ public class WaterSpout extends BendingActiveAbility {
 			loc = loc.add(vectors[cardinalPoint]);
 			if (loc.getBlock().getType().equals(Material.AIR)) {
 				//this.blocks.add(new TempBlock(loc.getBlock(), Material.STATIONARY_WATER, (byte) 0x0));
-				this.blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.WATER));
+				this.blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.WATER, false));
 			}
 
 		}

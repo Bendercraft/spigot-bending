@@ -34,7 +34,7 @@ public class WaterReturn {
 		if (!ProtectionManager.isLocationProtectedFromBending(player, WaterManipulation.NAME, location) && EntityTools.canBend(player, WaterManipulation.NAME)) {
 			if (BlockTools.isTransparentToEarthbending(player, block) && !block.isLiquid()) {
 				//this.block = new TempBlock(block, Material.WATER, full);
-				this.block = TempBlock.makeTemporary(block, Material.WATER);
+				this.block = TempBlock.makeTemporary(block, Material.WATER, false);
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public class WaterReturn {
 		if (BlockTools.isTransparentToEarthbending(player, newblock) && !newblock.isLiquid()) {
 			block.revertBlock();
 			//block = new TempBlock(newblock, Material.WATER, full);
-			block = TempBlock.makeTemporary(newblock, Material.WATER);
+			block = TempBlock.makeTemporary(newblock, Material.WATER, false);
 		} else {
 			return false;
 		}
