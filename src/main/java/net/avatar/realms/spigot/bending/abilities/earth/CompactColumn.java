@@ -3,6 +3,8 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -29,9 +31,11 @@ public class CompactColumn {
 	private int id;
 	private long time;
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
+	private final RegisteredAbility collapseRegister;
 
 	public CompactColumn(Player player) {
-		this.block = BlockTools.getEarthSourceBlock(player, Collapse.NAME, Collapse.RANGE);
+		this.collapseRegister = AbilityManager.getManager().getRegisteredAbility(Collapse.NAME);
+		this.block = BlockTools.getEarthSourceBlock(player, collapseRegister, Collapse.RANGE);
 		if (this.block == null) {
 			return;
 		}
@@ -58,6 +62,7 @@ public class CompactColumn {
 
 	public CompactColumn(Player player, Location origin) {
 		// Tools.verbose("New compact column");
+		this.collapseRegister = AbilityManager.getManager().getRegisteredAbility(Collapse.NAME);
 		this.origin = origin;
 		this.player = player;
 		this.block = origin.getBlock();

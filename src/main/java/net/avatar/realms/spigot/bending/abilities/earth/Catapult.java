@@ -64,7 +64,7 @@ public class Catapult extends BendingActiveAbility {
 		for (int i = 0; i <= length; i++) {
 			location = origin.clone().add(neg.clone().multiply((double) i));
 			block = location.getBlock();
-			if (BlockTools.isEarthbendable(player, NAME, block)) {
+			if (BlockTools.isEarthbendable(player, register, block)) {
 				distance = BlockTools.getEarthbendableBlocksLength(player, block, neg, length - i);
 				break;
 			} else if (!BlockTools.isTransparentToEarthbending(player, block)) {

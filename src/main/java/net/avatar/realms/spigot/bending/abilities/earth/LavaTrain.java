@@ -161,7 +161,7 @@ public class LavaTrain extends BendingActiveAbility {
 			}
 
 			for (Block potentialsBlock : potentialsBlocks) {
-				if (BlockTools.isEarthbendable(this.player, NAME, potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
+				if (BlockTools.isEarthbendable(this.player, register, potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
 					// Do not let block behind bender to be bend, this whill be
 					// stupid
 					if (!safe.contains(potentialsBlock)) {

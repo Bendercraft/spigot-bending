@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -158,10 +160,10 @@ public class BlockTools {
 	}
 
 	public static boolean isTransparentToEarthbending(Player player, Block block) {
-		return isTransparentToEarthbending(player, EarthWall.NAME, block);
+		return isTransparentToEarthbending(player, AbilityManager.getManager().getRegisteredAbility(EarthWall.NAME), block);
 	}
 
-	public static boolean isTransparentToEarthbending(Player player, String ability, Block block) {
+	public static boolean isTransparentToEarthbending(Player player, RegisteredAbility ability, Block block) {
 		if (ProtectionManager.isLocationProtectedFromBending(player, ability, block.getLocation())) {
 			return false;
 		}
@@ -210,11 +212,11 @@ public class BlockTools {
 	}
 
 	public static boolean isEarthbendable(Player player, Block block) {
-		return isEarthbendable(player, EarthWall.NAME, block);
+		return isEarthbendable(player, AbilityManager.getManager().getRegisteredAbility(EarthWall.NAME), block);
 	}
 
 	@SuppressWarnings("deprecation")
-	public static boolean isEarthbendable(Player player, String ability, Block block) {
+	public static boolean isEarthbendable(Player player, RegisteredAbility ability, Block block) {
 		if (ProtectionManager.isLocationProtectedFromBending(player, ability, block.getLocation())) {
 			return false;
 		}
@@ -427,7 +429,7 @@ public class BlockTools {
 
 	public static boolean moveEarth(Player player, Block block, Vector direction, int chainLength, boolean throwplayer) {
 		if (isEarthbendable(player, block) 
-				&& !ProtectionManager.isLocationProtectedFromBending(player, EarthWall.NAME, block.getLocation())) {
+				&& !ProtectionManager.isLocationProtectedFromBending(player, AbilityManager.getManager().getRegisteredAbility(EarthWall.NAME), block.getLocation())) {
 			boolean up = false;
 			boolean down = false;
 			Vector norm = direction.clone().normalize();
@@ -564,7 +566,7 @@ public class BlockTools {
 		Bending.getInstance().getManager().addGlobalTempBlock(Settings.REVERSE_TIME, tempSource, tempTarget);
 	}
 
-	public static Block getEarthSourceBlock(Player player, String ability, double range) {
+	public static Block getEarthSourceBlock(Player player, RegisteredAbility ability, double range) {
 		Block testblock = EntityTools.getTargetBlock(player, (int) range, getTransparentEarthbending());
 		if (isEarthbendable(player, ability, testblock)) {
 			return testblock;
@@ -588,7 +590,7 @@ public class BlockTools {
 		Vector vector = location.getDirection().clone().normalize();
 		for (double i = 0; i <= range; i++) {
 			Block block = location.clone().add(vector.clone().multiply(i)).getBlock();
-			if (ProtectionManager.isLocationProtectedFromBending(player, WaterManipulation.NAME, location)) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, AbilityManager.getManager().getRegisteredAbility(WaterManipulation.NAME), location)) {
 				continue;
 			}
 

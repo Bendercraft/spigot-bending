@@ -90,7 +90,7 @@ public class EarthWall extends BendingActiveAbility {
 		Vector orth = new Vector(ox, oy, oz);
 		orth = orth.normalize();
 
-		Block sblock = BlockTools.getEarthSourceBlock(this.player, NAME, RANGE);
+		Block sblock = BlockTools.getEarthSourceBlock(this.player, register, RANGE);
 		Location origin;
 		if (sblock == null) {
 			origin = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
@@ -106,7 +106,7 @@ public class EarthWall extends BendingActiveAbility {
 			if (BlockTools.isTransparentToEarthbending(this.player, block)) {
 				for (int j = 1; j < this.height; j++) {
 					block = block.getRelative(BlockFace.DOWN);
-					if (BlockTools.isEarthbendable(this.player, NAME, block)) {
+					if (BlockTools.isEarthbendable(this.player, register, block)) {
 						cooldown = true;
 						EarthColumn ec = new EarthColumn();
 						if(ec.init(this.player, block.getLocation(), this.height)) {
@@ -118,7 +118,7 @@ public class EarthWall extends BendingActiveAbility {
 						break;
 					}
 				}
-			} else if (BlockTools.isEarthbendable(this.player, NAME, block.getRelative(BlockFace.UP))) {
+			} else if (BlockTools.isEarthbendable(this.player, register, block.getRelative(BlockFace.UP))) {
 				for (int j = 1; j < this.height; j++) {
 					block = block.getRelative(BlockFace.UP);
 

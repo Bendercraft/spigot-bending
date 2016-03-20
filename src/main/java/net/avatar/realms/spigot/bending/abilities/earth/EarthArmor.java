@@ -185,14 +185,14 @@ public class EarthArmor extends BendingActiveAbility {
 
 		if (BlockTools.isTransparentToEarthbending(this.player, newheadblock) && !newheadblock.isLiquid()) {
 			BlockTools.breakBlock(newheadblock);
-		} else if (!BlockTools.isEarthbendable(this.player, NAME, newheadblock) && !newheadblock.isLiquid() && (newheadblock.getType() != Material.AIR)) {
+		} else if (!BlockTools.isEarthbendable(this.player, register, newheadblock) && !newheadblock.isLiquid() && (newheadblock.getType() != Material.AIR)) {
 			cancel();
 			return false;
 		}
 
 		if (BlockTools.isTransparentToEarthbending(this.player, newlegsblock) && !newlegsblock.isLiquid()) {
 			BlockTools.breakBlock(newlegsblock);
-		} else if (!BlockTools.isEarthbendable(this.player, NAME, newlegsblock) && !newlegsblock.isLiquid() && (newlegsblock.getType() != Material.AIR)) {
+		} else if (!BlockTools.isEarthbendable(this.player, register, newlegsblock) && !newlegsblock.isLiquid() && (newlegsblock.getType() != Material.AIR)) {
 			cancel();
 			return false;
 		}

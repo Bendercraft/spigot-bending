@@ -52,8 +52,8 @@ public class EarthLariat extends BendingActiveAbility {
 					return false;
 				}
 				
-				if(BlockTools.isEarthbendable(player, NAME, player.getLocation().getBlock().getRelative(BlockFace.DOWN))
-						&& BlockTools.isEarthbendable(player, NAME, target.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
+				if(BlockTools.isEarthbendable(player, register, player.getLocation().getBlock().getRelative(BlockFace.DOWN))
+						&& BlockTools.isEarthbendable(player, register, target.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
 					player.getWorld().playEffect(player.getLocation(), Effect.GHAST_SHOOT, 0, 4);
 					target.getWorld().playEffect(target.getLocation(), Effect.GHAST_SHOOT, 0, 4);
 					

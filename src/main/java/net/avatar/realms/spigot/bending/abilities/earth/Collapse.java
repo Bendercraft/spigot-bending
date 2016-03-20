@@ -67,7 +67,7 @@ public class Collapse extends BendingActiveAbility {
 			return false;
 		}
 
-		Block sblock = BlockTools.getEarthSourceBlock(this.player, NAME, RANGE);
+		Block sblock = BlockTools.getEarthSourceBlock(this.player, register, RANGE);
 		Location location;
 		if (sblock == null) {
 			location = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
@@ -75,7 +75,7 @@ public class Collapse extends BendingActiveAbility {
 			location = sblock.getLocation();
 		}
 		for (Block block : BlockTools.getBlocksAroundPoint(location, this.radius)) {
-			if (BlockTools.isEarthbendable(this.player, NAME, block) && !this.blocks.containsKey(block) && block.getY() >= location.getBlockY()) {
+			if (BlockTools.isEarthbendable(this.player, register, block) && !this.blocks.containsKey(block) && block.getY() >= location.getBlockY()) {
 				getAffectedBlocks(block);
 			}
 		}
@@ -126,7 +126,7 @@ public class Collapse extends BendingActiveAbility {
 		bendableblocks.add(block);
 		for (int i = 1; i <= DEPTH; i++) {
 			Block blocki = block.getRelative(BlockFace.DOWN, i);
-			if (BlockTools.isEarthbendable(this.player, NAME, blocki)) {
+			if (BlockTools.isEarthbendable(this.player, register, blocki)) {
 				baseblock = blocki;
 				bendableblocks.add(blocki);
 				tall++;
