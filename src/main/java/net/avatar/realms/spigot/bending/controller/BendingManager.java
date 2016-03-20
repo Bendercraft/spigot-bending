@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -42,8 +41,6 @@ public class BendingManager implements Runnable {
 
 	@Override
 	public void run() {
-		//Nerf the regen heal
-		nerfRegen();
 
 		try {
 			long now = System.currentTimeMillis();
@@ -208,55 +205,6 @@ public class BendingManager implements Runnable {
 
 	public long getTimestep() {
 		return timestep;
-	}
-
-	public static Map<UUID, Integer> nerfRegen = new HashMap<>();
-
-	public void nerfRegen() {
-		for (World w : Bukkit.getWorlds()) {
-			for (Player player : w.getPlayers()) {
-				if (player.isOnline() && !player.isDead() && player.getHealth() < player.getMaxHealth()) {
-					if (player.getFoodLevel() >= 18 && !(player.getHealth() == player.getMaxHealth())) {
-						int regenTime = getTimeToNerfRegen(player.getUniqueId());
-						if (regenTime >= 4 * 20) {
-							setTimeToNerfRegen(player.getUniqueId(), 0);
-							player.setHealth(getValidHealth(player.getHealth() + 1, player));
-						} else {
-							addTimeToNerfRegen(player.getUniqueId(), 1);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public static int getTimeToNerfRegen(UUID id) {
-		if (nerfRegen.containsKey(id))
-			return nerfRegen.get(id);
-		return 0;
-	}
-
-	public static void addTimeToNerfRegen(UUID id, int time) {
-		if (nerfRegen.containsKey(id)) {
-			time = time + nerfRegen.get(id);
-			nerfRegen.remove(id);
-		}
-
-		nerfRegen.put(id, time);
-	}
-
-	public static void setTimeToNerfRegen(UUID id, int time) {
-		if (nerfRegen.containsKey(id)) {
-			nerfRegen.remove(id);
-		}
-
-		nerfRegen.put(id, time);
-	}
-
-	public static double getValidHealth(double health, Player player){
-		if (health > player.getMaxHealth())
-			return player.getMaxHealth();
-		return health;
 	}
 
 	private class Queue {
