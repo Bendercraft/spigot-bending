@@ -1,6 +1,7 @@
 package net.avatar.realms.spigot.bending.abilities.earth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -44,13 +46,11 @@ public class EarthArmor extends BendingActiveAbility {
 
 	private Block headblock, legsblock;
 	private Location headblocklocation, legsblocklocation;
-	private Material headtype, legstype;
-	private byte headdata, legsdata;
-	private long time, starttime;
+	
+	private long time;
+	
 	private boolean formed = false;
 	private boolean complete = false;
-	public ItemStack[] oldarmor;
-	public List<ItemStack> armors = new ArrayList<ItemStack>(4);
 
 	private static long interval = 2000;
 
@@ -60,27 +60,17 @@ public class EarthArmor extends BendingActiveAbility {
 		super(register, player);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean swing() {
 		//EarthArmor
-		
-		if (this.bender.isOnCooldown(NAME)) {
-			return false;
-		}
-
-		this.headblock = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending());
-		if (BlockTools.getEarthbendableBlocksLength(this.player, this.headblock, new Vector(0, -1, 0), 2) >= 2) {
-			this.legsblock = this.headblock.getRelative(BlockFace.DOWN);
-			this.headtype = this.headblock.getType();
-			this.legstype = this.legsblock.getType();
-			this.headdata = this.headblock.getData();
-			this.legsdata = this.legsblock.getData();
-			this.headblocklocation = this.headblock.getLocation();
-			this.legsblocklocation = this.legsblock.getLocation();
+		headblock = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
+		if (BlockTools.getEarthbendableBlocksLength(player, headblock, new Vector(0, -1, 0), 2) >= 2) {
+			legsblock = headblock.getRelative(BlockFace.DOWN);
+			headblocklocation = this.headblock.getLocation();
+			legsblocklocation = this.legsblock.getLocation();
 			Block oldheadblock, oldlegsblock;
-			oldheadblock = this.headblock;
-			oldlegsblock = this.legsblock;
+			oldheadblock = headblock;
+			oldlegsblock = legsblock;
 			if (!moveBlocks()) {
 				return false;
 			}
@@ -100,16 +90,7 @@ public class EarthArmor extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 		// EarthShield
-
-		if (getState() != BendingAbilityState.START) {
-			return false;
-		}
-
-		if (this.bender.isOnCooldown(NAME)) {
-			return false;
-		}
-
-		Block base = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending());
+		Block base = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
 
 		List<Block> blocks = new ArrayList<Block>();
 		Location location = base.getLocation();
@@ -124,11 +105,11 @@ public class EarthArmor extends BendingActiveAbility {
 			testloc = loc1.clone().add(factor * Math.cos(Math.toRadians(angle)), 1, factor * Math.sin(Math.toRadians(angle)));
 			for (int y = 0; y < EarthColumn.HEIGHT - height1; y++) {
 				testloc = testloc.clone().add(0, -1, 0);
-				if (BlockTools.isEarthbendable(this.player, testloc.getBlock())) {
+				if (BlockTools.isEarthbendable(player, testloc.getBlock())) {
 					if (!blocks.contains(testloc.getBlock())) {
 						EarthColumn ec = new EarthColumn();
 						if(ec.init(this.player, testloc, height1+y-1)) {
-							this.columns.add(ec);
+							columns.add(ec);
 						}
 					}
 					blocks.add(testloc.getBlock());
@@ -139,11 +120,11 @@ public class EarthArmor extends BendingActiveAbility {
 			testloc2 = loc2.clone().add(factor2 * Math.cos(Math.toRadians(angle)), 1, factor2 * Math.sin(Math.toRadians(angle)));
 			for (int y = 0; y < EarthColumn.HEIGHT - height2; y++) {
 				testloc2 = testloc2.clone().add(0, -1, 0);
-				if (BlockTools.isEarthbendable(this.player, testloc2.getBlock())) {
+				if (BlockTools.isEarthbendable(player, testloc2.getBlock())) {
 					if (!blocks.contains(testloc2.getBlock())) {
 						EarthColumn ec = new EarthColumn();
-						if(ec.init(this.player, testloc2, height2+y-1)) {
-							this.columns.add(ec);
+						if(ec.init(player, testloc2, height2+y-1)) {
+							columns.add(ec);
 						}
 					}
 					blocks.add(testloc2.getBlock());
@@ -152,8 +133,8 @@ public class EarthArmor extends BendingActiveAbility {
 			}
 		}
 
-		if (!this.columns.isEmpty()) {
-			this.bender.cooldown(NAME, COOLDOWN);
+		if (!columns.isEmpty()) {
+			bender.cooldown(NAME, COOLDOWN);
 			setState(BendingAbilityState.PROGRESSING);
 		}
 
@@ -161,123 +142,129 @@ public class EarthArmor extends BendingActiveAbility {
 	}
 
 	private boolean moveBlocks() {
-		if (headblock == null || player.getWorld() != this.headblock.getWorld()) {
+		if (headblock == null || player.getWorld() != headblock.getWorld()) {
 			cancel();
 			return false;
 		}
 
-		Location headlocation = this.player.getEyeLocation();
-		Location legslocation = this.player.getLocation();
-		Vector headdirection = headlocation.toVector().subtract(this.headblocklocation.toVector()).normalize().multiply(.5);
-		Vector legsdirection = legslocation.toVector().subtract(this.legsblocklocation.toVector()).normalize().multiply(.5);
+		Location headlocation = player.getEyeLocation();
+		Location legslocation = player.getLocation();
+		Vector headdirection = headlocation.toVector().subtract(headblocklocation.toVector()).normalize().multiply(.5);
+		Vector legsdirection = legslocation.toVector().subtract(legsblocklocation.toVector()).normalize().multiply(.5);
 
-		Block newheadblock = this.headblock;
-		Block newlegsblock = this.legsblock;
+		Block newheadblock = headblock;
+		Block newlegsblock = legsblock;
 
-		if (!headlocation.getBlock().equals(this.headblock)) {
-			this.headblocklocation = this.headblocklocation.clone().add(headdirection);
-			newheadblock = this.headblocklocation.getBlock();
+		if (!headlocation.getBlock().equals(headblock)) {
+			headblocklocation = headblocklocation.clone().add(headdirection);
+			newheadblock = headblocklocation.getBlock();
 		}
-		if (!legslocation.getBlock().equals(this.legsblock)) {
-			this.legsblocklocation = this.legsblocklocation.clone().add(legsdirection);
-			newlegsblock = this.legsblocklocation.getBlock();
+		if (!legslocation.getBlock().equals(legsblock)) {
+			legsblocklocation = legsblocklocation.clone().add(legsdirection);
+			newlegsblock = legsblocklocation.getBlock();
 		}
 
-		if (BlockTools.isTransparentToEarthbending(this.player, newheadblock) && !newheadblock.isLiquid()) {
+		if (BlockTools.isTransparentToEarthbending(player, newheadblock) && !newheadblock.isLiquid()) {
 			BlockTools.breakBlock(newheadblock);
-		} else if (!BlockTools.isEarthbendable(this.player, register, newheadblock) && !newheadblock.isLiquid() && (newheadblock.getType() != Material.AIR)) {
+		} else if (!BlockTools.isEarthbendable(player, register, newheadblock) 
+				&& !newheadblock.isLiquid() 
+				&& newheadblock.getType() != Material.AIR) {
 			cancel();
 			return false;
 		}
 
-		if (BlockTools.isTransparentToEarthbending(this.player, newlegsblock) && !newlegsblock.isLiquid()) {
+		if (BlockTools.isTransparentToEarthbending(player, newlegsblock) && !newlegsblock.isLiquid()) {
 			BlockTools.breakBlock(newlegsblock);
-		} else if (!BlockTools.isEarthbendable(this.player, register, newlegsblock) && !newlegsblock.isLiquid() && (newlegsblock.getType() != Material.AIR)) {
+		} else if (!BlockTools.isEarthbendable(player, register, newlegsblock) 
+				&& !newlegsblock.isLiquid() 
+				&& newlegsblock.getType() != Material.AIR) {
 			cancel();
 			return false;
 		}
 
-		if ((this.headblock.getLocation().distance(this.player.getEyeLocation()) > RANGE) || (this.legsblock.getLocation().distance(this.player.getLocation()) > RANGE)) {
+		if (headblock.getLocation().distance(player.getEyeLocation()) > RANGE 
+				|| legsblock.getLocation().distance(player.getLocation()) > RANGE) {
 			cancel();
 			return false;
 		}
 
-		if (!newheadblock.equals(this.headblock)) {
-			//new TempBlock(newheadblock, this.headtype, this.headdata);
-			TempBlock.makeTemporary(newheadblock, headtype, headdata, false);
-			TempBlock.revertBlock(this.headblock);
+		if (!newheadblock.equals(headblock)) {
+			TempBlock.makeTemporary(newheadblock, headblock.getType(), false);
+			TempBlock.revertBlock(headblock);
 		}
 
-		if (!newlegsblock.equals(this.legsblock)) {
-			//new TempBlock(newlegsblock, this.legstype, this.legsdata);
-			TempBlock.makeTemporary(newlegsblock, this.legstype, this.legsdata, false);
-			TempBlock.revertBlock(this.legsblock);
+		if (!newlegsblock.equals(legsblock)) {
+			TempBlock.makeTemporary(newlegsblock, legsblock.getType(), false);
+			TempBlock.revertBlock(legsblock);
 		}
 
-		this.headblock = newheadblock;
-		this.legsblock = newlegsblock;
+		headblock = newheadblock;
+		legsblock = newlegsblock;
 
 		return true;
 	}
 
 	private void cancel() {
 		if (Settings.REVERSE_BENDING) {
-			TempBlock.revertBlock(this.headblock);
-			TempBlock.revertBlock(this.legsblock);
+			TempBlock.revertBlock(headblock);
+			TempBlock.revertBlock(legsblock);
 		} else {
-			this.headblock.breakNaturally();
-			this.legsblock.breakNaturally();
+			headblock.breakNaturally();
+			legsblock.breakNaturally();
 		}
 	}
 
 	private boolean inPosition() {
-		if(this.headblock == null || this.legsblock == null) {
+		if(headblock == null || legsblock == null) {
 			return false;
 		}
-		if (this.headblock.equals(this.player.getEyeLocation().getBlock()) && this.legsblock.equals(this.player.getLocation().getBlock())) {
+		if (headblock.equals(player.getEyeLocation().getBlock()) && legsblock.equals(player.getLocation().getBlock())) {
 			return true;
 		}
 		return false;
 	}
 
 	private void formArmor() {
-		TempBlock.revertBlock(this.headblock);
-		TempBlock.revertBlock(this.legsblock);
-		short cptIroned = 0;
-		this.oldarmor = this.player.getInventory().getArmorContents();
-		if (BlockTools.isIronBendable(this.player, this.legstype)) {
-			ItemStack is = new ItemStack(Material.IRON_BOOTS, 1);
-			this.armors.add(is);
-			is = new ItemStack(Material.IRON_LEGGINGS, 1);
-			this.armors.add(is);
-			cptIroned++;
+		// Save current player's armor into inventory
+		for(ItemStack is : player.getInventory().getArmorContents()) {
+			if(is != null) {
+				player.getInventory().addItem(is);
+			}
+		}
+		player.getInventory().setArmorContents(null);
+		
+		boolean iron = false;
+		ItemStack[] armors = new ItemStack[4];
+		if (BlockTools.isIronBendable(player, legsblock.getType())) {
+			armors[0] = sign(new ItemStack(Material.IRON_BOOTS, 1));
+			armors[1] = sign(new ItemStack(Material.IRON_LEGGINGS, 1));
+			iron = true;
 		} else {
-			this.armors.add(new ItemStack(Material.LEATHER_BOOTS, 1));
-			this.armors.add(new ItemStack(Material.LEATHER_LEGGINGS, 1));
+			armors[0] = sign(new ItemStack(Material.LEATHER_BOOTS, 1));
+			armors[1] = sign(new ItemStack(Material.LEATHER_LEGGINGS, 1));
 		}
 
-		if (BlockTools.isIronBendable(this.player, this.headtype)) {
-			ItemStack is = new ItemStack(Material.IRON_CHESTPLATE, 1);
-			this.armors.add(is);
-			is = new ItemStack(Material.IRON_HELMET, 1);
-			this.armors.add(is);
-			cptIroned++;
+		if (BlockTools.isIronBendable(player, headblock.getType())) {
+			armors[2] = sign(new ItemStack(Material.IRON_CHESTPLATE, 1));
+			armors[3] = sign(new ItemStack(Material.IRON_HELMET, 1));
+			iron = true;
 		} else {
-			this.armors.add(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
-			this.armors.add(new ItemStack(Material.LEATHER_HELMET, 1));
+			armors[2] = sign(new ItemStack(Material.LEATHER_CHESTPLATE, 1));
+			armors[3] = sign(new ItemStack(Material.LEATHER_HELMET, 1));
 		}
 
-		if (cptIroned == 0) {
+		if (iron) {
 			PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) DURATION / 50, STRENGTH - 1);
-			this.player.addPotionEffect(resistance);
+			player.addPotionEffect(resistance);
 			PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, (int) DURATION / 50, 0);
-			this.player.addPotionEffect(slowness);
+			player.addPotionEffect(slowness);
 		}
-		ItemStack[] ar = this.armors.toArray(new ItemStack[this.armors.size()]);
-		this.player.getInventory().setArmorContents(ar);
+		player.getInventory().setArmorContents(armors);
 
-		this.formed = true;
-		this.starttime = System.currentTimeMillis();
+		formed = true;
+		
+		TempBlock.revertBlock(headblock);
+		TempBlock.revertBlock(legsblock);
 	}
 
 	@Override
@@ -287,30 +274,29 @@ public class EarthArmor extends BendingActiveAbility {
 			return;
 		}
 
-		if(!this.columns.isEmpty()) {
-			List<EarthColumn> test = new LinkedList<EarthColumn>(this.columns);
+		if(!columns.isEmpty()) {
+			List<EarthColumn> test = new LinkedList<EarthColumn>(columns);
 			for(EarthColumn column : test) {
 				if(!column.progress()) {
-					this.columns.remove(column);
+					columns.remove(column);
 				}
 			}
-			if(this.columns.isEmpty()) {
+			if(columns.isEmpty()) {
 				remove();
 				return;
 			}
 		}
 
-		if (this.formed) {
-			if ((System.currentTimeMillis() > (this.starttime + DURATION)) && !this.complete) {
-				this.complete = true;
-				removeEffect();
+		if (formed) {
+			if ((System.currentTimeMillis() > (startedTime + DURATION)) && !complete) {
+				complete = true;
 				return;
 			}
-			if (System.currentTimeMillis() > (this.starttime + COOLDOWN)) {
+			if (System.currentTimeMillis() > (startedTime + COOLDOWN)) {
 				remove();
 				return;
 			}
-		} else if (System.currentTimeMillis() > (this.time + interval)) {
+		} else if (System.currentTimeMillis() > (time + interval)) {
 			if (inPosition()) {
 				formArmor();
 			} else {
@@ -326,42 +312,6 @@ public class EarthArmor extends BendingActiveAbility {
 		return AbilityManager.getManager().getInstances(NAME).containsKey(player);
 	}
 
-	public static EarthArmor getEarthArmor(Player pl) {
-		return (EarthArmor) AbilityManager.getManager().getInstances(NAME).get(pl);
-	}
-
-	public boolean isArmor(ItemStack is) {
-		for (ItemStack part : this.armors) {
-			if (part.getType().equals(is.getType())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void removeEffect() {
-		if (this.oldarmor != null) {
-			this.player.getInventory().setArmorContents(this.oldarmor);
-		}
-	}
-
-	public static void removeEffect(Player player) {
-		EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(NAME).get(player);
-		if (earthArmor != null) {
-			earthArmor.removeEffect();
-		}
-	}
-
-	public static boolean canRemoveArmor(Player player) {
-		if (AbilityManager.getManager().getInstances(NAME).containsKey(player)) {
-			EarthArmor earthArmor = (EarthArmor) AbilityManager.getManager().getInstances(NAME).get(player);
-			if (System.currentTimeMillis() < (earthArmor.starttime + DURATION)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	@Override
 	public Object getIdentifier() {
 		return this.player;
@@ -369,8 +319,19 @@ public class EarthArmor extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		for(EarthColumn column : this.columns) {
+		for(EarthColumn column : columns) {
 			column.remove();
 		}
+	}
+	
+	private static ItemStack sign(ItemStack is) {
+		ItemMeta meta = is.getItemMeta();
+		meta.setLore(Arrays.asList(NAME));
+		is.setItemMeta(meta);
+		return is;
+	}
+	
+	public static boolean isArmor(ItemStack is) {
+		return is.hasItemMeta() && is.getItemMeta().hasLore() && is.getItemMeta().getLore().contains(NAME);
 	}
 }
