@@ -279,7 +279,7 @@ public class EarthBlast extends BendingActiveAbility {
 					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
-					if (ProtectionManager.isLocationProtectedFromBending(player, NAME, entity.getLocation())) {
+					if (ProtectionManager.isLocationProtectedFromBending(player, register, entity.getLocation())) {
 						continue;
 					}
 
@@ -394,7 +394,8 @@ public class EarthBlast extends BendingActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, blast.location)) {
+			RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(NAME);
+			if (ProtectionManager.isLocationProtectedFromBending(player, register, blast.location)) {
 				continue;
 			}
 
@@ -437,7 +438,8 @@ public class EarthBlast extends BendingActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, blast.location)) {
+			RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(NAME);
+			if (ProtectionManager.isLocationProtectedFromBending(player, register, blast.location)) {
 				continue;
 			}
 

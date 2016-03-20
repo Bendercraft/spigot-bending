@@ -3,7 +3,9 @@ package net.avatar.realms.spigot.bending.abilities.fire;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
@@ -67,7 +69,8 @@ public class FireProtection {
 			Vector direction = location.getDirection();
 			location = location.clone().add(direction.multiply(radius));
 
-			if (ProtectionManager.isLocationProtectedFromBending(this.player, FireShield.NAME, location)) {
+			RegisteredAbility ability = AbilityManager.getManager().getRegisteredAbility(FireShield.NAME);
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, ability, location)) {
 				return false;
 			}
 
@@ -80,7 +83,7 @@ public class FireProtection {
 			}
 
 			for (Block block : blocks) {
-				if (!ProtectionManager.isLocationProtectedFromBending(this.player, FireShield.NAME, block.getLocation())) {
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, ability, block.getLocation())) {
 					block.getWorld().playEffect(block.getLocation(), Effect.MOBSPAWNER_FLAMES, 0, 20);
 				}
 			}
@@ -89,7 +92,7 @@ public class FireProtection {
 				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, FireShield.NAME, entity.getLocation())) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, ability, entity.getLocation())) {
 					continue;
 				}
 

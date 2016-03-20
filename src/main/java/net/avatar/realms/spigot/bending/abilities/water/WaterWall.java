@@ -253,7 +253,7 @@ public class WaterWall extends BendingActiveAbility {
 			remove();
 			return;
 		}
-		if (!EntityTools.canBend(player, NAME)) {
+		if (!EntityTools.canBend(player, register)) {
 			if (!forming)
 				breakBlock();
 			returnWater();
@@ -296,7 +296,7 @@ public class WaterWall extends BendingActiveAbility {
 						// loc.getBlock().setType(Material.GLOWSTONE);
 						vec = Tools.getOrthogonalVector(dir.clone(), angle, i);
 						block = loc.clone().add(vec).getBlock();
-						if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation()))
+						if (ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation()))
 							continue;
 						if (wallblocks.containsKey(block)) {
 							blocks.add(block);
@@ -409,7 +409,7 @@ public class WaterWall extends BendingActiveAbility {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation()))
+		if (ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation()))
 			return;
 
 		if (!TempBlock.isTempBlock(block)) {

@@ -17,7 +17,7 @@ public abstract class BendingAbility {
 	protected long startedTime;
 	
 	// For performance
-	private final RegisteredAbility register;
+	protected final RegisteredAbility register;
 
 	private BendingAbilityState state = BendingAbilityState.START;
 
@@ -80,7 +80,7 @@ public abstract class BendingAbility {
 			return false;
 		}
 
-		if (!EntityTools.canBend(this.player, getName())) {
+		if (!EntityTools.canBend(this.player, register)) {
 			// Also check region protection at player location
 			return false;
 		}
@@ -98,7 +98,7 @@ public abstract class BendingAbility {
 				|| this.player.isDead()
 				|| this.state.equals(BendingAbilityState.ENDED)
 				|| (getMaxMillis() > 0 && System.currentTimeMillis() > (this.startedTime + getMaxMillis()))
-				|| !EntityTools.canBend(this.player, getName())) {
+				|| !EntityTools.canBend(this.player, register)) {
 			return false;
 		}
 		return true;

@@ -421,11 +421,12 @@ public class WaterManipulation extends BendingActiveAbility {
 	}
 
 	private static void redirectTargettedBlasts(Player player) {
+		RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(NAME);
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (!manip.progressing 
 					|| !manip.location.getWorld().equals(player.getWorld()) 
-					|| ProtectionManager.isLocationProtectedFromBending(player, NAME, manip.location)) {
+					|| ProtectionManager.isLocationProtectedFromBending(player, registered, manip.location)) {
 				continue;
 			}
 
@@ -445,12 +446,13 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	private static void block(Player player) {
 		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
+		RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(NAME);
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.player.equals(player) 
 					|| !manip.location.getWorld().equals(player.getWorld()) 
 					|| !manip.progressing 
-					|| ProtectionManager.isLocationProtectedFromBending(player, NAME, manip.location)) {
+					|| ProtectionManager.isLocationProtectedFromBending(player, registered, manip.location)) {
 				continue;
 			}
 

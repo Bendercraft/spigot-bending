@@ -180,7 +180,9 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (MetalBending.NAME.equals(ability) && EntityTools.canBend(player, ability)) {
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+
+		if (MetalBending.NAME.equals(ability) && EntityTools.canBend(player, register)) {
 			MetalWire.pull(player, event.getHook());
 		}
 	}
@@ -239,7 +241,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (EntityTools.canBend(player, ability) &&
+		if (EntityTools.canBend(player, registered) &&
 				(registered.canBeUsedWithTools() ||!EntityTools.isTool(player.getInventory().getItemInMainHand().getType()))) {
 			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			boolean shouldCreateNew = true;
@@ -268,6 +270,10 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSneak(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
+		if (player == null){
+			Bending.getInstance().getLogger().warning("Null player in PlayerSneak");
+			return;
+		}
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
@@ -276,14 +282,15 @@ public class BendingPlayerListener implements Listener {
 		String ability = EntityTools.getBendingAbility(player);
 		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
 		if (!player.isSneaking()
-				&& ((ability == null) || !register.isShift())
+				&& ((ability == null) || (register == null) || !register.isShift())
 				&& (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying())) {
 			if (bender.isBender(BendingElement.WATER)
 					&& EntityTools.canBendPassive(player, BendingElement.WATER)
 					&& !WaterSpout.isBending(player)) {
-
+				player.sendMessage("Can bend dolphin");
 				FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
 				if(ab.canBeInitialized()) {
+					player.sendMessage("Can be initialized");
 					ab.start();
 					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
@@ -293,7 +300,7 @@ public class BendingPlayerListener implements Listener {
 			}
 		}
 
-		if (EntityTools.canBend(player, ability) && !player.isSneaking()) {
+		if (EntityTools.canBend(player, register) && !player.isSneaking()) {
 			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			boolean shouldCreateNew = true;
 			for (BendingAbility a : abilities.values()) {

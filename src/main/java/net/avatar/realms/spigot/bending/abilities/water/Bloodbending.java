@@ -67,10 +67,10 @@ public class Bloodbending extends BendingActiveAbility {
 					continue;
 				}
 				if (entity instanceof Player) {
-					if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, entity.getLocation())
+					if (ProtectionManager.isLocationProtectedFromBending(this.player, register, entity.getLocation())
 							|| AvatarState.isAvatarState((Player) entity) 
 							|| (entity.getEntityId() == this.player.getEntityId()) 
-							|| EntityTools.canBend((Player) entity, NAME)) {
+							|| EntityTools.canBend((Player) entity, register)) {
 						continue;
 					}
 				}
@@ -84,11 +84,11 @@ public class Bloodbending extends BendingActiveAbility {
 			LivingEntity target = EntityTools.getTargetedEntity(this.player, this.range);
 			if (target == null
 					|| ProtectionManager.isEntityProtected(target)
-					|| ProtectionManager.isLocationProtectedFromBending(this.player, NAME, target.getLocation())) {
+					|| ProtectionManager.isLocationProtectedFromBending(this.player, register, target.getLocation())) {
 				return false;
 			}
 			if (target instanceof Player) {
-				if (EntityTools.canBend((Player) target, NAME) || AvatarState.isAvatarState((Player) target) || target.isOp()) {
+				if (EntityTools.canBend((Player) target, register) || AvatarState.isAvatarState((Player) target) || target.isOp()) {
 					return false;
 				}
 
@@ -126,7 +126,7 @@ public class Bloodbending extends BendingActiveAbility {
 		}
 		if (!this.player.isSneaking() 
 				|| !NAME.equals(EntityTools.getBendingAbility(player))
-				|| !EntityTools.canBend(this.player, NAME) 
+				|| !EntityTools.canBend(this.player, register)
 				|| System.currentTimeMillis() - this.time > MAX_DURATION) {
 			return false;
 		}
@@ -143,7 +143,7 @@ public class Bloodbending extends BendingActiveAbility {
 				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, entity.getLocation())) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, register, entity.getLocation())) {
 					continue;
 				}
 				if (entity instanceof Player) {

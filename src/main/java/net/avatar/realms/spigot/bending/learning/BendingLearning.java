@@ -83,10 +83,10 @@ public class BendingLearning {
 	}
 
 	public boolean addPermission(Player player, String ability) {
-		if (!EntityTools.hasPermission(player, ability)) {
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+		if (!EntityTools.hasPermission(player, register)) {
 			// Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
-			RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
 			String perm = register.getPermission();
 			attachment.setPermission(perm, true);
 			if (!permissions.containsKey(player.getUniqueId())) {
@@ -104,10 +104,10 @@ public class BendingLearning {
 	}
 
 	public boolean removePermission(Player player, String ability) {
-		if (EntityTools.hasPermission(player, ability)) {
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+		if (EntityTools.hasPermission(player, register)) {
 			// Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
-			RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
 			attachment.unsetPermission(register.getPermission());
 			if (permissions.containsKey(player.getUniqueId())) {
 				permissions.get(player.getUniqueId()).remove(register.getPermission());

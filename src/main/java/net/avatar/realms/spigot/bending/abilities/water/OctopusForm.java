@@ -140,7 +140,7 @@ public class OctopusForm extends BendingActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, entity.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, register, entity.getLocation())) {
 				continue;
 			}
 
@@ -161,7 +161,7 @@ public class OctopusForm extends BendingActiveAbility {
 			return;
 		}
 
-		if (!EntityTools.canBend(player, NAME) 
+		if (!EntityTools.canBend(player, register)
 				|| (!player.isSneaking() && !sourceselected) 
 				|| !NAME.equals(EntityTools.getBendingAbility(player)) 
 				|| !sourceblock.getWorld().equals(player.getWorld()) 
@@ -346,7 +346,7 @@ public class OctopusForm extends BendingActiveAbility {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())) {
 			return;
 		}
 

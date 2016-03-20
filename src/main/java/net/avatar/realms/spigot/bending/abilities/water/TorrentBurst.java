@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -37,6 +39,7 @@ public class TorrentBurst {
 	private Map<Integer, Map<Integer, Double>> heights = new HashMap<Integer, Map<Integer, Double>>();
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private List<Entity> affectedentities = new LinkedList<Entity>();
+	private final RegisteredAbility torrentRegister;
 
 	public TorrentBurst(Player player, double radius, BendingAbility parent) {
 		this.player = player;
@@ -46,6 +49,7 @@ public class TorrentBurst {
 		factor = PluginTools.waterbendingNightAugment(factor, world);
 		maxradius = PluginTools.waterbendingNightAugment(maxradius, world);
 		this.radius = radius;
+		this.torrentRegister = AbilityManager.getManager().getRegisteredAbility(Torrent.NAME);
 		initializeHeightsMap();
 	}
 
@@ -67,7 +71,7 @@ public class TorrentBurst {
 			return false;
 		}
 
-		if (!EntityTools.canBend(player, Torrent.NAME)) {
+		if (!EntityTools.canBend(player, torrentRegister)) {
 			return false;
 		}
 

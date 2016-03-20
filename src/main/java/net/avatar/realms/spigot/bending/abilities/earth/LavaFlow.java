@@ -109,7 +109,7 @@ public class LavaFlow extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (current != null && ProtectionManager.isLocationProtectedFromBending(this.player, NAME, current)) {
+		if (current != null && ProtectionManager.isLocationProtectedFromBending(this.player, register, current)) {
 			return false;
 		}
 		return true;

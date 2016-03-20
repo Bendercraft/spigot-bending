@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.bending.abilities.air;
 
+import net.avatar.realms.spigot.bending.abilities.*;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -8,12 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingPath;
-import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
@@ -135,7 +130,7 @@ public class AirSuction extends BendingActiveAbility {
 		Location location = origin.clone();
 		for (double i = 1; i <= this.range; i++) {
 			location = origin.clone().add(direction.clone().multiply(i));
-			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock()) || ProtectionManager.isLocationProtectedFromBending(this.player, AirSuction.NAME, location)) {
+			if (!BlockTools.isTransparentToEarthbending(this.player, location.getBlock()) || ProtectionManager.isLocationProtectedFromBending(this.player, register, location)) {
 				return origin.clone().add(direction.clone().multiply(i - 1));
 			}
 		}
@@ -148,7 +143,8 @@ public class AirSuction extends BendingActiveAbility {
 			return null;
 		}
 
-		if (ProtectionManager.isLocationProtectedFromBending(player, AirSuction.NAME, location)) {
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(AirSuction.NAME);
+		if (ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
 			return null;
 		}
 
@@ -184,7 +180,7 @@ public class AirSuction extends BendingActiveAbility {
 			return;
 		}
 		
-		if(ProtectionManager.isLocationProtectedFromBending(this.player, AirSuction.NAME, this.location)) {
+		if(ProtectionManager.isLocationProtectedFromBending(this.player, register, this.location)) {
 			remove();
 			return;
 		}

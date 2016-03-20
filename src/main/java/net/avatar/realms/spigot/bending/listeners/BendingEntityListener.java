@@ -2,6 +2,7 @@ package net.avatar.realms.spigot.bending.listeners;
 
 import java.util.logging.Level;
 
+import net.avatar.realms.spigot.bending.abilities.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -29,11 +30,6 @@ import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import net.avatar.realms.spigot.bending.Bending;
-import net.avatar.realms.spigot.bending.abilities.AbilityManager;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.arts.C4;
 import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.arts.ExplosiveShot;
@@ -232,8 +228,9 @@ public class BendingEntityListener implements Listener {
 			return;
 		}
 
-		if (EntityTools.canBend(player, ExplosiveShot.NAME)) {
-			ExplosiveShot ab = (ExplosiveShot) AbilityManager.getManager().buildAbility(ExplosiveShot.NAME, player);
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ExplosiveShot.NAME);
+		if (EntityTools.canBend(player, register)) {
+			ExplosiveShot ab = (ExplosiveShot) AbilityManager.getManager().buildAbility(register, player);
 			if(ab == null) {
 				Bending.getInstance().getLogger().log(Level.SEVERE, "Ability " + ability + " failed to construct with buildAbility for player " + player.getName());
 				return;

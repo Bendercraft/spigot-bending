@@ -86,7 +86,7 @@ public class Suffocate extends BendingActiveAbility {
 			this.target = (Player) target;
 			this.targetLocation = this.target.getLocation().getBlock();
 
-			if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, this.target.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, register, this.target.getLocation())) {
 				return false;
 			}
 
@@ -101,7 +101,7 @@ public class Suffocate extends BendingActiveAbility {
 	@Override
 	public boolean canTick() {
 		if(!super.canTick() 
-				|| ProtectionManager.isLocationProtectedFromBending(this.player, NAME, this.target.getLocation())
+				|| ProtectionManager.isLocationProtectedFromBending(this.player, register, this.target.getLocation())
 				|| this.target.isDead() 
 				|| !getState().equals(BendingAbilityState.PROGRESSING) 
 				|| !this.player.hasLineOfSight(this.target) 

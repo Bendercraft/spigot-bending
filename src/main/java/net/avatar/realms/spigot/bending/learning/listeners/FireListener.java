@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -215,8 +216,8 @@ public class FireListener implements Listener {
 				if (bPlayer.isBender(BendingElement.FIRE)) {
 					// Check fireburst
 					Player p = (Player) event.getEntity();
-					if (EntityTools.canBend(p, FireBurst.NAME)) {
-						if (EntityTools.canBend(p, FireWall.NAME)) {
+					if (EntityTools.canBend(p, AbilityManager.getManager().getRegisteredAbility(FireBurst.NAME))) {
+						if (EntityTools.canBend(p, AbilityManager.getManager().getRegisteredAbility(FireWall.NAME))) {
 							if (this.plugin.addPermission(p, FireJet.NAME)) {
 								String message = "An idea came up to you, by combining a fire burst and a wall of fire, you think you will be able to fly temporary into the air";
 								p.sendMessage(color + message);

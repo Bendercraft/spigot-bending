@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
 import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -41,6 +42,8 @@ public class FireStream {
 	private Player player;
 	private long interval;
 
+	private final RegisteredAbility blazeRegister;
+
 	public FireStream(Location location, Vector direction, Player player, int range) {
 		this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
 		this.player = player;
@@ -51,11 +54,12 @@ public class FireStream {
 		this.direction = this.direction.clone().normalize();
 		this.location = this.location.clone().add(this.direction);
 		this.time = System.currentTimeMillis();
+		this.blazeRegister = AbilityManager.getManager().getRegisteredAbility(Blaze.NAME);
 		interval = (long) (1000. / SPEED);
 	}
 
 	public boolean progress() {
-		if (ProtectionManager.isLocationProtectedFromBending(this.player, Blaze.NAME, this.location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, blazeRegister, this.location)) {
 			return false;
 		}
 		if ((System.currentTimeMillis() - this.time) >= interval) {
@@ -91,7 +95,7 @@ public class FireStream {
 	}
 
 	public static boolean isIgnitable(Player player, Block block) {
-		if (ProtectionManager.isLocationProtectedFromBending(player, Blaze.NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, AbilityManager.getManager().getRegisteredAbility(Blaze.NAME), block.getLocation())) {
 			return false;
 		}
 

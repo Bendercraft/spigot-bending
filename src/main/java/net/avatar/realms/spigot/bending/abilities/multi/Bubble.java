@@ -106,10 +106,7 @@ public abstract class Bubble extends BendingActiveAbility {
 				if (this.origins.containsKey(block)) {
 					continue;
 				}
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, WaterBubble.NAME, block.getLocation())) {
-					continue;
-				}
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, AirBubble.NAME, block.getLocation())) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, register, block.getLocation())) {
 					continue;
 				}
 				if (this.pushedMaterials.contains(block.getType())) {

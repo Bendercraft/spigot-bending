@@ -3,6 +3,7 @@ package net.avatar.realms.spigot.bending.abilities.fire;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import net.avatar.realms.spigot.bending.abilities.*;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,11 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.water.PhaseChange;
 import net.avatar.realms.spigot.bending.abilities.water.Torrent;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
@@ -99,7 +95,7 @@ public class HeatControl extends BendingActiveAbility {
 		double radius = PluginTools.firebendingDayAugment(RADIUS, this.player.getWorld());
 
 		for (Block block : BlockTools.getBlocksAroundPoint(EntityTools.getTargetBlock(this.player, range).getLocation(), radius)) {
-			if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, block.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, register, block.getLocation())) {
 				continue;
 			}
 			// Do not allow firebender to completly negate lavabend
@@ -238,7 +234,8 @@ public class HeatControl extends BendingActiveAbility {
 	// Copy from Melt (now deleted)
 	@SuppressWarnings("deprecation")
 	public static void melt(Player player, Block block) {
-		if (ProtectionManager.isLocationProtectedFromBending(player, PhaseChange.NAME, block.getLocation())) {
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(PhaseChange.NAME);
+		if (ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())) {
 			return;
 		}
 
@@ -265,7 +262,8 @@ public class HeatControl extends BendingActiveAbility {
 	}
 
 	public static void evaporate(Player player, Block block) {
-		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation())) {
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(NAME);
+		if (ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())) {
 			return;
 		}
 		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block) && WaterManipulation.canPhysicsChange(block)) {

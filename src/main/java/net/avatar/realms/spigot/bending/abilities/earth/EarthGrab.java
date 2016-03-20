@@ -111,7 +111,7 @@ public class EarthGrab extends BendingActiveAbility {
 
 				this.origin = new Location(entity.getLocation().getWorld(), x, y, z, entity.getLocation().getYaw(), entity.getLocation().getPitch());
 
-				if (ProtectionManager.isLocationProtectedFromBending(player, EarthWall.NAME, this.origin)) {
+				if (ProtectionManager.isLocationProtectedFromBending(player, register, this.origin)) {
 					return false;
 				}
 
