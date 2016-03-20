@@ -96,7 +96,7 @@ public class FireShield extends BendingActiveAbility {
 			}
 
 			for (Block block : blocks) {
-				if (!ProtectionManager.isLocationProtectedFromBending(this.player, NAME, block.getLocation())) {
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, block.getLocation())) {
 					block.getWorld().playEffect(block.getLocation(), Effect.MOBSPAWNER_FLAMES, 0, 20);
 				}
 			}
@@ -105,7 +105,7 @@ public class FireShield extends BendingActiveAbility {
 				if (ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, entity.getLocation())) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, register, entity.getLocation())) {
 					continue;
 				}
 				if ((this.player.getEntityId() != entity.getEntityId()) && ignite) {

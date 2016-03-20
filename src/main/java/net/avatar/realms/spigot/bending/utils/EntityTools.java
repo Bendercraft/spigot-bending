@@ -82,13 +82,16 @@ public class EntityTools {
 		return true;
 	}
 
-	public static boolean hasPermission(Player player, String ability) {
-		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
-		if (register.getAffinity() != BendingAffinity.NONE && !EntityTools.isSpecialized(player, register.getAffinity())) {
+	public static boolean hasPermission(Player player, RegisteredAbility ability) {
+		if (ability == null) {
 			return false;
 		}
 
-		if (player.hasPermission(register.getPermission())) {
+		if (ability.getAffinity() != BendingAffinity.NONE && !EntityTools.isSpecialized(player, ability.getAffinity())) {
+			return false;
+		}
+
+		if (player.hasPermission(ability.getPermission())) {
 			return true;
 		}
 
@@ -96,6 +99,10 @@ public class EntityTools {
 	}
 
 	public static boolean canBend(Player player, String ability) {
+		return canBend(player, AbilityManager.getManager().getRegisteredAbility(ability));
+	}
+
+	public static boolean canBend(Player player, RegisteredAbility ability) {
 		if (ability == null) {
 			return false;
 		}
@@ -108,13 +115,11 @@ public class EntityTools {
 			return false;
 		}
 		
-		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
-
-		if (register.getElement() == BendingElement.ENERGY) {
+		if (ability.getElement() == BendingElement.ENERGY) {
 			return true;
 		}
 
-		if (toggledBending(player) && !BendingPassiveAbility.isPassive(register)) {
+		if (toggledBending(player) && !BendingPassiveAbility.isPassive(ability)) {
 			return false;
 		}
 
@@ -122,12 +127,12 @@ public class EntityTools {
 			return false;
 		}
 
-		if (!isBender(player, register.getElement())) {
+		if (!isBender(player, ability.getElement())) {
 			return false;
 		}
 
-		if (register.getAffinity() != BendingAffinity.NONE) {
-			if (!isSpecialized(player, register.getAffinity())) {
+		if (ability.getAffinity() != BendingAffinity.NONE) {
+			if (!isSpecialized(player, ability.getAffinity())) {
 				return false;
 			}
 			if (speToggled(player)) {
@@ -215,7 +220,7 @@ public class EntityTools {
 			return true;
 		}
 
-		if (canBend(player, Bloodbending.NAME) && !toggledBending(player)) {
+		if (canBend(player, AbilityManager.getManager().getRegisteredAbility(Bloodbending.NAME)) && !toggledBending(player)) {
 			return false;
 		}
 

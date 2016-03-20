@@ -47,7 +47,7 @@ public class BindExecution extends BendingCommand {
 
 		Player player = (Player) sender;
 
-		if (!EntityTools.hasPermission(player, ability.getName())) {
+		if (!EntityTools.hasPermission(player, ability)) {
 			player.sendMessage(ChatColor.RED + Messages.NO_BIND_PERMISSION);
 			return true;
 		}

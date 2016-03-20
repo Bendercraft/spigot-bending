@@ -27,6 +27,7 @@ import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.earth.EarthArmor;
 import net.avatar.realms.spigot.bending.controller.Settings;
 
 public class BendingDenyItem implements Listener {
@@ -231,6 +232,18 @@ public class BendingDenyItem implements Listener {
 					|| item.getType() == Material.IRON_HELMET
 					|| item.getType() == Material.IRON_LEGGINGS) {
 				bender.getPlayer().getInventory().remove(item);
+			}
+		}
+		
+		//EarthBender with EarthArmor in progress might keep leather armor with "EartArmor" on it
+		if(bender == null || !bender.isBender(BendingElement.EARTH) || !EarthArmor.hasEarthArmor(bender.getPlayer())) {
+			if(item.getType() == Material.LEATHER_BOOTS 
+					|| item.getType() == Material.LEATHER_CHESTPLATE
+					|| item.getType() == Material.LEATHER_HELMET
+					|| item.getType() == Material.LEATHER_LEGGINGS) {
+				if(EarthArmor.isArmor(item)) {
+					bender.getPlayer().getInventory().remove(item);
+				}
 			}
 		}
 	}

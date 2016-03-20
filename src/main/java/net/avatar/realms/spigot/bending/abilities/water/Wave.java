@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -68,12 +69,15 @@ public class Wave {
 
 	private WaterReturn waterReturn;
 
+	private final RegisteredAbility waterRegister;
+
 	public Wave(Player player) {
 		this.player = player;
 
 		if (AvatarState.isAvatarState(player)) {
 			this.maxradius = AvatarState.getValue(this.maxradius);
 		}
+		this.waterRegister = AbilityManager.getManager().getRegisteredAbility(WaterWall.NAME);
 		this.maxradius = PluginTools.waterbendingNightAugment(this.maxradius, player.getWorld());
 	}
 
@@ -202,7 +206,7 @@ public class Wave {
 		if (waterReturn != null) {
 			return waterReturn.progress();
 		}
-		if (this.player.isDead() || !this.player.isOnline() || !EntityTools.canBend(this.player, WaterWall.NAME)) {
+		if (this.player.isDead() || !this.player.isOnline() || !EntityTools.canBend(this.player, waterRegister)) {
 			breakBlock();
 			thaw();
 			return false;
@@ -232,14 +236,15 @@ public class Wave {
 					breakBlock();
 					return false;
 				}
-				if (!EntityTools.canBend(this.player, PhaseChange.NAME) && !PhaseChange.NAME.equals(EntityTools.getBendingAbility(player))) {
+				RegisteredAbility phase = AbilityManager.getManager().getRegisteredAbility(PhaseChange.NAME);
+				if (!EntityTools.canBend(this.player, phase) && !PhaseChange.NAME.equals(EntityTools.getBendingAbility(player))) {
 					this.progressing = false;
 					thaw();
 					breakBlock();
 					returnWater();
 					return false;
 				}
-				if (!EntityTools.canBend(this.player, WaterWall.NAME)) {
+				if (!EntityTools.canBend(this.player, waterRegister)) {
 					this.progressing = false;
 					thaw();
 					breakBlock();
@@ -256,7 +261,7 @@ public class Wave {
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!ProtectionManager.isLocationProtectedFromBending(this.player, WaterWall.NAME, this.location) && ((((blockl.getType() == Material.AIR) || (blockl.getType() == Material.FIRE) || BlockTools.isPlant(blockl) || BlockTools.isWater(blockl) || BlockTools.isWaterbendable(blockl, this.player))) && (blockl.getType() != Material.LEAVES))) {
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, waterRegister, this.location) && ((((blockl.getType() == Material.AIR) || (blockl.getType() == Material.FIRE) || BlockTools.isPlant(blockl) || BlockTools.isWater(blockl) || BlockTools.isWaterbendable(blockl, this.player))) && (blockl.getType() != Material.LEAVES))) {
 
 					for (double i = 0; i <= this.radius; i += .5) {
 						for (double angle = 0; angle < 360; angle += 10) {
@@ -363,7 +368,7 @@ public class Wave {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isLocationProtectedFromBending(this.player, WaterWall.NAME, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, waterRegister, block.getLocation())) {
 			return;
 		}
 		if (!TempBlock.isTempBlock(block)) {
@@ -402,8 +407,8 @@ public class Wave {
 		}
 
 		for (Block block : BlockTools.getBlocksAroundPoint(this.frozenlocation, freezeradius)) {
-			if (ProtectionManager.isLocationProtectedFromBending(this.player, WaterWall.NAME, block.getLocation())
-					|| ProtectionManager.isLocationProtectedFromBending(this.player, WaterWall.NAME, block.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, waterRegister, block.getLocation())
+					|| ProtectionManager.isLocationProtectedFromBending(this.player, waterRegister, block.getLocation())) {
 				continue;
 			}
 			if (TempBlock.isTempBlock(block)) {

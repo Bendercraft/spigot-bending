@@ -2,7 +2,6 @@ package net.avatar.realms.spigot.bending.listeners;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +24,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -180,7 +178,9 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (MetalBending.NAME.equals(ability) && EntityTools.canBend(player, ability)) {
+		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
+
+		if (MetalBending.NAME.equals(ability) && EntityTools.canBend(player, register)) {
 			MetalWire.pull(player, event.getHook());
 		}
 	}
@@ -239,7 +239,7 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		if (EntityTools.canBend(player, ability) &&
+		if (EntityTools.canBend(player, registered) &&
 				(registered.canBeUsedWithTools() ||!EntityTools.isTool(player.getInventory().getItemInMainHand().getType()))) {
 			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			boolean shouldCreateNew = true;
@@ -268,6 +268,10 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerSneak(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
+		if (player == null){
+			Bending.getInstance().getLogger().warning("Null player in PlayerSneak");
+			return;
+		}
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
@@ -276,12 +280,11 @@ public class BendingPlayerListener implements Listener {
 		String ability = EntityTools.getBendingAbility(player);
 		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
 		if (!player.isSneaking()
-				&& ((ability == null) || !register.isShift())
+				&& ((ability == null) || (register == null) || !register.isShift())
 				&& (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE || !player.isFlying())) {
 			if (bender.isBender(BendingElement.WATER)
 					&& EntityTools.canBendPassive(player, BendingElement.WATER)
 					&& !WaterSpout.isBending(player)) {
-
 				FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
 				if(ab.canBeInitialized()) {
 					ab.start();
@@ -293,7 +296,7 @@ public class BendingPlayerListener implements Listener {
 			}
 		}
 
-		if (EntityTools.canBend(player, ability) && !player.isSneaking()) {
+		if (EntityTools.canBend(player, register) && !player.isSneaking()) {
 			Map<Object, BendingAbility> abilities = AbilityManager.getManager().getInstances(ability);
 			boolean shouldCreateNew = true;
 			for (BendingAbility a : abilities.values()) {
@@ -489,10 +492,6 @@ public class BendingPlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
-		if ((event.getSlotType() == SlotType.ARMOR) && !EarthArmor.canRemoveArmor((Player) event.getWhoClicked())) {
-			event.setCancelled(true);
-		}
-
 		if (Suffocate.isTempHelmet(event.getCurrentItem())) {
 			event.setCancelled(true);
 		}
@@ -501,7 +500,6 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		if (EarthArmor.hasEarthArmor(event.getPlayer())) {
-			EarthArmor.removeEffect(event.getPlayer());
 			event.getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
 		}
 		if (Suffocate.isTargeted(event.getPlayer())) {
@@ -521,7 +519,6 @@ public class BendingPlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-
 		EntityDamageEvent ede = event.getEntity().getLastDamageCause();
 
 		if ((ede != null) && (ede.getCause() != null) && (ede.getCause() == DamageCause.LAVA)) {
@@ -531,23 +528,6 @@ public class BendingPlayerListener implements Listener {
 			if (lT != null) {
 				event.setDeathMessage(player.getName() + " died swimming in " + lT.getPlayer().getName() + "'s lava train");
 			}
-		}
-
-		if (EarthArmor.hasEarthArmor(event.getEntity())) {
-			List<ItemStack> drops = event.getDrops();
-			List<ItemStack> newdrops = new ArrayList<ItemStack>();
-			EarthArmor armor = EarthArmor.getEarthArmor(event.getEntity());
-			for (int i = 0; i < drops.size(); i++) {
-				// Remove eartharmor from items drops
-				if (!armor.isArmor(drops.get(i))) {
-					newdrops.add(drops.get(i));
-				}
-			}
-			// Koudja : Since "EarthArmor.removeEffect" already restore player
-			// armor, do not drop it again !
-			event.getDrops().clear();
-			event.getDrops().addAll(newdrops);
-			EarthArmor.removeEffect(event.getEntity());
 		}
 
 		// Fireblade & Suffocate

@@ -129,25 +129,29 @@ public class AbilityManager {
 		}
 	}
 
-	public BendingActiveAbility buildAbility(String name, Player player) {
-		RegisteredAbility registered = this.binds.get(name.toLowerCase());
-		if (registered == null) {
+	public BendingActiveAbility buildAbility(RegisteredAbility ability, Player player) {
+		if (ability == null) {
 			return null; // Invalid bind
 		}
-		Constructor<? extends BendingAbility> contructor = registered.getConstructor();
+		Constructor<? extends BendingAbility> contructor = ability.getConstructor();
 		if (contructor == null) {
 			return null; // Invalid bind
 		}
 		try {
-			BendingActiveAbility ab = (BendingActiveAbility) contructor.newInstance(registered, player);
+			BendingActiveAbility ab = (BendingActiveAbility) contructor.newInstance(ability, player);
 			if (ab == null) {
-				Bending.getInstance().getLogger().warning("Invalid class for ability " + name);
+				Bending.getInstance().getLogger().warning("Invalid class for ability " + ability.getName());
 			}
 			return ab;
 		} catch (Exception e) {
-			Bending.getInstance().getLogger().log(Level.SEVERE, "Invalid constructor for ability " + name, e);
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Invalid constructor for ability " + ability.getName(), e);
 		}
 		return null;
+	}
+
+	public BendingActiveAbility buildAbility(String name, Player player) {
+		RegisteredAbility registered = this.binds.get(name.toLowerCase());
+		return buildAbility(registered, player);
 	}
 
 	public String getName(BendingAbility instance) {

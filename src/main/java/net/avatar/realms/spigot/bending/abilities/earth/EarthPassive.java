@@ -39,7 +39,7 @@ public class EarthPassive extends BendingPassiveAbility {
 	public boolean start() {
 		Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
 
-		if (BlockTools.isEarthbendable(player, NAME, block) || BlockTools.isTransparentToEarthbending(player, NAME, block)) {
+		if (BlockTools.isEarthbendable(player, register, block) || BlockTools.isTransparentToEarthbending(player, register, block)) {
 
 			if (!BlockTools.isTransparentToEarthbending(player, block)) {
 				if (BlockTools.isSolid(block.getRelative(BlockFace.DOWN))) {

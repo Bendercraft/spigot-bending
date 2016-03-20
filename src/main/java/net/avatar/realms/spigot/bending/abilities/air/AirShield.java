@@ -132,7 +132,7 @@ public class AirShield extends BendingActiveAbility {
 					|| (entity instanceof FallingBlock) 
 					|| (entity instanceof ItemFrame) 
 					|| (entity instanceof Item)
-					|| ProtectionManager.isLocationProtectedFromBending(this.player, NAME, entity.getLocation())) {
+					|| ProtectionManager.isLocationProtectedFromBending(this.player, register, entity.getLocation())) {
 				continue;
 			}
 
@@ -194,7 +194,7 @@ public class AirShield extends BendingActiveAbility {
 			z = origin.getZ() + (this.radius * Math.sin(angle) * f);
 
 			Location effect = new Location(origin.getWorld(), x, y, z);
-			if (!ProtectionManager.isLocationProtectedFromBending(this.player, NAME, effect)) {
+			if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, effect)) {
 				origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
 			}
 

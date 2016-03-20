@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import org.bukkit.Location;
@@ -46,6 +49,11 @@ public class EarthColumn {
 	private long time;
 	private int height = HEIGHT;
 	private List<Block> affectedBlocks = new ArrayList<Block>();
+	private final RegisteredAbility earthRegister;
+
+	public EarthColumn() {
+		this.earthRegister = AbilityManager.getManager().getRegisteredAbility(EarthWall.NAME);
+	}
 
 	public boolean init(Player player) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -53,8 +61,7 @@ public class EarthColumn {
 		if (bPlayer.isOnCooldown(EarthWall.NAME)) {
 			return false;
 		}
-
-		block = BlockTools.getEarthSourceBlock(player, EarthWall.NAME, RANGE);
+		block = BlockTools.getEarthSourceBlock(player, earthRegister, RANGE);
 		if (block == null)
 			return  false;
 		origin = block.getLocation();

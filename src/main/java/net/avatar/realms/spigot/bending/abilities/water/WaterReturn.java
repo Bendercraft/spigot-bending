@@ -3,7 +3,9 @@ package net.avatar.realms.spigot.bending.abilities.water;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
 import net.avatar.realms.spigot.bending.abilities.BendingAbility;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -27,11 +29,13 @@ public class WaterReturn {
 	private TempBlock block;
 	private long time;
 	private Player player;
+	private final RegisteredAbility waterRegister;
 
 	public WaterReturn(Player player, Block block, BendingAbility parent) {
 		location = block.getLocation();
 		this.player = player;
-		if (!ProtectionManager.isLocationProtectedFromBending(player, WaterManipulation.NAME, location) && EntityTools.canBend(player, WaterManipulation.NAME)) {
+		this.waterRegister = AbilityManager.getManager().getRegisteredAbility(WaterManipulation.NAME);
+		if (!ProtectionManager.isLocationProtectedFromBending(player, waterRegister, location) && EntityTools.canBend(player, waterRegister)) {
 			if (BlockTools.isTransparentToEarthbending(player, block) && !block.isLiquid()) {
 				//this.block = new TempBlock(block, Material.WATER, full);
 				this.block = TempBlock.makeTemporary(block, Material.WATER, false);
@@ -67,7 +71,7 @@ public class WaterReturn {
 		if (location.getBlock().equals(block.getLocation().getBlock()))
 			return true;
 
-		if (ProtectionManager.isLocationProtectedFromBending(player, WaterManipulation.NAME, location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, waterRegister, location)) {
 			return false;
 		}
 

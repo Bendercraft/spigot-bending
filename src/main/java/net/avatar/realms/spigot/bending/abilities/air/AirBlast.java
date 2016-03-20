@@ -120,7 +120,7 @@ public class AirBlast extends BendingActiveAbility {
 				return false;
 			}
 
-			if ((originLocation == null) || ProtectionManager.isLocationProtectedFromBending(this.player, NAME, originLocation)) {
+			if ((originLocation == null) || ProtectionManager.isLocationProtectedFromBending(this.player, register, originLocation)) {
 				return false;
 			}
 

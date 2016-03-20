@@ -3,6 +3,8 @@ package net.avatar.realms.spigot.bending.abilities.water;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.avatar.realms.spigot.bending.abilities.AbilityManager;
+import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -49,6 +51,7 @@ public class SpikeFieldColumn {
 	private List<TempBlock> affectedblocks = new LinkedList<TempBlock>();
 	private List<LivingEntity> damaged = new LinkedList<LivingEntity>();
 	private Player player;
+	private final RegisteredAbility icespikeRegister;
 
 	public SpikeFieldColumn(Player player, Location origin, int damage, Vector throwing, long aoecooldown, SpikeField spikeField) {
 		interval = (long) (1000 / speed);
@@ -58,6 +61,7 @@ public class SpikeFieldColumn {
 		this.damage = damage;
 		this.thrown = throwing;
 		this.time = System.currentTimeMillis() - interval;
+		this.icespikeRegister = AbilityManager.getManager().getRegisteredAbility(IceSpike.NAME);
 	}
 
 	public boolean progress() {
@@ -74,7 +78,7 @@ public class SpikeFieldColumn {
 					return true;
 				}
 				this.location = affectedblock.getLocation();
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, IceSpike.NAME, this.location)) {
+				if (ProtectionManager.isLocationProtectedFromBending(this.player, icespikeRegister, this.location)) {
 					return false;
 				}
 				for (LivingEntity en : EntityTools.getLivingEntitiesAroundPoint(this.location, 1.4)) {

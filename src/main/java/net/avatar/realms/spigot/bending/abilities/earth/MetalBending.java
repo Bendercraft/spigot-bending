@@ -3,12 +3,7 @@ package net.avatar.realms.spigot.bending.abilities.earth;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.avatar.realms.spigot.bending.abilities.BendingAbilityState;
-import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
-import net.avatar.realms.spigot.bending.abilities.ABendingAbility;
-import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
-import net.avatar.realms.spigot.bending.abilities.BendingElement;
-import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
+import net.avatar.realms.spigot.bending.abilities.*;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -82,7 +77,8 @@ public class MetalBending extends BendingActiveAbility {
 						bl = bl.getRelative(BlockFace.DOWN);
 					}
 					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
-						if (!ProtectionManager.isLocationProtectedFromBending(pl, NAME, bl.getLocation())) {
+						RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(NAME);
+						if (!ProtectionManager.isLocationProtectedFromBending(pl, registered, bl.getLocation())) {
 							if (bl.getData() < 4) {
 								bl.setData((byte) (bl.getData() + 4));
 								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);

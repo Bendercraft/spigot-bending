@@ -102,7 +102,7 @@ public class Torrent extends BendingActiveAbility {
 		if (this.layer == 0) {
 			return;
 		}
-		if (!EntityTools.canBend(this.player, PhaseChange.NAME)) {
+		if (!EntityTools.canBend(this.player, AbilityManager.getManager().getRegisteredAbility(PhaseChange.NAME))) {
 			return;
 		}
 		List<Block> ice = BlockTools.getBlocksAroundPoint(this.location, this.layer);
@@ -323,7 +323,7 @@ public class Torrent extends BendingActiveAbility {
 					this.location = blockloc.clone();
 				}
 				Block block = blockloc.getBlock();
-				if (!doneblocks.contains(block) && !ProtectionManager.isLocationProtectedFromBending(this.player, Torrent.NAME, blockloc)) {
+				if (!doneblocks.contains(block) && !ProtectionManager.isLocationProtectedFromBending(this.player, register, blockloc)) {
 					if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
 						//this.launchblocks.add(new TempBlock(block, Material.WATER, full));
 						this.launchblocks.add(TempBlock.makeTemporary(block, Material.WATER, false));
@@ -371,7 +371,7 @@ public class Torrent extends BendingActiveAbility {
 
 		// player.sendBlockChange(location, 20, (byte) 0);
 
-		if ((this.location.distance(this.player.getLocation()) > this.range) || ProtectionManager.isLocationProtectedFromBending(this.player, Torrent.NAME, this.location)) {
+		if ((this.location.distance(this.player.getLocation()) > this.range) || ProtectionManager.isLocationProtectedFromBending(this.player, register, this.location)) {
 			if (this.layer < maxlayer) {
 				if (this.freeze || (this.layer < 1)) {
 					this.layer++;
@@ -470,7 +470,7 @@ public class Torrent extends BendingActiveAbility {
 			double dz = Math.sin(phi) * radius;
 			Location blockloc = loc.clone().add(dx, dy, dz);
 			Block block = blockloc.getBlock();
-			if (!doneBlocks.contains(block) && !ProtectionManager.isLocationProtectedFromBending(this.player, Torrent.NAME, blockloc)) {
+			if (!doneBlocks.contains(block) && !ProtectionManager.isLocationProtectedFromBending(this.player, register, blockloc)) {
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
 					//this.blocks.add(new TempBlock(block, Material.WATER, full));
 					this.blocks.add(TempBlock.makeTemporary(block, Material.WATER, false));

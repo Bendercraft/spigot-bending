@@ -68,7 +68,7 @@ public class StraightShot extends BendingActiveAbility {
 	}
 	
 	private boolean affectAround(Location location) {
-		if (ProtectionManager.isLocationProtectedFromBending(player, NAME, location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
 			return false;
 		}
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.1)) {

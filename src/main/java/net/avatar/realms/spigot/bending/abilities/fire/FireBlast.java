@@ -147,7 +147,7 @@ public class FireBlast extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, this.location)) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, register, this.location)) {
 			return false;
 		}
 		return true;

@@ -149,7 +149,7 @@ public class WaterSpout extends BendingActiveAbility {
 		}
 		for (int i = 0; i <= (height + 1); i++) {
 			Location locToTest = loc.add(0, -1, 0);
-			if (ProtectionManager.isLocationProtectedFromBending(this.player, NAME, locToTest)) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, register, locToTest)) {
 				return -1;
 			}
 			Block block = locToTest.getBlock();

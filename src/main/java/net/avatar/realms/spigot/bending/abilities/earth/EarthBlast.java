@@ -114,7 +114,7 @@ public class EarthBlast extends BendingActiveAbility {
 				|| isState(BendingAbilityState.PREPARED)) {
 			block(player); // Despite EarthBlast being allowed to have multiple instance for same player, when selecting we do NOT want that behavior
 			
-			Block block = BlockTools.getEarthSourceBlock(player, NAME, SELECT_RANGE);
+			Block block = BlockTools.getEarthSourceBlock(player, register, SELECT_RANGE);
 			if (block != null) {
 				if (EarthPassive.isPassiveSand(block)) {
 					EarthPassive.revertSand(block);
@@ -286,7 +286,7 @@ public class EarthBlast extends BendingActiveAbility {
 					if (ProtectionManager.isEntityProtected(entity)) {
 						continue;
 					}
-					if (ProtectionManager.isLocationProtectedFromBending(player, NAME, entity.getLocation())) {
+					if (ProtectionManager.isLocationProtectedFromBending(player, register, entity.getLocation())) {
 						continue;
 					}
 
@@ -401,7 +401,8 @@ public class EarthBlast extends BendingActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, blast.location)) {
+			RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(NAME);
+			if (ProtectionManager.isLocationProtectedFromBending(player, register, blast.location)) {
 				continue;
 			}
 
@@ -444,7 +445,8 @@ public class EarthBlast extends BendingActiveAbility {
 				continue;
 			}
 
-			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, blast.location)) {
+			RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(NAME);
+			if (ProtectionManager.isLocationProtectedFromBending(player, register, blast.location)) {
 				continue;
 			}
 

@@ -77,19 +77,17 @@ public class ProtectionManager {
 		return false;
 	}
 
-	public static boolean isLocationProtectedFromBending(Player player, String ability, Location loc) {
+	public static boolean isLocationProtectedFromBending(Player player, RegisteredAbility ability, Location loc) {
 		if (ability == null || player == null) {
 			return false;
 		}
 		
-		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
-
 		if (player.hasPermission("bending.protection.bypass")) {
 			return false;
 		}
 
 		if (Settings.RESPECT_WORLDGUARD && worldguard != null) {
-			return worldguard.isRegionProtectedFromBending(player, register, loc);
+			return worldguard.isRegionProtectedFromBending(player, ability, loc);
 		}
 
 		return false;

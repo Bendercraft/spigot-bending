@@ -132,7 +132,7 @@ public class Combustion extends BendingActiveAbility {
 		}
 
 		if (System.currentTimeMillis() > time + interval) {
-			if (ProtectionManager.isLocationProtectedFromBending(player, NAME, location)) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
 				remove();
 				return;
 			}
@@ -222,7 +222,7 @@ public class Combustion extends BendingActiveAbility {
 				obsidian = true;
 			}
 			if (!obsidian || (obsidian && location.distance(block.getLocation()) < EXPLOSION_RADIUS / 2.0)) {
-				if (!ProtectionManager.isLocationProtectedFromBending(player, NAME, block.getLocation())
+				if (!ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())
 						&& !ProtectionManager.isLocationProtectedFromExplosion(player, NAME, block.getLocation())) {
 					affecteds.add(block);
 				}

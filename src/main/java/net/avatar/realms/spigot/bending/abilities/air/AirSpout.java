@@ -89,8 +89,7 @@ public class AirSpout extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (this.player.getEyeLocation().getBlock().isLiquid() 
-				|| BlockTools.isSolid(this.player.getEyeLocation().getBlock())) {
+		if (this.player.getEyeLocation().getBlock().isLiquid()) {
 			return false;
 		}
 		return true;
