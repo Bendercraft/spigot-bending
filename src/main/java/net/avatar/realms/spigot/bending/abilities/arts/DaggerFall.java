@@ -40,7 +40,7 @@ public class DaggerFall extends BendingActiveAbility {
 		ItemStack dagger = new ItemStack(Material.IRON_SWORD, 1);
 		dagger.addEnchantment(Enchantment.KNOCKBACK, 1);
 		ItemMeta meta = dagger.getItemMeta();
-		meta.setDisplayName("§3SwordDagger");
+		meta.setDisplayName("§3Master Sword");
 		meta.setLore(Arrays.asList("Dagger"));
 		dagger.setItemMeta(meta);
 		
