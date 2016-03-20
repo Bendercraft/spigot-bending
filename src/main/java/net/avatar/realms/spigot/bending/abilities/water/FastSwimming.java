@@ -38,16 +38,16 @@ public class FastSwimming extends BendingPassiveAbility {
 			return false;
 		}
 		
-		if (!(EntityTools.canBendPassive(this.player, BendingElement.WATER) && this.player.isSneaking())) {
+		if (!(EntityTools.canBendPassive(player, BendingElement.WATER) && player.isSneaking())) {
 			return false;
 		}
-		String ability = EntityTools.getBendingAbility(this.player);
+		String ability = EntityTools.getBendingAbility(player);
 		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
 		if ((ability != null) && register.isShift() && !ability.equals(WaterSpout.NAME)) {
 			return false;
 		}
 
-		if (WaterSpout.isBending(this.player)) {
+		if (WaterSpout.isBending(player)) {
 			return false;
 		}
 		
@@ -56,14 +56,14 @@ public class FastSwimming extends BendingPassiveAbility {
 
 	@Override
 	public void progress() {
-		if (BlockTools.isWater(this.player.getLocation().getBlock()) && !TempBlock.isTempBlock(this.player.getLocation().getBlock())) {
+		if (BlockTools.isWater(player.getLocation().getBlock()) && !TempBlock.isTempBlock(player.getLocation().getBlock())) {
 			swimFast();
 		}
 	}
 
 	private void swimFast() {
-		Vector dir = this.player.getEyeLocation().getDirection().clone();
-		this.player.setVelocity(dir.normalize().multiply(FACTOR));
+		Vector dir = player.getEyeLocation().getDirection().clone();
+		player.setVelocity(dir.normalize().multiply(FACTOR));
 	}
 
 	@Override
