@@ -24,14 +24,16 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
  * FireBlade works by giving player a GOLDEN_SWORD, that is allowed by bending {@link BendingDenyItem}.
- * This sword does no damage @link {@link BendingPlayerListener} but calls {@link #affect(LivingEntity)}
+ * This sword does no damage @link {@link BendingPlayerListener} but calls {@link /affect(LivingEntity)}
  *
  */
 @ABendingAbility(name = FireBlade.NAME, element = BendingElement.FIRE, shift=false)
 public class FireBlade extends BendingActiveAbility {
 	public final static String NAME = "FireBlade";
-	
-	private static String LORE_NAME = "FireBlade";
+
+	private static String NAME_NAME = "§cFireBlade";
+	private static String LORE_NAME = "A short blade made of fire bent right";
+	private static String LORE_NAME2 = "out of the firenbender's hand";
 
 	@ConfigurationParameter("Duration")
 	private static int DURATION = 40000;
@@ -53,8 +55,8 @@ public class FireBlade extends BendingActiveAbility {
 		if(getState() == BendingAbilityState.START) {
 			blade = new ItemStack(Material.GOLD_SWORD);
 			ItemMeta meta = blade.getItemMeta();
-			meta.setDisplayName("§cFireBlade");
-			meta.setLore(Arrays.asList(LORE_NAME));
+			meta.setDisplayName(NAME_NAME);
+			meta.setLore(Arrays.asList(LORE_NAME, LORE_NAME2));
 			blade.setItemMeta(meta);
 			EntityTools.giveItemInMainHand(player, blade);
 			

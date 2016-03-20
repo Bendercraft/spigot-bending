@@ -18,7 +18,14 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 @ABendingAbility(name = Supply.NAME, affinity = BendingAffinity.BOW)
 public class Supply extends BendingActiveAbility {
 	public final static String NAME = "Supply";
-	
+
+
+	private static String NAME_NAMEB = "§3Master's Bow";
+	private static String LORE_NAMEB = "A true archer is capable of crafting a reliable";
+	private static String LORE_NAMEB2 = "bow from scratch using any ressource at disposal.";
+	private static String NAME_NAMEA = "§3Master's Arrow";
+	private static String LORE_NAMEA = "Arrow for Master's Bow";
+
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 15000;
 	
@@ -40,14 +47,15 @@ public class Supply extends BendingActiveAbility {
 		ItemStack bow = new ItemStack(Material.BOW, 1);
 		bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
 		ItemMeta metaBow = bow.getItemMeta();
-		metaBow.setDisplayName("§3Master Bow");
-		metaBow.setLore(Arrays.asList("Bow"));
+		metaBow.setDisplayName(NAME_NAMEB);
+		metaBow.setLore(Arrays.asList(LORE_NAMEB, LORE_NAMEB2));
 		bow.setItemMeta(metaBow);
 		EntityTools.giveItemInMainHand(player, bow);
 		
 		ItemStack arrow = new ItemStack(Material.ARROW, 1);
 		ItemMeta metaArrow = bow.getItemMeta();
-		metaArrow.setLore(Arrays.asList("Arrow"));
+		metaArrow.setDisplayName(NAME_NAMEA);
+		metaArrow.setLore(Arrays.asList(LORE_NAMEA));
 		arrow.setItemMeta(metaArrow);
 		player.getInventory().addItem(arrow);
 		

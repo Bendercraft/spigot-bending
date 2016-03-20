@@ -18,7 +18,13 @@ import net.avatar.realms.spigot.bending.utils.EntityTools;
 @ABendingAbility(name = DaggerFall.NAME, affinity = BendingAffinity.SWORD)
 public class DaggerFall extends BendingActiveAbility {
 	public final static String NAME = "DaggerFall";
-	
+
+
+	private static String NAME_NAME = "§3Master's Sword";
+	private static String LORE_NAME = "The Master's Sword is the expression of";
+	private static String LORE_NAME2 = "a swordsman's talent. It was made by himself";
+	private static String LORE_NAME3 = "as a proof of his versatility in the arts of combat.";
+
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 15000;
 	
@@ -40,8 +46,8 @@ public class DaggerFall extends BendingActiveAbility {
 		ItemStack dagger = new ItemStack(Material.IRON_SWORD, 1);
 		dagger.addEnchantment(Enchantment.KNOCKBACK, 1);
 		ItemMeta meta = dagger.getItemMeta();
-		meta.setDisplayName("§3Master Sword");
-		meta.setLore(Arrays.asList("Dagger"));
+		meta.setDisplayName(NAME_NAME);
+		meta.setLore(Arrays.asList(LORE_NAME, LORE_NAME2, LORE_NAME3));
 		dagger.setItemMeta(meta);
 		
 		EntityTools.giveItemInMainHand(player, dagger);
