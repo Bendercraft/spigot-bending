@@ -287,10 +287,8 @@ public class BendingPlayerListener implements Listener {
 			if (bender.isBender(BendingElement.WATER)
 					&& EntityTools.canBendPassive(player, BendingElement.WATER)
 					&& !WaterSpout.isBending(player)) {
-				player.sendMessage("Can bend dolphin");
 				FastSwimming ab = new FastSwimming(AbilityManager.getManager().getRegisteredAbility(FastSwimming.NAME), player);
 				if(ab.canBeInitialized()) {
-					player.sendMessage("Can be initialized");
 					ab.start();
 					if(ab.getState() != BendingAbilityState.START && ab.getState() != BendingAbilityState.ENDED) {
 						AbilityManager.getManager().addInstance(ab);
