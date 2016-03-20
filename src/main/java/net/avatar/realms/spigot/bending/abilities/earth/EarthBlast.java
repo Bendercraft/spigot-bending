@@ -186,8 +186,8 @@ public class EarthBlast extends BendingActiveAbility {
 		
 		time = System.currentTimeMillis();
 		LivingEntity target = EntityTools.getTargetedEntity(player, RANGE);
+		destination = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
 		if (target == null) {
-			destination = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
 			firstDestination = location.clone();
 			firstDestination.setY(destination.getY());
 		} else {
