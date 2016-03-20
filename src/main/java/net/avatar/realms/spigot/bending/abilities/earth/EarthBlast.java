@@ -69,6 +69,9 @@ public class EarthBlast extends BendingActiveAbility {
 	@ConfigurationParameter("Revert")
 	private static long COOLDOWN = 500;
 
+	@ConfigurationParameter("Revert2")
+	private static long COOLDOWN2 = 1000;
+
 	@ConfigurationParameter("Deflect-Range")
 	private static double DEFLECT_RANGE = 3;
 
@@ -94,9 +97,6 @@ public class EarthBlast extends BendingActiveAbility {
 		this.uuid = UUID.randomUUID();
 
 		double speed = SPEED;
-		if (this.bender.hasPath(BendingPath.RECKLESS)) {
-			speed *= 0.8;
-		}
 
 		this.interval = (long) (1000. / speed);
 	}
@@ -164,9 +164,16 @@ public class EarthBlast extends BendingActiveAbility {
 		List<EarthBlast> ignore = null;
 		if (!bender.isOnCooldown(NAME)) {
 			if (getState() == BendingAbilityState.PREPARED) {
-				throwEarth();
-				bender.cooldown(NAME, COOLDOWN);
-				ignore = Collections.singletonList(this);
+				if (this.bender.hasPath(BendingPath.RECKLESS)) {
+					throwEarth();
+					bender.cooldown(NAME, COOLDOWN2);
+					ignore = Collections.singletonList(this);
+				}
+				else {
+					throwEarth();
+					bender.cooldown(NAME, COOLDOWN);
+					ignore = Collections.singletonList(this);
+				}
 			}
 		}
 		if (ignore == null) {
