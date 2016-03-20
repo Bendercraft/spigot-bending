@@ -91,7 +91,7 @@ public class EntityTools {
 			return false;
 		}
 
-		if (player.hasPermission(ability.getPermission())) {
+		if(ability.isPassive() || player.hasPermission(ability.getPermission())) {
 			return true;
 		}
 
