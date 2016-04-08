@@ -68,8 +68,6 @@ public class DamageTools {
 				}
 				living.setHealth(health);
 				
-				
-				
 				// See EntityLiving#damageEntity from NMS to get effect ID and standard hurt ticks
 				t.getHandle().lastDamage = (float) event.getDamage();
 				t.getHandle().lastDamager = ((CraftPlayer)(attacker.getPlayer())).getHandle();
@@ -80,9 +78,11 @@ public class DamageTools {
 				}
 				t.getHandle().killer = ((CraftPlayer)(attacker.getPlayer())).getHandle();
 				t.getHandle().hurtTicks = t.getHandle().ay = 10;
-				t.getHandle().noDamageTicks = t.getHandle().maxNoDamageTicks;
+				t.getHandle().noDamageTicks = 5;
 				t.getHandle().world.broadcastEntityEffect(t.getHandle(), (byte)33);
-				
+				// Small knockback
+				t.getHandle().lastDamager.a(t.getHandle(), 0.5F, t.getHandle().locX - t.getHandle().lastDamager.locX, t.getHandle().locZ - t.getHandle().lastDamager.locZ);
+				// Should entity die ?
 				if(living.getHealth() <= 0) {
 					t.getHandle().die(DamageSource.GENERIC);
 				}
