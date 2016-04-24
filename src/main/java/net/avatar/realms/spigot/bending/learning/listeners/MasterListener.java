@@ -25,7 +25,7 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 
-public class ChiListener implements Listener {
+public class MasterListener implements Listener {
 	private BendingLearning plugin;
 
 	private Map<UUID, Double> sprintDistanceTraveledDash = new HashMap<UUID, Double>();
@@ -34,7 +34,7 @@ public class ChiListener implements Listener {
 
 	private static ChatColor color = PluginTools.getColor(Settings.getColor(BendingElement.MASTER));
 
-	public ChiListener(BendingLearning plugin) {
+	public MasterListener(BendingLearning plugin) {
 		this.plugin = plugin;
 
 	}

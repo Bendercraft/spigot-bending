@@ -20,6 +20,7 @@ import net.avatar.realms.spigot.bending.abilities.air.AirSlice;
 import net.avatar.realms.spigot.bending.abilities.air.AirSpout;
 import net.avatar.realms.spigot.bending.abilities.air.AirSwipe;
 import net.avatar.realms.spigot.bending.abilities.arts.Dash;
+import net.avatar.realms.spigot.bending.abilities.arts.DirectHit;
 import net.avatar.realms.spigot.bending.abilities.arts.HighJump;
 import net.avatar.realms.spigot.bending.abilities.earth.Collapse;
 import net.avatar.realms.spigot.bending.abilities.earth.EarthBlast;
@@ -34,7 +35,7 @@ import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.abilities.water.WaterSpout;
 import net.avatar.realms.spigot.bending.abilities.water.WaterTurret;
 import net.avatar.realms.spigot.bending.learning.listeners.AirListener;
-import net.avatar.realms.spigot.bending.learning.listeners.ChiListener;
+import net.avatar.realms.spigot.bending.learning.listeners.MasterListener;
 import net.avatar.realms.spigot.bending.learning.listeners.EarthListener;
 import net.avatar.realms.spigot.bending.learning.listeners.FireListener;
 import net.avatar.realms.spigot.bending.learning.listeners.PermissionListener;
@@ -60,7 +61,7 @@ public class BendingLearning {
 			EarthListener earthListener = new EarthListener(this);
 			WaterListener waterListener = new WaterListener(this);
 			FireListener fireListener = new FireListener(this);
-			ChiListener chiListener = new ChiListener(this);
+			MasterListener chiListener = new MasterListener(this);
 
 			// Register listeners
 			Bending.getInstance().getServer().getPluginManager().registerEvents(permListener, Bending.getInstance());
@@ -198,6 +199,7 @@ public class BendingLearning {
 				|| ability.equals(WaterTurret.NAME)
 				
 				|| ability.equals(Dash.NAME)
+				|| ability.equals(DirectHit.NAME)
 				|| ability.equals(HighJump.NAME)) {
 			return true;
 		}
