@@ -1,6 +1,5 @@
 package net.avatar.realms.spigot.bending.listeners;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,8 +21,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionType;
-
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import net.avatar.realms.spigot.bending.Bending;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
@@ -36,12 +35,12 @@ public class BendingDenyItem implements Listener {
 	private Map<UUID, Long> enderpearls;
 	
 	private Map<Enchantment, Integer> deniedEnchantments;
-	private List<PotionType> deniedPotions;
+	private List<PotionEffectType> deniedPotions;
 	
 	public BendingDenyItem() {
 		enderpearls = new HashMap<UUID, Long>();
 		deniedEnchantments = new HashMap<Enchantment, Integer>();
-		deniedPotions = new LinkedList<PotionType>();
+		deniedPotions = new LinkedList<PotionEffectType>();
 		
 		deniedEnchantments.put(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
 		deniedEnchantments.put(Enchantment.PROTECTION_FIRE, 0);
@@ -67,9 +66,9 @@ public class BendingDenyItem implements Listener {
 		deniedEnchantments.put(Enchantment.LUCK, 3);
 		deniedEnchantments.put(Enchantment.LURE, 3);
 		
-		deniedPotions.add(PotionType.STRENGTH);
-		deniedPotions.add(PotionType.FIRE_RESISTANCE);
-		deniedPotions.add(PotionType.INVISIBILITY);
+		deniedPotions.add(PotionEffectType.INCREASE_DAMAGE);
+		deniedPotions.add(PotionEffectType.FIRE_RESISTANCE);
+		deniedPotions.add(PotionEffectType.INVISIBILITY);
 	}
 	
 	@EventHandler
@@ -178,8 +177,11 @@ public class BendingDenyItem implements Listener {
 		
 		if(item.getType() == Material.POTION) {
 			PotionMeta meta = (PotionMeta) item.getItemMeta();
-			if(!Collections.disjoint(deniedPotions, meta.getCustomEffects())) {
-				bender.getPlayer().getInventory().remove(item);
+			for(PotionEffect effect : meta.getCustomEffects()) {
+				if(deniedPotions.contains(effect.getType())) {
+					bender.getPlayer().getInventory().remove(item);
+					break;
+				}
 			}
 		}
 		
