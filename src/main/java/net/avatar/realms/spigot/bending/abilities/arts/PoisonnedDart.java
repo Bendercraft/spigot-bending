@@ -11,7 +11,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -86,8 +86,8 @@ public class PoisonnedDart extends BendingActiveAbility {
 				is.setAmount(1);
 				break;
 			case POTION:
-				Potion potion = Potion.fromItemStack(is);
-				this.effects.addAll(potion.getEffects());
+				PotionMeta meta = (PotionMeta) is.getItemMeta();
+				this.effects.addAll(meta.getCustomEffects());
 				this.player.getInventory().removeItem(is);
 				this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
 				break;
@@ -105,6 +105,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 				is.setAmount(1);
 				break;
 			case SKULL_ITEM:
+				@SuppressWarnings("deprecation")
 				byte data = is.getData().getData();
 				// If this is a wither skull
 				if (data == 1) {

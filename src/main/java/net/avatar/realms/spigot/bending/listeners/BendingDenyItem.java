@@ -1,5 +1,6 @@
 package net.avatar.realms.spigot.bending.listeners;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +21,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
 
 import net.avatar.realms.spigot.bending.Bending;
@@ -176,15 +177,9 @@ public class BendingDenyItem implements Listener {
 		}
 		
 		if(item.getType() == Material.POTION) {
-			Potion potion = Potion.fromItemStack(item);
-			if(deniedPotions.contains(potion.getType())) {
-				potion.setType(PotionType.WATER);
-				ItemStack corrected = potion.toItemStack(1);
-				item.setAmount(corrected.getAmount());
-				item.setData(corrected.getData());
-				item.setDurability(corrected.getDurability());
-				item.setItemMeta(corrected.getItemMeta());
-				item.setType(corrected.getType());
+			PotionMeta meta = (PotionMeta) item.getItemMeta();
+			if(!Collections.disjoint(deniedPotions, meta.getCustomEffects())) {
+				bender.getPlayer().getInventory().remove(item);
 			}
 		}
 		
