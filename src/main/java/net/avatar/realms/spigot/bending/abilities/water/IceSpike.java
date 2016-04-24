@@ -19,6 +19,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -266,13 +267,13 @@ public class IceSpike extends BendingActiveAbility {
 				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
 				entity.addPotionEffect(effect);
 				bPlayer.slow(slowCooldown);
-				EntityTools.damageEntity(bender, entity, damage);
+				DamageTools.damageEntity(bender, entity, damage);
 			}
 		} else {
 			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
 			entity.addPotionEffect(effect);
 			entity.damage(damage, this.player);
-			EntityTools.damageEntity(bender, entity, damage);
+			DamageTools.damageEntity(bender, entity, damage);
 		}
 	}
 

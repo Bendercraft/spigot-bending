@@ -9,6 +9,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -261,7 +262,7 @@ public class Ripple {
 		}
 
 		if (entity instanceof LivingEntity) {
-			EntityTools.damageEntity(bender, entity, damage);
+			DamageTools.damageEntity(bender, entity, damage);
 		}
 
 		Vector vector = direction.clone();

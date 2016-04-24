@@ -19,6 +19,7 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.avatar.realms.spigot.bending.utils.TempBlock;
@@ -249,7 +250,7 @@ public class AirBlast extends BendingActiveAbility {
 		entity.setFallDistance(0);
 
 		if (this.bender.hasPath(BendingPath.RENEGADE) && !entity.getUniqueId().equals(player.getUniqueId())) {
-			EntityTools.damageEntity(bender, entity, 1);
+			DamageTools.damageEntity(bender, entity, 1);
 		}
 	}
 

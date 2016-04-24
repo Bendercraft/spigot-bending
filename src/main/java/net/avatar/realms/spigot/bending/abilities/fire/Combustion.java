@@ -14,6 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -167,13 +168,13 @@ public class Combustion extends BendingActiveAbility {
 			return;
 		}
 		if (distance < DAMAGE_RADIUS) {
-			EntityTools.damageEntity(bender, entity, damage);
+			DamageTools.damageEntity(bender, entity, damage);
 			return;
 		}
 		double slope = -(damage * .5) / (EXPLOSION_RADIUS - DAMAGE_RADIUS);
 
 		double damage = slope * (distance - DAMAGE_RADIUS) + this.damage;
-		EntityTools.damageEntity(bender, entity, (int) damage);
+		DamageTools.damageEntity(bender, entity, (int) damage);
 	}
 
 	private void knockBack(Entity entity) {

@@ -26,6 +26,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -74,7 +75,7 @@ public class Bloodbending extends BendingActiveAbility {
 						continue;
 					}
 				}
-				EntityTools.damageEntity(bender, entity, 0);
+				DamageTools.damageEntity(bender, entity, 0);
 				this.targetEntities.put(entity, entity.getLocation().clone());
 			}
 		} else {
@@ -93,7 +94,7 @@ public class Bloodbending extends BendingActiveAbility {
 				}
 
 			}
-			EntityTools.damageEntity(bender, target, 0);
+			DamageTools.damageEntity(bender, target, 0);
 			this.targetEntities.put(target, target.getLocation().clone());
 		}
 		this.time = System.currentTimeMillis();
@@ -153,7 +154,7 @@ public class Bloodbending extends BendingActiveAbility {
 				}
 				entities.add(entity);
 				if (!this.targetEntities.containsKey(entity)) {
-					EntityTools.damageEntity(bender, entity, 0);
+					DamageTools.damageEntity(bender, entity, 0);
 					this.targetEntities.put(entity, entity.getLocation().clone());
 				}
 				Location newlocation = entity.getLocation().clone();

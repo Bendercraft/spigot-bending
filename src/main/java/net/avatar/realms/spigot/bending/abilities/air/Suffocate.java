@@ -21,6 +21,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -131,7 +132,7 @@ public class Suffocate extends BendingActiveAbility {
 			}
 
 			this.target.getWorld().playEffect(this.target.getEyeLocation(), Effect.SMOKE, 4);
-			EntityTools.damageEntity(bender, target, baseDamage + addtionnalDamage);
+			DamageTools.damageEntity(bender, target, baseDamage + addtionnalDamage);
 
 			this.targetLocation = this.target.getLocation().getBlock();
 		}

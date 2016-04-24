@@ -14,6 +14,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @ABendingAbility(name = Slice.NAME, affinity = BendingAffinity.SWORD, canBeUsedWithTools = true)
@@ -93,7 +94,7 @@ public class Slice extends BendingActiveAbility {
 				remove();
 				return;
 			}
-			EntityTools.damageEntity(bender, target, DAMAGE_BLEED);
+			DamageTools.damageEntity(bender, target, DAMAGE_BLEED);
 			ticks++;
 		}
 	}

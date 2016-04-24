@@ -31,6 +31,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 import net.coreprotect.CoreProtectAPI;
@@ -317,7 +318,7 @@ public class C4 extends BendingActiveAbility {
 			return;
 		}
 
-		EntityTools.damageEntity(bender, entity, MAX_DAMAGE);
+		DamageTools.damageEntity(bender, entity, MAX_DAMAGE);
 	}
 
 	private void knockBack(Entity entity) {

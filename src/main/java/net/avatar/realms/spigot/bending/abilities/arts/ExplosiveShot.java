@@ -18,6 +18,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.fire.FireStream;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 @ABendingAbility(name = ExplosiveShot.NAME, affinity = BendingAffinity.BOW)
@@ -64,7 +65,7 @@ public class ExplosiveShot extends BendingActiveAbility {
 		Location location = arrow.getLocation();
 		
 		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, RANGE_DAMAGE)) {
-			EntityTools.damageEntity(bender, entity, DAMAGE);
+			DamageTools.damageEntity(bender, entity, DAMAGE);
 		}
 
 		Vector direction = arrow.getLocation().getDirection().clone();

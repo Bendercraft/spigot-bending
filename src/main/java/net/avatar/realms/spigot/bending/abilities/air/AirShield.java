@@ -25,6 +25,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -165,7 +166,7 @@ public class AirShield extends BendingActiveAbility {
 				velocity.multiply(this.radius / maxRadius);
 
 				if (bender.hasPath(BendingPath.RENEGADE)) {
-					EntityTools.damageEntity(bender, entity, 1);
+					DamageTools.damageEntity(bender, entity, 1);
 					velocity.multiply(2);
 				}
 				entity.setVelocity(velocity);

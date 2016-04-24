@@ -25,6 +25,9 @@ public class DamageTools {
 	private static final Function<? super Double, Double> ZERO = Functions.constant(-0.0);
 	private static Field FIELD_ENTITYPLAYER_lastDamageByPlayerTime = null;
 	
+	public static final int DEFAULT_NODAMAGETICKS = 5;
+	public static final float DEFAULT_KNOCKBACK = 0.5F;
+	
 	private static Field getField() throws NoSuchFieldException, SecurityException {
 		if(FIELD_ENTITYPLAYER_lastDamageByPlayerTime == null) {
 			FIELD_ENTITYPLAYER_lastDamageByPlayerTime = EntityLiving.class.getDeclaredField("lastDamageByPlayerTime");
@@ -34,6 +37,20 @@ public class DamageTools {
 	}
 	
 	public static void damageEntity(BendingPlayer attacker, Entity damagee, double damage) {
+		damageEntity(attacker, damagee, damage, false, DEFAULT_NODAMAGETICKS, DEFAULT_KNOCKBACK, false);
+	}
+	
+	/**
+	 * 
+	 * @param attacker : thug life
+	 * @param damagee : who's the victim here ?!
+	 * @param damage : amount of damage to apply
+	 * @param ghost : if true, this damage won't change "noDamageTicks" on damagee, usefull to get "passive damage" done
+	 * @param noDamageTicks : how many ticks damagee gets invulnerability after being touch by this damage (have no effect if 'ghost' is set to true)
+	 * @param knockback : knockback push to apply
+	 * @param bypassImmunity : set to true if this damage should bypass "noDamageTicks" 
+	 */
+	public static void damageEntity(BendingPlayer attacker, Entity damagee, double damage, boolean ghost, int noDamageTicks, float knockback, boolean bypassImmunity) {
 		if (ProtectionManager.isEntityProtected(damagee)) {
 			return;
 		}
@@ -55,7 +72,7 @@ public class DamageTools {
 			
 			
 			CraftLivingEntity t = (CraftLivingEntity) damagee;
-			if(!event.isCancelled() && !living.isDead() && t.getHandle().noDamageTicks == 0) {
+			if(!event.isCancelled() && !living.isDead() && (bypassImmunity || t.getHandle().noDamageTicks == 0)) {
 				living.setLastDamageCause(event);
 				
 				// Make sure we do not set negative health or too much
@@ -78,10 +95,13 @@ public class DamageTools {
 				}
 				t.getHandle().killer = ((CraftPlayer)(attacker.getPlayer())).getHandle();
 				t.getHandle().hurtTicks = t.getHandle().ay = 10;
-				t.getHandle().noDamageTicks = 5;
+				if(!ghost) {
+					t.getHandle().noDamageTicks = noDamageTicks;
+				}
 				t.getHandle().world.broadcastEntityEffect(t.getHandle(), (byte)33);
-				// Small knockback
-				t.getHandle().lastDamager.a(t.getHandle(), 0.5F, t.getHandle().locX - t.getHandle().lastDamager.locX, t.getHandle().locZ - t.getHandle().lastDamager.locZ);
+				// Knockback
+				t.getHandle().lastDamager.a(t.getHandle(), knockback, t.getHandle().locX - t.getHandle().lastDamager.locX, t.getHandle().locZ - t.getHandle().lastDamager.locZ);
+				
 				// Should entity die ?
 				if(living.getHealth() <= 0) {
 					t.getHandle().die(DamageSource.GENERIC);

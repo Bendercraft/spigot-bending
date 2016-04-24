@@ -13,6 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -118,7 +119,7 @@ public class FireFerret extends BendingActiveAbility {
 			return false;
 		}
 		if (entity.getEntityId() != this.player.getEntityId()) {
-			EntityTools.damageEntity(bender, entity, DAMAGE);
+			DamageTools.damageEntity(bender, entity, DAMAGE);
 			entity.setFireTicks(2);
 			return false;
 		}

@@ -25,6 +25,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -104,7 +105,6 @@ public class PoisonnedDart extends BendingActiveAbility {
 				is.setAmount(1);
 				break;
 			case SKULL_ITEM:
-				@SuppressWarnings("deprecation")
 				byte data = is.getData().getData();
 				// If this is a wither skull
 				if (data == 1) {
@@ -181,7 +181,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 				}
 			}
 			if (!health && (this.effects != null)) {
-				EntityTools.damageEntity(bender, entity, DAMAGE);
+				DamageTools.damageEntity(bender, entity, DAMAGE);
 			}
 			cptEnt++;
 			break;

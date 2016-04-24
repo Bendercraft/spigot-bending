@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.BendingPlayer;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -95,7 +96,7 @@ public class Enflamed {
 		this.target.setFireTicks(this.secondsLeft * 20);
 		this.secondsLeft -= 1;
 		
-		EntityTools.damageEntity(bender, this.target, damage);
+		DamageTools.damageEntity(bender, this.target, damage, true, 0, 0.0F, true);
 		return true;
 	}
 

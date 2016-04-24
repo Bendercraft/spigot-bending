@@ -24,6 +24,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.controller.Settings;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.MathUtils;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
@@ -199,7 +200,7 @@ public class Lightning extends BendingActiveAbility {
 		}
 		double dmg = this.damage - ((distance / this.strikeradius) * .5);
 		this.hitentities.add(entity);
-		EntityTools.damageEntity(bender, entity, (int) dmg);
+		DamageTools.damageEntity(bender, entity, (int) dmg);
 	}
 
 	public static boolean isNearbyChannel(Location location) {

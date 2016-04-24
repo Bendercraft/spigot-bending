@@ -25,6 +25,7 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -580,7 +581,7 @@ public class Torrent extends BendingActiveAbility {
 			if (Tools.isNight(world)) {
 				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * DEFLECT_DAMAGE);
 			}
-			EntityTools.damageEntity(bender, entity, damagedealt);
+			DamageTools.damageEntity(bender, entity, damagedealt);
 		}
 
 	}
@@ -607,7 +608,7 @@ public class Torrent extends BendingActiveAbility {
 				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * this.damage);
 			}
 
-			EntityTools.damageEntity(bender, entity, damagedealt);
+			DamageTools.damageEntity(bender, entity, damagedealt);
 			this.hurtentities.add(entity);
 
 			entity.setNoDamageTicks(0);

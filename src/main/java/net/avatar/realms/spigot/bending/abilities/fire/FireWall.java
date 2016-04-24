@@ -18,6 +18,7 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -197,7 +198,7 @@ public class FireWall extends BendingActiveAbility {
 		}
 		entity.setVelocity(new Vector(0, 0, 0));
 		Enflamed.enflame(this.player, entity, 1);
-		EntityTools.damageEntity(bender, entity, this.damage);	
+		DamageTools.damageEntity(bender, entity, this.damage);	
 	}
 
 	@Override

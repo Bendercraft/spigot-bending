@@ -19,6 +19,7 @@ import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.listeners.BendingDenyItem;
 import net.avatar.realms.spigot.bending.listeners.BendingPlayerListener;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 
@@ -130,7 +131,7 @@ public class FireBlade extends BendingActiveAbility {
 	}
 	
 	public void affect(Entity entity) {
-		EntityTools.damageEntity(bender, entity, DAMAGE);
+		DamageTools.damageEntity(bender, entity, DAMAGE);
 		Enflamed.enflame(player, entity, 4);
 	}
 

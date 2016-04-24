@@ -30,6 +30,7 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -348,7 +349,7 @@ public class WaterManipulation extends BendingActiveAbility {
 							this.damage = AvatarState.getValue(this.damage);
 						}
 
-						EntityTools.damageEntity(bender, entity, PluginTools.waterbendingNightAugment(this.damage, this.player.getWorld()));
+						DamageTools.damageEntity(bender, entity, PluginTools.waterbendingNightAugment(this.damage, this.player.getWorld()));
 						this.progressing = false;
 					}
 				}

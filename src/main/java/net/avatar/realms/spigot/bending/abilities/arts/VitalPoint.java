@@ -15,6 +15,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
@@ -75,7 +76,7 @@ public class VitalPoint extends BendingActiveAbility {
 			this.cooldown = 1000;
 			if (this.player.isSneaking()) {
 				this.damage += DAMAGE_INCREMENT;
-				EntityTools.damageEntity(bender, target, damage);
+				DamageTools.damageEntity(bender, target, damage);
 				if (this.target instanceof Player) {
 					EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
 				}
@@ -83,7 +84,7 @@ public class VitalPoint extends BendingActiveAbility {
 				this.cooldown += COOLDOWN / (6);
 			}
 			else {
-				EntityTools.damageEntity(bender, target, damage);
+				DamageTools.damageEntity(bender, target, damage);
 				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
 			}
 			this.bender.cooldown(NAME, this.cooldown);

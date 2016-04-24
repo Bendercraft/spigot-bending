@@ -8,6 +8,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingActiveAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingAffinity;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 
 /**
@@ -44,7 +45,7 @@ public class BlankPoint extends BendingActiveAbility {
 			return false;
 		}
 		if(this.player.isSneaking()) {
-			EntityTools.damageEntity(bender, target, DAMAGE);
+			DamageTools.damageEntity(bender, target, DAMAGE);
 			target.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
 					.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
 

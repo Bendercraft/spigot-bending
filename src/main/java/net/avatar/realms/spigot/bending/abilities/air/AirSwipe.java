@@ -29,6 +29,7 @@ import net.avatar.realms.spigot.bending.abilities.fire.FireBlast;
 import net.avatar.realms.spigot.bending.abilities.water.WaterManipulation;
 import net.avatar.realms.spigot.bending.controller.ConfigurationParameter;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.PluginTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
@@ -295,7 +296,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 						if (!this.affectedentities.contains(entity)) {
 							if (this.damage != 0) {
-								EntityTools.damageEntity(bender, entity, this.damage);
+								DamageTools.damageEntity(bender, entity, this.damage);
 							}
 							this.affectedentities.add(entity);
 						}

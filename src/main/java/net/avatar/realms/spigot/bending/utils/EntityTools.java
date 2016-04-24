@@ -343,11 +343,6 @@ public class EntityTools {
 		}
 		return result;
 	}
-
-
-	public static void damageEntity(BendingPlayer attacker, Entity damagee, double damage) {
-		DamageTools.damageEntity(attacker, damagee, damage);
-	}
 	
 	public static void giveItemInOffHand(Player player, ItemStack itemstack) {
 		ItemStack offhand = player.getInventory().getItemInOffHand();

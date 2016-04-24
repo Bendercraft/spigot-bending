@@ -13,6 +13,7 @@ import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import net.avatar.realms.spigot.bending.abilities.RegisteredAbility;
 import net.avatar.realms.spigot.bending.abilities.BendingElement;
 import net.avatar.realms.spigot.bending.utils.BlockTools;
+import net.avatar.realms.spigot.bending.utils.DamageTools;
 import net.avatar.realms.spigot.bending.utils.EntityTools;
 import net.avatar.realms.spigot.bending.utils.ProtectionManager;
 
@@ -110,7 +111,7 @@ public class FireShield extends BendingActiveAbility {
 				}
 				if ((this.player.getEntityId() != entity.getEntityId()) && ignite) {
 					if (this.bender.hasPath(BendingPath.LIFELESS)) {
-						EntityTools.damageEntity(bender, entity, 2);
+						DamageTools.damageEntity(bender, entity, 2);
 					}
 					Enflamed.enflame(this.player, entity, 3);
 				}
