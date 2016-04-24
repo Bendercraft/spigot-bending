@@ -87,7 +87,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 				break;
 			case POTION:
 				PotionMeta meta = (PotionMeta) is.getItemMeta();
-				this.effects.addAll(meta.getCustomEffects());
+				this.effects.add(meta.getBasePotionData().getType().getEffectType().createEffect(100, 1));
 				this.player.getInventory().removeItem(is);
 				this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
 				break;
