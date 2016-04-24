@@ -20,13 +20,14 @@ import net.avatar.realms.spigot.bending.abilities.energy.AvatarState;
 import net.avatar.realms.spigot.bending.event.BendingDamageEvent;
 import net.minecraft.server.v1_9_R1.DamageSource;
 import net.minecraft.server.v1_9_R1.EntityLiving;
+import net.minecraft.server.v1_9_R1.MathHelper;
 
 public class DamageTools {
 	private static final Function<? super Double, Double> ZERO = Functions.constant(-0.0);
 	private static Field FIELD_ENTITYPLAYER_lastDamageByPlayerTime = null;
 	
 	public static final int DEFAULT_NODAMAGETICKS = 5;
-	public static final float DEFAULT_KNOCKBACK = 0.5F;
+	public static final float DEFAULT_KNOCKBACK = 0.4F;
 	
 	private static Field getField() throws NoSuchFieldException, SecurityException {
 		if(FIELD_ENTITYPLAYER_lastDamageByPlayerTime == null) {
@@ -100,7 +101,18 @@ public class DamageTools {
 				}
 				t.getHandle().world.broadcastEntityEffect(t.getHandle(), (byte)33);
 				// Knockback
-				t.getHandle().lastDamager.a(t.getHandle(), knockback, t.getHandle().locX - t.getHandle().lastDamager.locX, t.getHandle().locZ - t.getHandle().lastDamager.locZ);
+				if (t.getHandle().lastDamager != null) {
+                    double d0 = t.getHandle().lastDamager.locX - t.getHandle().locX;
+
+                    double d1;
+
+                    for (d1 = t.getHandle().lastDamager.locZ - t.getHandle().locZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D) {
+                        d0 = (Math.random() - Math.random()) * 0.01D;
+                    }
+
+                    t.getHandle().az = (float) (MathHelper.b(d1, d0) * 57.2957763671875D - (double) t.getHandle().yaw);
+                    t.getHandle().a(t.getHandle().lastDamager, knockback, d0, d1);
+				}
 				
 				// Should entity die ?
 				if(living.getHealth() <= 0) {
