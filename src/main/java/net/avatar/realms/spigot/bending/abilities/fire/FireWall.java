@@ -197,8 +197,8 @@ public class FireWall extends BendingActiveAbility {
 			return;
 		}
 		entity.setVelocity(new Vector(0, 0, 0));
-		Enflamed.enflame(this.player, entity, 1);
 		DamageTools.damageEntity(bender, entity, this.damage);	
+		Enflamed.enflame(this.player, entity, 1);
 	}
 
 	@Override

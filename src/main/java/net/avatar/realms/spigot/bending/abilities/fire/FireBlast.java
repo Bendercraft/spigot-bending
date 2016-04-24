@@ -243,8 +243,8 @@ public class FireBlast extends BendingActiveAbility {
 			} else {
 				entity.setVelocity(this.direction.clone().multiply(PUSH_FACTOR));
 			}
-			Enflamed.enflame(this.player, entity, 2);
 			DamageTools.damageEntity(bender, entity, PluginTools.firebendingDayAugment(this.damage, entity.getWorld()));
+			Enflamed.enflame(this.player, entity, 2);
 			return false;
 		}
 		return true;
