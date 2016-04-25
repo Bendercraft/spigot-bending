@@ -64,10 +64,6 @@ public abstract class Bubble extends BendingActiveAbility {
 			return false;
 		}
 
-		if (!EntityTools.holdsTool(player)) {
-			remove();
-		}
-
 		return false;
 	}
 
