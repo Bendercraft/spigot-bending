@@ -104,6 +104,9 @@ public class Bloodbending extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
+		if(isState(BendingAbilityState.START)) {
+			return false;
+		}
 		Location location = this.player.getLocation();
 		for (Entity entity : this.targetEntities.keySet()) {
 			double dx, dy, dz;
