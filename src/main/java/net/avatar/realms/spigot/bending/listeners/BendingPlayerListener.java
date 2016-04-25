@@ -186,15 +186,6 @@ public class BendingPlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPlayerChangeVelocity(PlayerVelocityEvent event) {
-		Player player = event.getPlayer();
-		// TODO : Check if this is useful ?
-		if (EntityTools.isBender(player, BendingElement.WATER) && EntityTools.canBendPassive(player, BendingElement.WATER)) {
-			event.setVelocity(WaterPassive.handle(player, event.getVelocity()));
-		}
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		if (!(Settings.CHAT_ENABLED)) {
 			return;
