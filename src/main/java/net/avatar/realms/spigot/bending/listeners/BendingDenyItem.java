@@ -175,7 +175,7 @@ public class BendingDenyItem implements Listener {
 				continue;
 			}
 			try {
-				if(item.getEnchantmentLevel(enchantment) >= level) {
+				if(item.getEnchantmentLevel(enchantment) > level) {
 					item.removeEnchantment(enchantment);
 					item.addEnchantment(enchantment, level);
 				}
