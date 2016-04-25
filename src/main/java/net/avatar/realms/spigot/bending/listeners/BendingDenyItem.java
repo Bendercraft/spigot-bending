@@ -68,6 +68,16 @@ public class BendingDenyItem implements Listener {
 		deniedPotions.add(PotionEffectType.INCREASE_DAMAGE);
 		deniedPotions.add(PotionEffectType.FIRE_RESISTANCE);
 		deniedPotions.add(PotionEffectType.INVISIBILITY);
+		
+		//Fool check
+		Bending.getInstance().getServer().getScheduler().scheduleSyncRepeatingTask(Bending.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				for(Player player : Bending.getInstance().getServer().getOnlinePlayers()) {
+					sanitize(player);
+				}
+			}
+		}, 100, 100);
 	}
 	
 	@EventHandler
