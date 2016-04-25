@@ -17,8 +17,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
 public class WaterReturn {
@@ -150,17 +153,29 @@ public class WaterReturn {
 	}
 
 	public static boolean hasWaterBottle(Player player) {
-		// if (instances.containsKey(player))
-		// return false;
-		if (isBending(player))
+		if (isBending(player)) {
 			return false;
-		PlayerInventory inventory = player.getInventory();
-		return (inventory.contains(new ItemStack(Material.POTION), 1));
+		}
+		return getWaterBottle(player.getInventory()) != -1;
+	}
+	
+	private static int getWaterBottle(Inventory inventory) {
+		for(int i = 0 ; i < inventory.getContents().length ; i++) {
+			ItemStack is = inventory.getContents()[i];
+			if(is == null || is.getType() != Material.POTION) {
+				continue;
+			}
+			PotionMeta pm = (PotionMeta) is.getItemMeta();
+			if(pm.getBasePotionData().getType() == PotionType.WATER) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public static void emptyWaterBottle(Player player) {
 		PlayerInventory inventory = player.getInventory();
-		int index = inventory.first(new ItemStack(Material.POTION));
+		int index = getWaterBottle(inventory);
 		if (index != -1) {
 			ItemStack item = inventory.getItem(index);
 			if (item.getAmount() == 1) {
