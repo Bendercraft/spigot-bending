@@ -253,7 +253,7 @@ public class EarthArmor extends BendingActiveAbility {
 			armors[3] = sign(new ItemStack(Material.LEATHER_HELMET, 1));
 		}
 
-		if (iron) {
+		if (!iron) {
 			PotionEffect resistance = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) DURATION / 50, STRENGTH - 1);
 			player.addPotionEffect(resistance);
 			PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, (int) DURATION / 50, 0);
