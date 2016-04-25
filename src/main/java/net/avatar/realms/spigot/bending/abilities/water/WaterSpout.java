@@ -7,7 +7,6 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -43,7 +42,6 @@ public class WaterSpout extends BendingActiveAbility {
 	private static long COOLDOWN = 0;
 
 	private int currentCardinalPoint = 0;
-	private BlockState baseState;
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private FlyingPlayer flying;
 	private int height;
@@ -86,7 +84,6 @@ public class WaterSpout extends BendingActiveAbility {
 	}
 
 	private void revertSpout() {
-		revertBaseBlock();
 		for (TempBlock b : this.blocks) {
 			b.revertBlock();
 		}
@@ -167,13 +164,6 @@ public class WaterSpout extends BendingActiveAbility {
 		}
 		return -2;
 		// Can waterspout but too high
-	}
-
-	private void revertBaseBlock() {
-		if (this.baseState != null) {
-			this.baseState.update(true);
-			this.baseState = null;
-		}
 	}
 
 	public static boolean isWaterSpoutBlock(Block block) {
