@@ -85,7 +85,7 @@ public class BendingDenyItem implements Listener {
 	
 	@EventHandler
     public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {
-		sanitize(BendingPlayer.getBendingPlayer(event.getPlayer()), event.getItem().getItemStack());
+		sanitize(event.getPlayer());
 	}
 	
 	@EventHandler
