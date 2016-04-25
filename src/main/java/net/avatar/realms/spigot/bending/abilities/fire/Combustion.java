@@ -50,10 +50,10 @@ public class Combustion extends BendingActiveAbility {
 	private static double PUSH_RADIUS = 5.0;
 	
 	@ConfigurationParameter("Explosion-Radius")
-	private static double EXPLOSION_RADIUS = 3.0;
+	private static double EXPLOSION_RADIUS = 5.0;
 
 	@ConfigurationParameter("Inner-Radius")
-	private static double DAMAGE_RADIUS = 3.0;
+	private static double DAMAGE_RADIUS = 5.0;
 
 	@ConfigurationParameter("Sound-Radius")
 	private static int SOUND_RADIUS = 35;
