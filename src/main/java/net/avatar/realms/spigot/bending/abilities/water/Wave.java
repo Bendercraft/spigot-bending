@@ -133,6 +133,10 @@ public class Wave {
 	}
 
 	public void remove() {
+		if(activatefreeze) {
+			thaw();
+			breakBlock();
+		}
 		finalRemoveWater(this.sourceblock);
 		if (this.drainedBlock != null) {
 			this.drainedBlock.revertBlock();
@@ -476,4 +480,5 @@ public class Wave {
 		return false;
 	}
 
+	public boolean isFrozen() {return freeze;}
 }
