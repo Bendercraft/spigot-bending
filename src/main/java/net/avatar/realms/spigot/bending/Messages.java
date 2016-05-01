@@ -83,7 +83,7 @@ public class Messages {
 	public static String NO_BENDING = "No bending";
 
 	@LanguageParameter("command.who.is_bending")
-	public static String WHO_IS_BENDING = "{0} is a {1} bender.";
+	public static String WHO_IS_BENDING = "{0} is a {1} bender. (Path : {2})";
 
 	@LanguageParameter("command.who_is_chi")
 	public static String WHO_IS_CHI = "{0} is a chi-blocker.";

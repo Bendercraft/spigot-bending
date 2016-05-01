@@ -17,7 +17,7 @@
         <mkdir dir="${outputDir}" />
     </target>
     <target name="compile" depends="prepare">
-        <javac destdir="${outputDir}" debug="true" debuglevel="source,lines,vars" target="1.7" source="1.7">
+        <javac destdir="${outputDir}" debug="true" debuglevel="source,lines,vars" target="1.8" source="1.8">
             <src path="${javaDir}"/>
             <classpath>
                 <fileset dir="${libdir}">

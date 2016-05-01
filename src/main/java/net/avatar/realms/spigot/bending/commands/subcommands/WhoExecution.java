@@ -1,7 +1,9 @@
 package net.avatar.realms.spigot.bending.commands.subcommands;
 
 import java.util.List;
+import java.util.Optional;
 
+import net.avatar.realms.spigot.bending.abilities.BendingPath;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -45,45 +47,48 @@ public class WhoExecution extends BendingCommand {
 	}
 
 	private void sendWho(Player player, String playerName) {
-		Player p = getPlayer(playerName);
-		if (p == null || !player.canSee(p)) {
+		Player target = getPlayer(playerName);
+		if (target == null || !player.canSee(target)) {
 			player.sendMessage(ChatColor.RED + Messages.INVALID_PLAYER);
 			return;
 		}
-		BendingPlayer bender = BendingPlayer.getBendingPlayer(p);
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(target);
 		if (bender == null || bender.getBendingTypes() == null || bender.getBendingTypes().isEmpty()) {
 			player.sendMessage(playerName);
 			player.sendMessage(Messages.NO_BENDING);
 			return;
 		}
 
-		ChatColor color = ChatColor.WHITE;
+		ChatColor color;
 		if (bender.getBendingTypes().size() > 1) {
 			color = PluginTools.getColor(Settings.getColor(BendingElement.ENERGY));
-		} else {
+		}
+		else {
 			color = PluginTools.getColor(Settings.getColor(bender.getBendingTypes().get(0)));
 		}
 		player.sendMessage(color + playerName);
-		for (BendingElement element : bender.getBendingTypes()) {
-			color = PluginTools.getColor(Settings.getColor(element));
+
+		bender.getBendingTypes().stream().parallel().forEach((element) -> {
+			ChatColor col = PluginTools.getColor(Settings.getColor(element));
 			String msg;
 			if (element == BendingElement.MASTER) {
 				msg = Messages.WHO_IS_CHI;
 			} else {
 				msg = Messages.WHO_IS_BENDING;
-				msg = msg.replaceAll("\\{1\\}", element.name());
-			}
-			msg = msg.replaceAll("\\{0\\}", p.getName());
-			msg = color + msg;
-			player.sendMessage(msg);
-
-			for (BendingAffinity aff : bender.getAffinities()) {
-				if (aff.getElement() == element) {
-					player.sendMessage(color + p.getName() + " has affinity : " + aff.name());
-					break;
+				msg = msg.replace("{1}", element.name());
+				Optional<BendingPath> path = bender.getPath().stream().filter((p) -> p.getElement().equals(element)).findFirst();
+				if (path.isPresent()) {
+					msg = msg.replace("{2}",path.get().name());
 				}
 			}
-		}
+			msg = msg.replace("{0}", target.getName());
+			msg = col + msg;
+			player.sendMessage(msg);
+
+			bender.getAffinities().stream().filter((aff) -> aff.getElement() == element).forEach((aff) -> {
+				player.sendMessage(col + target.getName() + " has affinity : " + aff.name());
+			});
+		});
 	}
 
 	private void sendList(Player player) {
