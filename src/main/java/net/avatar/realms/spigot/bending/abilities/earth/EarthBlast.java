@@ -59,7 +59,10 @@ public class EarthBlast extends BendingActiveAbility {
 	private static int SAND_DAMAGE = 5;
 
 	@ConfigurationParameter("Iron-Damage")
-	private static int IRON_DAMAGE = 9;
+	private static int IRON_DAMAGE = 8;
+
+	@ConfigurationParameter("Lava-Damage")
+	private static int LAVA_DAMAGE = 9;
 
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 35;
@@ -137,8 +140,8 @@ public class EarthBlast extends BendingActiveAbility {
 						current = TempBlock.makeTemporary(block, Material.IRON_BLOCK, false);
 					}
 					damage = IRON_DAMAGE;
-				} else if (EntityTools.canBend(this.player, LavaTrain.NAME) && (type == Material.OBSIDIAN)) {
-					damage = IRON_DAMAGE;
+				} else if (type == Material.OBSIDIAN) {
+					damage = LAVA_DAMAGE;
 					current = TempBlock.makeTemporary(block, Material.BEDROCK, false);
 				} else {
 					current = TempBlock.makeTemporary(block, Material.STONE, false);

@@ -64,6 +64,8 @@ public class BendingDenyItem implements Listener {
 		deniedEnchantments.put(Enchantment.ARROW_INFINITE, 0);
 		deniedEnchantments.put(Enchantment.LUCK, 3);
 		deniedEnchantments.put(Enchantment.LURE, 3);
+		deniedEnchantments.put(Enchantment.MENDING, 1);
+		deniedEnchantments.put(Enchantment.FROST_WALKER, 0);
 		
 		deniedPotions.add(PotionEffectType.INCREASE_DAMAGE);
 		deniedPotions.add(PotionEffectType.FIRE_RESISTANCE);
@@ -174,10 +176,15 @@ public class BendingDenyItem implements Listener {
 				item.removeEnchantment(enchantment);
 				continue;
 			}
+			if(item.getEnchantmentLevel(Enchantment.KNOCKBACK) == 2) {
+				item.removeEnchantment(Enchantment.KNOCKBACK);
+				item.addUnsafeEnchantment(Enchantment.KNOCKBACK, 1);
+				continue;
+			}
 			try {
 				if(item.getEnchantmentLevel(enchantment) > level) {
 					item.removeEnchantment(enchantment);
-					item.addEnchantment(enchantment, level);
+					item.addUnsafeEnchantment(enchantment, level);
 				}
 			} catch(IllegalArgumentException e) {
 				Bending.getInstance().getLogger().severe("Player "+bender.getPlayer().getName()+" had item "+item.getType()+" with enchant "+enchantment.getName()+" but... NOPE :o");
