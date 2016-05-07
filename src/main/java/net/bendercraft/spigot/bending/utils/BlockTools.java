@@ -242,7 +242,7 @@ public class BlockTools {
 
 		if (EntityTools.isSpecialized(player, BendingAffinity.LAVA) 
 				&& (block.getType() == Material.OBSIDIAN) 
-				&& ((ability.equals(EarthWall.NAME)) || (ability.equals(LavaTrain.NAME)))) {
+				&& ((EarthWall.NAME.equals(ability.getName())) || (LavaTrain.NAME.equals(ability.getName())))) {
 			return true;
 		}
 
