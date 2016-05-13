@@ -1,5 +1,5 @@
 name: Bending
-main: net.avatar.realms.spigot.bending.Bending
+main: net.bendercraft.spigot.bending.Bending
 authors: [Noko, Koudja]
 version: 6.1.0
 depend: [ProtocolLib]
