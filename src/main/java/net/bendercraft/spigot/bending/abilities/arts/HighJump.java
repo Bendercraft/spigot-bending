@@ -17,10 +17,10 @@ public class HighJump extends BendingActiveAbility {
 	public final static String NAME = "HighJump";
 
 	@ConfigurationParameter("Height")
-	private static final int JUMP_HEIGHT = 7;
+	private static int JUMP_HEIGHT = 7;
 
 	@ConfigurationParameter("Cooldown")
-	private static final long COOLDOWN = 3500;
+	private static long COOLDOWN = 3500;
 
 	public HighJump(RegisteredAbility register, Player player) {
 		super(register, player);

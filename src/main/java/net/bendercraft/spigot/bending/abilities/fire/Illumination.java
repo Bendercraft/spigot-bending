@@ -16,7 +16,7 @@ public class Illumination extends BendingActiveAbility {
 	public final static String NAME = "Illumination";
 
 	@ConfigurationParameter("Range")
-	private static final int RANGE = 5;
+	private static int RANGE = 5;
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 0;
