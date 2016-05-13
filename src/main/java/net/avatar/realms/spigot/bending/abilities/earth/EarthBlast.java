@@ -288,7 +288,7 @@ public class EarthBlast extends BendingActiveAbility {
 						Location location = player.getEyeLocation();
 						Vector vector = location.getDirection();
 						entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
-						DamageTools.damageEntity(bender, entity, damage);
+						DamageTools.damageEntity(bender, entity, damage, false, 2, 0.5f, false);
 						remove();
 						return;
 					}
