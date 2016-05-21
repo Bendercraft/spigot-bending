@@ -201,6 +201,10 @@ public class BendingManager implements Runnable {
 		
 		revertQueue.add(queue);
 	}
+	
+	public boolean isGlobalTemBlock(TempBlock block) {
+		return revertQueue.stream().filter(x -> x.blocks.contains(block)).findAny().isPresent();
+	}
 
 	public long getTimestep() {
 		return timestep;

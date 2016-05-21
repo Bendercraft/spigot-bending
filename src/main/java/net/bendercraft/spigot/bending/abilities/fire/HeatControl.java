@@ -10,9 +10,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
-import net.bendercraft.spigot.bending.abilities.water.Torrent;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.abilities.water.Wave;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -22,12 +22,7 @@ import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
-/**
- * State progressing means that the player is cooking something. Other stuff
- * don't need a progress
- *
- * @author Noko
- */
+
 @ABendingAbility(name = HeatControl.NAME, element = BendingElement.FIRE)
 public class HeatControl extends BendingActiveAbility {
 	public final static String NAME = "HeatControl";
@@ -243,11 +238,11 @@ public class HeatControl extends BendingActiveAbility {
 			Wave.thaw(block);
 			return;
 		}
-		if (!Torrent.canThaw(block)) {
-			Torrent.thaw(block);
-			return;
-		}
-		if (BlockTools.isMeltable(block) && !TempBlock.isTempBlock(block) && WaterManipulation.canPhysicsChange(block)) {
+		
+		//Either block is a tempblock and a global one, or not at all
+		if(BlockTools.isMeltable(block) && TempBlock.isTempBlock(block) && Bending.getInstance().getManager().isGlobalTemBlock(TempBlock.get(block))) {
+			TempBlock.revertBlock(block);
+		} else if (BlockTools.isMeltable(block) && !TempBlock.isTempBlock(block) && WaterManipulation.canPhysicsChange(block)) {
 			if (block.getType() == Material.SNOW) {
 				block.setType(Material.AIR);
 				return;

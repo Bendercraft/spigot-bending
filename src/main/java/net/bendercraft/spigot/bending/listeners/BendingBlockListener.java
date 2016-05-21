@@ -90,9 +90,6 @@ public class BendingBlockListener implements Listener {
 		if (!event.isCancelled()) {
 			event.setCancelled(!Wave.canThaw(block));
 		}
-		if (!event.isCancelled()) {
-			event.setCancelled(!Torrent.canThaw(block));
-		}
 		if (FireStream.isIgnited(block)) {
 			FireStream.remove(block);
 		}
