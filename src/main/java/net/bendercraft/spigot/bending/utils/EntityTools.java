@@ -26,6 +26,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthGrab;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
+import net.bendercraft.spigot.bending.abilities.water.Drainbending;
 
 public class EntityTools {
 	private static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
@@ -157,14 +158,7 @@ public class EntityTools {
 	}
 
 	public static boolean canPlantbend(Player player) {
-		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
-		if (bPlayer == null) {
-			return false;
-		}
-		if (EntityTools.isSpecialized(player, BendingAffinity.DRAIN)) {
-			return true;
-		}
-		return false;
+		return Drainbending.canDrainBend(player);
 	}
 
 	public static void blockChi(Player player, long time) {

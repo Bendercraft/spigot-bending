@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
 /**
@@ -25,7 +26,7 @@ public class Drainbending {
 		}
 		
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-		if (bender == null || !bender.hasAffinity(BendingAffinity.DRAIN)) {
+		if (bender == null || !bender.hasAffinity(BendingAffinity.DRAIN) || EntityTools.speToggled(player)) {
 			return false;
 		}
 		
