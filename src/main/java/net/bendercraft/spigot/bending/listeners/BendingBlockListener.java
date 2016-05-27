@@ -104,7 +104,7 @@ public class BendingBlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
@@ -119,12 +119,6 @@ public class BendingBlockListener implements Listener {
 			C4.getCFour(bomber).cancel();
 		}
 
-		EarthGrab grab = EarthGrab.blockInEarthGrab(block);
-		if (grab != null) {
-			grab.setToKeep(false);
-			event.setCancelled(true);
-		}
-
 		if (PhaseChange.isFrozen(block)) {
 			PhaseChange.thawThenRemove(block);
 			event.setCancelled(true);
@@ -136,6 +130,17 @@ public class BendingBlockListener implements Listener {
 			event.setCancelled(true);
 		}
 		TempBlock.revertBlock(block);
+	}
+
+	//Counter Factions protection
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	public void onEarthGrabBreak(BlockBreakEvent event) {
+
+		EarthGrab grab = EarthGrab.blockInEarthGrab(event.getBlock());
+		if (grab != null) {
+			grab.setToKeep(false);
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

@@ -54,7 +54,6 @@ public class Bending extends JavaPlugin {
 			blListener = new BendingBlockListener(this);
 		}
 
-
 		this.commandExecutor = new BendingCommandExecutor();
 
 		Settings.applyConfiguration(getDataFolder());
@@ -78,10 +77,6 @@ public class Bending extends JavaPlugin {
 		pm.registerEvents(this.bpListener, this);
 		pm.registerEvents(this.blListener, this);
 
-		if (pm.getPlugin("Factions") != null) {
-			//If there is Factions on the server, let's try to prevent it to prevent block breaking
-			pm.registerEvents(new BendingFactionsBlockListener(), this);
-		}
 		if(Settings.DENY_ITEMS) {
 			getServer().getPluginManager().registerEvents(new BendingDenyItem(), this);
 		}
