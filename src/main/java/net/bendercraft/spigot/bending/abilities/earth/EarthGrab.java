@@ -301,6 +301,15 @@ public class EarthGrab extends BendingActiveAbility {
 		return false;
 	}
 
+	public boolean isEarthGrabBlock(Block block) {
+		for (TempBlock tempBlock : affectedBlocks) {
+			if (block.getLocation().equals(tempBlock.getLocation())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public Object getIdentifier() {
 		return this.id;

@@ -1,7 +1,9 @@
 package net.bendercraft.spigot.bending;
 
+import net.bendercraft.spigot.bending.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comphenix.protocol.ProtocolLibrary;
@@ -17,10 +19,6 @@ import net.bendercraft.spigot.bending.db.IBendingDB;
 import net.bendercraft.spigot.bending.integrations.citizens.BendableTrait;
 import net.bendercraft.spigot.bending.integrations.protocollib.BendingPacketAdapter;
 import net.bendercraft.spigot.bending.learning.BendingLearning;
-import net.bendercraft.spigot.bending.listeners.BendingBlockListener;
-import net.bendercraft.spigot.bending.listeners.BendingDenyItem;
-import net.bendercraft.spigot.bending.listeners.BendingEntityListener;
-import net.bendercraft.spigot.bending.listeners.BendingPlayerListener;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.citizensnpcs.api.CitizensAPI;
@@ -43,14 +41,19 @@ public class Bending extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		
-		if(manager == null)
+		if(manager == null) {
 			manager = new BendingManager(this);
-		if(listener == null)
+		}
+		if(listener == null) {
 			listener = new BendingEntityListener(this);
-		if(bpListener == null)
+		}
+		if(bpListener == null) {
 			bpListener = new BendingPlayerListener(this);
-		if(blListener == null)
+		}
+		if(blListener == null) {
 			blListener = new BendingBlockListener(this);
+		}
+
 
 		this.commandExecutor = new BendingCommandExecutor();
 
@@ -70,10 +73,15 @@ public class Bending extends JavaPlugin {
 			throw new RuntimeException("Invalid database : " + Settings.DATABASE);
 		}
 		bendingDatabase.init(this);
+		PluginManager pm = getServer().getPluginManager();
+		pm.registerEvents(this.listener, this);
+		pm.registerEvents(this.bpListener, this);
+		pm.registerEvents(this.blListener, this);
 
-		getServer().getPluginManager().registerEvents(this.listener, this);
-		getServer().getPluginManager().registerEvents(this.bpListener, this);
-		getServer().getPluginManager().registerEvents(this.blListener, this);
+		if (pm.getPlugin("Factions") != null) {
+			//If there is Factions on the server, let's try to prevent it to prevent block breaking
+			pm.registerEvents(new BendingFactionsBlockListener(), this);
+		}
 		if(Settings.DENY_ITEMS) {
 			getServer().getPluginManager().registerEvents(new BendingDenyItem(), this);
 		}
