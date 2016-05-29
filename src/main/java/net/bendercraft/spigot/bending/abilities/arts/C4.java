@@ -34,6 +34,7 @@ import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
+import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 
 @ABendingAbility(name = C4.NAME, affinity = BendingAffinity.CHI)
@@ -340,7 +341,7 @@ public class C4 extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	private void removeBlock(Block block) {
 		if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
-			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
+			CoreProtectAPI cp = CoreProtect.getInstance().getAPI();
 			cp.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getData());
 		}
 		double rand = Math.random();

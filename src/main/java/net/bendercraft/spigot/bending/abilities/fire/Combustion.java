@@ -19,6 +19,7 @@ import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.Tools;
+import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 
 import org.bukkit.Bukkit;
@@ -275,7 +276,7 @@ public class Combustion extends BendingActiveAbility {
 	@SuppressWarnings("deprecation")
 	private void removeBlock(Block block) {
 		if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
-			CoreProtectAPI cp = CoreProtectAPI.plugin.getAPI();
+			CoreProtectAPI cp = CoreProtect.getInstance().getAPI();
 			cp.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getData());
 		}
 		block.getDrops().clear();
