@@ -18,6 +18,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
+import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -29,6 +30,11 @@ import net.bendercraft.spigot.bending.utils.Tools;
 @ABendingAbility(name = IceSpike.NAME, element = BendingElement.WATER)
 public class IceSpike extends BendingActiveAbility {
 	public final static String NAME = "IceSpike";
+	
+	@ConfigurationParameter("Damage")
+	private static int SINGLE_DAMAGE = 4;
+	@ConfigurationParameter("Throw-Mult")
+	private static double SINGLE_THROW_MULT = 0.7;
 	
 	private static double defaultrange = 20;
 	private static int defaultdamage = 1;
@@ -53,6 +59,8 @@ public class IceSpike extends BendingActiveAbility {
 	private Location location;
 	private Location firstdestination;
 	private Location destination;
+	
+	private SpikeFieldColumn singleColumn; // Used only if click version
 
 	private SpikeField field = null;
 	private WaterReturn waterReturn;
@@ -87,7 +95,13 @@ public class IceSpike extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.PREPARED) {
+		if(getState() == BendingAbilityState.START) {
+			sourceblock = BlockTools.getWaterSourceBlock(this.player, this.range, this.plantbending);
+			if(sourceblock != null) {
+				singleColumn = new SpikeFieldColumn(player, sourceblock.getLocation(), SINGLE_DAMAGE, new Vector(0,SINGLE_THROW_MULT,0));
+				setState(BendingAbilityState.PROGRESSING);
+			}
+		} else if(getState() == BendingAbilityState.PREPARED) {
 			if (WaterReturn.hasWaterBottle(this.player)) {
 				Location eyeloc = this.player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
@@ -156,6 +170,13 @@ public class IceSpike extends BendingActiveAbility {
 	public void progress() {
 		if (this.waterReturn != null) {
 			if(!this.waterReturn.progress()) {
+				remove();
+			}
+			return;
+		}
+		
+		if(singleColumn != null) {
+			if(!singleColumn.progress()) {
 				remove();
 			}
 			return;
@@ -341,6 +362,9 @@ public class IceSpike extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
+		if (this.singleColumn != null) {
+			this.singleColumn.remove();
+		}
 		if (this.field != null) {
 			this.field.remove();
 		}

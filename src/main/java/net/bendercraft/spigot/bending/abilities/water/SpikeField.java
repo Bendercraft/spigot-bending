@@ -86,7 +86,7 @@ public class SpikeField {
 				entities.remove(target);
 			} else {
 				targetblock = iceblocks.get(this.ran.nextInt(iceblocks.size()));
-				this.spikes.add(new SpikeFieldColumn(p, targetblock.getLocation(), this.damage, this.thrown, COOLDOWN, this));
+				this.spikes.add(new SpikeFieldColumn(p, targetblock.getLocation(), this.damage, this.thrown));
 				iceblocks.remove(targetblock);
 			}
 		}

@@ -17,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
@@ -53,7 +54,7 @@ public class SpikeFieldColumn {
 	private Player player;
 	private final RegisteredAbility icespikeRegister;
 
-	public SpikeFieldColumn(Player player, Location origin, int damage, Vector throwing, long aoecooldown, SpikeField spikeField) {
+	public SpikeFieldColumn(Player player, Location origin, int damage, Vector throwing) {
 		interval = (long) (1000 / speed);
 		this.player = player;
 		this.location = origin.clone();
@@ -65,7 +66,7 @@ public class SpikeFieldColumn {
 	}
 
 	public boolean progress() {
-		if (this.block.getType() != Material.ICE) {
+		if (!BlockTools.isWaterBased(block)) {
 			return false;
 		}
 		if (System.currentTimeMillis() - this.time >= interval) {
