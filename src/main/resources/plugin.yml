@@ -83,18 +83,18 @@ permissions:
       bending.earth.Shockwave: true
       bending.earth.MetalBending: true
       bending.earth.LavaTrain: true
-  bending.chiblocker.*:
+  bending.master.*:
     description: Allows all chiblocking abilities.
     default: false
     children:
-      bending.chiblocker: true
-      bending.chiblocker.RapidPunch: true
-      bending.chiblocker.HighJump: true
-      bending.chiblocker.Paralyze: true
-      bending.chiblocker.SmokeBomb: true
-      bending.chiblocker.Dash: true
-      bending.chiblocker.PoisonnedDart: true
-      bending.chiblocker.PlasticBomb: true
+      bending.master: true
+      bending.master.RapidPunch: true
+      bending.master.HighJump: true
+      bending.master.Paralyze: true
+      bending.master.SmokeBomb: true
+      bending.master.Dash: true
+      bending.master.PoisonnedDart: true
+      bending.master.PlasticBomb: true
   bending.*:
     description: Allows all bending.
     default: false
@@ -103,7 +103,7 @@ permissions:
       bending.water.*: true
       bending.fire.*: true
       bending.air.*: true
-      bending.chiblocker.*: true
+      bending.master.*: true
       
   bending.admin:
     description: Allows all commands.
@@ -333,34 +333,34 @@ permissions:
     default: false
     
 # CHIBLOCKING PERMISSIONS
-  bending.chiblocker:
+  bending.master:
     description: Allows being a Chiblocker.
     default: true
-  bending.chiblocker.ChiSpeed:
+  bending.master.ChiSpeed:
     description: Allows the use of the Chi Speed
     default: true
-  bending.chiblocker.DirectHit:
+  bending.master.DirectHit:
     description: Allows the use of DirectHit
     default: true
-  bending.chiblocker.HighJump:
+  bending.master.HighJump:
     description: Allows the use of HighJump
     default: true
-  bending.chiblocker.VitalPoint:
+  bending.master.VitalPoint:
     description: Allows the use of Paralyze
     default: true
-  bending.chiblocker.SmokeBomb:
+  bending.master.SmokeBomb:
     description: Allows the use of SmokeBomb
     default: false
-  bending.chiblocker.Dash:
+  bending.master.Dash:
     description: Allows the use of Dash.
     default: false
-  bending.chiblocker.PoisonnedDart:
+  bending.master.PoisonnedDart:
     description: Allows the use of PoisonnedDart
     default: false
-  bending.chiblocker.PlasticBomb:
+  bending.master.PlasticBomb:
     description: Allows the use of the C4
     default: false
-  bending.chiblocker.Release:
+  bending.master.Release:
     description: Allows the use of the Release
     default: true
 
