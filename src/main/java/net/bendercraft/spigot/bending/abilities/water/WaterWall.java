@@ -63,6 +63,8 @@ public class WaterWall extends BendingActiveAbility {
 
 	private Wave wave;
 
+	private WaterReturn waterReturn;
+
 	public WaterWall(RegisteredAbility register, Player player) {
 		super(register, player);
 		if (AvatarState.isAvatarState(player)) {
@@ -184,8 +186,11 @@ public class WaterWall extends BendingActiveAbility {
 		if (drainedBlock != null) {
 			drainedBlock.revertBlock();
 		}
-		if (wave != null) {
+		if(wave != null) {
 			wave.remove();
+		}
+		if(waterReturn != null) {
+			waterReturn.stop();
 		}
 	}
 
@@ -259,6 +264,14 @@ public class WaterWall extends BendingActiveAbility {
 			returnWater();
 			return;
 		}
+		
+		if(waterReturn != null) {
+			if(!waterReturn.progress()) {
+				remove();
+				return;
+			}
+		}
+		
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
 
@@ -436,7 +449,7 @@ public class WaterWall extends BendingActiveAbility {
 
 	private void returnWater() {
 		if (location != null) {
-			// new WaterReturn(player, location.getBlock(), this); TODO temp
+			waterReturn = new WaterReturn(player, location.getBlock(), this);
 		}
 	}
 
