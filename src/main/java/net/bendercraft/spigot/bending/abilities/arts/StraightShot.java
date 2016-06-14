@@ -34,7 +34,7 @@ public class StraightShot extends BendingActiveAbility {
 	public final static String NAME = "StraightShot";
 
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 2;
+	private static int DAMAGE = 4;
 
 	@ConfigurationParameter("Range")
 	private static int RANGE = 20;

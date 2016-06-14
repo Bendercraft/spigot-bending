@@ -25,13 +25,13 @@ public class BlankPoint extends BendingActiveAbility {
 	public static long DAMAGE = 5;
 
 	@ConfigurationParameter("Knockback")
-	public static long KNOCKBACK = 2;
+	public static long KNOCKBACK = 4;
 
 	@ConfigurationParameter("Range")
 	public static long RANGE = 4;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 1500;
+	public static long COOLDOWN = 5000;
 
 	public BlankPoint(RegisteredAbility register, Player player) {
 		super(register, player);

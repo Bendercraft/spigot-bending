@@ -170,6 +170,9 @@ public class BendingDenyItem implements Listener {
 			if(enchantment == Enchantment.ARROW_INFINITE && bender.hasAffinity(BendingAffinity.BOW)) {
 				continue;
 			}
+			if(enchantment == Enchantment.ARROW_KNOCKBACK && bender.hasAffinity(BendingAffinity.BOW)) {
+				continue;
+			}
 			if(!item.containsEnchantment(enchantment)) {
 				continue;
 			}

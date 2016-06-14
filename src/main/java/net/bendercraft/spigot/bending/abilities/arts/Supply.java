@@ -39,6 +39,7 @@ public class Supply extends BendingActiveAbility {
 	public boolean sneak() {
 		ItemStack bow = new ItemStack(Material.BOW, 1);
 		bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
+		bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 2);
 		ItemMeta metaBow = bow.getItemMeta();
 		metaBow.setLore(Arrays.asList("Bow"));
 		bow.setItemMeta(metaBow);
