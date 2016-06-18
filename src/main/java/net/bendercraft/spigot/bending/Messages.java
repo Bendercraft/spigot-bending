@@ -85,8 +85,8 @@ public class Messages {
 	@LanguageParameter("command.who.is_bending")
 	public static String WHO_IS_BENDING = "{0} is a {1} bender. (Path : {2})";
 
-	@LanguageParameter("command.who_is_chi")
-	public static String WHO_IS_CHI = "{0} is a chi-blocker.";
+	@LanguageParameter("command.who_is_master")
+	public static String WHO_IS_MASTER = "{0} is a master.";
 
 	@LanguageParameter("command.not_element_able")
 	public static String NOT_ELEMENT_ABLE = "The target is not able to use the {0} bending.";

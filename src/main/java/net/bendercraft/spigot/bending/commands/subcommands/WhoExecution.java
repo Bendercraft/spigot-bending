@@ -71,7 +71,7 @@ public class WhoExecution extends BendingCommand {
 			ChatColor col = PluginTools.getColor(Settings.getColor(element));
 			String msg;
 			if (element == BendingElement.MASTER) {
-				msg = Messages.WHO_IS_CHI;
+				msg = Messages.WHO_IS_MASTER;
 			} else {
 				msg = Messages.WHO_IS_BENDING;
 				msg = msg.replace("{1}", element.name());
