@@ -96,7 +96,7 @@ public class BendingPlayerListener implements Listener {
 
 		Bending.getInstance().getBendingDatabase().lease(player.getUniqueId());
 
-		BendingPlayer.getBendingPlayer(player);
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 
 		if (!(Settings.CHAT_COMPATIBILITY) && (Settings.CHAT_ENABLED)) {
 			player.setDisplayName(player.getName());
@@ -108,7 +108,6 @@ public class BendingPlayerListener implements Listener {
 				if (player.hasPermission("bending.avatar")) {
 					color = PluginTools.getColor(Settings.getColor(BendingElement.ENERGY));
 				} else {
-					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 					List<BendingElement> els = bender.getBendingTypes();
 					if ((els != null) && !els.isEmpty()) {
 						color = PluginTools.getColor(Settings.getColor(els.get(0)));
@@ -470,7 +469,12 @@ public class BendingPlayerListener implements Listener {
 		if (Suffocate.isTargeted(event.getPlayer())) {
 			Suffocate.getSuffocateByTarget(event.getPlayer()).remove();
 		}
-
+		// Unregister scoreboard
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(event.getPlayer());
+		if(bender != null) {
+			bender.unloadScoreboard();
+		}
+		
 		Bending.getInstance().getBendingDatabase().release(event.getPlayer().getUniqueId());
 	}
 

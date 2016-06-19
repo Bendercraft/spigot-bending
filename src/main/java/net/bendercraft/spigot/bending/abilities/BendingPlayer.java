@@ -300,12 +300,17 @@ public class BendingPlayer {
 	
 	public void conflictScoreboard() {
 		getPlayer().sendMessage(ChatColor.RED+"[Bending] Scoreboard conflict detected, disabling cooldown GUI (sorry).");
+		Bending.getInstance().getLogger().warning("Player "+getPlayer().getName()+" had conflicting scoreboard.");
 		setUsingScoreboard(false);
+		scoreboard.getTeams().forEach(t->t.unregister());
+		scoreboard.getObjectives().forEach(o->o.unregister());
 		scoreboard = null;
 	}
 	
 	public void unloadScoreboard() {
 		if(!isUsingScoreboard() && scoreboard != null) {
+			scoreboard.getTeams().forEach(t->t.unregister());
+			scoreboard.getObjectives().forEach(o->o.unregister());
 			ScoreboardManager manager = Bukkit.getScoreboardManager();
 			getPlayer().setScoreboard(manager.getNewScoreboard());
 			scoreboard = null;
