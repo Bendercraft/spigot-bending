@@ -44,7 +44,6 @@ public class WaterSpout extends BendingActiveAbility {
 	private int currentCardinalPoint = 0;
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private FlyingPlayer flying;
-	private int height;
 
 	public WaterSpout(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -54,7 +53,6 @@ public class WaterSpout extends BendingActiveAbility {
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
 			if (canWaterSpout(this.player)) {
-				this.height = 0;
 				this.blocks = new LinkedList<TempBlock>();
 				this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 				if (this.flying != null) {
@@ -96,18 +94,18 @@ public class WaterSpout extends BendingActiveAbility {
 		this.player.removePotionEffect(PotionEffectType.SPEED);
 
 		Location location = this.player.getLocation().clone().add(0, 0.2, 0);
-		int result = spoutableWaterHeight(location);
+		int height = spoutableWaterHeight(location);
 
-		if (result == -1) {
+		if (height == -1) {
 			return false;
-		} else if (result == -2) {
+		} else if (height == -2) {
 			this.flying.resetState();
 		} else {
 			this.flying.fly();
 		}
 		Block block = location.getBlock();
 		location = block.getLocation();
-		for (int i = 0, cardinalPoint = this.currentCardinalPoint / SPEED; i < (this.height + 1); i++, cardinalPoint--) {
+		for (int i = 0, cardinalPoint = this.currentCardinalPoint / SPEED; i < (height + 1); i++, cardinalPoint--) {
 			Location loc = location.clone().add(0, -i, 0);
 			if (!TempBlock.isTempBlock(loc.getBlock())) {
 				//this.blocks.add(new TempBlock(loc.getBlock(), Material.STATIONARY_WATER, (byte) 0x0));
@@ -134,7 +132,6 @@ public class WaterSpout extends BendingActiveAbility {
 	}
 
 	private int spoutableWaterHeight(Location location) {
-
 		Location loc = location.clone();
 		if (loc.getBlock().getType() != Material.AIR && !BlockTools.isWaterBased(loc.getBlock())) {
 			return -1;
@@ -144,26 +141,31 @@ public class WaterSpout extends BendingActiveAbility {
 		if (Tools.isNight(loc.getWorld())) {
 			height = (int) (Settings.NIGHT_FACTOR * HEIGHT) + 1;
 		}
-		for (int i = 0; i <= (height + 1); i++) {
+		for (int i = 0; i < height; i++) {
 			Location locToTest = loc.add(0, -1, 0);
-			if (ProtectionManager.isLocationProtectedFromBending(this.player, register, locToTest)) {
+			if (ProtectionManager.isLocationProtectedFromBending(player, register, locToTest)) {
 				return -1;
 			}
 			Block block = locToTest.getBlock();
-			if (block.getType().equals(Material.AIR)) {
-				this.height = i + 1;
-				continue;
-			}
-			if (BlockTools.isWaterBased(block)) {
-				// Valid source !
-				return i + 1;
-			} else {
-				return -1;
-				// Cannot waterspout
+			if (!block.getType().equals(Material.AIR)) {
+				if (BlockTools.isWaterBased(block)) {
+					return i + 1; // Valid source !
+				} else {
+					return -1; // Cannot waterspout
+				}
 			}
 		}
-		return -2;
-		// Can waterspout but too high
+		// If we are here, only AIR block has been traversed : check one more time if we should just stop or deny lift
+		Location locToTest = loc.add(0, -1, 0);
+		if (ProtectionManager.isLocationProtectedFromBending(player, register, locToTest)) {
+			return -1; // Cannot waterspout
+		}
+		Block block = locToTest.getBlock();
+		if (BlockTools.isWaterBased(block)) {
+			return -2; // Can waterspout but too high
+		}
+		
+		return -1; // Cannot waterspout
 	}
 
 	public static boolean isWaterSpoutBlock(Block block) {
