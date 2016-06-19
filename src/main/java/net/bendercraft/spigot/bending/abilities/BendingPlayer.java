@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -295,6 +296,12 @@ public class BendingPlayer {
 		    objective.setDisplayName("Cooldowns");
 		    getPlayer().setScoreboard(scoreboard);
 		}
+	}
+	
+	public void conflictScoreboard() {
+		getPlayer().sendMessage(ChatColor.RED+"[Bending] Scoreboard conflict detected, disabling cooldown GUI (sorry).");
+		setUsingScoreboard(false);
+		scoreboard = null;
 	}
 	
 	public void unloadScoreboard() {

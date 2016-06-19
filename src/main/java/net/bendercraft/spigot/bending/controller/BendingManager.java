@@ -10,6 +10,7 @@ import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import net.bendercraft.spigot.bending.Bending;
@@ -62,8 +63,21 @@ public class BendingManager implements Runnable {
 				for(Player player : plugin.getServer().getOnlinePlayers()) {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 					if(bender != null && bender.isUsingScoreboard()) {
-						Team team = player.getScoreboard().getTeam(player.getName());
-						Objective objective = player.getScoreboard().getObjective("cooldowns");
+						Scoreboard scoreboard = player.getScoreboard();
+						if(scoreboard != bender.getScoreboard()) {
+							bender.conflictScoreboard();
+							continue;
+						}
+						Team team = scoreboard.getTeam(player.getName());
+						if(team == null) {
+							bender.conflictScoreboard();
+							continue;
+						}
+						Objective objective = scoreboard.getObjective("cooldowns");
+						if(objective == null) {
+							bender.conflictScoreboard();
+							continue;
+						}
 						
 						Map<String, BendingAbilityCooldown> cooldowns = bender.getCooldowns();
 						for(Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
@@ -72,7 +86,10 @@ public class BendingManager implements Runnable {
 							}
 							
 							Score score = objective.getScore(entry.getKey());
-						    score.setScore((int) (entry.getValue().timeLeft(now)/1000));
+							int value = (int) (entry.getValue().timeLeft(now)/1000);
+							if(value != score.getScore()) {
+								score.setScore(value);
+							}
 						}
 						
 						List<String> toRemove = new LinkedList<String>();
@@ -82,7 +99,7 @@ public class BendingManager implements Runnable {
 							}
 						}
 						for(String entry : toRemove) {
-							player.getScoreboard().resetScores(entry);
+							scoreboard.resetScores(entry);
 						}
 					}
 				}
