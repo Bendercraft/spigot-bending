@@ -1,7 +1,5 @@
 package net.bendercraft.spigot.bending.listeners;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,12 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -121,26 +116,6 @@ public class BendingPlayerListener implements Listener {
 				}
 			}
 			player.setDisplayName("<" + color + player.getName() + ChatColor.WHITE + ">");
-		}
-
-		YamlConfiguration dc = new YamlConfiguration();
-		File sv = new File(Bukkit.getPluginManager().getPlugin("Bending").getDataFolder(), "Armour.sav");
-		if (sv.exists() && (dc.contains("Armors." + player.getName() + ".Boots") && dc.contains("Armors." + player.getName() + ".Leggings") && dc.contains("Armors." + player.getName() + ".Chest") && dc.contains("Armors." + player.getName() + ".Helm"))) {
-			ItemStack boots = new ItemStack(Material.matchMaterial(dc.getString("Armors." + player.getName() + ".Boots").split(":")[0]));
-			ItemStack leggings = new ItemStack(Material.matchMaterial(dc.getString("Armors." + player.getName() + ".Leggings").split(":")[0]));
-			ItemStack chest = new ItemStack(Material.matchMaterial(dc.getString("Armors." + player.getName() + ".Chest").split(":")[0]));
-			ItemStack helm = new ItemStack(Material.matchMaterial(dc.getString("Armors." + player.getName() + ".Helm").split(":")[0]));
-			boots.setDurability(Short.parseShort(dc.getString("Armors." + player.getName() + ".Boots").split(":")[1]));
-			leggings.setDurability(Short.parseShort(dc.getString("Armors." + player.getName() + ".Leggings").split(":")[1]));
-			chest.setDurability(Short.parseShort(dc.getString("Armors." + player.getName() + ".Chest").split(":")[1]));
-			helm.setDurability(Short.parseShort(dc.getString("Armors." + player.getName() + ".Helm").split(":")[1]));
-			ItemStack[] armors = { boots, leggings, chest, helm };
-			player.getInventory().setArmorContents(armors);
-		}
-		try {
-			dc.save(sv);
-		} catch (IOException e) {
-			Bending.getInstance().getLogger().log(Level.SEVERE, "Failed to save armors file", e);
 		}
 	}
 	
