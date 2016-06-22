@@ -5,7 +5,9 @@ import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.flags.registry.SimpleFlagRegistry;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 
 import net.bendercraft.spigot.bending.Bending;
@@ -20,8 +22,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
 
 public class WorldGuardProtection {
 
@@ -81,19 +86,34 @@ public class WorldGuardProtection {
     }
 
     private void addFlags() {
-    	worldguard.getFlagRegistry().register(allBending);
-        worldguard.getFlagRegistry().register(passivesBending);
-        worldguard.getFlagRegistry().register(affinityBending);
-        worldguard.getFlagRegistry().register(speBending);
+    	SimpleFlagRegistry registry = (SimpleFlagRegistry) worldguard.getFlagRegistry();
+    	silentlyRegister(registry, allBending);
+    	silentlyRegister(registry, passivesBending);
+        silentlyRegister(registry, affinityBending);
+        silentlyRegister(registry, speBending);
         for (StateFlag flag : elementFlags.values()) {
-            worldguard.getFlagRegistry().register(flag);
+        	silentlyRegister(registry, flag);
         }
         for (StateFlag flag : affinityFlags.values()) {
-            worldguard.getFlagRegistry().register(flag);
+        	silentlyRegister(registry, flag);
         }
         for (StateFlag flag : abilityFlags.values()) {
-            worldguard.getFlagRegistry().register(flag);
+        	silentlyRegister(registry, flag);
         }
+    }
+    
+    private void silentlyRegister(SimpleFlagRegistry registry, StateFlag flag) {
+    	// Because worlguard load its region before this code is executed, an "UnknownFlag" is created
+    	// We therefore cannot user "register" method and we have to hook directly into store
+		try {
+			Field f = SimpleFlagRegistry.class.getDeclaredField("flags");
+			f.setAccessible(true);
+			@SuppressWarnings("unchecked")
+			ConcurrentMap<String, Flag<?>> flags = (ConcurrentMap<String, Flag<?>>) f.get(registry);
+			flags.put(flag.getName().toLowerCase(), flag);
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
+			Bending.getInstance().getLogger().log(Level.WARNING, "Flag "+flag.getName()+" failed to register", e1);
+		}
     }
 
     public boolean isRegionProtectedFromBending(Player player, RegisteredAbility ability, Location location) {
