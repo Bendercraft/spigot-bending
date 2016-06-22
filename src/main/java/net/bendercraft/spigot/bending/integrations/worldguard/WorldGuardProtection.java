@@ -1,6 +1,5 @@
 package net.bendercraft.spigot.bending.integrations.worldguard;
 
-import com.mewin.WGCustomFlags.WGCustomFlagsPlugin;
 import com.sk89q.worldguard.bukkit.RegionContainer;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -37,7 +36,6 @@ public class WorldGuardProtection {
     private Map<RegisteredAbility, StateFlag> abilityFlags;
 
     private WorldGuardPlugin worldguard = null;
-    private WGCustomFlagsPlugin wgCustomFlags = null;
 
     public WorldGuardProtection (Bending plugin) {
         initialize();
@@ -50,16 +48,9 @@ public class WorldGuardProtection {
         Plugin plugin = pm.getPlugin("WorldGuard");
         if ((plugin != null) && (plugin.isEnabled())) {
             worldguard = (WorldGuardPlugin) plugin;
-        }
-
-        plugin = pm.getPlugin("WGCustomFlags");
-        if ((plugin != null) && (plugin.isEnabled())) {
-            wgCustomFlags = (WGCustomFlagsPlugin) plugin;
-            if (worldguard != null) {
-                generateFlags();
-                addFlags();
-                Bending.getInstance().getLogger().info("Add BENDING FLAGS to Worldguard");
-            }
+            generateFlags();
+            addFlags();
+            Bending.getInstance().getLogger().info("Add BENDING FLAGS to Worldguard");
         }
     }
 
@@ -90,23 +81,23 @@ public class WorldGuardProtection {
     }
 
     private void addFlags() {
-        wgCustomFlags.addCustomFlag(allBending);
-        wgCustomFlags.addCustomFlag(passivesBending);
-        wgCustomFlags.addCustomFlag(affinityBending);
-        wgCustomFlags.addCustomFlag(speBending);
+    	worldguard.getFlagRegistry().register(allBending);
+        worldguard.getFlagRegistry().register(passivesBending);
+        worldguard.getFlagRegistry().register(affinityBending);
+        worldguard.getFlagRegistry().register(speBending);
         for (StateFlag flag : elementFlags.values()) {
-            wgCustomFlags.addCustomFlag(flag);
+            worldguard.getFlagRegistry().register(flag);
         }
         for (StateFlag flag : affinityFlags.values()) {
-            wgCustomFlags.addCustomFlag(flag);
+            worldguard.getFlagRegistry().register(flag);
         }
         for (StateFlag flag : abilityFlags.values()) {
-            wgCustomFlags.addCustomFlag(flag);
+            worldguard.getFlagRegistry().register(flag);
         }
     }
 
     public boolean isRegionProtectedFromBending(Player player, RegisteredAbility ability, Location location) {
-        if (worldguard == null || wgCustomFlags == null) {
+        if (worldguard == null) {
             return false;
         }
 
@@ -157,7 +148,7 @@ public class WorldGuardProtection {
     }
 
     public boolean isRegionProtectedFromExplosion(Player player, RegisteredAbility ability, Location loc) {
-        if (this.worldguard == null || this.wgCustomFlags == null) {
+        if (this.worldguard == null) {
             return false;
         }
         if (player == null ||ability == null || loc == null) {
@@ -183,7 +174,7 @@ public class WorldGuardProtection {
     }
 
     public boolean isRegionProtectedFromBendingPassives(Player player, Location location) {
-        if (worldguard == null || wgCustomFlags == null) {
+        if (worldguard == null) {
             return false;
         }
 
