@@ -269,13 +269,14 @@ public class WorldGuardProtection implements Listener {
     		List<StoredFlags> flags = Arrays.asList(gson.fromJson(fr, StoredFlags[].class));
     		RegionManager rgm = worldguard.getRegionManager(world);
     		for(Entry<String, ProtectedRegion> entry : rgm.getRegions().entrySet()) {
-    			Optional<StoredFlags> stored = flags.stream().filter(x -> x.region.equals(entry.getKey())).findFirst();
-    			if(stored.isPresent()) {
-    				try {
-    					StateFlag flag = (StateFlag) worldguard.getFlagRegistry().get(stored.get().flag);
-    					entry.getValue().setFlag(flag, State.valueOf(((String) stored.get().value).toUpperCase()));
-    				} catch (ClassCastException e1) {
-    					plugin.getLogger().warning("Invalid stored flags '"+stored.get().flag+"' for region '"+stored.get().region+"' : "+e1.getMessage());
+    			for(StoredFlags storedFlag : flags) {
+    				if(storedFlag.region.equals(entry.getKey())) {
+    					try {
+        					StateFlag flag = (StateFlag) worldguard.getFlagRegistry().get(storedFlag.flag);
+        					entry.getValue().setFlag(flag, State.valueOf(((String) storedFlag.value).toUpperCase()));
+        				} catch (ClassCastException e1) {
+        					plugin.getLogger().warning("Invalid stored flags '"+storedFlag.flag+"' for region '"+storedFlag.region+"' : "+e1.getMessage());
+        				}
     				}
     			}
     		}
