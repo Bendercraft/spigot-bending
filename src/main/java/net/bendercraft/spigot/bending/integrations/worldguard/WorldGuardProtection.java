@@ -279,8 +279,10 @@ public class WorldGuardProtection implements Listener {
     				}
     			}
     		}
-		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
+		} catch (JsonSyntaxException | JsonIOException e) {
 			plugin.getLogger().log(Level.SEVERE, "Flags file problem", e);
+		} catch (FileNotFoundException e) {
+			// Quiet please !
 		} finally {
 			IOUtils.closeQuietly(fr);
 		}
