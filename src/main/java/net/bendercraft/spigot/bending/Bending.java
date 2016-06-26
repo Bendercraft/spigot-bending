@@ -86,7 +86,7 @@ public class Bending extends JavaPlugin {
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 
-		ProtectionManager.init();
+		ProtectionManager.init(this);
 		getLogger().info("Bending v" + getDescription().getVersion() + " has been loaded.");
 
 		// Citizens
@@ -106,7 +106,7 @@ public class Bending extends JavaPlugin {
 		AbilityManager.getManager().stopAllAbilities();
 		getServer().getScheduler().cancelTasks(this);
 
-		this.learning.onDisable();
+		learning.onDisable();
 	}
 
 	public BendingManager getManager() {

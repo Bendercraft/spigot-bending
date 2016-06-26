@@ -16,28 +16,13 @@ import net.citizensnpcs.api.trait.Trait;
 
 public class ProtectionManager {
 
-	private static WorldGuardProtection worldguard;
-	// private static boolean useFactions = false;
+	private static WorldGuardProtection worldguard = null;
 	private static boolean useCitizens = false;
 
-
-	public static void init() {
-		// Plugin fcp = Bukkit.getPluginManager().getPlugin("Factions");
-		// if (fcp != null) {
-		// PluginTools.verbose("Recognized Factions...");
-		// if (Settings.RESPECT_FACTIONS) {
-		// useFactions = true;
-		// PluginTools.verbose("Bending is set to respect Factions' claimed lands.");
-		// }
-		// else {
-		// PluginTools.verbose("But Bending is set to ignore Factions' claimed lands.");
-		// }
-		// }
-
+	public static void init(Bending plugin) {
 		try {
-			worldguard = new WorldGuardProtection(Bending.getInstance());
-		}
-		catch (NoClassDefFoundError e) {
+			worldguard = new WorldGuardProtection(plugin);
+		} catch (NoClassDefFoundError e) {
 			Bukkit.getLogger().warning("WorldGuard classes not found.");
 			worldguard = null;
 		}
@@ -45,12 +30,12 @@ public class ProtectionManager {
 
 		Plugin citizens = Bukkit.getPluginManager().getPlugin("Citizens");
 		if (citizens != null) {
-			Bending.getInstance().getLogger().info("Recognized Citizens...");
+			plugin.getLogger().info("Recognized Citizens...");
 			if (Settings.RESPECT_CITIZENS) {
 				useCitizens = true;
-				Bending.getInstance().getLogger().info("Bending is set to respect Citizens traits.");
+				plugin.getLogger().info("Bending is set to respect Citizens traits.");
 			} else {
-				Bending.getInstance().getLogger().info("But Bending is set to ignore Citizens traits.");
+				plugin.getLogger().info("But Bending is set to ignore Citizens traits.");
 			}
 		}
 	}
@@ -104,5 +89,9 @@ public class ProtectionManager {
 			return worldguard.isRegionProtectedFromBendingPassives(player, loc);
 		}
 		return false;
+	}
+
+	public static void disable() {
+		
 	}
 }
