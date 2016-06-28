@@ -193,7 +193,7 @@ public class BendingDenyItem implements Listener {
 		if(item.getType() == Material.POTION) {
 			PotionMeta meta = (PotionMeta) item.getItemMeta();
 			if(deniedPotions.contains(meta.getBasePotionData().getType().getEffectType())) {
-				bender.getPlayer().getInventory().remove(item);
+				removeItem(bender.getPlayer(), item);
 			}
 		}
 		
@@ -209,20 +209,20 @@ public class BendingDenyItem implements Listener {
 				|| item.getType() == Material.GOLD_LEGGINGS
 				|| item.getType() == Material.SPECTRAL_ARROW
 				|| item.getType() == Material.TIPPED_ARROW) {
-			bender.getPlayer().getInventory().remove(item);
+			removeItem(bender.getPlayer(), item);
 		}
 		
 		// Firebender might keep golden sword for FireBlade
 		if(bender == null || !bender.isBender(BendingElement.FIRE)) {
 			if(item.getType() == Material.GOLD_SWORD) {
-				bender.getPlayer().getInventory().remove(item);
+				removeItem(bender.getPlayer(), item);
 			}
 		}
 		
 		// Airbender might keep elytra
 		if(bender == null || !bender.isBender(BendingElement.AIR)) {
 			if(item.getType() == Material.ELYTRA) {
-				bender.getPlayer().getInventory().remove(item);
+				removeItem(bender.getPlayer(), item);
 			}
 		}
 		
@@ -230,7 +230,7 @@ public class BendingDenyItem implements Listener {
 		if(bender == null || !bender.hasAffinity(BendingAffinity.SWORD)) {
 			if(item.getType() == Material.SHIELD 
 					|| item.getType() == Material.IRON_SWORD) {
-				bender.getPlayer().getInventory().remove(item);
+				removeItem(bender.getPlayer(), item);
 			}
 		}
 		
@@ -240,7 +240,7 @@ public class BendingDenyItem implements Listener {
 					|| item.getType() == Material.IRON_CHESTPLATE
 					|| item.getType() == Material.IRON_HELMET
 					|| item.getType() == Material.IRON_LEGGINGS) {
-				bender.getPlayer().getInventory().remove(item);
+				removeItem(bender.getPlayer(), item);
 			}
 		}
 		
@@ -251,9 +251,25 @@ public class BendingDenyItem implements Listener {
 					|| item.getType() == Material.LEATHER_HELMET
 					|| item.getType() == Material.LEATHER_LEGGINGS) {
 				if(EarthArmor.isArmor(item)) {
-					bender.getPlayer().getInventory().remove(item);
+					removeItem(bender.getPlayer(), item);
 				}
 			}
+		}
+	}
+	
+	private void removeItem(Player player, ItemStack item) {
+		player.getInventory().remove(item);
+		if(player.getInventory().getHelmet().equals(item)) {
+			player.getInventory().setHelmet(null);
+		}
+		if(player.getInventory().getChestplate().equals(item)) {
+			player.getInventory().setChestplate(null);
+		}
+		if(player.getInventory().getLeggings().equals(item)) {
+			player.getInventory().setLeggings(null);
+		}
+		if(player.getInventory().getBoots().equals(item)) {
+			player.getInventory().setBoots(null);
 		}
 	}
 }
