@@ -336,7 +336,7 @@ permissions:
   bending.master:
     description: Allows being a Chiblocker.
     default: true
-  bending.master.ChiSpeed:
+  bending.master.passive:
     description: Allows the use of the Chi Speed
     default: true
   bending.master.DirectHit:
