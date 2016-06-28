@@ -258,17 +258,20 @@ public class BendingDenyItem implements Listener {
 	}
 	
 	private void removeItem(Player player, ItemStack item) {
+		if(item == null) {
+			return;
+		}
 		player.getInventory().remove(item);
-		if(player.getInventory().getHelmet().equals(item)) {
+		if(item.equals(player.getInventory().getHelmet())) {
 			player.getInventory().setHelmet(null);
 		}
-		if(player.getInventory().getChestplate().equals(item)) {
+		if(item.equals(player.getInventory().getChestplate())) {
 			player.getInventory().setChestplate(null);
 		}
-		if(player.getInventory().getLeggings().equals(item)) {
+		if(item.equals(player.getInventory().getLeggings())) {
 			player.getInventory().setLeggings(null);
 		}
-		if(player.getInventory().getBoots().equals(item)) {
+		if(item.equals(player.getInventory().getBoots())) {
 			player.getInventory().setBoots(null);
 		}
 	}
