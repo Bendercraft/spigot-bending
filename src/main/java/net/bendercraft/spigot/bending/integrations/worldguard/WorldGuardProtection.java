@@ -10,7 +10,6 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.flags.registry.SimpleFlagRegistry;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -273,7 +272,7 @@ public class WorldGuardProtection implements Listener {
     				if(storedFlag.region.equals(entry.getKey())) {
     					try {
         					StateFlag flag = (StateFlag) worldguard.getFlagRegistry().get(storedFlag.flag);
-        					entry.getValue().setFlag(flag, State.valueOf(((String) storedFlag.value).toUpperCase()));
+        					entry.getValue().setFlag(flag, flag.unmarshal(storedFlag.value));
         				} catch (ClassCastException e1) {
         					plugin.getLogger().warning("Invalid stored flags '"+storedFlag.flag+"' for region '"+storedFlag.region+"' : "+e1.getMessage());
         				}
