@@ -89,27 +89,26 @@ public class WaterSpout extends BendingActiveAbility {
 	}
 
 	private boolean spout() {
-		this.player.setFallDistance(0);
-		this.player.setSprinting(false);
-		this.player.removePotionEffect(PotionEffectType.SPEED);
+		player.setFallDistance(0);
+		player.setSprinting(false);
+		player.removePotionEffect(PotionEffectType.SPEED);
 
-		Location location = this.player.getLocation().clone().add(0, 0.2, 0);
+		Location location = player.getLocation().clone().add(0, 0.2, 0);
 		int height = spoutableWaterHeight(location);
 
 		if (height == -1) {
 			return false;
 		} else if (height == -2) {
-			this.flying.resetState();
+			flying.resetState();
 		} else {
-			this.flying.fly();
+			flying.fly();
 		}
 		Block block = location.getBlock();
 		location = block.getLocation();
-		for (int i = 0, cardinalPoint = this.currentCardinalPoint / SPEED; i < (height + 1); i++, cardinalPoint--) {
+		for (int i = 0, cardinalPoint = currentCardinalPoint / SPEED; i < (height + 1); i++, cardinalPoint--) {
 			Location loc = location.clone().add(0, -i, 0);
-			if (!TempBlock.isTempBlock(loc.getBlock())) {
-				//this.blocks.add(new TempBlock(loc.getBlock(), Material.STATIONARY_WATER, (byte) 0x0));
-				this.blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.STATIONARY_WATER, false));
+			if (!TempBlock.isTempBlock(loc.getBlock()) && loc.getBlock().getType().equals(Material.AIR)) {
+				blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.STATIONARY_WATER, false));
 			}
 
 			if (cardinalPoint == -1) {
@@ -118,15 +117,14 @@ public class WaterSpout extends BendingActiveAbility {
 
 			loc = loc.add(vectors[cardinalPoint]);
 			if (loc.getBlock().getType().equals(Material.AIR)) {
-				//this.blocks.add(new TempBlock(loc.getBlock(), Material.STATIONARY_WATER, (byte) 0x0));
-				this.blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.WATER, false));
+				blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.WATER, false));
 			}
 
 		}
 
-		this.currentCardinalPoint++;
-		if (this.currentCardinalPoint == (SPEED * 8)) {
-			this.currentCardinalPoint = 0;
+		currentCardinalPoint++;
+		if (currentCardinalPoint == (SPEED * 8)) {
+			currentCardinalPoint = 0;
 		}
 		return true;
 	}
