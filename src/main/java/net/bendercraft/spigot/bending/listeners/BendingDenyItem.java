@@ -164,6 +164,9 @@ public class BendingDenyItem implements Listener {
 		if(item == null) {
 			return;
 		}
+		if(bender.getPlayer().hasPermission("bending.denyitem.bypass")) {
+			return;
+		}
 		for(Entry<Enchantment, Integer> entry : deniedEnchantments.entrySet()) {
 			Enchantment enchantment = entry.getKey();
 			int level = entry.getValue();

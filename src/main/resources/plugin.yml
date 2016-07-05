@@ -445,6 +445,9 @@ permissions:
   bending.protection.bypass:
     description: Players with this permission are not affected by world guard protection
     default: false
+  bending.denyitem.bypass:
+    description: Players with this permission are not affected by automatic items removal
+    default: false
     
   bending.message.daymessage:
     description: Allows receipt of the sun rising and falling for firebenders
