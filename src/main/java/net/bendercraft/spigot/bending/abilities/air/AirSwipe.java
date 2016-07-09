@@ -98,7 +98,7 @@ public class AirSwipe extends BendingActiveAbility {
 	private double pushfactor = PUSHFACTOR;
 	private int id;
 	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
-	private List<Entity> affectedentities = new ArrayList<Entity>();
+	private List<Entity> affectedEntities = new ArrayList<Entity>();
 
 	private double range;
 	private int arc;
@@ -214,7 +214,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 	@SuppressWarnings("deprecation")
 	private boolean advanceSwipe() {
-		this.affectedentities.clear();
+		this.affectedEntities.clear();
 
 		// Basically, AirSwipe is just a set of smoke effect on some location
 		// called "elements"
@@ -232,7 +232,6 @@ public class AirSwipe extends BendingActiveAbility {
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
 						toAdd.put(direction, newlocation);
 					}
-
 				}
 			}
 		}
@@ -294,11 +293,11 @@ public class AirSwipe extends BendingActiveAbility {
 							entity.setVelocity(direction.multiply(this.pushfactor));
 						}
 
-						if (!this.affectedentities.contains(entity)) {
+						if (!this.affectedEntities.contains(entity)) {
 							if (this.damage != 0) {
 								DamageTools.damageEntity(bender, entity, this.damage);
 							}
-							this.affectedentities.add(entity);
+							this.affectedEntities.add(entity);
 						}
 
 						// if (entity instanceof Player) {

@@ -80,6 +80,7 @@ public class Combustion extends BendingActiveAbility {
 	private long time;
 	private int progressed = 0;
 
+	private long chargeTime = CHARGE_TIME;
 	private double range = RANGE;
 	private double damage = DAMAGE;
 
@@ -89,6 +90,7 @@ public class Combustion extends BendingActiveAbility {
 		time = startedTime;
 		if (AvatarState.isAvatarState(player)) {
 			damage = AvatarState.getValue(damage);
+			chargeTime *= 0.60;
 		}
 		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 	}
@@ -124,7 +126,7 @@ public class Combustion extends BendingActiveAbility {
 			player.getWorld().playEffect(player.getEyeLocation(), 
 					Effect.SMOKE, 
 					Tools.getIntCardinalDirection(player.getEyeLocation().getDirection()), 3);
-			if (System.currentTimeMillis() > time + CHARGE_TIME) {
+			if (System.currentTimeMillis() > time + chargeTime) {
 				location = player.getEyeLocation();
 				origin = location.clone();
 				direction = location.getDirection().normalize().multiply(HITBOX);
