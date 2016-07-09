@@ -43,6 +43,7 @@ public class Mark extends BendingActiveAbility {
 		if(target != null) {
 			target.addPotionEffect(PotionEffectType.GLOWING.createEffect(DURATION*20/1000, 1));
 			bender.cooldown(this, DURATION);
+			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
@@ -86,4 +87,8 @@ public class Mark extends BendingActiveAbility {
 		return false;
 	}
 
+	@Override
+	protected long getMaxMillis() {
+		return DURATION;
+	}
 }
