@@ -2,6 +2,7 @@ package net.bendercraft.spigot.bending.abilities.earth;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.bukkit.block.Block;
@@ -25,7 +26,7 @@ public class TremorSense extends BendingActiveAbility {
     public static final String NAME = "TremorSense";
 
     private static final PotionEffect BLIND = new PotionEffect(PotionEffectType.BLINDNESS, 20, 0);
-    private static final PotionEffect GLOW = new PotionEffect(PotionEffectType.GLOWING, 5*20, 2);
+    private static final PotionEffect GLOW = new PotionEffect(PotionEffectType.GLOWING, 3*20, 2);
     private static final int[][] RELATIVES = {{1,0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
     @ConfigurationParameter("Base-Distance")
     private static int BASE_DISTANCE = 5;
@@ -109,29 +110,20 @@ public class TremorSense extends BendingActiveAbility {
             lastBlindTime = now;
         }
 
-        Collection<LivingEntity> oldEntities = entities.values();
         entities.clear();
         for (LivingEntity livingEntity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), currentDistance)) {
             if (player.getEntityId() != livingEntity.getEntityId() && isOnEarth(livingEntity)) {
                 entities.put(livingEntity.getEntityId(), livingEntity);
                 livingEntity.addPotionEffect(GLOW);
-                player.sendMessage("Glow effect added");
-            }
-            oldEntities.remove(livingEntity);
-        }
-        for (LivingEntity oldEntity : oldEntities) {
-            if (!Mark.isMarked(oldEntity)) {
-                player.sendMessage("Glow effect removed");
-                oldEntity.removePotionEffect(PotionEffectType.GLOWING);
             }
         }
     }
 
     @Override
     public void stop() {
-    	for(LivingEntity entity : entities.values()) {
+    	/*for(LivingEntity entity : entities.values()) {
     		entity.removePotionEffect(PotionEffectType.GLOWING);
-    	}
+    	}*/
     	entities.clear();
         bender.cooldown(NAME, (System.currentTimeMillis() - startedTime) / 10);
     }
@@ -167,7 +159,6 @@ public class TremorSense extends BendingActiveAbility {
             return false;
         }
         if (!tremorsenses.containsKey(player)) {
-            player.sendMessage("No tremorsense for you");
             return false;
         }
         TremorSense sense = (TremorSense) tremorsenses.get(player);

@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.bukkit.Location;
-import org.bukkit.Material;
+
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -336,6 +336,18 @@ public class EntityTools {
 			}
 		}
 		return result;
+	}
+
+	public static LivingEntity getLivingEntityByID(int entityID) {
+		for (World world : Bukkit.getWorlds()) {
+			for (LivingEntity entity : world.getLivingEntities()) {
+				if (entity.getEntityId() == entityID) {
+					return entity;
+				}
+			}
+		}
+
+		return null;
 	}
 	
 	public static void giveItemInOffHand(Player player, ItemStack itemstack) {
