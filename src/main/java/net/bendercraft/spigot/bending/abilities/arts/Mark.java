@@ -61,7 +61,9 @@ public class Mark extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		target.removePotionEffect(PotionEffectType.GLOWING);
+		if (target != null) {
+			target.removePotionEffect(PotionEffectType.GLOWING);
+		}
 	}
 
 	public LivingEntity getTarget() {
