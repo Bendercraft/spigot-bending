@@ -112,6 +112,7 @@ public class TremorSense extends BendingActiveAbility {
         for (LivingEntity livingEntity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), currentDistance)) {
             if (player.getEntityId() != livingEntity.getEntityId() && isOnEarth(livingEntity)) {
                 entities.put(livingEntity.getEntityId(), livingEntity);
+                livingEntity.removePotionEffect(GLOW.getType());
                 livingEntity.addPotionEffect(GLOW);
             }
         }
@@ -134,10 +135,12 @@ public class TremorSense extends BendingActiveAbility {
         if (BlockTools.isEarthbendable(player, block)) {
             return true;
         }
-        for (int[] rel : RELATIVES) {
-            Block relative = block.getRelative(rel[0], 0, rel[1]);
-            if (BlockTools.isEarthbendable(player, relative)) {
-                return true;
+        if (!block.getType().isSolid()) {
+            for (int[] rel : RELATIVES) {
+                Block relative = block.getRelative(rel[0], 0, rel[1]);
+                if (BlockTools.isEarthbendable(player, relative)) {
+                    return true;
+                }
             }
         }
         return false;
