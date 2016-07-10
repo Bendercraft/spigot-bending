@@ -1,8 +1,6 @@
 package net.bendercraft.spigot.bending.abilities.earth;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.bukkit.block.Block;
@@ -12,7 +10,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.bendercraft.spigot.bending.abilities.*;
-import net.bendercraft.spigot.bending.abilities.arts.Mark;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -64,6 +61,10 @@ public class TremorSense extends BendingActiveAbility {
         	return false;
         }
 
+        if (!player.isSneaking()) {
+            return false;
+        }
+
         if (!isOnEarth(player)) {
             return false;
         }
@@ -75,6 +76,7 @@ public class TremorSense extends BendingActiveAbility {
         if (!getState().equals(BendingAbilityState.PROGRESSING)) {
             return false;
         }
+
         return true;
     }
 
@@ -90,10 +92,6 @@ public class TremorSense extends BendingActiveAbility {
 
     @Override
     public void progress() {
-        if (!player.isSneaking()) {
-            remove();
-            return;
-        }
         long now = System.currentTimeMillis();
         if (now - lastIncrementTime >= 500) {
             if (currentDistance < MAX_DISTANCE) {
