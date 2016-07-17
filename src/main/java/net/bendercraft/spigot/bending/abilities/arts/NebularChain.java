@@ -16,10 +16,10 @@ public class NebularChain extends BendingActiveAbility {
 	public final static String NAME = "NebularChain";
 	
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 10000;
+	private static long COOLDOWN = 3000;
 	
 	@ConfigurationParameter("Range")
-	public static long RANGE = 10;
+	public static long RANGE = 20;
 	
 	@ConfigurationParameter("Push")
 	public static double PUSH = 2;
