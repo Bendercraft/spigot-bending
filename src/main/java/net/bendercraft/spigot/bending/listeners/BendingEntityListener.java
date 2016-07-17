@@ -300,7 +300,12 @@ public class BendingEntityListener implements Listener {
 				if (ability != null && ability.equals(C4.NAME) && EntityTools.canBend(player, ability)) {
 					C4 bomb = (C4) AbilityManager.getManager().buildAbility(C4.NAME, player);
 					bomb.setArrow(arrow);
-					bomb.swing();
+					if(bomb.canBeInitialized()) {
+						bomb.swing();
+						if(!bomb.isState(BendingAbilityState.START) && !bomb.isState(BendingAbilityState.ENDED)) {
+							AbilityManager.getManager().addInstance(bomb);
+						}
+					}
 				}
 			}
 		}

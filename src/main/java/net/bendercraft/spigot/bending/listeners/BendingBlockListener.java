@@ -116,7 +116,7 @@ public class BendingBlockListener implements Listener {
 		Object bomber = C4.isCFour(block);
 		if (bomber != null) {
 			block.getDrops().clear();
-			C4.getCFour(bomber).cancel();
+			C4.getCFour(bomber).remove();
 		}
 
 		if (PhaseChange.isFrozen(block)) {

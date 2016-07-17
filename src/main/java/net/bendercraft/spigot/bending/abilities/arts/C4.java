@@ -34,6 +34,7 @@ import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
+import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 
@@ -67,9 +68,8 @@ public class C4 extends BendingActiveAbility {
 	private static final Particle EXPLODE = Particle.EXPLOSION_HUGE;
 
 	private int id;
-	private Block bomb = null;
+	private TempBlock bomb = null;
 	private Location location;
-	private Material previousType;
 	private Block hitBlock = null;
 	private BlockFace hitFace = null;
 	
@@ -78,12 +78,10 @@ public class C4 extends BendingActiveAbility {
 	public C4(RegisteredAbility register, Player player) {
 		super(register, player);
 		loadBlockByDir(player.getEyeLocation(), player.getEyeLocation().getDirection());
-		previousType = location.getBlock().getType();
 	}
 	
 	public void setArrow(Arrow arrow) {
 		this.arrow = arrow;
-		previousType = null;
 		loadBlockByDir(arrow.getLocation(), arrow.getVelocity().normalize());
 	}
 
@@ -157,8 +155,12 @@ public class C4 extends BendingActiveAbility {
 			}
 			return true;
 		}
+		
+		if(location.getBlock().getType() != Material.AIR) {
+			return false;
+		}
 
-		generateCFour(location.getBlock(), hitFace);
+		generateC4(location.getBlock(), hitFace);
 		id = ID++;
 
 		setState(BendingAbilityState.PROGRESSING);
@@ -204,13 +206,13 @@ public class C4 extends BendingActiveAbility {
 			return;
 		}
 
-		if ((bomb != null) && (bomb.getType() != Material.SKULL)) {
+		if ((bomb != null) && (bomb.getBlock().getType() != Material.SKULL)) {
 			remove();
 			return;
 		}
 
-		if (bomb.getDrops() != null) {
-			bomb.getDrops().clear();
+		if (bomb.getBlock().getDrops() != null) {
+			bomb.getBlock().getDrops().clear();
 		}
 	}
 
@@ -218,9 +220,7 @@ public class C4 extends BendingActiveAbility {
 		location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 10, 1);
 		location.getWorld().spawnParticle(EXPLODE, location, 1, 0, 0, 0);
 
-		if ((bomb != null) && (previousType != null)) {
-			bomb.setType(previousType);
-		}
+		bomb.revertBlock();
 
 		explode();
 
@@ -229,8 +229,8 @@ public class C4 extends BendingActiveAbility {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void generateCFour(Block block, BlockFace face) {
-		bomb = block;
+	private void generateC4(Block block, BlockFace face) {
+		bomb = TempBlock.makeTemporary(block, Material.SKULL, false);
 		byte facing = 0x1;
 		switch (face) {
 			case SOUTH:
@@ -249,12 +249,12 @@ public class C4 extends BendingActiveAbility {
 				facing = 0x1;
 				break;
 		}
-		bomb.setTypeIdAndData(Material.SKULL.getId(), facing, true);
-		Skull skull = (Skull) bomb.getState();
+		bomb.getBlock().setTypeIdAndData(Material.SKULL.getId(), facing, true);
+		Skull skull = (Skull) bomb.getBlock().getState();
 		skull.setSkullType(SkullType.PLAYER);
 		skull.setOwner("MHF_TNT");
 		skull.update();
-		bomb.getDrops().clear();
+		bomb.getBlock().getDrops().clear();
 		location.getWorld().playSound(location, Sound.BLOCK_GRAVEL_STEP, 10, 1);
 	}
 
@@ -353,8 +353,11 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		if (bomb != null && previousType != null) {
-			bomb.setType(previousType);
+		if (bomb != null) {
+			bomb.revertBlock();
+		}
+		if(arrow != null) {
+			arrow.remove();
 		}
 	}
 
@@ -370,11 +373,6 @@ public class C4 extends BendingActiveAbility {
 			}
 		}
 		return null;
-	}
-
-	public void cancel() {
-		bomb.setType(previousType);
-		remove();
 	}
 
 	@Override
