@@ -51,7 +51,10 @@ public class SpikeField {
 			for (int z = -(RADIUS - 1); z <= (RADIUS - 1); z++) {
 				for (int y = -1; y <= 1; y++) {
 					Block testblock = p.getWorld().getBlockAt(locX + x, locY + y, locZ + z);
-					if (testblock.getType() == Material.ICE && testblock.getRelative(BlockFace.UP).getType() == Material.AIR && !(testblock.getX() == p.getEyeLocation().getBlock().getX() && testblock.getZ() == p.getEyeLocation().getBlock().getZ())) {
+					if (testblock.getType() == Material.ICE 
+							&& testblock.getRelative(BlockFace.UP).getType() == Material.AIR 
+							&& !(testblock.getX() == p.getLocation().getBlock().getX() 
+							&& testblock.getZ() == p.getLocation().getBlock().getZ())) {
 						iceblocks.add(testblock);
 					}
 				}
