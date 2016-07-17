@@ -236,7 +236,7 @@ public class FireBurst extends BendingActiveAbility {
 		return this.player;
 	}
 	
-	private class BurstBlast {
+	public static class BurstBlast {
 
 		private Player player;
 		private List<Block> safe;
@@ -248,7 +248,7 @@ public class FireBurst extends BendingActiveAbility {
 		private double damage;
 		private double speedfactor;
 
-		public BurstBlast(Player player, BendingPlayer bender, BendingAbility parent, Location location, Vector direction, int damage, List<Block> safeblocks) {
+		public BurstBlast(Player player, BendingPlayer bender, BendingAbility parent, Location location, Vector direction, double damage, List<Block> safeblocks) {
 			this.player = player;
 			this.bender = bender;
 			this.safe = safeblocks;

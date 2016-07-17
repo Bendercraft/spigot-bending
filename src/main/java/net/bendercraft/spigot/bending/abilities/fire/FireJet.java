@@ -49,7 +49,7 @@ public class FireJet extends BendingActiveAbility {
 		if(getState() == BendingAbilityState.START) {
 			Block block = this.player.getLocation().getBlock();
 			if (FireStream.isIgnitable(this.player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(this.player)) {
-				FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+				//FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
 				this.player.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor));
 				setState(BendingAbilityState.PROGRESSING);
 				
@@ -109,7 +109,7 @@ public class FireJet extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		FlyingPlayer.removeFlyingPlayer(this.player, this);
+		//FlyingPlayer.removeFlyingPlayer(this.player, this);
 		this.bender.cooldown(FireJet.NAME, COOLDOWN);
 	}
 

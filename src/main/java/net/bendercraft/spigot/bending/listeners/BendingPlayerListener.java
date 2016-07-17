@@ -58,6 +58,7 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthPassive;
 import net.bendercraft.spigot.bending.abilities.earth.LavaTrain;
 import net.bendercraft.spigot.bending.abilities.earth.MetalBending;
 import net.bendercraft.spigot.bending.abilities.earth.MetalWire;
+import net.bendercraft.spigot.bending.abilities.energy.AvatarShield;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireJet;
@@ -396,6 +397,16 @@ public class BendingPlayerListener implements Listener {
 			if (EntityTools.isBender(player, BendingElement.EARTH) && ((event.getCause() == DamageCause.SUFFOCATION) && TempBlock.isTempBlock(player.getEyeLocation().getBlock()))) {
 				event.setDamage(0);
 				event.setCancelled(true);
+			}
+			
+			if(bender != null) {
+				Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(AvatarShield.NAME);
+				if(instances.containsKey(player)) {
+					AvatarShield ab = (AvatarShield) instances.get(player);
+					if(ab.hit()) {
+						event.setCancelled(true);
+					}
+				}
 			}
 		}
 	}

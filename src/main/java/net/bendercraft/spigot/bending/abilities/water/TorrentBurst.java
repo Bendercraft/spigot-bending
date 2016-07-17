@@ -71,10 +71,6 @@ public class TorrentBurst {
 			return false;
 		}
 
-		if (!EntityTools.canBend(player, torrentRegister)) {
-			return false;
-		}
-
 		if (System.currentTimeMillis() > time + interval) {
 			if (radius < maxradius) {
 				radius += dr;
@@ -171,13 +167,9 @@ public class TorrentBurst {
 		entity.setVelocity(entity.getVelocity().clone().add(direction.multiply(factor)));
 	}
 
-	private void clear() {
+	public void remove() {
 		for (TempBlock block : blocks) {
 			block.revertBlock();
 		}
-	}
-
-	public void remove() {
-		this.clear();
 	}
 }

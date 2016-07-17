@@ -47,6 +47,7 @@ import net.bendercraft.spigot.bending.abilities.arts.StraightShot;
 import net.bendercraft.spigot.bending.abilities.arts.Supply;
 import net.bendercraft.spigot.bending.abilities.arts.VitalPoint;
 import net.bendercraft.spigot.bending.abilities.earth.*;
+import net.bendercraft.spigot.bending.abilities.energy.AvatarShield;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.Blaze;
 import net.bendercraft.spigot.bending.abilities.fire.Combustion;
@@ -198,6 +199,7 @@ public class AbilityManager {
 	public void registerAllAbilities() {
 
 		register(AvatarState.class);
+		register(AvatarShield.class);
 		
 		register(Dash.class);
 		register(HighJump.class);

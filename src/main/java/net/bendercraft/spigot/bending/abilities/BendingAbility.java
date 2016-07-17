@@ -64,23 +64,23 @@ public abstract class BendingAbility {
 	 *         <code>false</code> if the ability cannot be launched
 	 */
 	public boolean canBeInitialized() {
-		if (this.player == null) {
+		if (player == null) {
 			return false;
 		}
 
-		if (this.bender == null) {
+		if (bender == null) {
 			return false;
 		}
 		
-		if (this.bender.isOnCooldown(getName())) {
+		if (bender.isOnCooldown(getName())) {
 			return false;
 		}
 
-		if (!this.player.isOnline() || this.player.isDead()) {
+		if (!player.isOnline() || player.isDead()) {
 			return false;
 		}
 
-		if (!EntityTools.canBend(this.player, register)) {
+		if (!EntityTools.canBend(player, register)) {
 			// Also check region protection at player location
 			return false;
 		}
@@ -94,11 +94,11 @@ public abstract class BendingAbility {
 	}
 	
 	public boolean canTick() {
-		if (!this.player.isOnline()
-				|| this.player.isDead()
-				|| this.state.equals(BendingAbilityState.ENDED)
-				|| (getMaxMillis() > 0 && System.currentTimeMillis() > (this.startedTime + getMaxMillis()))
-				|| !EntityTools.canBend(this.player, register)) {
+		if (!player.isOnline()
+				|| player.isDead()
+				|| isState(BendingAbilityState.ENDED)
+				|| (getMaxMillis() > 0 && System.currentTimeMillis() > (startedTime + getMaxMillis()))
+				|| !EntityTools.canBend(player, register)) {
 			return false;
 		}
 		return true;
