@@ -23,7 +23,6 @@ import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPath;
-import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
@@ -198,29 +197,29 @@ public class WaterManipulation extends BendingActiveAbility {
 		}
 
 		if (getState() == BendingAbilityState.PREPARED) {
-			if (this.sourceblock == null) {
+			if (sourceblock == null) {
 				return false;
 			}
-			if (this.sourceblock.getWorld() != this.player.getWorld()) {
+			if (sourceblock.getWorld() != player.getWorld()) {
 				return false;
 			}
 
-			this.targetdestination = getTargetLocation(this.player);
-			if (this.targetdestination.distance(this.location) <= 1) {
-				this.progressing = false;
-				this.targetdestination = null;
+			targetdestination = getTargetLocation(player);
+			if (targetdestination.distance(location) <= 1) {
+				progressing = false;
+				targetdestination = null;
 				remove();
-			} else {
-				this.progressing = true;
-				this.settingup = true;
-				this.firstdestination = getToEyeLevel();
-				this.firstdirection = Tools.getDirection(this.sourceblock.getLocation(), this.firstdestination).normalize();
-				this.targetdestination = Tools.getPointOnLine(this.firstdestination, this.targetdestination, range);
-				this.targetdirection = Tools.getDirection(this.firstdestination, this.targetdestination).normalize();
-				addWater(this.sourceblock);
-				setState(BendingAbilityState.PROGRESSING);
+				return false;
 			}
-			BendingPlayer.getBendingPlayer(this.player).cooldown(NAME, COOLDOWN);
+			progressing = true;
+			settingup = true;
+			firstdestination = getToEyeLevel();
+			firstdirection = Tools.getDirection(sourceblock.getLocation(), firstdestination).normalize();
+			targetdestination = Tools.getPointOnLine(firstdestination, targetdestination, range);
+			targetdirection = Tools.getDirection(firstdestination, targetdestination).normalize();
+			addWater(sourceblock);
+			setState(BendingAbilityState.PROGRESSING);
+			bender.cooldown(NAME, COOLDOWN);
 		}
 
 		return false;
@@ -241,12 +240,12 @@ public class WaterManipulation extends BendingActiveAbility {
 	}
 
 	private Location getToEyeLevel() {
-		Location loc = this.sourceblock.getLocation().clone();
-		double dy = this.targetdestination.getY() - this.sourceblock.getY();
+		Location loc = sourceblock.getLocation().clone();
+		double dy = targetdestination.getY() - sourceblock.getY();
 		if (dy <= 2) {
-			loc.setY(this.sourceblock.getY() + 2L);
+			loc.setY(sourceblock.getY() + 2L);
 		} else {
-			loc.setY(this.targetdestination.getY() - 1L);
+			loc.setY(targetdestination.getY() - 1L);
 		}
 		return loc;
 	}
@@ -287,7 +286,7 @@ public class WaterManipulation extends BendingActiveAbility {
 					return;
 				}
 
-				if (this.sourceblock.getLocation().distance(this.firstdestination) < .5) {
+				if (this.sourceblock.getLocation().distance(this.firstdestination) < 0.6) {
 					this.settingup = false;
 				}
 
