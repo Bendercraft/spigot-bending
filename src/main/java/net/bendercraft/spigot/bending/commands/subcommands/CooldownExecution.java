@@ -92,6 +92,12 @@ public class CooldownExecution extends BendingCommand {
 					}
 				}
 				return true;
+			} else if(choice.equalsIgnoreCase("reset")) {
+				if (sender.hasPermission("bending.command.cooldown_reset")) {
+					bender.getCooldowns().clear();
+					player.sendMessage(ChatColor.GREEN+"Your cooldowns has been reset.");
+					return true;
+				}
 			}
 		}
 
