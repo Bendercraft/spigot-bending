@@ -13,6 +13,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -93,6 +94,11 @@ public class FireFerret extends BendingActiveAbility {
 		}
 		
 		if(target.isDead()) {
+			remove();
+			return;
+		}
+		
+		if (BlockTools.isSolid(location.getBlock())) {
 			remove();
 			return;
 		}
