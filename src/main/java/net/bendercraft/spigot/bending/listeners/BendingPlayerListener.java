@@ -412,7 +412,7 @@ public class BendingPlayerListener implements Listener {
 			double currspeed = vel.length();
 			double maxspeed = .15;
 			if (currspeed > maxspeed) {
-				vel = vel.normalize().multiply(maxspeed);
+				vel = vel.normalize().multiply(maxspeed*0.9);
 				event.getPlayer().setVelocity(vel);
 			}
 		}
