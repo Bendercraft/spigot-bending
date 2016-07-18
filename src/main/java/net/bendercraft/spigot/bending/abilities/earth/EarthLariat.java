@@ -1,7 +1,7 @@
 package net.bendercraft.spigot.bending.abilities.earth;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -54,8 +54,8 @@ public class EarthLariat extends BendingActiveAbility {
 				
 				if(BlockTools.isEarthbendable(player, register, player.getLocation().getBlock().getRelative(BlockFace.DOWN))
 						&& BlockTools.isEarthbendable(player, register, target.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
-					player.getWorld().playEffect(player.getLocation(), Effect.GHAST_SHOOT, 0, 4);
-					target.getWorld().playEffect(target.getLocation(), Effect.GHAST_SHOOT, 0, 4);
+					player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
+					target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
 					
 					Location middle = player.getLocation().clone().add(target.getLocation()).multiply(0.5);
 					

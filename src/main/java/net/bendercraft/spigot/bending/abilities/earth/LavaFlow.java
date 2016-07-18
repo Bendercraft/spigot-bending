@@ -3,9 +3,9 @@ package net.bendercraft.spigot.bending.abilities.earth;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -71,7 +71,7 @@ public class LavaFlow extends BendingActiveAbility {
 	public boolean swing() {
 		if(getState() == BendingAbilityState.PREPARED) {
 			direction = player.getEyeLocation().getDirection().normalize().setY(-((double)COLUMN_HEIGHT/(double)STREAM_REACH));
-			player.getWorld().playEffect(player.getLocation(), Effect.EXTINGUISH, 2);
+			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 			time = System.currentTimeMillis();
 			setState(BendingAbilityState.PROGRESSING);
 		} else { 
@@ -130,7 +130,7 @@ public class LavaFlow extends BendingActiveAbility {
 						blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.LAVA, false));
 					}
 				}
-				player.getWorld().playEffect(player.getLocation(), Effect.EXTINGUISH, 2);
+				player.getWorld().playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 				streams = futurStreams;
 				
 				columnHeight++;

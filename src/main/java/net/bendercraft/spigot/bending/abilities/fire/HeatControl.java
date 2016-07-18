@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -99,17 +100,17 @@ public class HeatControl extends BendingActiveAbility {
 			}
 			if (block.getType() == Material.FIRE) {
 				block.setType(Material.AIR);
-				block.getWorld().playEffect(block.getLocation(), Effect.EXTINGUISH, 0);
+				block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 			} else if (block.getType() == Material.STATIONARY_LAVA) {
 				block.setType(Material.OBSIDIAN);
-				block.getWorld().playEffect(block.getLocation(), Effect.EXTINGUISH, 0);
+				block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 			} else if (block.getType() == Material.LAVA) {
 				if (block.getData() == FULL) {
 					block.setType(Material.OBSIDIAN);
 				} else {
 					block.setType(Material.COBBLESTONE);
 				}
-				block.getWorld().playEffect(block.getLocation(), Effect.EXTINGUISH, 0);
+				block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 			}
 		}
 	}

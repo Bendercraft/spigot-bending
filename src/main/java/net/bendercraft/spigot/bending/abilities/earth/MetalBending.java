@@ -3,8 +3,8 @@ package net.bendercraft.spigot.bending.abilities.earth;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -81,10 +81,10 @@ public class MetalBending extends BendingActiveAbility {
 						if (!ProtectionManager.isLocationProtectedFromBending(pl, registered, bl.getLocation())) {
 							if (bl.getData() < 4) {
 								bl.setData((byte) (bl.getData() + 4));
-								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);
+								bl.getWorld().playSound(bl.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1.0f, 1.0f);
 							} else {
 								bl.setData((byte) (bl.getData() - 4));
-								bl.getWorld().playEffect(bl.getLocation(), Effect.DOOR_TOGGLE, 0);
+								bl.getWorld().playSound(bl.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1.0f, 1.0f);
 							}
 						}
 					}

@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -491,7 +491,7 @@ public class BlockTools {
 				}
 
 				moveEarthBlock(block, affectedblock);
-				block.getWorld().playEffect(block.getLocation(), Effect.GHAST_SHOOT, 0, 4);
+				block.getWorld().playSound(block.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
 
 				for (double i = 1; i < chainLength; i++) {
 					affectedblock = location.clone().add(negnorm.getX() * i, negnorm.getY() * i, negnorm.getZ() * i).getBlock();

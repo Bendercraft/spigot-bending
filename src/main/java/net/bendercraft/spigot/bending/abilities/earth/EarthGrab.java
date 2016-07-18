@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -174,7 +174,7 @@ public class EarthGrab extends BendingActiveAbility {
 																									// jump
 					this.target.addPotionEffect(slowness);
 					this.target.addPotionEffect(jumpless);
-					this.target.getWorld().playEffect(this.target.getLocation(), Effect.GHAST_SHOOT, 0, 4);
+					target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
 					for (Location loc : locs) {
 						int h = 1;
 						if (this.origin.getY() - loc.getY() >= 2) {

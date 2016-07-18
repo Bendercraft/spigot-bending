@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -205,7 +205,7 @@ public class EarthBlast extends BendingActiveAbility {
 		}
 		
 		setState(BendingAbilityState.PROGRESSING);
-		location.getWorld().playEffect(location, Effect.GHAST_SHOOT, 0, 10);
+		location.getWorld().playSound(location, Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
 	}
 
 	@Override

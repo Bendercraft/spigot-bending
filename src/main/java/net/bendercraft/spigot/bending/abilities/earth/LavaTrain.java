@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -167,7 +167,7 @@ public class LavaTrain extends BendingActiveAbility {
 					if (!safe.contains(potentialsBlock)) {
 						//this.affecteds.put(potentialsBlock, new TempBlock(potentialsBlock, Material.LAVA));
 						this.affecteds.put(potentialsBlock, TempBlock.makeTemporary(potentialsBlock, Material.LAVA, false));
-						potentialsBlock.getWorld().playEffect(potentialsBlock.getLocation(), Effect.EXTINGUISH, 10);
+						potentialsBlock.getWorld().playSound(potentialsBlock.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 					}
 				}
 			}

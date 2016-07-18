@@ -3,9 +3,9 @@ package net.bendercraft.spigot.bending.abilities.earth;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -76,7 +76,7 @@ public class LavaSpin extends BendingActiveAbility {
 			//Send
 			lava = true;
 			setState(BendingAbilityState.PROGRESSING);
-			current.getWorld().playEffect(current, Effect.EXTINGUISH, 10);
+			current.getWorld().playSound(current, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			setState(BendingAbilityState.PREPARED);
 		}
@@ -97,7 +97,7 @@ public class LavaSpin extends BendingActiveAbility {
 				block = TempBlock.makeTemporary(current.getBlock(), MATERIAL_REST, false);
 				Vector direction = player.getEyeLocation().subtract(current).toVector().normalize();
 				if(move(direction)) {
-					current.getWorld().playEffect(current, Effect.GHAST_SHOOT, 0, 10);
+					current.getWorld().playSound(current, Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
 					setState(BendingAbilityState.PREPARED);
 					bender.cooldown(this, COOLDOWN);
 				}
@@ -154,7 +154,7 @@ public class LavaSpin extends BendingActiveAbility {
 					if(block.getBlock().getType() != MATERIAL_REST) {
 						//block = new TempBlock(current.getBlock(), MATERIAL_REST);
 						block = TempBlock.makeTemporary(current.getBlock(), MATERIAL_REST, false);
-						current.getWorld().playEffect(current, Effect.EXTINGUISH, 10);
+						current.getWorld().playSound(current, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 					}
 				}
 			} else if(getState() == BendingAbilityState.PROGRESSING) {
