@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -81,17 +82,21 @@ public class AvatarShield extends BendingActiveAbility {
 	public boolean hit() {
 		if(earth != null) {
 			earthHit++;
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
 			if(earthHit > IMMUNITY_HIT) {
 				earth.clearRing();
 				earth = null;
 			}
 		} else if(fire != null) {
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 1.0f, 1.0f);
 			fire.clearRing();
 			fire = null;
 		} else if(water != null) {
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_SPLASH, 1.0f, 1.0f);
 			water.clearRing();
 			water = null;
 		} else if(air != null) {
+			player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BREATH, 1.0f, 1.0f);
 			air.clearRing();
 			air = null;
 		} else {
