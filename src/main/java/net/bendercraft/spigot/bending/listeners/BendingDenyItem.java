@@ -167,6 +167,9 @@ public class BendingDenyItem implements Listener {
 		if(bender.getPlayer().hasPermission("bending.denyitem.bypass")) {
 			return;
 		}
+		if(item.getType() == Material.CHORUS_FRUIT) {
+			removeItem(bender.getPlayer(), item);
+		}
 		for(Entry<Enchantment, Integer> entry : deniedEnchantments.entrySet()) {
 			Enchantment enchantment = entry.getKey();
 			int level = entry.getValue();
