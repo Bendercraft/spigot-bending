@@ -23,17 +23,17 @@ public class Blaze extends BendingActiveAbility {
 	@ConfigurationParameter("Arc")
 	private static int DEFAULT_ARC = 20;
 
-	@ConfigurationParameter("Range")
-	private static int DEFAULT_RANGE = 20;
+	@ConfigurationParameter("Range-Arc")
+	private static int RANGE_ARC = 10;
 
 	@ConfigurationParameter("Arc-Cooldown")
-	public static long ARC_COOLDOWN = 1000;
+	public static long ARC_COOLDOWN = 3000;
 
-	@ConfigurationParameter("Range")
-	private static int RANGE = 7;
+	@ConfigurationParameter("Range-Ring")
+	private static int RANGE_RING = 5;
 
 	@ConfigurationParameter("Ring-Cooldown")
-	public static long RING_COOLDOWN = 2000;
+	public static long RING_COOLDOWN = 15000;
 
 	private static int stepsize = 2;
 
@@ -67,7 +67,7 @@ public class Blaze extends BendingActiveAbility {
 			direction.setX(vx);
 			direction.setZ(vz);
 
-			int range = DEFAULT_RANGE;
+			int range = RANGE_ARC;
 			if (AvatarState.isAvatarState(this.player)) {
 				range = AvatarState.getValue(range);
 			}
@@ -100,7 +100,7 @@ public class Blaze extends BendingActiveAbility {
 			direction.setX(vx);
 			direction.setZ(vz);
 
-			int range = RANGE;
+			int range = RANGE_RING;
 			if (AvatarState.isAvatarState(this.player)) {
 				range = AvatarState.getValue(range);
 			}
