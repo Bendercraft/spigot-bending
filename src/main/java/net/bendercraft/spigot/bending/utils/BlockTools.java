@@ -595,7 +595,8 @@ public class BlockTools {
 			}
 
 			if (isWaterbendable(block, player) && (!isPlant(block) || plantbending)) {
-				if (TempBlock.isTempBlock(block)) {
+				TempBlock tempBlock = TempBlock.get(block);
+				if (tempBlock!= null && !tempBlock.isBendAllowed()) {
 					return null;
 				}
 				return block;

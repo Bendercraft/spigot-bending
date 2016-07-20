@@ -114,7 +114,7 @@ public class WaterTurret extends BendingActiveAbility {
 					head = test.getRelative(BlockFace.UP).getLocation();
 					if(!TempBlock.isTempBlock(head.getBlock()) || turrets.contains(TempBlock.get(head.getBlock()))) {
 						//turrets.add(turrets.size(), new TempBlock(head.getBlock(), Material.WATER, FULL));
-						turrets.add(turrets.size(), TempBlock.makeTemporary(head.getBlock(), Material.WATER, false));
+						turrets.add(turrets.size(), TempBlock.makeTemporary(head.getBlock(), Material.WATER, true));
 					}
 				} else {
 					Vector dir = target.getEyeLocation().toVector().clone().subtract(head.toVector()).normalize();
@@ -127,7 +127,7 @@ public class WaterTurret extends BendingActiveAbility {
 					
 					if(!TempBlock.isTempBlock(head.getBlock()) || turrets.contains(TempBlock.get(head.getBlock()))) {
 						//turrets.add(turrets.size(), new TempBlock(head.getBlock(), Material.WATER, FULL));
-						turrets.add(turrets.size(), TempBlock.makeTemporary(head.getBlock(), Material.WATER, false));
+						turrets.add(turrets.size(), TempBlock.makeTemporary(head.getBlock(), Material.WATER, true));
 					}
 				}
 				
