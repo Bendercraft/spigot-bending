@@ -106,7 +106,6 @@ public class IceSpike extends BendingActiveAbility {
 				Location eyeloc = this.player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 				if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
-
 					LivingEntity target = EntityTools.getTargetedEntity(this.player, defaultrange);
 					Location destination;
 					if (target == null) {

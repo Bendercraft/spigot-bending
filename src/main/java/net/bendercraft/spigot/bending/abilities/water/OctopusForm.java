@@ -100,7 +100,9 @@ public class OctopusForm extends BendingActiveAbility {
 			if (sourceblock == null && WaterReturn.hasWaterBottle(player)) {
 				Location eyeLoc = player.getEyeLocation();
 				Block block = eyeLoc.add(eyeLoc.getDirection().normalize()).getBlock();
-				if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeLoc.getBlock())) {
+				if (BlockTools.isTransparentToEarthbending(player, block) 
+						&& BlockTools.isTransparentToEarthbending(player, eyeLoc.getBlock())
+						&& WaterReturn.canBeSource(block)) {
 					//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 					this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
 					sourceblock = block;

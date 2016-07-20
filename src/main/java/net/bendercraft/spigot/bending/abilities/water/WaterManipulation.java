@@ -151,7 +151,9 @@ public class WaterManipulation extends BendingActiveAbility {
 				&& getState() != BendingAbilityState.PREPARED && WaterReturn.hasWaterBottle(player)) {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-			if (BlockTools.isTransparentToEarthbending(player, block) && BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())) {
+			if (BlockTools.isTransparentToEarthbending(player, block) 
+					&& BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())
+					&& WaterReturn.canBeSource(block)) {
 				//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, BlockTools.FULL);
 				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
 				WaterReturn.emptyWaterBottle(player);

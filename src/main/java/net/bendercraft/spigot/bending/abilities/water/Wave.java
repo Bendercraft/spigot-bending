@@ -123,11 +123,13 @@ public class Wave {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 			//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-			this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
-			this.sourceblock = block;
-			focusBlock();
-			WaterReturn.emptyWaterBottle(player);
-			return true;
+			if(WaterReturn.canBeSource(block)) {
+				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
+				this.sourceblock = block;
+				focusBlock();
+				WaterReturn.emptyWaterBottle(player);
+				return true;
+			}
 		}
 		return false;
 	}

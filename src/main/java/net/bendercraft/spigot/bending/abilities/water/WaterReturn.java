@@ -159,6 +159,13 @@ public class WaterReturn {
 		return getWaterBottle(player.getInventory()) != -1;
 	}
 	
+	public static boolean canBeSource(Block block) {
+		if (TempBlock.isTempBlock(block)) {
+			return false;
+		}
+		return block.getType() == Material.AIR;
+	}
+	
 	private static int getWaterBottle(Inventory inventory) {
 		for(int i = 0 ; i < inventory.getContents().length ; i++) {
 			ItemStack is = inventory.getContents()[i];

@@ -134,7 +134,9 @@ public class Torrent extends BendingActiveAbility {
 			if (this.sourceblock == null && WaterReturn.hasWaterBottle(this.player)) {
 				Location eyeloc = this.player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-				if (BlockTools.isTransparentToEarthbending(this.player, block) && BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())) {
+				if (BlockTools.isTransparentToEarthbending(this.player, block) 
+						&& BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())
+						&& WaterReturn.canBeSource(block)) {
 					//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 					this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
 					this.sourceblock = block;
