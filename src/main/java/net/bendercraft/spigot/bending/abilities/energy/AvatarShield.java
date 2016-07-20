@@ -50,8 +50,8 @@ public class AvatarShield extends BendingActiveAbility {
 	@ConfigurationParameter("Immunity-Hit")
 	private static int IMMUNITY_HIT = 3;
 	
-	@ConfigurationParameter("Fire-Cast")
-	private static int FIRE_CAST = 2;
+	@ConfigurationParameter("Fire-Range")
+	private static int FIRE_RANGE = 25;
 	
 	@ConfigurationParameter("Del-Phi")
 	static double DELPHI = 10;
@@ -122,7 +122,7 @@ public class AvatarShield extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					blasts.add(new FireBurst.BurstBlast(this.player, this.bender, this, location, direction.normalize(), DAMAGE_FIRE, safeblocks));
+					blasts.add(new FireBurst.BurstBlast(this.player, this.bender, this, location, direction.normalize(), FIRE_RANGE, DAMAGE_FIRE, safeblocks));
 				}
 			}
 		}

@@ -46,7 +46,7 @@ public class FireBurst extends BendingActiveAbility {
 	public final static String NAME = "FireBurst";
 	
 	@ConfigurationParameter("Charge-Time")
-	private static long CHARGE_TIME = 2500;
+	private static long CHARGE_TIME = 1500;
 
 	@ConfigurationParameter("Damage")
 	static int DAMAGE = 3;
@@ -60,8 +60,11 @@ public class FireBurst extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2500;
 	
-	@ConfigurationParameter("Blast-Range")
-	private static int BLAST_RANGE = 25;
+	@ConfigurationParameter("Range-Cone")
+	private static int RANGE_CONE = 12;
+	
+	@ConfigurationParameter("Range-Sphere")
+	private static int RANGE_SPHERE = 6;
 	
 	@ConfigurationParameter("Blast-Speed")
 	private static double BLAST_SPEED = 15;
@@ -123,7 +126,7 @@ public class FireBurst extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), this.damage, safeblocks));
+					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(),RANGE_CONE, this.damage, safeblocks));
 				}
 			}
 		}
@@ -191,7 +194,7 @@ public class FireBurst extends BendingActiveAbility {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), this.damage, safeblocks));
+				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_SPHERE, this.damage, safeblocks));
 			}
 		}
 		
@@ -248,11 +251,11 @@ public class FireBurst extends BendingActiveAbility {
 		private double damage;
 		private double speedfactor;
 
-		public BurstBlast(Player player, BendingPlayer bender, BendingAbility parent, Location location, Vector direction, double damage, List<Block> safeblocks) {
+		public BurstBlast(Player player, BendingPlayer bender, BendingAbility parent, Location location, Vector direction, int range, double damage, List<Block> safeblocks) {
 			this.player = player;
 			this.bender = bender;
 			this.safe = safeblocks;
-			this.range = PluginTools.firebendingDayAugment(BLAST_RANGE, player.getWorld());
+			this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
 			this.location = location.clone();
 			this.origin = location.clone();
 			this.direction = direction.clone().normalize();
