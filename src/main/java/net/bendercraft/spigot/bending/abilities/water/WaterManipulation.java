@@ -58,6 +58,9 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 500;
+	
+	@ConfigurationParameter("Damage")
+	private static int MAX_CONCURRENT_INSTANCE = 2;
 
 	private static final double deflectrange = 3;
 
@@ -248,6 +251,25 @@ public class WaterManipulation extends BendingActiveAbility {
 			loc.setY(targetdestination.getY() - 1L);
 		}
 		return loc;
+	}
+
+	@Override
+	public boolean canBeInitialized() {
+		if(!super.canBeInitialized()) {
+			return false;
+		}
+		int count = 0;
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
+			WaterManipulation manip = (WaterManipulation) ab;
+			if (manip.player.equals(player)) {
+				count ++;
+				if(count > MAX_CONCURRENT_INSTANCE) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	private void redirect(Player player, Location targetlocation) {
