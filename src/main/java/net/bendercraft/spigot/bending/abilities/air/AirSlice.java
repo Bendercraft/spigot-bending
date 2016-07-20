@@ -61,6 +61,17 @@ public class AirSlice extends BendingActiveAbility {
 	public AirSlice(RegisteredAbility register, Player player) {
 		super(register, player);
 	}
+	
+	@Override
+	public boolean canTick() {
+		if(!super.canTick()) {
+			return false;
+		}
+		if (getState() == BendingAbilityState.PREPARING && !NAME.equals(bender.getAbility())) {
+			return false;
+		}
+		return true;
+	}
 
 	@Override
 	public boolean swing() {
