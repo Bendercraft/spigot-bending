@@ -19,6 +19,7 @@ import net.bendercraft.spigot.bending.abilities.air.AirBubble;
 import net.bendercraft.spigot.bending.abilities.arts.C4;
 import net.bendercraft.spigot.bending.abilities.earth.EarthGrab;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
+import net.bendercraft.spigot.bending.abilities.fire.Illumination;
 import net.bendercraft.spigot.bending.abilities.fire.Lightning;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.OctopusForm;
@@ -73,6 +74,11 @@ public class BendingBlockListener implements Listener {
 		if (BlockTools.isLava(fromblock) && TempBlock.isTempBlock(fromblock)) {
 			event.setCancelled(true);
 		}
+		if (!event.isCancelled()) {
+			if (Illumination.isIlluminated(toblock)) {
+				toblock.setType(Material.AIR);
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -90,6 +96,9 @@ public class BendingBlockListener implements Listener {
 		if (!event.isCancelled()) {
 			event.setCancelled(!Wave.canThaw(block));
 		}
+		if (!event.isCancelled()) {
+			event.setCancelled(Illumination.isIlluminated(block));
+		}
 		if (FireStream.isIgnited(block)) {
 			FireStream.remove(block);
 		}
@@ -99,6 +108,9 @@ public class BendingBlockListener implements Listener {
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
 		event.setCancelled(!WaterManipulation.canPhysicsChange(block));
+		if (!event.isCancelled()) {
+			event.setCancelled(Illumination.isIlluminated(block));
+		}
 		if (!event.isCancelled()) {
 			event.setCancelled(BlockTools.isTempNoPhysics(block));
 		}
@@ -127,6 +139,8 @@ public class BendingBlockListener implements Listener {
 			event.setCancelled(true);
 		} else if (!Wave.canThaw(block)) {
 			Wave.thaw(block);
+			event.setCancelled(true);
+		} else if (Illumination.isIlluminated(block)) {
 			event.setCancelled(true);
 		}
 		TempBlock.revertBlock(block);
