@@ -204,7 +204,7 @@ public class WaterWall extends BendingActiveAbility {
 			// targetdestination = Tools.getTargetBlock(player, range,
 			// Tools.getTransparentEarthbending()).getLocation();
 
-			if (targetdestination.distance(location) <= 1) {
+			if (targetdestination.distance(location) <= 1.1) {
 				progressing = false;
 				targetdestination = null;
 			} else {
