@@ -48,23 +48,26 @@ public class FireBurst extends BendingActiveAbility {
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 1500;
 
-	@ConfigurationParameter("Damage")
-	static int DAMAGE = 3;
+	@ConfigurationParameter("Damage-Cone")
+	private static int DAMAGE_CONE = 6;
+	
+	@ConfigurationParameter("Damage-Sphere")
+	private static int DAMAGE_SPHERE = 3;
 
 	@ConfigurationParameter("Del-Theta")
-	static double DELTHETA = 10;
+	private static double DELTHETA = 10;
 
 	@ConfigurationParameter("Del-Phi")
-	static double DELPHI = 10;
+	private static double DELPHI = 10;
 
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2500;
 	
 	@ConfigurationParameter("Range-Cone")
-	private static int RANGE_CONE = 12;
+	private static int RANGE_CONE = 15;
 	
 	@ConfigurationParameter("Range-Sphere")
-	private static int RANGE_SPHERE = 6;
+	private static int RANGE_SPHERE = 10;
 	
 	@ConfigurationParameter("Blast-Speed")
 	private static double BLAST_SPEED = 15;
@@ -76,7 +79,6 @@ public class FireBurst extends BendingActiveAbility {
 	private static double BLAST_PUSH_FACTOR = 0.3;
 
 	private long chargetime = CHARGE_TIME;
-	private int damage = DAMAGE;
 	
 	private List<BurstBlast> blasts;
 
@@ -126,7 +128,7 @@ public class FireBurst extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(),RANGE_CONE, this.damage, safeblocks));
+					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_CONE, DAMAGE_CONE, safeblocks));
 				}
 			}
 		}
@@ -194,7 +196,7 @@ public class FireBurst extends BendingActiveAbility {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_SPHERE, this.damage, safeblocks));
+				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_SPHERE, DAMAGE_SPHERE, safeblocks));
 			}
 		}
 		
