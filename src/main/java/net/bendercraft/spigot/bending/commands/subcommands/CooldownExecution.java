@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -94,8 +95,24 @@ public class CooldownExecution extends BendingCommand {
 				return true;
 			} else if(choice.equalsIgnoreCase("reset")) {
 				if (sender.hasPermission("bending.command.cooldown_reset")) {
-					bender.getCooldowns().clear();
-					player.sendMessage(ChatColor.GREEN+"Your cooldowns has been reset.");
+					BendingPlayer target = bender;
+					if(args.size() == 2) {
+						Player p = Bukkit.getServer().getPlayer(args.get(1));
+						if(p == null) {
+							player.sendMessage(ChatColor.RED+"Invalid player : "+args.get(1)+".");
+							return true;
+						}
+						target = BendingPlayer.getBendingPlayer(p);
+					}
+					target.getCooldowns().clear();
+					
+					if(target.getPlayerID().equals(bender.getPlayerID())) {
+						bender.getPlayer().sendMessage(ChatColor.GREEN+"Your cooldowns has been reset.");
+					} else {
+						bender.getPlayer().sendMessage(ChatColor.GREEN+"Cooldowns of "+ChatColor.GOLD+target.getPlayer().getName()+ChatColor.GREEN+" has been reset.");
+						target.getPlayer().sendMessage(ChatColor.GREEN+"Your cooldowns has been reset by : "+ChatColor.GOLD+bender.getPlayer().getName()+ChatColor.GREEN+".");
+					}
+					
 					return true;
 				}
 			}
