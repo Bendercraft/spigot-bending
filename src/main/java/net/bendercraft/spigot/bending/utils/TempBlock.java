@@ -15,7 +15,6 @@ public class TempBlock {
 	private static Map<Block, TempBlock> instances = new HashMap<Block, TempBlock>();
 
 	private Block block;
-	private byte newData;
 	private BlockState state;
 	private boolean bendAllowed;
 
@@ -28,13 +27,11 @@ public class TempBlock {
 		TempBlock temp = null;
 		if (instances.containsKey(block)) {
 			temp = instances.get(block);
-		}
-		else {
+		} else {
 			temp = new TempBlock(block);
 			instances.put(block, temp);
 		}
 		temp.bendAllowed = bendAllowed;
-		temp.newData = newData;
 		temp.block.setType(newType);
 		temp.block.setData(newData);
 		if (temp.state.getType() == Material.FIRE) {
@@ -97,23 +94,8 @@ public class TempBlock {
 		}
 	}
 
-	public void setType(Material material) {
-		setType(material, this.newData);
-	}
-
-	@SuppressWarnings("deprecation")
-	public void setType(Material material, byte data) {
-		this.newData = data;
-		this.block.setType(material);
-		this.block.setData(data);
-	}
-
 	public boolean isBendAllowed() {
 		return bendAllowed;
-	}
-
-	public void setBendAllowed(boolean bendAllowed) {
-		this.bendAllowed = bendAllowed;
 	}
 
 }

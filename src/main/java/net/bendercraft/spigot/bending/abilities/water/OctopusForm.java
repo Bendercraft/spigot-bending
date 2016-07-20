@@ -357,7 +357,7 @@ public class OctopusForm extends BendingActiveAbility {
 			TempBlock tBlock = TempBlock.get(block);
 			if (!newblocks.contains(tBlock)) {
 				if (!blocks.contains(tBlock))
-					tBlock.setType(Material.WATER, full);
+					tBlock = TempBlock.makeTemporary(block, Material.WATER, full, false);
 				newblocks.add(tBlock);
 			}
 		} else if (BlockTools.isWaterbendable(block, player) || block.getType() == Material.FIRE || block.getType() == Material.AIR) {

@@ -390,8 +390,7 @@ public class WaterManipulation extends BendingActiveAbility {
 					this.trail2 = null;
 				}
 				if (this.trail != null) {
-					this.trail2 = this.trail;
-					this.trail2.setType(Material.WATER, (byte) 2);
+					this.trail2 = TempBlock.makeTemporary(trail.getBlock(), Material.WATER, (byte) 2, false);
 				}
 				//this.trail = new TempBlock(this.sourceblock, Material.WATER, (byte) 1);
 				this.trail = TempBlock.makeTemporary(sourceblock, Material.WATER, (byte) 1, false);
