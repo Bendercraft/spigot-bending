@@ -23,9 +23,9 @@ public class FlyingPlayer {
 		this.causes = new HashMap<BendingAbility, Long>();
 	}
 
-	public void fly() {
+	public void fly(boolean fly) {
 		this.player.setAllowFlight(true);
-		this.player.setFlying(true);
+		this.player.setFlying(fly);
 	}
 
 	public void resetState() {
@@ -72,7 +72,7 @@ public class FlyingPlayer {
 		}
 	}
 
-	public static FlyingPlayer addFlyingPlayer(Player player, BendingAbility cause, Long maxDuration) {
+	public static FlyingPlayer addFlyingPlayer(Player player, BendingAbility cause, Long maxDuration, boolean fly) {
 		if ((player == null) || (cause == null)) {
 			return null;
 		}
@@ -87,7 +87,7 @@ public class FlyingPlayer {
 		flying.addCause(cause, System.currentTimeMillis() + maxDuration);
 		if (flying.hasCauses()) {
 			flyingPlayers.put(player.getUniqueId(), flying);
-			flying.fly();
+			flying.fly(fly);
 		}
 		return flying;
 	}

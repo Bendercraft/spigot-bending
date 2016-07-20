@@ -57,7 +57,7 @@ public class AirSpout extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if (getState() == BendingAbilityState.START) {
-			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), true);
 			if (this.flying != null) {
 				setState(BendingAbilityState.PROGRESSING);
 			}
@@ -105,7 +105,7 @@ public class AirSpout extends BendingActiveAbility {
 			if (dy > height) {
 				this.flying.resetState();
 			} else {
-				this.flying.fly();
+				this.flying.fly(true);
 			}
 			rotateAirColumn(block);
 		} else {

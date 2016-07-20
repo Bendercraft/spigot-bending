@@ -83,7 +83,7 @@ public class Tornado extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.START) {
-			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), false);
 			if (this.flying != null) {
 				setState(BendingAbilityState.PROGRESSING);
 			}

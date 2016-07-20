@@ -54,7 +54,7 @@ public class WaterSpout extends BendingActiveAbility {
 		if(getState() == BendingAbilityState.START) {
 			if (canWaterSpout(this.player)) {
 				this.blocks = new LinkedList<TempBlock>();
-				this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+				this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), true);
 				if (this.flying != null) {
 					spout();
 					setState(BendingAbilityState.PROGRESSING);
@@ -101,7 +101,7 @@ public class WaterSpout extends BendingActiveAbility {
 		} else if (height == -2) {
 			flying.resetState();
 		} else {
-			flying.fly();
+			flying.fly(true);
 		}
 		Block block = location.getBlock();
 		location = block.getLocation();

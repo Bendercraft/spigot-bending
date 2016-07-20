@@ -34,7 +34,7 @@ public class FireJet extends BendingActiveAbility {
 	private static long DURATION = 1550;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 6000;
+	public static long COOLDOWN = 4000;
 
 	private long duration = DURATION;
 	private double factor = FACTOR;
@@ -49,7 +49,7 @@ public class FireJet extends BendingActiveAbility {
 		if(getState() == BendingAbilityState.START) {
 			Block block = this.player.getLocation().getBlock();
 			if (FireStream.isIgnitable(this.player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(this.player)) {
-				FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+				FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), false);
 				this.player.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor));
 				setState(BendingAbilityState.PROGRESSING);
 				

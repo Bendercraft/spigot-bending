@@ -141,7 +141,7 @@ public class AvatarShield extends BendingActiveAbility {
 			air = new Ring(bender, new Vector(1,-1,1), Effect.SMOKE);
 			water = new Ring(bender, new Vector(1,0,-1), Material.WATER);
 			earth = new Ring(bender, new Vector(1,1,-1), Material.STONE);
-			FlyingPlayer.addFlyingPlayer(player, this, MAX_DURATION);
+			FlyingPlayer.addFlyingPlayer(player, this, MAX_DURATION, true);
 		} else if (isState(BendingAbilityState.PROGRESSING)) {
 			if(player.isSneaking()) {
 				if(fire != null) {

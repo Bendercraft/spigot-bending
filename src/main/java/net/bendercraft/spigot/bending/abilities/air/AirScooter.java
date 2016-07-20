@@ -59,7 +59,7 @@ public class AirScooter extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if (getState() == BendingAbilityState.START) {
-			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis());
+			FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), false);
 			this.player.setSprinting(false);
 
 			setState(BendingAbilityState.PROGRESSING);
