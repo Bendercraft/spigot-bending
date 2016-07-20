@@ -119,10 +119,6 @@ public class Suffocate extends BendingActiveAbility {
 		if (!this.target.hasPotionEffect(PotionEffectType.SLOW)) {
 			this.target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 500, 1));
 		}
-		// Target is weakened
-		if (!this.target.hasPotionEffect(PotionEffectType.WEAKNESS)) {
-			this.target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 500, 1));
-		}
 
 		if ((System.currentTimeMillis() - this.time) >= interval) {
 			this.time = System.currentTimeMillis();
