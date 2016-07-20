@@ -41,7 +41,7 @@ public class HeatControl extends BendingActiveAbility {
 	private static double MELT_RADIUS = 5;
 
 	@ConfigurationParameter("Extinguish-Cooldown")
-	public static long EXT_COOLDOWN = 1000;
+	public static long EXT_COOLDOWN = 500;
 
 	@ConfigurationParameter("Cook-Time")
 	private static long COOK_TIME = 2000;
