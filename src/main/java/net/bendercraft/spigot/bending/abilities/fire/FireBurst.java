@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -28,7 +25,6 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
@@ -113,7 +109,6 @@ public class FireBurst extends BendingActiveAbility {
 
 	private void coneBurst() {
 		Location location = this.player.getEyeLocation();
-		List<Block> safeblocks = BlockTools.getBlocksAroundPoint(this.player.getLocation(), 2);
 		Vector vector = location.getDirection();
 		double angle = Math.toRadians(30);
 		double x, y, z;
@@ -128,7 +123,7 @@ public class FireBurst extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_CONE, DAMAGE_CONE, safeblocks));
+					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_CONE, DAMAGE_CONE));
 				}
 			}
 		}
@@ -183,7 +178,6 @@ public class FireBurst extends BendingActiveAbility {
 
 	private void sphereBurst() {
 		Location location = this.player.getEyeLocation();
-		List<Block> safeblocks = BlockTools.getBlocksAroundPoint(this.player.getLocation(), 2);
 
 		double x, y, z;
 		double r = 1;
@@ -196,7 +190,7 @@ public class FireBurst extends BendingActiveAbility {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_SPHERE, DAMAGE_SPHERE, safeblocks));
+				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_SPHERE, DAMAGE_SPHERE));
 			}
 		}
 		
@@ -242,9 +236,7 @@ public class FireBurst extends BendingActiveAbility {
 	}
 	
 	public static class BurstBlast {
-
 		private Player player;
-		private List<Block> safe;
 		private Location location;
 		private Location origin;
 		private Vector direction;
@@ -253,10 +245,9 @@ public class FireBurst extends BendingActiveAbility {
 		private double damage;
 		private double speedfactor;
 
-		public BurstBlast(Player player, BendingPlayer bender, BendingAbility parent, Location location, Vector direction, int range, double damage, List<Block> safeblocks) {
+		public BurstBlast(Player player, BendingPlayer bender, BendingAbility parent, Location location, Vector direction, int range, double damage) {
 			this.player = player;
 			this.bender = bender;
-			this.safe = safeblocks;
 			this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
 			this.location = location.clone();
 			this.origin = location.clone();
@@ -273,13 +264,6 @@ public class FireBurst extends BendingActiveAbility {
 		
 		public boolean progress() {
 			if (this.location.distance(this.origin) > this.range) {
-				return false;
-			}
-			Block block = this.location.getBlock();
-			if (BlockTools.isSolid(block) || block.isLiquid()) {
-				if (FireStream.isIgnitable(this.player, block.getRelative(BlockFace.UP))) {
-					ignite(this.location);
-				}
 				return false;
 			}
 
@@ -304,14 +288,6 @@ public class FireBurst extends BendingActiveAbility {
 			this.location = this.location.add(this.direction.clone().multiply(this.speedfactor));
 			
 			return true;
-		}
-		
-		private void ignite(Location location) {
-			for (Block block : BlockTools.getBlocksAroundPoint(location, BLAST_AFFECTING_RADIUS)) {
-				if (FireStream.isIgnitable(this.player, block) && !this.safe.contains(block)) {
-					block.setType(Material.FIRE);
-				}
-			}
 		}
 
 		private boolean affect(LivingEntity entity) {

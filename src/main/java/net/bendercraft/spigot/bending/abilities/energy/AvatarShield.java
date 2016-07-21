@@ -107,7 +107,6 @@ public class AvatarShield extends BendingActiveAbility {
 	
 	private void fireBurst() {
 		Location location = this.player.getEyeLocation();
-		List<Block> safeblocks = BlockTools.getBlocksAroundPoint(this.player.getLocation(), 2);
 		Vector vector = location.getDirection();
 		double angle = Math.toRadians(30);
 		double x, y, z;
@@ -122,7 +121,7 @@ public class AvatarShield extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					blasts.add(new FireBurst.BurstBlast(this.player, this.bender, this, location, direction.normalize(), FIRE_RANGE, DAMAGE_FIRE, safeblocks));
+					blasts.add(new FireBurst.BurstBlast(this.player, this.bender, this, location, direction.normalize(), FIRE_RANGE, DAMAGE_FIRE));
 				}
 			}
 		}
