@@ -74,6 +74,7 @@ import net.bendercraft.spigot.bending.abilities.water.WaterPassive;
 import net.bendercraft.spigot.bending.abilities.water.WaterSpout;
 import net.bendercraft.spigot.bending.abilities.water.WaterTurret;
 import net.bendercraft.spigot.bending.abilities.water.WaterWall;
+import net.bendercraft.spigot.bending.abilities.water.WaterWhip;
 import net.bendercraft.spigot.bending.controller.ConfigurationManager;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingRegisterEvent;
@@ -274,6 +275,7 @@ public class AbilityManager {
 		register(WaterTurret.class);
 		register(WaterSpout.class);
 		register(WaterWall.class);
+		register(WaterWhip.class);
 		
 		Bending.callEvent(new BendingRegisterEvent());
 	}
