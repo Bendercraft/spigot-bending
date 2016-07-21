@@ -99,6 +99,9 @@ public class WaterWhip extends BendingActiveAbility {
 		if(!BlockTools.isWaterBased(player.getLocation().getBlock())) {
 			return false;
 		}
+		if (!NAME.equals(EntityTools.getBendingAbility(player))) {
+			return false;
+		}
 		return true;
 	}
 
