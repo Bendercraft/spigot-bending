@@ -89,7 +89,7 @@ public class Lightning extends BendingActiveAbility {
 		Location targetlocation = getTargetLocation();
 
 		if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, targetlocation)) {
-			this.strike = this.player.getWorld().strikeLightning(targetlocation);
+			this.strike = this.player.getWorld().spigot().strikeLightning(targetlocation, true);
 			strikes.put(this.strike, this);
 		}
 	}
