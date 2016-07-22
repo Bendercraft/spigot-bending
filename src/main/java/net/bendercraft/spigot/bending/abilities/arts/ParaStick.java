@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +43,7 @@ public class ParaStick extends BendingActiveAbility {
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.START) {
 			stick = new ItemStack(Material.STICK);
+			stick.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
 			ItemMeta meta = stick.getItemMeta();
 			meta.setLore(Arrays.asList(LORE_NAME, "Glows from electricity"));
 			stick.setItemMeta(meta);
