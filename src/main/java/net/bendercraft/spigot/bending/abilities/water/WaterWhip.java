@@ -134,7 +134,7 @@ public class WaterWhip extends BendingActiveAbility {
 							blocks.add(TempBlock.makeTemporary(block, Material.WATER, false));
 							if(!old.contains(block)) {
 								for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(block.getLocation(), 1)) {
-									affect(entity);
+									affect(entity, points.get(i-1).next.getDirection().clone());
 								}
 							}
 						}
@@ -164,8 +164,9 @@ public class WaterWhip extends BendingActiveAbility {
 		bender.cooldown(this, COOLDOWN);
 	}
 	
-	public void affect(Entity entity) {
+	public void affect(Entity entity, Vector vector) {
 		DamageTools.damageEntity(bender, entity, DAMAGE);
+		entity.setVelocity(entity.getVelocity().clone().add(vector.multiply(0.5)));
 	}
 
 	@Override
