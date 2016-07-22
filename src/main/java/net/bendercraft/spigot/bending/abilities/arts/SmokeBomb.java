@@ -19,6 +19,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
+import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
 @ABendingAbility(name = SmokeBomb.NAME, affinity = BendingAffinity.CHI, shift=false)
@@ -36,6 +37,9 @@ public class SmokeBomb extends BendingActiveAbility {
 
 	@ConfigurationParameter("Sound-Radius")
 	public static float SOUND_RADIUS = 20;
+	
+	@ConfigurationParameter("Parastick-Damage")
+	public static double PARASTICK_DAMAGE = 4;
 
 	private static Integer ID = Integer.MIN_VALUE;
 
@@ -83,6 +87,15 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.player.addPotionEffect(blindnessBomber);
 
 		this.bender.cooldown(SmokeBomb.NAME, this.cooldown);
+		
+		if(ParaStick.hasParaStick(player)) {
+			ParaStick stick = ParaStick.getParaStick(player);
+			stick.consume();
+			
+			for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.origin, RADIUS)) {
+				DamageTools.damageEntity(bender, entity, PARASTICK_DAMAGE);
+			}
+		}
 
 		if (getState() == BendingAbilityState.PREPARED) {
 			setState(BendingAbilityState.PROGRESSING);

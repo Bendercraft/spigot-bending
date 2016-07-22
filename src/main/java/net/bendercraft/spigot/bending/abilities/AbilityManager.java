@@ -39,6 +39,7 @@ import net.bendercraft.spigot.bending.abilities.arts.ExplosiveShot;
 import net.bendercraft.spigot.bending.abilities.arts.HighJump;
 import net.bendercraft.spigot.bending.abilities.arts.Mark;
 import net.bendercraft.spigot.bending.abilities.arts.NebularChain;
+import net.bendercraft.spigot.bending.abilities.arts.ParaStick;
 import net.bendercraft.spigot.bending.abilities.arts.PoisonnedDart;
 import net.bendercraft.spigot.bending.abilities.arts.Slice;
 import net.bendercraft.spigot.bending.abilities.arts.SmokeBomb;
@@ -219,6 +220,7 @@ public class AbilityManager {
 		register(C4.class);
 		register(SmokeBomb.class);
 		register(VitalPoint.class);
+		register(ParaStick.class);
 
 		register(AirBlast.class);
 		register(AirBubble.class);

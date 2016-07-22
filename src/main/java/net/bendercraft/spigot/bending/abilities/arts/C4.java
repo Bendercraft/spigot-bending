@@ -64,6 +64,9 @@ public class C4 extends BendingActiveAbility {
 
 	@ConfigurationParameter("Max-Duration")
 	private static long MAX_DURATION = 1000 * 60 * 10;
+	
+	@ConfigurationParameter("Parastick-Enhance-Factor")
+	private static double PARASTICK_ENHANCE_FACTOR = 3.0;
 
 	private static final Particle EXPLODE = Particle.EXPLOSION_HUGE;
 
@@ -303,7 +306,15 @@ public class C4 extends BendingActiveAbility {
 			}
 		}
 
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, RADIUS + 1);
+		double factor = 1.5;
+		if (ParaStick.hasParaStick(player)) {
+			ParaStick stick = ParaStick.getParaStick(player);
+			stick.consume();
+			
+			factor *= PARASTICK_ENHANCE_FACTOR;
+		}
+		
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, RADIUS * factor);
 		for (LivingEntity entity : entities) {
 			if (ProtectionManager.isEntityProtected(entity)) {
 				continue;

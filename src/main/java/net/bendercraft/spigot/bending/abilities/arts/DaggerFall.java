@@ -39,11 +39,18 @@ public class DaggerFall extends BendingActiveAbility {
 	public boolean sneak() {
 		ItemStack dagger = new ItemStack(Material.IRON_SWORD, 1);
 		dagger.addEnchantment(Enchantment.KNOCKBACK, 1);
-		ItemMeta meta = dagger.getItemMeta();
-		meta.setLore(Arrays.asList("Dagger"));
-		dagger.setItemMeta(meta);
+		ItemMeta metaDagger = dagger.getItemMeta();
+		metaDagger.setLore(Arrays.asList("Dagger"));
+		dagger.setItemMeta(metaDagger);
+		
+		ItemStack shield = new ItemStack(Material.SHIELD, 1);
+		ItemMeta metaShield = shield.getItemMeta();
+		metaShield.setLore(Arrays.asList("Shield"));
+		shield.setItemMeta(metaShield);
 		
 		EntityTools.giveItemInMainHand(player, dagger);
+		EntityTools.giveItemInOffHand(player, shield);
+		
 		bender.cooldown(this, COOLDOWN);
 		return false;
 	}

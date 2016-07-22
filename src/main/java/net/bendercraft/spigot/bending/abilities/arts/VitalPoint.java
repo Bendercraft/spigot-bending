@@ -74,18 +74,23 @@ public class VitalPoint extends BendingActiveAbility {
 			}
 
 			this.cooldown = 1000;
-			if (this.player.isSneaking()) {
-				this.damage += DAMAGE_INCREMENT;
-				DamageTools.damageEntity(bender, target, damage);
+			this.damage += DAMAGE_INCREMENT;
+			
+			if (ParaStick.hasParaStick(player)) {
+				ParaStick stick = ParaStick.getParaStick(player);
+				stick.consume();
+				
+				DamageTools.damageEntity(bender, target, damage, true, 0, 0.0f, true);
 				if (this.target instanceof Player) {
 					EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
+					target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*6, 1));
 				}
 				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
 				this.cooldown += COOLDOWN / (6);
-			}
-			else {
-				DamageTools.damageEntity(bender, target, damage);
+			} else {
+				DamageTools.damageEntity(bender, target, damage, true, 0, 0.0f, true);
 				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
+				target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*3, 1));
 			}
 			this.bender.cooldown(NAME, this.cooldown);
 		}

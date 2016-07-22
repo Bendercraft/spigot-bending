@@ -49,6 +49,9 @@ public class PoisonnedDart extends BendingActiveAbility {
 
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 2000;
+	
+	@ConfigurationParameter("Parastick-Chiblock-Duration")
+	private static long PARASTICK_CHIBLOCK_DURATION = 3000;
 
 	private static final Particle VISUAL = Particle.VILLAGER_HAPPY;
 
@@ -87,12 +90,12 @@ public class PoisonnedDart extends BendingActiveAbility {
 				break;
 			case POTION:
 				PotionMeta meta = (PotionMeta) is.getItemMeta();
-				this.effects.add(meta.getBasePotionData().getType().getEffectType().createEffect(100, 1));
+				this.effects.add(meta.getBasePotionData().getType().getEffectType().createEffect(100, 2));
 				this.player.getInventory().removeItem(is);
 				this.player.getInventory().addItem(new ItemStack(Material.GLASS_BOTTLE));
 				break;
 			case EYE_OF_ENDER:
-				this.effects.add(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 10, 1));
+				this.effects.add(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 10, 2));
 				if (is.getAmount() == 1) {
 					this.player.getInventory().removeItem(is);
 				} else {
@@ -100,7 +103,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 				}
 				break;
 			case MUSHROOM_SOUP:
-				this.effects.add(new PotionEffect(PotionEffectType.CONFUSION, 20 * 12, 1));
+				this.effects.add(new PotionEffect(PotionEffectType.CONFUSION, 20 * 12, 2));
 				is.setType(Material.BOWL);
 				is.setAmount(1);
 				break;
@@ -109,7 +112,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 				byte data = is.getData().getData();
 				// If this is a wither skull
 				if (data == 1) {
-					this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 60, 0));
+					this.effects.add(new PotionEffect(PotionEffectType.WITHER, 20 * 60, 1));
 					if (is.getAmount() == 1) {
 						this.player.getInventory().removeItem(is);
 					} else {
@@ -118,17 +121,8 @@ public class PoisonnedDart extends BendingActiveAbility {
 				}
 				break;
 			default:
-				this.effects.add(new PotionEffect(PotionEffectType.POISON, 20, 0));
+				this.effects.add(new PotionEffect(PotionEffectType.POISON, 20*2, 1));
 				break;
-		}
-
-		if (this.effects != null) {
-			List<PotionEffect> newEffects = new LinkedList<PotionEffect>();
-			for (PotionEffect effect : this.effects) {
-				newEffects.add(new PotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier() + 1));
-			}
-			this.effects.clear();
-			this.effects = newEffects;
 		}
 
 		this.origin.getWorld().playSound(this.origin, Sound.ENTITY_ARROW_SHOOT, 10, 1);
@@ -183,6 +177,11 @@ public class PoisonnedDart extends BendingActiveAbility {
 			}
 			if (!health && (this.effects != null)) {
 				DamageTools.damageEntity(bender, entity, DAMAGE);
+			}
+			if(ParaStick.hasParaStick(player) && entity instanceof Player) {
+				ParaStick stick = ParaStick.getParaStick(player);
+				stick.consume();
+				EntityTools.blockChi((Player) entity, PARASTICK_CHIBLOCK_DURATION);
 			}
 			cptEnt++;
 			break;
