@@ -45,7 +45,7 @@ public class VitalPoint extends BendingActiveAbility {
 	private static int SLOW_DURATION = 5; // In seconds
 
 	@ConfigurationParameter("Chiblock-Duration")
-	private static long CHIBLOCK_DURATION = 3000;
+	private static long CHIBLOCK_DURATION = 500;
 
 	@ConfigurationParameter("Max-Range")
 	private static float MAX_RANGE = 3.5f;
@@ -83,7 +83,7 @@ public class VitalPoint extends BendingActiveAbility {
 				DamageTools.damageEntity(bender, target, damage, true, 0, 0.0f, true);
 				if (this.target instanceof Player) {
 					EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
-					target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*6, 1));
+					target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*4, 1));
 				}
 				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
 				this.cooldown += COOLDOWN / (6);
