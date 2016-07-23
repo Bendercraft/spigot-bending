@@ -295,7 +295,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 						if (!this.affectedEntities.contains(entity)) {
 							if (this.damage != 0) {
-								DamageTools.damageEntity(bender, entity, this.damage);
+								DamageTools.damageEntity(bender, entity, this, this.damage);
 							}
 							this.affectedEntities.add(entity);
 						}

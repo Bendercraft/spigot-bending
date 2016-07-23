@@ -94,7 +94,7 @@ public class Slice extends BendingActiveAbility {
 				remove();
 				return;
 			}
-			DamageTools.damageEntity(bender, target, DAMAGE_BLEED, true, 0, 0.0f, true);
+			DamageTools.damageEntity(bender, target, this, DAMAGE_BLEED, true, 0, 0.0f, true);
 			ticks++;
 		}
 	}

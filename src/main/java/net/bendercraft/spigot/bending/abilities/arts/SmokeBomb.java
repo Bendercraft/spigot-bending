@@ -93,7 +93,7 @@ public class SmokeBomb extends BendingActiveAbility {
 			stick.consume();
 			
 			for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.origin, RADIUS)) {
-				DamageTools.damageEntity(bender, entity, PARASTICK_DAMAGE);
+				DamageTools.damageEntity(bender, entity, this, PARASTICK_DAMAGE);
 			}
 		}
 

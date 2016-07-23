@@ -132,7 +132,7 @@ public class FireBlade extends BendingActiveAbility {
 	}
 	
 	public void affect(Entity entity) {
-		DamageTools.damageEntity(bender, entity, DAMAGE);
+		DamageTools.damageEntity(bender, entity, this, DAMAGE);
 		Enflamed.enflame(player, entity, 4);
 	}
 

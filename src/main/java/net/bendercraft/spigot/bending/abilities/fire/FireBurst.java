@@ -244,10 +244,12 @@ public class FireBurst extends BendingActiveAbility {
 		private double range;
 		private double damage;
 		private double speedfactor;
+		private BendingAbility ability;
 
-		public BurstBlast(Player player, BendingPlayer bender, BendingAbility parent, Location location, Vector direction, int range, double damage) {
+		public BurstBlast(Player player, BendingPlayer bender, BendingAbility ability, Location location, Vector direction, int range, double damage) {
 			this.player = player;
 			this.bender = bender;
+			this.ability = ability;
 			this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
 			this.location = location.clone();
 			this.origin = location.clone();
@@ -301,7 +303,7 @@ public class FireBurst extends BendingActiveAbility {
 					entity.setVelocity(this.direction.clone().multiply(BLAST_PUSH_FACTOR));
 				}
 				Enflamed.enflame(this.player, entity, 1);
-				DamageTools.damageEntity(bender, entity, PluginTools.firebendingDayAugment(this.damage, entity.getWorld()));
+				DamageTools.damageEntity(bender, entity, ability, PluginTools.firebendingDayAugment(this.damage, entity.getWorld()));
 				return false;
 			}
 			return true;

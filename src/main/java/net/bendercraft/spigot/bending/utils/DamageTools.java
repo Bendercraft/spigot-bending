@@ -15,6 +15,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 
 import net.bendercraft.spigot.bending.Bending;
+import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.event.BendingDamageEvent;
@@ -37,8 +38,8 @@ public class DamageTools {
 		return FIELD_ENTITYPLAYER_lastDamageByPlayerTime;
 	}
 	
-	public static void damageEntity(BendingPlayer attacker, Entity damagee, double damage) {
-		damageEntity(attacker, damagee, damage, false, DEFAULT_NODAMAGETICKS, DEFAULT_KNOCKBACK, false);
+	public static void damageEntity(BendingPlayer attacker, Entity damagee, BendingAbility ability, double damage) {
+		damageEntity(attacker, damagee, ability, damage, false, DEFAULT_NODAMAGETICKS, DEFAULT_KNOCKBACK, false);
 	}
 	
 	/**
@@ -51,7 +52,7 @@ public class DamageTools {
 	 * @param knockback : knockback push to apply
 	 * @param bypassImmunity : set to true if this damage should bypass "noDamageTicks" 
 	 */
-	public static void damageEntity(BendingPlayer attacker, Entity damagee, double damage, boolean ghost, int noDamageTicks, float knockback, boolean bypassImmunity) {
+	public static void damageEntity(BendingPlayer attacker, Entity damagee, BendingAbility ability, double damage, boolean ghost, int noDamageTicks, float knockback, boolean bypassImmunity) {
 		if (ProtectionManager.isEntityProtected(damagee)) {
 			return;
 		}
@@ -68,16 +69,21 @@ public class DamageTools {
 	        modifiers.put(DamageModifier.BASE, damage);
 	        modifierFunctions.put(DamageModifier.BASE, ZERO);
 			
-			BendingDamageEvent event = new BendingDamageEvent(attacker, damagee, modifiers, modifierFunctions);
+			BendingDamageEvent event = new BendingDamageEvent(attacker, damagee, ability, modifiers, modifierFunctions);
 			Bending.callEvent(event);
 			
+			if(event.isCancelled()) {
+				return;
+			}
+			
+			double finalDamage = event.getFinalDamage();
 			
 			CraftLivingEntity t = (CraftLivingEntity) damagee;
 			if(!event.isCancelled() && !living.isDead() && (bypassImmunity || t.getHandle().noDamageTicks == 0)) {
 				living.setLastDamageCause(event);
 				
 				// Make sure we do not set negative health or too much
-				double health = living.getHealth() - event.getDamage();
+				double health = living.getHealth() - finalDamage;
 				if(health < 0) {
 					health = 0;
 				}
@@ -87,7 +93,7 @@ public class DamageTools {
 				living.setHealth(health);
 				
 				// See EntityLiving#damageEntity from NMS to get effect ID and standard hurt ticks
-				t.getHandle().lastDamage = (float) event.getDamage();
+				t.getHandle().lastDamage = (float) finalDamage;
 				t.getHandle().lastDamager = ((CraftPlayer)(attacker.getPlayer())).getHandle();
 				try {
 					getField().setInt(t.getHandle(), 100);

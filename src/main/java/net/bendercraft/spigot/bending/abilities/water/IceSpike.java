@@ -287,13 +287,13 @@ public class IceSpike extends BendingActiveAbility {
 				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
 				entity.addPotionEffect(effect);
 				bPlayer.slow(slowCooldown);
-				DamageTools.damageEntity(bender, entity, damage);
+				DamageTools.damageEntity(bender, entity, this, damage);
 			}
 		} else {
 			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
 			entity.addPotionEffect(effect);
 			entity.damage(damage, this.player);
-			DamageTools.damageEntity(bender, entity, damage);
+			DamageTools.damageEntity(bender, entity, this, damage);
 		}
 	}
 

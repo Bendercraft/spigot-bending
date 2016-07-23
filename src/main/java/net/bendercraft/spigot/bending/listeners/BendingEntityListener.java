@@ -31,7 +31,6 @@ import org.bukkit.projectiles.ProjectileSource;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.abilities.arts.C4;
-import net.bendercraft.spigot.bending.abilities.arts.DirectHit;
 import net.bendercraft.spigot.bending.abilities.arts.ExplosiveShot;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlade;
@@ -43,7 +42,6 @@ import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
 import net.bendercraft.spigot.bending.abilities.water.WaterWall;
 import net.bendercraft.spigot.bending.abilities.water.Wave;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.MathUtils;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
 public class BendingEntityListener implements Listener {
@@ -136,17 +134,6 @@ public class BendingEntityListener implements Listener {
 			event.setCancelled(true);
 			lightning.dealDamage(entity);
 			return;
-		}
-
-		if ((source instanceof Player) && (entity instanceof Player)) {
-			Player sourceplayer = (Player) source;
-			Player targetplayer = (Player) entity;
-			if (EntityTools.canBendPassive(sourceplayer, BendingElement.MASTER)
-					&& EntityTools.isBender(sourceplayer, BendingElement.MASTER)
-					&& (event.getCause() == DamageCause.ENTITY_ATTACK) && MathUtils.doubleEquals(event.getDamage(), 1)
-					&& (sourceplayer.getLocation().distance(targetplayer.getLocation()) <= DirectHit.RANGE)) {
-				EntityTools.blockChi(targetplayer, 500);
-			}
 		}
 	}
 

@@ -135,11 +135,11 @@ public class AvatarShield extends BendingActiveAbility {
 		if (isState(BendingAbilityState.START)) {
 			setState(BendingAbilityState.PROGRESSING);
 			//fire = new Ring(bender, new Vector(-1,1,1), Material.MAGMA);
-			fire = new Ring(bender, new Vector(-1,1,1), Effect.MOBSPAWNER_FLAMES);
+			fire = new Ring(bender, this, new Vector(-1,1,1), Effect.MOBSPAWNER_FLAMES);
 			//air = new Ring(bender, new Vector(1,-1,1), Material.GLASS);
-			air = new Ring(bender, new Vector(1,-1,1), Effect.SMOKE);
-			water = new Ring(bender, new Vector(1,0,-1), Material.WATER);
-			earth = new Ring(bender, new Vector(1,1,-1), Material.STONE);
+			air = new Ring(bender, this, new Vector(1,-1,1), Effect.SMOKE);
+			water = new Ring(bender, this, new Vector(1,0,-1), Material.WATER);
+			earth = new Ring(bender, this, new Vector(1,1,-1), Material.STONE);
 			FlyingPlayer.addFlyingPlayer(player, this, MAX_DURATION, true);
 		} else if (isState(BendingAbilityState.PROGRESSING)) {
 			if(player.isSneaking()) {
@@ -265,18 +265,20 @@ public class AvatarShield extends BendingActiveAbility {
 		private Material material;
 		private Effect effect;
 		private double radius = 4;
+		private AvatarShield ability;
 		
 		
-		public Ring(BendingPlayer bender, Vector axis, Material material) {
-			this(bender, axis, material, null);
+		public Ring(BendingPlayer bender, AvatarShield ability, Vector axis, Material material) {
+			this(bender, ability, axis, material, null);
 		}
 		
-		public Ring(BendingPlayer bender, Vector axis, Effect effect) {
-			this(bender, axis, null, effect);
+		public Ring(BendingPlayer bender, AvatarShield ability, Vector axis, Effect effect) {
+			this(bender, ability, axis, null, effect);
 		}
 		
-		private Ring(BendingPlayer bender, Vector axis, Material material, Effect effect) {
+		private Ring(BendingPlayer bender, AvatarShield ability, Vector axis, Material material, Effect effect) {
 			this.bender = bender;
+			this.ability = ability;
 			this.axis = axis;
 			this.material = material;
 			this.effect = effect;
@@ -366,7 +368,7 @@ public class AvatarShield extends BendingActiveAbility {
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);
 			
-			DamageTools.damageEntity(bender, entity, DEFLECT_DAMAGE);
+			DamageTools.damageEntity(bender, entity, ability, DEFLECT_DAMAGE);
 		}
 	}
 }

@@ -119,7 +119,7 @@ public class Aim extends BendingActiveAbility {
 			if (entity.getEntityId() == player.getEntityId()) {
 				continue;
 			}
-			DamageTools.damageEntity(bender, entity, damage);
+			DamageTools.damageEntity(bender, entity, this, damage);
 			return false;
 		}
 		return true;

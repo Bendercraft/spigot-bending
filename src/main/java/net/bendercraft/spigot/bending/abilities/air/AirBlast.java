@@ -250,7 +250,7 @@ public class AirBlast extends BendingActiveAbility {
 		entity.setFallDistance(0);
 
 		if (this.bender.hasPath(BendingPath.RENEGADE) && !entity.getUniqueId().equals(player.getUniqueId())) {
-			DamageTools.damageEntity(bender, entity, 1);
+			DamageTools.damageEntity(bender, entity, this, 1);
 		}
 	}
 

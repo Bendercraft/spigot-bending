@@ -330,7 +330,7 @@ public class C4 extends BendingActiveAbility {
 			return;
 		}
 
-		DamageTools.damageEntity(bender, entity, MAX_DAMAGE);
+		DamageTools.damageEntity(bender, entity, this, MAX_DAMAGE);
 	}
 
 	private void knockBack(Entity entity) {

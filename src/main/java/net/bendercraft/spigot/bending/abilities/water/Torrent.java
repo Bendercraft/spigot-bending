@@ -579,7 +579,7 @@ public class Torrent extends BendingActiveAbility {
 			if (Tools.isNight(world)) {
 				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * DEFLECT_DAMAGE);
 			}
-			DamageTools.damageEntity(bender, entity, damagedealt);
+			DamageTools.damageEntity(bender, entity, this, damagedealt);
 		}
 
 	}
@@ -606,7 +606,7 @@ public class Torrent extends BendingActiveAbility {
 				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * this.damage);
 			}
 
-			DamageTools.damageEntity(bender, entity, damagedealt);
+			DamageTools.damageEntity(bender, entity, this, damagedealt);
 			this.hurtentities.add(entity);
 
 			entity.setNoDamageTicks(0);

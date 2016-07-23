@@ -67,6 +67,7 @@ import net.bendercraft.spigot.bending.abilities.water.FastSwimming;
 import net.bendercraft.spigot.bending.abilities.water.WaterPassive;
 import net.bendercraft.spigot.bending.abilities.water.WaterSpout;
 import net.bendercraft.spigot.bending.controller.Settings;
+import net.bendercraft.spigot.bending.event.BendingDamageEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
@@ -313,6 +314,18 @@ public class BendingPlayerListener implements Listener {
 			}
 		}
 	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onBendingDamage(BendingDamageEvent event) {
+		if (event.getEntity() instanceof Player) {
+			Player player = (Player) event.getEntity();
+			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+
+			if (bender != null && bender.hasPath(BendingPath.TOUGH)) {
+				event.setDamage(event.getDamage() * 0.9);
+			}
+		}
+	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerDamage(EntityDamageEvent event) {
@@ -320,10 +333,6 @@ public class BendingPlayerListener implements Listener {
 			Player player = (Player) event.getEntity();
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 			String ability = bender.getAbility();
-
-			if (bender != null && bender.hasPath(BendingPath.TOUGH)) {
-				event.setDamage(event.getDamage() * 0.9);
-			}
 
 			if (event.getCause() == DamageCause.FALL) {
 				BendingPassiveAbility ab = null;

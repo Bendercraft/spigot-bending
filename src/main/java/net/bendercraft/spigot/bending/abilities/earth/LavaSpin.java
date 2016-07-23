@@ -178,7 +178,7 @@ public class LavaSpin extends BendingActiveAbility {
 		if (!ProtectionManager.isEntityProtected(entity) 
 				&& entity.getEntityId() != player.getEntityId()
 				&& !affecteds.contains(entity)) {
-			DamageTools.damageEntity(bender, entity, DAMAGE);
+			DamageTools.damageEntity(bender, entity, this, DAMAGE);
 			affecteds.add(entity);
 		}
 	}

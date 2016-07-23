@@ -169,7 +169,7 @@ public class WaterWhip extends BendingActiveAbility {
 	}
 	
 	public void affect(Entity entity, Vector vector) {
-		DamageTools.damageEntity(bender, entity, DAMAGE);
+		DamageTools.damageEntity(bender, entity, this, DAMAGE);
 		entity.setVelocity(entity.getVelocity().clone().add(vector.multiply(0.5)));
 		hit += 1;
 		if(hit > MAX_HIT) {

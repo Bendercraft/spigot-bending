@@ -54,7 +54,7 @@ public class Shockwave extends BendingActiveAbility {
 				double rtheta = Math.toRadians(theta);
 				Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
 				if (vector.angle(player.getEyeLocation().getDirection()) < angle)
-					ripples.add(new Ripple(player, vector.normalize()));
+					ripples.add(new Ripple(player, this, vector.normalize()));
 			}
 			setState(BendingAbilityState.PROGRESSING);
 		}
@@ -101,7 +101,7 @@ public class Shockwave extends BendingActiveAbility {
 				for (double theta = 0; theta < 360; theta += dtheta) {
 					double rtheta = Math.toRadians(theta);
 					Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
-					ripples.add(new Ripple(player, vector.normalize()));
+					ripples.add(new Ripple(player, this, vector.normalize()));
 				}
 				setState(BendingAbilityState.PROGRESSING);
 			}

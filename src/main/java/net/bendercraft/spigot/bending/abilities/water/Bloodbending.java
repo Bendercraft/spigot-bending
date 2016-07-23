@@ -75,7 +75,7 @@ public class Bloodbending extends BendingActiveAbility {
 						continue;
 					}
 				}
-				DamageTools.damageEntity(bender, entity, 0);
+				DamageTools.damageEntity(bender, entity, this, 0);
 				this.targetEntities.put(entity, entity.getLocation().clone());
 			}
 		} else {
@@ -94,7 +94,7 @@ public class Bloodbending extends BendingActiveAbility {
 				}
 
 			}
-			DamageTools.damageEntity(bender, target, 0);
+			DamageTools.damageEntity(bender, target, this, 0);
 			this.targetEntities.put(target, target.getLocation().clone());
 		}
 		this.time = System.currentTimeMillis();
@@ -157,7 +157,7 @@ public class Bloodbending extends BendingActiveAbility {
 				}
 				entities.add(entity);
 				if (!this.targetEntities.containsKey(entity)) {
-					DamageTools.damageEntity(bender, entity, 0);
+					DamageTools.damageEntity(bender, entity, this, 0);
 					this.targetEntities.put(entity, entity.getLocation().clone());
 				}
 				Location newlocation = entity.getLocation().clone();

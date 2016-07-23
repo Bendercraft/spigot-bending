@@ -176,7 +176,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 				}
 			}
 			if (!health && (this.effects != null)) {
-				DamageTools.damageEntity(bender, entity, DAMAGE);
+				DamageTools.damageEntity(bender, entity, this, DAMAGE);
 			}
 			if(ParaStick.hasParaStick(player) && entity instanceof Player) {
 				ParaStick stick = ParaStick.getParaStick(player);

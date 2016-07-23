@@ -45,7 +45,7 @@ public class BlankPoint extends BendingActiveAbility {
 			return false;
 		}
 		if(this.player.isSneaking()) {
-			DamageTools.damageEntity(bender, target, DAMAGE);
+			DamageTools.damageEntity(bender, target, this, DAMAGE);
 			target.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
 					.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
 

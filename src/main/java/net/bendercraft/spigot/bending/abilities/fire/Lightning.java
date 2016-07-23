@@ -200,7 +200,7 @@ public class Lightning extends BendingActiveAbility {
 		}
 		double dmg = this.damage - ((distance / this.strikeradius) * .5);
 		this.hitentities.add(entity);
-		DamageTools.damageEntity(bender, entity, (int) dmg);
+		DamageTools.damageEntity(bender, entity, this, dmg);
 	}
 
 	public static boolean isNearbyChannel(Location location) {

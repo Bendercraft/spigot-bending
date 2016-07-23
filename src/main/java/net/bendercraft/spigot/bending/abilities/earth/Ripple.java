@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingPath;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -41,15 +42,18 @@ public class Ripple {
 	private Block block1, block2, block3, block4;
 	private int step = 0;
 	private int maxstep;
+	
+	private BendingAbility ability;
 
 	private Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
 
-	public Ripple(Player player, Vector direction) {
-		this(player, getInitialLocation(player, direction), direction);
+	public Ripple(Player player, BendingAbility ability, Vector direction) {
+		this(player, ability, getInitialLocation(player, direction), direction);
 	}
 
-	public Ripple(Player player, Location origin, Vector direction) {
+	public Ripple(Player player, BendingAbility ability, Location origin, Vector direction) {
 		this.player = player;
+		this.ability = ability;
 		if (origin == null)
 			return;
 		this.direction = direction.clone().normalize();
@@ -262,7 +266,7 @@ public class Ripple {
 		}
 
 		if (entity instanceof LivingEntity) {
-			DamageTools.damageEntity(bender, entity, damage);
+			DamageTools.damageEntity(bender, entity, ability, damage);
 		}
 
 		Vector vector = direction.clone();

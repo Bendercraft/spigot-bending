@@ -96,7 +96,7 @@ public class Enflamed {
 		this.target.setFireTicks(this.secondsLeft * 20);
 		this.secondsLeft -= 1;
 		
-		DamageTools.damageEntity(bender, this.target, damage, true, 0, 0.0F, true);
+		DamageTools.damageEntity(bender, this.target, null, damage, true, 0, 0.0F, true);
 		return true;
 	}
 

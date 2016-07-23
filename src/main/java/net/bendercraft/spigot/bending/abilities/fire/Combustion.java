@@ -171,13 +171,13 @@ public class Combustion extends BendingActiveAbility {
 			return;
 		}
 		if (distance < DAMAGE_RADIUS) {
-			DamageTools.damageEntity(bender, entity, damage);
+			DamageTools.damageEntity(bender, entity, this, damage);
 			return;
 		}
 		double slope = -(damage * .5) / (EXPLOSION_RADIUS - DAMAGE_RADIUS);
 
 		double damage = slope * (distance - DAMAGE_RADIUS) + this.damage;
-		DamageTools.damageEntity(bender, entity, (int) damage);
+		DamageTools.damageEntity(bender, entity, this, damage);
 	}
 
 	private void knockBack(Entity entity) {
