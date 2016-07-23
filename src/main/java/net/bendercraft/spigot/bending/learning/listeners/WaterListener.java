@@ -23,8 +23,10 @@ import net.bendercraft.spigot.bending.abilities.water.Torrent;
 import net.bendercraft.spigot.bending.abilities.water.WaterBubble;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.abilities.water.WaterWall;
+import net.bendercraft.spigot.bending.abilities.water.WaterWhip;
 import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
+import net.bendercraft.spigot.bending.event.BendingDamageEvent;
 import net.bendercraft.spigot.bending.learning.BendingLearning;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
@@ -35,6 +37,8 @@ public class WaterListener implements Listener {
 	private Map<UUID, Integer> waterManipulationSucceded = new HashMap<UUID, Integer>();
 
 	private Map<UUID, Integer> surge = new HashMap<UUID, Integer>();
+	
+	private Map<UUID, Integer> octopusHit = new HashMap<UUID, Integer>();
 
 	private static ChatColor color = PluginTools.getColor(Settings.getColor(BendingElement.WATER));
 
@@ -170,6 +174,35 @@ public class WaterListener implements Listener {
 					} else {
 						this.waterManipulationSucceded.put(p.getUniqueId(), success);
 						this.waterManipulationlastTime.put(p.getUniqueId(), currentTime);
+					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void unlockWhip(BendingDamageEvent event) {
+		if(!(event.getDamager() instanceof Player)) {
+			return;
+		}
+		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getDamager());
+		if (bPlayer != null) {
+			// Check if player knows surge
+			Player p = bPlayer.getPlayer();
+			if (bPlayer.isBender(BendingElement.WATER) && EntityTools.canBend(p, OctopusForm.NAME)) {
+				if (event.getAbility().equals(OctopusForm.NAME)) {
+					if(!octopusHit.containsKey(bPlayer.getPlayerID())) {
+						octopusHit.put(bPlayer.getPlayerID(), 0);
+					}
+					octopusHit.put(bPlayer.getPlayerID(), octopusHit.get(bPlayer.getPlayerID())+1);
+					if(octopusHit.get(bPlayer.getPlayerID()) >= 5) {
+						if (this.plugin.addPermission(p, WaterWhip.NAME)) {
+							String message = "Your skills with constant water streams has improved enough to perform a new move !";
+							p.sendMessage(color + message);
+							message = "Congratulations, you have unlocked " + WaterWhip.NAME;
+							p.sendMessage(color + message);
+							octopusHit.remove(bPlayer.getPlayerID());
+						}
 					}
 				}
 			}
