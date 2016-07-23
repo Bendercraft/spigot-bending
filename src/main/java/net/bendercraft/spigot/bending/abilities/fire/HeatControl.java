@@ -100,19 +100,18 @@ public class HeatControl extends BendingActiveAbility {
 			}
 			if (block.getType() == Material.FIRE) {
 				block.setType(Material.AIR);
-				block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 			} else if (block.getType() == Material.STATIONARY_LAVA) {
 				block.setType(Material.OBSIDIAN);
-				block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 			} else if (block.getType() == Material.LAVA) {
 				if (block.getData() == FULL) {
 					block.setType(Material.OBSIDIAN);
 				} else {
 					block.setType(Material.COBBLESTONE);
 				}
-				block.getWorld().playSound(block.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
+				
 			}
 		}
+		player.getWorld().playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 	}
 
 	@Override
