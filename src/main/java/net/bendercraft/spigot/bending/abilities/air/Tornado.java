@@ -1,8 +1,6 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,8 +26,6 @@ import net.bendercraft.spigot.bending.utils.ProtectionManager;
 @ABendingAbility(name = Tornado.NAME, affinity = BendingAffinity.TORNADO, canBeUsedWithTools = true)
 public class Tornado extends BendingActiveAbility {
 	public final static String NAME = "Tornado";
-	
-	private static Map<Integer, Tornado> instances = new HashMap<Integer, Tornado>();
 
 	@ConfigurationParameter("Fall-Imunity")
 	private static long FALL_IMMUNITY = 5000;
@@ -38,21 +34,21 @@ public class Tornado extends BendingActiveAbility {
 	public static long COOLDOWN = 5000;
 
 	@ConfigurationParameter("Radius")
-	private static double RADIUS = 10;
+	private static double RADIUS = 20;
 
 	@ConfigurationParameter("Height")
-	private static double HEIGHT = 25;
+	private static double HEIGHT = 40;
 
 	@ConfigurationParameter("Range")
 	private static double RANGE = 25;
 
 	@ConfigurationParameter("Mob-Push-Factor")
-	private static double NPC_PUSH = 1.0;
+	private static double NPC_PUSH = 3.0;
 
 	@ConfigurationParameter("Player-Push-Factor")
-	private static double PC_PUSH = 1.0;
+	private static double PC_PUSH = 3.0;
 
-	private static int numberOfStreams = (int) (.3 * HEIGHT);
+	private static int numberOfStreams = (int) (.2 * HEIGHT);
 
 	private static double speedfactor = 1;
 
@@ -61,28 +57,30 @@ public class Tornado extends BendingActiveAbility {
 
 	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
 	private Location origin;
+	private Location base;
 
 	private FlyingPlayer flying;
 
 	public Tornado(RegisteredAbility register, Player player) {
 		super(register, player);
-
-		this.origin = EntityTools.getTargetBlock(player, RANGE).getLocation();
-		this.origin.setY(this.origin.getY() - ((1. / 10.) * this.height));
-
-		int angle = 0;
-		for (int i = 0; i <= HEIGHT; i += (int) HEIGHT / numberOfStreams) {
-			this.angles.put(i, angle);
-			angle += 90;
-			if (angle == 360) {
-				angle = 0;
-			}
-		}
 	}
 
 	@Override
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.START) {
+			this.origin = EntityTools.getTargetBlock(player, RANGE).getLocation();
+			base = origin.clone();
+			this.origin.setY(this.origin.getY() - ((1. / 10.) * this.height));
+
+			int angle = 0;
+			for (int i = 0; i <= HEIGHT; i += (int) HEIGHT / numberOfStreams) {
+				this.angles.put(i, angle);
+				angle += 90;
+				if (angle == 360) {
+					angle = 0;
+				}
+			}
+			
 			this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), false);
 			if (this.flying != null) {
 				setState(BendingAbilityState.PROGRESSING);
@@ -94,6 +92,7 @@ public class Tornado extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
+		bender.cooldown(this, COOLDOWN);
 	}
 	
 	@Override
@@ -101,10 +100,7 @@ public class Tornado extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (this.player.getEyeLocation().getBlock().isLiquid() 
-				|| !this.player.isSneaking()
-				|| !NAME.equals(EntityTools.getBendingAbility(player))
-				|| ProtectionManager.isLocationProtectedFromBending(this.player, register, this.origin)) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, register, this.origin)) {
 			return false;
 		}
 		return true;
@@ -112,7 +108,7 @@ public class Tornado extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		this.origin = EntityTools.getTargetBlock(this.player, RANGE).getLocation();
+		origin = base.clone();
 
 		double timefactor = this.height / HEIGHT;
 		this.radius = timefactor * RADIUS;
@@ -220,14 +216,6 @@ public class Tornado extends BendingActiveAbility {
 		if (this.height > HEIGHT) {
 			this.height = HEIGHT;
 		}
-	}
-
-	public static List<Player> getPlayers() {
-		List<Player> players = new ArrayList<Player>();
-		for (Tornado tornado : instances.values()) {
-			players.add(tornado.player);
-		}
-		return players;
 	}
 
 	@Override

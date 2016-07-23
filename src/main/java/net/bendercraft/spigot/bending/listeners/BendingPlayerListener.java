@@ -51,7 +51,6 @@ import net.bendercraft.spigot.bending.abilities.air.AirBurst;
 import net.bendercraft.spigot.bending.abilities.air.AirSpeed;
 import net.bendercraft.spigot.bending.abilities.air.AirSpout;
 import net.bendercraft.spigot.bending.abilities.air.Suffocate;
-import net.bendercraft.spigot.bending.abilities.air.Tornado;
 import net.bendercraft.spigot.bending.abilities.arts.Dash;
 import net.bendercraft.spigot.bending.abilities.arts.Speed;
 import net.bendercraft.spigot.bending.abilities.earth.EarthArmor;
@@ -60,13 +59,12 @@ import net.bendercraft.spigot.bending.abilities.earth.LavaTrain;
 import net.bendercraft.spigot.bending.abilities.earth.MetalBending;
 import net.bendercraft.spigot.bending.abilities.earth.MetalWire;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarShield;
-import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
-import net.bendercraft.spigot.bending.abilities.fire.FireJet;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.FastSwimming;
 import net.bendercraft.spigot.bending.abilities.water.WaterPassive;
 import net.bendercraft.spigot.bending.abilities.water.WaterSpout;
+import net.bendercraft.spigot.bending.controller.FlyingPlayer;
 import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.event.BendingDamageEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -511,7 +509,7 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
 		Player p = event.getPlayer();
-		if (Tornado.getPlayers().contains(p) || Bloodbending.isBloodbended(p) || FireJet.getPlayers().contains(p) || AvatarState.getPlayers().contains(p)) {
+		if(FlyingPlayer.isFlying(p)) {
 			event.setCancelled(p.getGameMode() != GameMode.CREATIVE);
 		}
 	}

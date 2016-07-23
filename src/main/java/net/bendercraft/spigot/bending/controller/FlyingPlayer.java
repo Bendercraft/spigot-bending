@@ -141,4 +141,8 @@ public class FlyingPlayer {
 			flyingPlayers.remove(id);
 		}
 	}
+
+	public static boolean isFlying(Player p) {
+		return flyingPlayers.containsKey(p.getUniqueId());
+	}
 }

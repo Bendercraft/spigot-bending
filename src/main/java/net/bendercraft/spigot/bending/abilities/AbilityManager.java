@@ -22,6 +22,7 @@ import net.bendercraft.spigot.bending.abilities.air.AirBubble;
 import net.bendercraft.spigot.bending.abilities.air.AirBurst;
 import net.bendercraft.spigot.bending.abilities.air.AirScooter;
 import net.bendercraft.spigot.bending.abilities.air.AirShield;
+import net.bendercraft.spigot.bending.abilities.air.AirSink;
 import net.bendercraft.spigot.bending.abilities.air.AirSlice;
 import net.bendercraft.spigot.bending.abilities.air.AirSpeed;
 import net.bendercraft.spigot.bending.abilities.air.AirSpout;
@@ -234,6 +235,7 @@ public class AbilityManager {
 		register(AirSlice.class);
 		register(Suffocate.class);
 		register(Tornado.class);
+		register(AirSink.class);
 
 		register(Catapult.class);
 		register(Collapse.class);
