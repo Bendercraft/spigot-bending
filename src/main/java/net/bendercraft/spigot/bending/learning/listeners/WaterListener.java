@@ -187,10 +187,10 @@ public class WaterListener implements Listener {
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getDamager());
 		if (bPlayer != null) {
-			// Check if player knows surge
+			// Check if player knows OctopusForm
 			Player p = bPlayer.getPlayer();
 			if (bPlayer.isBender(BendingElement.WATER) && EntityTools.canBend(p, OctopusForm.NAME)) {
-				if (event.getAbility().equals(OctopusForm.NAME)) {
+				if (event.getAbility() != null && event.getAbility().getName().equals(OctopusForm.NAME)) {
 					if(!octopusHit.containsKey(bPlayer.getPlayerID())) {
 						octopusHit.put(bPlayer.getPlayerID(), 0);
 					}
@@ -201,8 +201,8 @@ public class WaterListener implements Listener {
 							p.sendMessage(color + message);
 							message = "Congratulations, you have unlocked " + WaterWhip.NAME;
 							p.sendMessage(color + message);
-							octopusHit.remove(bPlayer.getPlayerID());
 						}
+						octopusHit.remove(bPlayer.getPlayerID());
 					}
 				}
 			}
