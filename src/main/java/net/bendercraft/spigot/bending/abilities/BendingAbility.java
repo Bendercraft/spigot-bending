@@ -157,4 +157,8 @@ public abstract class BendingAbility {
 	public String getName() {
 		return register.getName();
 	}
+	
+	public BendingElement getElement() {
+		return register.getElement();
+	}
 }

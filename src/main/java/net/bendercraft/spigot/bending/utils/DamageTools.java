@@ -58,6 +58,9 @@ public class DamageTools {
 		}
 		if (damagee instanceof LivingEntity) {
 			LivingEntity living = (LivingEntity) damagee;
+			if(living.isDead()) {
+				return;
+			}
 			if (AvatarState.isAvatarState(attacker.getPlayer())) {
 				damage = AvatarState.getValue(damage);
 			}
@@ -82,15 +85,9 @@ public class DamageTools {
 			if(!event.isCancelled() && !living.isDead() && (bypassImmunity || t.getHandle().noDamageTicks == 0)) {
 				living.setLastDamageCause(event);
 				
-				// Make sure we do not set negative health or too much
-				double health = living.getHealth() - finalDamage;
-				if(health < 0) {
-					health = 0;
-				}
-				if(health > living.getMaxHealth()) {
-					health = living.getMaxHealth();
-				}
-				living.setHealth(health);
+				float previousHealth = t.getHandle().getHealth();
+				t.getHandle().setHealth((float) (previousHealth - finalDamage));
+				t.getHandle().getCombatTracker().trackDamage(DamageSource.GENERIC, previousHealth, (float) finalDamage);
 				
 				// See EntityLiving#damageEntity from NMS to get effect ID and standard hurt ticks
 				t.getHandle().lastDamage = (float) finalDamage;
