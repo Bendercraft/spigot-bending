@@ -3,7 +3,6 @@ package net.bendercraft.spigot.bending.abilities.arts;
 import java.util.Arrays;
 
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -38,7 +37,6 @@ public class DaggerFall extends BendingActiveAbility {
 	@Override
 	public boolean sneak() {
 		ItemStack dagger = new ItemStack(Material.IRON_SWORD, 1);
-		dagger.addEnchantment(Enchantment.KNOCKBACK, 1);
 		ItemMeta metaDagger = dagger.getItemMeta();
 		metaDagger.setLore(Arrays.asList("Dagger"));
 		dagger.setItemMeta(metaDagger);
