@@ -19,6 +19,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffectType;
@@ -138,6 +140,12 @@ public class BendingDenyItem implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void onPlayerTeleport(PlayerTeleportEvent event) {
+		if(event.getCause().equals(TeleportCause.CHORUS_FRUIT)) {
+			event.setCancelled(true);
+		}
+	}
 	
 	@EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
@@ -166,9 +174,6 @@ public class BendingDenyItem implements Listener {
 		}
 		if(bender.getPlayer().hasPermission("bending.denyitem.bypass")) {
 			return;
-		}
-		if(item.getType() == Material.CHORUS_FRUIT) {
-			removeItem(bender.getPlayer(), item);
 		}
 		for(Entry<Enchantment, Integer> entry : deniedEnchantments.entrySet()) {
 			Enchantment enchantment = entry.getKey();
