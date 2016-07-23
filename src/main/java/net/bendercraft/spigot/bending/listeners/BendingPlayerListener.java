@@ -41,6 +41,7 @@ import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
+import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPassiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingPath;
@@ -320,9 +321,18 @@ public class BendingPlayerListener implements Listener {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			if(bender == null) {
+				return;
+			}
 
-			if (bender != null && bender.hasPath(BendingPath.TOUGH)) {
+			if (bender.hasPath(BendingPath.TOUGH)) {
 				event.setDamage(event.getDamage() * 0.9);
+			}
+			if(bender.isBender(BendingElement.EARTH) && EarthArmor.hasEarthArmor(player)) {
+				event.setDamage(event.getDamage() * 0.9);
+			}
+			if(bender.hasAffinity(BendingAffinity.SWORD) && player.isBlocking()) {
+				event.setDamage(event.getDamage() * 0.60);
 			}
 		}
 	}
