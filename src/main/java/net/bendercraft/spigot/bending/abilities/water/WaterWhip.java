@@ -45,10 +45,10 @@ public class WaterWhip extends BendingActiveAbility {
 	private static double SPEED = 35;
 	
 	@ConfigurationParameter("Cooldown")
-	private static int COOLDOWN = 6000;
+	private static int COOLDOWN = 15000;
 	
-	@ConfigurationParameter("Max-hit")
-	private static int MAX_HIT = 6;
+	@ConfigurationParameter("Duration")
+	private static long DURATION = 8000;
 	
 	private ArrayList<Dot> points = new ArrayList<Dot>();
 	private Location previous;
@@ -57,7 +57,6 @@ public class WaterWhip extends BendingActiveAbility {
 
 	private long time;
 	private long interval;
-	private int hit = 0;
 
 	public WaterWhip(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -168,13 +167,14 @@ public class WaterWhip extends BendingActiveAbility {
 		bender.cooldown(this, COOLDOWN);
 	}
 	
+	@Override
+	protected long getMaxMillis() {
+		return DURATION;
+	}
+
 	public void affect(Entity entity, Vector vector) {
 		DamageTools.damageEntity(bender, entity, this, DAMAGE);
 		entity.setVelocity(entity.getVelocity().clone().add(vector.multiply(0.5)));
-		hit += 1;
-		if(hit > MAX_HIT) {
-			remove();
-		}
 	}
 
 	@Override
