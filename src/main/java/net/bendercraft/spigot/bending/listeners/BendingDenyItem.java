@@ -218,6 +218,10 @@ public class BendingDenyItem implements Listener {
 				|| item.getType() == Material.GOLD_CHESTPLATE
 				|| item.getType() == Material.GOLD_HELMET
 				|| item.getType() == Material.GOLD_LEGGINGS
+				|| item.getType() == Material.CHAINMAIL_BOOTS
+				|| item.getType() == Material.CHAINMAIL_CHESTPLATE
+				|| item.getType() == Material.CHAINMAIL_HELMET
+				|| item.getType() == Material.CHAINMAIL_LEGGINGS
 				|| item.getType() == Material.SPECTRAL_ARROW
 				|| item.getType() == Material.TIPPED_ARROW) {
 			removeItem(bender.getPlayer(), item);
