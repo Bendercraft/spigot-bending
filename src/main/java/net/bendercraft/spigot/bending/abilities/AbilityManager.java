@@ -7,10 +7,10 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
@@ -105,32 +105,29 @@ public class AbilityManager {
 	}
 
 	public void progressAllAbilities() {
-		for (Map<Object, BendingAbility> abilities : this.runnings.values()) {
-			Map<Object, BendingAbility> pendings = new HashMap<Object, BendingAbility>(abilities);
-			for (Entry<Object, BendingAbility> entry : pendings.entrySet()) {
-				if(entry.getValue().getState().equals(BendingAbilityState.ENDED)) {
-					abilities.remove(entry.getKey());
+		Iterator<Map<Object, BendingAbility>> it = runnings.values().iterator();
+		while(it.hasNext()) {
+			Map<Object, BendingAbility> abilities = it.next();
+			Iterator<BendingAbility> it2 = abilities.values().iterator();
+			while(it2.hasNext()) {
+				BendingAbility ability = it2.next();
+				if(ability.getState().equals(BendingAbilityState.ENDED)) {
+					it2.remove();
 				} else {
-					entry.getValue().tick();
+					ability.tick();
 				}
 			}
 		}
 	}
 
 	public void stopAllAbilities() {
-		for (Map<Object, BendingAbility> instances : this.runnings.values()) {
-			for (BendingAbility ability : instances.values()) {
-				ability.remove();
-			}
-		}
-
+		runnings.values().forEach(abilities -> abilities.values().forEach(ability -> ability.remove()));
 		clearAllAbilities();
 	}
 
 	private void clearAllAbilities() {
-		for (Map<Object, BendingAbility> instances : this.runnings.values()) {
-			instances.clear();
-		}
+		runnings.values().forEach(x -> x.clear());
+		runnings.clear();
 	}
 
 	public BendingActiveAbility buildAbility(RegisteredAbility ability, Player player) {
