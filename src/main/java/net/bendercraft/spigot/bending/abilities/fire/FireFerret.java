@@ -111,7 +111,7 @@ public class FireFerret extends BendingActiveAbility {
 			return;
 		}
 		
-		Vector direction = target.getLocation().toVector().clone().subtract(location.toVector());
+		Vector direction = target.getEyeLocation().toVector().clone().subtract(location.toVector());
 		location = this.location.add(direction.multiply(speedfactor));
 	}
 
