@@ -78,7 +78,7 @@ public class FireBlast extends BendingActiveAbility {
 	private Vector direction;
 	private int id;
 	private double speedfactor;
-	private int damage = DAMAGE;
+	private double damage = DAMAGE;
 	double range = RANGE;
 
 	public FireBlast(RegisteredAbility register, Player player) {
@@ -93,7 +93,6 @@ public class FireBlast extends BendingActiveAbility {
 
 		this.safe = new LinkedList<Block>();
 		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
-		this.range = PluginTools.firebendingDayAugment(this.range, player.getWorld());
 		this.location = this.player.getEyeLocation();
 		this.id = ID++;
 	}
@@ -243,7 +242,7 @@ public class FireBlast extends BendingActiveAbility {
 			} else {
 				entity.setVelocity(this.direction.clone().multiply(PUSH_FACTOR));
 			}
-			DamageTools.damageEntity(bender, entity, this, PluginTools.firebendingDayAugment(this.damage, entity.getWorld()));
+			DamageTools.damageEntity(bender, entity, this, damage);
 			Enflamed.enflame(this.player, entity, 2);
 			return false;
 		}

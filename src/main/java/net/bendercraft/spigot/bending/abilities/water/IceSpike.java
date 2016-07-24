@@ -22,7 +22,6 @@ import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.bendercraft.spigot.bending.utils.Tools;
@@ -70,7 +69,7 @@ public class IceSpike extends BendingActiveAbility {
 		if (EntityTools.canPlantbend(player)) {
 			this.plantbending = true;
 		}
-		this.range = PluginTools.waterbendingNightAugment(defaultrange, player.getWorld());
+		this.range = defaultrange;
 		this.id = ID++;
 		if (ID >= Integer.MAX_VALUE) {
 			ID = Integer.MIN_VALUE;
@@ -280,20 +279,17 @@ public class IceSpike extends BendingActiveAbility {
 			return;
 		}
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(this.player);
-		int mod = (int) PluginTools.waterbendingNightAugment(defaultmod, this.player.getWorld());
-		double damage = (int) PluginTools.waterbendingNightAugment(defaultdamage, this.player.getWorld());
 		if (entity instanceof Player) {
 			if (bPlayer.canBeSlowed()) {
-				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
+				PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, defaultmod);
 				entity.addPotionEffect(effect);
 				bPlayer.slow(slowCooldown);
-				DamageTools.damageEntity(bender, entity, this, damage);
+				DamageTools.damageEntity(bender, entity, this, defaultdamage);
 			}
 		} else {
-			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, mod);
+			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 70, defaultmod);
 			entity.addPotionEffect(effect);
-			entity.damage(damage, this.player);
-			DamageTools.damageEntity(bender, entity, this, damage);
+			DamageTools.damageEntity(bender, entity, this, defaultdamage);
 		}
 	}
 

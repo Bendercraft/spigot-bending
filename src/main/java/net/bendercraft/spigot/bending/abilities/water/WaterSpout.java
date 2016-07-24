@@ -20,11 +20,9 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
-import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 @ABendingAbility(name = WaterSpout.NAME, element = BendingElement.WATER, shift=false)
 public class WaterSpout extends BendingActiveAbility {
@@ -139,9 +137,6 @@ public class WaterSpout extends BendingActiveAbility {
 		}
 		loc = loc.add(0, 1, 0);
 		int height = HEIGHT;
-		if (Tools.isNight(loc.getWorld())) {
-			height = (int) (Settings.NIGHT_FACTOR * HEIGHT) + 1;
-		}
 		for (int i = 0; i < height; i++) {
 			Location locToTest = loc.add(0, -1, 0);
 			if (ProtectionManager.isLocationProtectedFromBending(player, register, locToTest)) {

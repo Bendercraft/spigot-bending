@@ -14,7 +14,6 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 
 @ABendingAbility(name = Blaze.NAME, element = BendingElement.FIRE)
 public class Blaze extends BendingActiveAbility {
@@ -51,7 +50,7 @@ public class Blaze extends BendingActiveAbility {
 		
 		Location location = this.player.getLocation();
 
-		int arc = (int) PluginTools.firebendingDayAugment(DEFAULT_ARC, this.player.getWorld());
+		int arc = DEFAULT_ARC;
 
 		for (int i = -arc; i <= arc; i += stepsize) {
 			double angle = Math.toRadians(i);

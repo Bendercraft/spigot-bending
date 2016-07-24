@@ -19,7 +19,6 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
@@ -57,14 +56,13 @@ public class PhaseChange extends BendingActiveAbility {
 			return false;
 		}
 		//Freeze
-		int range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
-		int radius = (int) PluginTools.waterbendingNightAugment(RADIUS, player.getWorld());
+		int range = RANGE;
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
 		}
 		Location location = EntityTools.getTargetedLocation(player, range);
 		int y = (int) location.getY();
-		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, RADIUS)) {
 			if (block.getLocation().getY() >= (y - DEPTH)) {
 				if(isFreezable(player, block)) {
 					PhaseChange owner = get(block);
@@ -94,14 +92,13 @@ public class PhaseChange extends BendingActiveAbility {
 			return false;
 		}
 		//Thaw
-		int range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
-		int radius = (int) PluginTools.waterbendingNightAugment(RADIUS, player.getWorld());
+		int range = RANGE;
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
 		}
 		Location location = EntityTools.getTargetedLocation(player, range);
 		int y = (int) location.getY();
-		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, RADIUS)) {
 			if (block.getLocation().getY() >= (y - DEPTH)) {
 				if(isThawable(player, block)) {
 					PhaseChange owner = get(block);

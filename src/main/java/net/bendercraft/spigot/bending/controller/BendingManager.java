@@ -4,9 +4,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -16,21 +13,15 @@ import org.bukkit.scoreboard.Team;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityCooldown;
-import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
-import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 public class BendingManager implements Runnable {
 	private Bending plugin;
 	private long time;
-	private List<World> worlds = new LinkedList<World>();
-	private Map<World, Boolean> nights = new HashMap<World, Boolean>();
-	private Map<World, Boolean> days = new HashMap<World, Boolean>();
 	private long timestep = 1; // in ms
 	
 	private List<Queue> revertQueue = new LinkedList<Queue>();
@@ -53,7 +44,6 @@ public class BendingManager implements Runnable {
 			manageFirebending();
 
 			manageGlobalTempBlock();
-			handleDayNight();
 			
 			if(Settings.USE_SCOREBOARD) {
 				//One scoreboard per player
@@ -137,73 +127,6 @@ public class BendingManager implements Runnable {
 		Enflamed.progressAll();
 	}
 
-	private void handleDayNight() {
-		for (World world : this.plugin.getServer().getWorlds()) {
-			if ((world.getWorldType() == WorldType.NORMAL) && !this.worlds.contains(world)) {
-				this.worlds.add(world);
-				this.nights.put(world, false);
-				this.days.put(world, false);
-			}
-		}
-
-		List<World> removeWorlds = new LinkedList<World>();
-		for (World world : this.worlds) {
-			if (!this.plugin.getServer().getWorlds().contains(world)) {
-				removeWorlds.add(world);
-				continue;
-			}
-			boolean night = this.nights.get(world);
-			boolean day = this.days.get(world);
-			if (Tools.isDay(world) && !day) {
-				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingElement.FIRE) && player.hasPermission("bending.message.daymessage")) {
-						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(Settings.getColor(BendingElement.FIRE));
-						player.sendMessage(color + "You feel the strength of the rising sun empowering your firebending.");
-					}
-				}
-				this.days.put(world, true);
-			}
-
-			if (!Tools.isDay(world) && day) {
-				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingElement.FIRE) && player.hasPermission("bending.message.daymessage")) {
-						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(Settings.getColor(BendingElement.FIRE));
-						player.sendMessage(color + "You feel the empowering of your firebending subside as the sun sets.");
-					}
-				}
-				this.days.put(world, false);
-			}
-
-			if (Tools.isNight(world) && !night) {
-				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingElement.WATER) && player.hasPermission("bending.message.nightmessage")) {
-						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(Settings.getColor(BendingElement.WATER));
-						player.sendMessage(color + "You feel the strength of the rising moon empowering your waterbending.");
-					}
-				}
-				this.nights.put(world, true);
-			}
-
-			if (!Tools.isNight(world) && night) {
-				for (Player player : world.getPlayers()) {
-					if (EntityTools.isBender(player, BendingElement.WATER) && player.hasPermission("bending.message.nightmessage")) {
-						ChatColor color = ChatColor.WHITE;
-						color = PluginTools.getColor(Settings.getColor(BendingElement.WATER));
-						player.sendMessage(color + "You feel the empowering of your waterbending subside as the moon sets.");
-					}
-				}
-				this.nights.put(world, false);
-			}
-		}
-
-		for (World world : removeWorlds) {
-			this.worlds.remove(world);
-		}
-	}
-	
 	public void addGlobalTempBlock(long life, TempBlock... blocks) {
 		List<TempBlock> temp = new LinkedList<TempBlock>();
 		Collections.addAll(temp, blocks);

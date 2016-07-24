@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -19,7 +18,6 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.bendercraft.spigot.bending.utils.Tools;
@@ -43,11 +41,8 @@ public class TorrentBurst {
 
 	public TorrentBurst(Player player, double radius, BendingAbility parent) {
 		this.player = player;
-		World world = player.getWorld();
 		origin = player.getEyeLocation().clone();
 		time = System.currentTimeMillis();
-		factor = PluginTools.waterbendingNightAugment(factor, world);
-		maxradius = PluginTools.waterbendingNightAugment(maxradius, world);
 		this.radius = radius;
 		this.torrentRegister = AbilityManager.getManager().getRegisteredAbility(Torrent.NAME);
 		initializeHeightsMap();

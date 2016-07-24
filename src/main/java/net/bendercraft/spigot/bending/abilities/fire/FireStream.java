@@ -17,7 +17,6 @@ import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.Tools;
 
@@ -45,7 +44,7 @@ public class FireStream {
 	private final RegisteredAbility blazeRegister;
 
 	public FireStream(Location location, Vector direction, Player player, int range) {
-		this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
+		this.range = range;
 		this.player = player;
 		this.origin = location.clone();
 		this.location = this.origin.clone();

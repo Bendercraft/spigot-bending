@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -26,7 +25,6 @@ import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.bendercraft.spigot.bending.utils.Tools;
@@ -572,14 +570,8 @@ public class Torrent extends BendingActiveAbility {
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);
 
-		World world = this.player.getWorld();
-
 		if (!bender.hasPath(BendingPath.MARKSMAN)) {
-			double damagedealt = DEFLECT_DAMAGE;
-			if (Tools.isNight(world)) {
-				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * DEFLECT_DAMAGE);
-			}
-			DamageTools.damageEntity(bender, entity, this, damagedealt);
+			DamageTools.damageEntity(bender, entity, this, DEFLECT_DAMAGE);
 		}
 
 	}
@@ -600,15 +592,8 @@ public class Torrent extends BendingActiveAbility {
 		}
 
 		if (!this.hurtentities.contains(entity)) {
-			World world = this.player.getWorld();
-			double damagedealt = this.damage;
-			if (Tools.isNight(world)) {
-				damagedealt = (PluginTools.getWaterbendingNightAugment(world) * this.damage);
-			}
-
-			DamageTools.damageEntity(bender, entity, this, damagedealt);
+			DamageTools.damageEntity(bender, entity, this, damage);
 			this.hurtentities.add(entity);
-
 			entity.setNoDamageTicks(0);
 		}
 	}

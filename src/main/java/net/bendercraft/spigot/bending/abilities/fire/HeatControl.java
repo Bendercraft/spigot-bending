@@ -19,7 +19,6 @@ import net.bendercraft.spigot.bending.abilities.water.Wave;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
@@ -64,12 +63,11 @@ public class HeatControl extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
-			double range = PluginTools.firebendingDayAugment(EXT_RANGE, this.player.getWorld());
-			Block block = EntityTools.getTargetBlock(this.player, range);
+			Block block = EntityTools.getTargetBlock(this.player, EXT_RANGE);
 			if (BlockTools.isMeltable(block)) {
 				melt();
 			} else {
-				extinguish(range);
+				extinguish(EXT_RANGE);
 			}
 
 			this.bender.cooldown(NAME, EXT_COOLDOWN);
@@ -78,8 +76,8 @@ public class HeatControl extends BendingActiveAbility {
 	}
 
 	private void melt() {
-		Location location = EntityTools.getTargetedLocation(this.player, (int) PluginTools.firebendingDayAugment(MELT_RANGE, this.player.getWorld()));
-		for (Block block : BlockTools.getBlocksAroundPoint(location, (int) PluginTools.firebendingDayAugment(MELT_RADIUS, this.player.getWorld()))) {
+		Location location = EntityTools.getTargetedLocation(this.player, MELT_RANGE);
+		for (Block block : BlockTools.getBlocksAroundPoint(location, MELT_RADIUS)) {
 			if (BlockTools.isMeltable(block)) {
 				melt(this.player, block); // Don't really like the idea
 			}
@@ -88,9 +86,7 @@ public class HeatControl extends BendingActiveAbility {
 
 	@SuppressWarnings("deprecation")
 	private void extinguish(double range) {
-		double radius = PluginTools.firebendingDayAugment(RADIUS, this.player.getWorld());
-
-		for (Block block : BlockTools.getBlocksAroundPoint(EntityTools.getTargetBlock(this.player, range).getLocation(), radius)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(EntityTools.getTargetBlock(this.player, range).getLocation(), RADIUS)) {
 			if (ProtectionManager.isLocationProtectedFromBending(this.player, register, block.getLocation())) {
 				continue;
 			}

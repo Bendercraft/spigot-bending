@@ -23,7 +23,6 @@ import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.bendercraft.spigot.bending.utils.Tools;
@@ -78,7 +77,6 @@ public class Wave {
 			this.maxradius = AvatarState.getValue(this.maxradius);
 		}
 		this.waterRegister = AbilityManager.getManager().getRegisteredAbility(WaterWall.NAME);
-		this.maxradius = PluginTools.waterbendingNightAugment(this.maxradius, player.getWorld());
 	}
 
 	public void freeze() {
@@ -164,7 +162,6 @@ public class Wave {
 			return;
 		}
 
-		this.range = PluginTools.waterbendingNightAugment(this.range, this.player.getWorld());
 		if (AvatarState.isAvatarState(this.player)) {
 			this.factor = AvatarState.getValue(this.factor);
 		}
@@ -323,7 +320,7 @@ public class Wave {
 						if (entity.getEntityId() == this.player.getEntityId()) {
 							dir.multiply(2.0 / 3.0);
 						}
-						entity.setVelocity(entity.getVelocity().clone().add(dir.clone().multiply(PluginTools.waterbendingNightAugment(this.factor, this.player.getWorld()))));
+						entity.setVelocity(entity.getVelocity().clone().add(dir.clone().multiply(factor)));
 						entity.setFallDistance(0);
 						if (entity.getFireTicks() > 0) {
 							entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);

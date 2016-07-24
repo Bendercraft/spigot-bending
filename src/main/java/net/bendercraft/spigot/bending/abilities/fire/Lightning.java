@@ -23,11 +23,9 @@ import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
-import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.MathUtils;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.Tools;
 
@@ -68,8 +66,6 @@ public class Lightning extends BendingActiveAbility {
 		this.warmup = WARMUP;
 		if (AvatarState.isAvatarState(this.player)) {
 			this.warmup *= 0.5;
-		} else if (Tools.isDay(this.player.getWorld())) {
-			this.warmup /= Settings.NIGHT_FACTOR;
 		}
 	}
 
@@ -95,11 +91,9 @@ public class Lightning extends BendingActiveAbility {
 	}
 
 	private Location getTargetLocation() {
-		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
-
 		Location targetLocation;
-		targetLocation = EntityTools.getTargetedLocation(this.player, distance);
-		LivingEntity target = EntityTools.getTargetedEntity(this.player, distance);
+		targetLocation = EntityTools.getTargetedLocation(this.player, RANGE);
+		LivingEntity target = EntityTools.getTargetedEntity(this.player, RANGE);
 		if (target != null) {
 			if ((this.player.getLocation().distance(targetLocation) > target.getLocation().distance(this.player.getLocation()))) {
 				// Check redirection
@@ -107,7 +101,7 @@ public class Lightning extends BendingActiveAbility {
 					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) target);
 					if ((bPlayer != null) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(NAME)) {
 						// Redirection !
-						targetLocation = EntityTools.getTargetedLocation((Player) target, distance);
+						targetLocation = EntityTools.getTargetedLocation((Player) target, RANGE);
 					} else {
 						targetLocation = target.getLocation();
 						if (target.getVelocity().length() < threshold) {
@@ -164,15 +158,13 @@ public class Lightning extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		int distance = (int) PluginTools.firebendingDayAugment(RANGE, this.player.getWorld());
-
 		if (System.currentTimeMillis() > (this.startedTime + this.warmup) && getState() == BendingAbilityState.PREPARING) {
 			setState(BendingAbilityState.PREPARED);
 		}
 
 		if (getState().equals(BendingAbilityState.PREPARED)) {
 			if (this.player.isSneaking()) {
-				this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE, Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), distance);
+				this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE, Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), RANGE);
 			} else {
 				strike();
 				remove();

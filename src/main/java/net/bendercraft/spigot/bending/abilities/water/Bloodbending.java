@@ -28,7 +28,6 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 @ABendingAbility(name = Bloodbending.NAME, affinity = BendingAffinity.BLOOD)
@@ -57,7 +56,7 @@ public class Bloodbending extends BendingActiveAbility {
 	public Bloodbending(RegisteredAbility register, Player player) {
 		super(register, player);
 
-		range = (int) PluginTools.waterbendingNightAugment(RANGE, player.getWorld());
+		range = RANGE;
 	}
 
 	@Override

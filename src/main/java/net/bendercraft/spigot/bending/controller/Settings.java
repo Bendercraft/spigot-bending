@@ -24,12 +24,6 @@ public class Settings {
 	@ConfigurationParameter("bending.reverse-time")
 	public static long REVERSE_TIME = 120000;
 	
-	@ConfigurationParameter("fire.day-factor")
-	public static double DAY_FACTOR = 1.1;
-	
-	@ConfigurationParameter("water.night-factor")
-	public static double NIGHT_FACTOR = 1.1;
-	
 	@ConfigurationParameter("earth.bendables")
 	public static String[] EARTHBENDABLES = { "STONE", "CLAY", "DIRT", "GRASS", "GRAVEL", "COAL_ORE", "LAPIS_ORE", "REDSTONE_ORE", "SAND", "GLOWING_REDSTONE_ORE", "MYCEL", };
 	

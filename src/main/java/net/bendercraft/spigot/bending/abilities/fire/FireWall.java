@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.Tools;
 
@@ -81,12 +79,10 @@ public class FireWall extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
-			World world = this.player.getWorld();
-
-			this.width = (int) PluginTools.firebendingDayAugment(WIDTH, world);
-			this.height = (int) PluginTools.firebendingDayAugment(HEIGHT, world);
-			this.duration = (long) PluginTools.firebendingDayAugment(DURATION, world);
-			this.damage = (int) PluginTools.firebendingDayAugment(DAMAGE, world);
+			this.width = WIDTH;
+			this.height = HEIGHT;
+			this.duration = DURATION;
+			this.damage = DAMAGE;
 
 			if (this.bender.hasPath(BendingPath.NURTURE)) {
 				this.damage *= 0.8;

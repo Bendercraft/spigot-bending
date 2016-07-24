@@ -19,7 +19,6 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.bendercraft.spigot.bending.utils.Tools;
@@ -78,7 +77,7 @@ public class WaterReturn {
 			return false;
 		}
 
-		if (location.distance(player.getEyeLocation()) > PluginTools.waterbendingNightAugment(range, player.getWorld())) {
+		if (location.distance(player.getEyeLocation()) > range) {
 			return false;
 		}
 

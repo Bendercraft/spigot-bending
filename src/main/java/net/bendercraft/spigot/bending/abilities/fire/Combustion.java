@@ -16,7 +16,6 @@ import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.Tools;
 import net.coreprotect.CoreProtect;
@@ -92,7 +91,6 @@ public class Combustion extends BendingActiveAbility {
 			damage = AvatarState.getValue(damage);
 			chargeTime *= 0.60;
 		}
-		range = PluginTools.firebendingDayAugment(range, player.getWorld());
 	}
 
 	@Override

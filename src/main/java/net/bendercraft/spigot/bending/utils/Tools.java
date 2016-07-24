@@ -2,8 +2,6 @@ package net.bendercraft.spigot.bending.utils;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
@@ -135,24 +133,5 @@ public class Tools {
 			break;
 		}
 		return 4;
-	}
-
-	public static boolean isDay(World world) {
-		long time = world.getTime();
-		if (time >= 23500 || time <= 12500) {
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean isNight(World world) {
-		if (world.getEnvironment() == Environment.NETHER || world.getEnvironment() == Environment.THE_END) {
-			return false;
-		}
-		long time = world.getTime();
-		if (time >= 12950 && time <= 23050) {
-			return true;
-		}
-		return false;
 	}
 }

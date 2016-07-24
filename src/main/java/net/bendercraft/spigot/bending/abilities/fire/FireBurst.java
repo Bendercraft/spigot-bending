@@ -24,12 +24,10 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
-import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 /**
  * State Preparing : Player is sneaking but burst is not ready yet State
@@ -81,9 +79,6 @@ public class FireBurst extends BendingActiveAbility {
 	public FireBurst(RegisteredAbility register, Player player) {
 		super(register, player);
 
-		if (Tools.isDay(player.getWorld())) {
-			this.chargetime /= Settings.DAY_FACTOR;
-		}
 		if (AvatarState.isAvatarState(player)) {
 			this.chargetime = 0;
 		}
@@ -250,7 +245,7 @@ public class FireBurst extends BendingActiveAbility {
 			this.player = player;
 			this.bender = bender;
 			this.ability = ability;
-			this.range = PluginTools.firebendingDayAugment(range, player.getWorld());
+			this.range = range;
 			this.location = location.clone();
 			this.origin = location.clone();
 			this.direction = direction.clone().normalize();
@@ -303,7 +298,7 @@ public class FireBurst extends BendingActiveAbility {
 					entity.setVelocity(this.direction.clone().multiply(BLAST_PUSH_FACTOR));
 				}
 				Enflamed.enflame(this.player, entity, 1);
-				DamageTools.damageEntity(bender, entity, ability, PluginTools.firebendingDayAugment(this.damage, entity.getWorld()));
+				DamageTools.damageEntity(bender, entity, ability, damage);
 				return false;
 			}
 			return true;

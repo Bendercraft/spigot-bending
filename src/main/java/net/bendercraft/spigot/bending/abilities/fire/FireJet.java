@@ -21,7 +21,6 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
 import net.bendercraft.spigot.bending.utils.BlockTools;
-import net.bendercraft.spigot.bending.utils.PluginTools;
 
 @ABendingAbility(name = FireJet.NAME, element = BendingElement.FIRE, shift=false)
 public class FireJet extends BendingActiveAbility {
@@ -41,7 +40,6 @@ public class FireJet extends BendingActiveAbility {
 
 	public FireJet(RegisteredAbility register, Player player) {
 		super(register, player);
-		this.factor = PluginTools.firebendingDayAugment(FACTOR, player.getWorld());
 	}
 
 	@Override
