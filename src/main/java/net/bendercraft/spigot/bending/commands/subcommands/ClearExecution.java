@@ -41,7 +41,7 @@ public class ClearExecution extends BendingCommand {
 					sender.sendMessage(ChatColor.RED + Messages.INVALID_SLOT);
 					return true;
 				}
-				bender.removeAbility(--slot);
+				bender.removeAbility(slot-1);
 				String msg = Messages.SLOT_CLEARED;
 				msg = msg.replaceAll("\\{0\\}", "" + slot);
 				sender.sendMessage(msg);
