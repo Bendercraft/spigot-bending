@@ -531,7 +531,7 @@ public class BendingPlayerListener implements Listener {
 			Player player = event.getEntity();
 			BendingDamageEvent bede = (BendingDamageEvent) ede;
 			if(bede.getAbility() == null) {
-				event.setDeathMessage(player.getName() + " died from "+bede.getAbility().getPlayer().getName()+"'s unknown bending");
+				event.setDeathMessage(player.getName() + " died from unknown bending");
 			} else {
 				event.setDeathMessage(ChatColor.DARK_RED+player.getName()+ChatColor.RESET + " died from "+ChatColor.DARK_GREEN+bede.getAbility().getPlayer().getName()+ChatColor.RESET+"'s "+PluginTools.getColor(Settings.getColor(bede.getAbility().getElement()))+bede.getAbility().getName());
 			}
