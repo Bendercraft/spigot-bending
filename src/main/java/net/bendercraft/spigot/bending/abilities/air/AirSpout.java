@@ -103,9 +103,12 @@ public class AirSpout extends BendingActiveAbility {
 		if (block != null) {
 			double dy = this.player.getLocation().getY() - block.getY();
 			if (dy > height) {
-				this.flying.resetState();
+				FlyingPlayer.removeFlyingPlayer(player, this);
+				flying = null;
 			} else {
-				this.flying.fly(true);
+				if(flying == null) {
+					flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), true);
+				}
 			}
 			rotateAirColumn(block);
 		} else {

@@ -99,9 +99,12 @@ public class WaterSpout extends BendingActiveAbility {
 		if (height == -1) {
 			return false;
 		} else if (height == -2) {
-			flying.resetState();
+			FlyingPlayer.removeFlyingPlayer(player, this);
+			flying = null;
 		} else {
-			flying.fly(true);
+			if(flying == null) {
+				flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), true);
+			}
 		}
 		Block block = location.getBlock();
 		location = block.getLocation();
