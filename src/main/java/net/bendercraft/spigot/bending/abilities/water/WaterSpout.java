@@ -136,15 +136,14 @@ public class WaterSpout extends BendingActiveAbility {
 			return -1;
 		}
 		loc = loc.add(0, 1, 0);
-		int height = HEIGHT;
-		for (int i = 0; i < height; i++) {
+		for (int i = 0; i < HEIGHT; i++) {
 			Location locToTest = loc.add(0, -1, 0);
 			if (ProtectionManager.isLocationProtectedFromBending(player, register, locToTest)) {
 				return -1;
 			}
 			Block block = locToTest.getBlock();
 			if (!block.getType().equals(Material.AIR)) {
-				if (BlockTools.isWaterBased(block)) {
+				if (BlockTools.isWaterBased(block) && (!TempBlock.isTempBlock(block) || TempBlock.get(block).isBendAllowed())) {
 					return i + 1; // Valid source !
 				} else {
 					return -1; // Cannot waterspout
@@ -157,7 +156,7 @@ public class WaterSpout extends BendingActiveAbility {
 			return -1; // Cannot waterspout
 		}
 		Block block = locToTest.getBlock();
-		if (BlockTools.isWaterBased(block)) {
+		if (BlockTools.isWaterBased(block) && (!TempBlock.isTempBlock(block) || TempBlock.get(block).isBendAllowed())) {
 			return -2; // Can waterspout but too high
 		}
 		
