@@ -514,7 +514,7 @@ public class BendingPlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		EntityDamageEvent ede = event.getEntity().getLastDamageCause();
 
