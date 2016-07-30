@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,7 +21,6 @@ import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 @ABendingAbility(name = FireWall.NAME, element = BendingElement.FIRE, shift=false)
 public class FireWall extends BendingActiveAbility {
@@ -56,42 +56,31 @@ public class FireWall extends BendingActiveAbility {
 	private List<Block> blocks = new LinkedList<Block>();
 
 	private int damage;
-	private int width;
-	private int height;
 	private long duration;
 
 	public FireWall(RegisteredAbility register, Player player) {
 		super(register, player);
-		this.origin = EntityTools.getTargetedLocation(player, RANGE);
-	}
-	
-	@Override
-	public boolean canBeInitialized() {
-		Block block = this.origin.getBlock();
-		if(!super.canBeInitialized() 
-				|| block.isLiquid() 
-				|| BlockTools.isSolid(block)) {
-			return false;
+		this.duration = DURATION;
+		this.damage = DAMAGE;
+		
+		if (this.bender.hasPath(BendingPath.NURTURE)) {
+			this.damage *= 0.8;
 		}
-		return true;
+		if (this.bender.hasPath(BendingPath.LIFELESS)) {
+			this.damage *= 1.1;
+		}
 	}
 
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
-			this.width = WIDTH;
-			this.height = HEIGHT;
-			this.duration = DURATION;
-			this.damage = DAMAGE;
-
-			if (this.bender.hasPath(BendingPath.NURTURE)) {
-				this.damage *= 0.8;
+			origin = EntityTools.getTargetedLocation(player, RANGE);
+			Block block = origin.getBlock();
+			if(block.isLiquid() || BlockTools.isSolid(block)) {
+				return false;
 			}
-			if (this.bender.hasPath(BendingPath.LIFELESS)) {
-				this.damage *= 1.1;
-			}
-
-			this.time = this.startedTime;
+			
+			time = this.startedTime;
 
 			Vector direction = this.player.getEyeLocation().getDirection();
 			Vector compare = direction.clone();
@@ -126,31 +115,69 @@ public class FireWall extends BendingActiveAbility {
 			damage();
 		}
 	}
-
+	
 	private void initializeBlocks() {
-		Vector direction = this.player.getEyeLocation().getDirection();
-		direction = direction.normalize();
+		Vector direction = player.getEyeLocation().getDirection().setY(0).normalize();
 
-		Vector ortholr = Tools.getOrthogonalVector(direction, 0, 1);
-		ortholr = ortholr.normalize();
+		// A vector orthogonal to (a, b, c) is (-b, a, 0), or (-c, 0, a) or (0, -c, b)
+		Vector orth = new Vector(-direction.getZ(), 0, direction.getX());
+		orth = orth.normalize();
 
-		Vector orthoud = Tools.getOrthogonalVector(direction, 90, 1);
-		orthoud = orthoud.normalize();
-
-		double w = this.width;
-		double h = this.height;
-		// TODO : Make it no longer pass through the walls
-		for (double i = -w; i <= w; i++) {
-			for (double j = -h; j <= h; j++) {
-				Location location = this.origin.clone().add(orthoud.clone().multiply(j));
-				location = location.add(ortholr.clone().multiply(i));
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, register, location)) {
+		Vector orth2 = new Vector(0,1,0);
+		
+		double i = 0;
+		boolean expandLeft = true;
+		while(-WIDTH <= i && i <= WIDTH) {
+			double j = 0;
+			boolean expandUp = true;
+			boolean carryOn = false;
+			while(-HEIGHT <= j && j <= HEIGHT) {
+				Location location = origin.clone().add(orth.clone().multiply(i));
+				location = location.add(orth2.clone().multiply(j));
+				if (ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
 					continue;
 				}
 				Block block = location.getBlock();
-				if (!this.blocks.contains(block)) {
-					this.blocks.add(block);
+				if(block.getType() != Material.AIR) {
+					if(expandUp) {
+						expandUp = false;
+						j = 0;
+						continue;
+					} else {
+						break;
+					}
 				}
+				carryOn = true;
+				if (!blocks.contains(block)) {
+					blocks.add(block);
+				}
+				if(expandUp) {
+					j = j + 0.8;
+					if(j > HEIGHT) {
+						expandUp = false;
+						j = 0;
+					}
+				} else {
+					j = j - 0.8;
+				}
+			}
+			if(!carryOn) {
+				if(expandLeft) {
+					expandLeft = false;
+					i = 0;
+					continue;
+				} else {
+					break;
+				}
+			}
+			if(expandLeft) {
+				i = i - 0.8;
+				if(i < -WIDTH) {
+					expandLeft = false;
+					i = 0;
+				}
+			} else {
+				i = i + 0.8;
 			}
 		}
 	}
@@ -162,9 +189,9 @@ public class FireWall extends BendingActiveAbility {
 	}
 
 	private void damage() {
-		double radius = this.height;
-		if (radius < this.width) {
-			radius = this.width;
+		double radius = HEIGHT;
+		if (radius < WIDTH) {
+			radius = WIDTH;
 		}
 		radius = radius + 1;
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(this.origin, radius);
