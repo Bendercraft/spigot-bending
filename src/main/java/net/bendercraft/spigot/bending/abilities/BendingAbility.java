@@ -126,7 +126,7 @@ public abstract class BendingAbility {
 	 * </pre>
 	 */
 	protected long getMaxMillis() {
-		return 60 * 1000;
+		return 60000;
 	}
 
 	/**
