@@ -65,7 +65,7 @@ public class FireFerret extends BendingActiveAbility {
 				origin = player.getEyeLocation().clone();
 				location = origin.clone();
 				target = EntityTools.getNearestLivingEntity(location, SEARCH_RADIUS, player);
-				if(target == null) {
+				if(target == null || ProtectionManager.isEntityProtected(target)) {
 					return false;
 				}
 				time = System.currentTimeMillis();
@@ -87,7 +87,7 @@ public class FireFerret extends BendingActiveAbility {
 		if(now - time > TIME_TO_TARGET * 1000) {
 			time = now;
 			target = EntityTools.getNearestLivingEntity(location, SEARCH_RADIUS, player);
-			if(target == null) {
+			if(target == null || ProtectionManager.isEntityProtected(target)) {
 				remove();
 				return;
 			}
@@ -124,7 +124,7 @@ public class FireFerret extends BendingActiveAbility {
 		if (ProtectionManager.isEntityProtected(entity)) {
 			return false;
 		}
-		if (entity.getEntityId() != this.player.getEntityId()) {
+		if (entity != this.player) {
 			DamageTools.damageEntity(bender, entity, this, DAMAGE);
 			entity.setFireTicks(2);
 			return false;
