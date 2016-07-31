@@ -161,7 +161,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 		int cptEnt = 0;
 		boolean health = areHealthEffects();
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, 2.1)) {
-			if (entity.getEntityId() == this.player.getEntityId()) {
+			if (entity == player || ProtectionManager.isEntityProtected(entity)) {
 				continue;
 			}
 

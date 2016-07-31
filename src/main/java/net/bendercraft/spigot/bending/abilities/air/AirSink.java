@@ -84,7 +84,7 @@ public class AirSink extends BendingActiveAbility {
 			
 			// Compute effect
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, RADIUS)) {
-				if(entity == player) {
+				if(entity == player || ProtectionManager.isEntityProtected(entity)) {
 					continue;
 				}
 				Vector direction = origin.clone().subtract(entity.getLocation()).toVector();

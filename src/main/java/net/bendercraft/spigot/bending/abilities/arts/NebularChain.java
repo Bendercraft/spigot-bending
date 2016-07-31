@@ -10,6 +10,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.EntityTools;
+import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 @ABendingAbility(name = NebularChain.NAME, affinity = BendingAffinity.SWORD)
 public class NebularChain extends BendingActiveAbility {
@@ -31,7 +32,7 @@ public class NebularChain extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		LivingEntity target = EntityTools.getTargetedEntity(player, RANGE);
-		if(target != null) {
+		if(target != null && !ProtectionManager.isEntityProtected(target)) {
 			target.setVelocity(player.getLocation().toVector().clone().subtract(target.getLocation().toVector()).normalize().multiply(PUSH));
 			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_HIT, 5, 1);
 			

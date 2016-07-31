@@ -17,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
+import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 /**
  *
@@ -69,7 +70,7 @@ public class VitalPoint extends BendingActiveAbility {
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
 			this.target = EntityTools.getTargetedEntity(this.player, MAX_RANGE);
-			if (this.target == null) {
+			if (this.target == null || ProtectionManager.isEntityProtected(target)) {
 				return false;
 			}
 

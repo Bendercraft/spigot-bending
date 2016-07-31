@@ -21,6 +21,7 @@ import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
+import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 @ABendingAbility(name = SmokeBomb.NAME, affinity = BendingAffinity.CHI, shift=false)
 public class SmokeBomb extends BendingActiveAbility {
@@ -115,10 +116,9 @@ public class SmokeBomb extends BendingActiveAbility {
 
 		for (LivingEntity targ : this.targets) {
 			if (!newTargets.contains(targ)) {
-				if (targ.getEntityId() != this.player.getEntityId()) {
+				if (targ != player) {
 					targ.removePotionEffect(PotionEffectType.BLINDNESS);
-				}
-				else {
+				} else {
 					targ.removePotionEffect(PotionEffectType.INVISIBILITY);
 				}
 			}
@@ -126,7 +126,10 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.targets.clear();
 
 		for (LivingEntity targ : newTargets) {
-			if (targ.getEntityId() != this.player.getEntityId()) {
+			if(ProtectionManager.isEntityProtected(targ)) {
+				continue;
+			}
+			if (targ != player) {
 				targ.addPotionEffect(this.blindnessTarget);
 			} else {
 				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
