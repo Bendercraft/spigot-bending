@@ -42,6 +42,8 @@ public class AirSink extends BendingActiveAbility {
 	private long time;
 	
 	private double particleDistance;
+	
+	private int noDisplayTick = 0;
 
 	public AirSink(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -91,19 +93,23 @@ public class AirSink extends BendingActiveAbility {
 				entity.setFallDistance(0);
 			}
 			
-			// Compute particles
-			for(double theta = 0 ; theta < 360 ; theta+=36) {
-				for(double phi = 0 ; phi < 360 ; phi+=36) {
-					double x = particleDistance * Math.cos(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
-					double y = particleDistance * Math.sin(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
-					double z = particleDistance * Math.cos(Math.toRadians(phi));
-					origin.getWorld().playEffect(origin.clone().add(x,y,z), Effect.SMOKE, 4, (int) RANGE);
+			if(noDisplayTick <= 0) {
+				// Compute particles
+				for(double theta = 0 ; theta < 360 ; theta+=36) {
+					for(double phi = 0 ; phi < 360 ; phi+=36) {
+						double x = particleDistance * Math.cos(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
+						double y = particleDistance * Math.sin(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
+						double z = particleDistance * Math.cos(Math.toRadians(phi));
+						origin.getWorld().playEffect(origin.clone().add(x,y,z), Effect.SMOKE, 4, (int) RANGE);
+					}
 				}
+				particleDistance -= 1;
+				if(particleDistance < 0) {
+					particleDistance = RADIUS;
+				}
+				noDisplayTick = 4;
 			}
-			particleDistance -= 1;
-			if(particleDistance < 0) {
-				particleDistance = RADIUS;
-			}
+			noDisplayTick--;
 		}
 	}
 
