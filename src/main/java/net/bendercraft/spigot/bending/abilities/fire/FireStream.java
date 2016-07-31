@@ -89,7 +89,7 @@ public class FireStream {
 
 	private void ignite(Block block) {
 		block.setType(Material.FIRE);
-		ignitedblocks.put(block, this.player);
+		ignitedblocks.put(block, player);
 		ignitedtimes.put(block, System.currentTimeMillis());
 	}
 
@@ -98,13 +98,12 @@ public class FireStream {
 			return false;
 		}
 
-		if (Arrays.asList(overwriteable).contains(block.getType())) {
+		if (block.getRelative(BlockFace.DOWN).getType().isSolid()
+				&& (Arrays.asList(overwriteable).contains(block.getType()) || block.getType() == Material.AIR)) {
 			return true;
-		} else if (block.getType() != Material.AIR) {
-			return false;
 		}
 
-		return true;
+		return false;
 	}
 
 	public static void removeAll() {
