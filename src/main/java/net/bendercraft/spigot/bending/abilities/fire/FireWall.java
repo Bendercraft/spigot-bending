@@ -125,40 +125,39 @@ public class FireWall extends BendingActiveAbility {
 
 		Vector orth2 = new Vector(0,1,0);
 		
-		double i = 0;
+		int i = 0;
 		boolean expandLeft = true;
 		while(-WIDTH <= i && i <= WIDTH) {
-			double j = 0;
+			int j = 0;
 			boolean expandUp = true;
 			boolean carryOn = false;
 			while(-HEIGHT <= j && j <= HEIGHT) {
 				Location location = origin.clone().add(orth.clone().multiply(i));
 				location = location.add(orth2.clone().multiply(j));
-				if (ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
-					continue;
-				}
-				Block block = location.getBlock();
-				if(block.getType() != Material.AIR) {
-					if(expandUp) {
-						expandUp = false;
-						j = 0;
-						continue;
-					} else {
-						break;
+				if (!ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
+					Block block = location.getBlock();
+					if(block.getType() != Material.AIR) {
+						if(expandUp) {
+							expandUp = false;
+							j = 0;
+							continue;
+						} else {
+							break;
+						}
+					}
+					carryOn = true;
+					if (!blocks.contains(block)) {
+						blocks.add(block);
 					}
 				}
-				carryOn = true;
-				if (!blocks.contains(block)) {
-					blocks.add(block);
-				}
 				if(expandUp) {
-					j = j + 0.8;
+					j++;
 					if(j > HEIGHT) {
 						expandUp = false;
 						j = 0;
 					}
 				} else {
-					j = j - 0.8;
+					j--;
 				}
 			}
 			if(!carryOn) {
@@ -171,13 +170,13 @@ public class FireWall extends BendingActiveAbility {
 				}
 			}
 			if(expandLeft) {
-				i = i - 0.8;
+				i--;
 				if(i < -WIDTH) {
 					expandLeft = false;
 					i = 0;
 				}
 			} else {
-				i = i + 0.8;
+				i++;
 			}
 		}
 	}
