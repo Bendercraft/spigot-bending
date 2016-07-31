@@ -106,8 +106,9 @@ public class PhaseChange extends BendingActiveAbility {
 						TempBlock b = TempBlock.get(block);
 						b.revertBlock();
 						owner.frozens.remove(b);
+					} else if(TempBlock.isTempBlock(block)) {
+						TempBlock.get(block).revertBlock();
 					} else {
-						//melted.add(new TempBlock(block, Material.WATER, block.getData()));
 						melted.add(TempBlock.makeTemporary(block, Material.WATER, block.getData(), true));
 					}
 				}
@@ -135,9 +136,7 @@ public class PhaseChange extends BendingActiveAbility {
 			return false;
 		}
 		if (block.getType() == Material.ICE) {
-			if (!TempBlock.isTempBlock(block) || isFrozen(block)) {
-				return true;
-			}
+			return true;
 		}
 
 		return false;
