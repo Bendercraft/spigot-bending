@@ -23,6 +23,8 @@ import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
 
 public class BendingPlayer {
+	
+	public static final String OBJECTIVE_STATUS = "status";
 
 	private UUID player;
 
@@ -291,9 +293,9 @@ public class BendingPlayer {
 			ScoreboardManager manager = Bukkit.getScoreboardManager();
 			scoreboard = manager.getNewScoreboard();
 			scoreboard.registerNewTeam(getPlayer().getName());
-		    Objective objective = scoreboard.registerNewObjective("cooldowns", "dummy");
-		    objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		    objective.setDisplayName("Cooldowns");
+		    Objective objectiveStatus = scoreboard.registerNewObjective(OBJECTIVE_STATUS, "dummy");
+		    objectiveStatus.setDisplaySlot(DisplaySlot.SIDEBAR);
+		    objectiveStatus.setDisplayName("Status");
 		    getPlayer().setScoreboard(scoreboard);
 		}
 	}

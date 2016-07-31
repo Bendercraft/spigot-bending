@@ -162,7 +162,14 @@ public class EntityTools {
 	}
 
 	public static void blockChi(Player player, long time) {
-		blockedChis.put(player, time);
+		blockedChis.put(player, System.currentTimeMillis()+time);
+	}
+	
+	public static long blockedChiTimeLeft(Player player, long now) {
+		if (isChiBlocked(player)) {
+			return blockedChis.get(player) - now;
+		}
+		return 0;
 	}
 
 	public static boolean isChiBlocked(Player player) {

@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -16,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbilityCooldown;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
+import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
@@ -48,7 +50,7 @@ public class BendingManager implements Runnable {
 			if(Settings.USE_SCOREBOARD) {
 				//One scoreboard per player
 				//One team per scoreboard (team name = player name)
-				//Team's entries = ability's name (case sensitive) (not player !)
+				//Team's entries = ability's name (case sensitive) (not player !) (using this to be able to list scores (not possible otherwise))
 				//Entry's score = cooldown left
 				for(Player player : plugin.getServer().getOnlinePlayers()) {
 					BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
@@ -63,11 +65,30 @@ public class BendingManager implements Runnable {
 							bender.conflictScoreboard();
 							continue;
 						}
-						Objective objective = scoreboard.getObjective("cooldowns");
+						
+						Objective objective = scoreboard.getObjective(BendingPlayer.OBJECTIVE_STATUS);
 						if(objective == null) {
 							bender.conflictScoreboard();
 							continue;
 						}
+						
+						if(EntityTools.isChiBlocked(player)) {
+							if(!team.hasEntry("chi")) {
+								team.addEntry("chi");
+							}
+							Score score = objective.getScore(ChatColor.AQUA+"Chiblocked");
+							int value = (int) (EntityTools.blockedChiTimeLeft(player, now)/1000);
+							if(value != score.getScore()) {
+								score.setScore(value);
+							}
+						} else {
+							Score score = objective.getScore(ChatColor.AQUA+"Chiblocked");
+							if(score.getScore() == 0) {
+								scoreboard.resetScores(ChatColor.AQUA+"Chiblocked");
+								team.removeEntry("chi");
+							}
+						}
+						
 						
 						Map<String, BendingAbilityCooldown> cooldowns = bender.getCooldowns();
 						for(Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
@@ -90,6 +111,7 @@ public class BendingManager implements Runnable {
 						}
 						for(String entry : toRemove) {
 							scoreboard.resetScores(entry);
+							team.removeEntry(entry);
 						}
 					}
 				}
