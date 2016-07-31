@@ -38,12 +38,6 @@ import net.bendercraft.spigot.bending.abilities.water.HealingWaters;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.abilities.water.WaterSpout;
 import net.bendercraft.spigot.bending.abilities.water.WaterTurret;
-import net.bendercraft.spigot.bending.learning.listeners.AirListener;
-import net.bendercraft.spigot.bending.learning.listeners.EarthListener;
-import net.bendercraft.spigot.bending.learning.listeners.FireListener;
-import net.bendercraft.spigot.bending.learning.listeners.MasterListener;
-import net.bendercraft.spigot.bending.learning.listeners.PermissionListener;
-import net.bendercraft.spigot.bending.learning.listeners.WaterListener;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
 public class BendingLearning {

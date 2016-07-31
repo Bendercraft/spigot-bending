@@ -1,4 +1,4 @@
-package net.bendercraft.spigot.bending.learning.listeners;
+package net.bendercraft.spigot.bending.learning;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,6 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.arts.Dash;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.learning.BendingLearning;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 
 public class MasterListener implements Listener {

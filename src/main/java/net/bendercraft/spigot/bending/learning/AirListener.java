@@ -1,4 +1,4 @@
-package net.bendercraft.spigot.bending.learning.listeners;
+package net.bendercraft.spigot.bending.learning;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +28,6 @@ import net.bendercraft.spigot.bending.abilities.air.AirShield;
 import net.bendercraft.spigot.bending.abilities.air.AirSuction;
 import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
-import net.bendercraft.spigot.bending.learning.BendingLearning;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 

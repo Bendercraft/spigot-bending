@@ -1,4 +1,4 @@
-package net.bendercraft.spigot.bending.learning.listeners;
+package net.bendercraft.spigot.bending.learning;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
-import net.bendercraft.spigot.bending.learning.BendingLearning;
 
 public class PermissionListener implements Listener {
 	private BendingLearning plugin;
