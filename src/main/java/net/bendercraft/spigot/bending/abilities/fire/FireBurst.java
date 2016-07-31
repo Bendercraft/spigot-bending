@@ -155,6 +155,8 @@ public class FireBurst extends BendingActiveAbility {
 		if (!this.player.isSneaking()) {
 			if (getState().equals(BendingAbilityState.PREPARED)) {
 				sphereBurst();
+			} else {
+				remove();
 			}
 			return;
 		}
@@ -166,8 +168,8 @@ public class FireBurst extends BendingActiveAbility {
 		}
 
 		if (getState() == BendingAbilityState.PREPARED) {
-			Location location = this.player.getEyeLocation();
-			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
+			Location location = player.getEyeLocation().add(player.getEyeLocation().getDirection().normalize());
+			location.getWorld().spigot().playEffect(location, Effect.FLAME, 0, 0, 0, 0, 0, 0, 1, RANGE_CONE + 4);
 		}
 	}
 
