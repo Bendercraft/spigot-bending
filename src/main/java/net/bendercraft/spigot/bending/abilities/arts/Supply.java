@@ -19,6 +19,9 @@ import net.bendercraft.spigot.bending.utils.EntityTools;
 public class Supply extends BendingActiveAbility {
 	public final static String NAME = "Supply";
 	
+	public final static String LORE_BOW = "Bow";
+	public final static String LORE_ARROW = "Bow";
+	
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 15000;
 	
@@ -41,13 +44,13 @@ public class Supply extends BendingActiveAbility {
 		bow.addEnchantment(Enchantment.ARROW_INFINITE, 1);
 		bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 2);
 		ItemMeta metaBow = bow.getItemMeta();
-		metaBow.setLore(Arrays.asList("Bow"));
+		metaBow.setLore(Arrays.asList(LORE_BOW));
 		bow.setItemMeta(metaBow);
 		EntityTools.giveItemInMainHand(player, bow);
 		
 		ItemStack arrow = new ItemStack(Material.ARROW, 1);
 		ItemMeta metaArrow = bow.getItemMeta();
-		metaArrow.setLore(Arrays.asList("Arrow"));
+		metaArrow.setLore(Arrays.asList(LORE_ARROW));
 		arrow.setItemMeta(metaArrow);
 		player.getInventory().addItem(arrow);
 		

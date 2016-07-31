@@ -29,6 +29,7 @@ import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
+import net.bendercraft.spigot.bending.abilities.arts.Supply;
 import net.bendercraft.spigot.bending.abilities.earth.EarthArmor;
 import net.bendercraft.spigot.bending.controller.Settings;
 
@@ -245,6 +246,26 @@ public class BendingDenyItem implements Listener {
 		if(bender == null || !bender.hasAffinity(BendingAffinity.SWORD)) {
 			if(item.getType() == Material.SHIELD 
 					|| item.getType() == Material.IRON_SWORD) {
+				removeItem(bender.getPlayer(), item);
+			}
+		}
+		
+		// Remove bow generated from bowman
+		if(bender == null || !bender.hasAffinity(BendingAffinity.BOW)) {
+			if(item.getType() == Material.BOW
+					&& item.getItemMeta() != null 
+					&& item.getItemMeta().hasLore() 
+					&& item.getItemMeta().getLore().contains(Supply.LORE_BOW)) {
+				removeItem(bender.getPlayer(), item);
+			}
+		}
+		
+		// Remove arrow generated from bowman
+		if(bender == null || !bender.hasAffinity(BendingAffinity.BOW)) {
+			if(item.getType() == Material.ARROW
+					&& item.getItemMeta() != null 
+					&& item.getItemMeta().hasLore() 
+					&& item.getItemMeta().getLore().contains(Supply.LORE_ARROW)) {
 				removeItem(bender.getPlayer(), item);
 			}
 		}
