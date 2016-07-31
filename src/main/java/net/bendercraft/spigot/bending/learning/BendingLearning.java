@@ -123,21 +123,25 @@ public class BendingLearning {
 		return false;
 	}
 
-	//TODO Rework throws as reader might not be closed in the end
 	private void load() throws IOException {
 		File folder = Bending.getInstance().getDataFolder();
 		File permissionsFile = new File(folder, "permissions.json");
 
 		if (permissionsFile.exists() && permissionsFile.isFile()) {
-			FileReader reader = new FileReader(permissionsFile);
-			LearningPermissions tmp = mapper.fromJson(reader, LearningPermissions.class);
-			permissions = new HashMap<UUID, List<String>>();
-			permissions.putAll(tmp.getPermissions());
-			reader.close();
+			FileReader reader = null;
+			try {
+				reader = new FileReader(permissionsFile);
+				LearningPermissions tmp = mapper.fromJson(reader, LearningPermissions.class);
+				permissions = new HashMap<UUID, List<String>>();
+				permissions.putAll(tmp.getPermissions());
+			} finally {
+				if(reader != null) {
+					reader.close();
+				}
+			}
 		}
 	}
 
-	//TODO Rework throws as writer might not be closed in the end
 	private void save() throws IOException {
 		File folder = Bending.getInstance().getDataFolder();
 		File permissionsFile = new File(folder, "permissions.json");
@@ -146,11 +150,17 @@ public class BendingLearning {
 			folder.mkdirs();
 			permissionsFile.createNewFile();
 		}
-		FileWriter writer = new FileWriter(permissionsFile);
-		LearningPermissions tmp = new LearningPermissions();
-		tmp.setPermissions(permissions);
-		mapper.toJson(tmp, writer);
-		writer.close();
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter(permissionsFile);
+			LearningPermissions tmp = new LearningPermissions();
+			tmp.setPermissions(permissions);
+			mapper.toJson(tmp, writer);
+		} finally {
+			if(writer != null) {
+				writer.close();
+			}
+		}
 	}
 
 	public PermissionAttachment lease(Player p) {
