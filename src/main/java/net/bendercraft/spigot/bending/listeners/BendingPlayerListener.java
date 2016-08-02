@@ -51,6 +51,7 @@ import net.bendercraft.spigot.bending.abilities.air.AirBurst;
 import net.bendercraft.spigot.bending.abilities.air.AirSpeed;
 import net.bendercraft.spigot.bending.abilities.air.AirSpout;
 import net.bendercraft.spigot.bending.abilities.air.Suffocate;
+import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.arts.Dash;
 import net.bendercraft.spigot.bending.abilities.arts.Speed;
 import net.bendercraft.spigot.bending.abilities.earth.EarthArmor;
@@ -133,7 +134,7 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		this.interact.add(player.getUniqueId());
-		if (Bloodbending.isBloodbended(player)) {
+		if (Bloodbending.isBloodbended(player) || Concussion.getTarget(player) != null) {
 			event.setCancelled(true);
 			return;
 		}
@@ -147,7 +148,7 @@ public class BendingPlayerListener implements Listener {
 
 		String ability = EntityTools.getBendingAbility(player);
 
-		if (Bloodbending.isBloodbended(player)) {
+		if (Bloodbending.isBloodbended(player) || Concussion.getTarget(player) != null) {
 			event.setCancelled(true);
 			return;
 		}
@@ -194,8 +195,9 @@ public class BendingPlayerListener implements Listener {
 			this.interact.remove(player.getUniqueId());
 			return;
 		}
-		if (Bloodbending.isBloodbended(player)) {
+		if (Bloodbending.isBloodbended(player) || Concussion.getTarget(player) != null) {
 			event.setCancelled(true);
+			return;
 		}
 
 		String ability = EntityTools.getBendingAbility(player);
@@ -238,8 +240,9 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-		if (Bloodbending.isBloodbended(player)) {
+		if (Bloodbending.isBloodbended(player) || Concussion.getTarget(player) != null) {
 			event.setCancelled(true);
+			return;
 		}
 
 		String ability = EntityTools.getBendingAbility(player);
@@ -431,6 +434,10 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
+		if(Concussion.getTarget(player) != null) {
+			event.setCancelled(true);
+			return;
+		}
 		if (WaterSpout.isBending(event.getPlayer()) || AirSpout.getPlayers().contains(event.getPlayer())) {
 			Vector vel = new Vector();
 			vel.setX(event.getTo().getX() - event.getFrom().getX());

@@ -31,6 +31,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.abilities.arts.C4;
+import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.arts.ExplosiveShot;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlade;
@@ -77,6 +78,14 @@ public class BendingEntityListener implements Listener {
 		Entity source = event.getDamager();
 		Entity entity = event.getEntity();
 		Lightning lightning = Lightning.getLightning(source);
+		
+		if(entity instanceof LivingEntity) {
+			Concussion concussion = Concussion.getTarget((LivingEntity) entity);
+			if(concussion != null) {
+				concussion.remove();
+			}
+		}
+		
 		
 		// FireBlade should not deal any damage at all
 		if(event.getCause() == DamageCause.ENTITY_ATTACK 
@@ -194,6 +203,9 @@ public class BendingEntityListener implements Listener {
 	public void onEntityInteractEvent(EntityInteractEvent event) {
 		Entity entity = event.getEntity();
 		if (Bloodbending.isBloodbended(entity)) {
+			event.setCancelled(true);
+		}
+		if(entity instanceof LivingEntity && Concussion.getTarget((LivingEntity) entity) != null) {
 			event.setCancelled(true);
 		}
 	}

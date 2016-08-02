@@ -23,6 +23,7 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPassiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
+import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.earth.EarthGrab;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
@@ -124,7 +125,7 @@ public class EntityTools {
 			return false;
 		}
 
-		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player))) {
+		if ((isChiBlocked(player) || Bloodbending.isBloodbended(player) || isGrabed(player) || Concussion.getTarget(player) != null)) {
 			return false;
 		}
 

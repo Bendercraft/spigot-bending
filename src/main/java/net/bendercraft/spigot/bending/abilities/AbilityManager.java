@@ -33,6 +33,7 @@ import net.bendercraft.spigot.bending.abilities.air.Tornado;
 import net.bendercraft.spigot.bending.abilities.arts.Aim;
 import net.bendercraft.spigot.bending.abilities.arts.BlankPoint;
 import net.bendercraft.spigot.bending.abilities.arts.C4;
+import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.arts.DaggerFall;
 import net.bendercraft.spigot.bending.abilities.arts.Dash;
 import net.bendercraft.spigot.bending.abilities.arts.DirectHit;
@@ -212,6 +213,7 @@ public class AbilityManager {
 		register(Mark.class);
 		register(Supply.class);
 		register(NebularChain.class);
+		register(Concussion.class);
 		register(Slice.class);
 		register(DaggerFall.class);
 		register(PoisonnedDart.class);
