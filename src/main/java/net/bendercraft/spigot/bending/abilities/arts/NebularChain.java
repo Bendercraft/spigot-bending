@@ -1,8 +1,11 @@
 package net.bendercraft.spigot.bending.abilities.arts;
 
+import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
@@ -33,8 +36,19 @@ public class NebularChain extends BendingActiveAbility {
 	public boolean swing() {
 		LivingEntity target = EntityTools.getTargetedEntity(player, RANGE);
 		if(target != null && !ProtectionManager.isEntityProtected(target)) {
-			target.setVelocity(player.getLocation().toVector().clone().subtract(target.getLocation().toVector()).normalize().multiply(PUSH));
 			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_HIT, 5, 1);
+			
+			Vector direction = target.getEyeLocation().subtract(player.getEyeLocation()).toVector();
+			double distance = direction.length();
+			for(double i=0; i < distance ; i = i + 0.01) {
+				Location location = player.getEyeLocation().clone().add(direction.clone().normalize().multiply(i));
+				location.getWorld().spawnParticle(Particle.SPELL_WITCH, location, 1, 0, 0, 0, 0);
+			}
+			
+			Location location = player.getEyeLocation().add(player.getEyeLocation().getDirection());
+		    location.setPitch(target.getEyeLocation().getPitch());
+		    location.setYaw(target.getEyeLocation().getYaw());
+		    target.teleport(location);
 			
 			bender.cooldown(this, COOLDOWN);
 		}
