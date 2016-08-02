@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -169,7 +170,7 @@ public class FireBurst extends BendingActiveAbility {
 
 		if (getState() == BendingAbilityState.PREPARED) {
 			Location location = player.getEyeLocation().add(player.getEyeLocation().getDirection().normalize());
-			location.getWorld().spigot().playEffect(location, Effect.FLAME, 0, 0, 0, 0, 0, 0, 1, RANGE_CONE + 4);
+			location.getWorld().spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
 		}
 	}
 

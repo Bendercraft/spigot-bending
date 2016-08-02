@@ -1,7 +1,7 @@
 package net.bendercraft.spigot.bending.abilities.fire;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -103,7 +103,7 @@ public class FireFerret extends BendingActiveAbility {
 			return;
 		}
 
-		location.getWorld().spigot().playEffect(location, Effect.FLAME, 0, 0, 0, 0, 0, 0, 1, RANGE + 4);
+		location.getWorld().spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
 		
 		if(target.getLocation().distance(location) < AFFECTING_RADIUS) {
 			affect(target);
