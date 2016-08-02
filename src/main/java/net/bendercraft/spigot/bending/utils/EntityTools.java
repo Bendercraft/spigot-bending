@@ -301,10 +301,10 @@ public class EntityTools {
 	}
 
 	public static LivingEntity getTargetedEntity(Player player, double range) {
-		return getTargetedEntity(player, range, new LinkedList<Entity>());
+		return getTargetedEntity(player, range, new LinkedList<Entity>(), Collections.singleton(Material.AIR));
 	}
 
-	public static LivingEntity getTargetedEntity(Player player, double range, List<Entity> avoid) {
+	public static LivingEntity getTargetedEntity(Player player, double range, List<Entity> avoid, Set<Material> nonOpaque) {
 		double longestRange = range + 1;
 		LivingEntity target = null;
 		Location origin = player.getEyeLocation();
@@ -320,6 +320,17 @@ public class EntityTools {
 					&& entity.getLocation().distance(origin.clone().add(direction)) < entity.getLocation().distance(origin.clone().add(direction.clone().multiply(-1)))) {
 				target = entity;
 				longestRange = entity.getLocation().distance(origin);
+			}
+		}
+		if(target != null) {
+			Vector line = target.getEyeLocation().subtract(player.getEyeLocation()).toVector();
+			double distance = line.length();
+			for(int i=0 ; i < distance ; i = i + 1) {
+				Location location = player.getEyeLocation().clone().add(line.clone().normalize().multiply(i));
+				if (!nonOpaque.contains(location.getBlock().getType())) {
+					target = null;
+					break;
+				}
 			}
 		}
 		return target;

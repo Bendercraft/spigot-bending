@@ -1,6 +1,7 @@
 package net.bendercraft.spigot.bending.abilities.water;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -342,7 +343,7 @@ public class Torrent extends BendingActiveAbility {
 
 		Entity target = null;
 		if (!this.bender.hasPath(BendingPath.FLOWLESS)) {
-			target = EntityTools.getTargetedEntity(this.player, this.range, this.hurtentities);
+			target = EntityTools.getTargetedEntity(this.player, this.range, this.hurtentities, Collections.singleton(Material.AIR));
 		}
 		Location targetloc = EntityTools.getTargetBlock(this.player, this.range, BlockTools.getTransparentEarthbending()).getLocation();
 
