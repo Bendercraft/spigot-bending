@@ -283,7 +283,7 @@ public class AbilityManager {
 		Bending.callEvent(new BendingRegisterEvent());
 	}
 
-	protected void register(Class<? extends BendingAbility> ability) {
+	public void register(Class<? extends BendingAbility> ability) {
 		ABendingAbility annotation = ability.getAnnotation(ABendingAbility.class);
 		if (annotation == null) {
 			Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but not annoted ! Aborting this registration...");
