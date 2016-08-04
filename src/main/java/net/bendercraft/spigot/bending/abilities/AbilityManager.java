@@ -80,7 +80,6 @@ import net.bendercraft.spigot.bending.abilities.water.WaterWall;
 import net.bendercraft.spigot.bending.abilities.water.WaterWhip;
 import net.bendercraft.spigot.bending.controller.ConfigurationManager;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
-import net.bendercraft.spigot.bending.event.BendingRegisterEvent;
 
 public class AbilityManager {
 
@@ -279,8 +278,6 @@ public class AbilityManager {
 		register(WaterSpout.class);
 		register(WaterWall.class);
 		register(WaterWhip.class);
-		
-		Bending.callEvent(new BendingRegisterEvent());
 	}
 
 	public void register(Class<? extends BendingAbility> ability) {
