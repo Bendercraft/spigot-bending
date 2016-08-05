@@ -71,7 +71,7 @@ public class FireJet extends BendingActiveAbility {
 			return false;
 		}
 		if ((BlockTools.isWater(this.player.getLocation().getBlock()) 
-				|| (System.currentTimeMillis() > (this.startedTime + this.duration))) && !AvatarState.isAvatarState(this.player)) {
+				|| (System.currentTimeMillis() > (this.startedTime + this.duration)))) {
 			return false;
 		}
 		return true;
