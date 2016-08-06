@@ -266,6 +266,10 @@ public class FireBurst extends BendingActiveAbility {
 			if (this.location.distance(this.origin) > this.range) {
 				return false;
 			}
+			
+			if(this.location.getBlock().getType().isSolid() || this.location.getBlock().isLiquid()) {
+				return false;
+			}
 
 			PluginTools.removeSpouts(this.location, this.player);
 
