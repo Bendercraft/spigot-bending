@@ -1,4 +1,4 @@
-package net.bendercraft.spigot.bending.db.impl;
+package net.bendercraft.spigot.bending.db;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.BendingPlayerData;
-import net.bendercraft.spigot.bending.db.IBendingDB;
 
 public class FlatFileDB implements IBendingDB {
 	private static String DIR_NAME = "benders";
