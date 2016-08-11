@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -99,7 +98,10 @@ public class Lightning extends BendingActiveAbility {
 			direction = direction.normalize();
 			for(double j=0 ; j < distance ; j += 0.1) {
 				Location loc = locations.get(i).clone().add(direction.clone().multiply(j));
-				loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0);
+				float red = 0x80;
+				float green = 0xf2;
+				float blue = 0xff;
+				loc.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, (float) red/ 255, (float) green/ 255, (float) blue/ 255, 1, 0, 30);
 			}
 		}
 		player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_LIGHTNING_THUNDER, 1.0f, 0.0f);
