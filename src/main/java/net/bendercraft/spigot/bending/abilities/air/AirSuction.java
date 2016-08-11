@@ -156,7 +156,7 @@ public class AirSuction extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!getState().equals(BendingAbilityState.PROGRESSING) && !bender.getAbility().equals(AirSuction.NAME)) {
+		if (!isState(BendingAbilityState.PROGRESSING) && !NAME.equals(bender.getAbility())) {
 			return false;
 		}
 		return true;
