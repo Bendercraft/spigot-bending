@@ -19,6 +19,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import net.bendercraft.spigot.bending.Bending;
+import net.bendercraft.spigot.bending.abilities.fire.FirePower;
 import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
 
@@ -45,6 +46,8 @@ public class BendingPlayer {
 	private boolean usingScoreboard;
 	
 	private Scoreboard scoreboard;
+	
+	public FirePower fire = new FirePower();
 
 	public BendingPlayer(UUID id) {
 		this.player = id;
@@ -80,7 +83,7 @@ public class BendingPlayer {
 
 		this.lastTime = data.getLastTime();
 		
-		this.usingScoreboard = data.isUsingScoreboard();
+		this.usingScoreboard = true;
 	}
 
 	public static BendingPlayer getBendingPlayer(Player player) {
@@ -304,9 +307,11 @@ public class BendingPlayer {
 		getPlayer().sendMessage(ChatColor.RED+"[Bending] Scoreboard conflict detected, disabling cooldown GUI (sorry).");
 		Bending.getInstance().getLogger().warning("Player "+getPlayer().getName()+" had conflicting scoreboard.");
 		setUsingScoreboard(false);
-		scoreboard.getTeams().forEach(t->t.unregister());
-		scoreboard.getObjectives().forEach(o->o.unregister());
-		scoreboard = null;
+		if(scoreboard != null) {
+			scoreboard.getTeams().forEach(t->t.unregister());
+			scoreboard.getObjectives().forEach(o->o.unregister());
+			scoreboard = null;
+		}
 	}
 	
 	public void unloadScoreboard() {
@@ -439,7 +444,6 @@ public class BendingPlayer {
 		result.setDecks(this.decks);
 		result.setCurrentDeck(this.currentDeck);
 		result.setPaths(this.paths);
-		result.setUsingScoreboard(this.usingScoreboard);
 		return result;
 	}
 

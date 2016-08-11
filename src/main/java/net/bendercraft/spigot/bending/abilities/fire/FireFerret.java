@@ -40,8 +40,8 @@ public class FireFerret extends BendingActiveAbility {
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 3;
 	
-	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 5000;
+	@ConfigurationParameter("Power")
+	public static int POWER = 3;
 	
 	private Location origin;
 	private Location location;
@@ -57,6 +57,19 @@ public class FireFerret extends BendingActiveAbility {
 		
 		speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if(!bender.fire.can(NAME, POWER)) {
+			return false;
+		}
+
+		return true;
+	}
 
 	@Override
 	public boolean swing() {
@@ -70,7 +83,7 @@ public class FireFerret extends BendingActiveAbility {
 				}
 				time = System.currentTimeMillis();
 				setState(BendingAbilityState.PROGRESSING);
-				bender.cooldown(this, COOLDOWN);
+				bender.fire.consume(NAME, POWER);
 			}
 		}
 		return false;
@@ -126,7 +139,7 @@ public class FireFerret extends BendingActiveAbility {
 		}
 		if (entity != this.player) {
 			DamageTools.damageEntity(bender, entity, this, DAMAGE);
-			entity.setFireTicks(2);
+			Enflamed.enflame(player, entity, 2);
 			return false;
 		}
 		return true;

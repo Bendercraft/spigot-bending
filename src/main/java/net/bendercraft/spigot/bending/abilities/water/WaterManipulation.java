@@ -516,17 +516,25 @@ public class WaterManipulation extends BendingActiveAbility {
 		return true;
 	}
 
-	public static void removeAroundPoint(Location location, double radius) {
-		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
+	public static boolean removeOneAroundPoint(Location location, double radius) {
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.location.getWorld().equals(location.getWorld()) 
 					&& manip.location.distance(location) <= radius) {
-				toBreak.add(manip);
+				manip.remove();
+				return true;
 			}
 		}
-		for (WaterManipulation manip : toBreak) {
-			manip.remove();
+		return false;
+	}
+	
+	public static void removeAroundPoint(Location location, double radius) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
+			WaterManipulation manip = (WaterManipulation) ab;
+			if (manip.location.getWorld().equals(location.getWorld()) 
+					&& manip.location.distance(location) <= radius) {
+				manip.remove();
+			}
 		}
 	}
 

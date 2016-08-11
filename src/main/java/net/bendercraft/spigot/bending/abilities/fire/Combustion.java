@@ -67,8 +67,8 @@ public class Combustion extends BendingActiveAbility {
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 9;
 
-	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 2000;
+	@ConfigurationParameter("Power")
+	public static int POWER = 10;
 
 	private static final Particle CRIT = Particle.CRIT;
 	private static final Particle EXPLODE = Particle.EXPLOSION_HUGE;
@@ -82,6 +82,8 @@ public class Combustion extends BendingActiveAbility {
 	private long chargeTime = CHARGE_TIME;
 	private double range = RANGE;
 	private double damage = DAMAGE;
+	
+	private boolean destruction = false; 
 
 	public Combustion(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -92,11 +94,39 @@ public class Combustion extends BendingActiveAbility {
 			chargeTime *= 0.60;
 		}
 	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if(!bender.fire.can(NAME, POWER)) {
+			return false;
+		}
+
+		return true;
+	}
+	
+	@Override
+	public boolean swing() {
+		if(getState() == BendingAbilityState.START) {
+			if (!player.getEyeLocation().getBlock().isLiquid() && bender.fire.can(NAME, POWER)) {
+				destruction = false;
+				bender.fire.consume(NAME, POWER);
+				damage *= 0.5;
+				launch();
+				setState(BendingAbilityState.PREPARED);
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.START) {
 			if (!player.getEyeLocation().getBlock().isLiquid()) {
+				destruction = true;
 				setState(BendingAbilityState.PREPARING);
 			}
 		}
@@ -113,6 +143,12 @@ public class Combustion extends BendingActiveAbility {
 		}
 		return true;
 	}
+	
+	private void launch() {
+		location = player.getEyeLocation();
+		origin = location.clone();
+		direction = location.getDirection().normalize().multiply(HITBOX);
+	}
 
 	@Override
 	public void progress() {
@@ -125,9 +161,7 @@ public class Combustion extends BendingActiveAbility {
 					Effect.SMOKE, 
 					Tools.getIntCardinalDirection(player.getEyeLocation().getDirection()), 3);
 			if (System.currentTimeMillis() > time + chargeTime) {
-				location = player.getEyeLocation();
-				origin = location.clone();
-				direction = location.getDirection().normalize().multiply(HITBOX);
+				launch();
 				setState(BendingAbilityState.PREPARED);
 			}
 			return;
@@ -218,36 +252,38 @@ public class Combustion extends BendingActiveAbility {
 	private void explode() {
 		boolean obsidian = false;
 
-		List<Block> affecteds = new LinkedList<Block>();
-		for (Block block : BlockTools.getBlocksAroundPoint(location, EXPLOSION_RADIUS)) {
-			if (block.getType() == Material.OBSIDIAN) {
-				obsidian = true;
-			}
-			if (!obsidian || (obsidian && location.distance(block.getLocation()) < EXPLOSION_RADIUS / 2.0)) {
-				if (!ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())
-						&& !ProtectionManager.isLocationProtectedFromExplosion(player, NAME, block.getLocation())) {
-					affecteds.add(block);
+		if(destruction) {
+			List<Block> affecteds = new LinkedList<Block>();
+			for (Block block : BlockTools.getBlocksAroundPoint(location, EXPLOSION_RADIUS)) {
+				if (block.getType() == Material.OBSIDIAN) {
+					obsidian = true;
+				}
+				if (!obsidian || (obsidian && location.distance(block.getLocation()) < EXPLOSION_RADIUS / 2.0)) {
+					if (!ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())
+							&& !ProtectionManager.isLocationProtectedFromExplosion(player, NAME, block.getLocation())) {
+						affecteds.add(block);
+					}
 				}
 			}
-		}
-		for (Block block : affecteds) {
-			if (!block.getType().equals(Material.BEDROCK)) {
-				if (!obsidian || location.distance(block.getLocation()) < 2.0) {
-					List<Block> adjacent = new LinkedList<Block>();
-					adjacent.add(block.getRelative(BlockFace.NORTH));
-					adjacent.add(block.getRelative(BlockFace.SOUTH));
-					adjacent.add(block.getRelative(BlockFace.EAST));
-					adjacent.add(block.getRelative(BlockFace.WEST));
-					adjacent.add(block.getRelative(BlockFace.UP));
-					adjacent.add(block.getRelative(BlockFace.DOWN));
-
-					if (affecteds.containsAll(adjacent)) {
-						// Explosion ok
-						removeBlock(block);
-					} else {
-						double rand = Math.random();
-						if (rand < 0.8) {
+			for (Block block : affecteds) {
+				if (!block.getType().equals(Material.BEDROCK)) {
+					if (!obsidian || location.distance(block.getLocation()) < 2.0) {
+						List<Block> adjacent = new LinkedList<Block>();
+						adjacent.add(block.getRelative(BlockFace.NORTH));
+						adjacent.add(block.getRelative(BlockFace.SOUTH));
+						adjacent.add(block.getRelative(BlockFace.EAST));
+						adjacent.add(block.getRelative(BlockFace.WEST));
+						adjacent.add(block.getRelative(BlockFace.UP));
+						adjacent.add(block.getRelative(BlockFace.DOWN));
+	
+						if (affecteds.containsAll(adjacent)) {
+							// Explosion ok
 							removeBlock(block);
+						} else {
+							double rand = Math.random();
+							if (rand < 0.8) {
+								removeBlock(block);
+							}
 						}
 					}
 				}
@@ -285,7 +321,7 @@ public class Combustion extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		bender.cooldown(NAME, COOLDOWN);
+		
 	}
 
 	public static void removeFireballsAroundPoint(Location location, double radius) {

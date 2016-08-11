@@ -32,8 +32,8 @@ public class FireWall extends BendingActiveAbility {
 	@ConfigurationParameter("Range")
 	private static int RANGE = 4;
 
-	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 7500;
+	@ConfigurationParameter("Power")
+	private static int POWER = 4;
 
 	@ConfigurationParameter("Interval")
 	private static long DAMAGE_INTERVAL = 500;
@@ -70,6 +70,23 @@ public class FireWall extends BendingActiveAbility {
 			this.damage *= 1.1;
 		}
 	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if(!bender.fire.can(NAME, POWER)) {
+			return false;
+		}
+
+		if (player.getEyeLocation().getBlock().isLiquid()) {
+			return false;
+		}
+
+		return true;
+	}
 
 	@Override
 	public boolean swing() {
@@ -91,6 +108,7 @@ public class FireWall extends BendingActiveAbility {
 			}
 
 			initializeBlocks();
+			bender.fire.consume(NAME, POWER);
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;

@@ -10,9 +10,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
-
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.air.AirBubble;
@@ -20,7 +17,6 @@ import net.bendercraft.spigot.bending.abilities.arts.C4;
 import net.bendercraft.spigot.bending.abilities.earth.EarthGrab;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
 import net.bendercraft.spigot.bending.abilities.fire.Illumination;
-import net.bendercraft.spigot.bending.abilities.fire.Lightning;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.OctopusForm;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
@@ -48,16 +44,6 @@ public class BendingBlockListener implements Listener {
 		BendingPlayer.getBendingPlayer(player).cooldown();
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onBlockIgnite(BlockIgniteEvent event) {
-		if (event.getCause() == IgniteCause.LIGHTNING) {
-			if (Lightning.isNearbyChannel(event.getBlock().getLocation())) {
-				event.setCancelled(true);
-				return;
-			}
 		}
 	}
 

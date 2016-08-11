@@ -81,9 +81,9 @@ public class ExplosiveShot extends BendingActiveAbility {
 			direction.setX(vx);
 			direction.setZ(vz);
 
-			firestreams.add(new FireStream(location, direction, player, RANGE));
-			firestreams.add(new FireStream(location.add(0, 1, 0), direction, player, RANGE));
-			firestreams.add(new FireStream(location.add(0, -1, 0), direction, player, RANGE));
+			firestreams.add(new FireStream(location, direction, player, RANGE, 1200));
+			firestreams.add(new FireStream(location.add(0, 1, 0), direction, player, RANGE, 1200));
+			firestreams.add(new FireStream(location.add(0, -1, 0), direction, player, RANGE, 1200));
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		location.getWorld().playSound(location, Sound.BLOCK_GLASS_BREAK, SOUND_RADIUS / 16.0f, 1);

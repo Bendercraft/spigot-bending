@@ -27,30 +27,52 @@ public class FireJet extends BendingActiveAbility {
 	public final static String NAME = "FireJet";
 
 	@ConfigurationParameter("Speed")
-	private static double FACTOR = 0.7;
+	private static double FACTOR = 1.0;
 
 	@ConfigurationParameter("Duration")
-	private static long DURATION = 1550;
+	private static long DURATION = 1600;
 
-	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 4000;
+	@ConfigurationParameter("Power")
+	public static int POWER = 1;
+	
+	@ConfigurationParameter("Power-Activation")
+	public static int POWER_ACTIVATION = 5;
+	
+	@ConfigurationParameter("Tick")
+	public static long TICK = 320;
 
 	private long duration = DURATION;
 	private double factor = FACTOR;
+	private long time;
 
 	public FireJet(RegisteredAbility register, Player player) {
 		super(register, player);
+	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if(!bender.fire.can(NAME, POWER_ACTIVATION)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
-			Block block = this.player.getLocation().getBlock();
-			if (FireStream.isIgnitable(this.player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(this.player)) {
-				FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), false);
-				this.player.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor));
+			Block block = player.getLocation().getBlock();
+			if (FireStream.isIgnitable(player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(player)) {
+				FlyingPlayer.addFlyingPlayer(player, this, getMaxMillis(), false);
+				player.setVelocity(player.getEyeLocation().getDirection().clone().normalize().multiply(factor));
+				bender.fire.consume(NAME, POWER_ACTIVATION);
+				bender.fire.halt();
+				time = System.currentTimeMillis();
 				setState(BendingAbilityState.PROGRESSING);
-				
 			}
 		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			remove();
@@ -70,25 +92,35 @@ public class FireJet extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if ((BlockTools.isWater(this.player.getLocation().getBlock()) 
-				|| (System.currentTimeMillis() > (this.startedTime + this.duration)))) {
+		if ((BlockTools.isWater(player.getLocation().getBlock()) 
+				|| (System.currentTimeMillis() > (startedTime + duration)))) {
 			return false;
 		}
+		
+		if(!bender.fire.can(NAME, POWER)) {
+			return false;
+		}
+		
 		return true;
 	}
 
 	@Override
 	public void progress() {
-		this.player.getWorld().playEffect(this.player.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+		player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
 		double timefactor;
-		if (AvatarState.isAvatarState(this.player)) {
+		if (AvatarState.isAvatarState(player)) {
 			timefactor = 1;
 		} else {
-			timefactor = 1 - ((System.currentTimeMillis() - this.startedTime) / (2.0 * this.duration));
+			timefactor = 1 - ((System.currentTimeMillis() - startedTime) / (2.0 * duration));
 		}
-		Vector velocity = this.player.getEyeLocation().getDirection().clone().normalize().multiply(this.factor * timefactor);
-		this.player.setVelocity(velocity);
-		this.player.setFallDistance(0);
+		Vector velocity = player.getEyeLocation().getDirection().clone().normalize().multiply(factor * timefactor);
+		player.setVelocity(velocity);
+		player.setFallDistance(0);
+		long now = System.currentTimeMillis();
+		if(time + TICK < now) {
+			time = now;
+			bender.fire.consume(NAME, POWER, false);
+		}
 	}
 
 	public static List<Player> getPlayers() {
@@ -108,7 +140,7 @@ public class FireJet extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		FlyingPlayer.removeFlyingPlayer(this.player, this);
-		this.bender.cooldown(FireJet.NAME, COOLDOWN);
+		bender.fire.resume();
 	}
 
 	@Override

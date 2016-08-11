@@ -18,20 +18,15 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 public class FireStream {
 	private static Map<Block, Player> ignitedblocks = new HashMap<Block, Player>();
 	private static Map<Block, Long> ignitedtimes = new HashMap<Block, Long>();
-	static final long soonesttime = Tools.timeinterval;
 
 	private static final Material[] overwriteable = { Material.SAPLING, Material.LONG_GRASS, Material.DEAD_BUSH, Material.YELLOW_FLOWER, Material.RED_ROSE, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.FIRE, Material.SNOW, Material.TORCH };
 
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 15;
-
-	@ConfigurationParameter("Dissipate-Time")
-	private static long dissipateAfter = 1200;
 
 	private Location origin;
 	private Location location;
@@ -40,10 +35,11 @@ public class FireStream {
 	private double range;
 	private Player player;
 	private long interval;
+	private long duration;
 
 	private final RegisteredAbility blazeRegister;
 
-	public FireStream(Location location, Vector direction, Player player, int range) {
+	public FireStream(Location location, Vector direction, Player player, int range, long duration) {
 		this.range = range;
 		this.player = player;
 		this.origin = location.clone();
@@ -54,7 +50,8 @@ public class FireStream {
 		this.location = this.location.clone().add(this.direction);
 		this.time = System.currentTimeMillis();
 		this.blazeRegister = AbilityManager.getManager().getRegisteredAbility(Blaze.NAME);
-		interval = (long) (1000. / SPEED);
+		this.duration = duration;
+		this.interval = (long) (1000. / SPEED);
 	}
 
 	public boolean progress() {
@@ -89,8 +86,7 @@ public class FireStream {
 
 	private void ignite(Block block) {
 		block.setType(Material.FIRE);
-		ignitedblocks.put(block, player);
-		ignitedtimes.put(block, System.currentTimeMillis());
+		addIgnitedBlock(block, player, duration);
 	}
 
 	public static boolean isIgnitable(Player player, Block block) {
@@ -113,27 +109,17 @@ public class FireStream {
 		}
 	}
 
-	public static void removeAllNoneFireIgnitedBlock() {
-		List<Block> toRemove = new LinkedList<Block>(ignitedblocks.keySet());
+	public static void progressAll() {
+		long now = System.currentTimeMillis();
+		List<Block> toRemove = new LinkedList<Block>(ignitedtimes.keySet());
 		for (Block block : toRemove) {
 			if (block.getType() != Material.FIRE) {
 				remove(block);
-			}
-		}
-	}
-
-	public static void dissipateAll() {
-		if (dissipateAfter != 0) {
-			List<Block> toRemove = new LinkedList<Block>(ignitedtimes.keySet());
-			for (Block block : toRemove) {
-				if (block.getType() != Material.FIRE) {
+			} else {
+				long time = ignitedtimes.get(block);
+				if (now > time) {
+					block.setType(Material.AIR);
 					remove(block);
-				} else {
-					long time = ignitedtimes.get(block);
-					if (System.currentTimeMillis() > (time + dissipateAfter)) {
-						block.setType(Material.AIR);
-						remove(block);
-					}
 				}
 			}
 		}
@@ -166,7 +152,7 @@ public class FireStream {
 
 	public static void addIgnitedBlock(Block block, Player player, long time) {
 		ignitedblocks.put(block, player);
-		ignitedtimes.put(block, time);
+		ignitedtimes.put(block, System.currentTimeMillis()+time);
 	}
 
 	public static boolean isIgnited(Block block) {

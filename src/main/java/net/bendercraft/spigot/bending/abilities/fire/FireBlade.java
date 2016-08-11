@@ -41,9 +41,6 @@ public class FireBlade extends BendingActiveAbility {
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 5;
 
-	@ConfigurationParameter("Cooldown-Factor")
-	public static float COOLDOWN_FACTOR = 0.75f;
-
 	private ItemStack blade;
 
 	public FireBlade(RegisteredAbility register, Player player) {
@@ -94,8 +91,6 @@ public class FireBlade extends BendingActiveAbility {
 		if (toRemove != null) {
 			player.getInventory().remove(toRemove);
 		}
-		long realDuration = System.currentTimeMillis() - startedTime;
-		bender.cooldown(NAME, (long) (realDuration * COOLDOWN_FACTOR));
 	}
 
 	public ItemStack getBlade() {

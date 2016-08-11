@@ -55,22 +55,22 @@ public class FireBlast extends BendingActiveAbility {
 	private static boolean POWER_FURNACE = true;
 
 	@ConfigurationParameter("Dissipates")
-	static boolean DISSIPATES = false;
+	static boolean DISSIPATES = true;
 
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 6;
+	private static int DAMAGE = 5;
 
 	@ConfigurationParameter("Range")
 	private static int RANGE = 25;
-
-	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 950;
+	
+	@ConfigurationParameter("Power")
+	private static int POWER = 1;
 
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 3500;
-
-	@ConfigurationParameter("Charged-Cooldown")
-	private static long CHARGED_COOLDOWN = 1250;
+	
+	@ConfigurationParameter("Dissipate")
+	private static long DISSIPATE = 1000;
 
 	private Location location;
 	private List<Block> safe;
@@ -96,6 +96,23 @@ public class FireBlast extends BendingActiveAbility {
 		this.location = this.player.getEyeLocation();
 		this.id = ID++;
 	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+
+		if (player.getEyeLocation().getBlock().isLiquid()) {
+			return false;
+		}
+		
+		if(!bender.fire.can(NAME, POWER)) {
+			return false;
+		}
+
+		return true;
+	}
 
 	@Override
 	public boolean sneak() {
@@ -107,38 +124,24 @@ public class FireBlast extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.START) {
-			launchSingle();
-			this.bender.cooldown(NAME, COOLDOWN);
-			return false;
-		} else if(getState() == BendingAbilityState.PREPARING) {
-			launchSingle();
-			this.bender.cooldown(NAME, COOLDOWN);
+		if(isState(BendingAbilityState.START) || isState(BendingAbilityState.PREPARING)) {
+			launch();
 			return false;
 		} else if(getState() == BendingAbilityState.PREPARED) {
 			this.damage *= 1.30;
 			this.range *= 1.20;
-			launchSingle();
-			Vector perpDir = this.direction.clone();
-			double tempZ = -perpDir.getZ();
-			perpDir.setZ(perpDir.getX());
-			perpDir.setY(0);
-			perpDir.setX(tempZ);
-			perpDir.multiply(1.5);
-			//List<Block> safes = new LinkedList<Block>();
-			//new FireBlast(this.player, this, this.location.clone().add(perpDir), this.direction, this.damage, safes);
-			//new FireBlast(this.player, this, this.location.clone().subtract(perpDir), this.direction, this.damage, safes);
-			this.bender.cooldown(NAME, CHARGED_COOLDOWN);
+			launch();
 			return false;
 		}
 		return true;
 	}
 
-	private void launchSingle() {
+	private void launch() {
 		this.location = this.player.getEyeLocation();
 		this.origin = this.player.getEyeLocation();
 		this.direction = this.player.getEyeLocation().getDirection().normalize();
 		this.location = this.location.add(this.direction.clone());
+		bender.fire.consume(NAME, POWER);
 		setState(BendingAbilityState.PROGRESSING);
 	}
 	
@@ -226,7 +229,7 @@ public class FireBlast extends BendingActiveAbility {
 			if (FireStream.isIgnitable(this.player, block) && !this.safe.contains(block)) {
 				block.setType(Material.FIRE);
 				if (DISSIPATES) {
-					FireStream.addIgnitedBlock(block, this.player, System.currentTimeMillis());
+					FireStream.addIgnitedBlock(block, this.player, DISSIPATE);
 				}
 			}
 		}
@@ -247,6 +250,21 @@ public class FireBlast extends BendingActiveAbility {
 			return false;
 		}
 		return true;
+	}
+	
+	public static boolean removeOneFireBlastsAroundPointExceptPlayer(Location location, Player player, double radius) {
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
+		for (BendingAbility ability : instances.values()) {
+			FireBlast blast = (FireBlast) ability;
+			Location loc = blast.location;
+			if (location.getWorld() == loc.getWorld()) {
+				if (location.distance(loc) <= radius && blast.getPlayer() != player) {
+					blast.remove();
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public static void removeFireBlastsAroundPoint(Location location, double radius) {
@@ -280,19 +298,6 @@ public class FireBlast extends BendingActiveAbility {
 
 	public static boolean annihilateBlasts(Location location, double radius, Player source) {
 		return shouldAnnihilateBlasts(location, radius, source, true);
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		if (this.player.getEyeLocation().getBlock().isLiquid()) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override

@@ -39,14 +39,8 @@ public class HeatControl extends BendingActiveAbility {
 	@ConfigurationParameter("Melt-Radius")
 	private static double MELT_RADIUS = 5;
 
-	@ConfigurationParameter("Extinguish-Cooldown")
-	public static long EXT_COOLDOWN = 500;
-
 	@ConfigurationParameter("Cook-Time")
 	private static long COOK_TIME = 2000;
-
-	@ConfigurationParameter("Cook-Cooldown")
-	private static long COOK_COOLDOWN = 0;
 
 	private static final Material[] cookables = { Material.RAW_BEEF, Material.RAW_CHICKEN, Material.RAW_FISH, Material.PORK, Material.POTATO_ITEM, Material.POISONOUS_POTATO, Material.STICK, Material.RABBIT, Material.MUTTON };
 
@@ -69,8 +63,6 @@ public class HeatControl extends BendingActiveAbility {
 			} else {
 				extinguish(EXT_RANGE);
 			}
-
-			this.bender.cooldown(NAME, EXT_COOLDOWN);
 		}
 		return false;
 	}
@@ -107,7 +99,7 @@ public class HeatControl extends BendingActiveAbility {
 				
 			}
 		}
-		player.getWorld().playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
+		player.getWorld().playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 0.0f);
 	}
 
 	@Override

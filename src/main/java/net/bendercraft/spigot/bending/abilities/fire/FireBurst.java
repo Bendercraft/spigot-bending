@@ -55,8 +55,8 @@ public class FireBurst extends BendingActiveAbility {
 	@ConfigurationParameter("Del-Phi")
 	private static double DELPHI = 10;
 
-	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 2500;
+	@ConfigurationParameter("Power")
+	private static int POWER = 5;
 	
 	@ConfigurationParameter("Range-Cone")
 	private static int RANGE_CONE = 15;
@@ -85,6 +85,19 @@ public class FireBurst extends BendingActiveAbility {
 		}
 		
 		blasts = new LinkedList<BurstBlast>();
+	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if(!bender.fire.can(NAME, POWER)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
@@ -123,6 +136,7 @@ public class FireBurst extends BendingActiveAbility {
 				}
 			}
 		}
+		bender.fire.consume(NAME, POWER);
 		setState(BendingAbilityState.PROGRESSING);
 	}
 	
@@ -191,13 +205,13 @@ public class FireBurst extends BendingActiveAbility {
 				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_SPHERE, DAMAGE_SPHERE));
 			}
 		}
-		
+		bender.fire.consume(NAME, POWER);
 		setState(BendingAbilityState.PROGRESSING);
 	}
 
 	@Override
 	public void stop() {
-		this.bender.cooldown(NAME, COOLDOWN);
+		
 	}
 
 	public boolean isCharged() {
@@ -212,20 +226,6 @@ public class FireBurst extends BendingActiveAbility {
 	public static FireBurst getFireBurst(Player player) {
 		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		return (FireBurst) instances.get(player);
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
-		if (instances.containsKey(this.player)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override

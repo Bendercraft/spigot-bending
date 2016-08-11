@@ -14,6 +14,7 @@ import org.bukkit.scoreboard.Team;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityCooldown;
+import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
@@ -76,24 +77,40 @@ public class BendingManager implements Runnable {
 							if(!team.hasEntry("chi")) {
 								team.addEntry("chi");
 							}
-							Score score = objective.getScore(ChatColor.AQUA+"Chiblocked");
+							Score score = objective.getScore(ChatColor.GOLD+"Chiblocked");
 							int value = (int) (EntityTools.blockedChiTimeLeft(player, now)/1000);
 							if(value != score.getScore()) {
 								score.setScore(value);
 							}
 						} else {
-							Score score = objective.getScore(ChatColor.AQUA+"Chiblocked");
+							Score score = objective.getScore(ChatColor.GOLD+"Chiblocked");
 							if(score.getScore() == 0) {
-								scoreboard.resetScores(ChatColor.AQUA+"Chiblocked");
+								scoreboard.resetScores(ChatColor.GOLD+"Chiblocked");
 								team.removeEntry("chi");
+							}
+						}
+						
+						if(bender.isBender(BendingElement.FIRE)) {
+							if(!team.hasEntry("fire")) {
+								team.addEntry("fire");
+							}
+							Score score = objective.getScore(ChatColor.DARK_RED+"Energy");
+							int value = bender.fire.getPower();
+							if(value != score.getScore()) {
+								score.setScore(value);
+							}
+						} else {
+							if(team.hasEntry("fire")) {
+								team.removeEntry("fire");
+								scoreboard.resetScores(ChatColor.DARK_RED+"Energy");
 							}
 						}
 						
 						
 						Map<String, BendingAbilityCooldown> cooldowns = bender.getCooldowns();
 						for(Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
-							if(!team.hasEntry(entry.getKey())) {
-								team.addEntry(entry.getKey());
+							if(!team.hasEntry("cd-"+entry.getKey())) {
+								team.addEntry("cd-"+entry.getKey());
 							}
 							
 							Score score = objective.getScore(entry.getKey());
@@ -105,12 +122,12 @@ public class BendingManager implements Runnable {
 						
 						List<String> toRemove = new LinkedList<String>();
 						for(String entry : team.getEntries()) {
-							if(!cooldowns.containsKey(entry)) {
+							if(!cooldowns.containsKey(entry.substring("cd-".length()))) {
 								toRemove.add(entry);
 							}
 						}
 						for(String entry : toRemove) {
-							scoreboard.resetScores(entry);
+							scoreboard.resetScores(entry.substring("cd-".length()));
 							team.removeEntry(entry);
 						}
 					}
@@ -143,9 +160,14 @@ public class BendingManager implements Runnable {
 	}
 
 	private void manageFirebending() {
-		FireStream.removeAllNoneFireIgnitedBlock();
+		for(Player player : plugin.getServer().getOnlinePlayers()) {
+			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			if(bender != null && bender.isBender(BendingElement.FIRE)) {
+				bender.fire.progress();
+			}
+		}
 
-		FireStream.dissipateAll();
+		FireStream.progressAll();
 		Enflamed.progressAll();
 	}
 

@@ -170,7 +170,7 @@ public class BendingDenyItem implements Listener {
 	}
 	
 	private void sanitize(BendingPlayer bender, ItemStack item) {
-		if(item == null) {
+		if(item == null || bender == null || bender.getPlayer() == null) {
 			return;
 		}
 		if(bender.getPlayer().hasPermission("bending.denyitem.bypass")) {

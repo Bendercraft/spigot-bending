@@ -1,21 +1,18 @@
 package net.bendercraft.spigot.bending.abilities.fire;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
+import java.util.Random;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
-import net.bendercraft.spigot.bending.abilities.AbilityManager;
-import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
@@ -25,15 +22,12 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.MathUtils;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.Tools;
 
 @ABendingAbility(name = Lightning.NAME, affinity = BendingAffinity.LIGHTNING, canBeUsedWithTools = true)
 public class Lightning extends BendingActiveAbility {
 	public final static String NAME = "Lightning";
-	
-	private static Map<Entity, Lightning> strikes = new HashMap<Entity, Lightning>();
 
 	@ConfigurationParameter("Range")
 	public static int RANGE = 50;
@@ -41,24 +35,19 @@ public class Lightning extends BendingActiveAbility {
 	@ConfigurationParameter("Charge-Time")
 	private static long WARMUP = 4000;
 
-	@ConfigurationParameter("Miss-Chance")
-	private static double MISS_CHANCE = 5.0;
-
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 10;
 
-	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 0;
-
-	private static double threshold = 0.1;
-	private static double blockdistance = 4;
+	@ConfigurationParameter("Power")
+	public static int POWER = 5;
+	
+	@ConfigurationParameter("Radius")
+	public static double RADIUS = 2;
 
 	private int damage = DAMAGE;
-	private double strikeradius = 4;
-
 	private long warmup;
-	private LightningStrike strike = null;
-	private List<Entity> hitentities = new LinkedList<Entity>();
+	private Location targetLocation;
+	private Location redirectLocation;
 
 	public Lightning(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -67,6 +56,19 @@ public class Lightning extends BendingActiveAbility {
 		if (AvatarState.isAvatarState(this.player)) {
 			this.warmup *= 0.5;
 		}
+	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if(!bender.fire.can(NAME, POWER)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
@@ -77,72 +79,83 @@ public class Lightning extends BendingActiveAbility {
 		return false;
 	}
 
-	public static Lightning getLightning(Entity entity) {
-		return strikes.get(entity);
-	}
-
 	private void strike() {
-		Location targetlocation = getTargetLocation();
-
-		if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, targetlocation)) {
-			this.strike = this.player.getWorld().strikeLightning(targetlocation);
-			strikes.put(this.strike, this);
+		bender.fire.consume(NAME, POWER);
+		
+		// Get paths & targets
+		getTargetLocation();
+		List<Location> locations = new LinkedList<Location>();
+		if(redirectLocation != null) {
+			locations.addAll(randomizePath(player.getEyeLocation(), redirectLocation));
+			locations.addAll(randomizePath(redirectLocation, targetLocation));
+		} else {
+			locations.addAll(randomizePath(player.getEyeLocation(), targetLocation));
+		}
+		
+		// Effect + sound
+		for(int i=0; i < locations.size()-1 ; i++) {
+			Vector direction = locations.get(i+1).clone().subtract(locations.get(i)).toVector();
+			double distance = direction.length();
+			direction = direction.normalize();
+			for(double j=0 ; j < distance ; j += 0.1) {
+				Location loc = locations.get(i).clone().add(direction.clone().multiply(j));
+				loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0);
+			}
+		}
+		player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_LIGHTNING_THUNDER, 1.0f, 0.0f);
+		if(redirectLocation != null) {
+			redirectLocation.getWorld().playSound(redirectLocation, Sound.ENTITY_LIGHTNING_THUNDER, 1.0f, 0.0f);
+		}
+		targetLocation.getWorld().playSound(targetLocation, Sound.ENTITY_LIGHTNING_IMPACT, 1.0f, 0.0f);
+		
+		// Damage !
+		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(targetLocation, RADIUS)) {
+			affect(entity);
 		}
 	}
+	
+	private List<Location> randomizePath(Location start, Location end) {
+		Vector direction = end.clone().subtract(start.clone()).toVector();
+		double distance = direction.length();
+		direction = direction.normalize();
+		List<Location> locations = new LinkedList<Location>();
+		
+		locations.add(start.clone());
+		for(int i = 0 ; i < distance; i+=3) {
+			int[] randoms = new Random().ints(3, -1, 1).toArray();
+			Location loc = start.clone().add(direction.clone().multiply(i));
+			loc = loc.add(randoms[0], randoms[1], randoms[2]);
+			locations.add(loc);
+		}
+		locations.add(end.clone());
+		
+		return locations;
+	}
 
-	private Location getTargetLocation() {
-		Location targetLocation;
+	private void getTargetLocation() {
 		targetLocation = EntityTools.getTargetedLocation(this.player, RANGE);
 		LivingEntity target = EntityTools.getTargetedEntity(this.player, RANGE);
 		if (target != null) {
-			if ((this.player.getLocation().distance(targetLocation) > target.getLocation().distance(this.player.getLocation()))) {
-				// Check redirection
-				if (target instanceof Player) {
-					BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) target);
-					if ((bPlayer != null) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(NAME)) {
-						// Redirection !
-						targetLocation = EntityTools.getTargetedLocation((Player) target, RANGE);
-					} else {
-						targetLocation = target.getLocation();
-						if (target.getVelocity().length() < threshold) {
-							MISS_CHANCE = 0;
-						}
-					}
-				} else {
-					targetLocation = target.getLocation();
-					if (target.getVelocity().length() < threshold) {
-						MISS_CHANCE = 0;
+			targetLocation = target.getEyeLocation();
+			// Check redirection
+			if (target instanceof Player) {
+				BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) target);
+				if ((bPlayer != null) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(NAME)) {
+					redirectLocation = targetLocation;
+					// Redirection !
+					targetLocation = EntityTools.getTargetedLocation((Player) target, RANGE);
+					LivingEntity targetRedirect = EntityTools.getTargetedEntity((Player) target, RANGE);
+					if(targetRedirect != null) {
+						targetLocation = targetRedirect.getEyeLocation();
 					}
 				}
-
 			}
-		} else {
-			MISS_CHANCE = 0;
 		}
-
-		if (targetLocation.getBlock().getType() == Material.AIR) {
-			targetLocation.add(0, -1, 0);
-		}
-		if (targetLocation.getBlock().getType() == Material.AIR) {
-			targetLocation.add(0, -1, 0);
-		}
-
-		if (!MathUtils.doubleEquals(MISS_CHANCE, 0) && !AvatarState.isAvatarState(this.player)) {
-			double A = Math.random() * Math.PI * MISS_CHANCE * MISS_CHANCE;
-			double theta = Math.random() * Math.PI * 2;
-			double r = Math.sqrt(A) / Math.PI;
-			double x = r * Math.cos(theta);
-			double z = r * Math.sin(theta);
-
-			targetLocation = targetLocation.add(x, 0, z);
-		}
-
-		return targetLocation;
 	}
 
 	@Override
 	public void stop() {
-		this.bender.cooldown(NAME, COOLDOWN);
+		
 	}
 	
 	@Override
@@ -176,57 +189,15 @@ public class Lightning extends BendingActiveAbility {
 		}
 	}
 
-	public void dealDamage(Entity entity) {
+	private void affect(Entity entity) {
 		if (ProtectionManager.isEntityProtected(entity)) {
 			return;
 		}
-		if (this.strike == null) {
-			return;
-		}
-		if (this.hitentities.contains(entity)) {
-			return;
-		}
-		double distance = entity.getLocation().distance(this.strike.getLocation());
-		if (distance > this.strikeradius) {
-			return;
-		}
-		double dmg = this.damage - ((distance / this.strikeradius) * .5);
-		this.hitentities.add(entity);
-		DamageTools.damageEntity(bender, entity, this, dmg);
-	}
-
-	public static boolean isNearbyChannel(Location location) {
-		boolean isNearby = false;
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
-
-		for (Object obj : instances.keySet()) {
-			if (!instances.get(obj).getPlayer().getWorld().equals(location.getWorld())) {
-				continue;
-			}
-			if (instances.get(obj).getPlayer().getLocation().distance(location) <= blockdistance) {
-				isNearby = true;
-				((Lightning) instances.get(obj)).startedTime = 0;
-			}
-		}
-		return isNearby;
+		DamageTools.damageEntity(bender, entity, this, damage);
 	}
 
 	@Override
 	public Object getIdentifier() {
 		return this.player;
-	}
-
-	@Override
-	public boolean canBeInitialized() {
-		if (!super.canBeInitialized()) {
-			return false;
-		}
-
-		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
-
-		if (instances == null) {
-			return true;
-		}
-		return !instances.containsKey(this.player.getUniqueId());
 	}
 }

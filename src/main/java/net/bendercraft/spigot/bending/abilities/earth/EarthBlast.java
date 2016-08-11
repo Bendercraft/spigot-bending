@@ -411,19 +411,28 @@ public class EarthBlast extends BendingActiveAbility {
 			blast.remove();
 		}
 	}
-
-	public static void removeAroundPoint(Location location, double radius) {
-		List<EarthBlast> toRemove = new LinkedList<EarthBlast>();
+	
+	public static boolean removeOneAroundPoint(Location location, double radius) {
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			EarthBlast blast = (EarthBlast) ab;
 			if (blast.location.getWorld().equals(location.getWorld())) {
 				if (blast.location.distance(location) <= radius) {
-					toRemove.add(blast);
+					blast.remove();
+					return true;
 				}
 			}
 		}
-		for (EarthBlast blast : toRemove) {
-			blast.remove();
+		return false;
+	}
+
+	public static void removeAroundPoint(Location location, double radius) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
+			EarthBlast blast = (EarthBlast) ab;
+			if (blast.location.getWorld().equals(location.getWorld())) {
+				if (blast.location.distance(location) <= radius) {
+					blast.remove();
+				}
+			}
 		}
 	}
 

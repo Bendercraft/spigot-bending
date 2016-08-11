@@ -2,7 +2,6 @@ package net.bendercraft.spigot.bending.abilities.fire;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -25,14 +24,14 @@ public class Blaze extends BendingActiveAbility {
 	@ConfigurationParameter("Range-Arc")
 	private static int RANGE_ARC = 10;
 
-	@ConfigurationParameter("Arc-Cooldown")
-	public static long ARC_COOLDOWN = 3000;
-
 	@ConfigurationParameter("Range-Ring")
 	private static int RANGE_RING = 5;
-
-	@ConfigurationParameter("Ring-Cooldown")
-	public static long RING_COOLDOWN = 15000;
+	
+	@ConfigurationParameter("Power")
+	public static int POWER = 4;
+	
+	@ConfigurationParameter("Dissipate")
+	public static long DISSIPATE = 5000;
 
 	private static int stepsize = 2;
 
@@ -40,6 +39,19 @@ public class Blaze extends BendingActiveAbility {
 
 	public Blaze(RegisteredAbility register, Player player) {
 		super(register, player);
+	}
+	
+	@Override
+	public boolean canBeInitialized() {
+		if (!super.canBeInitialized()) {
+			return false;
+		}
+		
+		if(!bender.fire.can(NAME, POWER)) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
@@ -71,9 +83,9 @@ public class Blaze extends BendingActiveAbility {
 				range = AvatarState.getValue(range);
 			}
 
-			firestreams.add(new FireStream(location, direction, this.player, range));
+			firestreams.add(new FireStream(location, direction, this.player, range, DISSIPATE));
 		}
-		this.bender.cooldown(NAME, ARC_COOLDOWN);
+		bender.fire.consume(NAME, POWER);
 		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
@@ -104,11 +116,10 @@ public class Blaze extends BendingActiveAbility {
 				range = AvatarState.getValue(range);
 			}
 
-			firestreams.add(new FireStream(location, direction, this.player, range));
+			firestreams.add(new FireStream(location, direction, this.player, range, DISSIPATE));
 		}
 
-		this.bender.cooldown(NAME, RING_COOLDOWN);
-		
+		bender.fire.consume(NAME, POWER);
 		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
@@ -127,6 +138,11 @@ public class Blaze extends BendingActiveAbility {
 			}
 		}
 	}
+	
+	@Override
+	public void stop() {
+		
+	}
 
 	@Override
 	public Object getIdentifier() {
@@ -136,13 +152,4 @@ public class Blaze extends BendingActiveAbility {
 	public List<FireStream> getFirestreams() {
 		return firestreams;
 	}
-
-	@Override
-	public void stop() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-
 }

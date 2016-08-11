@@ -29,7 +29,12 @@ import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import net.bendercraft.spigot.bending.Bending;
-import net.bendercraft.spigot.bending.abilities.*;
+import net.bendercraft.spigot.bending.abilities.AbilityManager;
+import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
+import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPlayer;
+import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.arts.C4;
 import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.arts.ExplosiveShot;
@@ -37,7 +42,6 @@ import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlade;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
 import net.bendercraft.spigot.bending.abilities.fire.HeatControl;
-import net.bendercraft.spigot.bending.abilities.fire.Lightning;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
 import net.bendercraft.spigot.bending.abilities.water.WaterWall;
@@ -75,9 +79,7 @@ public class BendingEntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageByEntityEvent event) {
-		Entity source = event.getDamager();
 		Entity entity = event.getEntity();
-		Lightning lightning = Lightning.getLightning(source);
 		
 		if(entity instanceof LivingEntity) {
 			Concussion concussion = Concussion.getTarget((LivingEntity) entity);
@@ -130,19 +132,6 @@ public class BendingEntityListener implements Listener {
 					event.setDamage(event.getDamage()*0.5);
 				}
 			}
-		}
-
-		if (event.getCause() == DamageCause.LIGHTNING) {
-			if (Lightning.isNearbyChannel(source.getLocation())) {
-				event.setCancelled(true);
-				return;
-			}
-		}
-
-		if (lightning != null) {
-			event.setCancelled(true);
-			lightning.dealDamage(entity);
-			return;
 		}
 	}
 

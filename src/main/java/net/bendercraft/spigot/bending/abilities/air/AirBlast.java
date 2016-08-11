@@ -1,5 +1,7 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
+import java.util.Map;
+
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +13,8 @@ import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
+import net.bendercraft.spigot.bending.abilities.AbilityManager;
+import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
@@ -262,5 +266,33 @@ public class AirBlast extends BendingActiveAbility {
 	@Override
 	public void stop() {
 
+	}
+	
+	public static boolean removeOneBlastAroundPoint(Location location, double radius) {
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
+		for (BendingAbility ability : instances.values()) {
+			AirBlast blast = (AirBlast) ability;
+			Location loc = blast.location;
+			if (loc != null && location.getWorld() == loc.getWorld()) {
+				if (location.distance(loc) <= radius) {
+					blast.remove();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static void removeBlastsAroundPoint(Location location, double radius) {
+		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
+		for (BendingAbility ability : instances.values()) {
+			AirBlast blast = (AirBlast) ability;
+			Location loc = blast.location;
+			if (location.getWorld() == loc.getWorld()) {
+				if (location.distance(loc) <= radius) {
+					blast.remove();
+				}
+			}
+		}
 	}
 }
