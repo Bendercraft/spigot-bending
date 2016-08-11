@@ -168,7 +168,7 @@ public class FireBlast extends BendingActiveAbility {
 			Location location = this.player.getEyeLocation();
 			//location.getWorld().playEffect(location, Effect.FLAME, Tools.getIntCardinalDirection(location.getDirection()), 3);
 			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
-			if(!this.player.isSneaking() || !this.bender.getAbility().equals(NAME)) {
+			if(!this.player.isSneaking() || !NAME.equals(bender.getAbility())) {
 				remove();
 				return;
 			}
