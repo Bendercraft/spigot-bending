@@ -1,12 +1,9 @@
 package net.bendercraft.spigot.bending.abilities.water;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -58,10 +55,9 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 500;
-
-	private static final double deflectrange = 3;
-
-	private static Set<Byte> water = new HashSet<Byte>();
+	
+	@ConfigurationParameter("Range-Deflect")
+	private static double RANGE_DEFLECT = 3;
 
 	private long interval;
 
@@ -84,11 +80,6 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	public WaterManipulation(RegisteredAbility register, Player player) {
 		super(register, player);
-		if (water.isEmpty()) {
-			water.add((byte) 0);
-			water.add((byte) 8);
-			water.add((byte) 9);
-		}
 
 		damage = DAMAGE;
 		range = RANGE;
@@ -438,7 +429,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = manip.location;
-			if ((mloc.distance(location) <= manip.range) && (Tools.getDistanceFromLine(vector, location, manip.location) < deflectrange) && (mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1))))) {
+			if ((mloc.distance(location) <= manip.range) && (Tools.getDistanceFromLine(vector, location, manip.location) < RANGE_DEFLECT) && (mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1))))) {
 				manip.redirect(player, manip.getTargetLocation(player));
 			}
 
@@ -460,7 +451,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			Location location = player.getEyeLocation();
 			Vector vector = location.getDirection();
 			Location mloc = manip.location;
-			if ((mloc.distance(location) <= manip.range) && (Tools.getDistanceFromLine(vector, location, manip.location) < deflectrange) && (mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1))))) {
+			if ((mloc.distance(location) <= manip.range) && (Tools.getDistanceFromLine(vector, location, manip.location) < RANGE_DEFLECT) && (mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1))))) {
 				toBreak.add(manip);
 			}
 
