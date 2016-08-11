@@ -368,20 +368,6 @@ public class BendingPlayer {
 		return list;
 	}
 
-	public String bendingsToString() {
-
-		Player pl = getPlayer();
-		if (pl != null) {
-			String str = pl.getName() + " : \n";
-			for (BendingElement type : this.bendings) {
-				str += type.toString() + "\n";
-			}
-			return str;
-		}
-		return "This player seems not to exist.";
-
-	}
-
 	public boolean canBeParalyzed() {
 		return System.currentTimeMillis() > this.paralyzeTime;
 	}
