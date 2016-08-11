@@ -99,10 +99,25 @@ public class BendingManager implements Runnable {
 							if(value != score.getScore()) {
 								score.setScore(value);
 							}
+							String ability = team.getEntries().stream().filter(e -> e.startsWith("fire-")).findAny().orElse("fire-");
+							if(!ability.substring("fire-".length()).equals(bender.fire.getLastAbility())) {
+								scoreboard.resetScores(ChatColor.RED+ability.substring("fire-".length()));
+								team.removeEntry(ability);
+								
+								if(bender.fire.getLastAbility() != null) {
+									team.addEntry("fire-"+bender.fire.getLastAbility());
+									objective.getScore(ChatColor.RED+bender.fire.getLastAbility()).setScore(1);
+								}
+							}
 						} else {
 							if(team.hasEntry("fire")) {
-								team.removeEntry("fire");
 								scoreboard.resetScores(ChatColor.DARK_RED+"Energy");
+								team.removeEntry("fire");
+							}
+							String ability = team.getEntries().stream().filter(e -> e.startsWith("fire-")).findAny().orElse(null);
+							if(ability != null) {
+								scoreboard.resetScores(ChatColor.RED+ability.substring("fire-".length()));
+								team.removeEntry(ability);
 							}
 						}
 						
@@ -122,8 +137,10 @@ public class BendingManager implements Runnable {
 						
 						List<String> toRemove = new LinkedList<String>();
 						for(String entry : team.getEntries()) {
-							if(!cooldowns.containsKey(entry.substring("cd-".length()))) {
-								toRemove.add(entry);
+							if(entry.startsWith("cd-")) {
+								if(!cooldowns.containsKey(entry.substring("cd-".length()))) {
+									toRemove.add(entry);
+								}
 							}
 						}
 						for(String entry : toRemove) {
