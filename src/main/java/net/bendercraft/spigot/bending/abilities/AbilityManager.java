@@ -66,6 +66,7 @@ import net.bendercraft.spigot.bending.abilities.fire.Illumination;
 import net.bendercraft.spigot.bending.abilities.fire.Lightning;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.FastSwimming;
+import net.bendercraft.spigot.bending.abilities.water.Frozen;
 import net.bendercraft.spigot.bending.abilities.water.HealingWaters;
 import net.bendercraft.spigot.bending.abilities.water.IceSpike;
 import net.bendercraft.spigot.bending.abilities.water.OctopusForm;
@@ -278,6 +279,7 @@ public class AbilityManager {
 		register(WaterSpout.class);
 		register(WaterWall.class);
 		register(WaterWhip.class);
+		register(Frozen.class);
 	}
 
 	public void register(Class<? extends BendingAbility> ability) {
