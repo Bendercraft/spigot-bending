@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -22,7 +23,6 @@ import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 @ABendingAbility(name = Lightning.NAME, affinity = BendingAffinity.LIGHTNING, canBeUsedWithTools = true)
 public class Lightning extends BendingActiveAbility {
@@ -173,19 +173,19 @@ public class Lightning extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (System.currentTimeMillis() > (this.startedTime + this.warmup) && getState() == BendingAbilityState.PREPARING) {
-			setState(BendingAbilityState.PREPARED);
-		}
-
-		if (getState().equals(BendingAbilityState.PREPARED)) {
-			if (this.player.isSneaking()) {
-				this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE, Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), RANGE);
-			} else {
-				strike();
+		if(isState(BendingAbilityState.PREPARING)) {
+			if (System.currentTimeMillis() > (startedTime + warmup)) {
+				setState(BendingAbilityState.PREPARED);
+			}
+			if (!this.player.isSneaking()) {
 				remove();
 			}
-		} else {
-			if (!this.player.isSneaking()) {
+		} else if (isState(BendingAbilityState.PREPARED)) {
+			if (player.isSneaking()) {
+				Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+				player.getWorld().spawnParticle(Particle.FLAME, loc, 1, 0, 0, 0, 0);
+			} else {
+				strike();
 				remove();
 			}
 		}

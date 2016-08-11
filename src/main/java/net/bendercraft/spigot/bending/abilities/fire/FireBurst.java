@@ -183,8 +183,8 @@ public class FireBurst extends BendingActiveAbility {
 		}
 
 		if (getState() == BendingAbilityState.PREPARED) {
-			Location location = player.getEyeLocation().add(player.getEyeLocation().getDirection().normalize());
-			location.getWorld().spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.FLAME, loc, 1, 0, 0, 0, 0);
 		}
 	}
 

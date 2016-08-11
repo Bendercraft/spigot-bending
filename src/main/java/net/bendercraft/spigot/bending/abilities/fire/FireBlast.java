@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -165,9 +166,8 @@ public class FireBlast extends BendingActiveAbility {
 			}
 			return;
 		} else if (getState() == BendingAbilityState.PREPARED) {
-			Location location = this.player.getEyeLocation();
-			//location.getWorld().playEffect(location, Effect.FLAME, Tools.getIntCardinalDirection(location.getDirection()), 3);
-			location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 4, 3);
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.FLAME, loc, 1, 0, 0, 0, 0);
 			if(!this.player.isSneaking() || !NAME.equals(bender.getAbility())) {
 				remove();
 				return;
