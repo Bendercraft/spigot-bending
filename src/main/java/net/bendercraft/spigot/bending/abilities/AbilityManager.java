@@ -81,6 +81,7 @@ import net.bendercraft.spigot.bending.abilities.water.WaterWall;
 import net.bendercraft.spigot.bending.abilities.water.WaterWhip;
 import net.bendercraft.spigot.bending.controller.ConfigurationManager;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingAbilityEvent;
 
 public class AbilityManager {
 
@@ -161,6 +162,9 @@ public class AbilityManager {
 	}
 
 	public void addInstance(BendingAbility instance) {
+		if(instance == null || instance.isState(BendingAbilityState.START) || instance.isState(BendingAbilityState.ENDED)) {
+			return;
+		}
 		String name = getName(instance);
 		Map<Object, BendingAbility> map = runnings.get(name);
 		if(map == null) {
@@ -168,6 +172,7 @@ public class AbilityManager {
 			runnings.put(name, map);
 		}
 		map.put(instance.getIdentifier(), instance);
+		Bending.callEvent(new BendingAbilityEvent(instance.getBender(), name));
 	}
 
 	public Map<Object, BendingAbility> getInstances(String name) {

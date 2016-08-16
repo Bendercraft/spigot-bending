@@ -28,7 +28,7 @@ import net.bendercraft.spigot.bending.abilities.fire.FireShield;
 import net.bendercraft.spigot.bending.abilities.fire.FireWall;
 import net.bendercraft.spigot.bending.abilities.fire.Illumination;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
+import net.bendercraft.spigot.bending.event.BendingAbilityEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 
@@ -95,7 +95,7 @@ public class FireListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockFireBurst(BendingCooldownEvent event) {
+	public void unlockFireBurst(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireBlast.NAME)) {
@@ -135,7 +135,7 @@ public class FireListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockFireShield(BendingCooldownEvent event) {
+	public void unlockFireShield(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireShield.NAME)) {
@@ -162,7 +162,7 @@ public class FireListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockWallOfFire(BendingCooldownEvent event) {
+	public void unlockWallOfFire(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireShield.NAME)) {

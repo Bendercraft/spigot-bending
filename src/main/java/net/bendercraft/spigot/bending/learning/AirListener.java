@@ -27,7 +27,7 @@ import net.bendercraft.spigot.bending.abilities.air.AirScooter;
 import net.bendercraft.spigot.bending.abilities.air.AirShield;
 import net.bendercraft.spigot.bending.abilities.air.AirSuction;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
+import net.bendercraft.spigot.bending.event.BendingAbilityEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 
@@ -132,7 +132,7 @@ public class AirListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockAirBurst(BendingCooldownEvent event) {
+	public void unlockAirBurst(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equals(AirBlast.NAME)) {
@@ -158,7 +158,7 @@ public class AirListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockAirShield(BendingCooldownEvent event) {
+	public void unlockAirShield(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equals(AirShield.NAME)) {

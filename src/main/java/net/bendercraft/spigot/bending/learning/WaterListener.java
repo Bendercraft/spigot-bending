@@ -25,7 +25,7 @@ import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.abilities.water.WaterWall;
 import net.bendercraft.spigot.bending.abilities.water.WaterWhip;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
+import net.bendercraft.spigot.bending.event.BendingAbilityEvent;
 import net.bendercraft.spigot.bending.event.BendingDamageEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
@@ -47,7 +47,7 @@ public class WaterListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockTorrent(BendingCooldownEvent event) {
+	public void unlockTorrent(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equals(Torrent.NAME)) {
@@ -92,7 +92,7 @@ public class WaterListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockSurge(BendingCooldownEvent event) {
+	public void unlockSurge(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equals(WaterManipulation.NAME)) {
@@ -118,7 +118,7 @@ public class WaterListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockIceSpike(BendingCooldownEvent event) {
+	public void unlockIceSpike(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			// Check if player has unlocked PhaseChange here
@@ -137,7 +137,7 @@ public class WaterListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockOctopusForm(BendingCooldownEvent event) {
+	public void unlockOctopusForm(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			// Check if player knows surge

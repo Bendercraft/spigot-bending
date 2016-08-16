@@ -24,7 +24,7 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthGrab;
 import net.bendercraft.spigot.bending.abilities.earth.EarthTunnel;
 import net.bendercraft.spigot.bending.abilities.earth.EarthWall;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
+import net.bendercraft.spigot.bending.event.BendingAbilityEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 
@@ -54,7 +54,7 @@ public class EarthListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockEarthGrab(BendingCooldownEvent event) {
+	public void unlockEarthGrab(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.EARTH)) {
@@ -115,7 +115,7 @@ public class EarthListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockEarthArmor(BendingCooldownEvent event) {
+	public void unlockEarthArmor(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equals(EarthGrab.NAME)) {
@@ -142,7 +142,7 @@ public class EarthListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockEarthTunel(BendingCooldownEvent event) {
+	public void unlockEarthTunel(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.EARTH)) {
@@ -202,7 +202,7 @@ public class EarthListener implements Listener {
 	}
 
 	@EventHandler
-	public void unlockCatapult(BendingCooldownEvent event) {
+	public void unlockCatapult(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equals(EarthWall.NAME)) {

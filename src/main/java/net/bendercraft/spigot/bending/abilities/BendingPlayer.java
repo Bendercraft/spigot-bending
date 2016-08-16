@@ -20,7 +20,6 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.fire.FirePower;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.event.BendingCooldownEvent;
 
 public class BendingPlayer {
 	
@@ -124,9 +123,6 @@ public class BendingPlayer {
 			this.cooldowns.put(ability, cd);
 		}
 		this.lastTime = now;
-		if (ability != null) {
-			Bending.callEvent(new BendingCooldownEvent(this, ability));
-		}
 	}
 
 	public Map<String, BendingAbilityCooldown> getCooldowns() {

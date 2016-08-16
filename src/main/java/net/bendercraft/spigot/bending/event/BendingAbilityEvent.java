@@ -5,13 +5,13 @@ import org.bukkit.event.HandlerList;
 
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 
-public class BendingCooldownEvent extends Event {
+public class BendingAbilityEvent extends Event {
 	protected static final HandlerList handlers = new HandlerList();
 	
 	private BendingPlayer bender;
 	private String ability;
 
-	public BendingCooldownEvent(BendingPlayer bender, String ability) {
+	public BendingAbilityEvent(BendingPlayer bender, String ability) {
 		this.ability = ability;
 		this.bender = bender;
 	}
