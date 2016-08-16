@@ -135,7 +135,7 @@ public class AirListener implements Listener {
 	public void unlockAirBurst(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equals(AirBlast.NAME)) {
+			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equalsIgnoreCase(AirBlast.NAME)) {
 				Player player = bPlayer.getPlayer();
 				int blasted = 0;
 				if (airBurst.containsKey(player.getUniqueId())) {
@@ -161,7 +161,7 @@ public class AirListener implements Listener {
 	public void unlockAirShield(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equals(AirShield.NAME)) {
+			if (bPlayer.isBender(BendingElement.AIR) && event.getAbility().equalsIgnoreCase(AirShield.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 				for (Entity entity : entities) {

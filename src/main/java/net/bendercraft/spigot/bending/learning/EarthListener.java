@@ -58,7 +58,7 @@ public class EarthListener implements Listener {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.EARTH)) {
-				if (event.getAbility().equals(EarthWall.NAME)) {
+				if (event.getAbility().equalsIgnoreCase(EarthWall.NAME)) {
 					int raised = 0;
 					Player p = bPlayer.getPlayer();
 					UUID id = p.getUniqueId();
@@ -79,7 +79,7 @@ public class EarthListener implements Listener {
 					} else {
 						raiseAmountGrab.put(id, raised);
 					}
-				} else if (event.getAbility().equals(EarthGrab.NAME)) {
+				} else if (event.getAbility().equalsIgnoreCase(EarthGrab.NAME)) {
 					List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 					for (LivingEntity entity : entities) {
@@ -118,7 +118,7 @@ public class EarthListener implements Listener {
 	public void unlockEarthArmor(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equals(EarthGrab.NAME)) {
+			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equalsIgnoreCase(EarthGrab.NAME)) {
 				int grabs = 0;
 				Player p = bPlayer.getPlayer();
 				UUID id = p.getUniqueId();
@@ -146,7 +146,7 @@ public class EarthListener implements Listener {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.EARTH)) {
-				if (event.getAbility().equals(Collapse.NAME)) {
+				if (event.getAbility().equalsIgnoreCase(Collapse.NAME)) {
 					int comps = 0;
 					Player p = bPlayer.getPlayer();
 					UUID id = p.getUniqueId();
@@ -205,7 +205,7 @@ public class EarthListener implements Listener {
 	public void unlockCatapult(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equals(EarthWall.NAME)) {
+			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equalsIgnoreCase(EarthWall.NAME)) {
 				int raised = 0;
 				Player p = bPlayer.getPlayer();
 				UUID id = p.getUniqueId();

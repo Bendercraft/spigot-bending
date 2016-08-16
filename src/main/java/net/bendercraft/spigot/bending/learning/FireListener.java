@@ -54,7 +54,7 @@ public class FireListener implements Listener {
 		if (event.getDamager() instanceof Player) {
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer((Player) event.getDamager());
 			if (bPlayer != null) {
-				if (bPlayer.isBender(BendingElement.FIRE) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equals(FireBlast.NAME)) {
+				if (bPlayer.isBender(BendingElement.FIRE) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equalsIgnoreCase(FireBlast.NAME)) {
 					boolean ok = false;
 					Player p = (Player) event.getDamager();
 					if (p.getInventory().getItemInMainHand().getType().equals(Material.WOOD_SWORD)) {
@@ -98,7 +98,7 @@ public class FireListener implements Listener {
 	public void unlockFireBurst(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireBlast.NAME)) {
+			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equalsIgnoreCase(FireBlast.NAME)) {
 				Player p = bPlayer.getPlayer();
 				long lastTime = -1;
 				long currentTime = System.currentTimeMillis();
@@ -138,7 +138,7 @@ public class FireListener implements Listener {
 	public void unlockFireShield(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireShield.NAME)) {
+			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equalsIgnoreCase(FireShield.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 				for (Entity entity : entities) {
@@ -165,7 +165,7 @@ public class FireListener implements Listener {
 	public void unlockWallOfFire(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equals(FireShield.NAME)) {
+			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equalsIgnoreCase(FireShield.NAME)) {
 				Player p = bPlayer.getPlayer();
 				int done = 0;
 				if (this.wallOfFire.containsKey(p.getUniqueId())) {

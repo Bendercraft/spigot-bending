@@ -50,7 +50,7 @@ public class WaterListener implements Listener {
 	public void unlockTorrent(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equals(Torrent.NAME)) {
+			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equalsIgnoreCase(Torrent.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 				for (Entity entity : entities) {
@@ -95,7 +95,7 @@ public class WaterListener implements Listener {
 	public void unlockSurge(BendingAbilityEvent event) {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equals(WaterManipulation.NAME)) {
+			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equalsIgnoreCase(WaterManipulation.NAME)) {
 				int blasted = 0;
 				Player p = bPlayer.getPlayer();
 				if (this.surge.containsKey(p.getUniqueId())) {
@@ -122,7 +122,7 @@ public class WaterListener implements Listener {
 		BendingPlayer bPlayer = event.getBender();
 		if (bPlayer != null) {
 			// Check if player has unlocked PhaseChange here
-			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equals(WaterManipulation.NAME)) {
+			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equalsIgnoreCase(WaterManipulation.NAME)) {
 				Player p = bPlayer.getPlayer();
 				if (EntityTools.canBend(p, PhaseChange.NAME)) {
 					if (this.plugin.addPermission(p, IceSpike.NAME)) {
@@ -143,7 +143,7 @@ public class WaterListener implements Listener {
 			// Check if player knows surge
 			Player p = bPlayer.getPlayer();
 			if (bPlayer.isBender(BendingElement.WATER) && EntityTools.canBend(p, WaterWall.NAME)) {
-				if (event.getAbility().equals(WaterManipulation.NAME)) {
+				if (event.getAbility().equalsIgnoreCase(WaterManipulation.NAME)) {
 					long lastTime = -1;
 					long currentTime = System.currentTimeMillis();
 					if (this.waterManipulationlastTime.containsKey(p.getUniqueId())) {
@@ -189,7 +189,7 @@ public class WaterListener implements Listener {
 			// Check if player knows OctopusForm
 			Player p = bPlayer.getPlayer();
 			if (bPlayer.isBender(BendingElement.WATER) && EntityTools.canBend(p, OctopusForm.NAME)) {
-				if (event.getAbility() != null && event.getAbility().getName().equals(OctopusForm.NAME)) {
+				if (event.getAbility() != null && event.getAbility().getName().equalsIgnoreCase(OctopusForm.NAME)) {
 					if(!octopusHit.containsKey(bPlayer.getPlayerID())) {
 						octopusHit.put(bPlayer.getPlayerID(), 0);
 					}
