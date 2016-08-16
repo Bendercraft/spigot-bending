@@ -49,11 +49,13 @@ public class Slice extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		target = EntityTools.getTargetedEntity(player, RANGE);
-		if(target != null) {
-			player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getEyeLocation().add(player.getEyeLocation().getDirection().normalize()), 1);
-			bender.cooldown(this, COOLDOWN);
-			setState(BendingAbilityState.PROGRESSING);
+		if(isState(BendingAbilityState.START)) {
+			target = EntityTools.getTargetedEntity(player, RANGE);
+			if(target != null) {
+				player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getEyeLocation().add(player.getEyeLocation().getDirection().normalize()), 1);
+				bender.cooldown(this, COOLDOWN);
+				setState(BendingAbilityState.PROGRESSING);
+			}
 		}
 		return false;
 	}
@@ -84,7 +86,7 @@ public class Slice extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if(getState() != BendingAbilityState.PROGRESSING) {
+		if(!isState(BendingAbilityState.PROGRESSING)) {
 			remove();
 			return;
 		}
