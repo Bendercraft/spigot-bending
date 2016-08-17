@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
-import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.abilities.water.Wave;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -230,7 +229,7 @@ public class HeatControl extends BendingActiveAbility {
 		//Either block is a tempblock and a global one, or not at all
 		if(BlockTools.isMeltable(block) && TempBlock.isTempBlock(block) && Bending.getInstance().getManager().isGlobalTemBlock(TempBlock.get(block))) {
 			TempBlock.revertBlock(block);
-		} else if (BlockTools.isMeltable(block) && !TempBlock.isTempBlock(block) && WaterManipulation.canPhysicsChange(block)) {
+		} else if (BlockTools.isMeltable(block) && !TempBlock.isTempBlock(block) && !TempBlock.isTempBlock(block) && ! TempBlock.isTouchingTempBlock(block)) {
 			if (block.getType() == Material.SNOW) {
 				block.setType(Material.AIR);
 				return;
@@ -249,7 +248,7 @@ public class HeatControl extends BendingActiveAbility {
 		if (ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())) {
 			return;
 		}
-		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block) && WaterManipulation.canPhysicsChange(block)) {
+		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block) && !TempBlock.isTempBlock(block) && ! TempBlock.isTouchingTempBlock(block)) {
 			block.setType(Material.AIR);
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1);
 		}

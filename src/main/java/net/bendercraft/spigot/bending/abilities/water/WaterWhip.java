@@ -17,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
+import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.listeners.BendingDenyItem;
 import net.bendercraft.spigot.bending.listeners.BendingPlayerListener;
@@ -77,6 +78,7 @@ public class WaterWhip extends BendingActiveAbility {
 			}
 			time = System.currentTimeMillis();
 			setState(BendingAbilityState.PROGRESSING);
+			bender.water.liquid();
 		} else if(isState(BendingAbilityState.PROGRESSING)) {
 			remove();
 		}
@@ -173,7 +175,7 @@ public class WaterWhip extends BendingActiveAbility {
 	}
 
 	public void affect(Entity entity, Vector vector) {
-		DamageTools.damageEntity(bender, entity, this, DAMAGE);
+		DamageTools.damageEntity(bender, entity, this, bender.water.damage(Damage.LIQUID, DAMAGE));
 		entity.setVelocity(entity.getVelocity().clone().add(vector.multiply(0.5)));
 	}
 

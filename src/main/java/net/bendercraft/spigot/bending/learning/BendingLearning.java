@@ -37,7 +37,6 @@ import net.bendercraft.spigot.bending.abilities.fire.HeatControl;
 import net.bendercraft.spigot.bending.abilities.water.HealingWaters;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.abilities.water.WaterSpout;
-import net.bendercraft.spigot.bending.abilities.water.WaterTurret;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
 public class BendingLearning {
@@ -200,7 +199,6 @@ public class BendingLearning {
 				|| ability.equals(WaterManipulation.NAME)
 				|| ability.equals(HealingWaters.NAME)
 				|| ability.equals(WaterSpout.NAME)
-				|| ability.equals(WaterTurret.NAME)
 				
 				|| ability.equals(Dash.NAME)
 				|| ability.equals(DirectHit.NAME)

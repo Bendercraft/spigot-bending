@@ -78,8 +78,8 @@ public class EarthArmor extends BendingActiveAbility {
 				BlockTools.addTempAirBlock(oldheadblock);
 				BlockTools.addTempAirBlock(oldlegsblock);
 			} else {
-				BlockTools.removeBlock(oldheadblock);
-				BlockTools.removeBlock(oldlegsblock);
+				oldheadblock.setType(Material.AIR);
+				oldlegsblock.setType(Material.AIR);
 			}
 			
 			setState(BendingAbilityState.PROGRESSING);

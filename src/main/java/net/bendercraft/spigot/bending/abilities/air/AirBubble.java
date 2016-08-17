@@ -7,8 +7,8 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
-import net.bendercraft.spigot.bending.abilities.multi.Bubble;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.utils.abilities.Bubble;
 
 @ABendingAbility(name = AirBubble.NAME, element = BendingElement.AIR, shift = false, canBeUsedWithTools = true)
 public class AirBubble extends Bubble {

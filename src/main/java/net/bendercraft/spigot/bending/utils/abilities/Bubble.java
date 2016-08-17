@@ -1,4 +1,4 @@
-package net.bendercraft.spigot.bending.abilities.multi;
+package net.bendercraft.spigot.bending.utils.abilities;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +20,6 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.air.AirBubble;
 import net.bendercraft.spigot.bending.abilities.water.WaterBubble;
-import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -106,7 +105,7 @@ public abstract class Bubble extends BendingActiveAbility {
 					continue;
 				}
 				if (this.pushedMaterials.contains(block.getType())) {
-					if (WaterManipulation.canBubbleWater(block)) {
+					if (!TempBlock.isTempBlock(block) || TempBlock.get(block).isBendAllowed()) {
 						//this.origins.put(block, new TempBlock(block, Material.AIR, (byte) 0x0));
 						this.origins.put(block, TempBlock.makeTemporary(block, Material.AIR, true));
 					}

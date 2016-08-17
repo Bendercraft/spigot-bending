@@ -135,18 +135,12 @@ public class WaterReturn {
 			return true;
 		}
 
-		if (OctopusForm.isOctopus(player))
-			return true;
-
 		if (Wave.isWaving(player))
 			return true;
 
 		if (WaterWall.isWaterWalling(player)) {
 			return true;
 		}
-
-		if (IceSpike.isBending(player))
-			return true;
 
 		return false;
 	}

@@ -42,9 +42,6 @@ import net.bendercraft.spigot.bending.utils.Tools;
 @ABendingAbility(name = EarthBlast.NAME, element = BendingElement.EARTH)
 public class EarthBlast extends BendingActiveAbility {
 	public final static String NAME = "EarthBlast";
-	
-	@ConfigurationParameter("Hit-Self")
-	private static boolean HITSELF = false;
 
 	@ConfigurationParameter("Select-Range")
 	private static double SELECT_RANGE = 11;
@@ -284,7 +281,7 @@ public class EarthBlast extends BendingActiveAbility {
 						continue;
 					}
 
-					if (((entity.getEntityId() != player.getEntityId()) || HITSELF)) {
+					if (((entity.getEntityId() != player.getEntityId()))) {
 						Location location = player.getEyeLocation();
 						Vector vector = location.getDirection();
 						entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
@@ -412,14 +409,14 @@ public class EarthBlast extends BendingActiveAbility {
 		}
 	}
 	
-	public static boolean removeOneAroundPoint(Location location, double radius) {
+	public static boolean removeOneAroundPoint(Location location, Player player, double radius) {
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			EarthBlast blast = (EarthBlast) ab;
-			if (blast.location.getWorld().equals(location.getWorld())) {
-				if (blast.location.distance(location) <= radius) {
-					blast.remove();
-					return true;
-				}
+			if (blast.player != player
+					&& blast.location.getWorld().equals(location.getWorld()) 
+					&& blast.location.distance(location) <= radius) {
+				blast.remove();
+				return true;
 			}
 		}
 		return false;

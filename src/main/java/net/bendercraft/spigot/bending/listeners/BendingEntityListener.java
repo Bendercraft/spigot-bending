@@ -44,7 +44,6 @@ import net.bendercraft.spigot.bending.abilities.fire.FireStream;
 import net.bendercraft.spigot.bending.abilities.fire.HeatControl;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
-import net.bendercraft.spigot.bending.abilities.water.WaterWall;
 import net.bendercraft.spigot.bending.abilities.water.Wave;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
@@ -142,9 +141,6 @@ public class BendingEntityListener implements Listener {
 				PhaseChange.thawThenRemove(block);
 			}
 
-			if (WaterWall.isWaterWallPart(block)) {
-				block.setType(Material.AIR);
-			}
 			if (!Wave.canThaw(block)) {
 				Wave.thaw(block);
 			}

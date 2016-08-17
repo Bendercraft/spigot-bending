@@ -252,7 +252,7 @@ public class FireBlast extends BendingActiveAbility {
 		return true;
 	}
 	
-	public static boolean removeOneFireBlastsAroundPointExceptPlayer(Location location, Player player, double radius) {
+	public static boolean removeOneAroundPoint(Location location, Player player, double radius) {
 		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		for (BendingAbility ability : instances.values()) {
 			FireBlast blast = (FireBlast) ability;
@@ -308,6 +308,10 @@ public class FireBlast extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+
+	public static boolean removeOneAroundPoint(Location location2, double aFFECTING_RADIUS2, Player player) {
+		return false;
 	}
 
 }

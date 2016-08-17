@@ -19,6 +19,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.fire.FirePower;
+import net.bendercraft.spigot.bending.abilities.water.WaterBalance;
 import net.bendercraft.spigot.bending.controller.Settings;
 
 public class BendingPlayer {
@@ -46,6 +47,7 @@ public class BendingPlayer {
 	private Scoreboard scoreboard;
 	
 	public FirePower fire = new FirePower();
+	public WaterBalance water = new WaterBalance();
 
 	public BendingPlayer(UUID id) {
 		this.player = id;

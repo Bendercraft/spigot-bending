@@ -288,8 +288,15 @@ public class EntityTools {
 		return getTargetBlock(player, range, Collections.singleton(Material.AIR));
 	}
 
-	public static Block getTargetBlock(Player player, double originselectrange, Set<Material> nonOpaque2) {
-		BlockIterator iter = new BlockIterator(player, (int) originselectrange + 1);
+	/**
+	 * 
+	 * @param player Player to start from (uses eye location)
+	 * @param originselectrange maximum distance before returning
+	 * @param nonOpaque2 block to go ignore if encountered while iterating
+	 * @return a block, never null
+	 */
+	public static Block getTargetBlock(Player player, double range, Set<Material> nonOpaque2) {
+		BlockIterator iter = new BlockIterator(player, (int) range + 1);
 		Block block = iter.next();
 		while (iter.hasNext()) {
 			block = iter.next();

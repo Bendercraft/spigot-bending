@@ -85,6 +85,7 @@ public class WaterWall extends BendingActiveAbility {
 			if (wave == null) {
 				moveWater(); // Build wall
 				setState(BendingAbilityState.PROGRESSING);
+				bender.water.ice();
 			} else {
 				remove();
 			}
@@ -110,6 +111,7 @@ public class WaterWall extends BendingActiveAbility {
 		} else if (getState() == BendingAbilityState.PREPARED) {
 			if (wave != null) {
 				wave.moveWater();
+				bender.water.liquid();
 				setState(BendingAbilityState.PROGRESSING);
 			}
 		} else if (getState() == BendingAbilityState.PROGRESSING) {

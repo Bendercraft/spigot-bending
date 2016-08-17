@@ -18,10 +18,8 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthGrab;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
 import net.bendercraft.spigot.bending.abilities.fire.Illumination;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
-import net.bendercraft.spigot.bending.abilities.water.OctopusForm;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
 import net.bendercraft.spigot.bending.abilities.water.Torrent;
-import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.abilities.water.WaterWall;
 import net.bendercraft.spigot.bending.abilities.water.Wave;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -54,7 +52,7 @@ public class BendingBlockListener implements Listener {
 		if (BlockTools.isWater(fromblock)) {
 			event.setCancelled(!AirBubble.canFlowTo(toblock));
 			if (!event.isCancelled()) {
-				event.setCancelled(!WaterManipulation.canFlowFromTo(fromblock, toblock));
+				event.setCancelled(TempBlock.isTempBlock(fromblock) || TempBlock.isTempBlock(toblock));
 			}
 		}
 		if (BlockTools.isLava(fromblock) && TempBlock.isTempBlock(fromblock)) {
@@ -74,7 +72,7 @@ public class BendingBlockListener implements Listener {
 			return;
 		}
 		if (!event.isCancelled()) {
-			event.setCancelled(!WaterManipulation.canPhysicsChange(block));
+			event.setCancelled(!TempBlock.isTempBlock(block));
 		}
 		if (!event.isCancelled()) {
 			event.setCancelled(PhaseChange.isFrozen(block));
@@ -90,15 +88,14 @@ public class BendingBlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
-		event.setCancelled(!WaterManipulation.canPhysicsChange(block));
-		if (!event.isCancelled()) {
-			event.setCancelled(Illumination.isIlluminated(block));
-		}
-		if (!event.isCancelled()) {
-			event.setCancelled(BlockTools.isTempNoPhysics(block));
+		if(TempBlock.isTempBlock(block)
+				|| TempBlock.isTouchingTempBlock(block)
+				|| Illumination.isIlluminated(block)
+				|| BlockTools.isTempNoPhysics(block)) {
+			event.setCancelled(true);
 		}
 	}
 
@@ -106,7 +103,7 @@ public class BendingBlockListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
-		if (WaterWall.wasBrokenFor(player, block) || OctopusForm.wasBrokenFor(player, block) || Torrent.wasBrokenFor(player, block)) {
+		if (WaterWall.wasBrokenFor(player, block) || Torrent.wasBrokenFor(player, block)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -135,7 +132,6 @@ public class BendingBlockListener implements Listener {
 	//Counter Factions protection
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	public void onEarthGrabBreak(BlockBreakEvent event) {
-
 		EarthGrab grab = EarthGrab.blockInEarthGrab(event.getBlock());
 		if (grab != null) {
 			grab.setToKeep(false);
@@ -143,12 +139,9 @@ public class BendingBlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockForm(BlockFormEvent event) {
-		if (TempBlock.isTempBlock(event.getBlock())) {
-			event.setCancelled(true);
-		}
-		if (!WaterManipulation.canPhysicsChange(event.getBlock())) {
+		if (TempBlock.isTempBlock(event.getBlock()) || TempBlock.isTouchingTempBlock(event.getBlock())) {
 			event.setCancelled(true);
 		}
 	}

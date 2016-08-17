@@ -3,6 +3,7 @@ package net.bendercraft.spigot.bending.abilities.water;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,6 +22,7 @@ import net.bendercraft.spigot.bending.abilities.BendingPath;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
+import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
@@ -98,16 +100,16 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	private void freeze() {
-		if (this.layer == 0) {
+		if (layer == 0) {
 			return;
 		}
 		if (!EntityTools.canBend(this.player, AbilityManager.getManager().getRegisteredAbility(PhaseChange.NAME))) {
 			return;
 		}
-		List<Block> ice = BlockTools.getBlocksAroundPoint(this.location, this.layer);
+		List<Block> ice = BlockTools.getBlocksAroundPoint(location, layer);
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, layer);
 		for (Block block : ice) {
-			if (BlockTools.isTransparentToEarthbending(this.player, block) && (block.getType() != Material.ICE)) {
+			if (BlockTools.isTransparentToEarthbending(player, block) && (block.getType() != Material.ICE)) {
 				boolean safe = true;
 				for(LivingEntity entity : entities) {
 					if(entity.getEyeLocation().getBlock().getLocation().equals(block.getLocation()) 
@@ -126,33 +128,32 @@ public class Torrent extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if (getState() == BendingAbilityState.START) {
-			this.time = System.currentTimeMillis();
-			this.sourceblock = BlockTools.getWaterSourceBlock(this.player, selectrange, EntityTools.canPlantbend(this.player));
+			time = System.currentTimeMillis();
+			sourceblock = BlockTools.getWaterSourceBlock(player, selectrange, EntityTools.canPlantbend(player));
 
-			if (this.sourceblock == null && WaterReturn.hasWaterBottle(this.player)) {
-				Location eyeloc = this.player.getEyeLocation();
+			if (sourceblock == null && WaterReturn.hasWaterBottle(player)) {
+				Location eyeloc = player.getEyeLocation();
 				Block block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-				if (BlockTools.isTransparentToEarthbending(this.player, block) 
-						&& BlockTools.isTransparentToEarthbending(this.player, eyeloc.getBlock())
+				if (BlockTools.isTransparentToEarthbending(player, block) 
+						&& BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())
 						&& WaterReturn.canBeSource(block)) {
-					//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-					this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
-					this.sourceblock = block;
-					WaterReturn.emptyWaterBottle(this.player);
+					drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
+					sourceblock = block;
+					WaterReturn.emptyWaterBottle(player);
 				}
 			}
 
-			if (this.sourceblock != null) {
-				this.sourceselected = true;
+			if (sourceblock != null) {
+				sourceselected = true;
 				setState(BendingAbilityState.PREPARING);
 			}
 
 			return false;
 		}
-
-		this.launch = true;
-		if (this.launching) {
-			this.freeze = true;
+		launch = true;
+		if (launching && !freeze) {
+			freeze = true;
+			bender.water.ice();
 		}
 
 		return false;
@@ -196,7 +197,7 @@ public class Torrent extends BendingActiveAbility {
 				if (this.player.isSneaking()) {
 					this.sourceselected = false;
 					this.settingup = true;
-
+					bender.water.liquid();
 					if (BlockTools.isPlant(this.sourceblock)) {
 						this.sourceblock.setType(Material.AIR);
 					} else if (!BlockTools.adjacentToThreeOrMoreSources(this.sourceblock)) {
@@ -206,7 +207,7 @@ public class Torrent extends BendingActiveAbility {
 					this.source = TempBlock.makeTemporary(sourceblock, Material.WATER, false);
 					this.location = this.sourceblock.getLocation();
 				} else {
-					Tools.playFocusWaterEffect(this.sourceblock);
+					sourceblock.getWorld().playEffect(sourceblock.getLocation(), Effect.SMOKE, 4, 20);
 					return;
 				}
 			}
@@ -571,7 +572,7 @@ public class Torrent extends BendingActiveAbility {
 		entity.setFallDistance(0);
 
 		if (!bender.hasPath(BendingPath.MARKSMAN)) {
-			DamageTools.damageEntity(bender, entity, this, DEFLECT_DAMAGE);
+			DamageTools.damageEntity(bender, entity, this, bender.water.damage(Damage.LIQUID, DEFLECT_DAMAGE));
 		}
 
 	}
@@ -592,7 +593,7 @@ public class Torrent extends BendingActiveAbility {
 		}
 
 		if (!this.hurtentities.contains(entity)) {
-			DamageTools.damageEntity(bender, entity, this, damage);
+			DamageTools.damageEntity(bender, entity, this, bender.water.damage(Damage.LIQUID, damage));
 			this.hurtentities.add(entity);
 			entity.setNoDamageTicks(0);
 		}

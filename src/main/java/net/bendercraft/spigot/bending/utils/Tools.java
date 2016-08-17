@@ -1,8 +1,6 @@
 package net.bendercraft.spigot.bending.utils;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
@@ -78,10 +76,6 @@ public class Tools {
 		double vY = (1.0 + 0.03 * t) * (target.getY() - origin.getY()) / t - 0.5 * g * t;
 		double vZ = (1.0 + 0.07 * t) * (target.getZ() - origin.getZ()) / t;
 		return new Vector(vX, vY, vZ);
-	}
-
-	public static void playFocusWaterEffect(Block block) {
-		block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 4, 20);
 	}
 
 	public static BlockFace getCardinalDirection(Vector vector) {

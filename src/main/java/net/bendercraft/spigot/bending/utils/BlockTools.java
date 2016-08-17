@@ -328,7 +328,7 @@ public class BlockTools {
 	}
 
 	public static boolean isWaterbendable(Block block, Player player) {
-		if (TempBlock.isTempBlock(block)) {
+		if (TempBlock.isTempBlock(block) && !TempBlock.get(block).isBendAllowed()) {
 			return false;
 		}
 
@@ -353,7 +353,10 @@ public class BlockTools {
 		BlockFace[] faces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
 		for (BlockFace face : faces) {
 			Block blocki = block.getRelative(face);
-			if (((blocki.getType() == Material.WATER) || (blocki.getType() == Material.STATIONARY_WATER)) && (blocki.getData() == FULL) && WaterManipulation.canPhysicsChange(blocki)) {
+			if ((blocki.getType() == Material.WATER || blocki.getType() == Material.STATIONARY_WATER) 
+					&& blocki.getData() == FULL 
+					&& !TempBlock.isTempBlock(blocki)
+					&& ! TempBlock.isTouchingTempBlock(blocki)) {
 				sources++;
 			}
 			if (PhaseChange.isFrozen(blocki)) {
@@ -596,7 +599,7 @@ public class BlockTools {
 
 			if (isWaterbendable(block, player) && (!isPlant(block) || plantbending)) {
 				TempBlock tempBlock = TempBlock.get(block);
-				if (tempBlock!= null && !tempBlock.isBendAllowed()) {
+				if (tempBlock != null && !tempBlock.isBendAllowed()) {
 					return null;
 				}
 				return block;
@@ -612,16 +615,6 @@ public class BlockTools {
 	
 	public static void breakBlock(Block block) {
 		block.breakNaturally(new ItemStack(Material.AIR));
-	}
-
-	@SuppressWarnings("deprecation")
-	public static void removeBlock(Block block) {
-		if (adjacentToThreeOrMoreSources(block)) {
-			block.setType(Material.WATER);
-			block.setData((byte) 0x0);
-		} else {
-			block.setType(Material.AIR);
-		}
 	}
 
 	public static void dropItems(Block block, Collection<ItemStack> items) {

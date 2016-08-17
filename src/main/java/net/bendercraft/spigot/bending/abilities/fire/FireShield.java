@@ -216,9 +216,9 @@ public class FireShield extends BendingActiveAbility {
 			Vector direction = location.getDirection();
 			location = location.clone().add(direction.multiply(radius));
 			
-			if(FireBlast.removeOneFireBlastsAroundPointExceptPlayer(location, player, discradius)
-					|| WaterManipulation.removeOneAroundPoint(location, discradius)
-					|| EarthBlast.removeOneAroundPoint(location, discradius)
+			if(FireBlast.removeOneAroundPoint(location, player, discradius)
+					|| WaterManipulation.removeOneAroundPoint(location, player, discradius)
+					|| EarthBlast.removeOneAroundPoint(location, player, discradius)
 					|| AirBlast.removeOneBlastAroundPoint(location, discradius)) {
 				return false;
 			}

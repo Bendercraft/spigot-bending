@@ -26,6 +26,8 @@ import net.bendercraft.spigot.bending.utils.TempBlock;
 public class PhaseChange extends BendingActiveAbility {
 	public final static String NAME = "PhaseChange";
 	
+	public final static String NAME_SHIFT = "BalanceShift";
+	
 	@ConfigurationParameter("Range")
 	public static int RANGE = 20;
 
@@ -37,6 +39,9 @@ public class PhaseChange extends BendingActiveAbility {
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 500;
+	
+	@ConfigurationParameter("Cooldown-Shift")
+	public static long COOLDOWN_SHIFT = 10000;
 
 	private List<TempBlock> frozens = new LinkedList<TempBlock>();
 	private List<TempBlock> melted = new LinkedList<TempBlock>();
@@ -55,29 +60,40 @@ public class PhaseChange extends BendingActiveAbility {
 		if (bender.isOnCooldown(NAME)) {
 			return false;
 		}
-		//Freeze
-		int range = RANGE;
-		if (AvatarState.isAvatarState(player)) {
-			range = AvatarState.getValue(range);
-		}
-		Location location = EntityTools.getTargetedLocation(player, range);
-		int y = (int) location.getY();
-		for (Block block : BlockTools.getBlocksAroundPoint(location, RADIUS)) {
-			if (block.getLocation().getY() >= (y - DEPTH)) {
-				if(isFreezable(player, block)) {
-					PhaseChange owner = get(block);
-					if(owner != null) {
-						TempBlock b = TempBlock.get(block);
-						b.revertBlock();
-						owner.melted.remove(b);
-					} else {
-						//rozens.add(new TempBlock(block, Material.ICE, block.getData()));
-						frozens.add(TempBlock.makeTemporary(block, Material.ICE, block.getData(), true));
+		if(player.isSneaking()) {
+			if(!bender.isOnCooldown(NAME_SHIFT)) {
+				bender.water.shift();
+				bender.cooldown(NAME_SHIFT, COOLDOWN_SHIFT);
+			}
+		} else {
+			//Freeze
+			int range = RANGE;
+			if (AvatarState.isAvatarState(player)) {
+				range = AvatarState.getValue(range);
+			}
+			Location location = EntityTools.getTargetedLocation(player, range);
+			int y = (int) location.getY();
+			for (Block block : BlockTools.getBlocksAroundPoint(location, RADIUS)) {
+				if (block.getLocation().getY() >= (y - DEPTH)) {
+					if(isFreezable(player, block)) {
+						PhaseChange owner = get(block);
+						if(owner != null) {
+							TempBlock b = TempBlock.get(block);
+							if(b != null) {
+								b.revertBlock();
+								owner.melted.remove(b);
+							}
+						} else {
+							//rozens.add(new TempBlock(block, Material.ICE, block.getData()));
+							frozens.add(TempBlock.makeTemporary(block, Material.ICE, block.getData(), true));
+						}
 					}
 				}
 			}
+			if(!frozens.isEmpty()) {
+				bender.cooldown(NAME, COOLDOWN);
+			}
 		}
-		bender.cooldown(NAME, COOLDOWN);
 		return false;
 	}
 
@@ -114,7 +130,9 @@ public class PhaseChange extends BendingActiveAbility {
 				}
 			}
 		}
-		bender.cooldown(NAME, COOLDOWN);
+		if(!melted.isEmpty()) {
+			bender.cooldown(NAME, COOLDOWN);
+		}
 		return false;
 	}
 
