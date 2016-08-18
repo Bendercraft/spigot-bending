@@ -349,8 +349,8 @@ public class BendingPlayerListener implements Listener {
 				BendingPassiveAbility ab = null;
 				if (bender != null && bender.isBender(BendingElement.EARTH)) {
 					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
-					AbilityManager.getManager().addInstance(ab);
 					if (ab.start()) {
+						AbilityManager.getManager().addInstance(ab);
 						player.setFallDistance(0);
 						event.setDamage(0);
 						event.setCancelled(true);
