@@ -231,7 +231,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			}
 
 			if (manip.player.equals(player)) {
-				manip.blast.redirect(manip.blast.getTargetLocation());
+				manip.blast.redirect(manip.blast.getTargetLocation(player));
 			}
 
 			Location location = player.getEyeLocation();
@@ -240,7 +240,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			if (mloc.distance(location) <= manip.range 
 					&& Tools.getDistanceFromLine(vector, location, mloc) < RANGE_DEFLECT 
 					&& mloc.distance(location.clone().add(vector)) < mloc.distance(location.clone().add(vector.clone().multiply(-1)))) {
-				manip.blast.redirect(manip.blast.getTargetLocation());
+				manip.blast.redirect(manip.blast.getTargetLocation(player));
 			}
 
 		}
@@ -339,14 +339,14 @@ public class WaterManipulation extends BendingActiveAbility {
 		}
 
 		@Override
-		public Location getTargetLocation() {
+		public Location getTargetLocation(Player player) {
 			Entity target = null;
 			if (!parent.getBender().hasPath(BendingPath.FLOWLESS)) {
-				target = EntityTools.getTargetedEntity(parent.getPlayer(), range);
+				target = EntityTools.getTargetedEntity(player, range);
 			}
 			Location result = null;
 			if (target == null || ProtectionManager.isEntityProtected(target)) {
-				result = EntityTools.getTargetedLocation(parent.getPlayer(), range, BlockTools.getTransparentEarthBending());
+				result = EntityTools.getTargetedLocation(player, range, BlockTools.getTransparentEarthBending());
 			} else {
 				result = ((LivingEntity) target).getLocation();
 			}
@@ -403,11 +403,11 @@ public class WaterManipulation extends BendingActiveAbility {
 		}
 
 		@Override
-		public Location getTargetLocation() {
-			Entity target = EntityTools.getTargetedEntity(parent.getPlayer(), range);
+		public Location getTargetLocation(Player player) {
+			Entity target = EntityTools.getTargetedEntity(player, range);
 			Location result = null;
 			if (target == null || ProtectionManager.isEntityProtected(target)) {
-				result = EntityTools.getTargetedLocation(parent.getPlayer(), range, BlockTools.getTransparentEarthBending());
+				result = EntityTools.getTargetedLocation(player, range, BlockTools.getTransparentEarthBending());
 			} else {
 				result = ((LivingEntity) target).getEyeLocation();
 			}

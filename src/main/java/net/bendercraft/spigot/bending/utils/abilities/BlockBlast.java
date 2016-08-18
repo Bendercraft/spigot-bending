@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -64,7 +65,7 @@ public abstract class BlockBlast {
 		
 		firstDestination = source.getLocation().clone();
 		firstDestination.setY(parent.getPlayer().getEyeLocation().getY()+1);
-		targetDestination = getTargetLocation();
+		targetDestination = getTargetLocation(parent.getPlayer());
 		// Not enough distance, just cancel this blast
 		if (targetDestination.distance(location) <= 1) {
 			targetDestination = null;
@@ -179,7 +180,7 @@ public abstract class BlockBlast {
 	 * @param player
 	 * @return
 	 */
-	public abstract Location getTargetLocation();
+	public abstract Location getTargetLocation(Player player);
 	/**
 	 * Function used to display visual effect for blast
 	 */
