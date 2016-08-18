@@ -67,6 +67,9 @@ public class IceSpike extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
+		if(!isState(BendingAbilityState.START)) {
+			return false;
+		}
 		Location target = EntityTools.getTargetedLocation(player, RANGE_SELECT, BlockTools.getTransparentEarthBending());
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(target, RANGE);
 		entities.removeIf(e -> e == player);
