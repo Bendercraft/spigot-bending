@@ -62,10 +62,16 @@ public abstract class BlockBlast {
 		if (source == null || source.getWorld() != parent.getPlayer().getWorld()) {
 			return false;
 		}
+		targetDestination = getTargetLocation(parent.getPlayer());
 		
 		firstDestination = source.getLocation().clone();
+		if (targetDestination.getBlockY() - source.getY() <= 2) {
+			firstDestination.setY(source.getY() + 2);
+		} else {
+			firstDestination.setY(targetDestination.getBlockY() - 1);
+		}
 		firstDestination.setY(parent.getPlayer().getEyeLocation().getY()+1);
-		targetDestination = getTargetLocation(parent.getPlayer());
+		
 		// Not enough distance, just cancel this blast
 		if (targetDestination.distance(location) <= 1) {
 			targetDestination = null;
