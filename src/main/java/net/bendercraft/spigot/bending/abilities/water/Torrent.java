@@ -7,6 +7,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -112,8 +113,8 @@ public class Torrent extends BendingActiveAbility {
 			if (BlockTools.isTransparentToEarthbending(player, block) && (block.getType() != Material.ICE)) {
 				boolean safe = true;
 				for(LivingEntity entity : entities) {
-					if(entity.getEyeLocation().getBlock().getLocation().equals(block.getLocation()) 
-							|| entity.getLocation().getBlock().getLocation().equals(block.getLocation())) {
+					if(entity.getLocation().getBlock().getLocation().equals(block.getLocation()) 
+							|| entity.getLocation().getBlock().getRelative(BlockFace.UP).getLocation().equals(block.getLocation())) {
 						safe = false;
 						break;
 					}
