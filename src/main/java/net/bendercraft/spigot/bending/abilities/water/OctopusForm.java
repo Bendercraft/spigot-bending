@@ -1,6 +1,6 @@
 package net.bendercraft.spigot.bending.abilities.water;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
@@ -34,6 +35,9 @@ public class OctopusForm extends BendingActiveAbility {
 
 	@ConfigurationParameter("Damage")
 	private static int DAMAGE = 5;
+	
+	@ConfigurationParameter("Damage-Ice")
+	private static int DAMAGE_ICE = 7;
 	
 	@ConfigurationParameter("Range")
 	private static double RANGE = 30;
@@ -72,7 +76,7 @@ public class OctopusForm extends BendingActiveAbility {
 	// PROGRESSING
 	private int animstep = 1, step = 1, inc = 3;
 	private double dta = 45;
-	private List<WaterTentacle> tentacles = new LinkedList<WaterTentacle>();
+	private List<WaterTentacle> tentacles = new ArrayList<WaterTentacle>();
 	
 	private List<TempBlock> blocks = new LinkedList<TempBlock>(); // Both PREPARED & PROGRESSING, holds ring base
 	
@@ -116,7 +120,11 @@ public class OctopusForm extends BendingActiveAbility {
 						closest = tentacle;
 					}
 				}
-				closest.target(target);
+				if(closest.hasTarget() && closest.isTarget(target)) {
+					closest.freeze();
+				} else {
+					closest.target(target);
+				}
 			}
 		}
 
@@ -271,13 +279,18 @@ public class OctopusForm extends BendingActiveAbility {
 		Vector eyedir = player.getEyeLocation().getDirection();
 		eyedir.setY(0);
 
-		Iterator<WaterTentacle> it = tentacles.iterator();
+		int current = 0;
 		int astep = animstep;
 		for (int i = 0; i < 360; i += dta) {
 			astep += 1;
 			double phi = Math.toRadians(i);
 			Location loc = player.getLocation().add(new Vector(RADIUS * Math.cos(phi), 0, RADIUS * Math.sin(phi)));
-			it.next().progress(loc, astep);
+			if(current < tentacles.size()) {
+				if(!tentacles.get(current).progress(loc, astep)) {
+					return false;
+				}
+				current++;
+			}
 		}
 		
 		return true;
@@ -306,6 +319,7 @@ public class OctopusForm extends BendingActiveAbility {
 		private long interval;
 
 		private OctopusForm parent;
+		private boolean freeze;
 		
 		public WaterTentacle(OctopusForm parent) {
 			this.parent = parent;
@@ -323,15 +337,21 @@ public class OctopusForm extends BendingActiveAbility {
 			if(block.getType() != Material.AIR && !BlockTools.isWaterBased(block)) {
 				return;
 			}
-			blocks.add(TempBlock.makeTemporary(block, Material.WATER, false));
+			Material material = Material.WATER;
+			if(freeze) {
+				material = Material.ICE;
+			}
+			blocks.add(TempBlock.makeTemporary(block, material, false));
 		}
 		
 		public void target(LivingEntity target) {
-			this.target = target;
-			distance = 0;
+			if(!freeze) {
+				this.target = target;
+				distance = 0;
+			}
 		}
 
-		public void progress(Location location, int animation) {
+		public boolean progress(Location location, int animation) {
 			blocks.forEach(b -> b.revertBlock());
 			blocks.clear();
 			origin = location.clone();
@@ -367,13 +387,13 @@ public class OctopusForm extends BendingActiveAbility {
 						addWater(origin.clone().add(2 * direction.getX(), 2, 2 * direction.getZ()).getBlock());
 					}
 				}
-				return;
+				return true;
 			}
 			
 			// Tentacle at work (targetting someone)
 			if(target.isDead()) {
 				target = null;
-				return;
+				return true;
 			}
 			long now = System.currentTimeMillis();
 			if ((now - time) >= interval) {
@@ -396,21 +416,43 @@ public class OctopusForm extends BendingActiveAbility {
 						if(entity == parent.getPlayer()) {
 							continue;
 						}
-						DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.LIQUID, DAMAGE));
-						entity.setVelocity(new Vector(0,0,0));
+						if(freeze) {
+							DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.ICE, DAMAGE_ICE));
+						} else {
+							DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.LIQUID, DAMAGE));
+							entity.setVelocity(new Vector(0,0,0));
+						}
 						consumed = true;
 					}
-					if(consumed) {
+					if(freeze && consumed) {
+						blocks.forEach(b -> Bending.getInstance().getManager().addGlobalTempBlock(5000, b));
+						blocks.clear();
+						parent.getBender().cooldown(parent, 5000);
+						return false;
+					} else if(consumed) {
 						target(null);
 						break;
 					}
 				}
 			}
+			return true;
 		}
 
 		public void remove() {
 			blocks.forEach(b -> b.revertBlock());
 			blocks.clear();
+		}
+		
+		public boolean hasTarget() {
+			return target != null;
+		}
+		
+		public boolean isTarget(LivingEntity entity) {
+			return entity == target;
+		}
+		
+		public void freeze() {
+			freeze = true;
 		}
 	}
 
