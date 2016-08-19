@@ -113,8 +113,8 @@ public class Torrent extends BendingActiveAbility {
 			if (BlockTools.isTransparentToEarthbending(player, block) && (block.getType() != Material.ICE)) {
 				boolean safe = true;
 				for(LivingEntity entity : entities) {
-					if(entity.getLocation().getBlock().getLocation().equals(block.getLocation()) 
-							|| entity.getLocation().getBlock().getRelative(BlockFace.UP).getLocation().equals(block.getLocation())) {
+					if(entity.getLocation().getBlock() == block
+							|| entity.getLocation().getBlock().getRelative(BlockFace.UP) == block) {
 						safe = false;
 						break;
 					}
