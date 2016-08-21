@@ -70,7 +70,6 @@ public abstract class BlockBlast {
 		} else {
 			firstDestination.setY(targetDestination.getBlockY() - 1);
 		}
-		firstDestination.setY(parent.getPlayer().getEyeLocation().getY()+1);
 		
 		// Not enough distance, just cancel this blast
 		if (targetDestination.distance(location) <= 1) {
