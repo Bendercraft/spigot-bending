@@ -84,6 +84,9 @@ public class BendingPlayer {
 		this.lastTime = data.getLastTime();
 		
 		this.usingScoreboard = true;
+		
+		this.fire.set(data.getFire());
+		this.water.setBalance(data.getWater());
 	}
 
 	public static BendingPlayer getBendingPlayer(Player player) {
@@ -427,6 +430,8 @@ public class BendingPlayer {
 		result.setDecks(this.decks);
 		result.setCurrentDeck(this.currentDeck);
 		result.setPaths(this.paths);
+		result.setFire(this.fire.getPower());
+		result.setWater(this.water.getBalance());
 		return result;
 	}
 

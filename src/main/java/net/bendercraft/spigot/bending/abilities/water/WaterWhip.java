@@ -3,6 +3,7 @@ package net.bendercraft.spigot.bending.abilities.water;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
@@ -49,7 +51,13 @@ public class WaterWhip extends BendingActiveAbility {
 	private static int COOLDOWN = 15000;
 	
 	@ConfigurationParameter("Duration")
-	private static long DURATION = 8000;
+	private static long DURATION = 16000;
+	
+	@ConfigurationParameter("Ice-Duration")
+	private static long ICE = 15000;
+	
+	@ConfigurationParameter("Ice-Height")
+	private static int ICE_HEIGHT = 6;
 	
 	private ArrayList<Dot> points = new ArrayList<Dot>();
 	private Location previous;
@@ -58,6 +66,7 @@ public class WaterWhip extends BendingActiveAbility {
 
 	private long time;
 	private long interval;
+	private boolean freeze = false;
 
 	public WaterWhip(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -69,17 +78,34 @@ public class WaterWhip extends BendingActiveAbility {
 	public boolean swing() {
 		if(isState(BendingAbilityState.START)) {
 			previous = player.getEyeLocation().clone();
-			Location eye = previous.clone();
-			for(int i=0 ; i < LENGTH ; i++) {
-				Dot dot = new Dot();
-				dot.point = eye.clone().add(previous.getDirection().clone().multiply(i+1));
-				dot.next = dot.point.clone();
-				points.add(dot);
-			}
+			
+			Dot dot = new Dot();
+			dot.point = previous.clone().add(previous.getDirection().clone().normalize());
+			dot.next = dot.point.clone();
+			points.add(dot);
+			
 			time = System.currentTimeMillis();
 			setState(BendingAbilityState.PROGRESSING);
-			bender.water.liquid();
 		} else if(isState(BendingAbilityState.PROGRESSING)) {
+			blocks.forEach(b -> b.revertBlock());
+			for(TempBlock block : blocks) {
+				Bending.getInstance().getManager().addGlobalTempBlock(ICE, TempBlock.makeTemporary(block.getBlock(), Material.ICE, false));
+			}
+			blocks.clear();
+			for(int i=1 ; i < points.size() ; i++) {
+				Dot dot = points.get(i);
+				double[] randoms = new Random().doubles(3, -1, 1).toArray();
+				Vector direction = new Vector(randoms[0], randoms[1], randoms[2]).normalize();
+				for(int j=1 ; j < ICE_HEIGHT ; j++) {
+					Location loc = dot.point.clone().add(direction.clone().multiply(j));
+					if(!BlockTools.isWaterBased(loc.getBlock()) && loc.getBlock().getType() != Material.AIR) {
+						break;
+					}
+					TempBlock temp = TempBlock.makeTemporary(loc.getBlock(), Material.ICE, true);
+					Bending.getInstance().getManager().addGlobalTempBlock(ICE, temp);
+				}
+			}
+			freeze = true;
 			remove();
 		}
 		return false;
@@ -114,9 +140,7 @@ public class WaterWhip extends BendingActiveAbility {
 	public void progress() {
 		if ((System.currentTimeMillis() - time) >= interval) {
 			time = System.currentTimeMillis();
-			for(TempBlock block : blocks) {
-				block.revertBlock();
-			}
+			blocks.forEach(b -> b.revertBlock());
 			List<Block> old = new LinkedList<Block>();
 			blocks.forEach(x -> old.add(x.getBlock()));
 			blocks.clear();
@@ -157,6 +181,13 @@ public class WaterWhip extends BendingActiveAbility {
 				}
 			}
 			previous = direction.clone();
+			
+			if(points.size() < LENGTH) {
+				Dot dot = new Dot();
+				dot.point = previous.clone().add(previous.getDirection().clone().normalize().multiply(points.size()));
+				dot.next = dot.point.clone();
+				points.add(dot);
+			}
 		}
 	}
 
@@ -167,6 +198,11 @@ public class WaterWhip extends BendingActiveAbility {
 		}
 		blocks.clear();
 		bender.cooldown(this, COOLDOWN);
+		if(freeze) {
+			bender.water.ice();
+		} else {
+			bender.water.liquid();
+		}
 	}
 	
 	@Override

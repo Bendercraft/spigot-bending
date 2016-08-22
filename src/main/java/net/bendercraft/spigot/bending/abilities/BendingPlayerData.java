@@ -12,6 +12,9 @@ public class BendingPlayerData {
 	private Map<String, Map<Integer, String>> decks;
 	private String currentDeck;
 	private long lastTime;
+	
+	private int fire;
+	private int water;
 
 	public UUID getPlayer() {
 		return this.player;
@@ -67,5 +70,21 @@ public class BendingPlayerData {
 
 	public void setCurrentDeck(String currentDeck) {
 		this.currentDeck = currentDeck;
+	}
+
+	public int getFire() {
+		return fire;
+	}
+
+	public void setFire(int fire) {
+		this.fire = fire;
+	}
+
+	public int getWater() {
+		return water;
+	}
+
+	public void setWater(int water) {
+		this.water = water;
 	}
 }

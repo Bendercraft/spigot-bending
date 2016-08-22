@@ -154,7 +154,6 @@ public class Torrent extends BendingActiveAbility {
 		launch = true;
 		if (launching && !freeze) {
 			freeze = true;
-			bender.water.ice();
 		}
 
 		return false;
@@ -198,7 +197,6 @@ public class Torrent extends BendingActiveAbility {
 				if (this.player.isSneaking()) {
 					this.sourceselected = false;
 					this.settingup = true;
-					bender.water.liquid();
 					if (BlockTools.isPlant(this.sourceblock)) {
 						this.sourceblock.setType(Material.AIR);
 					} else if (!BlockTools.adjacentToThreeOrMoreSources(this.sourceblock)) {
@@ -518,16 +516,21 @@ public class Torrent extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		this.clear();
-		if(this.drainedBlock != null) {
-			this.drainedBlock.revertBlock();
-			this.drainedBlock = null;
+		clear();
+		if(drainedBlock != null) {
+			drainedBlock.revertBlock();
+			drainedBlock = null;
 		}
-		if (this.waterReturn != null) {
-			this.waterReturn.stop();
+		if (waterReturn != null) {
+			waterReturn.stop();
 		}
-		if (this.burst != null) {
-			this.burst.remove();
+		if (burst != null) {
+			burst.remove();
+		}
+		if(launching && freeze) {
+			bender.water.ice();
+		} else if(launching || burst != null) {
+			bender.water.liquid();
 		}
 	}
 

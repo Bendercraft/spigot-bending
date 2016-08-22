@@ -41,7 +41,7 @@ public class PhaseChange extends BendingActiveAbility {
 	public static long COOLDOWN = 500;
 	
 	@ConfigurationParameter("Cooldown-Shift")
-	public static long COOLDOWN_SHIFT = 10000;
+	public static long COOLDOWN_SHIFT = 5000;
 
 	private List<TempBlock> frozens = new LinkedList<TempBlock>();
 	private List<TempBlock> melted = new LinkedList<TempBlock>();
@@ -62,8 +62,9 @@ public class PhaseChange extends BendingActiveAbility {
 		}
 		if(player.isSneaking()) {
 			if(!bender.isOnCooldown(NAME_SHIFT)) {
-				bender.water.shift();
-				bender.cooldown(NAME_SHIFT, COOLDOWN_SHIFT);
+				int balance = bender.water.getBalance();
+				bender.water.setBalance(0);
+				bender.cooldown(NAME_SHIFT, COOLDOWN_SHIFT*Math.abs(balance));
 			}
 		} else {
 			//Freeze

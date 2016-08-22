@@ -19,7 +19,7 @@ import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
 import net.bendercraft.spigot.bending.abilities.water.Frozen;
-import net.bendercraft.spigot.bending.abilities.water.WaterBalance.State;
+import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
@@ -125,22 +125,22 @@ public class BendingManager implements Runnable {
 						
 						if(bender.isBender(BendingElement.WATER)) {
 							ChatColor color = null;
-							if(bender.water.isState(State.STABLE)) {
-								if(!team.hasEntry("water-stable")) {
-									team.addEntry("water-stable");
+							if(bender.water.toward(Damage.ICE)) {
+								if(!team.hasEntry("water-ice")) {
+									team.addEntry("water-ice");
 								}
-								if(team.hasEntry("water-excited")) {
+								if(team.hasEntry("water-liquid")) {
 									scoreboard.resetScores(ChatColor.BLUE+"Balance");
-									team.removeEntry("water-excited");
+									team.removeEntry("water-liquid");
 								}
 								color = ChatColor.AQUA;
 							} else {
-								if(!team.hasEntry("water-excited")) {
-									team.addEntry("water-excited");
+								if(!team.hasEntry("water-liquid")) {
+									team.addEntry("water-liquid");
 								}
-								if(team.hasEntry("water-stable")) {
+								if(team.hasEntry("water-ice")) {
 									scoreboard.resetScores(ChatColor.AQUA+"Balance");
-									team.removeEntry("water-stable");
+									team.removeEntry("water-ice");
 								}
 								color = ChatColor.BLUE;
 							}
@@ -151,13 +151,13 @@ public class BendingManager implements Runnable {
 								score.setScore(value);
 							}
 						} else {
-							if(team.hasEntry("water-excited")) {
+							if(team.hasEntry("water-liquid")) {
 								scoreboard.resetScores(ChatColor.BLUE+"Balance");
-								team.removeEntry("water-excited");
+								team.removeEntry("water-liquid");
 							}
-							if(team.hasEntry("water-stable")) {
+							if(team.hasEntry("water-ice")) {
 								scoreboard.resetScores(ChatColor.AQUA+"Balance");
-								team.removeEntry("water-stable");
+								team.removeEntry("water-ice");
 							}
 						}
 						

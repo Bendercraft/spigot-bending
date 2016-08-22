@@ -131,8 +131,6 @@ public class OctopusForm extends BendingActiveAbility {
 		return false;
 	}
 
-	
-
 	@Override
 	public boolean canTick() {
 		if(!super.canTick()) {
@@ -418,6 +416,7 @@ public class OctopusForm extends BendingActiveAbility {
 						}
 						if(freeze) {
 							DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.ICE, DAMAGE_ICE));
+							Frozen.freeze(parent.getPlayer(), entity.getLocation(), 3);
 						} else {
 							DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.LIQUID, DAMAGE));
 							entity.setVelocity(new Vector(0,0,0));
@@ -428,9 +427,11 @@ public class OctopusForm extends BendingActiveAbility {
 						blocks.forEach(b -> Bending.getInstance().getManager().addGlobalTempBlock(5000, b));
 						blocks.clear();
 						parent.getBender().cooldown(parent, 5000);
+						parent.getBender().water.ice();
 						return false;
 					} else if(consumed) {
 						target(null);
+						parent.getBender().water.liquid();
 						break;
 					}
 				}
