@@ -325,21 +325,22 @@ public class OctopusForm extends BendingActiveAbility {
 			this.time = System.currentTimeMillis();
 		}
 		
-		private void addWater(Block block) {
+		private boolean addWater(Block block) {
 			if (ProtectionManager.isLocationProtectedFromBending(parent.getPlayer(), parent.register, block.getLocation())) {
-				return;
+				return false;
 			}
 			if(TempBlock.isTempBlock(block)) {
-				return;
+				return false;
 			}
 			if(block.getType() != Material.AIR && !BlockTools.isWaterBased(block)) {
-				return;
+				return false;
 			}
 			Material material = Material.WATER;
 			if(freeze) {
 				material = Material.ICE;
 			}
 			blocks.add(TempBlock.makeTemporary(block, material, false));
+			return true;
 		}
 		
 		public void target(LivingEntity target) {
@@ -406,7 +407,11 @@ public class OctopusForm extends BendingActiveAbility {
 					Location current = origin.clone().add(dir.clone().multiply(i));
 					Block block = current.getBlock();
 					if(!blocks.stream().anyMatch(t -> t.getBlock() == block)) {
-						addWater(block);
+						if(!addWater(block)) {
+							target(null);
+							parent.getBender().water.liquid();
+							return true;
+						}
 					}
 					
 					boolean consumed = false;
