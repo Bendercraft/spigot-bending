@@ -96,6 +96,10 @@ public class WaterManipulation extends BendingActiveAbility {
 
 		this.damage = DAMAGE;
 		this.range = RANGE;
+		this.push = PUSHFACTOR;
+		this.radius = AFFECTING_RADIUS;
+		this.interval = (long) (1000. / SPEED);
+		this.time = System.currentTimeMillis();
 
 		if (this.bender.hasPath(BendingPath.MARKSMAN)) {
 			this.damage *= 0.8;
@@ -266,7 +270,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		Block block = location.getBlock();
 		if (BlockTools.isTransparentToEarthbending(player, block) && !block.isLiquid()) {
 			BlockTools.breakBlock(block); // DESTROY FLOWERSSSS
-		} else if (!(block.getType() == Material.AIR || BlockTools.isWater(block))) {
+		} else if (block.getType() != Material.AIR && !BlockTools.isWater(block)) {
 			hit();
 			return;
 		}
