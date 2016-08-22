@@ -101,7 +101,7 @@ public class WaterWhip extends BendingActiveAbility {
 					if(!BlockTools.isWaterBased(loc.getBlock()) && loc.getBlock().getType() != Material.AIR) {
 						break;
 					}
-					TempBlock temp = TempBlock.makeTemporary(loc.getBlock(), Material.ICE, true);
+					TempBlock temp = TempBlock.makeTemporary(loc.getBlock(), Material.ICE, false);
 					Bending.getInstance().getManager().addGlobalTempBlock(ICE, temp);
 				}
 			}
