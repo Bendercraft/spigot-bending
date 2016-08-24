@@ -17,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
+import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.listeners.BendingDenyItem;
 import net.bendercraft.spigot.bending.listeners.BendingPlayerListener;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -32,6 +33,9 @@ public class ParaStick extends BendingActiveAbility {
 	public final static String NAME = "ParaStick";
 	
 	private static String LORE_NAME = "ParaStick";
+	
+	@ConfigurationParameter("Cooldown")
+	private static long COOLDOWN = 10000;
 
 	private ItemStack stick;
 
@@ -73,7 +77,7 @@ public class ParaStick extends BendingActiveAbility {
 	
 	public void consume() {
 		remove();
-		bender.cooldown(this, 6000);
+		bender.cooldown(this, COOLDOWN);
 	}
 
 	@Override
