@@ -177,9 +177,12 @@ public class FireBurst extends BendingActiveAbility {
 		}
 
 		if (getState() != BendingAbilityState.PREPARED) {
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 			if (System.currentTimeMillis() > (this.startedTime + this.chargetime)) {
 				setState(BendingAbilityState.PREPARED);
 			}
+			return;
 		}
 
 		if (getState() == BendingAbilityState.PREPARED) {

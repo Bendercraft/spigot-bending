@@ -3,8 +3,8 @@ package net.bendercraft.spigot.bending.abilities.earth;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -17,7 +17,6 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 @ABendingAbility(name = Shockwave.NAME, element = BendingElement.EARTH)
 public class Shockwave extends BendingActiveAbility {
@@ -88,12 +87,14 @@ public class Shockwave extends BendingActiveAbility {
 				remove();
 				return;
 			}
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 			if (System.currentTimeMillis() > starttime + chargetime) {
 				setState(BendingAbilityState.PREPARED);
 			}
 		} else if (getState() == BendingAbilityState.PREPARED) {
-			Location location = player.getEyeLocation();
-			location.getWorld().playEffect(location, Effect.SMOKE, Tools.getIntCardinalDirection(player.getEyeLocation().getDirection()), 3);
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
 
 			if (!player.isSneaking() || (player.getFallDistance() < Shockwave.FALL_THRESHOLD && !BlockTools.isEarthbendable(player, player.getLocation().add(0, -1, 0).getBlock()))) {
 				// Area - either because unsneak or falling

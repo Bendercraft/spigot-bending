@@ -174,6 +174,8 @@ public class Lightning extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		if(isState(BendingAbilityState.PREPARING)) {
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 			if (System.currentTimeMillis() > (startedTime + warmup)) {
 				setState(BendingAbilityState.PREPARED);
 			}

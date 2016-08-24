@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -34,7 +35,6 @@ import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 /**
  * State Preparing = Player is charging his Airswipe State Prepared = Player has
@@ -175,6 +175,8 @@ public class AirSwipe extends BendingActiveAbility {
 		long now = System.currentTimeMillis();
 		if (getState().equals(BendingAbilityState.PREPARING)) {
 			if (this.player.isSneaking()) {
+				Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+				player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 				if (now >= (this.startedTime + MAX_CHARGE_TIME)) {
 					setState(BendingAbilityState.PREPARED);
 					this.damage *= MAX_FACTOR;
@@ -185,7 +187,8 @@ public class AirSwipe extends BendingActiveAbility {
 		}
 
 		if (getState().equals(BendingAbilityState.PREPARED)) {
-			this.player.getWorld().playEffect(this.player.getEyeLocation(), Effect.SMOKE, Tools.getIntCardinalDirection(this.player.getEyeLocation().getDirection()), 3);
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
 		}
 
 		if (getState().equals(BendingAbilityState.PROGRESSING)) {

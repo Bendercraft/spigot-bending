@@ -17,7 +17,6 @@ import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
-import net.bendercraft.spigot.bending.utils.Tools;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 
@@ -157,9 +156,8 @@ public class Combustion extends BendingActiveAbility {
 				remove();
 				return;
 			}
-			player.getWorld().playEffect(player.getEyeLocation(), 
-					Effect.SMOKE, 
-					Tools.getIntCardinalDirection(player.getEyeLocation().getDirection()), 3);
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 			if (System.currentTimeMillis() > time + chargeTime) {
 				launch();
 				setState(BendingAbilityState.PREPARED);

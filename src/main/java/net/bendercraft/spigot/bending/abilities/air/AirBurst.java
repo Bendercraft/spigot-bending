@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -22,10 +23,8 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.MathUtils;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 @ABendingAbility(name = AirBurst.NAME, element = BendingElement.AIR)
 public class AirBurst extends BendingActiveAbility {
@@ -72,10 +71,6 @@ public class AirBurst extends BendingActiveAbility {
 		
 		blasts = new LinkedList<BurstBlast>();
 		chargetime = DEFAULT_CHARGETIME;
-		
-		if (AvatarState.isAvatarState(player) && !MathUtils.doubleEquals(AvatarState.FACTOR, 0)) {
-			this.chargetime = (long) (DEFAULT_CHARGETIME / AvatarState.FACTOR);
-		}
 	}
 	
 	@Override
@@ -88,7 +83,7 @@ public class AirBurst extends BendingActiveAbility {
 	
 	@Override
 	public boolean swing() {
-		if (getState() == BendingAbilityState.PREPARED) {
+		if (isState(BendingAbilityState.PREPARED)) {
 			coneBurst();
 			return false;
 		}
@@ -97,7 +92,7 @@ public class AirBurst extends BendingActiveAbility {
 	
 	@Override
 	public boolean fall() {
-		if (this.player.getFallDistance() < THRESHOLD) {
+		if (player.getFallDistance() < THRESHOLD) {
 			return false;
 		}
 		
@@ -111,10 +106,10 @@ public class AirBurst extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if(getState().equals(BendingAbilityState.PREPARING) && !this.player.isSneaking()) {
+		if(isState(BendingAbilityState.PREPARING) && !player.isSneaking()) {
 			return false;
 		}
-		if (!getState().equals(BendingAbilityState.PROGRESSING) && !bender.getAbility().equals(NAME)) {
+		if (!isState(BendingAbilityState.PROGRESSING) && !NAME.equals(bender.getAbility())) {
 			return false;
 		}
 		return true;
@@ -122,7 +117,19 @@ public class AirBurst extends BendingActiveAbility {
 	
 	@Override
 	public void progress() {
-		if(getState() == BendingAbilityState.PROGRESSING) {
+		if(isState(BendingAbilityState.PREPARING)) {
+			if(System.currentTimeMillis() > (this.startedTime + this.chargetime)) {
+				setState(BendingAbilityState.PREPARED);
+			}
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
+		} else if(isState(BendingAbilityState.PREPARED)) {
+			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+			player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
+			if (!this.player.isSneaking()) {
+				sphereBurst();
+			}
+		} else if(isState(BendingAbilityState.PROGRESSING)) {
 			List<BurstBlast> toRemove = new LinkedList<BurstBlast>();
 			for(BurstBlast blast : blasts) {
 				if(!blast.progress()) {
@@ -134,20 +141,6 @@ public class AirBurst extends BendingActiveAbility {
 				remove();
 			}
 			return;
-		}
-		if (!this.player.isSneaking()) {
-			if (getState().equals(BendingAbilityState.PREPARED)) {
-				sphereBurst();
-			}
-		} else if (!getState().equals(BendingAbilityState.PREPARED) && (System.currentTimeMillis() > (this.startedTime + this.chargetime))) {
-			if (!NAME.equals(EntityTools.getBendingAbility(player))) {
-				remove();
-				return;
-			}
-			setState(BendingAbilityState.PREPARED);
-		} else if (getState() == BendingAbilityState.PREPARED) {
-			Location location = this.player.getEyeLocation();
-			location.getWorld().playEffect(location, Effect.SMOKE, Tools.getIntCardinalDirection(location.getDirection()), 3);
 		}
 	}
 	
