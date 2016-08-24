@@ -329,9 +329,6 @@ public class OctopusForm extends BendingActiveAbility {
 			if (ProtectionManager.isLocationProtectedFromBending(parent.getPlayer(), parent.register, block.getLocation())) {
 				return false;
 			}
-			if(TempBlock.isTempBlock(block)) {
-				return false;
-			}
 			if(block.getType() != Material.AIR && !BlockTools.isWaterBased(block)) {
 				return false;
 			}
