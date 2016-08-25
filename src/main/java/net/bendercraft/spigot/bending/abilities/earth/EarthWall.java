@@ -1,9 +1,10 @@
 package net.bendercraft.spigot.bending.abilities.earth;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,6 +20,7 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
+import net.bendercraft.spigot.bending.utils.TempBlock;
 
 @ABendingAbility(name = EarthWall.NAME, element = BendingElement.EARTH)
 public class EarthWall extends BendingActiveAbility {
@@ -32,6 +34,12 @@ public class EarthWall extends BendingActiveAbility {
 
 	@ConfigurationParameter("Width")
 	private static int WIDTH = 6;
+	
+	@ConfigurationParameter("Selection-Time")
+	public static long SELECTION_TIME = 3000;
+	
+	@ConfigurationParameter("Selection-Max")
+	private static int SELECTION_MAX = 30;
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
@@ -40,6 +48,8 @@ public class EarthWall extends BendingActiveAbility {
 	private int halfwidth = WIDTH / 2;
 
 	private List<EarthColumn> columns = new LinkedList<EarthColumn>();
+	private List<Block> selection = new LinkedList<Block>();
+	private List<TempBlock> selected = new LinkedList<TempBlock>();
 
 	public EarthWall(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -53,11 +63,11 @@ public class EarthWall extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		// One column
-		if (getState() != BendingAbilityState.START) {
+		if (!isState(BendingAbilityState.START)) {
 			return false;
 		}
 
-		if (this.bender.isOnCooldown(NAME)) {
+		if (bender.isOnCooldown(NAME)) {
 			return false;
 		}
 		EarthColumn ec = new EarthColumn();
@@ -71,102 +81,124 @@ public class EarthWall extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() != BendingAbilityState.START) {
+		if (!isState(BendingAbilityState.START)) {
 			return false;
 		}
 
 		// Wall
-		if (this.bender.isOnCooldown(NAME)) {
+		if (bender.isOnCooldown(NAME)) {
 			return false;
 		}
-
-		Vector direction = this.player.getEyeLocation().getDirection().normalize();
-
-		double ox, oy, oz;
-		ox = -direction.getZ();
-		oy = 0;
-		oz = direction.getX();
-
-		Vector orth = new Vector(ox, oy, oz);
-		orth = orth.normalize();
-
-		Block sblock = BlockTools.getEarthSourceBlock(this.player, register, RANGE);
-		Location origin;
-		if (sblock == null) {
-			origin = EntityTools.getTargetBlock(this.player, RANGE, BlockTools.getTransparentEarthbending()).getLocation();
-		} else {
-			origin = sblock.getLocation();
-		}
-		World world = origin.getWorld();
-
-		boolean cooldown = false;
-		for (int i = -this.halfwidth; i <= this.halfwidth; i++) {
-			Block block = world.getBlockAt(origin.clone().add(orth.clone().multiply((double) i)));
-
-			if (BlockTools.isTransparentToEarthbending(this.player, block)) {
-				for (int j = 1; j < this.height; j++) {
-					block = block.getRelative(BlockFace.DOWN);
-					if (BlockTools.isEarthbendable(this.player, register, block)) {
-						cooldown = true;
-						EarthColumn ec = new EarthColumn();
-						if(ec.init(this.player, block.getLocation(), this.height)) {
-							this.columns.add(ec);
-						}
-						// } else if (block.getType() != Material.AIR
-						// && !block.isLiquid()) {
-					} else if (!BlockTools.isTransparentToEarthbending(this.player, block)) {
-						break;
-					}
-				}
-			} else if (BlockTools.isEarthbendable(this.player, register, block.getRelative(BlockFace.UP))) {
-				for (int j = 1; j < this.height; j++) {
-					block = block.getRelative(BlockFace.UP);
-
-					if (BlockTools.isTransparentToEarthbending(this.player, block)) {
-						cooldown = true;
-						EarthColumn ec = new EarthColumn();
-						if(ec.init(this.player, block.getRelative(BlockFace.DOWN).getLocation(), this.height)) {
-							this.columns.add(ec);
-						}
-					} else if (!BlockTools.isEarthbendable(this.player, block)) {
-						break;
-					}
-				}
-			} else if (BlockTools.isEarthbendable(this.player, block)) {
-				cooldown = true;
-				EarthColumn ec = new EarthColumn();
-				if(ec.init(this.player, block.getLocation(), this.height)) {
-					this.columns.add(ec);
-				}
-			}
-		}
-		if (cooldown) {
-			this.bender.cooldown(NAME, COOLDOWN);
-		}
-		setState(BendingAbilityState.PROGRESSING);
+		
+		addSelection();
+		
+		setState(BendingAbilityState.PREPARING);
 		return false;
+	}
+	
+	private void addSelection() {
+		Block target = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
+		if(target != null && !TempBlock.isTempBlock(target) && !selection.contains(target) && BlockTools.isEarthbendable(player, target)) {
+			selection.add(target);
+			selected.add(TempBlock.makeTemporary(target, Material.COBBLESTONE, false));
+		}
 	}
 
 	@Override
 	public void progress() {
-		if (getState() == BendingAbilityState.PROGRESSING && this.columns.isEmpty()) {
-			remove();
-			return;
-		}
+		if(isState(BendingAbilityState.PREPARING)) {
+			if(player.isSneaking() 
+					&& System.currentTimeMillis() < getStartedTime() + SELECTION_TIME 
+					&& selection.size() < SELECTION_MAX) {
+				addSelection();
+			} else {
+				setState(BendingAbilityState.PREPARED);
+			}
+		} else if(isState(BendingAbilityState.PREPARED)) {
+			selected.forEach(t -> t.revertBlock());
+			selected.clear();
+			
+			// If only one block has been selected, then keep legacy behavior and expand selection
+			if(selection.size() == 1) {
+				Vector direction = player.getEyeLocation().getDirection().normalize();
 
-		LinkedList<EarthColumn> test = new LinkedList<EarthColumn>(this.columns);
-		for (EarthColumn column : test) {
-			if (!column.progress()) {
-				this.columns.remove(column);
+				double ox, oy, oz;
+				ox = -direction.getZ();
+				oy = 0;
+				oz = direction.getX();
+				
+				Vector orth = new Vector(ox, oy, oz);
+				orth = orth.normalize();
+				
+				World world = selection.get(0).getWorld();
+				for (int i = -halfwidth; i <= halfwidth; i++) {
+					Block block = world.getBlockAt(selection.get(0).getLocation().add(orth.clone().multiply((double) i)));
+					selection.add(block);
+				}
+			}
+			
+			boolean cooldown = false;
+			for(Block block : selection) {
+				if (BlockTools.isTransparentToEarthbending(player, block)) {
+					for (int j = 1; j < height; j++) {
+						block = block.getRelative(BlockFace.DOWN);
+						if (BlockTools.isEarthbendable(player, register, block)) {
+							cooldown = true;
+							EarthColumn ec = new EarthColumn();
+							if(ec.init(player, block.getLocation(), height)) {
+								columns.add(ec);
+							}
+						} else if (!BlockTools.isTransparentToEarthbending(player, block)) {
+							break;
+						}
+					}
+				} else if (BlockTools.isEarthbendable(player, register, block.getRelative(BlockFace.UP))) {
+					for (int j = 1; j < height; j++) {
+						block = block.getRelative(BlockFace.UP);
+
+						if (BlockTools.isTransparentToEarthbending(player, block)) {
+							cooldown = true;
+							EarthColumn ec = new EarthColumn();
+							if(ec.init(player, block.getRelative(BlockFace.DOWN).getLocation(), height)) {
+								columns.add(ec);
+							}
+						} else if (!BlockTools.isEarthbendable(player, block)) {
+							break;
+						}
+					}
+				} else if (BlockTools.isEarthbendable(player, block)) {
+					cooldown = true;
+					EarthColumn ec = new EarthColumn();
+					if(ec.init(player, block.getLocation(), height)) {
+						columns.add(ec);
+					}
+				}
+			}
+			if(cooldown) {
+				bender.cooldown(NAME, COOLDOWN * (columns.size() / WIDTH));
+			}
+			setState(BendingAbilityState.PROGRESSING);
+		} else if(isState(BendingAbilityState.PROGRESSING)) {
+			Iterator<EarthColumn> it = columns.iterator();
+			while(it.hasNext()) {
+				EarthColumn column = it.next();
+				if (!column.progress()) {
+					it.remove();
+				}
+			}
+			if(columns.isEmpty()) {
+				remove();
+				return;
 			}
 		}
 	}
 
 	@Override
 	public void stop() {
-		for (EarthColumn column : this.columns) {
-			column.remove();
-		}
+		selected.forEach(t -> t.revertBlock());
+		selected.clear();
+		columns.forEach(c -> c.remove());
+		columns.clear();
 	}
 
 	@Override
