@@ -255,7 +255,7 @@ public class FireBurst extends BendingActiveAbility {
 			this.location = location.clone();
 			this.origin = location.clone();
 			this.direction = direction.clone().normalize();
-			this.damage = damage*1.5;
+			this.damage = damage;
 			this.speedfactor = BLAST_SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 			if (this.bender.hasPath(BendingPath.NURTURE)) {
 				this.damage *= 0.8;
@@ -307,8 +307,9 @@ public class FireBurst extends BendingActiveAbility {
 				} else {
 					entity.setVelocity(this.direction.clone().multiply(BLAST_PUSH_FACTOR));
 				}
-				Enflamed.enflame(this.player, entity, 1);
+				
 				DamageTools.damageEntity(bender, entity, ability, damage);
+				Enflamed.enflame(this.player, entity, 1);
 				return false;
 			}
 			return true;
