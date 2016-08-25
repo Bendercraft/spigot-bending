@@ -53,6 +53,10 @@ public class TempBlock {
 	public BlockState getState() {
 		return this.state;
 	}
+	
+	public boolean isBendAllowed() {
+		return bendAllowed;
+	}
 
 	public static void revertBlock(Block block) {
 		if (instances.containsKey(block)) {
@@ -94,8 +98,7 @@ public class TempBlock {
 		}
 	}
 
-	public boolean isBendAllowed() {
-		return bendAllowed;
+	public static int count() {
+		return instances.size();
 	}
-
 }

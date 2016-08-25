@@ -10,6 +10,7 @@ import net.bendercraft.spigot.bending.Messages;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.commands.BendingCommand;
+import net.bendercraft.spigot.bending.utils.TempBlock;
 
 public class DebugExecution extends BendingCommand {
 
@@ -30,6 +31,7 @@ public class DebugExecution extends BendingCommand {
 		});
 
 		long now = System.currentTimeMillis();
+		sender.sendMessage("Total temp block : "+ChatColor.GOLD+TempBlock.count());
 		sender.sendMessage("Total runnings abilities : "+ChatColor.GOLD+runnings.size());
 		for(BendingAbility running : runnings) {
 			sender.sendMessage(" - "+ChatColor.DARK_PURPLE+running.getName()+ChatColor.RESET+" from "+ChatColor.GREEN+running.getPlayer().getName()+ChatColor.RESET+" since "+ChatColor.RED+((now - running.getStartedTime())/1000)+"s");
