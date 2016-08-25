@@ -1,8 +1,6 @@
 package net.bendercraft.spigot.bending.utils;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -88,10 +86,8 @@ public class TempBlock {
 	}
 
 	public static void removeAll() {
-		List<TempBlock> toRevert = new LinkedList<TempBlock>(instances.values());
-		for (TempBlock block : toRevert) {
-			block.revertBlock();
-		}
+		instances.values().forEach(t -> t.revertBlock());
+		instances.clear();
 	}
 
 	public boolean isBendAllowed() {
