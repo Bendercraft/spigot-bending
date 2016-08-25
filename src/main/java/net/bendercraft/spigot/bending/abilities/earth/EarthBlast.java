@@ -110,8 +110,11 @@ public class EarthBlast extends BendingActiveAbility {
 		// Player is selecting a block as source
 		if(isState(BendingAbilityState.START) 
 				|| isState(BendingAbilityState.PREPARED)) {
-			block(player); // Despite EarthBlast being allowed to have multiple instance for same player, when selecting we do NOT want that behavior
-			
+			block(player);
+			if(current != null) {
+				current.revertBlock();
+				current = null;
+			}
 			Block block = BlockTools.getEarthSourceBlock(player, register, SELECT_RANGE);
 			if (block != null) {
 				if (EarthPassive.isPassiveSand(block)) {
