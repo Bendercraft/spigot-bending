@@ -116,7 +116,8 @@ public class OctopusForm extends BendingActiveAbility {
 			if(target != null) {
 				WaterTentacle closest = tentacles.get(0);
 				for(WaterTentacle tentacle : tentacles) {
-					if(target.getLocation().distance(closest.origin) > target.getLocation().distance(tentacle.origin)) {
+					if(closest.origin == null 
+							|| (tentacle.origin != null && target.getLocation().distance(closest.origin) > target.getLocation().distance(tentacle.origin))) {
 						closest = tentacle;
 					}
 				}
