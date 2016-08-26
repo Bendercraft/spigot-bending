@@ -161,4 +161,8 @@ public abstract class BendingAbility {
 	public BendingElement getElement() {
 		return register.getElement();
 	}
+	
+	public RegisteredAbility getRegister() {
+		return this.register;
+	}
 }

@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -19,6 +20,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -130,26 +132,10 @@ public class PoisonnedDart extends BendingActiveAbility {
 		}
 		
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, RADIUS)) {
-			if (entity == player || ProtectionManager.isEntityProtected(entity)) {
-				continue;
+			if(affect(entity)) {
+				remove();
+				return;
 			}
-
-			if (effect.type == null) {
-				for (PotionEffect effect : entity.getActivePotionEffects()) {
-					entity.removePotionEffect(effect.getType());
-				}
-				entity.getActivePotionEffects().clear();
-			} else {
-				entity.addPotionEffect(new PotionEffect(effect.type, 20*2, 1));
-				DamageTools.damageEntity(bender, entity, this, DAMAGE);
-			}
-			if(ParaStick.hasParaStick(player) && entity instanceof Player) {
-				ParaStick stick = ParaStick.getParaStick(player);
-				stick.consume();
-				EntityTools.blockChi((Player) entity, PARASTICK_CHIBLOCK_DURATION);
-			}
-			remove();
-			return;
 		}
 	}
 	
@@ -163,6 +149,32 @@ public class PoisonnedDart extends BendingActiveAbility {
 		return this.player;
 	}
 	
+	private boolean affect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		if (entity == player) {
+			return false;
+		}
+
+		if (effect.type == null) {
+			for (PotionEffect effect : entity.getActivePotionEffects()) {
+				entity.removePotionEffect(effect.getType());
+			}
+			entity.getActivePotionEffects().clear();
+		} else {
+			entity.addPotionEffect(new PotionEffect(effect.type, 20*2, 1));
+			DamageTools.damageEntity(bender, entity, this, DAMAGE);
+		}
+		if(ParaStick.hasParaStick(player) && entity instanceof Player) {
+			ParaStick stick = ParaStick.getParaStick(player);
+			stick.consume();
+			EntityTools.blockChi((Player) entity, PARASTICK_CHIBLOCK_DURATION);
+		}
+		return true;
+	}
 	
 	private enum Effect {
 		PURGE(null, null, Particle.HEART), 

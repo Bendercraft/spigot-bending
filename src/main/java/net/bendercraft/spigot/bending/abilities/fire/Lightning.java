@@ -12,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
@@ -20,9 +21,9 @@ import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 @ABendingAbility(name = Lightning.NAME, affinity = BendingAffinity.LIGHTNING, canBeUsedWithTools = true)
 public class Lightning extends BendingActiveAbility {
@@ -194,7 +195,9 @@ public class Lightning extends BendingActiveAbility {
 	}
 
 	private void affect(Entity entity) {
-		if (ProtectionManager.isEntityProtected(entity)) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
 			return;
 		}
 		DamageTools.damageEntity(bender, entity, this, damage);

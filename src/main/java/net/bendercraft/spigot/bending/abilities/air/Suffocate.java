@@ -15,12 +15,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -77,24 +79,11 @@ public class Suffocate extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.START) {
+		if(isState(BendingAbilityState.START)) {
 			Entity target = EntityTools.getTargetedEntity(this.player, RANGE);
-
-			if (!(target instanceof Player)) {
-				return false;
+			if(affect(target)) {
+				setState(BendingAbilityState.PROGRESSING);
 			}
-
-			this.target = (Player) target;
-			this.targetLocation = this.target.getLocation().getBlock();
-
-			if (ProtectionManager.isLocationProtectedFromBending(this.player, register, this.target.getLocation())) {
-				return false;
-			}
-
-			this.helmet = this.target.getInventory().getHelmet();
-			this.target.getInventory().setHelmet(this.temp);
-
-			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
@@ -179,5 +168,23 @@ public class Suffocate extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.player;
+	}
+	
+	private boolean affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		
+		if (!(entity instanceof Player)) {
+			return false;
+		}
+
+		target = (Player) entity;
+		targetLocation = target.getLocation().getBlock();
+		helmet = target.getInventory().getHelmet();
+		target.getInventory().setHelmet(temp);
+		return true;
 	}
 }

@@ -12,16 +12,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 @ABendingAbility(name = SmokeBomb.NAME, affinity = BendingAffinity.CHI, shift=false)
 public class SmokeBomb extends BendingActiveAbility {
@@ -126,16 +127,9 @@ public class SmokeBomb extends BendingActiveAbility {
 		this.targets.clear();
 
 		for (LivingEntity targ : newTargets) {
-			if(ProtectionManager.isEntityProtected(targ)) {
-				continue;
+			if(affect(targ)) {
+				this.targets.add(targ);
 			}
-			if (targ != player) {
-				targ.addPotionEffect(this.blindnessTarget);
-			} else {
-				PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
-				targ.addPotionEffect(invisibilityLauncher);
-			}
-			this.targets.add(targ);
 		}
 
 		if ((this.ticksRemaining % 16) == 0) {
@@ -175,5 +169,20 @@ public class SmokeBomb extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+	
+	private boolean affect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		if (entity != player) {
+			entity.addPotionEffect(this.blindnessTarget);
+		} else {
+			PotionEffect invisibilityLauncher = new PotionEffect(PotionEffectType.INVISIBILITY, this.ticksRemaining, 1);
+			entity.addPotionEffect(invisibilityLauncher);
+		}
+		return true;
 	}
 }

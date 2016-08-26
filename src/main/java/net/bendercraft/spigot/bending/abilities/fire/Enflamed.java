@@ -8,12 +8,14 @@ import java.util.Map;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import net.bendercraft.spigot.bending.Bending;
+import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPath;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 public class Enflamed {
 	private static Map<Entity, Enflamed> instances = new HashMap<Entity, Enflamed>();
@@ -26,12 +28,10 @@ public class Enflamed {
 	private long time;
 	private BendingPlayer bender;
 	private double damage;
+	private BendingAbility ability;
 
-	public static void enflame(Player source, Entity target, int seconds) {
-		if (target.getEntityId() == source.getEntityId()) {
-			return;
-		}
-		if (ProtectionManager.isEntityProtected(target)) {
+	public static void enflame(Player source, Entity target, int seconds, BendingAbility ability) {
+		if (target == source) {
 			return;
 		}
 		
@@ -43,13 +43,15 @@ public class Enflamed {
 		if (bender.hasPath(BendingPath.NURTURE)) {
 			if (instances.containsKey(target) && instances.get(target).bender == bender) {
 				instances.get(target).addSeconds(seconds);
+				instances.get(target).ability = ability;
 				return;
 			}
 		}
-		instances.put(target, new Enflamed(bender, target, seconds));
+		instances.put(target, new Enflamed(bender, target, seconds, ability));
 	}
 	
-	private Enflamed(BendingPlayer bender, Entity target, int seconds) {
+	private Enflamed(BendingPlayer bender, Entity target, int seconds, BendingAbility ability) {
+		this.ability = ability;
 		this.target = target;
 		this.time = System.currentTimeMillis();
 		this.secondsLeft = seconds;
@@ -85,19 +87,29 @@ public class Enflamed {
 		if(secondsLeft <= 0) {
 			return false;
 		}
-		if (this.target.getFireTicks() == 0 && !this.bender.hasPath(BendingPath.NURTURE)) {
+		if (target.getFireTicks() == 0 && !bender.hasPath(BendingPath.NURTURE)) {
 			return false;
 		}
 		
-		if (target instanceof Player && !canBurn((Player) this.target)) {
+		if (target instanceof Player && !canBurn((Player) target)) {
 			return false;
 		}
 
-		this.target.setFireTicks(this.secondsLeft * 20);
-		this.secondsLeft -= 1;
+		affect(target);
+		secondsLeft -= 1;
 		
-		DamageTools.damageEntity(bender, this.target, null, damage, true, 0, 0.0F, true);
+		
 		return true;
+	}
+	
+	public void affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(ability, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		target.setFireTicks(this.secondsLeft * 20);
+		DamageTools.damageEntity(bender, target, ability, damage, true, 0, 0.0F, true);
 	}
 
 	public static boolean isEnflamed(Entity entity) {

@@ -25,10 +25,10 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 /**
  * State Preparing : Player is sneaking but burst is not ready yet State
@@ -283,10 +283,7 @@ public class FireBurst extends BendingActiveAbility {
 			}
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, BLAST_AFFECTING_RADIUS)) {
-				boolean result = affect(entity);
-				// If result is true, do not return here ! we need to iterate
-				// fully !
-				if (result == false) {
+				if (affect(entity)) {
 					return false;
 				}
 			}
@@ -298,21 +295,25 @@ public class FireBurst extends BendingActiveAbility {
 		}
 
 		private boolean affect(LivingEntity entity) {
-			if (entity.getEntityId() != this.player.getEntityId()) {
-				if (ProtectionManager.isEntityProtected(entity)) {
-					return false;
-				}
-				if (AvatarState.isAvatarState(this.player)) {
-					entity.setVelocity(this.direction.clone().multiply(AvatarState.getValue(BLAST_PUSH_FACTOR)));
-				} else {
-					entity.setVelocity(this.direction.clone().multiply(BLAST_PUSH_FACTOR));
-				}
-				
-				DamageTools.damageEntity(bender, entity, ability, damage);
-				Enflamed.enflame(this.player, entity, 1);
+			BendingHitEvent event = new BendingHitEvent(ability, entity);
+			Bending.callEvent(event);
+			if(event.isCancelled()) {
 				return false;
 			}
+			if (entity == player) {
+				return false;
+			}
+			
+			if (AvatarState.isAvatarState(this.player)) {
+				entity.setVelocity(this.direction.clone().multiply(AvatarState.getValue(BLAST_PUSH_FACTOR)));
+			} else {
+				entity.setVelocity(this.direction.clone().multiply(BLAST_PUSH_FACTOR));
+			}
+			
+			DamageTools.damageEntity(bender, entity, ability, damage);
+			Enflamed.enflame(this.player, entity, 1, ability);
 			return true;
 		}
+		
 	}
 }

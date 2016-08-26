@@ -21,9 +21,9 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
 @ABendingAbility(name = AirBurst.NAME, element = BendingElement.AIR)
@@ -157,7 +157,7 @@ public class AirBurst extends BendingActiveAbility {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				blasts.add(new BurstBlast(location, direction.normalize(), AirBurst.PUSHFACTOR, player));
+				blasts.add(new BurstBlast(this, location, direction.normalize(), AirBurst.PUSHFACTOR, player));
 			}
 		}
 		setState(BendingAbilityState.PROGRESSING);
@@ -179,7 +179,7 @@ public class AirBurst extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					blasts.add(new BurstBlast(location, direction.normalize(), AirBurst.PUSHFACTOR, player));
+					blasts.add(new BurstBlast(this, location, direction.normalize(), AirBurst.PUSHFACTOR, player));
 				}
 			}
 		}
@@ -199,7 +199,7 @@ public class AirBurst extends BendingActiveAbility {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				blasts.add(new BurstBlast(location, direction.normalize(), AirBurst.PUSHFACTOR, player));
+				blasts.add(new BurstBlast(this, location, direction.normalize(), AirBurst.PUSHFACTOR, player));
 			}
 		}
 		setState(BendingAbilityState.PROGRESSING);
@@ -241,11 +241,13 @@ public class AirBurst extends BendingActiveAbility {
 		private double speedfactor;
 		private Player player;
 		private double range;
+		private AirBurst parent;
 
-		public BurstBlast(Location location, Vector direction, double factorpush, Player player) {
+		public BurstBlast(AirBurst parent, Location location, Vector direction, double factorpush, Player player) {
 			if (location.getBlock().isLiquid()) {
 				return;
 			}
+			this.parent = parent;
 			this.player = player;
 			this.origin = location.clone();
 			this.direction = direction.clone();
@@ -304,7 +306,9 @@ public class AirBurst extends BendingActiveAbility {
 		}
 
 		private void affect(Entity entity) {
-			if (ProtectionManager.isEntityProtected(entity)) {
+			BendingHitEvent event = new BendingHitEvent(parent, entity);
+			Bending.callEvent(event);
+			if(event.isCancelled()) {
 				return;
 			}
 

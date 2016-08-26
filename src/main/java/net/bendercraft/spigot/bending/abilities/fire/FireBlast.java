@@ -31,6 +31,7 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -210,10 +211,7 @@ public class FireBlast extends BendingActiveAbility {
 			}
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.location, AFFECTING_RADIUS)) {
-				boolean result = affect(entity);
-				// If result is true, do not return here ! we need to iterate
-				// fully !
-				if (result == false) {
+				if (affect(entity)) {
 					remove();
 					return;
 				}
@@ -236,19 +234,21 @@ public class FireBlast extends BendingActiveAbility {
 	}
 
 	private boolean affect(LivingEntity entity) {
-		if (entity.getEntityId() != this.player.getEntityId()) {
-			if (ProtectionManager.isEntityProtected(entity)) {
-				return false;
-			}
-			if (AvatarState.isAvatarState(this.player)) {
-				entity.setVelocity(this.direction.clone().multiply(AvatarState.getValue(PUSH_FACTOR)));
-			} else {
-				entity.setVelocity(this.direction.clone().multiply(PUSH_FACTOR));
-			}
-			DamageTools.damageEntity(bender, entity, this, damage);
-			Enflamed.enflame(this.player, entity, 2);
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
 			return false;
 		}
+		if (entity == player) {
+			return false;
+		}
+		if (AvatarState.isAvatarState(this.player)) {
+			entity.setVelocity(this.direction.clone().multiply(AvatarState.getValue(PUSH_FACTOR)));
+		} else {
+			entity.setVelocity(this.direction.clone().multiply(PUSH_FACTOR));
+		}
+		DamageTools.damageEntity(bender, entity, this, damage);
+		Enflamed.enflame(this.player, entity, 2, this);
 		return true;
 	}
 	

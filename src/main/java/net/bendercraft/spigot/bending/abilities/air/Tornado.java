@@ -7,12 +7,14 @@ import java.util.Map.Entry;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
@@ -20,6 +22,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
@@ -117,72 +120,7 @@ public class Tornado extends BendingActiveAbility {
 			this.origin.setY(this.origin.getY() - ((1. / 10.) * this.height));
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.origin, this.height)) {
-				if (ProtectionManager.isEntityProtected(entity)) {
-					continue;
-				}
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, register, entity.getLocation())) {
-					continue;
-				}
-
-				double y = entity.getLocation().getY();
-				double factor;
-				if ((y > this.origin.getY()) && (y < (this.origin.getY() + this.height))) {
-					factor = (y - this.origin.getY()) / this.height;
-					Location testloc = new Location(this.origin.getWorld(), this.origin.getX(), y, this.origin.getZ());
-					if (testloc.distance(entity.getLocation()) < (this.radius * factor)) {
-						double x, z, vx, vz, mag;
-						double angle = 100;
-						double vy = NPC_PUSH;
-						angle = Math.toRadians(angle);
-
-						x = entity.getLocation().getX() - this.origin.getX();
-						z = entity.getLocation().getZ() - this.origin.getZ();
-
-						mag = Math.sqrt((x * x) + (z * z));
-
-						vx = ((x * Math.cos(angle)) - (z * Math.sin(angle))) / mag;
-						vz = ((x * Math.sin(angle)) + (z * Math.cos(angle))) / mag;
-
-						if (entity instanceof Player) {
-							double dy = y - this.origin.getY();
-							if (dy >= (this.height * .95)) {
-								vy = 0;
-							} else if (dy >= (this.height * .85)) {
-								vy = 6.0 * (.95 - (dy / this.height));
-							} else {
-								vy = PC_PUSH;
-							}
-						}
-
-						if (entity.getEntityId() == this.player.getEntityId()) {
-							Vector direction = this.player.getEyeLocation().getDirection().clone().normalize();
-							vx = direction.getX();
-							vz = direction.getZ();
-							Location playerloc = this.player.getLocation();
-							double py = playerloc.getY();
-							double oy = this.origin.getY();
-							double dy = py - oy;
-							if (dy >= (this.height * .95)) {
-								vy = 0;
-							} else if (dy >= (this.height * .85)) {
-								vy = 6.0 * (.95 - (dy / this.height));
-							} else {
-								vy = .6;
-							}
-						} else {
-							entity.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 10, 1));
-						}
-
-						Vector velocity = entity.getVelocity();
-						velocity.setX(vx);
-						velocity.setZ(vz);
-						velocity.setY(vy);
-						velocity.multiply(timefactor * 0.75);
-						entity.setVelocity(velocity);
-						entity.setFallDistance((float) (entity.getFallDistance() / 3.0));
-					}
-				}
-				EntityTools.fallImmunity.put(entity.getUniqueId(), System.currentTimeMillis() + FALL_IMMUNITY);
+				affect(entity, timefactor);
 			}
 
 			Map<Integer, Integer> toAdd = new HashMap<Integer, Integer>();
@@ -226,6 +164,74 @@ public class Tornado extends BendingActiveAbility {
 	@Override
 	public long getMaxMillis() {
 		return 60 * 1000;
+	}
+	
+	private void affect(Entity entity, double timefactor) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+
+		double y = entity.getLocation().getY();
+		double factor;
+		if ((y > this.origin.getY()) && (y < (this.origin.getY() + this.height))) {
+			factor = (y - this.origin.getY()) / this.height;
+			Location testloc = new Location(this.origin.getWorld(), this.origin.getX(), y, this.origin.getZ());
+			if (testloc.distance(entity.getLocation()) < (this.radius * factor)) {
+				double x, z, vx, vz, mag;
+				double angle = 100;
+				double vy = NPC_PUSH;
+				angle = Math.toRadians(angle);
+
+				x = entity.getLocation().getX() - this.origin.getX();
+				z = entity.getLocation().getZ() - this.origin.getZ();
+
+				mag = Math.sqrt((x * x) + (z * z));
+
+				vx = ((x * Math.cos(angle)) - (z * Math.sin(angle))) / mag;
+				vz = ((x * Math.sin(angle)) + (z * Math.cos(angle))) / mag;
+
+				if (entity instanceof Player) {
+					double dy = y - this.origin.getY();
+					if (dy >= (this.height * .95)) {
+						vy = 0;
+					} else if (dy >= (this.height * .85)) {
+						vy = 6.0 * (.95 - (dy / this.height));
+					} else {
+						vy = PC_PUSH;
+					}
+				}
+
+				if (entity.getEntityId() == this.player.getEntityId()) {
+					Vector direction = this.player.getEyeLocation().getDirection().clone().normalize();
+					vx = direction.getX();
+					vz = direction.getZ();
+					Location playerloc = this.player.getLocation();
+					double py = playerloc.getY();
+					double oy = this.origin.getY();
+					double dy = py - oy;
+					if (dy >= (this.height * .95)) {
+						vy = 0;
+					} else if (dy >= (this.height * .85)) {
+						vy = 6.0 * (.95 - (dy / this.height));
+					} else {
+						vy = .6;
+					}
+				} else {
+					((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 10, 1));
+				}
+
+				Vector velocity = entity.getVelocity();
+				velocity.setX(vx);
+				velocity.setZ(vz);
+				velocity.setY(vy);
+				velocity.multiply(timefactor * 0.75);
+				entity.setVelocity(velocity);
+				entity.setFallDistance((float) (entity.getFallDistance() / 3.0));
+			}
+		}
+		EntityTools.fallImmunity.put(entity.getUniqueId(), System.currentTimeMillis() + FALL_IMMUNITY);
 	}
 
 }

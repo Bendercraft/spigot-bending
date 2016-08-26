@@ -25,6 +25,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -540,10 +541,13 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	private void deflect(LivingEntity entity) {
-		if (ProtectionManager.isEntityProtected(entity)) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
 			return;
 		}
-		if (entity.getEntityId() == this.player.getEntityId()) {
+		
+		if (entity == player) {
 			return;
 		}
 		double x, z, vx, vz, mag;
@@ -582,10 +586,13 @@ public class Torrent extends BendingActiveAbility {
 	}
 
 	private void affect(LivingEntity entity, Vector direction) {
-		if (ProtectionManager.isEntityProtected(entity)) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
 			return;
 		}
-		if (entity.getEntityId() == this.player.getEntityId()) {
+		
+		if (entity == player) {
 			return;
 		}
 

@@ -11,6 +11,7 @@ import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -186,55 +187,7 @@ public class AirSuction extends BendingActiveAbility {
 		}
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, affectingradius)) {
-			if (ProtectionManager.isEntityProtected(entity)) {
-				continue;
-			}
-
-			if (entity.getType().equals(EntityType.ENDER_PEARL)) {
-				continue;
-			}
-
-			if (entity.getFireTicks() > 0) {
-				entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
-				entity.setFireTicks(0);
-			}
-			if (!((entity.getEntityId() != this.player.getEntityId()) || this.otherorigin)) {
-				continue;
-			}
-			Vector velocity = entity.getVelocity();
-			double max = maxspeed;
-			double factor = pushfactor;
-			if (AvatarState.isAvatarState(this.player)) {
-				max = AvatarState.getValue(maxspeed);
-				factor = AvatarState.getValue(factor);
-			}
-
-			Vector push = this.direction.clone();
-			if ((Math.abs(push.getY()) > max) && (entity.getEntityId() != this.player.getEntityId())) {
-				if (push.getY() < 0) {
-					push.setY(-max);
-				} else {
-					push.setY(max);
-				}
-			}
-
-			factor *= 1 - (this.location.distance(this.origin) / (2 * this.range));
-
-			double comp = velocity.dot(push.clone().normalize());
-			if (comp > factor) {
-				velocity.multiply(.5);
-				velocity.add(push.clone().normalize().multiply(velocity.clone().dot(push.clone().normalize())));
-			} else if ((comp + (factor * .5)) > factor) {
-				velocity.add(push.clone().multiply(factor - comp));
-			} else {
-				velocity.add(push.clone().multiply(factor * .5));
-			}
-			if (entity.getEntityId() == this.player.getEntityId()) {
-				velocity.multiply(1.0 / 1.85);
-			}
-			entity.setVelocity(velocity);
-			entity.setFallDistance(0);
-
+			affect(entity);
 		}
 		advanceLocation();
 	}
@@ -257,6 +210,59 @@ public class AirSuction extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.id;
+	}
+	
+	private void affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+
+		if (entity.getType().equals(EntityType.ENDER_PEARL)) {
+			return;
+		}
+
+		if (entity.getFireTicks() > 0) {
+			entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
+			entity.setFireTicks(0);
+		}
+		if (entity == player && !this.otherorigin) {
+			return;
+		}
+		Vector velocity = entity.getVelocity();
+		double max = maxspeed;
+		double factor = pushfactor;
+		if (AvatarState.isAvatarState(this.player)) {
+			max = AvatarState.getValue(maxspeed);
+			factor = AvatarState.getValue(factor);
+		}
+
+		Vector push = this.direction.clone();
+		if (Math.abs(push.getY()) > max && entity != player) {
+			if (push.getY() < 0) {
+				push.setY(-max);
+			} else {
+				push.setY(max);
+			}
+		}
+
+		factor *= 1 - (this.location.distance(this.origin) / (2 * this.range));
+
+		double comp = velocity.dot(push.clone().normalize());
+		if (comp > factor) {
+			velocity.multiply(.5);
+			velocity.add(push.clone().normalize().multiply(velocity.clone().dot(push.clone().normalize())));
+		} else if ((comp + (factor * .5)) > factor) {
+			velocity.add(push.clone().multiply(factor - comp));
+		} else {
+			velocity.add(push.clone().multiply(factor * .5));
+		}
+		if (entity.getEntityId() == this.player.getEntityId()) {
+			velocity.multiply(1.0 / 1.85);
+		}
+		entity.setVelocity(velocity);
+		entity.setFallDistance(0);
 	}
 
 }

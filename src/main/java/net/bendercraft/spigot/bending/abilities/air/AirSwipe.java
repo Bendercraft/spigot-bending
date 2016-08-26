@@ -29,6 +29,7 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -282,31 +283,7 @@ public class AirSwipe extends BendingActiveAbility {
 				// Check affected people
 				PluginTools.removeSpouts(location, this.player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, AFFECTING_RADIUS)) {
-					if (ProtectionManager.isEntityProtected(entity)) {
-						continue;
-					}
-					if (ProtectionManager.isLocationProtectedFromBending(this.player, register, entity.getLocation())) {
-						continue;
-					}
-
-					if (entity.getEntityId() != this.player.getEntityId()) {
-						if (AvatarState.isAvatarState(this.player)) {
-							entity.setVelocity(direction.multiply(AvatarState.getValue(this.pushfactor)));
-						} else {
-							entity.setVelocity(direction.multiply(this.pushfactor));
-						}
-
-						if (!this.affectedEntities.contains(entity)) {
-							if (this.damage != 0) {
-								DamageTools.damageEntity(bender, entity, this, this.damage);
-							}
-							this.affectedEntities.add(entity);
-						}
-
-						// if (entity instanceof Player) {
-						// new Flight((Player) entity, this.player);
-						// }
-
+					if(affect(entity, direction)) {
 						toRemove.add(direction);
 					}
 				}
@@ -356,6 +333,32 @@ public class AirSwipe extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+	
+	private boolean affect(Entity entity, Vector direction) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+
+		if (entity != player) {
+			if (AvatarState.isAvatarState(this.player)) {
+				entity.setVelocity(direction.multiply(AvatarState.getValue(this.pushfactor)));
+			} else {
+				entity.setVelocity(direction.multiply(this.pushfactor));
+			}
+
+			if (!this.affectedEntities.contains(entity)) {
+				if (this.damage != 0) {
+					DamageTools.damageEntity(bender, entity, this, this.damage);
+				}
+				this.affectedEntities.add(entity);
+			}
+
+			return true;
+		}
+		return false;
 	}
 
 }

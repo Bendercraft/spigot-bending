@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
@@ -25,6 +26,7 @@ import net.bendercraft.spigot.bending.abilities.fire.FireBurst.BurstBlast;
 import net.bendercraft.spigot.bending.abilities.water.TorrentBurst;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -306,7 +308,7 @@ public class AvatarShield extends BendingActiveAbility {
 			
 			List<Block> doneBlocks = new ArrayList<Block>();
 			List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(loc, radius + 2);
-			List<Entity> affectedEntities = new ArrayList<Entity>();
+			
 			
 			for (double theta = startangle; theta < (angle + startangle); theta += 20) {
 				double phi = Math.toRadians(theta);
@@ -326,26 +328,26 @@ public class AvatarShield extends BendingActiveAbility {
 						}
 						
 						for (LivingEntity entity : entities) {
-							if (ProtectionManager.isEntityProtected(entity)) {
-								continue;
-							}
-							if (entity.getWorld() != blockloc.getWorld()) {
-								continue;
-							}
-							if (!affectedEntities.contains(entity) && (entity.getLocation().distance(blockloc) <= 1.5)) {
-								deflect(entity);
-							}
+							affect(entity, blockloc);
 						}
 					}
 				}
 			}
 		}
 		
-		private void deflect(LivingEntity entity) {
-			if (ProtectionManager.isEntityProtected(entity)) {
+		private void affect(Entity entity, Location blockloc) {
+			BendingHitEvent event = new BendingHitEvent(ability, entity);
+			Bending.callEvent(event);
+			if(event.isCancelled()) {
 				return;
 			}
-			if (entity.getEntityId() == bender.getPlayer().getEntityId()) {
+			if(ProtectionManager.isEntityProtected(entity)) {
+				return;
+			}
+			if(entity.getWorld() != blockloc.getWorld()) {
+				return;
+			}
+			if(entity.getLocation().distance(blockloc) >= 1.5) {
 				return;
 			}
 			double x, z, vx, vz, mag;

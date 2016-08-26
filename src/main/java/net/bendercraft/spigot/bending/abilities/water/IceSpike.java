@@ -10,10 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
@@ -24,11 +26,11 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
 @ABendingAbility(name = IceSpike.NAME, element = BendingElement.WATER)
@@ -182,14 +184,7 @@ public class IceSpike extends BendingActiveAbility {
 			}
 			
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(current, radius)) {
-				if (ProtectionManager.isEntityProtected(entity)) {
-					continue;
-				}
-				if (entity != parent.getPlayer()) {
-					Vector vector = parent.getPlayer().getEyeLocation().getDirection();
-					entity.setVelocity(vector.normalize().multiply(push));
-
-					DamageTools.damageEntity(parent.getBender(), entity, parent, damage);
+				if(affect(entity)) {
 					return false;
 				}
 			}
@@ -206,6 +201,23 @@ public class IceSpike extends BendingActiveAbility {
 			if(previous != null) {
 				previous.revertBlock();
 			}
+		}
+		
+		private boolean affect(Entity entity) {
+			BendingHitEvent event = new BendingHitEvent(parent, entity);
+			Bending.callEvent(event);
+			if(event.isCancelled()) {
+				return false;
+			}
+			
+			if (entity == parent.getPlayer()) {
+				return false;
+			}
+			Vector vector = parent.getPlayer().getEyeLocation().getDirection();
+			entity.setVelocity(vector.normalize().multiply(push));
+
+			DamageTools.damageEntity(parent.getBender(), entity, parent, damage);
+			return true;
 		}
 		
 	}

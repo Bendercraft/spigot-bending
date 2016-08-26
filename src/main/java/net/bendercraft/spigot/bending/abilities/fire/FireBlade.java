@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -18,6 +19,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.listeners.BendingDenyItem;
 import net.bendercraft.spigot.bending.listeners.BendingPlayerListener;
 import net.bendercraft.spigot.bending.utils.DamageTools;
@@ -127,8 +129,13 @@ public class FireBlade extends BendingActiveAbility {
 	}
 	
 	public void affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
 		DamageTools.damageEntity(bender, entity, this, DAMAGE);
-		Enflamed.enflame(player, entity, 4);
+		Enflamed.enflame(player, entity, 4, this);
 	}
 
 	@Override

@@ -55,10 +55,10 @@ public class EarthListener implements Listener {
 
 	@EventHandler
 	public void unlockEarthGrab(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.EARTH)) {
-				if (event.getAbility().equalsIgnoreCase(EarthWall.NAME)) {
+				if (event.getAbility().getName().equalsIgnoreCase(EarthWall.NAME)) {
 					int raised = 0;
 					Player p = bPlayer.getPlayer();
 					UUID id = p.getUniqueId();
@@ -79,7 +79,7 @@ public class EarthListener implements Listener {
 					} else {
 						raiseAmountGrab.put(id, raised);
 					}
-				} else if (event.getAbility().equalsIgnoreCase(EarthGrab.NAME)) {
+				} else if (event.getAbility().getName().equalsIgnoreCase(EarthGrab.NAME)) {
 					List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 					for (LivingEntity entity : entities) {
@@ -116,9 +116,9 @@ public class EarthListener implements Listener {
 
 	@EventHandler
 	public void unlockEarthArmor(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equalsIgnoreCase(EarthGrab.NAME)) {
+			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().getName().equalsIgnoreCase(EarthGrab.NAME)) {
 				int grabs = 0;
 				Player p = bPlayer.getPlayer();
 				UUID id = p.getUniqueId();
@@ -143,10 +143,10 @@ public class EarthListener implements Listener {
 
 	@EventHandler
 	public void unlockEarthTunel(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
 			if (bPlayer.isBender(BendingElement.EARTH)) {
-				if (event.getAbility().equalsIgnoreCase(Collapse.NAME)) {
+				if (event.getAbility().getName().equalsIgnoreCase(Collapse.NAME)) {
 					int comps = 0;
 					Player p = bPlayer.getPlayer();
 					UUID id = p.getUniqueId();
@@ -203,9 +203,9 @@ public class EarthListener implements Listener {
 
 	@EventHandler
 	public void unlockCatapult(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().equalsIgnoreCase(EarthWall.NAME)) {
+			if (bPlayer.isBender(BendingElement.EARTH) && event.getAbility().getName().equalsIgnoreCase(EarthWall.NAME)) {
 				int raised = 0;
 				Player p = bPlayer.getPlayer();
 				UUID id = p.getUniqueId();

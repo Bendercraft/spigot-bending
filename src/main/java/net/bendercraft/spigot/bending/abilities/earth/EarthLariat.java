@@ -3,17 +3,20 @@ package net.bendercraft.spigot.bending.abilities.earth;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
@@ -54,16 +57,10 @@ public class EarthLariat extends BendingActiveAbility {
 				
 				if(BlockTools.isEarthbendable(player, register, player.getLocation().getBlock().getRelative(BlockFace.DOWN))
 						&& BlockTools.isEarthbendable(player, register, target.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
-					player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
-					target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
-					
-					Location middle = player.getLocation().clone().add(target.getLocation()).multiply(0.5);
-					
-					player.setVelocity(middle.toVector().clone().subtract(player.getLocation().toVector()).multiply(0.5));
-					target.setVelocity(middle.toVector().clone().subtract(target.getLocation().toVector()).multiply(0.5));
-					
-					setState(BendingAbilityState.PROGRESSING);
-					bender.cooldown(this, COOLDOWN);
+					if(affect(target)) {
+						setState(BendingAbilityState.PROGRESSING);
+						bender.cooldown(this, COOLDOWN);
+					}
 				}
 			}
 		} else if(getState() == BendingAbilityState.PROGRESSING) {
@@ -96,6 +93,23 @@ public class EarthLariat extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+	
+	private boolean affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		
+		player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
+		target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
+		
+		Location middle = player.getLocation().clone().add(target.getLocation()).multiply(0.5);
+		
+		player.setVelocity(middle.toVector().clone().subtract(player.getLocation().toVector()).multiply(0.5));
+		target.setVelocity(middle.toVector().clone().subtract(target.getLocation().toVector()).multiply(0.5));
+		return true;
 	}
 
 }

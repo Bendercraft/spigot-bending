@@ -1,11 +1,14 @@
 package net.bendercraft.spigot.bending.abilities.arts;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
 import java.util.Map;
@@ -41,9 +44,10 @@ public class Mark extends BendingActiveAbility {
 	public boolean sneak() {
 		target = EntityTools.getTargetedEntity(player, RANGE);
 		if(target != null) {
-			target.addPotionEffect(PotionEffectType.GLOWING.createEffect(DURATION*20/1000, 1));
-			bender.cooldown(this, DURATION);
-			setState(BendingAbilityState.PROGRESSING);
+			if(affect(target)) {
+				bender.cooldown(this, DURATION);
+				setState(BendingAbilityState.PROGRESSING);
+			}
 		}
 		return false;
 	}
@@ -70,6 +74,21 @@ public class Mark extends BendingActiveAbility {
 		return target;
 	}
 
+	@Override
+	protected long getMaxMillis() {
+		return DURATION;
+	}
+	
+	private boolean affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		target.addPotionEffect(PotionEffectType.GLOWING.createEffect(DURATION*20/1000, 1));
+		return true;
+	}
+
 	public static boolean isMarked(LivingEntity target) {
 		return isMarked(target.getEntityId());
 	}
@@ -87,10 +106,5 @@ public class Mark extends BendingActiveAbility {
 			}
 		}
 		return false;
-	}
-
-	@Override
-	protected long getMaxMillis() {
-		return DURATION;
 	}
 }

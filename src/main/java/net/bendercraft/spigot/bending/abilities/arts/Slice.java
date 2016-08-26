@@ -6,6 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -14,6 +15,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
@@ -51,7 +53,7 @@ public class Slice extends BendingActiveAbility {
 	public boolean swing() {
 		if(isState(BendingAbilityState.START)) {
 			target = EntityTools.getTargetedEntity(player, RANGE);
-			if(target != null) {
+			if(target != null && affectDirect(target)) {
 				player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getEyeLocation().add(player.getEyeLocation().getDirection().normalize()), 1);
 				bender.cooldown(this, COOLDOWN);
 				setState(BendingAbilityState.PROGRESSING);
@@ -96,7 +98,7 @@ public class Slice extends BendingActiveAbility {
 				remove();
 				return;
 			}
-			DamageTools.damageEntity(bender, target, this, DAMAGE_BLEED, true, 0, 0.0f, true);
+			affect(target);
 			ticks++;
 		}
 	}
@@ -122,5 +124,23 @@ public class Slice extends BendingActiveAbility {
 	public void stop() {
 		
 	}
+	
+	private boolean affectDirect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		DamageTools.damageEntity(bender, target, this, DAMAGE_DIRECT, true, 0, 0.0f, true);
+		return true;
+	}
 
+	private void affect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		DamageTools.damageEntity(bender, target, this, DAMAGE_BLEED, true, 0, 0.0f, true);
+	}
 }

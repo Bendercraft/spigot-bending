@@ -13,9 +13,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import net.bendercraft.spigot.bending.abilities.AbilityManager;
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
-import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -37,14 +37,14 @@ public class TorrentBurst {
 	private Map<Integer, Map<Integer, Double>> heights = new HashMap<Integer, Map<Integer, Double>>();
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private List<Entity> affectedentities = new LinkedList<Entity>();
-	private final RegisteredAbility torrentRegister;
+	private BendingAbility parent;
 
 	public TorrentBurst(Player player, double radius, BendingAbility parent) {
+		this.parent = parent;
 		this.player = player;
 		origin = player.getEyeLocation().clone();
 		time = System.currentTimeMillis();
 		this.radius = radius;
-		this.torrentRegister = AbilityManager.getManager().getRegisteredAbility(Torrent.NAME);
 		initializeHeightsMap();
 	}
 
@@ -113,7 +113,7 @@ public class TorrentBurst {
 				Block block = location.getBlock();
 				if (torrentblocks.contains(block))
 					continue;
-				if (BlockTools.isTransparentToEarthbending(player, torrentRegister, block)) {
+				if (BlockTools.isTransparentToEarthbending(player, parent.getRegister(), block)) {
 					//TempBlock tempBlock = new TempBlock(block, Material.WATER, full);
 					TempBlock tempBlock = TempBlock.makeTemporary(block, Material.WATER, false);
 					blocks.add(tempBlock);
@@ -153,7 +153,9 @@ public class TorrentBurst {
 	}
 
 	private void affect(Entity entity) {
-		if (ProtectionManager.isEntityProtected(entity)) {
+		BendingHitEvent event = new BendingHitEvent(parent, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
 			return;
 		}
 		Vector direction = Tools.getDirection(origin, entity.getLocation());

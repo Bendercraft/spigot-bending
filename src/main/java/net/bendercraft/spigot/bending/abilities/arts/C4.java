@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -30,6 +31,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -316,37 +318,8 @@ public class C4 extends BendingActiveAbility {
 		
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, RADIUS * factor);
 		for (LivingEntity entity : entities) {
-			if (ProtectionManager.isEntityProtected(entity)) {
-				continue;
-			}
-			dealDamage(entity);
-			knockBack(entity);
+			affect(entity);
 		}
-	}
-
-	public void dealDamage(Entity entity) {
-		double distance = entity.getLocation().distance(location);
-		if (distance > RADIUS) {
-			return;
-		}
-
-		DamageTools.damageEntity(bender, entity, this, MAX_DAMAGE);
-	}
-
-	private void knockBack(Entity entity) {
-		double distance = entity.getLocation().distance(location);
-		if (distance > RADIUS) {
-			return;
-		}
-		double dx = entity.getLocation().getX() - location.getX();
-		double dy = entity.getLocation().getY() - location.getY();
-		double dz = entity.getLocation().getZ() - location.getZ();
-		Vector v = new Vector(dx, dy, dz);
-		v = v.normalize();
-
-		v.multiply(distance);
-
-		entity.setVelocity(v);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -395,9 +368,29 @@ public class C4 extends BendingActiveAbility {
 	protected long getMaxMillis() {
 		return MAX_DURATION;
 	}
+	
+	private void affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		
+		double distance = entity.getLocation().distance(location);
+		if (distance > RADIUS) {
+			return;
+		}
+		DamageTools.damageEntity(bender, entity, this, MAX_DAMAGE);
+		double dx = entity.getLocation().getX() - location.getX();
+		double dy = entity.getLocation().getY() - location.getY();
+		double dz = entity.getLocation().getZ() - location.getZ();
+		Vector v = new Vector(dx, dy, dz);
+		v = v.normalize();
+		v.multiply(distance);
+		entity.setVelocity(v);
+	}
 
 	public static C4 getCFour(Object id) {
-
 		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		if ((instances != null) && !instances.isEmpty()) {
 			return (C4) instances.get(id);

@@ -96,9 +96,9 @@ public class FireListener implements Listener {
 
 	@EventHandler
 	public void unlockFireBurst(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equalsIgnoreCase(FireBlast.NAME)) {
+			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().getName().equalsIgnoreCase(FireBlast.NAME)) {
 				Player p = bPlayer.getPlayer();
 				long lastTime = -1;
 				long currentTime = System.currentTimeMillis();
@@ -136,9 +136,9 @@ public class FireListener implements Listener {
 
 	@EventHandler
 	public void unlockFireShield(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equalsIgnoreCase(FireShield.NAME)) {
+			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().getName().equalsIgnoreCase(FireShield.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 				for (Entity entity : entities) {
@@ -163,9 +163,9 @@ public class FireListener implements Listener {
 
 	@EventHandler
 	public void unlockWallOfFire(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().equalsIgnoreCase(FireShield.NAME)) {
+			if (bPlayer.isBender(BendingElement.FIRE) && event.getAbility().getName().equalsIgnoreCase(FireShield.NAME)) {
 				Player p = bPlayer.getPlayer();
 				int done = 0;
 				if (this.wallOfFire.containsKey(p.getUniqueId())) {

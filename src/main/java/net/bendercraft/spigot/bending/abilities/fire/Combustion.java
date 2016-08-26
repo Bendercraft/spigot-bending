@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -13,6 +14,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -44,9 +46,6 @@ public class Combustion extends BendingActiveAbility {
 
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 2000;
-
-	@ConfigurationParameter("Push-Radius")
-	private static double PUSH_RADIUS = 5.0;
 	
 	@ConfigurationParameter("Explosion-Radius")
 	private static double EXPLOSION_RADIUS = 5.0;
@@ -195,24 +194,15 @@ public class Combustion extends BendingActiveAbility {
 		}
 	}
 
-	public void dealDamage(Entity entity) {
+	public void affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		
 		double distance = entity.getLocation().distance(location);
 		if (distance > EXPLOSION_RADIUS) {
-			return;
-		}
-		if (distance < DAMAGE_RADIUS) {
-			DamageTools.damageEntity(bender, entity, this, damage);
-			return;
-		}
-		double slope = -(damage * .5) / (EXPLOSION_RADIUS - DAMAGE_RADIUS);
-
-		double damage = slope * (distance - DAMAGE_RADIUS) + this.damage;
-		DamageTools.damageEntity(bender, entity, this, damage);
-	}
-
-	private void knockBack(Entity entity) {
-		double distance = entity.getLocation().distance(location);
-		if (distance > PUSH_RADIUS) {
 			return;
 		}
 		double dx = entity.getLocation().getX() - location.getX();
@@ -224,6 +214,14 @@ public class Combustion extends BendingActiveAbility {
 		v = v.multiply(PUSH_BACK);
 
 		entity.setVelocity(v);
+		
+		if (distance < DAMAGE_RADIUS) {
+			DamageTools.damageEntity(bender, entity, this, damage);
+		} else {
+			double slope = -(damage * .5) / (EXPLOSION_RADIUS - DAMAGE_RADIUS);
+			double damage = slope * (distance - DAMAGE_RADIUS) + this.damage;
+			DamageTools.damageEntity(bender, entity, this, damage);
+		}
 	}
 
 	private boolean fireball() {
@@ -292,18 +290,7 @@ public class Combustion extends BendingActiveAbility {
 		
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, EXPLOSION_RADIUS);
 		for (LivingEntity entity : entities) {
-			if (ProtectionManager.isEntityProtected(entity)) {
-				continue;
-			}
-			dealDamage(entity);
-		}
-		
-		entities = EntityTools.getLivingEntitiesAroundPoint(location, PUSH_BACK);
-		for (LivingEntity entity : entities) {
-			if (ProtectionManager.isEntityProtected(entity)) {
-				continue;
-			}
-			knockBack(entity);
+			affect(entity);
 		}
 	}
 

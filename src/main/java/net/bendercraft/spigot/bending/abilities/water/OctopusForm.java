@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -21,6 +22,7 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -414,17 +416,9 @@ public class OctopusForm extends BendingActiveAbility {
 					
 					boolean consumed = false;
 					for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(current, AFFECTING_RADIUS)) {
-						if(entity == parent.getPlayer()) {
-							continue;
+						if(affect(entity)) {
+							consumed = true;
 						}
-						if(freeze) {
-							DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.ICE, DAMAGE_ICE));
-							Frozen.freeze(parent.getPlayer(), entity.getLocation(), 3);
-						} else {
-							DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.LIQUID, DAMAGE));
-							entity.setVelocity(new Vector(0,0,0));
-						}
-						consumed = true;
 					}
 					if(freeze && consumed) {
 						blocks.forEach(b -> Bending.getInstance().getManager().addGlobalTempBlock(5000, b));
@@ -439,6 +433,26 @@ public class OctopusForm extends BendingActiveAbility {
 					}
 				}
 			}
+			return true;
+		}
+		
+		private boolean affect(Entity entity) {
+			BendingHitEvent event = new BendingHitEvent(parent, entity);
+			Bending.callEvent(event);
+			if(event.isCancelled()) {
+				return false;
+			}
+			
+			if(entity == parent.getPlayer()) {
+				return false;
+			}
+			if(freeze) {
+				DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.ICE, DAMAGE_ICE));
+				Frozen.freeze(parent.getPlayer(), entity.getLocation(), 3);
+			} else {
+				DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.LIQUID, DAMAGE));
+				entity.setVelocity(new Vector(0,0,0));
+			}		
 			return true;
 		}
 

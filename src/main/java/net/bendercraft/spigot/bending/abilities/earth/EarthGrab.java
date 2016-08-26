@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -22,6 +23,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -54,21 +56,20 @@ public class EarthGrab extends BendingActiveAbility {
 
 	public EarthGrab(RegisteredAbility register, Player player) {
 		super(register, player);
+		this.id = ID++;
 	}
 
 	@Override
 	public boolean swing() {
-		if (getState() != BendingAbilityState.START) {
+		if (isState(BendingAbilityState.START)) {
 			return false;
 		}
-		if (this.bender.isOnCooldown(NAME)) {
+		if (bender.isOnCooldown(NAME)) {
 			return false;
 		}
 		this.self = false;
-		Entity closestEntity = EntityTools.getTargetedEntity(this.player, range);
-		boolean done = grabEntity(this.player, closestEntity);
-		if (this.target != null && done == true) {
-			this.id = ID++;
+		Entity target = EntityTools.getTargetedEntity(this.player, range);
+		if(target != null && affect(target)) {
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
@@ -83,115 +84,116 @@ public class EarthGrab extends BendingActiveAbility {
 			return false;
 		}
 		this.self = true;
-		boolean done = grabEntity(this.player, this.player);
-		if (this.target != null && done == true) {
+		if (this.target != null && affect(player)) {
 			this.id = ID++;
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
 
-	public boolean grabEntity(Player player, Entity entity) {
-		if (entity != null) {
-			if (entity instanceof LivingEntity) {
-				if (ProtectionManager.isEntityProtected(entity)) {
-					return false;
-				}
+	public boolean affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		if (entity instanceof LivingEntity) {
+			if (ProtectionManager.isEntityProtected(entity)) {
+				return false;
+			}
 
-				this.target = (LivingEntity) entity;
-				this.time = System.currentTimeMillis();
-				this.toKeep = true;
+			this.time = System.currentTimeMillis();
+			this.toKeep = true;
 
-				double x = (int) this.target.getLocation().getX();
-				double y = (int) this.target.getLocation().getY();
-				double z = (int) this.target.getLocation().getZ();
+			double x = (int) this.target.getLocation().getX();
+			double y = (int) this.target.getLocation().getY();
+			double z = (int) this.target.getLocation().getZ();
 
-				x = (x < 0) ? x - 0.5 : x + 0.5;
-				z = (z < 0) ? z - 0.5 : z + 0.5;
+			x = (x < 0) ? x - 0.5 : x + 0.5;
+			z = (z < 0) ? z - 0.5 : z + 0.5;
 
-				this.origin = new Location(entity.getLocation().getWorld(), x, y, z, entity.getLocation().getYaw(), entity.getLocation().getPitch());
+			this.origin = new Location(entity.getLocation().getWorld(), x, y, z, entity.getLocation().getYaw(), entity.getLocation().getPitch());
 
-				if (ProtectionManager.isLocationProtectedFromBending(player, register, this.origin)) {
-					return false;
-				}
+			if (ProtectionManager.isLocationProtectedFromBending(player, register, this.origin)) {
+				return false;
+			}
 
-				List<Location> locs = new LinkedList<Location>();
-				List<Location> toRemove = new LinkedList<Location>();
+			List<Location> locs = new LinkedList<Location>();
+			List<Location> toRemove = new LinkedList<Location>();
 
-				locs.add(this.origin.clone().add(0, 0, -1));
-				locs.add(this.origin.clone().add(0, 0, 1));
-				locs.add(this.origin.clone().add(-1, 0, 0));
-				locs.add(this.origin.clone().add(1, 0, 0));
+			locs.add(this.origin.clone().add(0, 0, -1));
+			locs.add(this.origin.clone().add(0, 0, 1));
+			locs.add(this.origin.clone().add(-1, 0, 0));
+			locs.add(this.origin.clone().add(1, 0, 0));
 
-				int cpt = 0;
+			int cpt = 0;
 
-				for (Location loc : locs) {
-					if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
+			for (Location loc : locs) {
+				if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
+
+					loc.add(0, -1, 0);
+					if (BlockTools.isEarthbendable(player, loc.getBlock())) {
+						cpt++;
+					} else if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
 
 						loc.add(0, -1, 0);
 						if (BlockTools.isEarthbendable(player, loc.getBlock())) {
 							cpt++;
-						} else if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
-
-							loc.add(0, -1, 0);
-							if (BlockTools.isEarthbendable(player, loc.getBlock())) {
-								cpt++;
-							} else {
-								return false;
-							}
 						} else {
 							return false;
 						}
-					} else if (BlockTools.isEarthbendable(player, loc.getBlock())) {
-						cpt++;
-						toRemove.add(loc);
 					} else {
 						return false;
 					}
+				} else if (BlockTools.isEarthbendable(player, loc.getBlock())) {
+					cpt++;
+					toRemove.add(loc);
+				} else {
+					return false;
+				}
+			}
+
+			for (Location tr : toRemove) {
+				locs.remove(tr);
+			}
+
+			if (cpt >= 4) {
+				this.target.teleport(this.origin);
+				// To be sure the guy is locked in the grab
+
+				int duration;
+				if (this.self) {
+					duration = SELF_DURATION * 20;
+				} else {
+					duration = OTHER_DURATION * 20;
+				}
+				PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, duration, 150); // The
+																								// entity
+																								// cannot
+																								// move
+				PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, duration, 150); // The
+																								// entity
+																								// cannot
+																								// jump
+				this.target.addPotionEffect(slowness);
+				this.target.addPotionEffect(jumpless);
+				target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
+				for (Location loc : locs) {
+					int h = 1;
+					if (this.origin.getY() - loc.getY() >= 2) {
+						h = 2;
+					}
+					Material t = loc.getBlock().getType();
+					for (int i = 0; i < h; i++) {
+						//this.affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
+						this.affectedBlocks.add(TempBlock.makeTemporary(loc.add(0, 1, 0).getBlock(), t, false));
+					}
 				}
 
-				for (Location tr : toRemove) {
-					locs.remove(tr);
+				if (this.target instanceof Player && this.target.getEntityId() != player.getEntityId()) {
+					EntityTools.grab((Player) this.target, this.time);
 				}
-
-				if (cpt >= 4) {
-					this.target.teleport(this.origin);
-					// To be sure the guy is locked in the grab
-
-					int duration;
-					if (this.self) {
-						duration = SELF_DURATION * 20;
-					} else {
-						duration = OTHER_DURATION * 20;
-					}
-					PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, duration, 150); // The
-																									// entity
-																									// cannot
-																									// move
-					PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, duration, 150); // The
-																									// entity
-																									// cannot
-																									// jump
-					this.target.addPotionEffect(slowness);
-					this.target.addPotionEffect(jumpless);
-					target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
-					for (Location loc : locs) {
-						int h = 1;
-						if (this.origin.getY() - loc.getY() >= 2) {
-							h = 2;
-						}
-						Material t = loc.getBlock().getType();
-						for (int i = 0; i < h; i++) {
-							//this.affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
-							this.affectedBlocks.add(TempBlock.makeTemporary(loc.add(0, 1, 0).getBlock(), t, false));
-						}
-					}
-
-					if (this.target instanceof Player && this.target.getEntityId() != player.getEntityId()) {
-						EntityTools.grab((Player) this.target, this.time);
-					}
-					this.bender.cooldown(NAME, COOLDOWN);
-				}
+				this.bender.cooldown(NAME, COOLDOWN);
 			}
 		}
 		return true;

@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -16,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -54,7 +56,7 @@ public class StraightShot extends BendingActiveAbility {
 		Location current = origin.clone();
 		Vector direction = origin.getDirection().normalize();
 		
-		while(affectAround(current) 
+		while(!affectAround(current) 
 				&& player.getWorld().equals(current.getWorld()) 
 				&& current.distance(origin) < RANGE 
 				&& !BlockTools.isSolid(current.getBlock())) {
@@ -70,16 +72,14 @@ public class StraightShot extends BendingActiveAbility {
 	
 	private boolean affectAround(Location location) {
 		if (ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
-			return false;
+			return true;
 		}
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2.1)) {
-			if (entity.getEntityId() == player.getEntityId()) {
-				continue;
+			if(affect(entity)) {
+				return true;
 			}
-			DamageTools.damageEntity(bender, entity, this, DAMAGE);
-			return false;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -117,6 +117,19 @@ public class StraightShot extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+	
+	private boolean affect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		if (entity == player) {
+			return false;
+		}
+		DamageTools.damageEntity(bender, entity, this, DAMAGE);
+		return true;
 	}
 
 }

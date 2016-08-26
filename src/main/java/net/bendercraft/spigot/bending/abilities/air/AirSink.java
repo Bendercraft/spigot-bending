@@ -2,16 +2,19 @@ package net.bendercraft.spigot.bending.abilities.air;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
@@ -84,13 +87,7 @@ public class AirSink extends BendingActiveAbility {
 			
 			// Compute effect
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, RADIUS)) {
-				if(entity == player || ProtectionManager.isEntityProtected(entity)) {
-					continue;
-				}
-				Vector direction = origin.clone().subtract(entity.getLocation()).toVector();
-				double distance = direction.length();
-				entity.setVelocity(entity.getVelocity().add(direction.normalize().multiply(PUSH*distance/RADIUS)));
-				entity.setFallDistance(0);
+				affect(entity);
 			}
 			
 			if(noDisplayTick <= 0) {
@@ -123,4 +120,18 @@ public class AirSink extends BendingActiveAbility {
 		return DURATION;
 	}
 
+	private void affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		if(entity == player) {
+			return;
+		}
+		Vector direction = origin.clone().subtract(entity.getLocation()).toVector();
+		double distance = direction.length();
+		entity.setVelocity(entity.getVelocity().add(direction.normalize().multiply(PUSH*distance/RADIUS)));
+		entity.setFallDistance(0);
+	}
 }

@@ -170,7 +170,7 @@ public class AbilityManager {
 			runnings.put(name, map);
 		}
 		map.put(instance.getIdentifier(), instance);
-		Bending.callEvent(new BendingAbilityEvent(instance.getBender(), name));
+		Bending.callEvent(new BendingAbilityEvent(instance));
 	}
 
 	public Map<Object, BendingAbility> getInstances(String name) {

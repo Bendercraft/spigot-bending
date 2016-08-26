@@ -14,14 +14,15 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingPath;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 public class Ripple {
 	@ConfigurationParameter("Radius")
@@ -252,7 +253,9 @@ public class Ripple {
 	}
 
 	private void affect(Entity entity) {
-		if (ProtectionManager.isEntityProtected(entity)) {
+		BendingHitEvent event = new BendingHitEvent(ability, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
 			return;
 		}
 

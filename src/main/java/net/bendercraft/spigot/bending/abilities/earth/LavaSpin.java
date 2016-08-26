@@ -12,12 +12,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -174,9 +176,13 @@ public class LavaSpin extends BendingActiveAbility {
 	}
 	
 	private void affect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
 		entity.setFireTicks(0);
-		if (!ProtectionManager.isEntityProtected(entity) 
-				&& entity.getEntityId() != player.getEntityId()
+		if (entity != player
 				&& !affecteds.contains(entity)) {
 			DamageTools.damageEntity(bender, entity, this, DAMAGE);
 			affecteds.add(entity);

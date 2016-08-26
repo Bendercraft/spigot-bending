@@ -53,7 +53,8 @@ public class DamageTools {
 	 * @param bypassImmunity : set to true if this damage should bypass "noDamageTicks" 
 	 */
 	public static void damageEntity(BendingPlayer attacker, Entity damagee, BendingAbility ability, double damage, boolean ghost, int noDamageTicks, float knockback, boolean bypassImmunity) {
-		if (ProtectionManager.isEntityProtected(damagee)) {
+		if (ProtectionManager.isEntityProtected(damagee) 
+				|| ProtectionManager.isLocationProtectedFromBending(attacker.getPlayer(), ability.getRegister(), damagee.getLocation())) {
 			return;
 		}
 		if (damagee instanceof LivingEntity) {

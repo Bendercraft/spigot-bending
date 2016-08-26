@@ -12,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
@@ -22,6 +23,7 @@ import net.bendercraft.spigot.bending.abilities.air.AirBlast;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -78,7 +80,7 @@ public class FireShield extends BendingActiveAbility {
 			if(!bender.fire.can(NAME, POWER)) {
 				return false;
 			}
-			protect = new FireProtection(this.player);
+			protect = new FireProtection(this, player);
 			bender.fire.consume(NAME, POWER);
 			setState(BendingAbilityState.PROGRESSING);
 			
@@ -157,7 +159,10 @@ public class FireShield extends BendingActiveAbility {
 
 		private Player player;
 
-		public FireProtection(Player player) {
+		private FireShield parent;
+
+		public FireProtection(FireShield parent, Player player) {
+			this.parent = parent;
 			this.player = player;
 			this.time = System.currentTimeMillis();
 			this.startedTime = this.time;
@@ -192,23 +197,11 @@ public class FireShield extends BendingActiveAbility {
 				}
 
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(location, discradius)) {
-					if (ProtectionManager.isEntityProtected(entity)) {
-						continue;
-					}
-					if (ProtectionManager.isLocationProtectedFromBending(player, ability, entity.getLocation())) {
-						continue;
-					}
-
-					if (player.getEntityId() != entity.getEntityId()) {
-						if (!(entity instanceof LivingEntity)) {
-							entity.remove();
-						} else {
-							Enflamed.enflame(player, entity, 5);
-						}
-					}
 					if(entity instanceof Arrow) {
 						entity.setVelocity(entity.getVelocity().multiply(-1));
 						return false;
+					} else {
+						affect(entity);
 					}
 				}
 			}
@@ -224,6 +217,23 @@ public class FireShield extends BendingActiveAbility {
 			}
 			return true;
 		}
-	}
+		
+		private void affect(Entity entity) {
+			BendingHitEvent event = new BendingHitEvent(parent, entity);
+			Bending.callEvent(event);
+			if(event.isCancelled()) {
+				return;
+			}
 
+			if (player == entity) {
+				return;
+			}
+			if (!(entity instanceof LivingEntity)) {
+				entity.remove();
+			} else {
+				Enflamed.enflame(player, entity, 5, parent);
+			}
+			
+		}
+	}
 }

@@ -21,6 +21,7 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.listeners.BendingDenyItem;
 import net.bendercraft.spigot.bending.listeners.BendingPlayerListener;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -211,6 +212,11 @@ public class WaterWhip extends BendingActiveAbility {
 	}
 
 	public void affect(Entity entity, Vector vector) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
 		DamageTools.damageEntity(bender, entity, this, bender.water.damage(Damage.LIQUID, DAMAGE));
 		entity.setVelocity(entity.getVelocity().clone().add(vector.multiply(0.5)));
 	}

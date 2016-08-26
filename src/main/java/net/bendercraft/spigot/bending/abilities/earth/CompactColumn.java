@@ -169,8 +169,4 @@ public class CompactColumn {
 	public void remove() {
 		instances.remove(this.id);
 	}
-
-	public static String getDescription() {
-		return " To use, simply left-click on an earthbendable block. " + "That block and the earthbendable blocks above it will be shoved " + "back into the earth below them, if they can. " + "This ability does have the capacity to trap something inside of it, " + "although it is incredibly difficult to do so. ";
-	}
 }

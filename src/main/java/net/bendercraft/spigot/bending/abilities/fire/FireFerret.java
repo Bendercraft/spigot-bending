@@ -13,6 +13,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -119,9 +120,10 @@ public class FireFerret extends BendingActiveAbility {
 		location.getWorld().spawnParticle(Particle.FLAME, location, 1, 0, 0, 0, 0);
 		
 		if(target.getLocation().distance(location) < AFFECTING_RADIUS) {
-			affect(target);
-			remove();
-			return;
+			if(affect(target)) {
+				remove();
+				return;
+			}
 		}
 		
 		Vector direction = target.getEyeLocation().toVector().clone().subtract(location.toVector());
@@ -134,14 +136,16 @@ public class FireFerret extends BendingActiveAbility {
 	}
 	
 	private boolean affect(LivingEntity entity) {
-		if (ProtectionManager.isEntityProtected(entity)) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
 			return false;
 		}
-		if (entity != this.player) {
-			DamageTools.damageEntity(bender, entity, this, DAMAGE);
-			Enflamed.enflame(player, entity, 2);
+		if (entity == player) {
 			return false;
 		}
+		DamageTools.damageEntity(bender, entity, this, DAMAGE);
+		Enflamed.enflame(player, entity, 2, this);
 		return true;
 	}
 

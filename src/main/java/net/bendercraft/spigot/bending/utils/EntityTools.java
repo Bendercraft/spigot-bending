@@ -321,7 +321,8 @@ public class EntityTools {
 			if (avoid.contains(entity)) {
 				continue;
 			}
-			if (entity.getLocation().getWorld() == origin.getWorld()
+			if (!ProtectionManager.isEntityProtected(entity) 
+					&& entity.getLocation().getWorld() == origin.getWorld()
 					&& entity.getLocation().distance(origin) < longestRange
 					&& Tools.getDistanceFromLine(direction, origin, entity.getLocation()) < 2
 					&& entity.getEntityId() != player.getEntityId()

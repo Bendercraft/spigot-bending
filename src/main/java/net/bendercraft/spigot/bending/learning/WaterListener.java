@@ -48,9 +48,9 @@ public class WaterListener implements Listener {
 
 	@EventHandler
 	public void unlockTorrent(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equalsIgnoreCase(Torrent.NAME)) {
+			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().getName().equalsIgnoreCase(Torrent.NAME)) {
 				List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(bPlayer.getPlayer().getLocation(), 10);
 
 				for (Entity entity : entities) {
@@ -93,9 +93,9 @@ public class WaterListener implements Listener {
 
 	@EventHandler
 	public void unlockSurge(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
-			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equalsIgnoreCase(WaterManipulation.NAME)) {
+			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().getName().equalsIgnoreCase(WaterManipulation.NAME)) {
 				int blasted = 0;
 				Player p = bPlayer.getPlayer();
 				if (this.surge.containsKey(p.getUniqueId())) {
@@ -119,10 +119,10 @@ public class WaterListener implements Listener {
 
 	@EventHandler
 	public void unlockIceSpike(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
 			// Check if player has unlocked PhaseChange here
-			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().equalsIgnoreCase(WaterManipulation.NAME)) {
+			if (bPlayer.isBender(BendingElement.WATER) && event.getAbility().getName().equalsIgnoreCase(WaterManipulation.NAME)) {
 				Player p = bPlayer.getPlayer();
 				if (EntityTools.canBend(p, PhaseChange.NAME)) {
 					if (this.plugin.addPermission(p, IceSpike.NAME)) {
@@ -138,12 +138,12 @@ public class WaterListener implements Listener {
 
 	@EventHandler
 	public void unlockOctopusForm(BendingAbilityEvent event) {
-		BendingPlayer bPlayer = event.getBender();
+		BendingPlayer bPlayer = event.getAbility().getBender();
 		if (bPlayer != null) {
 			// Check if player knows surge
 			Player p = bPlayer.getPlayer();
 			if (bPlayer.isBender(BendingElement.WATER) && EntityTools.canBend(p, WaterWall.NAME)) {
-				if (event.getAbility().equalsIgnoreCase(WaterManipulation.NAME)) {
+				if (event.getAbility().getName().equalsIgnoreCase(WaterManipulation.NAME)) {
 					long lastTime = -1;
 					long currentTime = System.currentTimeMillis();
 					if (this.waterManipulationlastTime.containsKey(p.getUniqueId())) {

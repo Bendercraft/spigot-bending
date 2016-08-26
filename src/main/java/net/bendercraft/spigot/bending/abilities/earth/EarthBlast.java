@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -25,6 +26,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -277,18 +279,7 @@ public class EarthBlast extends BendingActiveAbility {
 					}
 				}
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, FireBlast.AFFECTING_RADIUS)) {
-					if (ProtectionManager.isEntityProtected(entity)) {
-						continue;
-					}
-					if (ProtectionManager.isLocationProtectedFromBending(player, register, entity.getLocation())) {
-						continue;
-					}
-
-					if (((entity.getEntityId() != player.getEntityId()))) {
-						Location location = player.getEyeLocation();
-						Vector vector = location.getDirection();
-						entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
-						DamageTools.damageEntity(bender, entity, this, damage, false, 2, 0.5f, false);
+					if(affect(entity)) {
 						remove();
 						return;
 					}
@@ -340,6 +331,22 @@ public class EarthBlast extends BendingActiveAbility {
 	@Override
 	public Object getIdentifier() {
 		return this.uuid;
+	}
+	
+	private boolean affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		if(entity == player) {
+			return false;
+		}
+		Location location = player.getEyeLocation();
+		Vector vector = location.getDirection();
+		entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
+		DamageTools.damageEntity(bender, entity, this, damage, false, 2, 0.5f, false);
+		return true;
 	}
 	
 	private static Location getTargetLocation(Player player) {

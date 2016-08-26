@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -26,6 +27,7 @@ import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -88,7 +90,7 @@ public class Bloodbending extends BendingActiveAbility {
 				return false;
 			}
 			if (target instanceof Player) {
-				if (EntityTools.canBend((Player) target, register) || AvatarState.isAvatarState((Player) target) || target.isOp()) {
+				if (EntityTools.canBend((Player) target, register) || AvatarState.isAvatarState((Player) target)) {
 					return false;
 				}
 
@@ -138,46 +140,10 @@ public class Bloodbending extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 60, 1);
-		
 		if (AvatarState.isAvatarState(this.player)) {
 			ArrayList<Entity> entities = new ArrayList<Entity>();
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.player.getLocation(), this.range)) {
-				if (ProtectionManager.isEntityProtected(entity)) {
-					continue;
-				}
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, register, entity.getLocation())) {
-					continue;
-				}
-				if (entity instanceof Player) {
-					if (!EntityTools.canBeBloodbent((Player) entity)) {
-						continue;
-					}
-				}
-				entities.add(entity);
-				if (!this.targetEntities.containsKey(entity)) {
-					DamageTools.damageEntity(bender, entity, this, 0);
-					this.targetEntities.put(entity, entity.getLocation().clone());
-				}
-				Location newlocation = entity.getLocation().clone();
-				Location location = this.targetEntities.get(entity);
-				double distance = location.distance(newlocation);
-				double dx, dy, dz;
-				dx = location.getX() - newlocation.getX();
-				dy = location.getY() - newlocation.getY();
-				dz = location.getZ() - newlocation.getZ();
-				Vector vector = new Vector(dx, dy, dz);
-				if (distance > .5) {
-					entity.setVelocity(vector.normalize().multiply(.5));
-				} else {
-					entity.setVelocity(new Vector(0, 0, 0));
-				}
-				entity.addPotionEffect(effect);
-				entity.setFallDistance(0);
-				if (entity instanceof Creature) {
-					((Creature) entity).setTarget(null);
-				}
-
+				affect(entity, entity.getLocation());
 			}
 			List<Entity> toRemove = new LinkedList<Entity>();
 			for (Entity entity : this.targetEntities.keySet()) {
@@ -191,31 +157,7 @@ public class Bloodbending extends BendingActiveAbility {
 		} else {
 			List<Entity> toRemove = new LinkedList<Entity>();
 			for (Entry<Entity, Location> entry : this.targetEntities.entrySet()) {
-				Entity entity = entry.getKey();
-				if (entity instanceof Player) {
-					if (!EntityTools.canBeBloodbent((Player) entity)) {
-						toRemove.add(entity);
-						continue;
-					}
-				}
-				Location newlocation = entity.getLocation();
-				Location location = EntityTools.getTargetedLocation(this.player, (int) entry.getValue().distance(this.player.getLocation()));
-				double distance = location.distance(newlocation);
-				double dx, dy, dz;
-				dx = location.getX() - newlocation.getX();
-				dy = location.getY() - newlocation.getY();
-				dz = location.getZ() - newlocation.getZ();
-				Vector vector = new Vector(dx, dy / 3, dz);
-				if (distance > .5) {
-					entity.setVelocity(vector.normalize().multiply(.5));
-				} else {
-					entity.setVelocity(new Vector(0, 0, 0));
-				}
-				((LivingEntity) entity).addPotionEffect(effect);
-				entity.setFallDistance(0);
-				if (entity instanceof Creature) {
-					((Creature) entity).setTarget(null);
-				}
+				affect(entry.getKey(), entry.getValue());
 			}
 			for (Entity entity : toRemove) {
 				this.targetEntities.remove(entity);
@@ -268,5 +210,35 @@ public class Bloodbending extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		bender.cooldown(this, COOLDOWN);
+	}
+	
+	private boolean affect(Entity entity, Location loc) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		if (entity instanceof Player && !EntityTools.canBeBloodbent((Player) entity)) {
+			return false;
+		}
+		Location newlocation = entity.getLocation();
+		Location location = EntityTools.getTargetedLocation(this.player, (int) loc.distance(this.player.getLocation()));
+		double distance = location.distance(newlocation);
+		double dx, dy, dz;
+		dx = location.getX() - newlocation.getX();
+		dy = location.getY() - newlocation.getY();
+		dz = location.getZ() - newlocation.getZ();
+		Vector vector = new Vector(dx, dy / 3, dz);
+		if (distance > .5) {
+			entity.setVelocity(vector.normalize().multiply(.5));
+		} else {
+			entity.setVelocity(new Vector(0, 0, 0));
+		}
+		((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 1));
+		entity.setFallDistance(0);
+		if (entity instanceof Creature) {
+			((Creature) entity).setTarget(null);
+		}
+		return true;
 	}
 }

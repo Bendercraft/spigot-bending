@@ -14,6 +14,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -25,6 +26,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -128,55 +130,7 @@ public class AirShield extends BendingActiveAbility {
 		FireBlast.removeFireBlastsAroundPoint(origin, this.radius);
 
 		for (Entity entity : EntityTools.getEntitiesAroundPoint(origin, this.radius)) {
-			if (ProtectionManager.isEntityProtected(entity)
-					|| (entity instanceof ExperienceOrb) 
-					|| (entity instanceof FallingBlock) 
-					|| (entity instanceof ItemFrame) 
-					|| (entity instanceof Item)
-					|| ProtectionManager.isLocationProtectedFromBending(this.player, register, entity.getLocation())) {
-				continue;
-			}
-
-			if (entity instanceof Player) {
-				entity.setFireTicks(0);
-			}
-
-			if (origin.distance(entity.getLocation()) > 2) {
-				double x, z, vx, vz, mag;
-				double angle = 50;
-				angle = Math.toRadians(angle);
-
-				x = entity.getLocation().getX() - origin.getX();
-				z = entity.getLocation().getZ() - origin.getZ();
-
-				mag = Math.sqrt((x * x) + (z * z));
-
-				vx = ((x * Math.cos(angle)) - (z * Math.sin(angle))) / mag;
-				vz = ((x * Math.sin(angle)) + (z * Math.cos(angle))) / mag;
-
-				Vector velocity = entity.getVelocity();
-				if (AvatarState.isAvatarState(this.player)) {
-					velocity.setX(AvatarState.getValue(vx));
-					velocity.setZ(AvatarState.getValue(vz));
-				} else {
-					velocity.setX(vx);
-					velocity.setZ(vz);
-				}
-
-				velocity.multiply(this.radius / maxRadius);
-
-				if (bender.hasPath(BendingPath.RENEGADE)) {
-					DamageTools.damageEntity(bender, entity, this, 1);
-					velocity.multiply(2);
-				}
-				entity.setVelocity(velocity);
-				entity.setFallDistance(0);
-
-				if (bender.hasPath(BendingPath.RENEGADE)) {
-					remove();
-					return;
-				}
-			}
+			affect(entity);
 		}
 
 		Set<Integer> keys = this.angles.keySet();
@@ -224,6 +178,62 @@ public class AirShield extends BendingActiveAbility {
 	@Override
 	protected long getMaxMillis() {
 		return MAX_DURATION;
+	}
+	
+	private void affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		
+		if (entity instanceof ExperienceOrb
+				|| entity instanceof FallingBlock
+				|| entity instanceof ItemFrame
+				|| entity instanceof Item) {
+			return;
+		}
+		Location origin = this.player.getLocation();
+		if (entity instanceof Player) {
+			entity.setFireTicks(0);
+		}
+
+		if (origin.distance(entity.getLocation()) > 2) {
+			double x, z, vx, vz, mag;
+			double angle = 50;
+			angle = Math.toRadians(angle);
+
+			x = entity.getLocation().getX() - origin.getX();
+			z = entity.getLocation().getZ() - origin.getZ();
+
+			mag = Math.sqrt((x * x) + (z * z));
+
+			vx = ((x * Math.cos(angle)) - (z * Math.sin(angle))) / mag;
+			vz = ((x * Math.sin(angle)) + (z * Math.cos(angle))) / mag;
+
+			Vector velocity = entity.getVelocity();
+			if (AvatarState.isAvatarState(this.player)) {
+				velocity.setX(AvatarState.getValue(vx));
+				velocity.setZ(AvatarState.getValue(vz));
+			} else {
+				velocity.setX(vx);
+				velocity.setZ(vz);
+			}
+
+			velocity.multiply(this.radius / maxRadius);
+
+			if (bender.hasPath(BendingPath.RENEGADE)) {
+				DamageTools.damageEntity(bender, entity, this, 1);
+				velocity.multiply(2);
+			}
+			entity.setVelocity(velocity);
+			entity.setFallDistance(0);
+
+			if (bender.hasPath(BendingPath.RENEGADE)) {
+				remove();
+				return;
+			}
+		}
 	}
 
 	public static boolean isShielded(Player player) {

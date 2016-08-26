@@ -1,13 +1,16 @@
 package net.bendercraft.spigot.bending.abilities.arts;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
@@ -45,11 +48,9 @@ public class DirectHit extends BendingActiveAbility {
 			return false;
 		}
 		if(this.player.isSneaking()) {
-			DamageTools.damageEntity(bender, target, this, DAMAGE, false, DamageTools.DEFAULT_NODAMAGETICKS, 0.0f, true);
-			target.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
-					.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
-
-			this.bender.cooldown(this, COOLDOWN * 2);
+			if(affect(target)) {
+				this.bender.cooldown(this, COOLDOWN);
+			}
 		}
 		return false;
 	}
@@ -87,4 +88,16 @@ public class DirectHit extends BendingActiveAbility {
 		
 	}
 
+	private boolean affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		DamageTools.damageEntity(bender, entity, this, DAMAGE, false, DamageTools.DEFAULT_NODAMAGETICKS, 0.0f, true);
+		entity.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
+				.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
+		
+		return true;
+	}
 }

@@ -12,6 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -23,6 +24,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -286,13 +288,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		
 		// Check for any damage to entities
 		for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, radius)) {
-			if (ProtectionManager.isEntityProtected(entity)) {
-				continue;
-			}
-			if (entity != player) {
-				Vector vector = player.getEyeLocation().getDirection();
-				entity.setVelocity(vector.normalize().multiply(push));
-				DamageTools.damageEntity(bender, entity, this, damage);
+			if(affect(entity)) {
 				hit();
 				return;
 			}
@@ -317,6 +313,21 @@ public class WaterManipulation extends BendingActiveAbility {
 				current = TempBlock.makeTemporary(location.getBlock(), Material.WATER, false);
 			}
 		}
+	}
+	
+	private boolean affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		if (entity == player) {
+			return false;
+		}
+		Vector vector = player.getEyeLocation().getDirection();
+		entity.setVelocity(vector.normalize().multiply(push));
+		DamageTools.damageEntity(bender, entity, this, damage);
+		return true;
 	}
 		
 	private void hit() {

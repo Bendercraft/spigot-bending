@@ -13,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -40,7 +39,6 @@ import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.arts.ExplosiveShot;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlade;
-import net.bendercraft.spigot.bending.abilities.fire.FireStream;
 import net.bendercraft.spigot.bending.abilities.fire.HeatControl;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
@@ -57,20 +55,8 @@ public class BendingEntityListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onEntityCombust(EntityCombustEvent event) {
-		Entity entity = event.getEntity();
-		Block block = entity.getLocation().getBlock();
-		if (FireStream.isIgnited(block) && (entity instanceof LivingEntity)) {
-			Enflamed.enflame(FireStream.getIgnited(block), entity, 2);
-		}
-	}
-
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDamageEvent(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-		if ((event.getCause() == DamageCause.FIRE) && FireStream.isIgnited(entity.getLocation().getBlock())) {
-			Enflamed.enflame(FireStream.getIgnited(entity.getLocation().getBlock()), entity, 2);
-		}
 		if (Enflamed.isEnflamed(entity) && (event.getCause() == DamageCause.FIRE_TICK)) {
 			event.setCancelled(true);
 		}

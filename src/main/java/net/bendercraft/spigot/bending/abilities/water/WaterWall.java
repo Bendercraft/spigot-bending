@@ -77,7 +77,7 @@ public class WaterWall extends BendingActiveAbility {
 			if (bender.isOnCooldown(NAME)) {
 				return false;
 			}
-			wave = new Wave(player);
+			wave = new Wave(this, player);
 			if (wave.prepare()) {
 				setState(BendingAbilityState.PREPARED);
 			}

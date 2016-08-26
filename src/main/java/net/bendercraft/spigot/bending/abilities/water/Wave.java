@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
@@ -21,6 +22,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
@@ -68,15 +70,14 @@ public class Wave {
 
 	private WaterReturn waterReturn;
 
-	private final RegisteredAbility waterRegister;
+	private BendingAbility parent;
 
-	public Wave(Player player) {
+	public Wave(BendingAbility parent, Player player) {
 		this.player = player;
-
+		this.parent = parent;
 		if (AvatarState.isAvatarState(player)) {
 			this.maxradius = AvatarState.getValue(this.maxradius);
 		}
-		this.waterRegister = AbilityManager.getManager().getRegisteredAbility(WaterWall.NAME);
 	}
 
 	public void freeze() {
@@ -205,7 +206,7 @@ public class Wave {
 		if (waterReturn != null) {
 			return waterReturn.progress();
 		}
-		if (this.player.isDead() || !this.player.isOnline() || !EntityTools.canBend(this.player, waterRegister)) {
+		if (this.player.isDead() || !this.player.isOnline() || !EntityTools.canBend(player, parent.getName())) {
 			breakBlock();
 			thaw();
 			return false;
@@ -243,7 +244,7 @@ public class Wave {
 					returnWater();
 					return false;
 				}
-				if (!EntityTools.canBend(this.player, waterRegister)) {
+				if (!EntityTools.canBend(this.player, parent.getName())) {
 					this.progressing = false;
 					thaw();
 					breakBlock();
@@ -260,7 +261,7 @@ public class Wave {
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!ProtectionManager.isLocationProtectedFromBending(this.player, waterRegister, this.location) && ((((blockl.getType() == Material.AIR) || (blockl.getType() == Material.FIRE) || BlockTools.isPlant(blockl) || BlockTools.isWater(blockl) || BlockTools.isWaterbendable(blockl, this.player))) && (blockl.getType() != Material.LEAVES))) {
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, parent.getRegister(), this.location) && ((((blockl.getType() == Material.AIR) || (blockl.getType() == Material.FIRE) || BlockTools.isPlant(blockl) || BlockTools.isWater(blockl) || BlockTools.isWaterbendable(blockl, this.player))) && (blockl.getType() != Material.LEAVES))) {
 
 					for (double i = 0; i <= this.radius; i += .5) {
 						for (double angle = 0; angle < 360; angle += 10) {
@@ -295,38 +296,7 @@ public class Wave {
 				}
 
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, 2 * this.radius)) {
-					if (ProtectionManager.isEntityProtected(entity)) {
-						continue;
-					}
-					boolean knockback = false;
-
-					List<Block> temp = new LinkedList<Block>(this.wave.keySet());
-					for (Block block : temp) {
-						if (entity.getLocation().distance(block.getLocation()) <= 2) {
-							if ((entity instanceof LivingEntity) && this.freeze && (entity.getEntityId() != this.player.getEntityId())) {
-								this.activatefreeze = true;
-								this.frozenlocation = entity.getLocation();
-								freezeAround();
-								break;
-							}
-							if ((entity.getEntityId() != this.player.getEntityId()) || this.canhitself) {
-								knockback = true;
-							}
-						}
-					}
-					if (knockback) {
-						Vector dir = direction.clone();
-						dir.setY(dir.getY() * VERT_FACTOR);
-						if (entity.getEntityId() == this.player.getEntityId()) {
-							dir.multiply(2.0 / 3.0);
-						}
-						entity.setVelocity(entity.getVelocity().clone().add(dir.clone().multiply(factor)));
-						entity.setFallDistance(0);
-						if (entity.getFireTicks() > 0) {
-							entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
-						}
-						entity.setFireTicks(0);
-					}
+					affect(entity, direction);
 				}
 
 				if (!this.progressing) {
@@ -351,6 +321,43 @@ public class Wave {
 		return true;
 
 	}
+	
+	private void affect(Entity entity, Vector direction) {
+		BendingHitEvent event = new BendingHitEvent(parent, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		
+		boolean knockback = false;
+
+		List<Block> temp = new LinkedList<Block>(this.wave.keySet());
+		for (Block block : temp) {
+			if (entity.getLocation().distance(block.getLocation()) <= 2) {
+				if ((entity instanceof LivingEntity) && this.freeze && (entity.getEntityId() != this.player.getEntityId())) {
+					this.activatefreeze = true;
+					this.frozenlocation = entity.getLocation();
+					freezeAround();
+				}
+				if ((entity.getEntityId() != this.player.getEntityId()) || this.canhitself) {
+					knockback = true;
+				}
+			}
+		}
+		if (knockback) {
+			Vector dir = direction.clone();
+			dir.setY(dir.getY() * VERT_FACTOR);
+			if (entity.getEntityId() == this.player.getEntityId()) {
+				dir.multiply(2.0 / 3.0);
+			}
+			entity.setVelocity(entity.getVelocity().clone().add(dir.clone().multiply(factor)));
+			entity.setFallDistance(0);
+			if (entity.getFireTicks() > 0) {
+				entity.getWorld().playEffect(entity.getLocation(), Effect.EXTINGUISH, 0);
+			}
+			entity.setFireTicks(0);
+		}
+	}
 
 	private void breakBlock() {
 		List<Block> temp = new LinkedList<Block>(this.wave.keySet());
@@ -367,7 +374,7 @@ public class Wave {
 	}
 
 	private void addWater(Block block) {
-		if (ProtectionManager.isLocationProtectedFromBending(this.player, waterRegister, block.getLocation())) {
+		if (ProtectionManager.isLocationProtectedFromBending(this.player, parent.getRegister(), block.getLocation())) {
 			return;
 		}
 		if (!TempBlock.isTempBlock(block)) {
@@ -406,8 +413,8 @@ public class Wave {
 		}
 
 		for (Block block : BlockTools.getBlocksAroundPoint(this.frozenlocation, freezeradius)) {
-			if (ProtectionManager.isLocationProtectedFromBending(this.player, waterRegister, block.getLocation())
-					|| ProtectionManager.isLocationProtectedFromBending(this.player, waterRegister, block.getLocation())) {
+			if (ProtectionManager.isLocationProtectedFromBending(this.player, parent.getRegister(), block.getLocation())
+					|| ProtectionManager.isLocationProtectedFromBending(this.player, parent.getRegister(), block.getLocation())) {
 				continue;
 			}
 			if (TempBlock.isTempBlock(block)) {

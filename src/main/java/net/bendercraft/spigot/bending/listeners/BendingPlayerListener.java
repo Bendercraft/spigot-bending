@@ -68,8 +68,10 @@ import net.bendercraft.spigot.bending.abilities.water.WaterSpout;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
 import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.event.BendingDamageEvent;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
+import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
 public class BendingPlayerListener implements Listener {
@@ -335,6 +337,14 @@ public class BendingPlayerListener implements Listener {
 			if(bender.hasAffinity(BendingAffinity.SWORD) && player.isBlocking()) {
 				event.setDamage(event.getDamage() * 0.60);
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onBendingHit(BendingHitEvent event) {
+		if (ProtectionManager.isEntityProtected(event.getTarget()) 
+				|| ProtectionManager.isLocationProtectedFromBending(event.getAbility().getPlayer(), event.getAbility().getRegister(), event.getTarget().getLocation())) {
+			event.setCancelled(true);
 		}
 	}
 

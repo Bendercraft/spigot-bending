@@ -9,14 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
-/**
- * Created by Nokorbis on 02/03/2016.
- */
+
 @ABendingAbility(name = TremorSense.NAME, element = BendingElement.EARTH, shift = true, canBeUsedWithTools = true)
 public class TremorSense extends BendingActiveAbility {
 
@@ -110,11 +110,7 @@ public class TremorSense extends BendingActiveAbility {
 
         entities.clear();
         for (LivingEntity livingEntity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), currentDistance)) {
-            if (player.getEntityId() != livingEntity.getEntityId() && isOnEarth(livingEntity)) {
-                entities.put(livingEntity.getEntityId(), livingEntity);
-                livingEntity.removePotionEffect(GLOW.getType());
-                livingEntity.addPotionEffect(GLOW);
-            }
+            affect(livingEntity);
         }
     }
 
@@ -144,6 +140,19 @@ public class TremorSense extends BendingActiveAbility {
             }
         }
         return false;
+    }
+    
+    private void affect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		if (player != entity && isOnEarth(entity)) {
+            entities.put(entity.getEntityId(), entity);
+            entity.removePotionEffect(GLOW.getType());
+            entity.addPotionEffect(GLOW);
+        }
     }
 
 	public Map<Integer, LivingEntity> getEntities() {

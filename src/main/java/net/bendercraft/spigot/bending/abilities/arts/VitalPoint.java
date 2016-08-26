@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -15,9 +16,9 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 /**
  *
@@ -68,32 +69,15 @@ public class VitalPoint extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if(getState() == BendingAbilityState.START) {
-			this.target = EntityTools.getTargetedEntity(this.player, MAX_RANGE);
-			if (this.target == null || ProtectionManager.isEntityProtected(target)) {
+		if(isState(BendingAbilityState.START)) {
+			target = EntityTools.getTargetedEntity(player, MAX_RANGE);
+			if (target == null) {
 				return false;
 			}
 
-			this.cooldown = 1000;
-			this.damage += DAMAGE_INCREMENT;
-			
-			if (ParaStick.hasParaStick(player)) {
-				ParaStick stick = ParaStick.getParaStick(player);
-				stick.consume();
-				
-				DamageTools.damageEntity(bender, target, this, damage, true, 0, 0.0f, true);
-				if (this.target instanceof Player) {
-					EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
-					target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*4, 1));
-				}
-				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
-				this.cooldown += COOLDOWN / (6);
-			} else {
-				DamageTools.damageEntity(bender, target, this, damage, true, 0, 0.0f, true);
-				this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
-				target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*3, 1));
-			}
-			this.bender.cooldown(NAME, this.cooldown);
+			cooldown = 1000;
+			damage += DAMAGE_INCREMENT;
+			affect(target);
 		}
 		return true;
 	}
@@ -135,5 +119,30 @@ public class VitalPoint extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+	
+	private void affect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return;
+		}
+		if (ParaStick.hasParaStick(player)) {
+			ParaStick stick = ParaStick.getParaStick(player);
+			stick.consume();
+			
+			DamageTools.damageEntity(bender, target, this, damage, true, 0, 0.0f, true);
+			if (this.target instanceof Player) {
+				EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
+				target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*4, 1));
+			}
+			this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
+			this.cooldown += COOLDOWN / (6);
+		} else {
+			DamageTools.damageEntity(bender, target, this, damage, true, 0, 0.0f, true);
+			this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));
+			target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*3, 1));
+		}
+		this.bender.cooldown(NAME, this.cooldown);
 	}
 }

@@ -2,19 +2,21 @@ package net.bendercraft.spigot.bending.abilities.earth;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 @ABendingAbility(name = Catapult.NAME, element = BendingElement.EARTH)
 public class Catapult extends BendingActiveAbility {
@@ -149,24 +151,14 @@ public class Catapult extends BendingActiveAbility {
 			if (location.distance(origin) < .5) {
 				boolean remove = false;
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(origin, 2)) {
-					if (ProtectionManager.isEntityProtected(entity)) {
-						continue;
-					}
-					if (entity instanceof Player) {
-						Player target = (Player) entity;
-						boolean equal = target.getEntityId() == player.getEntityId();
-						if (equal) {
-							remove = true;
-						}
-					}
-					entity.setVelocity(direction.clone().multiply(push * distance / length));
+					affect(entity);
 				}
 				return remove;
 			}
 		} else {
 			if (location.distance(origin) <= length - distance) {
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, 2)) {
-					entity.setVelocity(direction.clone().multiply(push * distance / length));
+					affect(entity);
 				}
 				return false;
 			}
@@ -183,5 +175,19 @@ public class Catapult extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+	
+	private boolean affect(Entity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		boolean remove = true;
+		if(catapult) {
+			remove = entity == player;
+		}
+		entity.setVelocity(direction.clone().multiply(push * distance / length));
+		return remove;
 	}
 }

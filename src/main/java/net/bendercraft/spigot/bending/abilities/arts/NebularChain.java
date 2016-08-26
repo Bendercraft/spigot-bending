@@ -7,13 +7,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 @ABendingAbility(name = NebularChain.NAME, affinity = BendingAffinity.SWORD)
 public class NebularChain extends BendingActiveAbility {
@@ -35,21 +36,8 @@ public class NebularChain extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		LivingEntity target = EntityTools.getTargetedEntity(player, RANGE);
-		if(target != null && !ProtectionManager.isEntityProtected(target)) {
+		if(target != null && affect(target)) {
 			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_ANVIL_HIT, 5, 1);
-			
-			Vector direction = target.getEyeLocation().subtract(player.getEyeLocation()).toVector();
-			double distance = direction.length();
-			for(double i=0; i < distance ; i = i + 0.01) {
-				Location location = player.getEyeLocation().clone().add(direction.clone().normalize().multiply(i));
-				location.getWorld().spawnParticle(Particle.SPELL_WITCH, location, 1, 0, 0, 0, 0);
-			}
-			
-			Location location = player.getEyeLocation().add(player.getEyeLocation().getDirection());
-		    location.setPitch(target.getEyeLocation().getPitch());
-		    location.setYaw(target.getEyeLocation().getYaw());
-		    target.teleport(location);
-			
 			bender.cooldown(this, COOLDOWN);
 		}
 		return false;
@@ -74,6 +62,26 @@ public class NebularChain extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
+	}
+	
+	private boolean affect(LivingEntity entity) {
+		BendingHitEvent event = new BendingHitEvent(this, entity);
+		Bending.callEvent(event);
+		if(event.isCancelled()) {
+			return false;
+		}
+		Vector direction = entity.getEyeLocation().subtract(player.getEyeLocation()).toVector();
+		double distance = direction.length();
+		for(double i=0; i < distance ; i = i + 0.01) {
+			Location location = player.getEyeLocation().clone().add(direction.clone().normalize().multiply(i));
+			location.getWorld().spawnParticle(Particle.SPELL_WITCH, location, 1, 0, 0, 0, 0);
+		}
+		
+		Location location = player.getEyeLocation().add(player.getEyeLocation().getDirection());
+	    location.setPitch(entity.getEyeLocation().getPitch());
+	    location.setYaw(entity.getEyeLocation().getYaw());
+	    entity.teleport(location);
+		return true;
 	}
 
 }
