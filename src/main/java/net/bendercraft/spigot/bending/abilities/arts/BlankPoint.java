@@ -3,6 +3,7 @@ package net.bendercraft.spigot.bending.abilities.arts;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
@@ -47,12 +48,8 @@ public class BlankPoint extends BendingActiveAbility {
 			remove();
 			return false;
 		}
-		if(this.player.isSneaking()) {
-			affect(target);
-			this.bender.cooldown(this, COOLDOWN * 2);
-		} else {
-			this.bender.cooldown(this, COOLDOWN);
-		}
+		affect(target);
+		this.bender.cooldown(this, COOLDOWN);
 		return false;
 	}
 
@@ -96,8 +93,11 @@ public class BlankPoint extends BendingActiveAbility {
 			return;
 		}
 		DamageTools.damageEntity(bender, entity, this, DAMAGE);
-		entity.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
-				.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
+		Vector push = player.getEyeLocation().getDirection().normalize();
+		push.setY(0.2);
+		push = push.normalize().multiply(KNOCKBACK);
+		
+		entity.setVelocity(push);
 	}
 
 }

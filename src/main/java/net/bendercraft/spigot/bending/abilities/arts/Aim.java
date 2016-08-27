@@ -2,7 +2,6 @@ package net.bendercraft.spigot.bending.abilities.arts;
 
 import java.util.Map;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -25,7 +24,6 @@ import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
-import net.bendercraft.spigot.bending.utils.Tools;
 
 
 @ABendingAbility(name = Aim.NAME, affinity = BendingAffinity.BOW)
@@ -40,6 +38,9 @@ public class Aim extends BendingActiveAbility {
 
 	@ConfigurationParameter("Range")
 	private static int RANGE = 40;
+	
+	@ConfigurationParameter("Range-Effective")
+	private static int EFFECTIVE_RANGE = 30;
 
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 3000;
@@ -95,9 +96,11 @@ public class Aim extends BendingActiveAbility {
 				setState(BendingAbilityState.PREPARED);
 			}
 			if(getState() == BendingAbilityState.PREPARED) {
-				player.getWorld().playEffect(player.getEyeLocation(), 
-						Effect.SMOKE, 
-						Tools.getIntCardinalDirection(player.getEyeLocation().getDirection()), 3);
+				Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+				player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
+			} else {
+				Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
+				player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 			}
 		} else if (getState() == BendingAbilityState.PROGRESSING) {
 			if (!player.getWorld().equals(location.getWorld()) 
@@ -130,7 +133,8 @@ public class Aim extends BendingActiveAbility {
 		if (entity == player) {
 			return false;
 		}
-		DamageTools.damageEntity(bender, entity, this, damage);
+		double factor = location.distance(origin) / EFFECTIVE_RANGE;
+		DamageTools.damageEntity(bender, entity, this, damage*factor);
 		return true;
 	}
 
