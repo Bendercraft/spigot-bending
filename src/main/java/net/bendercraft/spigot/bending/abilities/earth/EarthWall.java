@@ -91,8 +91,9 @@ public class EarthWall extends BendingActiveAbility {
 		}
 		
 		addSelection();
-		
-		setState(BendingAbilityState.PREPARING);
+		if(!selection.isEmpty()) {
+			setState(BendingAbilityState.PREPARING);
+		}
 		return false;
 	}
 	
