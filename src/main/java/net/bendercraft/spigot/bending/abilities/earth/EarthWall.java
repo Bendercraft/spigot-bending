@@ -119,7 +119,7 @@ public class EarthWall extends BendingActiveAbility {
 			selected.clear();
 			
 			// If only one block has been selected, then keep legacy behavior and expand selection
-			if(selection.size() == 1) {
+			if(selection.size() <= 3) {
 				Vector direction = player.getEyeLocation().getDirection().normalize();
 
 				double ox, oy, oz;
