@@ -331,9 +331,6 @@ public class BendingPlayerListener implements Listener {
 			if (bender.hasPath(BendingPath.TOUGH)) {
 				event.setDamage(event.getDamage() * 0.9);
 			}
-			if(bender.isBender(BendingElement.EARTH) && EarthArmor.hasEarthArmor(player)) {
-				event.setDamage(event.getDamage() * 0.9);
-			}
 			if(bender.hasAffinity(BendingAffinity.SWORD) && player.isBlocking()) {
 				event.setDamage(event.getDamage() * 0.60);
 			}
@@ -342,7 +339,8 @@ public class BendingPlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBendingHit(BendingHitEvent event) {
-		if (ProtectionManager.isEntityProtected(event.getTarget()) 
+		if (event.getTarget() != null
+				&& ProtectionManager.isEntityProtected(event.getTarget()) 
 				|| ProtectionManager.isLocationProtectedFromBending(event.getAbility().getPlayer(), event.getAbility().getRegister(), event.getTarget().getLocation())) {
 			event.setCancelled(true);
 		}

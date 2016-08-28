@@ -271,7 +271,7 @@ public class BendingDenyItem implements Listener {
 		}
 		
 		// Metal bender might keep iron armors
-		if(bender == null || !bender.hasAffinity(BendingAffinity.METAL)) {
+		if(bender == null || !bender.hasAffinity(BendingAffinity.METAL) || !EarthArmor.hasEarthArmor(bender.getPlayer())) {
 			if(item.getType() == Material.IRON_BOOTS 
 					|| item.getType() == Material.IRON_CHESTPLATE
 					|| item.getType() == Material.IRON_HELMET

@@ -37,6 +37,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.arts.C4;
 import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.arts.ExplosiveShot;
+import net.bendercraft.spigot.bending.abilities.earth.EarthArmor;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlade;
 import net.bendercraft.spigot.bending.abilities.fire.HeatControl;
@@ -117,6 +118,20 @@ public class BendingEntityListener implements Listener {
 					event.setDamage(event.getDamage()*0.5);
 				}
 			}
+		}
+		
+		// Check damage cancellation if EarthArmor is on victim
+		if(entity instanceof Player && EarthArmor.hasEarthArmor((Player) entity)) {
+			EarthArmor ea = (EarthArmor) AbilityManager.getManager().getInstances(EarthArmor.NAME).get(entity);
+			if(ea.shouldCancelDamage()) {
+				event.setDamage(0);
+			}
+		}
+		
+		// Reduce damage if EarthArmor is on attacker
+		if(event.getDamager() instanceof Player && EarthArmor.hasEarthArmor((Player) event.getDamager())) {
+			EarthArmor ea = (EarthArmor) AbilityManager.getManager().getInstances(EarthArmor.NAME).get(event.getDamager());
+			event.setDamage(event.getDamage() * (1-ea.getDamageReduction()));
 		}
 	}
 
