@@ -75,13 +75,16 @@ public class BendingLearning {
 			this.release(p);
 		}
 	}
-
+	
 	public boolean addPermission(Player player, String ability) {
-		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
-		if (!EntityTools.hasPermission(player, register)) {
+		return addPermission(player, AbilityManager.getManager().getRegisteredAbility(ability));
+	}
+
+	public boolean addPermission(Player player, RegisteredAbility ability) {
+		if (!EntityTools.hasPermission(player, ability)) {
 			// Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
-			String perm = register.getPermission();
+			String perm = ability.getPermission();
 			attachment.setPermission(perm, true);
 			if (!permissions.containsKey(player.getUniqueId())) {
 				permissions.put(player.getUniqueId(), new LinkedList<String>());
@@ -96,20 +99,23 @@ public class BendingLearning {
 		}
 		return false;
 	}
-
+	
 	public boolean removePermission(Player player, String ability) {
-		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(ability);
-		if (EntityTools.hasPermission(player, register)) {
+		return removePermission(player, AbilityManager.getManager().getRegisteredAbility(ability));
+	}
+
+	public boolean removePermission(Player player, RegisteredAbility ability) {
+		if (EntityTools.hasPermission(player, ability)) {
 			// Get permission attachement
 			PermissionAttachment attachment = this.lease(player);
-			attachment.unsetPermission(register.getPermission());
+			attachment.unsetPermission(ability.getPermission());
 			if (permissions.containsKey(player.getUniqueId())) {
-				permissions.get(player.getUniqueId()).remove(register.getPermission());
+				permissions.get(player.getUniqueId()).remove(ability.getPermission());
 			}
 			try {
 				this.save();
 			} catch (Exception e) {
-				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not have saved permission " + register.getPermission() + " for player " + player.getName(), e);
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Could not have saved permission " + ability.getPermission() + " for player " + player.getName(), e);
 			}
 			return true;
 		}
