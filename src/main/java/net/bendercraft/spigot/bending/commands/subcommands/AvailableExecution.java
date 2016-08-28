@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import net.bendercraft.spigot.bending.Messages;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
@@ -42,7 +43,7 @@ public class AvailableExecution extends BendingCommand {
 		}
 		
 		if(player == null) {
-			sender.sendMessage(ChatColor.RED+"No valid player found.");
+			sender.sendMessage(ChatColor.RED + Messages.INVALID_PLAYER);
 			return true;
 		}
 

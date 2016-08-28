@@ -41,7 +41,7 @@ public class DisplayExecution extends BendingCommand {
 		}
 		
 		if(player == null) {
-			sender.sendMessage(ChatColor.RED+"No valid player found.");
+			sender.sendMessage(ChatColor.RED + Messages.INVALID_PLAYER);
 			return true;
 		}
 
