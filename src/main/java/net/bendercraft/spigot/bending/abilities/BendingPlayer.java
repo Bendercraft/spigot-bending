@@ -161,8 +161,12 @@ public class BendingPlayer {
 		return this.bendings.contains(type);
 	}
 
-	public boolean hasAffinity(BendingAffinity specialization) {
-		return this.affinities.contains(specialization);
+	public boolean hasAffinity(BendingElement element) {
+		return this.affinities.stream().filter(a -> a.getElement() == element).findAny().isPresent();
+	}
+	
+	public boolean hasAffinity(BendingAffinity affinity) {
+		return this.affinities.contains(affinity);
 	}
 
 	public boolean hasPath(BendingElement type) {

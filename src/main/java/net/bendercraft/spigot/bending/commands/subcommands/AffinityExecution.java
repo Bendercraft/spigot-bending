@@ -73,7 +73,7 @@ public class AffinityExecution extends BendingCommand {
 	private void set(CommandSender sender, List<String> args) {
 		Player target = checkArgs(sender, args, 1, 2);
 
-		if (target == null) {
+		if(target == null) {
 			return;
 		}
 
@@ -85,8 +85,13 @@ public class AffinityExecution extends BendingCommand {
 
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(target);
 
-		if (!bender.isBender(affinity.getElement())) {
+		if(!bender.isBender(affinity.getElement())) {
 			sender.sendMessage(ChatColor.RED + Messages.INVALID_AFFINITY_ELEMENT);
+			return;
+		}
+		
+		if(bender.hasAffinity(affinity.getElement())) {
+			sender.sendMessage(ChatColor.RED + "Your target already have affinity ["+affinity.name()+"] for element "+affinity.getElement());
 			return;
 		}
 
