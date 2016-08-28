@@ -71,8 +71,12 @@ public class DamageTools {
 	        Map<DamageModifier, Function<? super Double, Double>> modifierFunctions = new EnumMap<DamageModifier, Function<? super Double, Double>>(DamageModifier.class);
 	        
 	        modifiers.put(DamageModifier.BASE, damage);
+	        modifierFunctions.put(DamageModifier.BASE, ZERO);
 	        for(DamageModifier modifier : DamageModifier.values()) {
-	        	modifierFunctions.put(modifier, ZERO);
+	        	if(modifier != DamageModifier.BASE) {
+		        	modifiers.put(modifier, 0.0);
+		        	modifierFunctions.put(modifier, ZERO);
+	        	}
 	        }
 			
 			BendingDamageEvent event = new BendingDamageEvent(attacker, damagee, ability, modifiers, modifierFunctions);
