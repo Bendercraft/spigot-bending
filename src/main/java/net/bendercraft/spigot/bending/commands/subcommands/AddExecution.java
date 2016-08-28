@@ -18,7 +18,6 @@ public class AddExecution extends BendingCommand {
 	public AddExecution() {
 		super();
 		this.command = "add";
-		this.aliases.add("a");
 		this.basePermission = "bending.command.add";
 	}
 

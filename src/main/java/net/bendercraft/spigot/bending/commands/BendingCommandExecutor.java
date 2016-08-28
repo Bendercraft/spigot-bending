@@ -29,72 +29,31 @@ import net.bendercraft.spigot.bending.commands.subcommands.ReloadExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.RemoveExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.ToggleExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.VersionExecution;
-import net.bendercraft.spigot.bending.commands.subcommands.WhoExecution;
 
 public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
-
-	private IBendingCommand bind;
-	private IBendingCommand choose;
-	private IBendingCommand remove;
-	private IBendingCommand learning;
-	private IBendingCommand version;
-	private IBendingCommand toggle;
-	private IBendingCommand who;
-	private IBendingCommand display;
-	private IBendingCommand cooldown;
-	private IBendingCommand clear;
-	private IBendingCommand add;
-	private IBendingCommand affinity;
-	private IBendingCommand path;
-	private IBendingCommand reload;
-	private IBendingCommand help;
-	private IBendingCommand available;
-	private IBendingCommand deck;
-	private IBendingCommand debug;
 
 	private List<IBendingCommand> commands;
 
 	public BendingCommandExecutor() {
 		this.commands = new LinkedList<IBendingCommand>();
 
-		this.bind = new BindExecution();
-		this.choose = new ChooseExecution();
-		this.remove = new RemoveExecution();
-		this.learning = new LearningExecution();
-		this.version = new VersionExecution();
-		this.toggle = new ToggleExecution();
-		this.who = new WhoExecution();
-		this.cooldown = new CooldownExecution();
-		this.add = new AddExecution();
-		this.reload = new ReloadExecution();
-		this.display = new DisplayExecution();
-		this.clear = new ClearExecution();
-		this.affinity = new AffinityExecution();
-		this.path = new PathExecution();
-		this.help = new HelpExecution(this.commands);
-		// TODO :
-		this.deck = new DeckExecution();
-		this.available = new AvailableExecution();
-		this.debug = new DebugExecution();
-
-		this.commands.add(this.bind);
-		this.commands.add(this.deck);
-		this.commands.add(this.debug);
-		this.commands.add(this.choose);
-		this.commands.add(this.remove);
-		this.commands.add(this.add);
-		this.commands.add(this.affinity);
-		this.commands.add(this.path);
-		this.commands.add(this.learning);
-		this.commands.add(this.available);
-		this.commands.add(this.help);
-		this.commands.add(this.version);
-		this.commands.add(this.toggle);
-		this.commands.add(this.who);
-		this.commands.add(this.display);
-		this.commands.add(this.cooldown);
-		this.commands.add(this.clear);
-		this.commands.add(this.reload);
+		this.commands.add(new BindExecution());
+		this.commands.add(new ChooseExecution());
+		this.commands.add(new RemoveExecution());
+		this.commands.add(new LearningExecution());
+		this.commands.add(new VersionExecution());
+		this.commands.add(new ToggleExecution());
+		this.commands.add(new CooldownExecution());
+		this.commands.add(new AddExecution());
+		this.commands.add(new ReloadExecution());
+		this.commands.add(new DisplayExecution());
+		this.commands.add(new ClearExecution());
+		this.commands.add(new AffinityExecution());
+		this.commands.add(new PathExecution());
+		this.commands.add(new DeckExecution());
+		this.commands.add(new AvailableExecution());
+		this.commands.add(new DebugExecution());
+		this.commands.add(new HelpExecution(this.commands));
 	}
 
 	@Override

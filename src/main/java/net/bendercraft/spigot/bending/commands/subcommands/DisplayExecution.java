@@ -5,13 +5,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.bendercraft.spigot.bending.Messages;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
+import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPath;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.commands.BendingCommand;
@@ -29,43 +32,48 @@ public class DisplayExecution extends BendingCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + Messages.NOT_CONSOLE_COMMAND);
+		Player player = null;
+		
+		if (!args.isEmpty() && sender.hasPermission("bending.admin")) {
+			player = Bukkit.getPlayer(args.get(0));
+		} else if(sender instanceof Player) {
+			player = (Player) sender;
+		}
+		
+		if(player == null) {
+			sender.sendMessage(ChatColor.RED+"No valid player found.");
 			return true;
 		}
 
-		// If list slots
-		if (args.isEmpty()) {
-			Player player = (Player) sender;
-			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-			Map<Integer, String> abilities = bender.getAbilities();
-			player.sendMessage("You currently use deck : " + bender.getCurrentDeck());
-			player.sendMessage("Slots :");
-			if (abilities != null && !abilities.isEmpty()) {
-				ChatColor white = ChatColor.WHITE;
-				for (Entry<Integer, String> slot : abilities.entrySet()) {
-					RegisteredAbility ab = AbilityManager.getManager().getRegisteredAbility(slot.getValue());
-					if (ab != null) {
-						ChatColor color = PluginTools.getColor(Settings.getColor(ab.getElement()));
-						player.sendMessage("--" + color + (slot.getKey() + 1) + white + " : " + color + ab.getName());
-					}
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		sender.sendMessage("Player: "+ChatColor.GOLD+player.getName());
+		sender.sendMessage("Elements:");
+		for(BendingElement element : bender.getBendingTypes()) {
+			BendingPath path = bender.getPath().stream().filter(p -> p.getElement() == element).findAny().orElse(null);
+			StringBuilder sb = new StringBuilder();
+			for(BendingAffinity affinity : bender.getAffinities()) {
+				if(affinity.getElement() == element) {
+					sb.append(affinity.name()+", ");
 				}
-			} else {
-				player.sendMessage("-" + Messages.NOTHING_BOUND);
+			}
+			sender.sendMessage(" - "+PluginTools.getColor(Settings.getColor(element))+element.name()+" ("+(path == null ? "None":path.name())+") with affinities ["+sb.substring(0, sb.lastIndexOf(", "))+"]");
+		}
+		Map<Integer, String> abilities = bender.getAbilities();
+		sender.sendMessage("Active deck : " + bender.getCurrentDeck());
+		StringBuilder sb = new StringBuilder();
+		bender.getDecks().keySet().forEach(d -> sb.append(d+", "));
+		sender.sendMessage("Decks : " + sb.substring(0, sb.lastIndexOf(", ")));
+		if (abilities != null && !abilities.isEmpty()) {
+			sender.sendMessage("Slots:");
+			for (Entry<Integer, String> slot : abilities.entrySet()) {
+				RegisteredAbility ab = AbilityManager.getManager().getRegisteredAbility(slot.getValue());
+				if (ab != null) {
+					ChatColor color = PluginTools.getColor(Settings.getColor(ab.getElement()));
+					sender.sendMessage(" - " + color + (slot.getKey() + 1) + ChatColor.WHITE + " : " + color + ab.getName());
+				}
 			}
 		} else {
-			BendingElement element = getElement(args.get(0));
-			if (element == null) {
-				sender.sendMessage(ChatColor.RED + Messages.INVALID_ELEMENT);
-				return true;
-			}
-			ChatColor color = PluginTools.getColor(Settings.getColor(element));
-			sender.sendMessage(color + element.name() + ":");
-			for(RegisteredAbility ab : AbilityManager.getManager().getRegisteredAbilities()) {
-				if(ab.getElement() == element) {
-					sender.sendMessage(color + ab.getName());
-				}
-			}
+			sender.sendMessage("Slots: " + Messages.NOTHING_BOUND);
 		}
 
 		return true;
