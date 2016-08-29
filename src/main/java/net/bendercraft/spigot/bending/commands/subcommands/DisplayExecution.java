@@ -56,7 +56,7 @@ public class DisplayExecution extends BendingCommand {
 					sb.append(affinity.name()+", ");
 				}
 			}
-			sender.sendMessage(" - "+PluginTools.getColor(Settings.getColor(element))+element.name()+" ("+(path == null ? "None":path.name())+") with affinities ["+sb.substring(0, sb.lastIndexOf(", "))+"]");
+			sender.sendMessage(" - "+PluginTools.getColor(Settings.getColor(element))+element.name()+" ("+(path == null ? "None":path.name())+") with affinities ["+(sb.length()==0 ? "NONE" : sb.substring(0, sb.lastIndexOf(", ")))+"]");
 		}
 		Map<Integer, String> abilities = bender.getAbilities();
 		sender.sendMessage("Active deck : " + bender.getCurrentDeck());
@@ -82,7 +82,7 @@ public class DisplayExecution extends BendingCommand {
 	@Override
 	public void printUsage(CommandSender sender, boolean permission) {
 		if (sender.hasPermission("bending.command.display")) {
-			sender.sendMessage("/bending display [element]");
+			sender.sendMessage("/bending display");
 		}
 		else if (permission) {
 			sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
@@ -91,10 +91,6 @@ public class DisplayExecution extends BendingCommand {
 
 	@Override
 	public List<String> autoComplete(CommandSender sender, List<String> args) {
-		List<String> values = new LinkedList<String>();
-		for (BendingElement element : BendingElement.values()) {
-			values.add(element.name());
-		}
-		return values;
+		return new LinkedList<String>();
 	}
 }
