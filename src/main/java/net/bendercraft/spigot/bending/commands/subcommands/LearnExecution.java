@@ -35,7 +35,7 @@ public class LearnExecution extends BendingCommand {
 			printUsage(sender);
 			return true;
 		}
-		String target = args.remove(0);
+		String target = args.get(0);
 		
 		Player player = null;
 		if (args.size() == 2 && sender.hasPermission("bending.admin")) {
