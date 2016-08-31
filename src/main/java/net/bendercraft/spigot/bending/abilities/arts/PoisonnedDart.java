@@ -178,8 +178,8 @@ public class PoisonnedDart extends BendingActiveAbility {
 	
 	private enum Effect {
 		PURGE(null, null, Particle.HEART), 
-		CONFUSION(PotionEffectType.POISON, PURGE, Particle.CRIT), 
-		BLINDNESS(PotionEffectType.POISON, CONFUSION, Particle.DRAGON_BREATH), 
+		CONFUSION(PotionEffectType.CONFUSION, PURGE, Particle.CRIT), 
+		BLINDNESS(PotionEffectType.BLINDNESS, CONFUSION, Particle.DRAGON_BREATH), 
 		POISON(PotionEffectType.POISON, BLINDNESS, Particle.SPELL);
 		
 		public final PotionEffectType type;
