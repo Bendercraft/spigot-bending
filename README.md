@@ -1,5 +1,5 @@
 # Spigot-bending
-Spigot plugins allowings players to bend elements at their will. Based on "Avatar" franchise. This plugin is officially hosted and used on "Avatar-Realms", french community of the franchise.
+Spigot plugins allowings players to bend elements at their will. Based on "Avatar" franchise. This plugin is officially hosted and used on "Bendercraft _.net_ ", french community of the franchise.
 
 ## Features
  - Allow players to choose their element, either once or whenever they want
