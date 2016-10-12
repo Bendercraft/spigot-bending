@@ -340,6 +340,7 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBendingHit(BendingHitEvent event) {
 		if (event.getTarget() != null
+				&& event.getAbility() != null
 				&& ProtectionManager.isEntityProtected(event.getTarget()) 
 				|| ProtectionManager.isLocationProtectedFromBending(event.getAbility().getPlayer(), event.getAbility().getRegister(), event.getTarget().getLocation())) {
 			event.setCancelled(true);
