@@ -98,7 +98,7 @@ public class Frozen {
 						if(rand < 0.5) {
 							color = DyeColor.LIGHT_BLUE;
 						}
-						Bending.getInstance().getManager().addGlobalTempBlock(DURATION, TempBlock.makeTemporary(block, mat, color.getData(), true));
+						Bending.getInstance().getManager().addGlobalTempBlock(DURATION, TempBlock.makeTemporary(block, mat, color.getDyeData(), true));
 						block.getWorld().playSound(block.getLocation(), Sound.BLOCK_SNOW_PLACE, 1.0f, 1.0f);
 					} else {
 						Bending.getInstance().getManager().addGlobalTempBlock(DURATION, TempBlock.makeTemporary(block,  Material.ICE, true));

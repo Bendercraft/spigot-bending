@@ -5,8 +5,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
@@ -19,9 +19,9 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.event.BendingDamageEvent;
-import net.minecraft.server.v1_10_R1.DamageSource;
-import net.minecraft.server.v1_10_R1.EntityLiving;
-import net.minecraft.server.v1_10_R1.MathHelper;
+import net.minecraft.server.v1_11_R1.DamageSource;
+import net.minecraft.server.v1_11_R1.EntityLiving;
+import net.minecraft.server.v1_11_R1.MathHelper;
 
 public class DamageTools {
 	private static final Function<? super Double, Double> ZERO = Functions.constant(-0.0);
@@ -105,8 +105,8 @@ public class DamageTools {
 					Bending.getInstance().getLogger().log(Level.SEVERE, "Could not set lastDamageByPlayerTime on "+t.getName(), e);
 				}
 				t.getHandle().killer = ((CraftPlayer)(attacker.getPlayer())).getHandle();
-				t.getHandle().aA = 10;
-				t.getHandle().hurtTicks = t.getHandle().aA;
+				t.getHandle().az = 10;
+				t.getHandle().hurtTicks = t.getHandle().az;
 				if(!ghost) {
 					t.getHandle().noDamageTicks = noDamageTicks;
 				}
@@ -121,7 +121,7 @@ public class DamageTools {
                         d0 = (Math.random() - Math.random()) * 0.01D;
                     }
 
-                    t.getHandle().aB = (float) (MathHelper.b(d1, d0) * 57.2957763671875D - (double) t.getHandle().yaw);
+                    t.getHandle().aA = (float) (MathHelper.c(d1, d0) * 57.2957763671875D - (double) t.getHandle().yaw);
                     t.getHandle().a(t.getHandle().lastDamager, knockback, d0, d1);
 				}
 				
