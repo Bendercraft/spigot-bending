@@ -11,3 +11,4 @@ build.xml
 /.externalToolBuilders/
 /.sonar/
 /.idea/
+*.jar
