@@ -79,6 +79,7 @@ public class Lightning extends BendingActiveAbility {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	private void strike() {
 		bender.fire.consume(NAME, POWER);
 		
