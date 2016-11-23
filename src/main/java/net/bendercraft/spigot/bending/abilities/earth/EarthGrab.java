@@ -61,7 +61,7 @@ public class EarthGrab extends BendingActiveAbility {
 
 	@Override
 	public boolean swing() {
-		if (isState(BendingAbilityState.START)) {
+		if (!isState(BendingAbilityState.START)) {
 			return false;
 		}
 		if (bender.isOnCooldown(NAME)) {
@@ -69,7 +69,7 @@ public class EarthGrab extends BendingActiveAbility {
 		}
 		this.self = false;
 		Entity target = EntityTools.getTargetedEntity(this.player, range);
-		if(target != null && affect(target)) {
+		if(affect(target)) {
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
@@ -84,7 +84,7 @@ public class EarthGrab extends BendingActiveAbility {
 			return false;
 		}
 		this.self = true;
-		if (this.target != null && affect(player)) {
+		if (affect(player)) {
 			this.id = ID++;
 			setState(BendingAbilityState.PROGRESSING);
 		}
@@ -104,6 +104,7 @@ public class EarthGrab extends BendingActiveAbility {
 
 			this.time = System.currentTimeMillis();
 			this.toKeep = true;
+			this.target = (LivingEntity) entity;
 
 			double x = (int) this.target.getLocation().getX();
 			double y = (int) this.target.getLocation().getY();
