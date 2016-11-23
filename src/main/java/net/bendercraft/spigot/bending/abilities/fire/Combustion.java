@@ -68,6 +68,9 @@ public class Combustion extends BendingActiveAbility {
 	@ConfigurationParameter("Power")
 	public static int POWER = 10;
 
+	@ConfigurationParameter("Charged-Power")
+	public static int CHARGED_POWER = 3;
+
 	private static final Particle CRIT = Particle.CRIT;
 	private static final Particle EXPLODE = Particle.EXPLOSION_HUGE;
 
@@ -159,6 +162,7 @@ public class Combustion extends BendingActiveAbility {
 			player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 			if (System.currentTimeMillis() > time + chargeTime) {
 				launch();
+				bender.fire.consume(NAME, CHARGED_POWER);
 				setState(BendingAbilityState.PREPARED);
 			}
 			return;
