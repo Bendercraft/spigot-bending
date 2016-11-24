@@ -1,6 +1,7 @@
 package net.bendercraft.spigot.bending.abilities.earth;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -68,8 +69,8 @@ public class EarthGrab extends BendingActiveAbility {
 			return false;
 		}
 		this.self = false;
-		Entity target = EntityTools.getTargetedEntity(this.player, range);
-		if(affect(target)) {
+		this.target = EntityTools.getTargetedEntity(this.player, range);
+		if(this.target != null && affect()) {
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
@@ -84,119 +85,102 @@ public class EarthGrab extends BendingActiveAbility {
 			return false;
 		}
 		this.self = true;
-		if (affect(player)) {
+		this.target = player;
+		if (this.target != null && affect()) {
 			this.id = ID++;
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
 	}
 
-	public boolean affect(Entity entity) {
-		BendingHitEvent event = new BendingHitEvent(this, entity);
+	public boolean affect() {
+		BendingHitEvent event = new BendingHitEvent(this, this.target);
 		Bending.callEvent(event);
 		if(event.isCancelled()) {
 			return false;
 		}
-		if (entity instanceof LivingEntity) {
-			if (ProtectionManager.isEntityProtected(entity)) {
-				return false;
-			}
+        if (ProtectionManager.isEntityProtected(this.target)) {
+            return false;
+        }
 
-			this.time = System.currentTimeMillis();
-			this.toKeep = true;
-			this.target = (LivingEntity) entity;
+        this.time = System.currentTimeMillis();
+        this.toKeep = true;
 
-			double x = (int) this.target.getLocation().getX();
-			double y = (int) this.target.getLocation().getY();
-			double z = (int) this.target.getLocation().getZ();
+        double x = (int) this.target.getLocation().getX();
+        double y = (int) this.target.getLocation().getY();
+        double z = (int) this.target.getLocation().getZ();
 
-			x = (x < 0) ? x - 0.5 : x + 0.5;
-			z = (z < 0) ? z - 0.5 : z + 0.5;
+        x = (x < 0) ? x - 0.5 : x + 0.5;
+        z = (z < 0) ? z - 0.5 : z + 0.5;
 
-			this.origin = new Location(entity.getLocation().getWorld(), x, y, z, entity.getLocation().getYaw(), entity.getLocation().getPitch());
+        this.origin = new Location(this.target.getLocation().getWorld(), x, y, z, this.target.getLocation().getYaw(), this.target.getLocation().getPitch());
 
-			if (ProtectionManager.isLocationProtectedFromBending(player, register, this.origin)) {
-				return false;
-			}
+        if (ProtectionManager.isLocationProtectedFromBending(player, register, this.origin)) {
+            return false;
+        }
 
-			List<Location> locs = new LinkedList<Location>();
-			List<Location> toRemove = new LinkedList<Location>();
+        List<Location> locs = new LinkedList<Location>();
 
-			locs.add(this.origin.clone().add(0, 0, -1));
-			locs.add(this.origin.clone().add(0, 0, 1));
-			locs.add(this.origin.clone().add(-1, 0, 0));
-			locs.add(this.origin.clone().add(1, 0, 0));
+        locs.add(this.origin.clone().add(0, 0, -1));
+        locs.add(this.origin.clone().add(0, 0, 1));
+        locs.add(this.origin.clone().add(-1, 0, 0));
+        locs.add(this.origin.clone().add(1, 0, 0));
 
-			int cpt = 0;
+        //Check if we can earthgrab the player at this position
+        Iterator<Location> it = locs.iterator();
+        while (it.hasNext()) {
+            Location loc = it.next();
+            if (BlockTools.isEarthbendable(player, loc.getBlock())) {
+                it.remove(); //We don't need to bend it to lock the target
+            }
+            else if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
+                //Check if block under this location is bendable
+                loc.add(0, -1, 0);
+                if (!BlockTools.isEarthbendable(player, loc.getBlock())) {
+                    if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
 
-			for (Location loc : locs) {
-				if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
+                        loc.add(0, -1, 0);
+                        if (!BlockTools.isEarthbendable(player, loc.getBlock())) {
+                            return false;
+                        }
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+            else {
+                return false;
+            }
+        }
 
-					loc.add(0, -1, 0);
-					if (BlockTools.isEarthbendable(player, loc.getBlock())) {
-						cpt++;
-					} else if (BlockTools.isFluid(loc.getBlock()) || BlockTools.isPlant(loc.getBlock())) {
+        this.target.teleport(this.origin); // To be sure the guy is locked in the grab
 
-						loc.add(0, -1, 0);
-						if (BlockTools.isEarthbendable(player, loc.getBlock())) {
-							cpt++;
-						} else {
-							return false;
-						}
-					} else {
-						return false;
-					}
-				} else if (BlockTools.isEarthbendable(player, loc.getBlock())) {
-					cpt++;
-					toRemove.add(loc);
-				} else {
-					return false;
-				}
-			}
+        int duration = 20 * ((this.self)? SELF_DURATION : OTHER_DURATION);
 
-			for (Location tr : toRemove) {
-				locs.remove(tr);
-			}
+        PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, duration, 150); // The entity cannot move
+        PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, duration, 150); // The entity cannot jump
+        this.target.addPotionEffect(slowness);
+        this.target.addPotionEffect(jumpless);
 
-			if (cpt >= 4) {
-				this.target.teleport(this.origin);
-				// To be sure the guy is locked in the grab
+        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
+        for (Location loc : locs) {
+            int h = 1;
+            if (this.origin.getY() - loc.getY() >= 2) {
+                h = 2;
+            }
+            Material t = loc.getBlock().getType();
+            for (int i = 0; i < h; i++) {
+                //this.affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
+                this.affectedBlocks.add(TempBlock.makeTemporary(loc.add(0, 1, 0).getBlock(), t, false));
+            }
+        }
 
-				int duration;
-				if (this.self) {
-					duration = SELF_DURATION * 20;
-				} else {
-					duration = OTHER_DURATION * 20;
-				}
-				PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, duration, 150); // The
-																								// entity
-																								// cannot
-																								// move
-				PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, duration, 150); // The
-																								// entity
-																								// cannot
-																								// jump
-				this.target.addPotionEffect(slowness);
-				this.target.addPotionEffect(jumpless);
-				target.getWorld().playSound(target.getLocation(), Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
-				for (Location loc : locs) {
-					int h = 1;
-					if (this.origin.getY() - loc.getY() >= 2) {
-						h = 2;
-					}
-					Material t = loc.getBlock().getType();
-					for (int i = 0; i < h; i++) {
-						//this.affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
-						this.affectedBlocks.add(TempBlock.makeTemporary(loc.add(0, 1, 0).getBlock(), t, false));
-					}
-				}
+        if (this.target instanceof Player && this.target.getEntityId() != player.getEntityId()) {
+            EntityTools.grab((Player) this.target, this.time);
+        }
 
-				if (this.target instanceof Player && this.target.getEntityId() != player.getEntityId()) {
-					EntityTools.grab((Player) this.target, this.time);
-				}
-				this.bender.cooldown(NAME, COOLDOWN);
-			}
-		}
+        this.bender.cooldown(NAME, COOLDOWN);
 		return true;
 	}
 
