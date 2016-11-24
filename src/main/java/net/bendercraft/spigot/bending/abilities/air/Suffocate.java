@@ -9,6 +9,7 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -80,7 +81,7 @@ public class Suffocate extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if(isState(BendingAbilityState.START)) {
-			Entity target = EntityTools.getTargetedEntity(this.player, RANGE);
+			LivingEntity target = EntityTools.getTargetedEntity(this.player, RANGE);
 			if(affect(target)) {
 				setState(BendingAbilityState.PROGRESSING);
 			}
@@ -170,14 +171,14 @@ public class Suffocate extends BendingActiveAbility {
 		return this.player;
 	}
 	
-	private boolean affect(Entity entity) {
+	private boolean affect(LivingEntity entity) {
+		if (!(entity instanceof Player)) {
+			return false;
+		}
+
 		BendingHitEvent event = new BendingHitEvent(this, entity);
 		Bending.callEvent(event);
 		if(event.isCancelled()) {
-			return false;
-		}
-		
-		if (!(entity instanceof Player)) {
 			return false;
 		}
 
