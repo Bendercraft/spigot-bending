@@ -15,8 +15,8 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
-import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -51,12 +51,14 @@ public class EarthWall extends BendingActiveAbility {
 	private List<Block> selection = new LinkedList<Block>();
 	private List<TempBlock> selected = new LinkedList<TempBlock>();
 
+	private int range;
+
 	public EarthWall(RegisteredAbility register, Player player) {
 		super(register, player);
 
-		if (AvatarState.isAvatarState(player)) {
-			this.height = (int) (2. / 5. * AvatarState.getValue(this.height));
-			this.halfwidth = AvatarState.getValue(this.halfwidth);
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.EARTH_RAISEEARTH_RANGE)) {
+			this.range += 3;
 		}
 	}
 
@@ -98,17 +100,18 @@ public class EarthWall extends BendingActiveAbility {
 	}
 	
 	private void addSelection() {
-		Block target = EntityTools.getTargetBlock(player, RANGE, BlockTools.getTransparentEarthbending());
+		Block target = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending());
 		if(target != null && !TempBlock.isTempBlock(target) && !selection.contains(target) && BlockTools.isEarthbendable(player, target)) {
 			selection.add(target);
-			selected.add(TempBlock.makeTemporary(target, Material.COBBLESTONE, false));
+			selected.add(TempBlock.makeTemporary(this, target, Material.COBBLESTONE, false));
 		}
 	}
 
 	@Override
 	public void progress() {
 		if(isState(BendingAbilityState.PREPARING)) {
-			if(player.isSneaking() 
+			if(bender.hasPerk(BendingPerk.EARTH_EARTHWALL_MULTISELECT)
+					&& player.isSneaking() 
 					&& System.currentTimeMillis() < getStartedTime() + SELECTION_TIME 
 					&& selection.size() < SELECTION_MAX) {
 				addSelection();

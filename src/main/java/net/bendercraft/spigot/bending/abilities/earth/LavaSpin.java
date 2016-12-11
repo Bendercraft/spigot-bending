@@ -96,7 +96,7 @@ public class LavaSpin extends BendingActiveAbility {
 			if(BlockTools.isEarthbendable(player, target)) {
 				current = target.getRelative(BlockFace.UP).getLocation();
 				//block = new TempBlock(current.getBlock(), MATERIAL_REST);
-				block = TempBlock.makeTemporary(current.getBlock(), MATERIAL_REST, false);
+				block = TempBlock.makeTemporary(this, current.getBlock(), MATERIAL_REST, false);
 				Vector direction = player.getEyeLocation().subtract(current).toVector().normalize();
 				if(move(direction)) {
 					current.getWorld().playSound(current, Sound.ENTITY_GHAST_SHOOT, 1.0f, 1.0f);
@@ -116,10 +116,10 @@ public class LavaSpin extends BendingActiveAbility {
 		if(current.getBlock().getType() == Material.AIR || BlockTools.isPlant(current.getBlock())) {
 			if(lava) {
 				//block = new TempBlock(current.getBlock(), MATERIAL_RESTLESS, level);
-				block = TempBlock.makeTemporary(current.getBlock(), MATERIAL_RESTLESS, level, false);
+				block = TempBlock.makeTemporary(this, current.getBlock(), MATERIAL_RESTLESS, level, false);
 			} else {
 				//block = new TempBlock(current.getBlock(), MATERIAL_REST);
-				block = TempBlock.makeTemporary(current.getBlock(), MATERIAL_REST, false);
+				block = TempBlock.makeTemporary(this, current.getBlock(), MATERIAL_REST, false);
 			}
 		} else {
 			return false;
@@ -155,7 +155,7 @@ public class LavaSpin extends BendingActiveAbility {
 					lava = false;
 					if(block.getBlock().getType() != MATERIAL_REST) {
 						//block = new TempBlock(current.getBlock(), MATERIAL_REST);
-						block = TempBlock.makeTemporary(current.getBlock(), MATERIAL_REST, false);
+						block = TempBlock.makeTemporary(this, current.getBlock(), MATERIAL_REST, false);
 						current.getWorld().playSound(current, Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 					}
 				}

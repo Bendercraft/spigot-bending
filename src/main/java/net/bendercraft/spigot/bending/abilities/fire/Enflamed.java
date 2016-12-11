@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.DamageTools;
@@ -36,37 +36,28 @@ public class Enflamed {
 		}
 		
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(source);
-		if (BendingPlayer.getBendingPlayer(source).hasPath(BendingPath.LIFELESS)) {
-			return;
-		}
-		
-		if (bender.hasPath(BendingPath.NURTURE)) {
-			if (instances.containsKey(target) && instances.get(target).bender == bender) {
-				instances.get(target).addSeconds(seconds);
-				instances.get(target).ability = ability;
-				return;
+		double damage = DAMAGE;
+		if (instances.containsKey(target)) {
+			if(bender.hasPerk(BendingPerk.FIRE_SCORCH)) {
+				damage = DAMAGE * 1.4;
+				if(bender.hasPerk(BendingPerk.FIRE_SCORCH_ENHANCE_1)) {
+					damage = DAMAGE * 1.6;
+				}
+				if(bender.hasPerk(BendingPerk.FIRE_SCORCH_ENHANCE_2)) {
+					damage = DAMAGE * 1.8;
+				}
 			}
 		}
-		instances.put(target, new Enflamed(bender, target, seconds, ability));
+		instances.put(target, new Enflamed(bender, target, damage, seconds, ability));
 	}
 	
-	private Enflamed(BendingPlayer bender, Entity target, int seconds, BendingAbility ability) {
+	private Enflamed(BendingPlayer bender, Entity target, double damage, int seconds, BendingAbility ability) {
 		this.ability = ability;
 		this.target = target;
 		this.time = System.currentTimeMillis();
 		this.secondsLeft = seconds;
-		this.damage = DAMAGE;
+		this.damage = damage;
 		this.bender = bender;
-		if (this.bender.hasPath(BendingPath.NURTURE)) {
-			damage *= 0.5;
-		}
-
-		if (this.bender.hasPath(BendingPath.NURTURE)) {
-			if (instances.containsKey(this.target) && instances.get(this.target).bender == bender) {
-				instances.get(this.target).addSeconds(seconds);
-				return;
-			}
-		}
 		target.setFireTicks(secondsLeft*20);
 	}
 
@@ -87,7 +78,7 @@ public class Enflamed {
 		if(secondsLeft <= 0) {
 			return false;
 		}
-		if (target.getFireTicks() == 0 && !bender.hasPath(BendingPath.NURTURE)) {
+		if (target.getFireTicks() == 0 && !bender.hasPerk(BendingPerk.FIRE_INNERFIRE)) {
 			return false;
 		}
 		

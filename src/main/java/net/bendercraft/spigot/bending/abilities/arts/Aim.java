@@ -17,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -31,13 +32,13 @@ public class Aim extends BendingActiveAbility {
 	public final static String NAME = "Aim";
 
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 8;
+	private static int DAMAGE = 6;
 	
 	@ConfigurationParameter("Focus-Damage")
-	private static int FOCUS_DAMAGE = 4;
+	private static int FOCUS_DAMAGE = 6;
 
 	@ConfigurationParameter("Range")
-	private static int RANGE = 40;
+	private static double RANGE = 40;
 	
 	@ConfigurationParameter("Range-Effective")
 	private static int EFFECTIVE_RANGE = 30;
@@ -55,9 +56,28 @@ public class Aim extends BendingActiveAbility {
 	private Vector direction;
 	private int damage;
 
+	private long cooldown;
+	private long charge;
+	private double range;
+
 	public Aim(RegisteredAbility register, Player player) {
 		super(register, player);
-		damage = DAMAGE;
+		this.damage = DAMAGE;
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMCD_C4CD_SLICE_CD)) {
+			this.cooldown -= 500;
+		}
+		
+		this.charge = CHARGE;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMCHARGETIME_PARASTICKCD_CONCUSSIONCD)) {
+			this.charge -= 500;
+		}
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMRANGE_VITALPOINTCHI_SLICEINTERVAL)) {
+			this.range += 5;
+		}
 	}
 	
 	@Override
@@ -78,7 +98,7 @@ public class Aim extends BendingActiveAbility {
 			setState(BendingAbilityState.PROGRESSING);
 
 			origin.getWorld().playSound(origin, Sound.ENTITY_ARROW_SHOOT, 10, 1);
-			bender.cooldown(NAME, COOLDOWN);
+			bender.cooldown(NAME, cooldown);
 		}
 
 		return false;
@@ -91,7 +111,7 @@ public class Aim extends BendingActiveAbility {
 				remove();
 				return;
 			}
-			if(getState() == BendingAbilityState.PREPARING && startedTime + CHARGE < System.currentTimeMillis()) {
+			if(getState() == BendingAbilityState.PREPARING && startedTime + charge < System.currentTimeMillis()) {
 				damage += FOCUS_DAMAGE;
 				setState(BendingAbilityState.PREPARED);
 			}
@@ -104,7 +124,7 @@ public class Aim extends BendingActiveAbility {
 			}
 		} else if (getState() == BendingAbilityState.PROGRESSING) {
 			if (!player.getWorld().equals(location.getWorld()) 
-					|| location.distance(origin) > RANGE 
+					|| location.distance(origin) > range 
 					|| BlockTools.isSolid(location.getBlock())) {
 				remove();
 				return;
@@ -134,6 +154,11 @@ public class Aim extends BendingActiveAbility {
 			return false;
 		}
 		double factor = location.distance(origin) / EFFECTIVE_RANGE;
+		if(!bender.hasPerk(BendingPerk.MASTER_SNIPE_PERSIST_CONSTITUTION)) {
+			if(factor > 1) {
+				factor = 1;
+			}
+		}
 		DamageTools.damageEntity(bender, entity, this, damage*factor);
 		return true;
 	}

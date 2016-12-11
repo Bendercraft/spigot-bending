@@ -22,7 +22,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
@@ -78,16 +78,16 @@ public class AirSwipe extends BendingActiveAbility {
 	private static int ARC = 20;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 1500;
+	public static long COOLDOWN = 2500;
 
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 25;
 
 	@ConfigurationParameter("Max-Charge-Time")
-	private static long MAX_CHARGE_TIME = 3000;
+	private static long MAX_CHARGE_TIME = 2750;
 
 	@ConfigurationParameter ("Charge-Max-Factor")
-	private static double MAX_FACTOR = 2.5;
+	private static double MAX_FACTOR = 2.0;
 
 	private static int stepsize = 4;
 
@@ -96,27 +96,52 @@ public class AirSwipe extends BendingActiveAbility {
 
 	private Location origin;
 	private int damage = DAMAGE;
-	private double pushfactor = PUSHFACTOR;
 	private int id;
 	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
 	private List<Entity> affectedEntities = new ArrayList<Entity>();
 
 	private double range;
 	private int arc;
+	private long chargeTime;
+	private double chargeFactor;
+	private long cooldown;
+	private double pushfactor;
 
 	public AirSwipe(RegisteredAbility register, Player player) {
 		super(register, player);
 
 		this.id = ID++;
-		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
+		
 
 		this.arc = ARC;
+		
 		this.range = RANGE;
-
-		if (this.bender.hasPath(BendingPath.MOBILE)) {
-			this.arc *= 0.5;
-			this.range *= 1.4;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSWIPE_RANGE)) {
+			this.range += 3;
 		}
+		this.chargeTime = MAX_CHARGE_TIME;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSWIPE_CHARGE_TIME)) {
+			this.chargeTime -= 500;
+		}
+		this.chargeFactor = MAX_FACTOR;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSWIPE_CHARGE_POWER)) {
+			this.chargeFactor += 0.1;
+		}
+		this.pushfactor = PUSHFACTOR;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSWIPE_PUSH)) {
+			this.pushfactor *= 1.1;
+		}
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSWIPE_COOLDOWN)) {
+			this.cooldown -= 500;
+		}
+		
+		double speed = SPEED;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSWIPE_SPEED)) {
+			speed *= 1.1;
+		}
+		
+		this.speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.);
 	}
 
 	@Override
@@ -157,7 +182,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 			this.elements.put(direction, this.origin);
 		}
-		this.bender.cooldown(NAME, COOLDOWN);
+		this.bender.cooldown(NAME, cooldown);
 	}
 	
 	@Override
@@ -178,10 +203,10 @@ public class AirSwipe extends BendingActiveAbility {
 			if (this.player.isSneaking()) {
 				Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
 				player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
-				if (now >= (this.startedTime + MAX_CHARGE_TIME)) {
+				if (now >= (this.startedTime + chargeTime)) {
 					setState(BendingAbilityState.PREPARED);
-					this.damage *= MAX_FACTOR;
-					this.pushfactor *= MAX_FACTOR;
+					this.damage *= chargeFactor;
+					this.pushfactor *= chargeFactor;
 					return;
 				}
 			}
@@ -203,7 +228,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 		if (!this.player.isSneaking()) {
 			if (!getState().equals(BendingAbilityState.PREPARED)) {
-				double factor = (MAX_FACTOR * (now - this.startedTime)) / MAX_CHARGE_TIME;
+				double factor = (chargeFactor * (now - this.startedTime)) / chargeTime;
 				if (factor < 1) {
 					factor = 1;
 				}

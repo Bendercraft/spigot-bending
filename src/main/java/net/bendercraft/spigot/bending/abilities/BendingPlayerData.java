@@ -8,7 +8,6 @@ public class BendingPlayerData {
 	private UUID player;
 	private List<BendingElement> bendings;
 	private List<BendingAffinity> affinities;
-	private List<BendingPath> paths;
 	private Map<String, Map<Integer, String>> decks;
 	private String currentDeck;
 	private long lastTime;
@@ -54,14 +53,6 @@ public class BendingPlayerData {
 
 	public void setAffinities(List<BendingAffinity> affinities) {
 		this.affinities = affinities;
-	}
-
-	public List<BendingPath> getPaths() {
-		return this.paths;
-	}
-
-	public void setPaths(List<BendingPath> paths) {
-		this.paths = paths;
 	}
 
 	public String getCurrentDeck() {

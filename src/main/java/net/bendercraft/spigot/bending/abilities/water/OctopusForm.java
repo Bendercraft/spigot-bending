@@ -19,6 +19,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -53,6 +54,9 @@ public class OctopusForm extends BendingActiveAbility {
 	@ConfigurationParameter("Radius")
 	public static double RADIUS = 3;
 	
+	@ConfigurationParameter("Iced")
+	public static long ICED = 5000;
+	
 	
 	private long time;
 	private long interval;
@@ -81,11 +85,25 @@ public class OctopusForm extends BendingActiveAbility {
 	private List<WaterTentacle> tentacles = new ArrayList<WaterTentacle>();
 	
 	private List<TempBlock> blocks = new LinkedList<TempBlock>(); // Both PREPARED & PROGRESSING, holds ring base
+
+
+	private int damageWater;
+	private int damageIce;
 	
 
 	public OctopusForm(RegisteredAbility register, Player player) {
 		super(register, player);
 		this.interval = (long) (1000. / SPEED);
+		
+		this.damageWater = DAMAGE;
+		if(bender.hasPerk(BendingPerk.WATER_OCTOPUSFORM_WATER_DAMAGE)) {
+			this.damageWater += 1;
+		}
+		
+		this.damageIce = DAMAGE_ICE;
+		if(bender.hasPerk(BendingPerk.WATER_OCTOPUSFORM_ICE_DAMAGE)) {
+			this.damageIce += 1;
+		}
 	}
 
 	@Override
@@ -109,7 +127,7 @@ public class OctopusForm extends BendingActiveAbility {
 			time = System.currentTimeMillis();
 			source = target;
 			location = source.getLocation();
-			coming = TempBlock.makeTemporary(source, Material.WATER, false);
+			coming = TempBlock.makeTemporary(this, source, Material.WATER, false);
 			setState(BendingAbilityState.PREPARING);
 			return false;
 		} else if(isState(BendingAbilityState.PROGRESSING)) {
@@ -179,7 +197,7 @@ public class OctopusForm extends BendingActiveAbility {
 							return;
 						}
 						coming.revertBlock();
-						coming = TempBlock.makeTemporary(newBlock, Material.WATER, false);
+						coming = TempBlock.makeTemporary(this, newBlock, Material.WATER, false);
 						location = coming.getLocation();
 					} else if(coming.getBlock().getY() > player.getLocation().getBlockY()) {
 						Block newBlock = coming.getBlock().getRelative(BlockFace.DOWN);
@@ -188,7 +206,7 @@ public class OctopusForm extends BendingActiveAbility {
 							return;
 						}
 						coming.revertBlock();
-						coming = TempBlock.makeTemporary(newBlock, Material.WATER, false);
+						coming = TempBlock.makeTemporary(this, newBlock, Material.WATER, false);
 						location = coming.getLocation();
 					} else {
 						settingup = false; // Block is OK for Y, so let it come !
@@ -223,7 +241,7 @@ public class OctopusForm extends BendingActiveAbility {
 						}
 						if(location.getBlock() != coming.getBlock()) {
 							coming.revertBlock();
-							coming = TempBlock.makeTemporary(newBlock, Material.WATER, false);
+							coming = TempBlock.makeTemporary(this, newBlock, Material.WATER, false);
 						}
 					} else {
 						// Block has reached player, now we need to form ring !
@@ -259,7 +277,7 @@ public class OctopusForm extends BendingActiveAbility {
 			Block block = player.getLocation().add(new Vector(RADIUS * Math.cos(rtheta), 0, RADIUS * Math.sin(rtheta))).getBlock();
 			if (!doneblocks.contains(block)) {
 				if(allow(block)) {
-					blocks.add(TempBlock.makeTemporary(block, Material.WATER, false));
+					blocks.add(TempBlock.makeTemporary(this, block, Material.WATER, false));
 				}
 				doneblocks.add(block);
 			}
@@ -339,7 +357,7 @@ public class OctopusForm extends BendingActiveAbility {
 			if(freeze) {
 				material = Material.ICE;
 			}
-			blocks.add(TempBlock.makeTemporary(block, material, false));
+			blocks.add(TempBlock.makeTemporary(parent, block, material, false));
 			return true;
 		}
 		
@@ -421,7 +439,7 @@ public class OctopusForm extends BendingActiveAbility {
 						}
 					}
 					if(freeze && consumed) {
-						blocks.forEach(b -> Bending.getInstance().getManager().addGlobalTempBlock(5000, b));
+						blocks.forEach(b -> TempBlock.makeGlobal(ICED, b.getBlock(), Material.ICE, false));
 						blocks.clear();
 						parent.getBender().cooldown(parent, 5000);
 						parent.getBender().water.ice();
@@ -447,10 +465,10 @@ public class OctopusForm extends BendingActiveAbility {
 				return false;
 			}
 			if(freeze) {
-				DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.ICE, DAMAGE_ICE));
+				DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.ICE, parent.damageIce));
 				Frozen.freeze(parent.getPlayer(), entity.getLocation(), 3);
 			} else {
-				DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.LIQUID, DAMAGE));
+				DamageTools.damageEntity(parent.getBender(), entity, parent, parent.getBender().water.damage(Damage.LIQUID, parent.damageWater));
 				entity.setVelocity(new Vector(0,0,0));
 			}		
 			return true;

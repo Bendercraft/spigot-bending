@@ -12,22 +12,4 @@ public enum BendingElement {
 		}
 		return null;
 	}
-	
-	public BendingPath getDefaultPath () {
-		switch (this) {
-			case AIR:
-				return BendingPath.SPIRITUAL;
-			case EARTH:
-				return BendingPath.PATIENT;
-			case WATER:
-				return BendingPath.BALANCED;
-			case FIRE:
-				return BendingPath.CONTROL;
-			case MASTER:
-				return BendingPath.FREE;
-			default:
-				return BendingPath.NONE;
-				
-		}
-	}
 }

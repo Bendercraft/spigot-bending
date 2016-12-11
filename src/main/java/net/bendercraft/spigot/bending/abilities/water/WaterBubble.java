@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -18,12 +19,15 @@ public class WaterBubble extends Bubble {
 	public static double DEFAULT_RADIUS = 4;
 
 	@ConfigurationParameter("Max-Duration")
-	private static long MAX_DURATION = 60 * 10 * 1000;
+	private static long MAX_DURATION = 600000;
 
 	public WaterBubble(RegisteredAbility register, Player player) {
 		super(register, player);
 
 		this.radius = DEFAULT_RADIUS;
+		if(bender.hasPerk(BendingPerk.WATER_WATERBUBBLE_RADIUS)) {
+			this.radius += 1;
+		}
 
 		if (AvatarState.isAvatarState(player)) {
 			this.radius = AvatarState.getValue(this.radius);

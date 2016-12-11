@@ -11,7 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
 import net.bendercraft.spigot.bending.abilities.water.Wave;
@@ -227,7 +226,7 @@ public class HeatControl extends BendingActiveAbility {
 		}
 		
 		//Either block is a tempblock and a global one, or not at all
-		if(BlockTools.isMeltable(block) && TempBlock.isTempBlock(block) && Bending.getInstance().getManager().isGlobalTemBlock(TempBlock.get(block))) {
+		if(BlockTools.isMeltable(block) && TempBlock.isTempBlock(block) && TempBlock.isGlobalTempBlock(TempBlock.get(block))) {
 			TempBlock.revertBlock(block);
 		} else if (BlockTools.isMeltable(block) && !TempBlock.isTempBlock(block) && !TempBlock.isTempBlock(block) && ! TempBlock.isTouchingTempBlock(block)) {
 			if (block.getType() == Material.SNOW) {

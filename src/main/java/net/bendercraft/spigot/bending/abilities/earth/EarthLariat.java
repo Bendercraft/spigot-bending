@@ -14,6 +14,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -40,16 +41,38 @@ public class EarthLariat extends BendingActiveAbility {
 	public static long COOLDOWN = 5000;
 	
 	private LivingEntity target;
+	
+	private double range;
+	private int confusionDuration;
+	private long cooldown;
 
 	public EarthLariat(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHLARIAT_RANGE)) {
+			this.range += 2;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHLARIAT_COOLDOWN)) {
+			this.cooldown -= 2000;
+		}
+		
+		this.confusionDuration = CONFUSION_DURATION;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHLARIAT_STUN_1)) {
+			this.confusionDuration += 1;
+		}
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHLARIAT_STUN_2)) {
+			this.confusionDuration += 1;
+		}
 	}
 
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
 			if(!player.isSneaking()) {
-				target = EntityTools.getTargetedEntity(player, RANGE);
+				target = EntityTools.getTargetedEntity(player, range);
 				if(target == null) {
 					remove();
 					return false;
@@ -59,13 +82,13 @@ public class EarthLariat extends BendingActiveAbility {
 						&& BlockTools.isEarthbendable(player, register, target.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
 					if(affect(target)) {
 						setState(BendingAbilityState.PROGRESSING);
-						bender.cooldown(this, COOLDOWN);
+						bender.cooldown(this, cooldown);
 					}
 				}
 			}
 		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			if(player.getLocation().distance(target.getLocation()) < DISTANCE) {
-				target.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, CONFUSION_DURATION, 1));
+				target.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, confusionDuration, 1));
 			}
 			remove();
 		}

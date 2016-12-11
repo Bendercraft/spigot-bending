@@ -18,7 +18,6 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
@@ -50,10 +49,6 @@ public class AirScooter extends BendingActiveAbility {
 		}
 
 		this.speed = SPEED;
-
-		if (this.bender.hasPath(BendingPath.MOBILE)) {
-			this.speed *= 1.2;
-		}
 	}
 
 	@Override

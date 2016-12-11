@@ -14,6 +14,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -34,8 +35,29 @@ public class Concussion extends BendingActiveAbility {
 	
 	private LivingEntity target;
 
+	private long cooldown;
+
+	private long range;
+
+	private long duration;
+
 	public Concussion(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMCHARGETIME_PARASTICKCD_CONCUSSIONCD)) {
+			this.cooldown -= 500;
+		}
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.MASTER_BLANKPOINTCD_SMOKEBOMBCD_DASHSTUN)) {
+			this.range += 1;
+		}
+		
+		this.duration = DURATION;
+		if(bender.hasPerk(BendingPerk.MASTER_EXPLOSIVESHOTFIRE_POISONNEDDARTDAMAGE_CONCUSSIONDURATION)) {
+			this.duration += 1000;
+		}
 	}
 	
 	@Override
@@ -52,10 +74,10 @@ public class Concussion extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		target = EntityTools.getTargetedEntity(player, RANGE);
+		target = EntityTools.getTargetedEntity(player, range);
 		if(target != null) {
 			setState(BendingAbilityState.PROGRESSING);
-			bender.cooldown(this, COOLDOWN);
+			bender.cooldown(this, cooldown);
 		}
 		return false;
 	}
@@ -63,7 +85,7 @@ public class Concussion extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		if(target != null) {
-			if(startedTime + DURATION < System.currentTimeMillis()) {
+			if(startedTime + duration < System.currentTimeMillis()) {
 				remove();
 				return;
 			}

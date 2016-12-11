@@ -16,6 +16,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -36,17 +37,31 @@ public class FireJet extends BendingActiveAbility {
 	public static int POWER = 1;
 	
 	@ConfigurationParameter("Power-Activation")
-	public static int POWER_ACTIVATION = 5;
+	public static int POWER_ACTIVATION = 2;
 	
 	@ConfigurationParameter("Tick")
 	public static long TICK = 320;
 
 	private long duration = DURATION;
-	private double factor = FACTOR;
+	
 	private long time;
+	
+	private double factor;
+
+	private long tick;
 
 	public FireJet(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.factor = FACTOR;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREJET_SPEED)) {
+			this.factor *= 1.1;
+		}
+		
+		this.tick = TICK;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREJET_RANGE)) {
+			this.tick += 50; 
+		}
 	}
 	
 	@Override
@@ -117,7 +132,7 @@ public class FireJet extends BendingActiveAbility {
 		player.setVelocity(velocity);
 		player.setFallDistance(0);
 		long now = System.currentTimeMillis();
-		if(time + TICK < now) {
+		if(time + tick < now) {
 			time = now;
 			bender.fire.consume(NAME, POWER, false);
 		}

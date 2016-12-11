@@ -11,16 +11,17 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketListener;
 
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.commands.BendingCommandExecutor;
 import net.bendercraft.spigot.bending.controller.BendingManager;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.db.DBUtils;
-import net.bendercraft.spigot.bending.db.IBendingDB;
+import net.bendercraft.spigot.bending.db.FlatFileDB;
 import net.bendercraft.spigot.bending.integrations.citizens.BendableTrait;
 import net.bendercraft.spigot.bending.integrations.protocollib.BendingPacketAdapter;
 import net.bendercraft.spigot.bending.learning.BendingLearning;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
+import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 
@@ -31,7 +32,7 @@ public class Bending extends JavaPlugin {
 	private BendingEntityListener listener;
 	private BendingPlayerListener bpListener;
 	private BendingBlockListener blListener;
-	private IBendingDB bendingDatabase;
+	private FlatFileDB bendingDatabase;
 
 	private BendingLearning learning;
 
@@ -59,6 +60,7 @@ public class Bending extends JavaPlugin {
 		Settings.applyConfiguration(getDataFolder());
 		AbilityManager.getManager().registerAllAbilities();
 		AbilityManager.getManager().applyConfiguration(getDataFolder());
+		BendingPerk.collect();
 
 		Messages.loadMessages();
 
@@ -66,12 +68,9 @@ public class Bending extends JavaPlugin {
 		this.learning = new BendingLearning();
 		this.learning.onEnable();
 
-		bendingDatabase = DBUtils.choose(Settings.DATABASE);
-		// Fatal error
-		if (bendingDatabase == null) {
-			throw new RuntimeException("Invalid database : " + Settings.DATABASE);
-		}
+		bendingDatabase = new FlatFileDB();
 		bendingDatabase.init(this);
+		
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(this.listener, this);
 		pm.registerEvents(this.bpListener, this);
@@ -85,6 +84,7 @@ public class Bending extends JavaPlugin {
 		getCommand("bending").setTabCompleter(this.commandExecutor);
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new TempBlock.QueueRevert(), 20*1, 20*5);
 
 		ProtectionManager.init(this);
 		getLogger().info("Bending v" + getDescription().getVersion() + " has been loaded.");
@@ -113,7 +113,7 @@ public class Bending extends JavaPlugin {
 		return manager;
 	}
 
-	public IBendingDB getBendingDatabase() {
+	public FlatFileDB getBendingDatabase() {
 		return bendingDatabase;
 	}
 

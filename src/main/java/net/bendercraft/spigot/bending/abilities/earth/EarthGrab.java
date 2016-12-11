@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,6 +22,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -34,29 +36,44 @@ public class EarthGrab extends BendingActiveAbility {
 	public final static String NAME = "EarthGrab";
 	
 	@ConfigurationParameter("Range")
-	private static double range = 15;
+	private static double RANGE = 15;
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 15000;
 
 	@ConfigurationParameter("Other-Duration")
-	public static int OTHER_DURATION = 300;
+	public static int OTHER_DURATION = 10;
 
 	@ConfigurationParameter("Self-Duration")
 	private static int SELF_DURATION = 5;
 
-	private static Integer ID = Integer.MIN_VALUE;
-	private int id;
+	private UUID id = UUID.randomUUID();
 	private boolean self;
 	private LivingEntity target;
 	private Location origin;
 	private long time = 0;
 	private boolean toKeep = true;
 	private List<TempBlock> affectedBlocks = new ArrayList<TempBlock>(8);
+	
+	private double range;
+	private int duration;
+	private long cooldown;
 
 	public EarthGrab(RegisteredAbility register, Player player) {
 		super(register, player);
-		this.id = ID++;
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHGRAB_RANGE)) {
+			this.range += 2;
+		}
+		this.duration = OTHER_DURATION;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHGRAB_DURATION)) {
+			this.duration += 1;
+		}
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHGRAB_COOLDOWN)) {
+			this.cooldown -= 3000;
+		}
 	}
 
 	@Override
@@ -86,7 +103,6 @@ public class EarthGrab extends BendingActiveAbility {
 		this.self = true;
 		this.target = player;
 		if (this.target != null && affect()) {
-			this.id = ID++;
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		return false;
@@ -155,10 +171,10 @@ public class EarthGrab extends BendingActiveAbility {
 
         this.target.teleport(this.origin); // To be sure the guy is locked in the grab
 
-        int duration = 20 * ((this.self)? SELF_DURATION : OTHER_DURATION);
+        int time = 20 * ((this.self)? SELF_DURATION : duration);
 
-        PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, duration, 150); // The entity cannot move
-        PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, duration, 150); // The entity cannot jump
+        PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, time, 150); // The entity cannot move
+        PotionEffect jumpless = new PotionEffect(PotionEffectType.JUMP, time, 150); // The entity cannot jump
         this.target.addPotionEffect(slowness);
         this.target.addPotionEffect(jumpless);
 
@@ -170,8 +186,7 @@ public class EarthGrab extends BendingActiveAbility {
             }
             Material t = loc.getBlock().getType();
             for (int i = 0; i < h; i++) {
-                //this.affectedBlocks.add(new TempBlock(loc.add(0, 1, 0).getBlock(), t, full));
-                this.affectedBlocks.add(TempBlock.makeTemporary(loc.add(0, 1, 0).getBlock(), t, false));
+                this.affectedBlocks.add(TempBlock.makeTemporary(this, loc.add(0, 1, 0).getBlock(), t, false));
             }
         }
 
@@ -179,7 +194,7 @@ public class EarthGrab extends BendingActiveAbility {
             EntityTools.grab((Player) this.target, this.time);
         }
 
-        this.bender.cooldown(NAME, COOLDOWN);
+        this.bender.cooldown(NAME, cooldown);
 		return true;
 	}
 

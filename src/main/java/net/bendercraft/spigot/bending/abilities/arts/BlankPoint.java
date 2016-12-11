@@ -9,6 +9,7 @@ import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -29,16 +30,35 @@ public class BlankPoint extends BendingActiveAbility {
 	public static long DAMAGE = 5;
 
 	@ConfigurationParameter("Knockback")
-	public static long KNOCKBACK = 4;
+	public static double KNOCKBACK = 4;
 
 	@ConfigurationParameter("Range")
 	public static long RANGE = 4;
 
 	@ConfigurationParameter("Cooldown")
-	public static long COOLDOWN = 5000;
+	public static long COOLDOWN = 1500;
+	
+	private double knockback;
+	private long cooldown;
+	private long damage;
 
 	public BlankPoint(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.knockback = KNOCKBACK;
+		if(bender.hasPerk(BendingPerk.MASTER_BLANKPOINTPUSH_POISONNEDARTRANGE_NEBULARCHAINRANGE)) {
+			this.knockback += 0.5;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_BLANKPOINTCD_SMOKEBOMBCD_DASHSTUN)) {
+			this.cooldown -= 500;
+		}
+		
+		this.damage = DAMAGE;
+		if(bender.hasPerk(BendingPerk.MASTER_BLANKPOINTDAMAGE_PARASTICKCD_NEBULARRANGE)) {
+			this.damage += 1;
+		}
 	}
 
 	@Override
@@ -49,7 +69,14 @@ public class BlankPoint extends BendingActiveAbility {
 			return false;
 		}
 		affect(target);
-		this.bender.cooldown(this, COOLDOWN);
+		if(bender.hasPerk(BendingPerk.MASTER_DISENGAGE_PARAPARASTICK_CONSTITUTION)) {
+			Vector push = player.getEyeLocation().getDirection().multiply(-1).normalize();
+			push.setY(0.2);
+			push = push.normalize().multiply(knockback);
+			
+			player.setVelocity(push);
+		}
+		this.bender.cooldown(this, cooldown);
 		return false;
 	}
 
@@ -92,10 +119,10 @@ public class BlankPoint extends BendingActiveAbility {
 		if(event.isCancelled()) {
 			return;
 		}
-		DamageTools.damageEntity(bender, entity, this, DAMAGE);
+		DamageTools.damageEntity(bender, entity, this, damage);
 		Vector push = player.getEyeLocation().getDirection().normalize();
 		push.setY(0.2);
-		push = push.normalize().multiply(KNOCKBACK);
+		push = push.normalize().multiply(knockback);
 		
 		entity.setVelocity(push);
 	}

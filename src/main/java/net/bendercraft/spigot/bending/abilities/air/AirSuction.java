@@ -1,5 +1,7 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
+import java.util.UUID;
+
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -9,7 +11,6 @@ import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.*;
-import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -24,48 +25,55 @@ import net.bendercraft.spigot.bending.utils.Tools;
 public class AirSuction extends BendingActiveAbility {
 	public final static String NAME = "AirSuction";
 
-	static final long soonesttime = Tools.timeinterval;
-
-	private static int ID = Integer.MIN_VALUE;
-	static final double maxspeed = AirBlast.maxspeed;
-
 	@ConfigurationParameter("Speed")
-	private static double speed = 25.0;
+	private final static double SPEED = 25.0;
 
 	@ConfigurationParameter("Range")
 	private static double RANGE = 20;
 
 	@ConfigurationParameter("Affecting-Radius")
-	private static double affectingradius = 2.0;
+	private static double AFFECTING_RADIUS = 2.0;
 
 	@ConfigurationParameter("Push-Factor")
-	private static double pushfactor = 2.5;
+	private static double PUSH_FACTOR = 2.5;
 
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 250;
 
 	@ConfigurationParameter("Origin-Range")
 	private static double SELECT_RANGE = 10;
+	
+	static final double maxspeed = 1. / PUSH_FACTOR;
 
 	private Location location;
 	private Location origin;
 	private Vector direction;
-	private int id;
-	private double range = RANGE;
+	private UUID id = UUID.randomUUID();
+	private double range;
 	private boolean otherorigin = false;
 
 	private double speedfactor;
 
+	private long cooldown;
+
 	public AirSuction(RegisteredAbility register, Player player) {
 		super(register, player);
-
-		this.speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.); // Really used ?
-
-		this.id = ID++;
-
-		if (this.bender.hasPath(BendingPath.RENEGADE)) {
-			this.range *= 0.6;
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSUCTION_RANGE)) {
+			this.range += 2;
 		}
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSUCTION_COOLDOWN)) {
+			this.cooldown -= 500;
+		}
+
+		double speed = SPEED;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSUCTION_SPEED)) {
+			speed *= 1.1;
+		}
+		
+		this.speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.); // Really used ?
 	}
 	
 	@Override
@@ -186,7 +194,7 @@ public class AirSuction extends BendingActiveAbility {
 			return;
 		}
 
-		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, affectingradius)) {
+		for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, AFFECTING_RADIUS)) {
 			affect(entity);
 		}
 		advanceLocation();
@@ -194,7 +202,7 @@ public class AirSuction extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		this.bender.cooldown(AirSuction.NAME, COOLDOWN);
+		this.bender.cooldown(AirSuction.NAME, cooldown);
 	}
 
 	private void advanceLocation() {
@@ -232,11 +240,7 @@ public class AirSuction extends BendingActiveAbility {
 		}
 		Vector velocity = entity.getVelocity();
 		double max = maxspeed;
-		double factor = pushfactor;
-		if (AvatarState.isAvatarState(this.player)) {
-			max = AvatarState.getValue(maxspeed);
-			factor = AvatarState.getValue(factor);
-		}
+		double factor = PUSH_FACTOR;
 
 		Vector push = this.direction.clone();
 		if (Math.abs(push.getY()) > max && entity != player) {

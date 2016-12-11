@@ -46,7 +46,7 @@ public class Illumination extends BendingActiveAbility {
 		if ((FireStream.isIgnitable(player, standingblock) 
 				&& (standblock.getType() != Material.LEAVES)) 
 				&& (block == null) && !isIlluminated(standblock)) {
-			block = TempBlock.makeTemporary(standingblock, Material.TORCH, false);
+			block = TempBlock.makeTemporary(this, standingblock, Material.TORCH, false);
 		} else if (FireStream.isIgnitable(this.player, standingblock) 
 				&& (standblock.getType() == Material.DIRT
 					|| standblock.getType() == Material.STONE
@@ -61,7 +61,7 @@ public class Illumination extends BendingActiveAbility {
 			if(block != null) {
 				block.revertBlock();
 			}
-			block = TempBlock.makeTemporary(standingblock, Material.TORCH, false);
+			block = TempBlock.makeTemporary(this, standingblock, Material.TORCH, false);
 		}
 	}
 

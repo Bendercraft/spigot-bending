@@ -3,6 +3,7 @@ package net.bendercraft.spigot.bending.abilities.water;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -17,6 +18,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -141,9 +143,9 @@ public class HealingWaters extends BendingActiveAbility {
 		if (le.isDead()) {
 			return;
 		}
+		
 		final double current = le.getHealth();
-		@SuppressWarnings("deprecation")
-		final double max = le.getMaxHealth();
+		final double max = le.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 		if (current < max) {
 			applyHealingToEntity(le);
 		}
@@ -159,6 +161,18 @@ public class HealingWaters extends BendingActiveAbility {
 
 	private static void applyHealingToEntity(final LivingEntity le) {
 		le.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 70, 1));
+	}
+	
+	public static HealingWaters hasBuff(Entity entity) {
+		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
+			HealingWaters ability = (HealingWaters) ab;
+			if(ability.target != null 
+					&& ability.target == entity 
+					&& ability.getBender().hasPerk(BendingPerk.WATER_BATTERY)) {
+				return ability;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -185,6 +199,8 @@ public class HealingWaters extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		
+		if(bender.hasPerk(BendingPerk.WATER_BATTERY)) {
+			bender.cooldown(this, 5000);
+		}
 	}
 }

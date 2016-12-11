@@ -14,6 +14,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -43,9 +44,6 @@ public class VitalPoint extends BendingActiveAbility {
 	@ConfigurationParameter("Duration")
 	private static long DURATION = 2500;
 
-	@ConfigurationParameter("Slown-Duration")
-	private static int SLOW_DURATION = 5; // In seconds
-
 	@ConfigurationParameter("Chiblock-Duration")
 	private static long CHIBLOCK_DURATION = 500;
 
@@ -59,12 +57,19 @@ public class VitalPoint extends BendingActiveAbility {
 	private LivingEntity target;
 	private int amplifier;
 
+	private long chiBlock;
+
 	public VitalPoint(RegisteredAbility register, Player player) {
 		super(register, player);
 
 		this.amplifier = 0;
 		this.damage = DAMAGE;
 		this.cooldown = COOLDOWN;
+		
+		this.chiBlock = CHIBLOCK_DURATION;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMRANGE_VITALPOINTCHI_SLICEINTERVAL)) {
+			this.chiBlock +=1000;
+		}
 	}
 
 	@Override
@@ -133,11 +138,15 @@ public class VitalPoint extends BendingActiveAbility {
 			
 			DamageTools.damageEntity(bender, target, this, damage, true, 0, 0.0f, true);
 			if (this.target instanceof Player) {
-				EntityTools.blockChi((Player) this.target, CHIBLOCK_DURATION);
+				EntityTools.blockChi((Player) this.target, chiBlock);
 				target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20*4, 1));
 			}
 			this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), 130));
-			this.cooldown += COOLDOWN / (6);
+			if(stick.isEnhanced()) {
+				this.cooldown *= 0.5;
+			} else {
+				this.cooldown *= 1.15;
+			}
 		} else {
 			DamageTools.damageEntity(bender, target, this, damage, true, 0, 0.0f, true);
 			this.target.addPotionEffect(new PotionEffect(TYPE, (int) (DURATION / 20), this.amplifier));

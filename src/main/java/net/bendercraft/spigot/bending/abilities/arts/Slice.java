@@ -13,6 +13,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -36,7 +37,7 @@ public class Slice extends BendingActiveAbility {
 	private static int MAX_TICK_BLEED = 6;
 	
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 15000;
+	private static long COOLDOWN = 6000;
 	
 	@ConfigurationParameter("Range")
 	private static int RANGE = 3;
@@ -44,9 +45,40 @@ public class Slice extends BendingActiveAbility {
 	private LivingEntity target;
 	private int ticks;
 
+	private long cooldown;
+	private int damageBleed;
+	private int damageDirect;
+	private int maxTick;
+	private long interval;
+
 	public Slice(RegisteredAbility register, Player player) {
 		super(register, player);
 		ticks = 0;
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMCD_C4CD_SLICE_CD)) {
+			this.cooldown -= 500;
+		}
+		
+		this.damageDirect = DAMAGE_DIRECT;
+		this.damageBleed = DAMAGE_BLEED;
+		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTDAMAGE_SMOKEBOMBDURATION_SLICEBLEEDDAMAGE)) {
+			this.damageBleed += 1;
+			this.damageDirect -= 2;
+		}
+		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTRANGE_SMOKEBOMBRADIUS_SLICEDIRECTDAMAGE)) {
+			this.damageDirect += 1;
+		}
+		
+		this.maxTick = MAX_TICK_BLEED;
+		if(bender.hasPerk(BendingPerk.MASTER_EXPLOSIVESHOTCD_POISONNEDDARTCD_SLICEDURATION)) {
+			this.maxTick += 2;
+		}
+		
+		this.interval = INTERVAl_TICK_BLEED;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMRANGE_VITALPOINTCHI_SLICEINTERVAL)) {
+			this.interval *= 0.8;
+		}
 	}
 
 	@Override
@@ -55,7 +87,7 @@ public class Slice extends BendingActiveAbility {
 			target = EntityTools.getTargetedEntity(player, RANGE);
 			if(target != null && affectDirect(target)) {
 				player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, player.getEyeLocation().add(player.getEyeLocation().getDirection().normalize()), 1);
-				bender.cooldown(this, COOLDOWN);
+				bender.cooldown(this, cooldown);
 				setState(BendingAbilityState.PROGRESSING);
 			}
 		}
@@ -92,9 +124,9 @@ public class Slice extends BendingActiveAbility {
 			remove();
 			return;
 		}
-		int current = (int) Math.ceil((System.currentTimeMillis() - startedTime) / INTERVAl_TICK_BLEED);
+		int current = (int) Math.ceil((System.currentTimeMillis() - startedTime) / interval);
 		while(ticks < current) {
-			if(ticks > MAX_TICK_BLEED) {
+			if(ticks > maxTick) {
 				remove();
 				return;
 			}
@@ -131,7 +163,7 @@ public class Slice extends BendingActiveAbility {
 		if(event.isCancelled()) {
 			return false;
 		}
-		DamageTools.damageEntity(bender, target, this, DAMAGE_DIRECT, true, 0, 0.0f, true);
+		DamageTools.damageEntity(bender, target, this, damageDirect, true, 0, 0.0f, true);
 		return true;
 	}
 
@@ -141,6 +173,6 @@ public class Slice extends BendingActiveAbility {
 		if(event.isCancelled()) {
 			return;
 		}
-		DamageTools.damageEntity(bender, target, this, DAMAGE_BLEED, true, 0, 0.0f, true);
+		DamageTools.damageEntity(bender, target, this, damageBleed, true, 0, 0.0f, true);
 	}
 }

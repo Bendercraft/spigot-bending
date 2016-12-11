@@ -11,6 +11,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 
@@ -28,9 +29,23 @@ public class Dash extends BendingActiveAbility {
 	private static long COOLDOWN = 4000;
 
 	private Vector direction;
+	
+	private double length;
+
+	private long cooldown;
 
 	public Dash(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.length = LENGTH;
+		if(bender.hasPerk(BendingPerk.MASTER_DASH_RANGE)) {
+			this.length *= 1.1;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_DASH_CD)) {
+			this.cooldown -= 500;
+		}
 	}
 
 	@Override
@@ -63,7 +78,7 @@ public class Dash extends BendingActiveAbility {
 	}
 
 	public void dash() {
-		Vector dir = new Vector(this.direction.getX() * LENGTH, HEIGHT, this.direction.getZ() * LENGTH);
+		Vector dir = new Vector(this.direction.getX() * length, HEIGHT, this.direction.getZ() * length);
 		this.player.setVelocity(dir);
 		remove();
 	}
@@ -84,7 +99,7 @@ public class Dash extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		this.bender.cooldown(NAME, COOLDOWN);
+		this.bender.cooldown(NAME, cooldown);
 	}
 
 	@Override

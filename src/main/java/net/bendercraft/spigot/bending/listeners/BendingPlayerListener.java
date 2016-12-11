@@ -26,7 +26,6 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -44,7 +43,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPassiveAbility;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.air.AirBurst;
@@ -63,6 +62,7 @@ import net.bendercraft.spigot.bending.abilities.energy.AvatarShield;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.FastSwimming;
+import net.bendercraft.spigot.bending.abilities.water.HealingWaters;
 import net.bendercraft.spigot.bending.abilities.water.WaterPassive;
 import net.bendercraft.spigot.bending.abilities.water.WaterSpout;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
@@ -93,9 +93,9 @@ public class BendingPlayerListener implements Listener {
 			}
 		}, 0, 1);
 	}
-
+	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerLogin(PlayerLoginEvent event) {
+	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 
 		Bending.getInstance().getBendingDatabase().lease(player.getUniqueId());
@@ -120,12 +120,8 @@ public class BendingPlayerListener implements Listener {
 			}
 			player.setDisplayName("<" + color + player.getName() + ChatColor.WHITE + ">");
 		}
-	}
-	
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onPlayerScoreboard(PlayerJoinEvent event) {
+		
 		if(Settings.USE_SCOREBOARD) {
-			BendingPlayer bender = BendingPlayer.getBendingPlayer(event.getPlayer());
 			if(bender != null) {
 				bender.loadScoreboard();
 			}
@@ -328,11 +324,35 @@ public class BendingPlayerListener implements Listener {
 				return;
 			}
 
-			if (bender.hasPath(BendingPath.TOUGH)) {
-				event.setDamage(event.getDamage() * 0.9);
+			if(bender.hasAffinity(BendingAffinity.SWORD)) {
+				if(bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
+					event.setDamage(event.getDamage() * 0.90);
+				} else if(player.isBlocking()) {
+					event.setDamage(event.getDamage() * 0.60);
+				}
 			}
-			if(bender.hasAffinity(BendingAffinity.SWORD) && player.isBlocking()) {
-				event.setDamage(event.getDamage() * 0.60);
+			
+			
+			if(event.getAbility() != null) {
+				// Earth patience bonus
+				if(event.getAbility().getBender().earth.hasBonus()) {
+					event.setDamage(event.getDamage() + event.getAbility().getBender().earth.getBonus());
+				}
+				event.getAbility().getBender().earth.damageDone();
+				
+				// HealingWater buff
+				HealingWaters hw = HealingWaters.hasBuff(event.getAbility().getBender().getPlayer());
+				if(hw != null) {
+					event.setDamage(event.getDamage() + 2);
+					hw.remove();
+				}
+			}
+			
+			if(bender.hasPerk(BendingPerk.EARTH_RESISTANCE)) {
+				if(bender.getPlayer().getHealth() < event.getDamage()) {
+					event.setCancelled(true);
+					bender.earth.preventDeath();
+				}
 			}
 		}
 	}

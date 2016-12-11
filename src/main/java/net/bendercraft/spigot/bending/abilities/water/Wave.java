@@ -17,11 +17,11 @@ import org.bukkit.util.Vector;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
-import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
@@ -32,21 +32,18 @@ import net.bendercraft.spigot.bending.utils.Tools;
 public class Wave {
 	private static final long interval = 30;
 
-	@ConfigurationParameter("Radius")
 	private static final double RADIUS = 3;
 
-	@ConfigurationParameter("Horizontal-Factor")
 	private static final double HOR_FACTOR = 1;
 
-	@ConfigurationParameter("Vertical-Factor")
 	private static final double VERT_FACTOR = 0.2;
+	private static double RANGE = 20;
 
-	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
 
 	private static final double maxfreezeradius = 7;
 
-	static double defaultrange = 20;
+	
 
 	Player player;
 	private Location location = null;
@@ -58,11 +55,10 @@ public class Wave {
 	private Map<Block, Block> frozenblocks = new HashMap<Block, Block>();
 	private double radius = 1;
 	private long time;
-	private double maxradius = RADIUS;
+	
 	private boolean freeze = false;
 	private boolean activatefreeze = false;
 	private Location frozenlocation;
-	double range = defaultrange;
 	private double factor = HOR_FACTOR;
 	boolean canhitself = true;
 
@@ -72,11 +68,37 @@ public class Wave {
 
 	private BendingAbility parent;
 
+	private long cooldown;
+	private double maxradius;
+	private double range;
+
 	public Wave(BendingAbility parent, Player player) {
 		this.player = player;
 		this.parent = parent;
-		if (AvatarState.isAvatarState(player)) {
-			this.maxradius = AvatarState.getValue(this.maxradius);
+
+
+		this.maxradius = RADIUS;
+		if(parent.getBender().hasPerk(BendingPerk.WATER_WAVE_RADIUS_1)) {
+			this.maxradius += 1;
+		}
+		if(parent.getBender().hasPerk(BendingPerk.WATER_WAVE_RADIUS_2)) {
+			this.maxradius += 1;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(parent.getBender().hasPerk(BendingPerk.WATER_WAVE_RADIUS_2)) {
+			this.cooldown -= 1000;
+		}
+		
+		this.range = RANGE;
+		if(parent.getBender().hasPerk(BendingPerk.WATER_WAVE_RANGE)) {
+			this.range *= 1.1;
+		}
+		
+		if(parent.getBender().hasPerk(BendingPerk.WATER_TSUNAMI)) {
+			this.maxradius *= 2;
+			this.range *= 2;
+			this.cooldown *= 2;
 		}
 	}
 
@@ -106,8 +128,7 @@ public class Wave {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
-				//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
+				this.drainedBlock = TempBlock.makeTemporary(parent, block, Material.STATIONARY_WATER, false);
 				this.sourceblock = block;
 				focusBlock();
 				// Range and max radius is halfed for Drainbending
@@ -121,9 +142,8 @@ public class Wave {
 		if (WaterReturn.hasWaterBottle(player)) {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
-			//this.drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
 			if(WaterReturn.canBeSource(block)) {
-				this.drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
+				this.drainedBlock = TempBlock.makeTemporary(parent, block, Material.STATIONARY_WATER, false);
 				this.sourceblock = block;
 				focusBlock();
 				WaterReturn.emptyWaterBottle(player);
@@ -155,7 +175,7 @@ public class Wave {
 			return;
 		}
 
-		bPlayer.cooldown(WaterWall.NAME, COOLDOWN);
+		bPlayer.cooldown(WaterWall.NAME, cooldown);
 		if (this.sourceblock == null) {
 			return;
 		}
@@ -378,9 +398,7 @@ public class Wave {
 			return;
 		}
 		if (!TempBlock.isTempBlock(block)) {
-			//new TempBlock(block, Material.WATER, full);
-			TempBlock.makeTemporary(block, Material.WATER, false);
-			// new TempBlock(block, Material.ICE, (byte) 0);
+			TempBlock.makeTemporary(parent, block, Material.WATER, false);
 			this.wave.put(block, block);
 		}
 	}
@@ -421,8 +439,7 @@ public class Wave {
 				continue;
 			}
 			if ((block.getType() == Material.AIR) || (block.getType() == Material.SNOW)) {
-				//new TempBlock(block, Material.ICE, (byte) 0);
-				TempBlock.makeTemporary(block, Material.ICE, true);
+				TempBlock.makeTemporary(parent, block, Material.ICE, true);
 				this.frozenblocks.put(block, block);
 			}
 			if (BlockTools.isWater(block)) {
@@ -430,8 +447,7 @@ public class Wave {
 			}
 			if (BlockTools.isPlant(block) && (block.getType() != Material.LEAVES)) {
 				block.breakNaturally();
-				//new TempBlock(block, Material.ICE, (byte) 0);
-				TempBlock.makeTemporary(block, Material.ICE, true);
+				TempBlock.makeTemporary(parent, block, Material.ICE, true);
 				this.frozenblocks.put(block, block);
 			}
 		}
@@ -470,7 +486,7 @@ public class Wave {
 
 	private void returnWater() {
 		if (this.location != null) {
-			waterReturn = new WaterReturn(this.player, this.location.getBlock(), null);
+			waterReturn = new WaterReturn(this.player, this.location.getBlock(), parent);
 		}
 	}
 

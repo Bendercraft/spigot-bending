@@ -18,7 +18,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
@@ -44,10 +44,10 @@ public class FireBurst extends BendingActiveAbility {
 	private static long CHARGE_TIME = 1500;
 
 	@ConfigurationParameter("Damage-Cone")
-	private static int DAMAGE_CONE = 6;
+	private static int DAMAGE_CONE = 8;
 	
 	@ConfigurationParameter("Damage-Sphere")
-	private static int DAMAGE_SPHERE = 3;
+	private static int DAMAGE_SPHERE = 4;
 
 	@ConfigurationParameter("Del-Theta")
 	private static double DELTHETA = 10;
@@ -59,10 +59,10 @@ public class FireBurst extends BendingActiveAbility {
 	private static int POWER = 5;
 	
 	@ConfigurationParameter("Range-Cone")
-	private static int RANGE_CONE = 15;
+	private static int RANGE_CONE = 25;
 	
 	@ConfigurationParameter("Range-Sphere")
-	private static int RANGE_SPHERE = 10;
+	private static int RANGE_SPHERE = 15;
 	
 	@ConfigurationParameter("Blast-Speed")
 	private static double BLAST_SPEED = 15;
@@ -72,10 +72,18 @@ public class FireBurst extends BendingActiveAbility {
 	
 	@ConfigurationParameter("Blast-Push")
 	private static double BLAST_PUSH_FACTOR = 0.3;
+	
+	@ConfigurationParameter("Flame-Time")
+	private static int FLAME_TIME = 1;
 
 	private long chargetime = CHARGE_TIME;
 	
 	private List<BurstBlast> blasts;
+
+	private int rangeCone;
+	private int rangeSphere;
+	private int damageCone;
+	private int damageSphere;
 
 	public FireBurst(RegisteredAbility register, Player player) {
 		super(register, player);
@@ -84,7 +92,45 @@ public class FireBurst extends BendingActiveAbility {
 			this.chargetime = 0;
 		}
 		
-		blasts = new LinkedList<BurstBlast>();
+		this.rangeCone = RANGE_CONE;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBURST_CONE_RANGE_1)) {
+			this.rangeCone += 1;
+		}
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBURST_CONE_RANGE_2)) {
+			this.rangeCone += 1;
+		}
+		
+		this.rangeSphere = RANGE_SPHERE;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBURST_AREA_ZONE)) {
+			this.rangeSphere += 1;
+		}
+		
+		this.damageCone = DAMAGE_CONE;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBURST_CONE_DAMAGE)) {
+			this.damageCone += 1;
+		}
+		
+		this.damageSphere = DAMAGE_SPHERE;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBURST_DAMAGE_ZONE)) {
+			this.damageSphere += 1;
+		}
+		
+		if(bender.hasPerk(BendingPerk.FIRE_OVERLOAD)) {
+			this.damageCone *= 1.1;
+			this.rangeCone *= 0.95;
+			
+			this.damageSphere *= 1.1;
+			this.rangeSphere *= 0.95;
+		}
+		if(bender.hasPerk(BendingPerk.FIRE_SNIPER)) {
+			this.damageCone *= 0.95;
+			this.rangeCone *= 1.1;
+			
+			this.damageSphere *= 0.95;
+			this.rangeSphere *= 1.1;
+		}
+		
+		this.blasts = new LinkedList<BurstBlast>();
 	}
 	
 	@Override
@@ -132,7 +178,7 @@ public class FireBurst extends BendingActiveAbility {
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
 				if (direction.angle(vector) <= angle) {
-					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_CONE, DAMAGE_CONE));
+					blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), rangeCone, damageCone));
 				}
 			}
 		}
@@ -205,7 +251,7 @@ public class FireBurst extends BendingActiveAbility {
 				y = r * Math.sin(rphi) * Math.sin(rtheta);
 				z = r * Math.cos(rtheta);
 				Vector direction = new Vector(x, z, y);
-				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), RANGE_SPHERE, DAMAGE_SPHERE));
+				blasts.add(new BurstBlast(this.player, this.bender, this, location, direction.normalize(), rangeSphere, damageSphere));
 			}
 		}
 		bender.fire.consume(NAME, POWER);
@@ -246,6 +292,7 @@ public class FireBurst extends BendingActiveAbility {
 		private double damage;
 		private double speedfactor;
 		private BendingAbility ability;
+		private int flameTime;
 
 		public BurstBlast(Player player, BendingPlayer bender, BendingAbility ability, Location location, Vector direction, int range, double damage) {
 			this.player = player;
@@ -257,11 +304,9 @@ public class FireBurst extends BendingActiveAbility {
 			this.direction = direction.clone().normalize();
 			this.damage = damage;
 			this.speedfactor = BLAST_SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
-			if (this.bender.hasPath(BendingPath.NURTURE)) {
-				this.damage *= 0.8;
-			}
-			if (this.bender.hasPath(BendingPath.LIFELESS)) {
-				this.damage *= 1.1;
+			this.flameTime = FLAME_TIME;
+			if(bender.hasPerk(BendingPerk.FIRE_FIREBURST_FLAME)) {
+				this.flameTime += 1;
 			}
 		}
 		
@@ -311,7 +356,7 @@ public class FireBurst extends BendingActiveAbility {
 			}
 			
 			DamageTools.damageEntity(bender, entity, ability, damage);
-			Enflamed.enflame(this.player, entity, 1, ability);
+			Enflamed.enflame(this.player, entity, flameTime, ability);
 			return true;
 		}
 		

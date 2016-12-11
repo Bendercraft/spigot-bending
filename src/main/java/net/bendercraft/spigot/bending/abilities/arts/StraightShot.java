@@ -15,6 +15,7 @@ import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -42,12 +43,33 @@ public class StraightShot extends BendingActiveAbility {
 	private static int RANGE = 20;
 
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 10000;
+	private static long COOLDOWN = 5000;
 	
 	private static final Particle VISUAL = Particle.SPELL_WITCH;
 
+	private int damage;
+
+	private int range;
+
+	private long cooldown;
+
 	public StraightShot(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.damage = DAMAGE;
+		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTDAMAGE_SMOKEBOMBDURATION_SLICEBLEEDDAMAGE)) {
+			this.damage += 1;
+		}
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTRANGE_SMOKEBOMBRADIUS_SLICEDIRECTDAMAGE)) {
+			this.range += 1;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTCD_C4RADIUS_NEBULARCD)) {
+			this.cooldown -= 500;
+		}
 	}
 
 	@Override
@@ -58,14 +80,14 @@ public class StraightShot extends BendingActiveAbility {
 		
 		while(!affectAround(current) 
 				&& player.getWorld().equals(current.getWorld()) 
-				&& current.distance(origin) < RANGE 
+				&& current.distance(origin) < range 
 				&& !BlockTools.isSolid(current.getBlock())) {
 			current = current.add(direction.multiply(1.1));
 			current.getWorld().spawnParticle(VISUAL, current, 1, 0, 0, 0);
 		}
 
 		origin.getWorld().playSound(origin, Sound.ENTITY_ARROW_SHOOT, 10, 1);
-		bender.cooldown(NAME, COOLDOWN);
+		bender.cooldown(NAME, cooldown);
 
 		return false;
 	}
@@ -128,7 +150,7 @@ public class StraightShot extends BendingActiveAbility {
 		if (entity == player) {
 			return false;
 		}
-		DamageTools.damageEntity(bender, entity, this, DAMAGE);
+		DamageTools.damageEntity(bender, entity, this, damage);
 		return true;
 	}
 

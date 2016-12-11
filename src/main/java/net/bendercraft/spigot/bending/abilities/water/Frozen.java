@@ -14,7 +14,6 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
@@ -98,10 +97,10 @@ public class Frozen {
 						if(rand < 0.5) {
 							color = DyeColor.LIGHT_BLUE;
 						}
-						Bending.getInstance().getManager().addGlobalTempBlock(DURATION, TempBlock.makeTemporary(block, mat, color.getDyeData(), true));
+						TempBlock.makeGlobal(DURATION, block, mat, color.getDyeData(), true);
 						block.getWorld().playSound(block.getLocation(), Sound.BLOCK_SNOW_PLACE, 1.0f, 1.0f);
 					} else {
-						Bending.getInstance().getManager().addGlobalTempBlock(DURATION, TempBlock.makeTemporary(block,  Material.ICE, true));
+						TempBlock.makeGlobal(DURATION, block,  Material.ICE, true);
 						block.getWorld().playSound(block.getLocation(), Sound.BLOCK_SNOW_PLACE, 1.0f, 1.0f);
 					}
 					it.remove();

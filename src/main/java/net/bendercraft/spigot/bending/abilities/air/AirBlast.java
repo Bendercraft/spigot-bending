@@ -1,6 +1,7 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -18,7 +19,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -36,8 +37,6 @@ import net.bendercraft.spigot.bending.utils.Tools;
 @ABendingAbility(name = AirBlast.NAME, element = BendingElement.AIR)
 public class AirBlast extends BendingActiveAbility {
 	public final static String NAME = "AirBlast";
-	
-	private static int ID = Integer.MIN_VALUE;
 
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 25.0;
@@ -62,18 +61,34 @@ public class AirBlast extends BendingActiveAbility {
 	private Location location;
 	private Location origin;
 	private Vector direction;
-	private int id;
+	private UUID id = UUID.randomUUID();
 	private double speedfactor;
-	private double range = DEFAULT_RANGE;
+	private double range;
 	private double pushfactor = PUSH_FACTOR;
 	private boolean otherOrigin = false;
 
 	public AirBlast(RegisteredAbility register, Player player) {
 		super(register, player);
-		this.id = ID++;
-		if (this.bender.hasPath(BendingPath.RENEGADE)) {
-			this.range = this.range * 0.6;
+		
+		this.range = DEFAULT_RANGE;
+		if(bender.hasPerk(BendingPerk.AIR_AIRBLAST_RANGE)) {
+			this.range += 2;
 		}
+		if(bender.hasPerk(BendingPerk.AIR_CUT)) {
+			this.range *= 0.7;
+		}
+		this.pushfactor = PUSH_FACTOR;
+		if(bender.hasPerk(BendingPerk.AIR_AIRBLAST_PUSH)) {
+			this.pushfactor *= 1.1;
+		}
+		if(bender.hasPerk(BendingPerk.AIR_PRESSURE)) {
+			this.pushfactor *= 0.5;
+		}
+		double speed = SPEED;
+		if(bender.hasPerk(BendingPerk.AIR_AIRBLAST_SPEED)) {
+			speed *= 1.1;
+		}
+		this.speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.);
 	}
 
 	@Override
@@ -94,9 +109,6 @@ public class AirBlast extends BendingActiveAbility {
 		//It is NORMAL that both if could follow in same click
 		if(getState() == BendingAbilityState.PREPARING) {
 			Entity entity = EntityTools.getTargetedEntity(this.player, this.range);
-			if (this.bender.hasPath(BendingPath.MOBILE)) {
-				entity = null;
-			}
 			if (entity != null) {
 				this.direction = Tools.getDirection(this.origin, entity.getLocation()).normalize();
 			} else {
@@ -104,12 +116,6 @@ public class AirBlast extends BendingActiveAbility {
 			}
 			this.location = this.origin.clone();
 			long cooldown = COOLDOWN;
-			if (this.bender.hasPath(BendingPath.RENEGADE)) {
-				cooldown *= 1.2;
-			}
-			if (this.bender.hasPath(BendingPath.MOBILE)) {
-				cooldown *= 0.8;
-			}
 			this.bender.cooldown(NAME, cooldown);
 			setState(BendingAbilityState.PROGRESSING);
 			return false;
@@ -161,8 +167,6 @@ public class AirBlast extends BendingActiveAbility {
 			remove();
 			return;
 		}
-
-		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 
 		Block block = this.location.getBlock();
 		for (Block testblock : BlockTools.getBlocksAroundPoint(this.location, AFFECT_RADIUS)) {
@@ -253,12 +257,11 @@ public class AirBlast extends BendingActiveAbility {
 		if (isUser) {
 			velocity.multiply(1.0 / 2.2);
 		}
-		entity.setVelocity(velocity);
-		entity.setFallDistance(0);
-
-		if (this.bender.hasPath(BendingPath.RENEGADE) && !entity.getUniqueId().equals(player.getUniqueId())) {
+		if(bender.hasPerk(BendingPerk.AIR_CUT) && entity != player) {
 			DamageTools.damageEntity(bender, entity, this, 1);
 		}
+		entity.setVelocity(velocity);
+		entity.setFallDistance(0);
 	}
 
 	@Override
@@ -276,6 +279,9 @@ public class AirBlast extends BendingActiveAbility {
 		for (BendingAbility ability : instances.values()) {
 			AirBlast blast = (AirBlast) ability;
 			Location loc = blast.location;
+			if(blast.getBender().hasPerk(BendingPerk.AIR_PRESSURE)) {
+				return true;
+			}
 			if (loc != null && location.getWorld() == loc.getWorld()) {
 				if (location.distance(loc) <= radius) {
 					blast.remove();
@@ -291,6 +297,9 @@ public class AirBlast extends BendingActiveAbility {
 		for (BendingAbility ability : instances.values()) {
 			AirBlast blast = (AirBlast) ability;
 			Location loc = blast.location;
+			if(blast.getBender().hasPerk(BendingPerk.AIR_PRESSURE)) {
+				continue;
+			}
 			if (location.getWorld() == loc.getWorld()) {
 				if (location.distance(loc) <= radius) {
 					blast.remove();

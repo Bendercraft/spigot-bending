@@ -107,7 +107,7 @@ public abstract class Bubble extends BendingActiveAbility {
 				if (this.pushedMaterials.contains(block.getType())) {
 					if (!TempBlock.isTempBlock(block) || TempBlock.get(block).isBendAllowed()) {
 						//this.origins.put(block, new TempBlock(block, Material.AIR, (byte) 0x0));
-						this.origins.put(block, TempBlock.makeTemporary(block, Material.AIR, true));
+						this.origins.put(block, TempBlock.makeTemporary(this, block, Material.AIR, true));
 					}
 				}
 			}

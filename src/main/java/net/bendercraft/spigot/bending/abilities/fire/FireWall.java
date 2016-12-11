@@ -15,7 +15,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -38,7 +38,7 @@ public class FireWall extends BendingActiveAbility {
 	private static int POWER = 4;
 
 	@ConfigurationParameter("Interval")
-	private static long DAMAGE_INTERVAL = 500;
+	private static long DAMAGE_INTERVAL = 450;
 
 	@ConfigurationParameter("Height")
 	private static int HEIGHT = 4;
@@ -50,7 +50,10 @@ public class FireWall extends BendingActiveAbility {
 	private static long DURATION = 5000;
 
 	@ConfigurationParameter("Damage")
-	private static int DAMAGE = 9;
+	private static int DAMAGE = 7;
+	
+	@ConfigurationParameter("Flame-Time")
+	private static int FLAME_TIME = 1;
 
 	private Location origin;
 	private long time;
@@ -60,16 +63,26 @@ public class FireWall extends BendingActiveAbility {
 	private int damage;
 	private long duration;
 
+	private int flameTime;
+	private long damageInterval;
+
 	public FireWall(RegisteredAbility register, Player player) {
 		super(register, player);
 		this.duration = DURATION;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREWALL_DURATION)) {
+			this.duration += 1000;
+		}
+		
 		this.damage = DAMAGE;
 		
-		if (this.bender.hasPath(BendingPath.NURTURE)) {
-			this.damage *= 0.8;
+		this.flameTime = FLAME_TIME;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREWALL_FLAME)) {
+			this.flameTime += 1;
 		}
-		if (this.bender.hasPath(BendingPath.LIFELESS)) {
-			this.damage *= 1.1;
+		
+		this.damageInterval = DAMAGE_INTERVAL;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREWALL_TICK)) {
+			this.damageInterval -= 50;
 		}
 	}
 	
@@ -130,7 +143,7 @@ public class FireWall extends BendingActiveAbility {
 			display();
 		}
 
-		if ((this.time - this.startedTime) > (this.damagetick * DAMAGE_INTERVAL)) {
+		if ((this.time - this.startedTime) > (this.damagetick * damageInterval)) {
 			this.damagetick++;
 			damage();
 		}
@@ -242,7 +255,7 @@ public class FireWall extends BendingActiveAbility {
 		}
 		entity.setVelocity(new Vector(0, 0, 0));
 		DamageTools.damageEntity(bender, entity, this, this.damage, false, 1, 0.2f, true);
-		Enflamed.enflame(this.player, entity, 1, this);
+		Enflamed.enflame(this.player, entity, flameTime, this);
 	}
 
 	@Override

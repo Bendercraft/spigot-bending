@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.utils.EntityTools;
+import net.bendercraft.spigot.bending.utils.TempBlock;
 
 /**
  * Represent the base class for bending abilities
@@ -114,6 +115,7 @@ public abstract class BendingAbility {
 	
 	public final void remove() {
 		stop();
+		TempBlock.clean(this);
 		state = BendingAbilityState.ENDED;
 	}
 

@@ -438,6 +438,9 @@ permissions:
   bending.command.available:
     description: Allows the use of available command
     default: true
+  bending.command.credentials:
+    description: Allows the use of credentials command
+    default: true
 
   bending.immune:
     description: Make the player that has that permission to be immune to bending abilities

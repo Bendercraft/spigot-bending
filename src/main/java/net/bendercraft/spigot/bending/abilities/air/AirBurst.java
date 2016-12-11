@@ -18,11 +18,13 @@ import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
+import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
@@ -66,8 +68,15 @@ public class AirBurst extends BendingActiveAbility {
 	private long chargetime;
 	private List<BurstBlast> blasts;
 	
+	private long cooldown;
+	
 	public AirBurst(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.AIR_AIRBURST_COOLDOWN)) {
+			this.cooldown -= 500;
+		}
 		
 		blasts = new LinkedList<BurstBlast>();
 		chargetime = DEFAULT_CHARGETIME;
@@ -230,7 +239,7 @@ public class AirBurst extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		
+		bender.cooldown(this, cooldown);
 	}
 	
 	private class BurstBlast {
@@ -242,6 +251,7 @@ public class AirBurst extends BendingActiveAbility {
 		private Player player;
 		private double range;
 		private AirBurst parent;
+		private double speed;
 
 		public BurstBlast(AirBurst parent, Location location, Vector direction, double factorpush, Player player) {
 			if (location.getBlock().isLiquid()) {
@@ -253,7 +263,20 @@ public class AirBurst extends BendingActiveAbility {
 			this.direction = direction.clone();
 			this.location = location.clone();
 			this.pushfactor = PUSHFACTOR * factorpush;
+			if(parent.getBender().hasPerk(BendingPerk.AIR_AIRBURST_PUSH)) {
+				this.pushfactor *= 1.1;
+			}
 			this.range = BLAST_RANGE;
+			if(parent.getBender().hasPerk(BendingPerk.AIR_AIRBURST_RANGE)) {
+				this.range += 3;
+			}
+			if(parent.getBender().hasPerk(BendingPerk.AIR_CUT)) {
+				this.range *= 0.7;
+			}
+			this.speed = BLAST_SPEED;
+			if(parent.getBender().hasPerk(BendingPerk.AIR_AIRBURST_SPEED)) {
+				this.speed *= 1.1;
+			}
 		}
 		
 		@SuppressWarnings("deprecation")
@@ -267,7 +290,7 @@ public class AirBurst extends BendingActiveAbility {
 				return false;
 			}
 
-			this.speedfactor = BLAST_SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
+			this.speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.);
 
 			Block block = this.location.getBlock();
 			for (Block testblock : BlockTools.getBlocksAroundPoint(this.location, BLAST_AFFECT_RADIUS)) {
@@ -292,7 +315,7 @@ public class AirBurst extends BendingActiveAbility {
 			}
 
 			for (Entity entity : EntityTools.getEntitiesAroundPoint(this.location, BLAST_AFFECT_RADIUS)) {
-				if (entity.getEntityId() != this.player.getEntityId()) {
+				if (entity != this.player) {
 					affect(entity);
 				}
 			}
@@ -359,6 +382,9 @@ public class AirBurst extends BendingActiveAbility {
 			}
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);
+			if(parent.getBender().hasPerk(BendingPerk.AIR_CUT)) {
+				DamageTools.damageEntity(parent.getBender(), entity, parent, 2);
+			}
 		}
 	}
 }

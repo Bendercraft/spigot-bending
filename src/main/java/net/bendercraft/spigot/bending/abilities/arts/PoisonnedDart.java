@@ -18,6 +18,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -35,10 +36,10 @@ public class PoisonnedDart extends BendingActiveAbility {
 	private static int DAMAGE = 2;
 
 	@ConfigurationParameter("Range")
-	private static int RANGE = 20;
+	private static double RANGE = 20;
 
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 4000;
+	private static long COOLDOWN = 3000;
 	
 	@ConfigurationParameter("Radius")
 	private static double RADIUS = 2.1;
@@ -53,8 +54,27 @@ public class PoisonnedDart extends BendingActiveAbility {
 	private Vector direction;
 	private Effect effect = Effect.POISON;
 
+	private double range;
+	private int damage;
+	private long cooldown;
+
 	public PoisonnedDart(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.MASTER_BLANKPOINTPUSH_POISONNEDARTRANGE_NEBULARCHAINRANGE)) {
+			this.range += 2;
+		}
+		
+		this.damage = DAMAGE;
+		if(bender.hasPerk(BendingPerk.MASTER_EXPLOSIVESHOTFIRE_POISONNEDDARTDAMAGE_CONCUSSIONDURATION)) {
+			this.damage += 1;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_EXPLOSIVESHOTCD_POISONNEDDARTCD_SLICEDURATION)) {
+			this.cooldown -= 500;
+		}
 	}
 
 	@Override
@@ -72,7 +92,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 				location = origin.clone();
 				direction = origin.getDirection().normalize();
 				origin.getWorld().playSound(this.origin, Sound.ENTITY_ARROW_SHOOT, 10, 1);
-				bender.cooldown(NAME, COOLDOWN);
+				bender.cooldown(NAME, cooldown);
 				setState(BendingAbilityState.PROGRESSING);
 			}
 		}
@@ -117,7 +137,7 @@ public class PoisonnedDart extends BendingActiveAbility {
 		}
 
 		if (!player.getWorld().equals(location.getWorld()) 
-				|| location.distance(origin) > RANGE 
+				|| location.distance(origin) > range 
 				|| BlockTools.isSolid(location.getBlock())) {
 			remove();
 			return;
@@ -165,13 +185,21 @@ public class PoisonnedDart extends BendingActiveAbility {
 			}
 			entity.getActivePotionEffects().clear();
 		} else {
-			entity.addPotionEffect(new PotionEffect(effect.type, 20*2, 1));
-			DamageTools.damageEntity(bender, entity, this, DAMAGE);
+			int duration = 20*2;
+			if(bender.hasPerk(BendingPerk.MASTER_SNIPE_PERSIST_CONSTITUTION)) {
+				duration *= 2;
+			}
+			entity.addPotionEffect(new PotionEffect(effect.type, duration, 1));
+			DamageTools.damageEntity(bender, entity, this, damage);
 		}
 		if(ParaStick.hasParaStick(player) && entity instanceof Player) {
 			ParaStick stick = ParaStick.getParaStick(player);
 			stick.consume();
-			EntityTools.blockChi((Player) entity, PARASTICK_CHIBLOCK_DURATION);
+			long chiBlock = PARASTICK_CHIBLOCK_DURATION;
+			if(stick.isEnhanced()) {
+				chiBlock *= 1.5;
+			}
+			EntityTools.blockChi((Player) entity, chiBlock);
 		}
 		return true;
 	}

@@ -11,6 +11,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -46,17 +47,43 @@ public class FireFerret extends BendingActiveAbility {
 	
 	private Location origin;
 	private Location location;
-	
 	private LivingEntity target;
-	
 	private long time;
-
 	private double speedfactor;
+	
+	private int range;
+	private double searchRadius;
+	private int damage;
 	
 	public FireFerret(RegisteredAbility register, Player player) {
 		super(register, player);
 		
-		speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
+		double speed = SPEED;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREFERRET_SPEED)) {
+			speed *= 1.1;
+		}
+		
+		speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.);
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREFERRET_RANGE)) {
+			this.range += 5; 
+		}
+		
+		this.searchRadius = SEARCH_RADIUS;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREFERRET_SEARCH_RANGE)) {
+			this.searchRadius += 5;
+		}
+		
+		this.damage = DAMAGE;
+		if(bender.hasPerk(BendingPerk.FIRE_OVERLOAD)) {
+			this.damage *= 1.1;
+			this.range *= 0.95;
+		}
+		if(bender.hasPerk(BendingPerk.FIRE_SNIPER)) {
+			this.damage *= 0.95;
+			this.range *= 1.1;
+		}
 	}
 	
 	@Override
@@ -78,7 +105,7 @@ public class FireFerret extends BendingActiveAbility {
 			if(player.isSneaking()) {
 				origin = player.getEyeLocation().clone();
 				location = origin.clone();
-				target = EntityTools.getNearestLivingEntity(location, SEARCH_RADIUS, player);
+				target = EntityTools.getNearestLivingEntity(location, searchRadius, player);
 				if(target == null || ProtectionManager.isEntityProtected(target)) {
 					return false;
 				}
@@ -100,11 +127,16 @@ public class FireFerret extends BendingActiveAbility {
 		long now = System.currentTimeMillis();
 		if(now - time > TIME_TO_TARGET * 1000) {
 			time = now;
-			target = EntityTools.getNearestLivingEntity(location, SEARCH_RADIUS, player);
+			target = EntityTools.getNearestLivingEntity(location, searchRadius, player);
 			if(target == null || ProtectionManager.isEntityProtected(target)) {
 				remove();
 				return;
 			}
+		}
+		
+		if(origin.distanceSquared(location) >= range*range) {
+			remove();
+			return;
 		}
 		
 		if(target.isDead()) {
@@ -144,7 +176,7 @@ public class FireFerret extends BendingActiveAbility {
 		if (entity == player) {
 			return false;
 		}
-		DamageTools.damageEntity(bender, entity, this, DAMAGE);
+		DamageTools.damageEntity(bender, entity, this, damage);
 		Enflamed.enflame(player, entity, 2, this);
 		return true;
 	}

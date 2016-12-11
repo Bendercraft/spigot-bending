@@ -1,6 +1,7 @@
 package net.bendercraft.spigot.bending.abilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,12 +13,15 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import net.bendercraft.spigot.bending.Bending;
+import net.bendercraft.spigot.bending.abilities.earth.EarthCore;
 import net.bendercraft.spigot.bending.abilities.fire.FirePower;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance;
 import net.bendercraft.spigot.bending.controller.Settings;
@@ -33,7 +37,7 @@ public class BendingPlayer {
 
 	private List<BendingElement> bendings = new LinkedList<BendingElement>();
 	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
-	private List<BendingPath> paths = new LinkedList<BendingPath>();
+	private Map<String, BendingPerk> perks = new HashMap<String, BendingPerk>();
 
 	private Map<String, BendingAbilityCooldown> cooldowns = new HashMap<String, BendingAbilityCooldown>();
 
@@ -47,7 +51,8 @@ public class BendingPlayer {
 	private Scoreboard scoreboard;
 	
 	public FirePower fire = new FirePower();
-	public WaterBalance water = new WaterBalance();
+	public WaterBalance water = new WaterBalance(this);
+	public EarthCore earth = new EarthCore(this);
 
 	public BendingPlayer(UUID id) {
 		this.player = id;
@@ -76,7 +81,7 @@ public class BendingPlayer {
 
 		this.bendings = data.getBendings() != null ? data.getBendings() : this.bendings;
 		this.affinities = data.getAffinities() != null ? data.getAffinities() : this.affinities;
-		this.paths = data.getPaths() != null ? data.getPaths() : this.paths;
+		this.refreshPerks();
 
 		this.decks = data.getDecks() != null ? data.getDecks() : this.decks;
 		this.currentDeck = data.getCurrentDeck();
@@ -95,6 +100,33 @@ public class BendingPlayer {
 	
 	public static BendingPlayer getBendingPlayer(UUID player) {
 		return Bending.getInstance().getBendingDatabase().get(player);
+	}
+	
+	public void refreshPerks() {
+		this.perks = Collections.unmodifiableMap(BendingPerk.load(player));
+		
+		// Check max health, and adjust if needed
+		int bonus = 0;
+		if(hasPerk(BendingPerk.EARTH_INNERCORE)) {
+			bonus += 4;
+		}
+		if(hasPerk(BendingPerk.MASTER_DISENGAGE_PARAPARASTICK_CONSTITUTION)
+				&& hasAffinity(BendingAffinity.SWORD)) {
+			bonus += 2;
+		}
+		if(hasPerk(BendingPerk.MASTER_SNIPE_PERSIST_CONSTITUTION)
+				&& hasAffinity(BendingAffinity.SWORD)) {
+			bonus += 2;
+		}
+		Player p = getPlayer();
+		if(p != null) {
+			AttributeInstance attr = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			attr.setBaseValue(20 + bonus);
+		}
+	}
+	
+	public List<BendingPerk> getPerks() {
+		return new LinkedList<BendingPerk>(this.perks.values());
 	}
 
 	public boolean isOnGlobalCooldown() {
@@ -169,29 +201,22 @@ public class BendingPlayer {
 		return this.affinities.contains(affinity);
 	}
 
-	public boolean hasPath(BendingElement type) {
-		if (this.paths == null) {
+	public boolean hasPerk(BendingPerk perk) {
+		if (this.perks == null) {
 			return false;
 		}
-		for (BendingPath path : this.paths) {
-			if (path.getElement() == type) {
-				return true;
-			}
-		}
-		return false;
+		return perks.containsKey(perk.name.toLowerCase());
+	}
+	
+	public void resetPerks() {
+		BendingPerk.reset(player);
+		refreshPerks();
 	}
 
-	public boolean hasPath(BendingPath path) {
-		if (this.paths == null) {
-			return false;
-		}
-		return this.paths.contains(path);
-	}
 
 	public void setBender(BendingElement type) {
 		removeBender();
 		this.bendings.add(type);
-		setPath(type.getDefaultPath());
 		Bending.getInstance().getBendingDatabase().save(this.player);
 	}
 
@@ -205,12 +230,6 @@ public class BendingPlayer {
 	public void setAffinity(BendingAffinity affinity) {
 		this.clearAffinity(affinity.getElement());
 		this.affinities.add(affinity);
-		Bending.getInstance().getBendingDatabase().save(this.player);
-	}
-
-	public void setPath(BendingPath path) {
-		this.clearPath(path.getElement());
-		this.paths.add(path);
 		Bending.getInstance().getBendingDatabase().save(this.player);
 	}
 
@@ -241,18 +260,6 @@ public class BendingPlayer {
 		clearAbilities();
 	}
 
-	public void clearPath(BendingElement element) {
-		List<BendingPath> toRemove = new LinkedList<BendingPath>();
-		for (BendingPath path : this.paths) {
-			if (path.getElement().equals(element)) {
-				toRemove.add(path);
-			}
-		}
-		for (BendingPath path : toRemove) {
-			this.paths.remove(path);
-		}
-	}
-
 	public void clearAffinities() {
 		this.affinities.clear();
 		Bending.getInstance().getBendingDatabase().save(this.player);
@@ -264,10 +271,10 @@ public class BendingPlayer {
 	}
 
 	public void removeBender() {
+		resetPerks();
 		clearAbilities();
 		this.affinities.clear();
 		this.bendings.clear();
-		this.paths.clear();
 		Bending.getInstance().getBendingDatabase().save(this.player);
 	}
 
@@ -413,10 +420,6 @@ public class BendingPlayer {
 		return this.affinities;
 	}
 
-	public List<BendingPath> getPath() {
-		return this.paths;
-	}
-
 	public boolean isUsingScoreboard() {
 		return usingScoreboard;
 	}
@@ -433,10 +436,8 @@ public class BendingPlayer {
 		result.setPlayer(this.player);
 		result.setDecks(this.decks);
 		result.setCurrentDeck(this.currentDeck);
-		result.setPaths(this.paths);
 		result.setFire(this.fire.getPower());
 		result.setWater(this.water.getBalance());
 		return result;
 	}
-
 }

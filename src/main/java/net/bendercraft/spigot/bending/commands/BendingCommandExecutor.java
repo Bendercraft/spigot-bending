@@ -19,13 +19,14 @@ import net.bendercraft.spigot.bending.commands.subcommands.BindExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.ChooseExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.ClearExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.CooldownExecution;
+import net.bendercraft.spigot.bending.commands.subcommands.CredentialsExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.DebugExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.DeckExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.DisplayExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.ForgetExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.HelpExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.LearnExecution;
-import net.bendercraft.spigot.bending.commands.subcommands.PathExecution;
+import net.bendercraft.spigot.bending.commands.subcommands.PerkExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.ReloadExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.RemoveExecution;
 import net.bendercraft.spigot.bending.commands.subcommands.ToggleExecution;
@@ -40,6 +41,8 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 
 		this.commands.add(new BindExecution());
 		this.commands.add(new ChooseExecution());
+		this.commands.add(new CredentialsExecution());
+		this.commands.add(new PerkExecution());
 		this.commands.add(new RemoveExecution());
 		this.commands.add(new LearnExecution());
 		this.commands.add(new ForgetExecution());
@@ -51,7 +54,6 @@ public class BendingCommandExecutor implements CommandExecutor, TabCompleter {
 		this.commands.add(new DisplayExecution());
 		this.commands.add(new ClearExecution());
 		this.commands.add(new AffinityExecution());
-		this.commands.add(new PathExecution());
 		this.commands.add(new DeckExecution());
 		this.commands.add(new AvailableExecution());
 		this.commands.add(new DebugExecution());

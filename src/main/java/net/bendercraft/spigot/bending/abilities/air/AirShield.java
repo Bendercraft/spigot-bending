@@ -21,13 +21,12 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
-import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
@@ -42,20 +41,27 @@ public class AirShield extends BendingActiveAbility {
 	public static long COOLDOWN = 3000;
 
 	@ConfigurationParameter("Max-Duration")
-	private static long MAX_DURATION = 5 * 60 * 1000L;
+	private static long MAX_DURATION = 300000;
 
 	private int numberOfStreams = (int) (.75 * MAX_RADIUS);
-
 	private double radius = 2;
 	private double maxRadius = MAX_RADIUS;
-
 	private double speedfactor;
-
 	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
+	
+	private long cooldown;
+	private long duration;
 
 	public AirShield(RegisteredAbility register, Player player) {
 		super(register, player);
 
+		this.cooldown = COOLDOWN;
+		this.duration = MAX_DURATION;
+		if(bender.hasPerk(BendingPerk.AIR_MOBILITY)) {
+			this.cooldown *= 3;
+			this.duration = 6000;
+		}
+		
 		int angle = 0;
 		int di = (int) ((maxRadius * 2) / numberOfStreams);
 		for (int i = -(int) maxRadius + di; i < (int) maxRadius; i += di) {
@@ -96,12 +102,12 @@ public class AirShield extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-		if (getState() == BendingAbilityState.START) {
+		if (isState(BendingAbilityState.START)) {
 			setState(BendingAbilityState.PROGRESSING);
 			return false;
 		}
 
-		if (getState() == BendingAbilityState.PROGRESSING) {
+		if (isState(BendingAbilityState.PROGRESSING)) {
 			return false;
 		}
 
@@ -113,11 +119,13 @@ public class AirShield extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (this.player.getEyeLocation().getBlock().isLiquid()) {
+		if(this.player.getEyeLocation().getBlock().isLiquid()) {
 			return false;
 		}
-		if ((!NAME.equals(EntityTools.getBendingAbility(player)) || !this.player.isSneaking()) 
-				&& !AvatarState.isAvatarState(this.player)) {
+		if(!NAME.equals(EntityTools.getBendingAbility(player))) {
+			return false;
+		}
+		if(!this.player.isSneaking() && !bender.hasPerk(BendingPerk.AIR_MOBILITY)) {
 			return false;
 		}
 		return true;
@@ -167,17 +175,13 @@ public class AirShield extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		long cooldown = COOLDOWN;
-		if (bender.hasPath(BendingPath.RENEGADE)) {
-			cooldown *= 1.2;
-		}
 		this.bender.cooldown(NAME, cooldown);
 	}
 
 
 	@Override
 	protected long getMaxMillis() {
-		return MAX_DURATION;
+		return duration;
 	}
 	
 	private void affect(Entity entity) {
@@ -222,17 +226,8 @@ public class AirShield extends BendingActiveAbility {
 
 			velocity.multiply(this.radius / maxRadius);
 
-			if (bender.hasPath(BendingPath.RENEGADE)) {
-				DamageTools.damageEntity(bender, entity, this, 1);
-				velocity.multiply(2);
-			}
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);
-
-			if (bender.hasPath(BendingPath.RENEGADE)) {
-				remove();
-				return;
-			}
 		}
 	}
 

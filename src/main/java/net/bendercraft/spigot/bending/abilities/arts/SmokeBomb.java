@@ -17,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -29,7 +30,7 @@ public class SmokeBomb extends BendingActiveAbility {
 	public final static String NAME = "SmokeBomb";
 
 	@ConfigurationParameter("Radius")
-	public static int RADIUS = 5;
+	public static int RADIUS = 7;
 
 	@ConfigurationParameter("Duration")
 	public static int DURATION = 10;
@@ -56,14 +57,28 @@ public class SmokeBomb extends BendingActiveAbility {
 	private Integer id;
 
 	private long cooldown;
+	private int radius;
 
 	public SmokeBomb(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		int duration = DURATION;
+		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTDAMAGE_SMOKEBOMBDURATION_SLICEBLEEDDAMAGE)) {
+			duration += 2;
+		}
+		
+		this.radius = RADIUS;
+		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTRANGE_SMOKEBOMBRADIUS_SLICEDIRECTDAMAGE)) {
+			this.radius += 1;
+		}
 
 		this.origin = player.getLocation();
 		this.id = ID++;
 		this.cooldown = COOLDOWN;
-		this.ticksRemaining = DURATION * 20;
+		if(bender.hasPerk(BendingPerk.MASTER_BLANKPOINTCD_SMOKEBOMBCD_DASHSTUN)) {
+			this.cooldown -= 500;
+		}
+		this.ticksRemaining = duration * 20;
 		this.locs = new ArrayList<Location>();
 		this.targets = new ArrayList<LivingEntity>();
 
@@ -93,9 +108,18 @@ public class SmokeBomb extends BendingActiveAbility {
 		if(ParaStick.hasParaStick(player)) {
 			ParaStick stick = ParaStick.getParaStick(player);
 			stick.consume();
+			double damage = PARASTICK_DAMAGE;
+			if(stick.isEnhanced()) {
+				damage *= 1.5;
+			}
 			
-			for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.origin, RADIUS)) {
-				DamageTools.damageEntity(bender, entity, this, PARASTICK_DAMAGE);
+			for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.origin, radius)) {
+				if(bender.hasPerk(BendingPerk.MASTER_EXPLOSIVESHOTRADIUSDAMAGE_SMOKEBOMBPARASTICKDAMAGE_NEBULARCD)) {
+					if(entity == bender.getPlayer()) {
+						continue;
+					}
+				}
+				DamageTools.damageEntity(bender, entity, this, damage);
 			}
 		}
 
@@ -111,7 +135,7 @@ public class SmokeBomb extends BendingActiveAbility {
 			remove();
 			return;
 		}
-		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(this.origin, RADIUS);
+		List<LivingEntity> newTargets = EntityTools.getLivingEntitiesAroundPoint(this.origin, radius);
 
 		this.blindnessTarget = new PotionEffect(PotionEffectType.BLINDNESS, this.ticksRemaining, 2);
 

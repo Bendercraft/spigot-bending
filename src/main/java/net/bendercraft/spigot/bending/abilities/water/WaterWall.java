@@ -20,8 +20,8 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
-import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -45,6 +45,9 @@ public class WaterWall extends BendingActiveAbility {
 	@ConfigurationParameter("Radius")
 	private static double RADIUS = 2;
 
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1500;
+
 	private Location location = null;
 	private Block sourceblock = null;
 	private boolean progressing = false;
@@ -56,18 +59,22 @@ public class WaterWall extends BendingActiveAbility {
 	private boolean forming = false;
 	private boolean frozen = false;
 	private long time;
-	private double radius = RADIUS;
 
 	private TempBlock drainedBlock;
-
 	private Wave wave;
-
 	private WaterReturn waterReturn;
+	
+	private double radius;
 
 	public WaterWall(RegisteredAbility register, Player player) {
 		super(register, player);
-		if (AvatarState.isAvatarState(player)) {
-			radius = AvatarState.getValue(radius);
+		
+		this.radius = RADIUS;
+		if(bender.hasPerk(BendingPerk.WATER_WATERWALL_RADIUS_1)) {
+			this.radius += 1;
+		}
+		if(bender.hasPerk(BendingPerk.WATER_WATERWALL_RADIUS_2)) {
+			this.radius += 1;
 		}
 	}
 
@@ -134,8 +141,7 @@ public class WaterWall extends BendingActiveAbility {
 		frozen = true;
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				//new TempBlock(block, Material.ICE, (byte) 0);
-				TempBlock.makeTemporary(block, Material.ICE, false);
+				TempBlock.makeTemporary(this, block, Material.ICE, false);
 			}
 		}
 	}
@@ -144,8 +150,7 @@ public class WaterWall extends BendingActiveAbility {
 		frozen = false;
 		for (Block block : wallblocks.keySet()) {
 			if (wallblocks.get(block) == player) {
-				//new TempBlock(block, Material.WATER, full);
-				TempBlock.makeTemporary(block, Material.WATER, false);
+				TempBlock.makeTemporary(this, block, Material.WATER, false);
 			}
 		}
 	}
@@ -168,7 +173,7 @@ public class WaterWall extends BendingActiveAbility {
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
 				//drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-				drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
+				drainedBlock = TempBlock.makeTemporary(this, block, Material.STATIONARY_WATER, false);
 				sourceblock = block;
 				focusBlock();
 				// Radius is thirded for Drainbending
@@ -378,11 +383,9 @@ public class WaterWall extends BendingActiveAbility {
 
 	private void addWallBlock(Block block) {
 		if (frozen) {
-			//new TempBlock(block, Material.ICE, (byte) 0);
-			TempBlock.makeTemporary(block, Material.ICE, false);
+			TempBlock.makeTemporary(this, block, Material.ICE, false);
 		} else {
-			//new TempBlock(block, Material.WATER, full);
-			TempBlock.makeTemporary(block, Material.WATER, false);
+			TempBlock.makeTemporary(this, block, Material.WATER, false);
 		}
 	}
 
@@ -427,8 +430,7 @@ public class WaterWall extends BendingActiveAbility {
 			return;
 
 		if (!TempBlock.isTempBlock(block)) {
-			//new TempBlock(block, Material.WATER, full);
-			TempBlock.makeTemporary(block, Material.WATER, false);
+			TempBlock.makeTemporary(this, block, Material.WATER, false);
 			affectedblocks.put(block, block);
 		}
 	}

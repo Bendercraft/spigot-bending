@@ -8,6 +8,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPassiveAbility;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 
 @ABendingAbility(name = Speed.NAME, element = BendingElement.MASTER, shift = false, passive = true)
@@ -43,10 +44,12 @@ public class Speed extends BendingPassiveAbility {
 	}
 
 	private void applySpeed() {
-		PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, this.speedAmplifier);
-		PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 1);
-		this.player.addPotionEffect(speed);
-		this.player.addPotionEffect(jump);
+		if(bender.hasPerk(BendingPerk.MASTER_TRAINING)) {
+			PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 70, this.speedAmplifier);
+			PotionEffect jump = new PotionEffect(PotionEffectType.JUMP, 70, 1);
+			this.player.addPotionEffect(speed);
+			this.player.addPotionEffect(jump);
+		}
 	}
 
 	@Override

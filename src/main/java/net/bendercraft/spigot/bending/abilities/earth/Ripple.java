@@ -12,25 +12,20 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
-import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
 public class Ripple {
-	@ConfigurationParameter("Radius")
-	static double RADIUS = 15;
-
-	@ConfigurationParameter("Damage")
-	private final int DAMAGE = 5;
-
 	private Player player;
 	private BendingPlayer bender;
 
@@ -47,12 +42,14 @@ public class Ripple {
 	private BendingAbility ability;
 
 	private Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
+	private double radius;
+	private double damage;
 
-	public Ripple(Player player, BendingAbility ability, Vector direction) {
-		this(player, ability, getInitialLocation(player, direction), direction);
+	public Ripple(Player player, BendingAbility ability, Vector direction, double radius, double damage) {
+		this(player, ability, getInitialLocation(player, direction), direction, radius, damage);
 	}
 
-	public Ripple(Player player, BendingAbility ability, Location origin, Vector direction) {
+	public Ripple(Player player, BendingAbility ability, Location origin, Vector direction, double radius, double damage) {
 		this.player = player;
 		this.ability = ability;
 		if (origin == null)
@@ -60,7 +57,8 @@ public class Ripple {
 		this.direction = direction.clone().normalize();
 		this.origin = origin.clone();
 		this.location = origin.clone();
-
+		this.radius = radius;
+		this.damage = damage;
 		initializeLocations();
 		maxstep = locations.size();
 
@@ -195,7 +193,7 @@ public class Ripple {
 		Location location = origin.clone();
 		locations.add(location);
 
-		while (location.distance(origin) < RADIUS) {
+		while (location.distance(origin) < radius) {
 			location = location.clone().add(direction);
 			for (int i : new int[] { 1, 2, 3, 0, -1 }) {
 				Location loc;
@@ -259,17 +257,17 @@ public class Ripple {
 			return;
 		}
 
-		double damage = DAMAGE;
-		if (bender.hasPath(BendingPath.TOUGH)) {
-			damage *= 0.85;
-		}
-
-		if (bender.hasPath(BendingPath.RECKLESS)) {
-			damage *= 1.15;
-		}
-
 		if (entity instanceof LivingEntity) {
+			LivingEntity living = (LivingEntity) entity;
 			DamageTools.damageEntity(bender, entity, ability, damage);
+			if(ability.getBender().hasPerk(BendingPerk.EARTH_SHOCKWAVE_STUN)) {
+		        PotionEffect jumpless = new PotionEffect(PotionEffectType.CONFUSION, 20*3, 1);
+		        living.addPotionEffect(jumpless);
+			}
+			if(ability.getBender().hasPerk(BendingPerk.EARTH_SHOCKWAVE_SLOW)) {
+				PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, 20*3, 1);
+		        living.addPotionEffect(slowness);
+			}
 		}
 
 		Vector vector = direction.clone();

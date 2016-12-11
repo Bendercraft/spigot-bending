@@ -17,6 +17,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
@@ -43,8 +44,15 @@ public class WaterSpout extends BendingActiveAbility {
 	private List<TempBlock> blocks = new LinkedList<TempBlock>();
 	private FlyingPlayer flying;
 
+	private int height;
+
 	public WaterSpout(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.height = HEIGHT;
+		if(bender.hasPerk(BendingPerk.WATER_WATERSPOUT_HEIGHT)) {
+			this.height += 1;
+		}
 	}
 
 	@Override
@@ -109,7 +117,7 @@ public class WaterSpout extends BendingActiveAbility {
 		for (int i = 0, cardinalPoint = currentCardinalPoint / SPEED; i < (height + 1); i++, cardinalPoint--) {
 			Location loc = location.clone().add(0, -i, 0);
 			if (!TempBlock.isTempBlock(loc.getBlock()) && loc.getBlock().getType().equals(Material.AIR)) {
-				blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.STATIONARY_WATER, false));
+				blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.STATIONARY_WATER, false));
 			}
 
 			if (cardinalPoint == -1) {
@@ -118,7 +126,7 @@ public class WaterSpout extends BendingActiveAbility {
 
 			loc = loc.add(vectors[cardinalPoint]);
 			if (loc.getBlock().getType().equals(Material.AIR)) {
-				blocks.add(TempBlock.makeTemporary(loc.getBlock(), Material.WATER, false));
+				blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.WATER, false));
 			}
 
 		}
@@ -136,7 +144,7 @@ public class WaterSpout extends BendingActiveAbility {
 			return -1;
 		}
 		loc = loc.add(0, 1, 0);
-		for (int i = 0; i < HEIGHT; i++) {
+		for (int i = 0; i < height; i++) {
 			Location locToTest = loc.add(0, -1, 0);
 			if (ProtectionManager.isLocationProtectedFromBending(player, register, locToTest)) {
 				return -1;
@@ -212,7 +220,7 @@ public class WaterSpout extends BendingActiveAbility {
 		return instances.containsKey(player);
 	}
 
-	public static boolean canWaterSpout(Player player) {
+	public boolean canWaterSpout(Player player) {
 		Location loc = player.getLocation();
 		if (BlockTools.isWaterBased(loc.getBlock())) {
 			return true;
@@ -222,7 +230,7 @@ public class WaterSpout extends BendingActiveAbility {
 					|| loc.getBlock().getType() == Material.WATER 
 					|| loc.getBlock().getType() ==Material.STATIONARY_WATER) 
 				&& (loc.getBlockY() > 0) 
-				&& (cpt <= HEIGHT)) {
+				&& (cpt <= height)) {
 			loc = loc.add(0, -1, 0);
 			if (BlockTools.isWaterBased(loc.getBlock())) {
 				return true;

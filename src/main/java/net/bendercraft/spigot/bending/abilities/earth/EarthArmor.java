@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,9 +19,11 @@ import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
+import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
@@ -38,7 +41,7 @@ public class EarthArmor extends BendingActiveAbility {
 	private static int STRENGTH_BONUS_IRON = 2;
 
 	@ConfigurationParameter("Cooldown")
-	private static long COOLDOWN = 10000;
+	private static long COOLDOWN = 15000;
 
 	@ConfigurationParameter("Range")
 	private static int RANGE = 7;
@@ -46,7 +49,7 @@ public class EarthArmor extends BendingActiveAbility {
 	@ConfigurationParameter("Damage-Reduction")
 	private static double DAMAGE_REDUCTION = 0.15;
 	@ConfigurationParameter("Damage-Reduction-Boost")
-	private static double DAMAGE_REDUCTION_BOOST = 0.60;
+	private static double DAMAGE_REDUCTION_BOOST = 0.45;
 
 	private TempBlock block;
 	private Location location;
@@ -55,10 +58,35 @@ public class EarthArmor extends BendingActiveAbility {
 	
 	private boolean boost = false;
 	private boolean consumed = false;
+	
+	private long duration;
+	private double damageReduction;
+	private long cooldown;
 
 	public EarthArmor(RegisteredAbility register, Player player) {
 		super(register, player);
 		this.strength = STRENGTH;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHARMOR_THICK)) {
+			this.strength += 1;
+		}
+		
+		this.duration = DURATION;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHARMOR_DURATION_1)) {
+			this.duration += 2000;
+		}
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHARMOR_DURATION_2)) {
+			this.duration += 2000;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHARMOR_COOLDOWN)) {
+			this.cooldown -= 5000;
+		}
+		
+		this.damageReduction = DAMAGE_REDUCTION;
+		if(bender.hasPerk(BendingPerk.EARTH_EARTHARMOR_REDUCTION)) {
+			this.damageReduction -= 0.1;
+		}
 	}
 
 	@Override
@@ -71,7 +99,7 @@ public class EarthArmor extends BendingActiveAbility {
 					&& !TempBlock.isTempBlock(target.getRelative(BlockFace.UP))) {
 				location = target.getRelative(BlockFace.UP).getLocation();
 				material = target.getType();
-				block = TempBlock.makeTemporary(location.getBlock(), material, false);
+				block = TempBlock.makeTemporary(this, location.getBlock(), material, false);
 				if(BlockTools.isIronBendable(player, material)) {
 					strength += STRENGTH_BONUS_IRON;
 				}
@@ -104,6 +132,9 @@ public class EarthArmor extends BendingActiveAbility {
 			if(boost && !player.isSneaking()) {
 				boost = false;
 			}
+			if(strength <= 0) {
+				remove();
+			}
 		}
 	}
 
@@ -111,14 +142,25 @@ public class EarthArmor extends BendingActiveAbility {
 		if(isState(BendingAbilityState.PROGRESSING)) {
 			if(!boost) {
 				strength--;
-				if(strength <= 0) {
-					remove();
-				}
 			}
 			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_METAL_HIT, 2.0f, 0.0f);
 			return true;
 		}
 		return false;
+	}
+	
+	private void explode() {
+		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), 5)) {
+			if(bender.hasPerk(BendingPerk.EARTH_EARTHARMOR_PUSHBACK)) {
+				Vector direction = entity.getLocation().toVector().subtract(player.getLocation().toVector());
+				direction = direction.normalize();
+				direction = direction.setY(0.3);
+				entity.setVelocity(direction);
+			}
+			if(bender.hasPerk(BendingPerk.EARTH_EARTHARMOR_DAMAGE)) {
+				DamageTools.damageEntity(bender, entity, this, 1);
+			}
+		}
 	}
 
 	@Override
@@ -128,25 +170,26 @@ public class EarthArmor extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
+		explode();
 		if(block != null) {
 			block.revertBlock();
 		}
 		player.removePotionEffect(PotionEffectType.SLOW);
 		player.getWorld().playSound(player.getLocation(), Sound.BLOCK_METAL_BREAK, 2.0f, 0.0f);
-		bender.cooldown(this, COOLDOWN);
+		bender.cooldown(this, cooldown);
 	}
 	
 	@Override
 	protected long getMaxMillis() {
-		return DURATION;
+		return duration;
 	}
 	
 	public double getDamageReduction() {
 		if(isState(BendingAbilityState.PROGRESSING)) {
 			if(boost) {
-				return DAMAGE_REDUCTION_BOOST;
+				return damageReduction + DAMAGE_REDUCTION_BOOST;
 			} else {
-				return DAMAGE_REDUCTION;
+				return damageReduction;
 			}
 		}
 		return 0.0;
@@ -169,7 +212,7 @@ public class EarthArmor extends BendingActiveAbility {
 					|| TempBlock.isTempBlock(location.getBlock())) {
 				return false;
 			}
-			block = TempBlock.makeTemporary(location.getBlock(), material, false);
+			block = TempBlock.makeTemporary(this, location.getBlock(), material, false);
 		}
 		
 		if(location.distance(player.getEyeLocation()) < 1) {
@@ -203,7 +246,7 @@ public class EarthArmor extends BendingActiveAbility {
 			armors[3] = sign(new ItemStack(Material.LEATHER_HELMET, 1));
 		}
 		player.getInventory().setArmorContents(armors);
-		PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, (int) DURATION / 50, 0);
+		PotionEffect slowness = new PotionEffect(PotionEffectType.SLOW, (int) duration / 50, 0);
 		player.addPotionEffect(slowness);
 		setState(BendingAbilityState.PROGRESSING);
 	}

@@ -25,10 +25,9 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
-import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -66,13 +65,22 @@ public class FireBlast extends BendingActiveAbility {
 	private static int RANGE = 25;
 	
 	@ConfigurationParameter("Power")
-	private static int POWER = 1;
+	private static int POWER = 2;
 
 	@ConfigurationParameter("Charge-Time")
 	private static long CHARGE_TIME = 3500;
 	
 	@ConfigurationParameter("Dissipate")
 	private static long DISSIPATE = 1000;
+	
+	@ConfigurationParameter("Flame-Time")
+	private static int FLAME_TIME = 2;
+	
+	@ConfigurationParameter("Charge-Damage-Factor")
+	private static double CHARGE_DAMAGE_FACTOR = 1.3;
+	
+	@ConfigurationParameter("Charge-Range-Factor")
+	private static double CHARGE_RANGE_FACTOR = 1.2;
 
 	private Location location;
 	private List<Block> safe;
@@ -80,23 +88,70 @@ public class FireBlast extends BendingActiveAbility {
 	private Vector direction;
 	private int id;
 	private double speedfactor;
-	private double damage = DAMAGE;
-	double range = RANGE;
+	
+	
+	private double damage;
+	private double range;
+	private double pushFactor;
+	private int flameTime;
+	private long chargeTime;
+	private int power;
+
+	private double chargeDamageFactor;
 
 	public FireBlast(RegisteredAbility register, Player player) {
 		super(register, player);
-
-		if (this.bender.hasPath(BendingPath.NURTURE)) {
-			this.damage *= 0.8;
-		}
-		if (this.bender.hasPath(BendingPath.LIFELESS)) {
-			this.damage *= 1.1;
-		}
 
 		this.safe = new LinkedList<Block>();
 		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 		this.location = this.player.getEyeLocation();
 		this.id = ID++;
+		
+		this.power = POWER;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_ENERGY)) {
+			this.power -= 1;
+		}
+		
+		this.pushFactor = PUSH_FACTOR;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_PUSHBACK)) {
+			this.pushFactor *= 1.3;
+		}
+		this.flameTime = FLAME_TIME;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_FLAME)) {
+			this.flameTime += 1;
+		}
+		this.chargeTime = CHARGE_TIME;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_CHARGE_TIME_1)) {
+			this.chargeTime *= 0.85;
+		}
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_CHARGE_TIME_2)) {
+			this.chargeTime *= 0.85;
+		}
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_CHARGE_TIME_3)) {
+			this.chargeTime *= 0.85;
+		}
+		
+		this.chargeDamageFactor = CHARGE_DAMAGE_FACTOR;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_CHARGE_DAMAGE_1)) {
+			this.chargeDamageFactor += 0.15;
+		}
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_CHARGE_DAMAGE_2)) {
+			this.chargeDamageFactor += 0.15;
+		}
+		if(bender.hasPerk(BendingPerk.FIRE_FIREBLAST_CHARGE_DAMAGE_3)) {
+			this.chargeDamageFactor += 0.15;
+		}
+		
+		this.damage = DAMAGE;
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.FIRE_OVERLOAD)) {
+			this.damage *= 1.1;
+			this.range *= 0.95;
+		}
+		if(bender.hasPerk(BendingPerk.FIRE_SNIPER)) {
+			this.damage *= 0.95;
+			this.range *= 1.1;
+		}
 	}
 	
 	@Override
@@ -109,7 +164,7 @@ public class FireBlast extends BendingActiveAbility {
 			return false;
 		}
 		
-		if(!bender.fire.can(NAME, POWER)) {
+		if(!bender.fire.can(NAME, power)) {
 			return false;
 		}
 
@@ -130,8 +185,8 @@ public class FireBlast extends BendingActiveAbility {
 			launch();
 			return false;
 		} else if(getState() == BendingAbilityState.PREPARED) {
-			this.damage *= 1.30;
-			this.range *= 1.20;
+			this.damage *= chargeDamageFactor;
+			this.range *= CHARGE_RANGE_FACTOR;
 			launch();
 			return false;
 		}
@@ -143,7 +198,7 @@ public class FireBlast extends BendingActiveAbility {
 		this.origin = this.player.getEyeLocation();
 		this.direction = this.player.getEyeLocation().getDirection().normalize();
 		this.location = this.location.add(this.direction.clone());
-		bender.fire.consume(NAME, POWER);
+		bender.fire.consume(NAME, power);
 		setState(BendingAbilityState.PROGRESSING);
 	}
 	
@@ -162,7 +217,7 @@ public class FireBlast extends BendingActiveAbility {
 	public void progress() {
 		long now = System.currentTimeMillis();
 		if (getState() == BendingAbilityState.PREPARING) {
-			if ((now - this.startedTime) > CHARGE_TIME) {
+			if ((now - this.startedTime) > chargeTime) {
 				setState(BendingAbilityState.PREPARED);
 			}
 			return;
@@ -242,13 +297,9 @@ public class FireBlast extends BendingActiveAbility {
 		if (entity == player) {
 			return false;
 		}
-		if (AvatarState.isAvatarState(this.player)) {
-			entity.setVelocity(this.direction.clone().multiply(AvatarState.getValue(PUSH_FACTOR)));
-		} else {
-			entity.setVelocity(this.direction.clone().multiply(PUSH_FACTOR));
-		}
+		entity.setVelocity(this.direction.clone().multiply(pushFactor));
 		DamageTools.damageEntity(bender, entity, this, damage);
-		Enflamed.enflame(this.player, entity, 2, this);
+		Enflamed.enflame(this.player, entity, flameTime, this);
 		return true;
 	}
 	

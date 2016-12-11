@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
-import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -32,15 +31,16 @@ public class WaterReturn {
 	private long time;
 	private Player player;
 	private final RegisteredAbility waterRegister;
+	private BendingAbility parent;
 
 	public WaterReturn(Player player, Block block, BendingAbility parent) {
 		location = block.getLocation();
 		this.player = player;
-		this.waterRegister = AbilityManager.getManager().getRegisteredAbility(WaterManipulation.NAME);
+		this.parent = parent;
+		this.waterRegister = parent.getRegister();
 		if (!ProtectionManager.isLocationProtectedFromBending(player, waterRegister, location) && EntityTools.canBend(player, waterRegister)) {
 			if (BlockTools.isTransparentToEarthbending(player, block) && !block.isLiquid()) {
-				//this.block = new TempBlock(block, Material.WATER, full);
-				this.block = TempBlock.makeTemporary(block, Material.WATER, false);
+				this.block = TempBlock.makeTemporary(parent, block, Material.WATER, false);
 			}
 		}
 	}
@@ -89,8 +89,7 @@ public class WaterReturn {
 		Block newblock = location.getBlock();
 		if (BlockTools.isTransparentToEarthbending(player, newblock) && !newblock.isLiquid()) {
 			block.revertBlock();
-			//block = new TempBlock(newblock, Material.WATER, full);
-			block = TempBlock.makeTemporary(newblock, Material.WATER, false);
+			block = TempBlock.makeTemporary(parent, newblock, Material.WATER, false);
 		} else {
 			return false;
 		}

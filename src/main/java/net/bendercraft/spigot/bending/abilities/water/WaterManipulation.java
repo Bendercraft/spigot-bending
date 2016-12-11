@@ -19,7 +19,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
@@ -87,6 +87,8 @@ public class WaterManipulation extends BendingActiveAbility {
 	private WaterReturn waterReturn;
 	private TempBlock drainedBlock = null; // Can be null if no drain or no bottle used
 
+	private long cooldown;
+
 	public WaterManipulation(RegisteredAbility register, Player player) {
 		super(register, player);
 		
@@ -97,20 +99,36 @@ public class WaterManipulation extends BendingActiveAbility {
 		ID++;
 
 		this.damage = DAMAGE;
+		if(bender.hasPerk(BendingPerk.WATER_WATERMANIPULATION_DAMAGE)) {
+			this.damage += 1;
+		}
 		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.WATER_WATERMANIPULATION_RANGE_1)) {
+			this.range += 2;
+		}
+		if(bender.hasPerk(BendingPerk.WATER_WATERMANIPULATION_RANGE_2)) {
+			this.range += 2;
+		}
 		this.push = PUSHFACTOR;
+		if(bender.hasPerk(BendingPerk.WATER_WATERMANIPULATION_PUSHBACK)) {
+			this.push *= 1.5;
+		}
 		this.radius = AFFECTING_RADIUS;
-		this.interval = (long) (1000. / SPEED);
+		if(bender.hasPerk(BendingPerk.WATER_WATERMANIPULATION_HITBOX)) {
+			this.radius *= 1.1;
+		}
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.WATER_WATERMANIPULATION_COOLDOWN)) {
+			this.cooldown -= 1000;
+		}
+		
+		double speed = SPEED;
+		if(bender.hasPerk(BendingPerk.WATER_WATERMANIPULATION_SPEED)) {
+			speed *= 1.1;
+		}
+		
+		this.interval = (long) (1000. / speed);
 		this.time = System.currentTimeMillis();
-
-		if (this.bender.hasPath(BendingPath.MARKSMAN)) {
-			this.damage *= 0.8;
-			this.range *= 1.4;
-		}
-
-		if (this.bender.hasPath(BendingPath.FLOWLESS)) {
-			this.damage *= 1.15;
-		}
 	}
 
 	@Override
@@ -138,7 +156,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			Vector vector = drainLocation.getDirection().clone().normalize();
 			block = drainLocation.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
-				drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
+				drainedBlock = TempBlock.makeTemporary(this, block, Material.STATIONARY_WATER, false);
 				bender.cooldown(Drainbending.NAME, Drainbending.COOLDOWN);
 			} else {
 				block = null;
@@ -152,7 +170,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			if (BlockTools.isTransparentToEarthbending(player, block) 
 					&& BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())
 					&& WaterReturn.canBeSource(block)) {
-				drainedBlock = TempBlock.makeTemporary(block, Material.STATIONARY_WATER, false);
+				drainedBlock = TempBlock.makeTemporary(this, block, Material.STATIONARY_WATER, false);
 				WaterReturn.emptyWaterBottle(player);
 			} else {
 				block = null;
@@ -209,7 +227,7 @@ public class WaterManipulation extends BendingActiveAbility {
 				source.setType(Material.AIR);
 			}
 			setState(BendingAbilityState.PROGRESSING);
-			bender.cooldown(NAME, COOLDOWN);
+			bender.cooldown(NAME, cooldown);
 		} else if(isState(BendingAbilityState.PROGRESSING) && player.isSneaking()) {
 			freeze = !freeze;
 		}
@@ -304,13 +322,13 @@ public class WaterManipulation extends BendingActiveAbility {
 					trail.revertBlock();
 				}
 				if(current != null && !freeze) {
-					trail = TempBlock.makeTemporary(current.getBlock(), Material.WATER, (byte) 2, false);
+					trail = TempBlock.makeTemporary(this, current.getBlock(), Material.WATER, (byte) 2, false);
 				}
 			}
 			if(freeze) {
-				current = TempBlock.makeTemporary(location.getBlock(), Material.ICE, false);
+				current = TempBlock.makeTemporary(this, location.getBlock(), Material.ICE, false);
 			} else {
-				current = TempBlock.makeTemporary(location.getBlock(), Material.WATER, false);
+				current = TempBlock.makeTemporary(this, location.getBlock(), Material.WATER, false);
 			}
 		}
 	}
@@ -340,10 +358,7 @@ public class WaterManipulation extends BendingActiveAbility {
 	}
 	
 	public Location getTargetLocation(Player player) {
-		Entity target = null;
-		if (!bender.hasPath(BendingPath.FLOWLESS)) {
-			target = EntityTools.getTargetedEntity(player, range);
-		}
+		Entity target = EntityTools.getTargetedEntity(player, range);
 		Location result = null;
 		if (target == null || ProtectionManager.isEntityProtected(target)) {
 			result = EntityTools.getTargetedLocation(player, range, BlockTools.getTransparentEarthBending());

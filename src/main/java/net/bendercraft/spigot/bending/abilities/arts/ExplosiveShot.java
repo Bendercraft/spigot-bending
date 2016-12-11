@@ -3,13 +3,17 @@ package net.bendercraft.spigot.bending.abilities.arts;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.Bending;
@@ -17,10 +21,12 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
+import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 
@@ -45,8 +51,31 @@ public class ExplosiveShot extends BendingActiveAbility {
 	private Arrow arrow;
 	private List<FireStream> firestreams = new LinkedList<FireStream>();
 
+	private int rangeDamage;
+	private int range;
+	private long cooldown;
+
+	private int ticks = 0; // For display only
+
+	private Location location;
+
 	public ExplosiveShot(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.rangeDamage = RANGE_DAMAGE;
+		if(bender.hasPerk(BendingPerk.MASTER_EXPLOSIVESHOTRADIUSDAMAGE_SMOKEBOMBPARASTICKDAMAGE_NEBULARCD)) {
+			this.rangeDamage += 2;
+		}
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.MASTER_EXPLOSIVESHOTFIRE_POISONNEDDARTDAMAGE_CONCUSSIONDURATION)) {
+			this.range += 1;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_EXPLOSIVESHOTCD_POISONNEDDARTCD_SLICEDURATION)) {
+			this.cooldown -= 500;
+		}
 	}
 	
 	/**
@@ -55,7 +84,7 @@ public class ExplosiveShot extends BendingActiveAbility {
 	public void shot(Arrow arrow) {
 		this.arrow = arrow;
 		setState(BendingAbilityState.PREPARED);
-		bender.cooldown(NAME, COOLDOWN);
+		bender.cooldown(NAME, cooldown);
 	}
 	
 	/**
@@ -65,9 +94,9 @@ public class ExplosiveShot extends BendingActiveAbility {
 		if(arrow == null) {
 			return;
 		}
-		Location location = arrow.getLocation();
+		location = arrow.getLocation();
 		
-		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, RANGE_DAMAGE)) {
+		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, rangeDamage)) {
 			affect(entity);
 		}
 
@@ -84,9 +113,14 @@ public class ExplosiveShot extends BendingActiveAbility {
 			direction.setX(vx);
 			direction.setZ(vz);
 
-			firestreams.add(new FireStream(location, direction, player, RANGE, 1200));
-			firestreams.add(new FireStream(location.add(0, 1, 0), direction, player, RANGE, 1200));
-			firestreams.add(new FireStream(location.add(0, -1, 0), direction, player, RANGE, 1200));
+			firestreams.add(new FireStream(location, direction, player, range, 1200));
+			firestreams.add(new FireStream(location.add(0, 1, 0), direction, player, range, 1200));
+			firestreams.add(new FireStream(location.add(0, -1, 0), direction, player, range, 1200));
+			if(bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
+				for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, range)) {
+					entity.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20*6, 1));
+				}
+			}
 			setState(BendingAbilityState.PROGRESSING);
 		}
 		location.getWorld().playSound(location, Sound.BLOCK_GLASS_BREAK, SOUND_RADIUS / 16.0f, 1);
@@ -108,6 +142,15 @@ public class ExplosiveShot extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		if(getState() == BendingAbilityState.PROGRESSING) {
+			if(bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
+				this.ticks++;
+				if ((this.ticks  % 8) == 0 && location != null) {
+					for (Block block : BlockTools.getBlocksAroundPoint(location, range)) {
+						block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1, 15);
+					}
+				}
+			}
+			
 			List<FireStream> test = new LinkedList<FireStream>(firestreams);
 			for(FireStream stream : test) {
 				if(!stream.progress()) {

@@ -16,7 +16,6 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
@@ -49,9 +48,6 @@ public class AirSpout extends BendingActiveAbility {
 		this.time = this.startedTime;
 
 		height = HEIGHT;
-		if (bender.hasPath(BendingPath.MOBILE)) {
-			height *= 1.2;
-		}
 	}
 
 	@Override

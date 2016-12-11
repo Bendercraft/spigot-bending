@@ -3,6 +3,7 @@ package net.bendercraft.spigot.bending.abilities.arts;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,6 +30,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -44,10 +46,8 @@ import net.coreprotect.CoreProtectAPI;
 public class C4 extends BendingActiveAbility {
 	public final static String NAME = "C4";
 
-	private static int ID = Integer.MIN_VALUE;
-
 	@ConfigurationParameter("Radius")
-	private static double RADIUS = 2.35;
+	private static double RADIUS = 3;
 
 	@ConfigurationParameter("Damage")
 	private static int MAX_DAMAGE = 4;
@@ -72,16 +72,31 @@ public class C4 extends BendingActiveAbility {
 
 	private static final Particle EXPLODE = Particle.EXPLOSION_HUGE;
 
-	private int id;
+	private UUID id = UUID.randomUUID();
 	private TempBlock bomb = null;
+	private boolean hidden = false;
 	private Location location;
 	private Block hitBlock = null;
 	private BlockFace hitFace = null;
 	
 	private Arrow arrow;
 
+	private long cooldown;
+	private double radius;
+
 	public C4(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMCD_C4CD_SLICE_CD)) {
+			this.cooldown -= 500;
+		}
+		
+		this.radius = RADIUS;
+		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTCD_C4RADIUS_NEBULARCD)) {
+			this.radius += 1;
+		}
+		
 		loadBlockByDir(player.getEyeLocation(), player.getEyeLocation().getDirection());
 	}
 	
@@ -166,7 +181,6 @@ public class C4 extends BendingActiveAbility {
 		}
 
 		generateC4(location.getBlock(), hitFace);
-		id = ID++;
 
 		setState(BendingAbilityState.PROGRESSING);
 		return false;
@@ -174,8 +188,7 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public boolean sneak() {
-
-		if (!getState().equals(BendingAbilityState.PROGRESSING)) {
+		if (!isState(BendingAbilityState.PROGRESSING)) {
 			return false;
 		}
 
@@ -202,21 +215,21 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public void progress() {
-		if (!getState().equals(BendingAbilityState.PROGRESSING)) {
+		if(!isState(BendingAbilityState.PROGRESSING)) {
 			return;
 		}
 
-		if (bomb == null) {
+		if(bomb == null && !hidden) {
 			remove();
 			return;
 		}
 
-		if ((bomb != null) && (bomb.getBlock().getType() != Material.SKULL)) {
+		if(!hidden && bomb != null && bomb.getBlock().getType() != Material.SKULL) {
 			remove();
 			return;
 		}
 
-		if (bomb.getBlock().getDrops() != null) {
+		if(bomb != null && bomb.getBlock().getDrops() != null) {
 			bomb.getBlock().getDrops().clear();
 		}
 	}
@@ -225,17 +238,18 @@ public class C4 extends BendingActiveAbility {
 		location.getWorld().playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 10, 1);
 		location.getWorld().spawnParticle(EXPLODE, location, 1, 0, 0, 0);
 
-		bomb.revertBlock();
+		if(bomb != null) {
+			bomb.revertBlock();
+		}
 
 		explode();
 
-		bender.cooldown(NAME, COOLDOWN);
+		bender.cooldown(NAME, cooldown);
 		remove();
 	}
 
 	@SuppressWarnings("deprecation")
 	private void generateC4(Block block, BlockFace face) {
-		bomb = TempBlock.makeTemporary(block, Material.SKULL, false);
 		byte facing = 0x1;
 		switch (face) {
 			case SOUTH:
@@ -254,12 +268,19 @@ public class C4 extends BendingActiveAbility {
 				facing = 0x1;
 				break;
 		}
-		bomb.getBlock().setTypeIdAndData(Material.SKULL.getId(), facing, true);
-		Skull skull = (Skull) bomb.getBlock().getState();
-		skull.setSkullType(SkullType.PLAYER);
-		skull.setOwner("MHF_TNT");
-		skull.update();
-		bomb.getBlock().getDrops().clear();
+		if(bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
+			hidden = true;
+			player.sendBlockChange(block.getLocation(), Material.TNT, (byte) 0x0);
+		} else {
+			hidden = false;
+			bomb = TempBlock.makeTemporary(this, block, Material.SKULL, facing, false);
+			Skull skull = (Skull) bomb.getBlock().getState();
+			skull.setSkullType(SkullType.PLAYER);
+			skull.setOwner("MHF_TNT");
+			skull.update();
+			bomb.getBlock().getDrops().clear();
+		}
+		
 		location.getWorld().playSound(location, Sound.BLOCK_GRAVEL_STEP, 10, 1);
 	}
 
@@ -267,11 +288,11 @@ public class C4 extends BendingActiveAbility {
 		boolean obsidian = false;
 
 		List<Block> affecteds = new LinkedList<Block>();
-		for (Block block : BlockTools.getBlocksAroundPoint(location, RADIUS)) {
+		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (block.getType() == Material.OBSIDIAN) {
 				obsidian = true;
 			}
-			if (!obsidian || (obsidian && (location.distance(block.getLocation()) < (RADIUS / 2.0)))) {
+			if (!obsidian || (obsidian && (location.distance(block.getLocation()) < (radius / 2.0)))) {
 				if (!ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation()) && !ProtectionManager.isLocationProtectedFromExplosion(player, NAME, block.getLocation())) {
 					affecteds.add(block);
 				}
@@ -314,9 +335,12 @@ public class C4 extends BendingActiveAbility {
 			stick.consume();
 			
 			factor *= PARASTICK_ENHANCE_FACTOR;
+			if(stick.isEnhanced()) {
+				factor *= 1.5;
+			}
 		}
 		
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, RADIUS * factor);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(location, radius * factor);
 		for (LivingEntity entity : entities) {
 			affect(entity);
 		}
@@ -337,7 +361,7 @@ public class C4 extends BendingActiveAbility {
 
 	@Override
 	public void stop() {
-		if (bomb != null) {
+		if(bomb != null) {
 			bomb.revertBlock();
 		}
 		if(arrow != null) {
@@ -377,7 +401,7 @@ public class C4 extends BendingActiveAbility {
 		}
 		
 		double distance = entity.getLocation().distance(location);
-		if (distance > RADIUS) {
+		if (distance > radius) {
 			return;
 		}
 		DamageTools.damageEntity(bender, entity, this, MAX_DAMAGE);

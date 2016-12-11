@@ -2,6 +2,7 @@ package net.bendercraft.spigot.bending.abilities.earth;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -13,9 +14,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 
 public class CompactColumn {
-	private static Map<Integer, CompactColumn> instances = new HashMap<Integer, CompactColumn>();
-
-	private static int ID = Integer.MIN_VALUE;
+	private static Map<UUID, CompactColumn> instances = new HashMap<UUID, CompactColumn>();
 
 	private static int depth = Collapse.DEPTH;
 
@@ -28,7 +27,7 @@ public class CompactColumn {
 	private Block block;
 	private Player player;
 	private int distance;
-	private int id;
+	private UUID id = UUID.randomUUID();
 	private long time;
 	private Map<Block, Block> affectedblocks = new HashMap<Block, Block>();
 	private final RegisteredAbility collapseRegister;
@@ -49,12 +48,7 @@ public class CompactColumn {
 
 		if (this.distance != 0) {
 			if (canInstantiate()) {
-				this.id = ID;
 				instances.put(this.id, this);
-				if (ID >= Integer.MAX_VALUE) {
-					ID = Integer.MIN_VALUE;
-				}
-				ID++;
 				this.time = System.currentTimeMillis() - interval;
 			}
 		}
@@ -78,12 +72,7 @@ public class CompactColumn {
 				for (Block blocki : this.affectedblocks.keySet()) {
 					EarthColumn.resetBlock(blocki);
 				}
-				this.id = ID;
 				instances.put(this.id, this);
-				if (ID >= Integer.MAX_VALUE) {
-					ID = Integer.MIN_VALUE;
-				}
-				ID++;
 				this.time = System.currentTimeMillis() - interval;
 			}
 		}

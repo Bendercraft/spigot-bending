@@ -3,11 +3,13 @@ package net.bendercraft.spigot.bending.abilities.arts;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -36,8 +38,20 @@ public class DirectHit extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	public static long COOLDOWN = 1500;
 
+	private long knockback;
+	private long cooldown;
+
 	public DirectHit(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.knockback = KNOCKBACK;
+		if(bender.hasPerk(BendingPerk.MASTER_DIRECTHIT_PUSH)) {
+			this.knockback += 1;
+		}
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_DIRECTHIT_COOLDOWN)) {
+			this.cooldown -= 500;
+		}
 	}
 
 	@Override
@@ -49,7 +63,7 @@ public class DirectHit extends BendingActiveAbility {
 		}
 		if(this.player.isSneaking()) {
 			if(affect(target)) {
-				this.bender.cooldown(this, COOLDOWN);
+				this.bender.cooldown(this, cooldown);
 			}
 		}
 		return false;
@@ -95,8 +109,8 @@ public class DirectHit extends BendingActiveAbility {
 			return false;
 		}
 		DamageTools.damageEntity(bender, entity, this, DAMAGE, false, DamageTools.DEFAULT_NODAMAGETICKS, 0.0f, true);
-		entity.setVelocity(this.player.getEyeLocation().getDirection().clone().normalize()
-				.multiply((0.5 + this.player.getVelocity().length()) * KNOCKBACK));
+		Vector direction = entity.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+		entity.setVelocity(direction.multiply(knockback));
 		
 		return true;
 	}

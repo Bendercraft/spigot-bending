@@ -15,21 +15,20 @@ import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityCooldown;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireStream;
 import net.bendercraft.spigot.bending.abilities.water.Frozen;
+import net.bendercraft.spigot.bending.abilities.water.HealingWaters;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.PluginTools;
-import net.bendercraft.spigot.bending.utils.TempBlock;
 
 public class BendingManager implements Runnable {
 	private Bending plugin;
 	private long time;
 	private long timestep = 1; // in ms
-	
-	private List<Queue> revertQueue = new LinkedList<Queue>();
 
 	public BendingManager(Bending bending) {
 		this.plugin = bending;
@@ -48,7 +47,6 @@ public class BendingManager implements Runnable {
 			
 			manageFirebending();
 			Frozen.handle();
-			manageGlobalTempBlock();
 			
 			if(Settings.USE_SCOREBOARD) {
 				//One scoreboard per player
@@ -73,6 +71,19 @@ public class BendingManager implements Runnable {
 						if(objective == null) {
 							bender.conflictScoreboard();
 							continue;
+						}
+						
+						if(HealingWaters.hasBuff(player) != null) {
+							if(!team.hasEntry("healing")) {
+								team.addEntry("healing");
+							}
+							Score score = objective.getScore(ChatColor.LIGHT_PURPLE+"Damage boost");
+							score.setScore(1);
+						} else {
+							if(team.hasEntry("healing")) {
+								scoreboard.resetScores(ChatColor.LIGHT_PURPLE+"Damage boost");
+								team.removeEntry("healing");
+							}
 						}
 						
 						if(EntityTools.isChiBlocked(player)) {
@@ -161,6 +172,32 @@ public class BendingManager implements Runnable {
 							}
 						}
 						
+						if(bender.hasPerk(BendingPerk.EARTH_PATIENCE) && bender.earth.hasBonus()) {
+							if(!team.hasEntry("earth-patience")) {
+								team.addEntry("earth-patience");
+							}
+							Score score = objective.getScore(ChatColor.GREEN+"Patience");
+							score.setScore(1);
+						} else {
+							if(team.hasEntry("earth-patience")) {
+								scoreboard.resetScores(ChatColor.GREEN+"Patience");
+								team.removeEntry("earth-patience");
+							}
+						}
+						
+						if(bender.hasPerk(BendingPerk.EARTH_RESISTANCE) && bender.earth.hasPreventDeath()) {
+							if(!team.hasEntry("earth-resistance")) {
+								team.addEntry("earth-resistance");
+							}
+							Score score = objective.getScore(ChatColor.DARK_GREEN+"Resistance");
+							score.setScore(1);
+						} else {
+							if(team.hasEntry("earth-resistance")) {
+								scoreboard.resetScores(ChatColor.DARK_GREEN+"Resistance");
+								team.removeEntry("earth-resistance");
+							}
+						}
+						
 						
 						Map<String, BendingAbilityCooldown> cooldowns = bender.getCooldowns();
 						for(Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
@@ -202,20 +239,6 @@ public class BendingManager implements Runnable {
 
 	}
 
-	private void manageGlobalTempBlock() {
-		long now = System.currentTimeMillis();
-		List<Queue> toRemove = new LinkedList<Queue>();
-		for(Queue queue : revertQueue) {
-			if(queue.started+queue.life < now) {
-				for(TempBlock block : queue.blocks) {
-					block.revertBlock();
-				}
-				toRemove.add(queue);
-			}
-		}
-		revertQueue.removeAll(toRemove);
-	}
-
 	private void manageFirebending() {
 		for(Player player : plugin.getServer().getOnlinePlayers()) {
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
@@ -228,32 +251,7 @@ public class BendingManager implements Runnable {
 		Enflamed.progressAll();
 	}
 
-	public void addGlobalTempBlock(long life, TempBlock... blocks) {
-		List<TempBlock> temp = new LinkedList<TempBlock>();
-		Collections.addAll(temp, blocks);
-		addGlobalTempBlock(life, temp);
-	}
-	
-	public void addGlobalTempBlock(long life, List<TempBlock> blocks) {
-		Queue queue = new Queue();
-		queue.started = System.currentTimeMillis();
-		queue.life = life;
-		queue.blocks = blocks;
-		
-		revertQueue.add(queue);
-	}
-	
-	public boolean isGlobalTemBlock(TempBlock block) {
-		return revertQueue.stream().filter(x -> x.blocks.contains(block)).findAny().isPresent();
-	}
-
 	public long getTimestep() {
 		return timestep;
-	}
-
-	private class Queue {
-		private long started;
-		private long life;
-		private List<TempBlock> blocks;
 	}
 }

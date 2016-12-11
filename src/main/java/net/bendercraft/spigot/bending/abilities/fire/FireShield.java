@@ -18,6 +18,7 @@ import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.air.AirBlast;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
@@ -33,21 +34,46 @@ import net.bendercraft.spigot.bending.utils.Tools;
 public class FireShield extends BendingActiveAbility {
 	public final static String NAME = "FireShield";
 	
-	@ConfigurationParameter("Power")
-	public static int POWER = 1;
-
+	// FireShield
+	@ConfigurationParameter("Restore")
+	public static int RESTORE = 1;
 	@ConfigurationParameter("Tick")
 	public static long TICK = 1000;
+	@ConfigurationParameter("Flame")
+	public static int FLAME = 5;
+	@ConfigurationParameter("Radius-Regen")
+	public static double RADIUS_REGEN = 1;
+	
+	// FireProtection
+	@ConfigurationParameter("Cooldown")
+	public static long COOLDOWN = 1000;
+	@ConfigurationParameter("Duration")
+	private static long DURATION = 1200;
+	@ConfigurationParameter("Power")
+	public static int POWER = 1;
+	@ConfigurationParameter("Radius-Protection")
+	public static double RADIUS_PROTECTION = 4;
+	
+	
 	
 	private static long interval = 100;
-	private static double radius = 2;
+	
 
 	private long time;
 	private long timePower;
 	private FireProtection protect;
 
+	private long tick;
+
 	public FireShield(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.tick = TICK;
+		if(bender.hasPerk(BendingPerk.FIRE_FIREPROTECTION_BREATH)) {
+			this.tick *= 0.85;
+		}
+		
+		
 	}
 
 	@Override
@@ -117,7 +143,7 @@ public class FireShield extends BendingActiveAbility {
 				for (double phi = 0; phi < 360; phi += 20) {
 					double rphi = Math.toRadians(phi);
 					double rtheta = Math.toRadians(theta);
-					Block block = location.clone().add(radius * Math.cos(rphi) * Math.sin(rtheta), radius * Math.cos(rtheta), radius * Math.sin(rphi) * Math.sin(rtheta)).getBlock();
+					Block block = location.clone().add(RADIUS_REGEN * Math.cos(rphi) * Math.sin(rtheta), RADIUS_REGEN * Math.cos(rtheta), RADIUS_REGEN * Math.sin(rphi) * Math.sin(rtheta)).getBlock();
 					if (!blocks.contains(block) && !BlockTools.isSolid(block) && !block.isLiquid()) {
 						blocks.add(block);
 					}
@@ -131,9 +157,9 @@ public class FireShield extends BendingActiveAbility {
 			}
 		}
 		
-		if(now > timePower+TICK) {
+		if(now > timePower+tick) {
 			timePower = now;
-			bender.fire.grant(POWER);
+			bender.fire.grant(RESTORE);
 		}
 	}
 
@@ -143,36 +169,47 @@ public class FireShield extends BendingActiveAbility {
 	}
 	
 	public static class FireProtection {
-
-		@ConfigurationParameter("Cooldown")
-		public static long COOLDOWN = 1000;
-
-		@ConfigurationParameter("Duration")
-		private static long DURATION = 1200;
-
 		private static long interval = 100;
-		private static double radius = 4;
 		private static double discradius = 1.5;
 
 		private long time;
 		private long startedTime;
 
 		private Player player;
-
 		private FireShield parent;
+		
+		private double radius;
+		private long duration;
+		private int flame;
 
 		public FireProtection(FireShield parent, Player player) {
 			this.parent = parent;
 			this.player = player;
 			this.time = System.currentTimeMillis();
 			this.startedTime = this.time;
+			this.duration = DURATION;
+			if(parent.getBender().hasPerk(BendingPerk.FIRE_FIREPROTECTION_DURATION_1)) {
+				this.duration += 500;
+			}
+			if(parent.getBender().hasPerk(BendingPerk.FIRE_FIREPROTECTION_DURATION_2)) {
+				this.duration += 500;
+			}
+			this.flame= FLAME;
+			if(parent.getBender().hasPerk(BendingPerk.FIRE_FIREPROTECTION_FLAME)) {
+				this.flame += 1;
+			}
+			
+			this.radius = RADIUS_PROTECTION;
+			if(parent.getBender().hasPerk(BendingPerk.FIRE_FIREPROTECTION_AREA)) {
+				this.radius += 0.5;
+			}
 		}
 
 		public boolean progress() {
 			if (System.currentTimeMillis() > (time + interval)) {
 				time = System.currentTimeMillis();
 				
-				if(startedTime + DURATION < time) {
+				if(startedTime + duration < time) {
 					return false;
 				}
 				
@@ -231,7 +268,7 @@ public class FireShield extends BendingActiveAbility {
 			if (!(entity instanceof LivingEntity)) {
 				entity.remove();
 			} else {
-				Enflamed.enflame(player, entity, 5, parent);
+				Enflamed.enflame(player, entity, flame, parent);
 			}
 			
 		}

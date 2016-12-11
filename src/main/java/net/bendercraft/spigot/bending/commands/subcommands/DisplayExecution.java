@@ -14,7 +14,6 @@ import net.bendercraft.spigot.bending.Messages;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPath;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.commands.BendingCommand;
@@ -49,14 +48,13 @@ public class DisplayExecution extends BendingCommand {
 		sender.sendMessage("Player: "+ChatColor.GOLD+player.getName());
 		sender.sendMessage("Elements:");
 		for(BendingElement element : bender.getBendingTypes()) {
-			BendingPath path = bender.getPath().stream().filter(p -> p.getElement() == element).findAny().orElse(null);
 			StringBuilder sb = new StringBuilder();
 			for(BendingAffinity affinity : bender.getAffinities()) {
 				if(affinity.getElement() == element) {
 					sb.append(affinity.name()+", ");
 				}
 			}
-			sender.sendMessage(" - "+PluginTools.getColor(Settings.getColor(element))+element.name()+" ("+(path == null ? "None":path.name())+") with affinities ["+(sb.length()==0 ? "NONE" : sb.substring(0, sb.lastIndexOf(", ")))+"]");
+			sender.sendMessage(" - "+PluginTools.getColor(Settings.getColor(element))+element.name()+" with affinities ["+(sb.length()==0 ? "NONE" : sb.substring(0, sb.lastIndexOf(", ")))+"]");
 		}
 		Map<Integer, String> abilities = bender.getAbilities();
 		sender.sendMessage("Active deck : " + bender.getCurrentDeck());

@@ -48,6 +48,7 @@ public class AvailableExecution extends BendingCommand {
 		}
 
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		bender.refreshPerks();
 
 		Map<BendingElement, List<RegisteredAbility>> elements = new HashMap<BendingElement, List<RegisteredAbility>>();
 		Map<BendingAffinity, List<RegisteredAbility>> affinities = new HashMap<BendingAffinity, List<RegisteredAbility>>();

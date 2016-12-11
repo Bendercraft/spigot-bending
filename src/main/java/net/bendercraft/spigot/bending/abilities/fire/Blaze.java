@@ -10,6 +10,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -19,13 +20,13 @@ public class Blaze extends BendingActiveAbility {
 	public final static String NAME = "Blaze";
 	
 	@ConfigurationParameter("Arc")
-	private static int DEFAULT_ARC = 20;
+	private static int DEFAULT_ARC = 10;
 
 	@ConfigurationParameter("Range-Arc")
-	private static int RANGE_ARC = 10;
+	private static int RANGE_ARC = 25;
 
 	@ConfigurationParameter("Range-Ring")
-	private static int RANGE_RING = 5;
+	private static int RANGE_RING = 13;
 	
 	@ConfigurationParameter("Power")
 	public static int POWER = 4;
@@ -36,9 +37,22 @@ public class Blaze extends BendingActiveAbility {
 	private static int stepsize = 2;
 
 	private List<FireStream> firestreams = new LinkedList<FireStream>();
+	
+	private int power;
+	private long dissipate;
 
 	public Blaze(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.power = POWER;
+		if(bender.hasPerk(BendingPerk.FIRE_BLAZE_ENERGY)) {
+			this.power -= 1;
+		}
+		
+		this.dissipate = DISSIPATE;
+		if(bender.hasPerk(BendingPerk.FIRE_BLAZE_PERMANENT)) {
+			this.dissipate += 1000;
+		}
 	}
 	
 	@Override
@@ -47,7 +61,7 @@ public class Blaze extends BendingActiveAbility {
 			return false;
 		}
 		
-		if(!bender.fire.can(NAME, POWER)) {
+		if(!bender.fire.can(NAME, power)) {
 			return false;
 		}
 		
@@ -83,9 +97,9 @@ public class Blaze extends BendingActiveAbility {
 				range = AvatarState.getValue(range);
 			}
 
-			firestreams.add(new FireStream(location, direction, this.player, range, DISSIPATE));
+			firestreams.add(new FireStream(location, direction, this.player, range, dissipate));
 		}
-		bender.fire.consume(NAME, POWER);
+		bender.fire.consume(NAME, power);
 		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}
@@ -116,10 +130,10 @@ public class Blaze extends BendingActiveAbility {
 				range = AvatarState.getValue(range);
 			}
 
-			firestreams.add(new FireStream(location, direction, this.player, range, DISSIPATE));
+			firestreams.add(new FireStream(location, direction, this.player, range, dissipate));
 		}
 
-		bender.fire.consume(NAME, POWER);
+		bender.fire.consume(NAME, power);
 		setState(BendingAbilityState.PROGRESSING);
 		return false;
 	}

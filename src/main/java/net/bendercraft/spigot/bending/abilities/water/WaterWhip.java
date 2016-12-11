@@ -18,6 +18,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance.Damage;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -69,10 +70,26 @@ public class WaterWhip extends BendingActiveAbility {
 	private long interval;
 	private boolean freeze = false;
 
+	private int length;
+	private int cooldown;
+
 	public WaterWhip(RegisteredAbility register, Player player) {
 		super(register, player);
 		
-		this.interval = (long) (1000. / SPEED);
+		this.length = LENGTH;
+		if(bender.hasPerk(BendingPerk.WATER_WATERWHIP_RANGE)) {
+			this.length += 5;
+		}
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.WATER_WATERWHIP_COOLDOWN)) {
+			this.cooldown -= 2000;
+		}
+		double speed = SPEED;
+		if(bender.hasPerk(BendingPerk.WATER_WATERWHIP_SPEED)) {
+			speed *= 1.1;
+		}
+		
+		this.interval = (long) (1000. / speed);
 	}
 
 	@Override
@@ -90,7 +107,7 @@ public class WaterWhip extends BendingActiveAbility {
 		} else if(isState(BendingAbilityState.PROGRESSING)) {
 			blocks.forEach(b -> b.revertBlock());
 			for(TempBlock block : blocks) {
-				Bending.getInstance().getManager().addGlobalTempBlock(ICE, TempBlock.makeTemporary(block.getBlock(), Material.ICE, false));
+				TempBlock.makeGlobal(ICE, block.getBlock(), Material.ICE, false);
 			}
 			blocks.clear();
 			for(int i=1 ; i < points.size() ; i++) {
@@ -102,8 +119,7 @@ public class WaterWhip extends BendingActiveAbility {
 					if(!BlockTools.isWaterBased(loc.getBlock()) && loc.getBlock().getType() != Material.AIR) {
 						break;
 					}
-					TempBlock temp = TempBlock.makeTemporary(loc.getBlock(), Material.ICE, false);
-					Bending.getInstance().getManager().addGlobalTempBlock(ICE, temp);
+					TempBlock.makeGlobal(ICE, loc.getBlock(), Material.ICE, false);
 				}
 			}
 			freeze = true;
@@ -161,7 +177,7 @@ public class WaterWhip extends BendingActiveAbility {
 							broken = true;
 						}
 						if(!broken) {
-							blocks.add(TempBlock.makeTemporary(block, Material.WATER, false));
+							blocks.add(TempBlock.makeTemporary(this, block, Material.WATER, false));
 							if(!old.contains(block)) {
 								for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(block.getLocation(), 1)) {
 									affect(entity, points.get(i-1).next.getDirection().clone());
@@ -183,7 +199,7 @@ public class WaterWhip extends BendingActiveAbility {
 			}
 			previous = direction.clone();
 			
-			if(points.size() < LENGTH) {
+			if(points.size() < length) {
 				Dot dot = new Dot();
 				dot.point = previous.clone().add(previous.getDirection().clone().normalize().multiply(points.size()));
 				dot.next = dot.point.clone();
@@ -198,7 +214,7 @@ public class WaterWhip extends BendingActiveAbility {
 			block.revertBlock();
 		}
 		blocks.clear();
-		bender.cooldown(this, COOLDOWN);
+		bender.cooldown(this, cooldown);
 		if(freeze) {
 			bender.water.ice();
 		} else {

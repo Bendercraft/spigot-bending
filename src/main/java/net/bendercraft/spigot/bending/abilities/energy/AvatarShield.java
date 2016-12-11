@@ -19,7 +19,6 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
-import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.fire.FireBurst;
 import net.bendercraft.spigot.bending.abilities.fire.FireBurst.BurstBlast;
@@ -137,11 +136,11 @@ public class AvatarShield extends BendingActiveAbility {
 		if (isState(BendingAbilityState.START)) {
 			setState(BendingAbilityState.PROGRESSING);
 			//fire = new Ring(bender, new Vector(-1,1,1), Material.MAGMA);
-			fire = new Ring(bender, this, new Vector(-1,1,1), Effect.MOBSPAWNER_FLAMES);
+			fire = new Ring(this, new Vector(-1,1,1), Effect.MOBSPAWNER_FLAMES);
 			//air = new Ring(bender, new Vector(1,-1,1), Material.GLASS);
-			air = new Ring(bender, this, new Vector(1,-1,1), Effect.SMOKE);
-			water = new Ring(bender, this, new Vector(1,0,-1), Material.WATER);
-			earth = new Ring(bender, this, new Vector(1,1,-1), Material.STONE);
+			air = new Ring(this, new Vector(1,-1,1), Effect.SMOKE);
+			water = new Ring(this, new Vector(1,0,-1), Material.WATER);
+			earth = new Ring(this, new Vector(1,1,-1), Material.STONE);
 			FlyingPlayer.addFlyingPlayer(player, this, MAX_DURATION, true);
 		} else if (isState(BendingAbilityState.PROGRESSING)) {
 			if(player.isSneaking()) {
@@ -262,25 +261,23 @@ public class AvatarShield extends BendingActiveAbility {
 		private double startangle = 0;
 		private List<TempBlock> blocks = new ArrayList<TempBlock>();
 		private double angle = 180;
-		protected BendingPlayer bender;
 		private Vector axis;
 		private Material material;
 		private Effect effect;
 		private double radius = 4;
-		private AvatarShield ability;
+		private AvatarShield parent;
 		
 		
-		public Ring(BendingPlayer bender, AvatarShield ability, Vector axis, Material material) {
-			this(bender, ability, axis, material, null);
+		public Ring(AvatarShield parent, Vector axis, Material material) {
+			this(parent, axis, material, null);
 		}
 		
-		public Ring(BendingPlayer bender, AvatarShield ability, Vector axis, Effect effect) {
-			this(bender, ability, axis, null, effect);
+		public Ring(AvatarShield parent, Vector axis, Effect effect) {
+			this(parent, axis, null, effect);
 		}
 		
-		private Ring(BendingPlayer bender, AvatarShield ability, Vector axis, Material material, Effect effect) {
-			this.bender = bender;
-			this.ability = ability;
+		private Ring(AvatarShield parent, Vector axis, Material material, Effect effect) {
+			this.parent = parent;
 			this.axis = axis;
 			this.material = material;
 			this.effect = effect;
@@ -304,7 +301,7 @@ public class AvatarShield extends BendingActiveAbility {
 			clearRing();
 			
 			startangle += 30;
-			Location loc = bender.getPlayer().getLocation();
+			Location loc = parent.getBender().getPlayer().getLocation();
 			
 			List<Block> doneBlocks = new ArrayList<Block>();
 			List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(loc, radius + 2);
@@ -319,9 +316,9 @@ public class AvatarShield extends BendingActiveAbility {
 				Location blockloc = loc.clone().add(dx, dy, dz);
 				Block block = blockloc.getBlock();
 				if (!doneBlocks.contains(block)) {
-					if (BlockTools.isTransparentToEarthbending(bender.getPlayer(), block) && !block.isLiquid()) {
+					if (BlockTools.isTransparentToEarthbending(parent.getBender().getPlayer(), block) && !block.isLiquid()) {
 						if(material != null) {
-							blocks.add(TempBlock.makeTemporary(block, material, false));
+							blocks.add(TempBlock.makeTemporary(parent, block, material, false));
 							doneBlocks.add(block);
 						} else {
 							block.getLocation().getWorld().playEffect(block.getLocation(), effect, 0, 25);
@@ -336,7 +333,7 @@ public class AvatarShield extends BendingActiveAbility {
 		}
 		
 		private void affect(Entity entity, Location blockloc) {
-			BendingHitEvent event = new BendingHitEvent(ability, entity);
+			BendingHitEvent event = new BendingHitEvent(parent, entity);
 			Bending.callEvent(event);
 			if(event.isCancelled()) {
 				return;
@@ -354,8 +351,8 @@ public class AvatarShield extends BendingActiveAbility {
 			double angle = 50;
 			angle = Math.toRadians(angle);
 
-			x = entity.getLocation().getX() - bender.getPlayer().getLocation().getX();
-			z = entity.getLocation().getZ() - bender.getPlayer().getLocation().getZ();
+			x = entity.getLocation().getX() - parent.getBender().getPlayer().getLocation().getX();
+			z = entity.getLocation().getZ() - parent.getBender().getPlayer().getLocation().getZ();
 
 			mag = Math.sqrt((x * x) + (z * z));
 
@@ -370,7 +367,7 @@ public class AvatarShield extends BendingActiveAbility {
 			entity.setVelocity(velocity);
 			entity.setFallDistance(0);
 			
-			DamageTools.damageEntity(bender, entity, ability, DEFLECT_DAMAGE);
+			DamageTools.damageEntity(parent.getBender(), entity, parent, DEFLECT_DAMAGE);
 		}
 	}
 }

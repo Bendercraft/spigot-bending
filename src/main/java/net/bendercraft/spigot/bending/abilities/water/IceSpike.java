@@ -21,6 +21,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthBlast;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlast;
@@ -61,10 +62,44 @@ public class IceSpike extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	private static int COOLDOWN = 5000;
 	
+	@ConfigurationParameter("Iced")
+	private static long ICED = 5000;
+	
 	private List<IceSpikeColumn> columns = new LinkedList<IceSpikeColumn>();
+
+	private double push;
+	private int cooldown;
+	private int damage;
+	private double range;
+	private double speed;
 	
 	public IceSpike(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.push = PUSHFACTOR;
+		if(bender.hasPerk(BendingPerk.WATER_ICESPIKE_PUSHBACK)) {
+			this.push *= 1.5;
+		}
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.WATER_ICESPIKE_COOLDOWN)) {
+			this.cooldown -= 1500;
+		}
+		
+		this.damage = DAMAGE;
+		if(bender.hasPerk(BendingPerk.WATER_ICESPIKE_DAMAGE)) {
+			this.damage += 1;
+		}
+		
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.WATER_ICESPIKE_RANGE)) {
+			this.range *= 1.1;
+		}
+		
+		this.speed = SPEED;
+		if(bender.hasPerk(BendingPerk.WATER_ICESPIKE_SPEED)) {
+			this.speed *= 1.1;
+		}
 	}
 
 	@Override
@@ -73,7 +108,7 @@ public class IceSpike extends BendingActiveAbility {
 			return false;
 		}
 		Location target = EntityTools.getTargetedLocation(player, RANGE_SELECT, BlockTools.getTransparentEarthBending());
-		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(target, RANGE);
+		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(target, range);
 		entities.removeIf(e -> e == player);
 		List<Block> blocks = BlockTools.getBlocksAroundPoint(target, RADIUS);
 		blocks.removeIf(b -> b.getType() != Material.ICE || (TempBlock.isTempBlock(b) && !TempBlock.get(b).isBendAllowed()));
@@ -86,7 +121,7 @@ public class IceSpike extends BendingActiveAbility {
 				double[] randoms = new Random().doubles(3, -1, 1).toArray();
 				direction = new Vector(randoms[0], randoms[1], randoms[2]);
 			}
-			IceSpikeColumn column = new IceSpikeColumn(this, bender.water.damage(Damage.ICE, DAMAGE), RANGE, SPEED, AFFECTING_RADIUS, PUSHFACTOR, block.getLocation(), direction);
+			IceSpikeColumn column = new IceSpikeColumn(this, bender.water.damage(Damage.ICE, damage), range, speed, AFFECTING_RADIUS, push, block.getLocation(), direction);
 			columns.add(column);
 			if(TempBlock.isTempBlock(block)) {
 				TempBlock.revertBlock(block);
@@ -99,7 +134,7 @@ public class IceSpike extends BendingActiveAbility {
 		}
 		target.getWorld().playSound(target, Sound.BLOCK_GLASS_BREAK, 1.0f, 0.0f);
 		setState(BendingAbilityState.PROGRESSING);
-		bender.cooldown(this, COOLDOWN);
+		bender.cooldown(this, cooldown);
 		bender.water.ice();
 		return false;
 	}
@@ -135,6 +170,8 @@ public class IceSpike extends BendingActiveAbility {
 		private Location source;
 		private Location current;
 		private TempBlock previous;
+		
+		private List<TempBlock> column = new LinkedList<TempBlock>();
 		
 		private long time;
 		private double damage;
@@ -189,10 +226,17 @@ public class IceSpike extends BendingActiveAbility {
 				}
 			}
 			
-			if(previous != null) {
-				previous.revertBlock();
+			
+			if(parent.getBender().hasPerk(BendingPerk.WATER_PRESERVE)) {
+				if(previous != null) {
+					previous.revertBlock();
+				}
+				previous = TempBlock.makeTemporary(parent, current.getBlock(), Material.ICE, false);
+				column.add(previous);
+			} else {
+				TempBlock.makeGlobal(ICED, current.getBlock(), Material.ICE, false);
 			}
-			previous = TempBlock.makeTemporary(current.getBlock(), Material.ICE, false);
+			
 			
 			return true;
 		}
@@ -201,6 +245,7 @@ public class IceSpike extends BendingActiveAbility {
 			if(previous != null) {
 				previous.revertBlock();
 			}
+			column.forEach(t -> t.revertBlock());
 		}
 		
 		private boolean affect(Entity entity) {

@@ -57,8 +57,8 @@ public class Bloodbending extends BendingActiveAbility {
 
 	public Bloodbending(RegisteredAbility register, Player player) {
 		super(register, player);
-
-		range = RANGE;
+		
+		this.range = RANGE;
 	}
 
 	@Override

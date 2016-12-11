@@ -12,6 +12,7 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
@@ -46,9 +47,15 @@ public class Catapult extends BendingActiveAbility {
 	private long time;
 	private long starttime;
 	private int ticks = 0;
+	private long cooldown;
 
 	public Catapult(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.EARTH_CATAPULT_COOLDOWN)) {
+			this.cooldown -= 2000;
+		}
 	}
 
 	@Override
@@ -82,7 +89,7 @@ public class Catapult extends BendingActiveAbility {
 			starttime = System.currentTimeMillis();
 			moving = true;
 			
-			bender.cooldown(NAME, COOLDOWN);
+			bender.cooldown(NAME, cooldown);
 		}
 
 		return false;

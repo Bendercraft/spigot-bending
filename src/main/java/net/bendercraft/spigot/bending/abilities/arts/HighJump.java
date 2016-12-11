@@ -7,6 +7,7 @@ import org.bukkit.util.Vector;
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -22,14 +23,27 @@ public class HighJump extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown")
 	private static long COOLDOWN = 3500;
 
+	private int height;
+
+	private long cooldown;
+
 	public HighJump(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.height = JUMP_HEIGHT;
+		if(bender.hasPerk(BendingPerk.MASTER_HIGHJUMP_HEIGHT)) {
+			this.height += 1;
+		}
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_HIGHJUMP_COOLDOWN)) {
+			this.cooldown -= 500;
+		}
 	}
 
 	@Override
 	public boolean swing() {
 		if (makeJump()) {
-			this.bender.cooldown(NAME, COOLDOWN);
+			this.bender.cooldown(NAME, cooldown);
 		}
 		return true;
 	}
@@ -38,7 +52,6 @@ public class HighJump extends BendingActiveAbility {
 		if (!BlockTools.isSolid(this.player.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
 			return false;
 		}
-		int height = JUMP_HEIGHT;
 		Vector vec = Tools.getVectorForPoints(this.player.getLocation(), this.player.getLocation().add(this.player.getVelocity()).add(0, height, 0));
 		this.player.setVelocity(vec);
 		return true;

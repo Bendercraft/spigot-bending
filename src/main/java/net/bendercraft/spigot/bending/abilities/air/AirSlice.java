@@ -17,10 +17,12 @@ import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
+import net.bendercraft.spigot.bending.utils.DamageTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
@@ -30,7 +32,7 @@ public class AirSlice extends BendingActiveAbility {
 	public final static String NAME = "AirSlice";
 
 	@ConfigurationParameter("Select-Range")
-	private static double SELECT_RANGE = 6;
+	private static double SELECT_RANGE = 3;
 
 	@ConfigurationParameter("Speed")
 	public static double SPEED = 25.0;
@@ -58,9 +60,35 @@ public class AirSlice extends BendingActiveAbility {
 
 	private Location origin = null;
 	private List<Location> onGoing = new LinkedList<Location>();
+	
+	private double distance;
+	private double range;
+	private long cooldown;
+	private double speed;
+	
 
 	public AirSlice(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.distance = DISTANCE;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSLICE_DISTANCE)) {
+			this.distance += 2;
+		}
+		this.range = RANGE;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSLICE_RANGE)) {
+			this.range += 2;
+		}
+		if(bender.hasPerk(BendingPerk.AIR_CUT)) {
+			this.range *= 0.7;
+		}
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSLICE_COOLDOWN)) {
+			this.cooldown -= 500;
+		}
+		this.speed = SPEED;
+		if(bender.hasPerk(BendingPerk.AIR_AIRSLICE_SPEED)) {
+			this.speed *= 1.1;
+		}
 	}
 	
 	@Override
@@ -95,7 +123,7 @@ public class AirSlice extends BendingActiveAbility {
 			}
 
 			setState(BendingAbilityState.PROGRESSING);
-			bender.cooldown(this, COOLDOWN);
+			bender.cooldown(this, cooldown);
 		}
 
 		return false;
@@ -111,7 +139,7 @@ public class AirSlice extends BendingActiveAbility {
 			setState(BendingAbilityState.PREPARING);
 		} else if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
 			this.second = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
-			if(this.second != null && this.second.distance(this.first) > DISTANCE) {
+			if(this.second != null && this.second.distance(this.first) > distance) {
 				this.second = null;
 			}
 			if (this.second == null || this.second.getBlock().isLiquid() || BlockTools.isSolid(this.second.getBlock()) || ProtectionManager.isLocationProtectedFromBending(this.player, register, this.second)) {
@@ -144,7 +172,7 @@ public class AirSlice extends BendingActiveAbility {
 				return;
 			}
 
-			double speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
+			double speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.);
 
 			List<Location> toRemove = new LinkedList<Location>();
 			for(Location location : this.onGoing) {
@@ -170,10 +198,10 @@ public class AirSlice extends BendingActiveAbility {
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(location, AFFECT_RADIUS)) {
 					affect(location, entity);
 				}
-				location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) RANGE+4);
+				location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) range+4);
 				location.add(this.direction.clone().multiply(speedfactor));
 
-				if (location.distance(this.origin) > RANGE) {
+				if (location.distance(this.origin) > range) {
 					toRemove.add(location);
 					continue;
 				}
@@ -217,7 +245,7 @@ public class AirSlice extends BendingActiveAbility {
 			}
 		}
 
-		factor *= 1 - (location.distance(this.origin) / (2 * RANGE));
+		factor *= 1 - (location.distance(this.origin) / (2 * range));
 
 		if (isUser && BlockTools.isSolid(this.player.getLocation().add(0, -.5, 0).getBlock())) {
 			factor *= .5;
@@ -237,6 +265,9 @@ public class AirSlice extends BendingActiveAbility {
 		}
 		entity.setVelocity(velocity);
 		entity.setFallDistance(0);
+		if(bender.hasPerk(BendingPerk.AIR_CUT) && entity != player) {
+			DamageTools.damageEntity(bender, entity, this, 2);
+		}
 	}
 
 	@Override

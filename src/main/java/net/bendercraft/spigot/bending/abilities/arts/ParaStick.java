@@ -16,6 +16,7 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
 import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
+import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.listeners.BendingDenyItem;
@@ -38,9 +39,32 @@ public class ParaStick extends BendingActiveAbility {
 	private static long COOLDOWN = 10000;
 
 	private ItemStack stick;
+	private long cooldown;
+	
+	private boolean enhanced = false;
 
 	public ParaStick(RegisteredAbility register, Player player) {
 		super(register, player);
+		
+		this.cooldown = COOLDOWN;
+		if(bender.hasPerk(BendingPerk.MASTER_AIMCHARGETIME_PARASTICKCD_CONCUSSIONCD)) {
+			this.cooldown -= 500;
+		}
+		if(bender.hasPerk(BendingPerk.MASTER_BLANKPOINTDAMAGE_PARASTICKCD_NEBULARRANGE)) {
+			this.cooldown -= 500;
+		}
+	}
+	
+	@Override
+	public boolean swing() {
+		if(isState(BendingAbilityState.PROGRESSING)) {
+			if(bender.hasPerk(BendingPerk.MASTER_DISENGAGE_PARAPARASTICK_CONSTITUTION)
+					&& !enhanced) {
+				enhanced = true;
+				cooldown *= 2;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -77,7 +101,11 @@ public class ParaStick extends BendingActiveAbility {
 	
 	public void consume() {
 		remove();
-		bender.cooldown(this, COOLDOWN);
+		bender.cooldown(this, cooldown);
+	}
+	
+	public boolean isEnhanced() {
+		return enhanced;
 	}
 
 	@Override
