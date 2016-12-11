@@ -32,7 +32,7 @@ public class TempBlock {
 			instances.put(block, temp);
 		}
 		temp.bendAllowed = bendAllowed;
-		temp.block.setType(newType);
+		temp.block.setType(newType, false);
 		temp.block.setData(newData);
 		if (temp.state.getType() == Material.FIRE) {
 			temp.state.setType(Material.AIR);
