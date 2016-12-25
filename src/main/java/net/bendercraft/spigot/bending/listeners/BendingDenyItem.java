@@ -70,6 +70,7 @@ public class BendingDenyItem implements Listener {
 		deniedEnchantments.put(Enchantment.LURE, 3);
 		deniedEnchantments.put(Enchantment.MENDING, 1);
 		deniedEnchantments.put(Enchantment.FROST_WALKER, 0);
+		deniedEnchantments.put(Enchantment.SWEEPING_EDGE, 0);
 		
 		deniedPotions.add(PotionEffectType.INCREASE_DAMAGE);
 		deniedPotions.add(PotionEffectType.FIRE_RESISTANCE);
