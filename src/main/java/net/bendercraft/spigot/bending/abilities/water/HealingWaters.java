@@ -142,6 +142,7 @@ public class HealingWaters extends BendingActiveAbility {
 			return;
 		}
 		final double current = le.getHealth();
+		@SuppressWarnings("deprecation")
 		final double max = le.getMaxHealth();
 		if (current < max) {
 			applyHealingToEntity(le);
