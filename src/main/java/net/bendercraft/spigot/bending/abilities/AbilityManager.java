@@ -170,6 +170,7 @@ public class AbilityManager {
 			runnings.put(name, map);
 		}
 		map.put(instance.getIdentifier(), instance);
+		Bending.getInstance().getLogger().info("Player "+instance.getPlayer().getName()+" started "+instance.getName()+" at "+instance.getPlayer().getLocation().toString());
 		Bending.callEvent(new BendingAbilityEvent(instance));
 	}
 
