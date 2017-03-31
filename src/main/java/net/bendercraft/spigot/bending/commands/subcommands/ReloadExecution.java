@@ -9,6 +9,7 @@ import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.Messages;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.commands.BendingCommand;
+import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 
 public class ReloadExecution extends BendingCommand {
@@ -23,6 +24,7 @@ public class ReloadExecution extends BendingCommand {
 	public boolean execute(CommandSender sender, List<String> args) {
 		PluginTools.stopAllBending();
 		AbilityManager.getManager().stopAllAbilities();
+		Settings.applyConfiguration(Bending.getInstance().getDataFolder());
 		AbilityManager.getManager().applyConfiguration(Bending.getInstance().getDataFolder());
 		sender.sendMessage(ChatColor.GREEN + Messages.RELOADED);
 		return true;
