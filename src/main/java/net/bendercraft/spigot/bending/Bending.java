@@ -15,7 +15,7 @@ import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.commands.BendingCommandExecutor;
 import net.bendercraft.spigot.bending.controller.BendingManager;
 import net.bendercraft.spigot.bending.controller.Settings;
-import net.bendercraft.spigot.bending.db.FlatFileDB;
+import net.bendercraft.spigot.bending.db.MySQLDB;
 import net.bendercraft.spigot.bending.integrations.citizens.BendableTrait;
 import net.bendercraft.spigot.bending.integrations.protocollib.BendingPacketAdapter;
 import net.bendercraft.spigot.bending.learning.BendingLearning;
@@ -32,7 +32,6 @@ public class Bending extends JavaPlugin {
 	private BendingEntityListener listener;
 	private BendingPlayerListener bpListener;
 	private BendingBlockListener blListener;
-	private FlatFileDB bendingDatabase;
 
 	private BendingLearning learning;
 
@@ -67,9 +66,6 @@ public class Bending extends JavaPlugin {
 		// Learning
 		this.learning = new BendingLearning();
 		this.learning.onEnable();
-
-		bendingDatabase = new FlatFileDB();
-		bendingDatabase.init(this);
 		
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(this.listener, this);
@@ -85,6 +81,7 @@ public class Bending extends JavaPlugin {
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new TempBlock.QueueRevert(), 20*1, 20*5);
+		getServer().getScheduler().runTaskTimerAsynchronously(this, new MySQLDB(), 20*30, 20*30);
 
 		ProtectionManager.init(this);
 		getLogger().info("Bending v" + getDescription().getVersion() + " has been loaded.");
@@ -105,16 +102,14 @@ public class Bending extends JavaPlugin {
 		PluginTools.stopAllBending();
 		AbilityManager.getManager().stopAllAbilities();
 		getServer().getScheduler().cancelTasks(this);
-
-		learning.onDisable();
+		
+		// Force save
+		MySQLDB db = new MySQLDB();
+		db.run();
 	}
 
 	public BendingManager getManager() {
 		return manager;
-	}
-
-	public FlatFileDB getBendingDatabase() {
-		return bendingDatabase;
 	}
 
 	public BendingLearning getLearning() {

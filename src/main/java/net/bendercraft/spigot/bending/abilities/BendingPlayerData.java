@@ -10,10 +10,8 @@ public class BendingPlayerData {
 	private List<BendingAffinity> affinities;
 	private Map<String, Map<Integer, String>> decks;
 	private String currentDeck;
-	private long lastTime;
-	
-	private int fire;
-	private int water;
+	private List<BendingPerk> perks;
+	private List<String> abilities;
 
 	public UUID getPlayer() {
 		return this.player;
@@ -39,14 +37,6 @@ public class BendingPlayerData {
 		this.decks = slotAbilities;
 	}
 
-	public long getLastTime() {
-		return this.lastTime;
-	}
-
-	public void setLastTime(long lastTime) {
-		this.lastTime = lastTime;
-	}
-
 	public List<BendingAffinity> getAffinities() {
 		return this.affinities;
 	}
@@ -63,19 +53,19 @@ public class BendingPlayerData {
 		this.currentDeck = currentDeck;
 	}
 
-	public int getFire() {
-		return fire;
+	public List<BendingPerk> getPerks() {
+		return perks;
 	}
 
-	public void setFire(int fire) {
-		this.fire = fire;
+	public void setPerks(List<BendingPerk> perks) {
+		this.perks = perks;
 	}
 
-	public int getWater() {
-		return water;
+	public List<String> getAbilities() {
+		return abilities;
 	}
 
-	public void setWater(int water) {
-		this.water = water;
+	public void setAbilities(List<String> abilities) {
+		this.abilities = abilities;
 	}
 }

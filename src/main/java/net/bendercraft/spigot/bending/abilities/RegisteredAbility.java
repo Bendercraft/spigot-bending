@@ -44,10 +44,6 @@ public class RegisteredAbility {
 		return this.affinity;
 	}
 
-	public String getPermission() {
-		return "bending." + this.element.name().toLowerCase() + "." + this.name.toLowerCase();
-	}
-
 	public String getConfigPath() {
 		return this.element.name().toLowerCase() + "." + this.name.toLowerCase().replaceAll(" ", "_");
 	}

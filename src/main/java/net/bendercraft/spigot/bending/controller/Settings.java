@@ -12,6 +12,21 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 
 public class Settings {
 	
+	@ConfigurationParameter("database.host")
+	public static String DATABASE_HOST = "localhost";
+	
+	@ConfigurationParameter("database.port")
+	public static int DATABASE_PORT = 3306;
+	
+	@ConfigurationParameter("database.db")
+	public static String DATABASE_DB = "changeme_db";
+	
+	@ConfigurationParameter("database.user")
+	public static String DATABASE_USER = "changeme_user";
+	
+	@ConfigurationParameter("database.password")
+	public static String DATABASE_PASSWORD = "changeme_password";
+	
 	@ConfigurationParameter("abilities.global-cooldown")
 	public static long GLOBAL_COOLDOWN = 250;
 	

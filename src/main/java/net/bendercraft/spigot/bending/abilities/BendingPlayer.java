@@ -1,14 +1,12 @@
 package net.bendercraft.spigot.bending.abilities;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -25,26 +23,31 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthCore;
 import net.bendercraft.spigot.bending.abilities.fire.FirePower;
 import net.bendercraft.spigot.bending.abilities.water.WaterBalance;
 import net.bendercraft.spigot.bending.controller.Settings;
+import net.bendercraft.spigot.bending.db.MySQLDB;
+import net.bendercraft.spigot.bending.utils.PluginTools;
 
 public class BendingPlayer {
 	
 	public static final String OBJECTIVE_STATUS = "status";
+	
+	private static final Map<UUID, BendingPlayer> cache = new HashMap<UUID, BendingPlayer>();
 
 	private UUID player;
 
-	private String currentDeck = "default";
+	private String currentDeck;
 	private Map<String, Map<Integer, String>> decks = new HashMap<String, Map<Integer, String>>();
 
 	private List<BendingElement> bendings = new LinkedList<BendingElement>();
 	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
 	private Map<String, BendingPerk> perks = new HashMap<String, BendingPerk>();
+	private List<String> abilities = new LinkedList<String>();
 
 	private Map<String, BendingAbilityCooldown> cooldowns = new HashMap<String, BendingAbilityCooldown>();
 
 	private long paralyzeTime = 0;
 	private long slowTime = 0;
 
-	private long lastTime = 0;
+	private long lastTime = System.currentTimeMillis();
 	
 	private boolean usingScoreboard;
 	
@@ -53,11 +56,35 @@ public class BendingPlayer {
 	public FirePower fire = new FirePower();
 	public WaterBalance water = new WaterBalance(this);
 	public EarthCore earth = new EarthCore(this);
+	
+	private BendingPlayer(BendingPlayerData data) {
+		this.player = data.getPlayer();
 
-	public BendingPlayer(UUID id) {
-		this.player = id;
+		this.bendings = data.getBendings();
+		this.affinities = data.getAffinities();
+		this.perks = new HashMap<String, BendingPerk>();
+		for(BendingPerk perk : data.getPerks()) {
+			this.perks.put(perk.name, perk);
+		}
+		this.applyPerks();
+
+		this.decks = data.getDecks();
+		this.currentDeck = data.getCurrentDeck();
+		
+		if(this.decks.isEmpty()) {
+			this.decks.put("default", new HashMap<Integer, String>());
+		}
+		if(this.currentDeck == null) {
+			this.currentDeck = decks.keySet().iterator().next();
+		}
+		
+		for(String ability : data.getAbilities()) {
+			this.abilities.add(ability.toLowerCase());
+		}
+
 		this.lastTime = System.currentTimeMillis();
-		this.decks.put(this.currentDeck, new TreeMap<Integer, String>());
+		
+		this.usingScoreboard = true;
 	}
 
 	public String getCurrentDeck() {
@@ -74,24 +101,7 @@ public class BendingPlayer {
 
 	public void setCurrentDeck(String current) {
 		this.currentDeck = current;
-	}
-
-	public BendingPlayer(BendingPlayerData data) {
-		this.player = data.getPlayer();
-
-		this.bendings = data.getBendings() != null ? data.getBendings() : this.bendings;
-		this.affinities = data.getAffinities() != null ? data.getAffinities() : this.affinities;
-		this.refreshPerks();
-
-		this.decks = data.getDecks() != null ? data.getDecks() : this.decks;
-		this.currentDeck = data.getCurrentDeck();
-
-		this.lastTime = data.getLastTime();
-		
-		this.usingScoreboard = true;
-		
-		this.fire.set(data.getFire());
-		this.water.setBalance(data.getWater());
+		MySQLDB.save(player, serialize());
 	}
 
 	public static BendingPlayer getBendingPlayer(Player player) {
@@ -99,12 +109,31 @@ public class BendingPlayer {
 	}
 	
 	public static BendingPlayer getBendingPlayer(UUID player) {
-		return Bending.getInstance().getBendingDatabase().get(player);
+		BendingPlayer bender = cache.get(player);
+		if(bender == null) {
+			MySQLDB.fetch(player);
+		}
+		return bender;
 	}
 	
-	public void refreshPerks() {
-		this.perks = Collections.unmodifiableMap(BendingPerk.load(player));
-		
+	public static void insert(BendingPlayerData data) {
+		if(!cache.containsKey(data.getPlayer())) {
+			BendingPlayer bender = new BendingPlayer(data);
+			cache.put(data.getPlayer(), bender);
+			
+			bender.loadScoreboard();
+			
+			List<BendingElement> els = bender.getBendingTypes();
+			ChatColor color = ChatColor.WHITE;
+			if ((els != null) && !els.isEmpty()) {
+				color  = PluginTools.getColor(Settings.getColor(els.get(0)));
+			}
+			bender.getPlayer().setDisplayName("<" + color + bender.getPlayer().getName() + ChatColor.WHITE + ">");
+			
+		}
+	}
+	
+	public void applyPerks() {
 		// Check max health, and adjust if needed
 		int bonus = 0;
 		if(hasPerk(BendingPerk.EARTH_INNERCORE)) {
@@ -207,36 +236,30 @@ public class BendingPlayer {
 		}
 		return perks.containsKey(perk.name.toLowerCase());
 	}
-	
-	public void resetPerks() {
-		BendingPerk.reset(player);
-		refreshPerks();
-	}
-
 
 	public void setBender(BendingElement type) {
 		removeBender();
-		this.bendings.add(type);
-		Bending.getInstance().getBendingDatabase().save(this.player);
+		bendings.add(type);
+		MySQLDB.save(player, serialize());
 	}
 
 	public void addBender(BendingElement type) {
-		if (!this.bendings.contains(type)) {
-			this.bendings.add(type);
-			Bending.getInstance().getBendingDatabase().save(this.player);
+		if (!bendings.contains(type)) {
+			bendings.add(type);
+			MySQLDB.save(player, serialize());
 		}
 	}
 
 	public void setAffinity(BendingAffinity affinity) {
-		this.clearAffinity(affinity.getElement());
-		this.affinities.add(affinity);
-		Bending.getInstance().getBendingDatabase().save(this.player);
+		clearAffinity(affinity.getElement());
+		affinities.add(affinity);
+		MySQLDB.save(player, serialize());
 	}
 
 	public void addAffinity(BendingAffinity affinity) {
-		if (!this.affinities.contains(affinity)) {
-			this.affinities.add(affinity);
-			Bending.getInstance().getBendingDatabase().save(this.player);
+		if (!affinities.contains(affinity)) {
+			affinities.add(affinity);
+			MySQLDB.save(player, serialize());
 		}
 	}
 
@@ -261,21 +284,22 @@ public class BendingPlayer {
 	}
 
 	public void clearAffinities() {
-		this.affinities.clear();
-		Bending.getInstance().getBendingDatabase().save(this.player);
+		affinities.clear();
+		MySQLDB.save(player, serialize());
 	}
 
 	public void clearAbilities() {
-		this.decks.put(this.currentDeck, new HashMap<Integer, String>());
-		Bending.getInstance().getBendingDatabase().save(this.player);
+		decks.put(currentDeck, new HashMap<Integer, String>());
+		MySQLDB.save(player, serialize());
 	}
 
 	public void removeBender() {
-		resetPerks();
 		clearAbilities();
-		this.affinities.clear();
-		this.bendings.clear();
-		Bending.getInstance().getBendingDatabase().save(this.player);
+		perks.clear();
+		affinities.clear();
+		bendings.clear();
+		abilities.clear();
+		MySQLDB.save(player, serialize());
 	}
 
 	public String getAbility() {
@@ -339,33 +363,18 @@ public class BendingPlayer {
 		return scoreboard;
 	}
 
-	public void setAbility(int slot, String ability) {
-		if(!this.decks.containsKey(this.currentDeck)) {
-			Bending.getInstance().getLogger().warning("Player "+this.player+" tried to bind an ability on unknown deck "+this.currentDeck);
+	public void bind(int slot, String ability) {
+		if(!decks.containsKey(currentDeck)) {
+			Bending.getInstance().getLogger().warning("Player "+player+" tried to bind an ability on unknown deck "+currentDeck);
 			return;
 		}
-		this.decks.get(this.currentDeck).put(slot, ability);
-		Bending.getInstance().getBendingDatabase().save(this.player);
+		decks.get(currentDeck).put(slot, ability);
+		MySQLDB.save(player, serialize());
 	}
 
-	public void removeSelectedAbility() {
-		Player p = getPlayer();
-		if (p == null) {
-			return;
-		}
-		if (!p.isOnline() || p.isDead()) {
-			return;
-		}
-
-		int slot = p.getInventory().getHeldItemSlot();
-		removeAbility(slot);
-
-		Bending.getInstance().getBendingDatabase().save(this.player);
-	}
-
-	public void removeAbility(int slot) {
-		setAbility(slot, null);
-		Bending.getInstance().getBendingDatabase().save(this.player);
+	public void unbind(int slot) {
+		bind(slot, null);
+		MySQLDB.save(player, serialize());
 	}
 
 	public Player getPlayer() {
@@ -400,10 +409,6 @@ public class BendingPlayer {
 		return this.lastTime;
 	}
 
-	public void delete() {
-		Bending.getInstance().getBendingDatabase().remove(this.player);
-	}
-
 	@Override
 	public String toString() {
 		String string = "BendingPlayer{";
@@ -428,16 +433,41 @@ public class BendingPlayer {
 		this.usingScoreboard = usingScoreboard;
 	}
 
+	public void resetPerks() {
+		perks.clear();
+	}
+	
+	public void addAbility(RegisteredAbility ability) {
+		if(!hasAbility(ability)) {
+			this.abilities.add(ability.getName().toLowerCase());
+			MySQLDB.save(player, serialize());
+		}
+	}
+	
+	public void removeAbility(RegisteredAbility ability) {
+		if(hasAbility(ability)) {
+			this.abilities.remove(ability.getName().toLowerCase());
+			MySQLDB.save(player, serialize());
+		}
+	}
+
+	public boolean hasAbility(String name) {
+		return abilities.contains(name.toLowerCase());
+	}
+
+	public boolean hasAbility(RegisteredAbility ability) {
+		return hasAbility(ability.getName());
+	}
+	
 	public BendingPlayerData serialize() {
 		BendingPlayerData result = new BendingPlayerData();
-		result.setBendings(this.bendings);
-		result.setLastTime(this.lastTime);
-		result.setAffinities(this.affinities);
+		result.setBendings(new LinkedList<BendingElement>(this.bendings));
+		result.setAffinities(new LinkedList<BendingAffinity>(this.affinities));
 		result.setPlayer(this.player);
 		result.setDecks(this.decks);
+		result.setPerks(new LinkedList<BendingPerk>(this.perks.values()));
+		result.setAbilities(new LinkedList<String>(this.abilities));
 		result.setCurrentDeck(this.currentDeck);
-		result.setFire(this.fire.getPower());
-		result.setWater(this.water.getBalance());
 		return result;
 	}
 }

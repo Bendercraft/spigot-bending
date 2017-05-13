@@ -98,8 +98,6 @@ public class BendingPlayerListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 
-		Bending.getInstance().getBendingDatabase().lease(player.getUniqueId());
-
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 
 		if (!(Settings.CHAT_COMPATIBILITY) && (Settings.CHAT_ENABLED)) {
@@ -112,13 +110,15 @@ public class BendingPlayerListener implements Listener {
 				if (player.hasPermission("bending.avatar")) {
 					color = PluginTools.getColor(Settings.getColor(BendingElement.ENERGY));
 				} else {
-					List<BendingElement> els = bender.getBendingTypes();
-					if ((els != null) && !els.isEmpty()) {
-						color = PluginTools.getColor(Settings.getColor(els.get(0)));
+					if(bender != null) {
+						List<BendingElement> els = bender.getBendingTypes();
+						if ((els != null) && !els.isEmpty()) {
+							color = PluginTools.getColor(Settings.getColor(els.get(0)));
+						}
+						player.setDisplayName("<" + color + player.getName() + ChatColor.WHITE + ">");
 					}
 				}
 			}
-			player.setDisplayName("<" + color + player.getName() + ChatColor.WHITE + ">");
 		}
 		
 		if(Settings.USE_SCOREBOARD) {
@@ -291,6 +291,9 @@ public class BendingPlayerListener implements Listener {
 		Player player = event.getPlayer();
 		if (!player.isSprinting()) {
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			if(bender == null) {
+				return;
+			}
 			if (bender.isBender(BendingElement.AIR) && EntityTools.canBendPassive(player, BendingElement.AIR)) {
 				AirSpeed ab = new AirSpeed(AbilityManager.getManager().getRegisteredAbility(AirSpeed.NAME), player);
 				if(ab.canBeInitialized()) {
@@ -507,8 +510,6 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 			event.setReason(null);
 		}
-
-		Bending.getInstance().getBendingDatabase().release(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler
@@ -538,8 +539,6 @@ public class BendingPlayerListener implements Listener {
 		if(bender != null) {
 			bender.unloadScoreboard();
 		}
-		
-		Bending.getInstance().getBendingDatabase().release(event.getPlayer().getUniqueId());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

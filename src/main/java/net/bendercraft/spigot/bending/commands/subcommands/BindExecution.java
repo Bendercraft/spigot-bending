@@ -75,7 +75,7 @@ public class BindExecution extends BendingCommand {
 			player.sendMessage(color + Messages.NOT_HAVE_ELEMENT + ability.getElement().name());
 			return true;
 		}
-		bender.setAbility(slot, ability.getName());
+		bender.bind(slot, ability.getName());
 		String boundMessage = Messages.ABILITY_BOUND;
 		boundMessage = boundMessage.replaceAll("\\{0\\}", ability.getName());
 		boundMessage = boundMessage.replaceAll("\\{1\\}", "" + (slot + 1));
@@ -113,7 +113,7 @@ public class BindExecution extends BendingCommand {
 		}
 
 		for(RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
-			if (player.hasPermission(ability.getPermission())) {
+			if (bender.hasAbility(ability)) {
 				values.add(ability.getName());
 			}
 		}

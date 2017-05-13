@@ -92,8 +92,13 @@ public class EntityTools {
 		if (ability.getAffinity() != BendingAffinity.NONE && !EntityTools.isSpecialized(player, ability.getAffinity())) {
 			return false;
 		}
+		
+		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+		if(bender == null) {
+			return false;
+		}
 
-		if(ability.isPassive() || player.hasPermission(ability.getPermission())) {
+		if(ability.isPassive() || bender.hasAbility(ability.getName())) {
 			return true;
 		}
 

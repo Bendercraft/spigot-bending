@@ -1,7 +1,6 @@
 package net.bendercraft.spigot.bending.abilities;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;import java.util.ArrayList;
@@ -20,7 +19,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
 import net.bendercraft.spigot.bending.Bending;
-import net.bendercraft.spigot.bending.db.PlayerSkills;
 import net.bendercraft.spigot.bending.db.SkillTree;
 
 public class BendingPerk {
@@ -237,38 +235,6 @@ public class BendingPerk {
 		data.delete();
 	}
 	
-	public static Map<String, BendingPerk> load(UUID player) {
-		Map<String, BendingPerk> result = new HashMap<String, BendingPerk>();
-		
-		File folder = new File(Bending.getInstance().getDataFolder(), "skills");
-		File data = new File(folder, player.toString()+".json");
-		if(!data.exists()) {
-			return result;
-		}
-		
-		FileReader reader = null;
-		try {
-			reader = new FileReader(data);
-			PlayerSkills stored = mapper.fromJson(reader, PlayerSkills.class);
-			for(String skill : stored.getSkills()) {
-				BendingPerk perk = all.get(skill);
-				if(perk == null) {
-					Bending.getInstance().getLogger().severe("Unknown skills "+skill+" from player "+player);
-					continue;
-				}
-				result.put(perk.name, perk);
-			}
-		} catch (Exception e) {
-			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not load skills" + data, e);
-		} finally {
-			if (reader != null) {
-				IOUtils.closeQuietly(reader);
-			}
-		}
-		
-		return result;
-	}
-	
 	public static void collect() {
 		all.clear();
 		
@@ -323,6 +289,10 @@ public class BendingPerk {
 			IOUtils.closeQuietly(writer);
 		}
 		
+	}
+
+	public static BendingPerk valueOf(String string) {
+		return all.get(string);
 	}
 	
 }

@@ -30,7 +30,6 @@ public class PerkExecution extends BendingCommand {
 			}
 			Player player = (Player) sender;
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-			bender.refreshPerks();
 			
 			List<BendingPerk> perks = bender.getPerks();
 			StringBuilder sb = new StringBuilder();
@@ -50,7 +49,6 @@ public class PerkExecution extends BendingCommand {
 				//TODO check perm when debug is over
 				Player player = (Player) sender;
 				BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-				bender.refreshPerks();
 				bender.resetPerks();
 				sender.sendMessage("You have lost all your perks.");
 				return true;
@@ -61,7 +59,6 @@ public class PerkExecution extends BendingCommand {
 				}
 				Player player = getPlayer(arg);
 				BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-				bender.refreshPerks();
 				List<BendingPerk> perks = bender.getPerks();
 				StringBuilder sb = new StringBuilder();
 				
@@ -81,7 +78,6 @@ public class PerkExecution extends BendingCommand {
 			if(arg.equals("reset")) {
 				Player player = getPlayer(args.get(1));
 				BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
-				bender.refreshPerks();
 				bender.resetPerks();
 				sender.sendMessage("Player "+player.getName()+" losts all its perks.");
 				return true;
