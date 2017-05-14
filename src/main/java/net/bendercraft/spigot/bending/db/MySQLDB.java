@@ -274,8 +274,8 @@ public class MySQLDB {
 					
 					PreparedStatement players = connection.prepareStatement("INSERT INTO players(uuid, name) VALUES (?,?) ON DUPLICATE KEY UPDATE name = ?");
 					players.setString(1, data.getPlayer().toString());
-					players.setString(2, Bending.getInstance().getServer().getPlayer(data.getPlayer()).getName());
-					players.setString(3, Bending.getInstance().getServer().getPlayer(data.getPlayer()).getName());
+					players.setString(2, Bending.getInstance().getServer().getOfflinePlayer(data.getPlayer()).getName());
+					players.setString(3, Bending.getInstance().getServer().getOfflinePlayer(data.getPlayer()).getName());
 					players.executeUpdate();
 					
 					PreparedStatement cleanElements = connection.prepareStatement("DELETE FROM elements WHERE player_uuid = ?");
