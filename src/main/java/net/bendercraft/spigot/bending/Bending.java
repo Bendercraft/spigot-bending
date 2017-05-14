@@ -81,7 +81,8 @@ public class Bending extends JavaPlugin {
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new TempBlock.QueueRevert(), 20*1, 20*5);
-		getServer().getScheduler().runTaskTimerAsynchronously(this, new MySQLDB(), 20*30, 20*30);
+		getServer().getScheduler().runTaskTimerAsynchronously(this, new MySQLDB.SaveTask(), 20*30, 20*30);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new MySQLDB.UpdateTask(), 20*45, 20*30);
 
 		ProtectionManager.init(this);
 		getLogger().info("Bending v" + getDescription().getVersion() + " has been loaded.");
@@ -104,8 +105,8 @@ public class Bending extends JavaPlugin {
 		getServer().getScheduler().cancelTasks(this);
 		
 		// Force save
-		MySQLDB db = new MySQLDB();
-		db.run();
+		MySQLDB.SaveTask save = new MySQLDB.SaveTask();
+		save.run();
 	}
 
 	public BendingManager getManager() {

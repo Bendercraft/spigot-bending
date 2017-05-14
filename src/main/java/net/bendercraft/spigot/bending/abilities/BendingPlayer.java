@@ -1,6 +1,7 @@
 package net.bendercraft.spigot.bending.abilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,6 +131,26 @@ public class BendingPlayer {
 			}
 			bender.getPlayer().setDisplayName("<" + color + bender.getPlayer().getName() + ChatColor.WHITE + ">");
 			
+		}
+	}
+	
+	public static void update(BendingPlayerData data) {
+		BendingPlayer bender = getBendingPlayer(data.getPlayer());
+		if(bender == null) {
+			return;
+		}
+		Collection<BendingPerk> olds = bender.perks.values();
+		bender.perks = new HashMap<String, BendingPerk>();
+		for(BendingPerk perk : data.getPerks()) {
+			bender.perks.put(perk.name, perk);
+		}
+		Collection<BendingPerk> news = bender.perks.values();
+		
+		bender.applyPerks();
+		
+		if(olds.size() != news.size() || !olds.containsAll(news)) {
+			// Perks updated
+			bender.getPlayer().sendMessage(ChatColor.AQUA+"["+ChatColor.GOLD+"Bending"+ChatColor.AQUA+"]"+ChatColor.WHITE+" Your perks have been "+ChatColor.GREEN+"updated"+ChatColor.WHITE+".");
 		}
 	}
 	
@@ -431,6 +452,10 @@ public class BendingPlayer {
 
 	public void setUsingScoreboard(boolean usingScoreboard) {
 		this.usingScoreboard = usingScoreboard;
+	}
+	
+	public void refreshPerks() {
+		MySQLDB.update(player);
 	}
 
 	public void resetPerks() {
