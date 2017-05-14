@@ -338,7 +338,7 @@ public class MySQLDB {
 					
 					connection.commit();
 					Bending.getInstance().getLogger().info("Saved player "+player);
-				} catch (SQLException | ClassNotFoundException e) {
+				} catch (Exception e) {
 					Bending.getInstance().getLogger().log(Level.SEVERE, "Error while saving "+player, e);
 					try {
 						if(connection != null) {
