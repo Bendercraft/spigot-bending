@@ -316,7 +316,7 @@ public class BendingPlayer {
 
 	public void removeBender() {
 		clearAbilities();
-		perks.clear();
+		resetPerks();
 		affinities.clear();
 		bendings.clear();
 		abilities.clear();
@@ -460,6 +460,7 @@ public class BendingPlayer {
 
 	public void resetPerks() {
 		perks.clear();
+		MySQLDB.clearPerks(player);
 	}
 	
 	public void addAbility(RegisteredAbility ability) {

@@ -35,6 +35,7 @@ public class MySQLDB {
 	
 	private static List<UUID> fetching = new LinkedList<UUID>();
 	private static List<UUID> updating = new LinkedList<UUID>();
+	private static List<UUID> clearing = new LinkedList<UUID>();
 	
 	public static Connection openConnection() throws SQLException, ClassNotFoundException {
 	    if (connection != null && !connection.isClosed()) {
@@ -245,6 +246,55 @@ public class MySQLDB {
 
 	public static void save(UUID player, BendingPlayerData data) {
 		schedule.put(player, data);
+	}
+	
+	public static void clearPerks(UUID player) {
+		if(clearing.contains(player)) {
+			return;
+		}
+		clearing.add(player);
+		Runnable run = new Runnable() {
+			@Override
+			public void run() {
+				Connection connection = null;
+				try {
+					connection = openConnection();
+					connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+					connection.setAutoCommit(false);
+					
+					PreparedStatement clearPerks = connection.prepareStatement("DELETE FROM perks WHERE player_uuid = ?");
+					clearPerks.setString(1, player.toString());
+					clearPerks.executeUpdate();
+					
+					connection.commit();
+					Runnable insert = new Runnable() {
+						@Override
+						public void run() {
+							clearing.remove(player);
+						}
+					};
+					Bending.getInstance().getServer().getScheduler().runTask(Bending.getInstance(), insert);
+				} catch (SQLException | ClassNotFoundException e) {
+					Bending.getInstance().getLogger().log(Level.SEVERE, "Error while fetching for clearing perks "+player, e);
+					try {
+						if(connection != null) {
+							connection.rollback();
+						}
+					} catch (SQLException e1) {
+						Bending.getInstance().getLogger().log(Level.SEVERE, "Error while rollback connection", e1);
+					}
+					Runnable remove = new Runnable() {
+						@Override
+						public void run() {
+							clearing.remove(player);
+							Bending.getInstance().getLogger().log(Level.SEVERE, "Removing clearing status of "+player);
+						}
+					};
+					Bending.getInstance().getServer().getScheduler().runTask(Bending.getInstance(), remove);
+				}
+			}
+		};
+		Bending.getInstance().getServer().getScheduler().runTaskAsynchronously(Bending.getInstance(), run);
 	}
 
 	// Sync task
