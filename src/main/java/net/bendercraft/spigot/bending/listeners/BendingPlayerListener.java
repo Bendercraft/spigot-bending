@@ -351,7 +351,7 @@ public class BendingPlayerListener implements Listener {
 				}
 			}
 			
-			if(bender.hasPerk(BendingPerk.EARTH_RESISTANCE)) {
+			if(bender.earth.hasPreventDeath()) {
 				if(bender.getPlayer().getHealth() < event.getDamage()) {
 					event.setCancelled(true);
 					bender.earth.preventDeath();
