@@ -10,6 +10,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.flags.registry.SimpleFlagRegistry;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -58,6 +59,7 @@ public class WorldGuardProtection implements Listener {
     private StateFlag affinityBending;
     @Deprecated
     private StateFlag speBending;
+    private StateFlag perksBending;
 
     private Map<BendingElement, StateFlag> elementFlags;
     private Map<BendingAffinity, StateFlag> affinityFlags;
@@ -98,6 +100,7 @@ public class WorldGuardProtection implements Listener {
         passivesBending = new StateFlag("bending-passives",false);
         affinityBending = new StateFlag("bending-affinities", false);
         speBending = new StateFlag("bending-spe", false);
+        perksBending = new StateFlag("bending-perks", false);
 
         elementFlags = new HashMap<BendingElement, StateFlag>();
         for (BendingElement element : BendingElement.values()) {
@@ -123,6 +126,7 @@ public class WorldGuardProtection implements Listener {
         all.add(passivesBending);
         all.add(affinityBending);
         all.add(speBending);
+        all.add(perksBending);
         all.addAll(elementFlags.values());
         all.addAll(affinityFlags.values());
         all.addAll(abilityFlags.values());
@@ -130,19 +134,7 @@ public class WorldGuardProtection implements Listener {
 
     private void addFlags() {
     	SimpleFlagRegistry registry = (SimpleFlagRegistry) worldguard.getFlagRegistry();
-    	silentlyRegister(registry, allBending);
-    	silentlyRegister(registry, passivesBending);
-        silentlyRegister(registry, affinityBending);
-        silentlyRegister(registry, speBending);
-        for (StateFlag flag : elementFlags.values()) {
-        	silentlyRegister(registry, flag);
-        }
-        for (StateFlag flag : affinityFlags.values()) {
-        	silentlyRegister(registry, flag);
-        }
-        for (StateFlag flag : abilityFlags.values()) {
-        	silentlyRegister(registry, flag);
-        }
+    	all.forEach(flag -> silentlyRegister(registry, flag));
     }
     
     private void silentlyRegister(SimpleFlagRegistry registry, StateFlag flag) {
@@ -157,6 +149,24 @@ public class WorldGuardProtection implements Listener {
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
 			Bending.getInstance().getLogger().log(Level.WARNING, "Flag "+flag.getName()+" failed to register", e1);
 		}
+    }
+    
+    public boolean isRegionProtectedFromPerks(Player player, Location location) {
+        if (worldguard == null) {
+            return false;
+        }
+
+        if (location == null) {
+            return false;
+        }
+
+        com.sk89q.worldguard.LocalPlayer localPlayer = worldguard.wrapPlayer(player);
+        RegionManager manager = worldguard.getRegionManager(location.getWorld());
+        ApplicableRegionSet regions = manager.getApplicableRegions(location);
+
+        State state = regions.queryState(localPlayer, perksBending);
+
+        return state == StateFlag.State.DENY;
     }
 
     public boolean isRegionProtectedFromBending(Player player, RegisteredAbility ability, Location location) {

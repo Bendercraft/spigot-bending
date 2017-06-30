@@ -26,6 +26,7 @@ import net.bendercraft.spigot.bending.abilities.water.WaterBalance;
 import net.bendercraft.spigot.bending.controller.Settings;
 import net.bendercraft.spigot.bending.db.MySQLDB;
 import net.bendercraft.spigot.bending.utils.PluginTools;
+import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 public class BendingPlayer {
 	
@@ -253,6 +254,13 @@ public class BendingPlayer {
 
 	public boolean hasPerk(BendingPerk perk) {
 		if (this.perks == null) {
+			return false;
+		}
+		Player p = getPlayer();
+		if(p == null) {
+			return false;
+		}
+		if(ProtectionManager.isLocationProtectedFromPerks(p, p.getLocation())) {
 			return false;
 		}
 		return perks.containsKey(perk.name.toLowerCase());

@@ -61,6 +61,22 @@ public class ProtectionManager {
 		}
 		return false;
 	}
+	
+	public static boolean isLocationProtectedFromPerks(Player player, Location loc) {
+		if (player == null) {
+			return false;
+		}
+		
+		if (player.hasPermission("bending.protection.bypass")) {
+			return false;
+		}
+
+		if (Settings.RESPECT_WORLDGUARD && worldguard != null) {
+			return worldguard.isRegionProtectedFromPerks(player, loc);
+		}
+
+		return false;
+	}
 
 	public static boolean isLocationProtectedFromBending(Player player, RegisteredAbility ability, Location loc) {
 		if (ability == null || player == null) {
