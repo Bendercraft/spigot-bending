@@ -152,7 +152,7 @@ public class EarthArmor extends BendingActiveAbility {
 	private void explode() {
 		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(player.getLocation(), 5)) {
 			if(bender.hasPerk(BendingPerk.EARTH_EARTHARMOR_PUSHBACK)) {
-				Vector direction = entity.getLocation().toVector().subtract(player.getLocation().toVector());
+				Vector direction = entity.getLocation().subtract(player.getLocation()).getDirection();
 				direction = direction.normalize();
 				direction = direction.setY(0.3);
 				entity.setVelocity(direction);
