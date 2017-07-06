@@ -90,6 +90,7 @@ public class EarthBlast extends BendingActiveAbility {
 	
 	private long time;
 	private int damage;
+	private int damageBonus = 0;
 	private double selectRange;
 	private double range;
 	private double deflectRange;
@@ -152,7 +153,7 @@ public class EarthBlast extends BendingActiveAbility {
 		
 		if (block.getType() == Material.SAND) {
 			current.add(TempBlock.makeTemporary(this, block, Material.SANDSTONE, false));
-			damage += BONUS_DAMAGE_SAND;
+			damageBonus = BONUS_DAMAGE_SAND;
 		} else if (block.getType() == Material.STONE) {
 			current.add(TempBlock.makeTemporary(this, block, Material.COBBLESTONE, false));
 		} else if (EntityTools.canBend(this.player, MetalBending.NAME) && BlockTools.isIronBendable(player, type)) {
@@ -161,9 +162,9 @@ public class EarthBlast extends BendingActiveAbility {
 			} else {
 				current.add(TempBlock.makeTemporary(this, block, Material.IRON_BLOCK, false));
 			}
-			damage += BONUS_DAMAGE_IRON;
+			damageBonus = BONUS_DAMAGE_IRON;
 		} else if (EntityTools.canBend(this.player, LavaTrain.NAME) && (type == Material.OBSIDIAN)) {
-			damage += BONUS_DAMAGE_IRON;
+			damageBonus = BONUS_DAMAGE_IRON;
 			current.add(TempBlock.makeTemporary(this, block, Material.BEDROCK, false));
 		} else {
 			current.add(TempBlock.makeTemporary(this, block, Material.STONE, false));
@@ -380,7 +381,7 @@ public class EarthBlast extends BendingActiveAbility {
 		Location location = player.getEyeLocation();
 		Vector vector = location.getDirection();
 		entity.setVelocity(vector.normalize().multiply(PUSHFACTOR));
-		DamageTools.damageEntity(bender, entity, this, damage, false, 2, 0.5f, false);
+		DamageTools.damageEntity(bender, entity, this, damage+damageBonus, false, 2, 0.5f, false);
 		return true;
 	}
 	
