@@ -38,6 +38,7 @@ import net.bendercraft.spigot.bending.abilities.arts.C4;
 import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.arts.ExplosiveShot;
 import net.bendercraft.spigot.bending.abilities.earth.EarthArmor;
+import net.bendercraft.spigot.bending.abilities.earth.EarthGrab;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.fire.FireBlade;
 import net.bendercraft.spigot.bending.abilities.fire.HeatControl;
@@ -157,6 +158,9 @@ public class BendingEntityListener implements Listener {
 		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
+		if(EarthGrab.isGrabbed(entity)) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -165,12 +169,18 @@ public class BendingEntityListener implements Listener {
 		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
+		if(EarthGrab.isGrabbed(entity)) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
 		Entity entity = event.getEntity();
 		if (Bloodbending.isBloodbended(entity)) {
+			event.setCancelled(true);
+		}
+		if(EarthGrab.isGrabbed(entity)) {
 			event.setCancelled(true);
 		}
 	}
@@ -182,6 +192,9 @@ public class BendingEntityListener implements Listener {
 			if (Bloodbending.isBloodbended(entity)) {
 				event.setCancelled(true);
 			}
+			if(EarthGrab.isGrabbed(entity)) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
@@ -189,6 +202,9 @@ public class BendingEntityListener implements Listener {
 	public void onEntityInteractEvent(EntityInteractEvent event) {
 		Entity entity = event.getEntity();
 		if (Bloodbending.isBloodbended(entity)) {
+			event.setCancelled(true);
+		}
+		if(EarthGrab.isGrabbed(entity)) {
 			event.setCancelled(true);
 		}
 		if(entity instanceof LivingEntity && Concussion.getTarget((LivingEntity) entity) != null) {
@@ -200,6 +216,9 @@ public class BendingEntityListener implements Listener {
 	public void onEntityShootBowEvent(EntityShootBowEvent event) {
 		Entity entity = event.getEntity();
 		if (Bloodbending.isBloodbended(entity)) {
+			event.setCancelled(true);
+		}
+		if(EarthGrab.isGrabbed(entity)) {
 			event.setCancelled(true);
 		}
 		
@@ -235,6 +254,9 @@ public class BendingEntityListener implements Listener {
 		if (Bloodbending.isBloodbended(entity)) {
 			event.setCancelled(true);
 		}
+		if(EarthGrab.isGrabbed(entity)) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -248,6 +270,9 @@ public class BendingEntityListener implements Listener {
 			return;
 		}
 		if (Bloodbending.isBloodbended(entity)) {
+			event.setCancelled(true);
+		}
+		if(EarthGrab.isGrabbed(entity)) {
 			event.setCancelled(true);
 		}
 		if (entity instanceof Player) {
@@ -300,6 +325,9 @@ public class BendingEntityListener implements Listener {
 	public void onEntitySlimeSplitEvent(SlimeSplitEvent event) {
 		Entity entity = event.getEntity();
 		if (Bloodbending.isBloodbended(entity)) {
+			event.setCancelled(true);
+		}
+		if(EarthGrab.isGrabbed(entity)) {
 			event.setCancelled(true);
 		}
 	}

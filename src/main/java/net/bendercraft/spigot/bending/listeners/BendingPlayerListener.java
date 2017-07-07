@@ -54,6 +54,7 @@ import net.bendercraft.spigot.bending.abilities.arts.Concussion;
 import net.bendercraft.spigot.bending.abilities.arts.Dash;
 import net.bendercraft.spigot.bending.abilities.arts.Speed;
 import net.bendercraft.spigot.bending.abilities.earth.EarthArmor;
+import net.bendercraft.spigot.bending.abilities.earth.EarthGrab;
 import net.bendercraft.spigot.bending.abilities.earth.EarthPassive;
 import net.bendercraft.spigot.bending.abilities.earth.LavaTrain;
 import net.bendercraft.spigot.bending.abilities.earth.MetalBending;
@@ -136,6 +137,10 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+		if(EarthGrab.isGrabbed(player)) {
+			event.setCancelled(true);
+			return;
+		}
 
 		MetalBending.use(player, event.getClickedBlock());
 	}
@@ -147,6 +152,10 @@ public class BendingPlayerListener implements Listener {
 		String ability = EntityTools.getBendingAbility(player);
 
 		if (Bloodbending.isBloodbended(player) || Concussion.getTarget(player) != null) {
+			event.setCancelled(true);
+			return;
+		}
+		if(EarthGrab.isGrabbed(player)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -197,6 +206,10 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+		if(EarthGrab.isGrabbed(player)) {
+			event.setCancelled(true);
+			return;
+		}
 
 		String ability = EntityTools.getBendingAbility(player);
 		RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(ability);
@@ -239,6 +252,10 @@ public class BendingPlayerListener implements Listener {
 		}
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
 		if (Bloodbending.isBloodbended(player) || Concussion.getTarget(player) != null) {
+			event.setCancelled(true);
+			return;
+		}
+		if(EarthGrab.isGrabbed(player)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -470,6 +487,10 @@ public class BendingPlayerListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+		if(EarthGrab.isGrabbed(player)) {
+			event.setCancelled(true);
+			return;
+		}
 		if (WaterSpout.isBending(event.getPlayer()) || AirSpout.getPlayers().contains(event.getPlayer())) {
 			Vector vel = new Vector();
 			vel.setX(event.getTo().getX() - event.getFrom().getX());
@@ -503,6 +524,10 @@ public class BendingPlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerKick(PlayerKickEvent event) {
 		if (Bloodbending.isBloodbended(event.getPlayer())) {
+			event.setCancelled(true);
+			event.setReason(null);
+		}
+		if(EarthGrab.isGrabbed(event.getPlayer())) {
 			event.setCancelled(true);
 			event.setReason(null);
 		}

@@ -43,6 +43,9 @@ public class BendingBlockListener implements Listener {
 		if (Bloodbending.isBloodbended(player)) {
 			event.setCancelled(true);
 		}
+		if(EarthGrab.isGrabbed(player)) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -127,16 +130,6 @@ public class BendingBlockListener implements Listener {
 			event.setCancelled(true);
 		}
 		TempBlock.revertBlock(block);
-	}
-
-	//Counter Factions protection
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void onEarthGrabBreak(BlockBreakEvent event) {
-		EarthGrab grab = EarthGrab.blockInEarthGrab(event.getBlock());
-		if (grab != null) {
-			grab.setToKeep(false);
-			event.setCancelled(true);
-		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
