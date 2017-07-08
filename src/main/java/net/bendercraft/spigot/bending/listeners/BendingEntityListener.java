@@ -121,6 +121,18 @@ public class BendingEntityListener implements Listener {
 			}
 		}
 		
+		// Reduce all damage coming from diamond TOOLS
+		if(event.getCause() == DamageCause.ENTITY_ATTACK
+			&& event.getDamager() instanceof Player) {
+			Player attacker = (Player) event.getDamager();
+			if(attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_AXE
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_HOE
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_PICKAXE
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_SPADE) {
+				event.setDamage(event.getDamage()*0.3);
+			}
+		}
+		
 		// Check damage cancellation if EarthArmor is on victim
 		if(entity instanceof Player && EarthArmor.hasEarthArmor((Player) entity)) {
 			EarthArmor ea = (EarthArmor) AbilityManager.getManager().getInstances(EarthArmor.NAME).get(entity);
