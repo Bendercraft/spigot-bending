@@ -1,6 +1,12 @@
 package net.bendercraft.spigot.bending;
 
 import net.bendercraft.spigot.bending.listeners.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
@@ -19,8 +25,10 @@ import net.bendercraft.spigot.bending.db.MySQLDB;
 import net.bendercraft.spigot.bending.integrations.citizens.BendableTrait;
 import net.bendercraft.spigot.bending.integrations.protocollib.BendingPacketAdapter;
 import net.bendercraft.spigot.bending.learning.BendingLearning;
+import net.bendercraft.spigot.bending.utils.BendingAbilityLogFormatter;
 import net.bendercraft.spigot.bending.utils.PluginTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
+import net.bendercraft.spigot.bending.utils.RollingFileHandler;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -36,10 +44,25 @@ public class Bending extends JavaPlugin {
 	private BendingLearning learning;
 
 	private BendingCommandExecutor commandExecutor;
+	
+	private Logger abilityLogger;
 
 	@Override
 	public void onEnable() {
 		instance = this;
+		
+		abilityLogger = Logger.getLogger("Bending Ability");
+		abilityLogger.setUseParentHandlers(false);
+		try {
+			File logs = new File(getDataFolder(), "logs");
+			logs.mkdirs();
+			RollingFileHandler handler = new RollingFileHandler(logs, "bending_%d.log");
+			handler.setFormatter(new BendingAbilityLogFormatter());
+			abilityLogger.addHandler(handler);
+		} catch (SecurityException | IOException e) {
+			getLogger().log(Level.SEVERE, "Ability logger error", e);
+		}
+		
 		
 		if(manager == null) {
 			manager = new BendingManager(this);
@@ -128,5 +151,9 @@ public class Bending extends JavaPlugin {
 	
 	public static Bending getInstance() {
 		return instance;
+	}
+
+	public Logger getAbilityLogger() {
+		return abilityLogger;
 	}
 }
