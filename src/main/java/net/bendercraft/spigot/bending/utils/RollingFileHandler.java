@@ -36,6 +36,7 @@ public class RollingFileHandler extends Handler {
 			handler.flush();
 			handler.close();
 			handler = null;
+			date = now;
 		}
 		
 		if(handler == null) {
