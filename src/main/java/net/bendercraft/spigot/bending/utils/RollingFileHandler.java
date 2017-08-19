@@ -18,29 +18,29 @@ public class RollingFileHandler extends Handler {
 	private File folder;
 	
 	private FileHandler handler;
-	private Date date;
+	private String current;
 
 	public RollingFileHandler(File folder, String fileName) throws IOException, SecurityException {
 		this.folder = folder;
 		this.fileName = fileName;
-		this.date = new Date();
+		this.current = getFileName(new Date());
 	}
 
-	private String getFileName() {
+	private String getFileName(Date date) {
 		return this.folder.getPath()+"/"+fileName.replaceAll("%d", format.format(new Date()));
     }
 	
 	private FileHandler getHandler() throws SecurityException, IOException {
-		Date now = new Date();
-		if(now.getTime() - this.date.getTime() >= 86400000) {
+		String check = getFileName(new Date());
+		if(!check.equals(current)) {
 			handler.flush();
 			handler.close();
 			handler = null;
-			date = now;
+			current = check;
 		}
 		
 		if(handler == null) {
-			handler = new FileHandler(getFileName(), true);
+			handler = new FileHandler(current, true);
 			handler.setLevel(getLevel());
 			handler.setEncoding(getEncoding());
             handler.setFilter(getFilter());
