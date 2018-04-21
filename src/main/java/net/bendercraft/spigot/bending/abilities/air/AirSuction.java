@@ -26,7 +26,7 @@ public class AirSuction extends BendingActiveAbility {
 	public final static String NAME = "AirSuction";
 
 	@ConfigurationParameter("Speed")
-	private final static double SPEED = 25.0;
+	private static double SPEED = 25.0;
 
 	@ConfigurationParameter("Range")
 	private static double RANGE = 20;
