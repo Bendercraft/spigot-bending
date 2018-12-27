@@ -52,13 +52,13 @@ public class BendingBlockListener implements Listener {
 	public void onBlockFlowTo(BlockFromToEvent event) {
 		Block toblock = event.getToBlock();
 		Block fromblock = event.getBlock();
-		if (BlockTools.isWater(fromblock)) {
+		if (fromblock.getType() == Material.WATER) {
 			event.setCancelled(!AirBubble.canFlowTo(toblock));
 			if (!event.isCancelled()) {
 				event.setCancelled(TempBlock.isTempBlock(fromblock) || TempBlock.isTempBlock(toblock));
 			}
 		}
-		if (BlockTools.isLava(fromblock) && TempBlock.isTempBlock(fromblock)) {
+		if (fromblock.getType() == Material.LAVA && TempBlock.isTempBlock(fromblock)) {
 			event.setCancelled(true);
 		}
 		if (!event.isCancelled()) {

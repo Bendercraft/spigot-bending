@@ -7,6 +7,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -156,7 +157,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			Vector vector = drainLocation.getDirection().clone().normalize();
 			block = drainLocation.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
-				drainedBlock = TempBlock.makeTemporary(this, block, Material.STATIONARY_WATER, false);
+				drainedBlock = TempBlock.makeTemporary(this, block, Material.WATER, false);
 				bender.cooldown(Drainbending.NAME, Drainbending.COOLDOWN);
 			} else {
 				block = null;
@@ -170,7 +171,7 @@ public class WaterManipulation extends BendingActiveAbility {
 			if (BlockTools.isTransparentToEarthbending(player, block) 
 					&& BlockTools.isTransparentToEarthbending(player, eyeloc.getBlock())
 					&& WaterReturn.canBeSource(block)) {
-				drainedBlock = TempBlock.makeTemporary(this, block, Material.STATIONARY_WATER, false);
+				drainedBlock = TempBlock.makeTemporary(this, block, Material.WATER, false);
 				WaterReturn.emptyWaterBottle(player);
 			} else {
 				block = null;
@@ -290,7 +291,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		Block block = location.getBlock();
 		if (BlockTools.isTransparentToEarthbending(player, block) && !block.isLiquid()) {
 			BlockTools.breakBlock(block); // DESTROY FLOWERSSSS
-		} else if (block.getType() != Material.AIR && !BlockTools.isWater(block)) {
+		} else if (block.getType() != Material.AIR && block.getType() != Material.WATER) {
 			hit();
 			return;
 		}
@@ -322,7 +323,9 @@ public class WaterManipulation extends BendingActiveAbility {
 					trail.revertBlock();
 				}
 				if(current != null && !freeze) {
-					trail = TempBlock.makeTemporary(this, current.getBlock(), Material.WATER, (byte) 2, false);
+					Levelled data = (Levelled) Material.WATER.createBlockData();
+					data.setLevel(2);
+					trail = TempBlock.makeTemporary(this, current.getBlock(), Material.WATER, data, false);
 				}
 			}
 			if(freeze) {

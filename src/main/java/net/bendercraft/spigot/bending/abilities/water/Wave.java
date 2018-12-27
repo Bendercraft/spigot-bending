@@ -128,7 +128,7 @@ public class Wave {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
-				this.drainedBlock = TempBlock.makeTemporary(parent, block, Material.STATIONARY_WATER, false);
+				this.drainedBlock = TempBlock.makeTemporary(parent, block, Material.WATER, false);
 				this.sourceblock = block;
 				focusBlock();
 				// Range and max radius is halfed for Drainbending
@@ -143,7 +143,7 @@ public class Wave {
 			Location eyeloc = player.getEyeLocation();
 			block = eyeloc.add(eyeloc.getDirection().normalize()).getBlock();
 			if(WaterReturn.canBeSource(block)) {
-				this.drainedBlock = TempBlock.makeTemporary(parent, block, Material.STATIONARY_WATER, false);
+				this.drainedBlock = TempBlock.makeTemporary(parent, block, Material.WATER, false);
 				this.sourceblock = block;
 				focusBlock();
 				WaterReturn.emptyWaterBottle(player);
@@ -281,8 +281,8 @@ public class Wave {
 
 				List<Block> blocks = new LinkedList<Block>();
 
-				if (!ProtectionManager.isLocationProtectedFromBending(this.player, parent.getRegister(), this.location) && ((((blockl.getType() == Material.AIR) || (blockl.getType() == Material.FIRE) || BlockTools.isPlant(blockl) || BlockTools.isWater(blockl) || BlockTools.isWaterbendable(blockl, this.player))) && (blockl.getType() != Material.LEAVES))) {
-
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, parent.getRegister(), this.location) 
+						&& (blockl.getType() == Material.AIR || blockl.getType() == Material.FIRE || BlockTools.isPlant(blockl) || BlockTools.isWaterbendable(blockl, this.player))) {
 					for (double i = 0; i <= this.radius; i += .5) {
 						for (double angle = 0; angle < 360; angle += 10) {
 							Vector vec = Tools.getOrthogonalVector(this.targetdirection, angle, i);
@@ -442,10 +442,10 @@ public class Wave {
 				TempBlock.makeTemporary(parent, block, Material.ICE, true);
 				this.frozenblocks.put(block, block);
 			}
-			if (BlockTools.isWater(block)) {
+			if (block.getType() == Material.WATER) {
 				// new FreezeMelt(this.player, this, block); TODO temp
 			}
-			if (BlockTools.isPlant(block) && (block.getType() != Material.LEAVES)) {
+			if (BlockTools.isPlant(block) && (BlockTools.isLeaf(block))) {
 				block.breakNaturally();
 				TempBlock.makeTemporary(parent, block, Material.ICE, true);
 				this.frozenblocks.put(block, block);

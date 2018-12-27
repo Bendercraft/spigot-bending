@@ -117,7 +117,7 @@ public class WaterSpout extends BendingActiveAbility {
 		for (int i = 0, cardinalPoint = currentCardinalPoint / SPEED; i < (height + 1); i++, cardinalPoint--) {
 			Location loc = location.clone().add(0, -i, 0);
 			if (!TempBlock.isTempBlock(loc.getBlock()) && loc.getBlock().getType().equals(Material.AIR)) {
-				blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.STATIONARY_WATER, false));
+				blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.WATER, false));
 			}
 
 			if (cardinalPoint == -1) {
@@ -227,8 +227,7 @@ public class WaterSpout extends BendingActiveAbility {
 		}
 		int cpt = 0;
 		while ((loc.getBlock().getType() == Material.AIR 
-					|| loc.getBlock().getType() == Material.WATER 
-					|| loc.getBlock().getType() ==Material.STATIONARY_WATER) 
+					|| loc.getBlock().getType() == Material.WATER) 
 				&& (loc.getBlockY() > 0) 
 				&& (cpt <= height)) {
 			loc = loc.add(0, -1, 0);

@@ -9,8 +9,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
@@ -21,7 +23,6 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPerk;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
-import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
@@ -133,10 +134,11 @@ public class HealingWaters extends BendingActiveAbility {
 	}
 
 	private static boolean isWaterPotion(final ItemStack item) {
-		if ((item.getType() == Material.POTION) && (item.getDurability() == 0)) {
-			return true;
+		if (item.getType() != Material.POTION || !item.hasItemMeta() || !(item.getItemMeta() instanceof PotionMeta)) {
+			return false;
 		}
-		return false;
+		PotionMeta potionData = (PotionMeta) item.getItemMeta();
+		return potionData.getBasePotionData().getType() == PotionType.WATER;
 	}
 
 	private static void giveHPToEntity(LivingEntity le) {
@@ -153,7 +155,7 @@ public class HealingWaters extends BendingActiveAbility {
 
 	private static boolean inWater(final Entity entity) {
 		final Block block = entity.getLocation().getBlock();
-		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block)) {
+		if (block.getType() == Material.WATER && !TempBlock.isTempBlock(block)) {
 			return true;
 		}
 		return false;

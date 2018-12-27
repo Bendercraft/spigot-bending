@@ -40,7 +40,7 @@ public class Settings {
 	public static long REVERSE_TIME = 120000;
 	
 	@ConfigurationParameter("earth.bendables")
-	public static String[] EARTHBENDABLES = { "STONE", "CLAY", "DIRT", "GRASS", "GRAVEL", "COAL_ORE", "LAPIS_ORE", "REDSTONE_ORE", "SAND", "GLOWING_REDSTONE_ORE", "MYCEL", };
+	public static String[] EARTHBENDABLES = { "STONE", "DIORITE", "ANDESITE", "GRANITE", "CLAY", "DIRT", "GRASS_BLOCK", "GRAVEL", "COAL_ORE", "LAPIS_ORE", "REDSTONE_ORE", "SAND", "GLOWING_REDSTONE_ORE", "MYCEL", };
 	
 	@ConfigurationParameter("aliases.air")
 	public static String[] AIR_ALIASES = { "air", "airbending", "airbender" };

@@ -1,6 +1,5 @@
 package net.bendercraft.spigot.bending.abilities.fire;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,13 +16,12 @@ import net.bendercraft.spigot.bending.abilities.AbilityManager;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
 public class FireStream {
 	private static Map<Block, Player> ignitedblocks = new HashMap<Block, Player>();
 	private static Map<Block, Long> ignitedtimes = new HashMap<Block, Long>();
-
-	private static final Material[] overwriteable = { Material.SAPLING, Material.LONG_GRASS, Material.DEAD_BUSH, Material.YELLOW_FLOWER, Material.RED_ROSE, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.FIRE, Material.SNOW, Material.TORCH };
 
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 15;
@@ -95,7 +93,7 @@ public class FireStream {
 		}
 
 		if (block.getRelative(BlockFace.DOWN).getType().isSolid()
-				&& (Arrays.asList(overwriteable).contains(block.getType()) || block.getType() == Material.AIR)) {
+				&& (BlockTools.isPlant(block) || block.getType() == Material.AIR)) {
 			return true;
 		}
 

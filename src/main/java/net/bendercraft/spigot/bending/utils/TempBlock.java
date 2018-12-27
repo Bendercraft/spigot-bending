@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
@@ -28,23 +29,22 @@ public class TempBlock {
 	private long duration;
 	
 	public static TempBlock makeGlobal(long duration, Block block, Material newType, boolean bendAllowed) {
-		return makeGlobal(duration, block, newType, (byte) 0x0, bendAllowed);
+		return makeGlobal(duration, block, newType, null, bendAllowed);
 	}
 	
-	public static TempBlock makeGlobal(long duration, Block block, Material newType, byte newData, boolean bendAllowed) {
+	public static TempBlock makeGlobal(long duration, Block block, Material newType, BlockData newData, boolean bendAllowed) {
 		return make(null, duration, block, newType, newData, bendAllowed);
 	}
 
 	public static TempBlock makeTemporary(BendingAbility ability, Block block, Material newType, boolean bendAllowed) {
-		return makeTemporary(ability, block, newType, (byte) 0x0, bendAllowed);
+		return makeTemporary(ability, block, newType, null, bendAllowed);
 	}
 	
-	public static TempBlock makeTemporary(BendingAbility ability, Block block, Material newType, byte newData, boolean bendAllowed) {
+	public static TempBlock makeTemporary(BendingAbility ability, Block block, Material newType, BlockData newData, boolean bendAllowed) {
 		return make(ability, 0, block, newType, newData, bendAllowed);
 	}
 
-	@SuppressWarnings("deprecation")
-	private static TempBlock make(BendingAbility ability, long duration, Block block, Material newType, byte newData, boolean bendAllowed) {
+	private static TempBlock make(BendingAbility ability, long duration, Block block, Material newType, BlockData newData, boolean bendAllowed) {
 		// Reuse current on if existing
 		TempBlock temp = null;
 		if (instances.containsKey(block)) {
@@ -68,7 +68,9 @@ public class TempBlock {
 		temp.duration = duration;
 		
 		temp.block.setType(newType, false);
-		temp.block.setData(newData);
+		if(newData != null) {
+			temp.block.setBlockData(newData);
+		}
 		if (temp.state.getType() == Material.FIRE) {
 			temp.state.setType(Material.AIR);
 		}

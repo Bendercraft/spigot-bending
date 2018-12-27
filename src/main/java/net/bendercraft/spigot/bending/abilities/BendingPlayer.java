@@ -360,7 +360,7 @@ public class BendingPlayer {
 			ScoreboardManager manager = Bukkit.getScoreboardManager();
 			scoreboard = manager.getNewScoreboard();
 			scoreboard.registerNewTeam(getPlayer().getName());
-		    Objective objectiveStatus = scoreboard.registerNewObjective(OBJECTIVE_STATUS, "dummy");
+		    Objective objectiveStatus = scoreboard.registerNewObjective(OBJECTIVE_STATUS, "dummy", "bending");
 		    objectiveStatus.setDisplaySlot(DisplaySlot.SIDEBAR);
 		    objectiveStatus.setDisplayName("Status");
 		    getPlayer().setScoreboard(scoreboard);

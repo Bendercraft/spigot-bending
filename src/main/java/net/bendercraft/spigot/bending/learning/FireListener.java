@@ -57,13 +57,13 @@ public class FireListener implements Listener {
 				if (bPlayer.isBender(BendingElement.FIRE) && (bPlayer.getAbility() != null) && bPlayer.getAbility().equalsIgnoreCase(FireBlast.NAME)) {
 					boolean ok = false;
 					Player p = (Player) event.getDamager();
-					if (p.getInventory().getItemInMainHand().getType().equals(Material.WOOD_SWORD)) {
+					if (p.getInventory().getItemInMainHand().getType().equals(Material.WOODEN_SWORD)) {
 						ok = true;
 					} else if (p.getInventory().getItemInMainHand().getType().equals(Material.STONE_SWORD)) {
 						ok = true;
 					} else if (p.getInventory().getItemInMainHand().getType().equals(Material.IRON_SWORD)) {
 						ok = true;
-					} else if (p.getInventory().getItemInMainHand().getType().equals(Material.GOLD_SWORD)) {
+					} else if (p.getInventory().getItemInMainHand().getType().equals(Material.GOLDEN_SWORD)) {
 						ok = true;
 					} else if (p.getInventory().getItemInMainHand().getType().equals(Material.DIAMOND_SWORD)) {
 						ok = true;

@@ -235,13 +235,13 @@ public class FireBlast extends BendingActiveAbility {
 			}
 			Block block = this.location.getBlock();
 			if (BlockTools.isSolid(block) || block.isLiquid()) {
-				if (((block.getType() == Material.FURNACE) || (block.getType() == Material.BURNING_FURNACE)) && POWER_FURNACE) {
+				if (((block.getType() == Material.FURNACE) || (block.getType() == Material.FURNACE)) && POWER_FURNACE) {
 					BlockState state = block.getState();
 					Furnace furnace = (Furnace) state;
 					FurnaceInventory inv = furnace.getInventory();
 					if (inv.getFuel() == null) {
 						ItemStack temp = inv.getSmelting();
-						ItemStack tempfuel = new ItemStack(Material.SAPLING, 1);
+						ItemStack tempfuel = new ItemStack(Material.OAK_SAPLING, 1);
 						ItemStack tempsmelt = new ItemStack(Material.COBBLESTONE);
 						inv.setFuel(tempfuel);
 						inv.setSmelting(tempsmelt);

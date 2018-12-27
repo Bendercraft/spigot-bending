@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
@@ -30,58 +31,85 @@ import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.Settings;
 
 public class BlockTools {
-	public static final byte FULL = 0x0;
-	
 	private static List<Block> tempnophysics = new LinkedList<Block>();
+	
+	private static Set<Material> leafIds = new HashSet<Material>();
+	static {
+		leafIds.add(Material.ACACIA_LEAVES);
+		leafIds.add(Material.BIRCH_LEAVES);
+		leafIds.add(Material.DARK_OAK_LEAVES);
+		leafIds.add(Material.JUNGLE_LEAVES);
+		leafIds.add(Material.OAK_LEAVES);
+		leafIds.add(Material.SPRUCE_LEAVES);
+	}
+	
 	private static Set<Material> plantIds = new HashSet<Material>();
 	static {
-		plantIds.add(Material.SAPLING);
-		plantIds.add(Material.LEAVES);
-		plantIds.add(Material.LONG_GRASS); // Not sure here, previously ID 31
-		plantIds.add(Material.DOUBLE_PLANT);
+		plantIds.addAll(leafIds);
+		plantIds.add(Material.ACACIA_SAPLING);
+		plantIds.add(Material.BIRCH_SAPLING);
+		plantIds.add(Material.DARK_OAK_SAPLING);
+		plantIds.add(Material.JUNGLE_SAPLING);
+		plantIds.add(Material.OAK_SAPLING);
+		
+		plantIds.add(Material.TALL_GRASS);
+		plantIds.add(Material.FERN);
+		plantIds.add(Material.LILAC);
+		plantIds.add(Material.PEONY);
+		plantIds.add(Material.ROSE_BUSH);
 		plantIds.add(Material.DEAD_BUSH);
-		plantIds.add(Material.YELLOW_FLOWER);
-		plantIds.add(Material.RED_ROSE);
+		
+		plantIds.add(Material.DANDELION);
+		plantIds.add(Material.DANDELION_YELLOW);
+		plantIds.add(Material.ROSE_RED);
+		plantIds.add(Material.POPPY);
+		plantIds.add(Material.BLUE_ORCHID);
+		plantIds.add(Material.ALLIUM);
+		plantIds.add(Material.AZURE_BLUET);
+		plantIds.add(Material.RED_TULIP);
+		plantIds.add(Material.ORANGE_TULIP);
+		plantIds.add(Material.PINK_TULIP);
+		plantIds.add(Material.WHITE_TULIP);
+		plantIds.add(Material.OXEYE_DAISY);
+		
 		plantIds.add(Material.BROWN_MUSHROOM);
 		plantIds.add(Material.RED_MUSHROOM);
-		plantIds.add(Material.CROPS);
+		
+		plantIds.add(Material.WHEAT);
 		plantIds.add(Material.CACTUS);
-		plantIds.add(Material.SUGAR_CANE_BLOCK);
+		plantIds.add(Material.SUGAR_CANE);
 		plantIds.add(Material.PUMPKIN);
-		plantIds.add(Material.HUGE_MUSHROOM_1);// 99, BROWN MUSHROOM CAP
-		plantIds.add(Material.HUGE_MUSHROOM_2);// 100, RED MUSHROOM CAP
-		plantIds.add(Material.MELON_BLOCK);
+		plantIds.add(Material.BROWN_MUSHROOM);
+		plantIds.add(Material.RED_MUSHROOM);
+		plantIds.add(Material.MELON);
 		plantIds.add(Material.PUMPKIN_STEM);
 		plantIds.add(Material.MELON_STEM);
 		plantIds.add(Material.VINE);
-		plantIds.add(Material.WATER_LILY);
+		plantIds.add(Material.LILY_PAD);
 		plantIds.add(Material.CARROT);
 		plantIds.add(Material.POTATO);
-		plantIds.add(Material.LEAVES_2); // Wut acacia here ? (Wanted ID 162)
-		// plantIds.add(); SUN FLOWER wanted here (ID 175)
+		plantIds.add(Material.SUNFLOWER);
 	}
 
 	private static Set<Material> transparentEarthbending = new HashSet<Material>();
 	static {
+		transparentEarthbending.addAll(leafIds);
+		
 		transparentEarthbending.add(Material.AIR);
-		transparentEarthbending.add(Material.SAPLING);
 		transparentEarthbending.add(Material.WATER);
-		transparentEarthbending.add(Material.STATIONARY_WATER);
 		transparentEarthbending.add(Material.LAVA);
-		transparentEarthbending.add(Material.STATIONARY_LAVA);
-		transparentEarthbending.add(Material.WEB); // Not sure here, previously
-		// ID 30
-		transparentEarthbending.add(Material.LONG_GRASS); // Not sure here,
-		// previously ID 31
-		transparentEarthbending.add(Material.DOUBLE_PLANT);
+		transparentEarthbending.add(Material.COBWEB);
+		transparentEarthbending.add(Material.TALL_GRASS);
+		transparentEarthbending.add(Material.ROSE_BUSH);
 		transparentEarthbending.add(Material.DEAD_BUSH);
-		transparentEarthbending.add(Material.YELLOW_FLOWER);
-		transparentEarthbending.add(Material.RED_ROSE);
+		transparentEarthbending.add(Material.DANDELION);
+		transparentEarthbending.add(Material.DANDELION_YELLOW);
+		transparentEarthbending.add(Material.ROSE_RED);
 		transparentEarthbending.add(Material.BROWN_MUSHROOM);
 		transparentEarthbending.add(Material.RED_MUSHROOM);
 		transparentEarthbending.add(Material.TORCH);
 		transparentEarthbending.add(Material.FIRE);
-		transparentEarthbending.add(Material.CROPS);
+		transparentEarthbending.add(Material.WHEAT);
 		transparentEarthbending.add(Material.SNOW);
 		transparentEarthbending.add(Material.SUGAR_CANE);
 		transparentEarthbending.add(Material.VINE);
@@ -89,46 +117,49 @@ public class BlockTools {
 
 	private static Set<Material> nonOpaque = new HashSet<Material>();
 	static {
+		nonOpaque.addAll(leafIds);
+		
 		nonOpaque.add(Material.AIR);
-		nonOpaque.add(Material.SAPLING);
 		nonOpaque.add(Material.WATER);
-		nonOpaque.add(Material.STATIONARY_WATER);
 		nonOpaque.add(Material.LAVA);
-		nonOpaque.add(Material.STATIONARY_LAVA);
 		nonOpaque.add(Material.POWERED_RAIL);
 		nonOpaque.add(Material.DETECTOR_RAIL);
-		nonOpaque.add(Material.WEB); // Not sure here, previously ID 30
-		nonOpaque.add(Material.LONG_GRASS); // Not sure here, previously ID 31
-		nonOpaque.add(Material.DOUBLE_PLANT);
+		nonOpaque.add(Material.COBWEB);
+		nonOpaque.add(Material.TALL_GRASS); // Not sure here, previously ID 31
+		nonOpaque.add(Material.ROSE_BUSH);
 		nonOpaque.add(Material.DEAD_BUSH);
-		nonOpaque.add(Material.YELLOW_FLOWER);
-		nonOpaque.add(Material.RED_ROSE);
+		nonOpaque.add(Material.DANDELION);
+		nonOpaque.add(Material.DANDELION_YELLOW);
+		nonOpaque.add(Material.ROSE_RED);
+		nonOpaque.add(Material.POPPY);
 		nonOpaque.add(Material.BROWN_MUSHROOM);
 		nonOpaque.add(Material.RED_MUSHROOM);
 		nonOpaque.add(Material.TORCH);
 		nonOpaque.add(Material.FIRE);
 		nonOpaque.add(Material.REDSTONE_WIRE);
-		nonOpaque.add(Material.CROPS);
-		nonOpaque.add(Material.RAILS);
+		nonOpaque.add(Material.WHEAT);
+		nonOpaque.add(Material.RAIL);
 		nonOpaque.add(Material.WALL_SIGN);
 		nonOpaque.add(Material.LEVER);
-		nonOpaque.add(Material.STONE_PLATE);
-		nonOpaque.add(Material.WOOD_PLATE);
-		nonOpaque.add(Material.REDSTONE_TORCH_OFF);
-		nonOpaque.add(Material.REDSTONE_TORCH_ON);
+		nonOpaque.add(Material.STONE_PRESSURE_PLATE);
+		nonOpaque.add(Material.ACACIA_PRESSURE_PLATE);
+		nonOpaque.add(Material.BIRCH_PRESSURE_PLATE);
+		nonOpaque.add(Material.DARK_OAK_PRESSURE_PLATE);
+		nonOpaque.add(Material.JUNGLE_PRESSURE_PLATE);
+		nonOpaque.add(Material.OAK_PRESSURE_PLATE);
+		nonOpaque.add(Material.SPRUCE_PRESSURE_PLATE);
+		nonOpaque.add(Material.REDSTONE_TORCH);
 		nonOpaque.add(Material.STONE_BUTTON);
 		nonOpaque.add(Material.SNOW);
 		nonOpaque.add(Material.SUGAR_CANE);
-		nonOpaque.add(Material.PORTAL);
-		nonOpaque.add(Material.DIODE);
-		nonOpaque.add(Material.DIODE_BLOCK_ON); // 93 ?
-		nonOpaque.add(Material.DIODE_BLOCK_OFF); // 94 ?
+		nonOpaque.add(Material.NETHER_PORTAL);
+		nonOpaque.add(Material.END_PORTAL);
+		nonOpaque.add(Material.REPEATER);
 		nonOpaque.add(Material.PUMPKIN_STEM);
 		nonOpaque.add(Material.MELON_STEM);
 		nonOpaque.add(Material.VINE);
-		nonOpaque.add(Material.WATER_LILY);
-		nonOpaque.add(Material.NETHER_WARTS);
-		nonOpaque.add(Material.ENDER_PORTAL);
+		nonOpaque.add(Material.LILY_PAD);
+		nonOpaque.add(Material.NETHER_WART);
 		nonOpaque.add(Material.COCOA);
 		nonOpaque.add(Material.TRIPWIRE_HOOK);
 		nonOpaque.add(Material.TRIPWIRE);
@@ -141,7 +172,7 @@ public class BlockTools {
 		ironBendables.add(Material.IRON_BLOCK);
 		ironBendables.add(Material.IRON_ORE);
 		ironBendables.add(Material.ANVIL);
-		ironBendables.add(Material.IRON_FENCE);
+		ironBendables.add(Material.IRON_BARS);
 		ironBendables.add(Material.HOPPER);
 		ironBendables.add(Material.CAULDRON);
 	}
@@ -272,6 +303,13 @@ public class BlockTools {
 		}
 		return maxlength;
 	}
+	
+	public static boolean isLeaf(Block block) {
+		if (leafIds.contains(block.getType())) {
+			return true;
+		}
+		return false;
+	}
 
 	public static boolean isPlant(Block block) {
 		if (plantIds.contains(block.getType())) {
@@ -279,19 +317,9 @@ public class BlockTools {
 		}
 		return false;
 	}
-
-	public static boolean isWater(Block block) {
-		if (block == null) {
-			return false;
-		}
-		if ((block.getType() == Material.WATER) || (block.getType() == Material.STATIONARY_WATER)) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	public static boolean isWaterBased(Block block) {
-		if (isWater(block) || (block.getType() == Material.ICE) || (block.getType() == Material.SNOW_BLOCK) || (block.getType() == Material.SNOW)) {
+		if (block.getType() == Material.WATER || (block.getType() == Material.ICE) || (block.getType() == Material.SNOW_BLOCK) || (block.getType() == Material.SNOW)) {
 			return true;
 		}
 		return false;
@@ -303,24 +331,14 @@ public class BlockTools {
 			return false;
 		}
 
-		if (isWater(block) || isLava(block) || (block.getType() == Material.AIR)) {
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean isLava(Block block) {
-		if (block == null) {
-			return false;
-		}
-		if ((block.getType() == Material.LAVA) || (block.getType() == Material.STATIONARY_LAVA)) {
+		if (block.getType() == Material.WATER || block.getType() == Material.LAVA || (block.getType() == Material.AIR)) {
 			return true;
 		}
 		return false;
 	}
 
 	public static boolean isLavaBased(Block block) {
-		if (isLava(block) || (block.getType() == Material.OBSIDIAN)) {
+		if (block.getType() == Material.LAVA || (block.getType() == Material.OBSIDIAN)) {
 			return true;
 		}
 		return false;
@@ -342,7 +360,6 @@ public class BlockTools {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static boolean adjacentToThreeOrMoreSources(Block block) {
 		if (TempBlock.isTempBlock(block)) {
 			return false;
@@ -352,14 +369,18 @@ public class BlockTools {
 		BlockFace[] faces = { BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
 		for (BlockFace face : faces) {
 			Block blocki = block.getRelative(face);
-			if ((blocki.getType() == Material.WATER || blocki.getType() == Material.STATIONARY_WATER) 
-					&& blocki.getData() == FULL 
+			if(!(blocki.getBlockData() instanceof Levelled)) {
+				continue;
+			}
+			Levelled data = (Levelled) blocki.getBlockData();
+			if ((blocki.getType() == Material.WATER) 
+					&& data.getLevel() == data.getMaximumLevel()
 					&& !TempBlock.isTempBlock(blocki)
 					&& ! TempBlock.isTouchingTempBlock(blocki)) {
 				sources++;
 			}
 			if (PhaseChange.isFrozen(blocki)) {
-				if (PhaseChange.isLevel(blocki, FULL)) {
+				if (data.getLevel() == data.getMaximumLevel()) {
 					sources++;
 				}
 			} else if (blocki.getType() == Material.ICE) {
@@ -545,12 +566,11 @@ public class BlockTools {
 		return tempnophysics.contains(block);
 	}
 
-	@SuppressWarnings("deprecation")
 	public static void moveEarthBlock(Block source, Block target) {
 		if (target.getType() == Material.SAND) {
-			TempBlock.makeGlobal(Settings.REVERSE_TIME, target, Material.SANDSTONE, source.getData(), true);
+			TempBlock.makeGlobal(Settings.REVERSE_TIME, target, Material.SANDSTONE, source.getBlockData(), true);
 		} else {
-			TempBlock.makeGlobal(Settings.REVERSE_TIME, target, source.getType(), source.getData(), true);
+			TempBlock.makeGlobal(Settings.REVERSE_TIME, target, source.getType(), source.getBlockData(), true);
 		}
 		
 		if (adjacentToThreeOrMoreSources(source)) {

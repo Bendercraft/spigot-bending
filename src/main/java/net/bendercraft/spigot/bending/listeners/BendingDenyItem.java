@@ -14,11 +14,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -101,8 +101,10 @@ public class BendingDenyItem implements Listener {
 	}
 	
 	@EventHandler
-    public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {
-		sanitize(event.getPlayer());
+    public void onPlayerPickupItemEvent(EntityPickupItemEvent event) {
+		if(event.getEntity() instanceof Player) {
+			sanitize((Player) event.getEntity());
+		}
 	}
 	
 	@EventHandler
@@ -170,6 +172,7 @@ public class BendingDenyItem implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void sanitize(BendingPlayer bender, ItemStack item) {
 		if(item == null || bender == null || bender.getPlayer() == null) {
 			return;
@@ -216,23 +219,23 @@ public class BendingDenyItem implements Listener {
 				|| item.getType() == Material.DIAMOND_CHESTPLATE
 				|| item.getType() == Material.DIAMOND_HELMET
 				|| item.getType() == Material.DIAMOND_LEGGINGS
-				|| item.getType() == Material.GOLD_BOOTS
-				|| item.getType() == Material.GOLD_CHESTPLATE
-				|| item.getType() == Material.GOLD_HELMET
-				|| item.getType() == Material.GOLD_LEGGINGS
+				|| item.getType() == Material.GOLDEN_BOOTS
+				|| item.getType() == Material.GOLDEN_CHESTPLATE
+				|| item.getType() == Material.GOLDEN_HELMET
+				|| item.getType() == Material.GOLDEN_LEGGINGS
 				|| item.getType() == Material.CHAINMAIL_BOOTS
 				|| item.getType() == Material.CHAINMAIL_CHESTPLATE
 				|| item.getType() == Material.CHAINMAIL_HELMET
 				|| item.getType() == Material.CHAINMAIL_LEGGINGS
 				|| item.getType() == Material.SPECTRAL_ARROW
 				|| item.getType() == Material.TIPPED_ARROW
-				|| item.getType() == Material.TOTEM) {
+				|| item.getType() == Material.TOTEM_OF_UNDYING) {
 			removeItem(bender.getPlayer(), item);
 		}
 		
 		// Firebender might keep golden sword for FireBlade
 		if(bender == null || !bender.isBender(BendingElement.FIRE)) {
-			if(item.getType() == Material.GOLD_SWORD) {
+			if(item.getType() == Material.GOLDEN_SWORD) {
 				removeItem(bender.getPlayer(), item);
 			}
 		}

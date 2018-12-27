@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -56,8 +55,7 @@ public class Frozen {
 					&& block.getType() != Material.SAND
 					&& block.getType() != Material.SANDSTONE
 					&& block.getType() != Material.BRICK
-					&& block.getType() != Material.LEAVES
-					&& block.getType() != Material.LEAVES_2) {
+					&& BlockTools.isLeaf(block)) {
 				continue;
 			}
 			int distance = (int) location.distance(block.getLocation());
@@ -73,7 +71,6 @@ public class Frozen {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	private boolean progress() {
 		if (System.currentTimeMillis() - time >= interval) {
 			time = System.currentTimeMillis();
@@ -85,19 +82,17 @@ public class Frozen {
 				Iterator<Block> it = expands.get(iteration).iterator();
 				while(it.hasNext()) {
 					Block block = it.next();
-					if(block.getType() == Material.LEAVES || block.getType() == Material.LEAVES_2) {
-						Material mat = Material.STAINED_GLASS;
+					if(BlockTools.isLeaf(block)) {
 						double rand = Math.random();
-						if(rand < 0.5) {
-							mat = Material.STAINED_GLASS_PANE;
+						Material mat = Material.BLUE_STAINED_GLASS;
+						if(rand < 0.75) {
+							mat = Material.LIGHT_BLUE_STAINED_GLASS;
+						} else if(rand < 0.5) {
+							mat = Material.BLUE_STAINED_GLASS_PANE;
+						} else if(rand < 0.5) {
+							mat = Material.LIGHT_BLUE_STAINED_GLASS_PANE;
 						}
-						
-						DyeColor color = DyeColor.BLUE;
-						rand = Math.random();
-						if(rand < 0.5) {
-							color = DyeColor.LIGHT_BLUE;
-						}
-						TempBlock.makeGlobal(DURATION, block, mat, color.getDyeData(), true);
+						TempBlock.makeGlobal(DURATION, block, mat, true);
 						block.getWorld().playSound(block.getLocation(), Sound.BLOCK_SNOW_PLACE, 1.0f, 1.0f);
 					} else {
 						TempBlock.makeGlobal(DURATION, block,  Material.ICE, true);

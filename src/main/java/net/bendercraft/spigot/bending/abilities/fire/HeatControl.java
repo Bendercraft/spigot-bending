@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -40,7 +41,18 @@ public class HeatControl extends BendingActiveAbility {
 	@ConfigurationParameter("Cook-Time")
 	private static long COOK_TIME = 2000;
 
-	private static final Material[] cookables = { Material.RAW_BEEF, Material.RAW_CHICKEN, Material.RAW_FISH, Material.PORK, Material.POTATO_ITEM, Material.POISONOUS_POTATO, Material.STICK, Material.RABBIT, Material.MUTTON };
+	private static final Material[] cookables = {
+		Material.BEEF,
+		Material.CHICKEN,
+		Material.COD,
+		Material.SALMON,
+		Material.PORKCHOP,
+		Material.POTATO,
+		Material.POISONOUS_POTATO,
+		Material.STICK,
+		Material.RABBIT,
+		Material.MUTTON
+	};
 
 	public static final byte FULL = 0x0;
 
@@ -74,22 +86,20 @@ public class HeatControl extends BendingActiveAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void extinguish(double range) {
 		for (Block block : BlockTools.getBlocksAroundPoint(EntityTools.getTargetBlock(this.player, range).getLocation(), RADIUS)) {
 			if (ProtectionManager.isLocationProtectedFromBending(this.player, register, block.getLocation())) {
 				continue;
 			}
 			// Do not allow firebender to completly negate lavabend
-			if (BlockTools.isLava(block) && TempBlock.isTempBlock(block)) {
+			if (block.getType() == Material.LAVA && TempBlock.isTempBlock(block)) {
 				continue;
 			}
 			if (block.getType() == Material.FIRE) {
 				block.setType(Material.AIR);
-			} else if (block.getType() == Material.STATIONARY_LAVA) {
-				block.setType(Material.OBSIDIAN);
 			} else if (block.getType() == Material.LAVA) {
-				if (block.getData() == FULL) {
+				Levelled data = (Levelled) block.getBlockData();
+				if (data.getLevel() == data.getMaximumLevel()) {
 					block.setType(Material.OBSIDIAN);
 				} else {
 					block.setType(Material.COBBLESTONE);
@@ -167,24 +177,27 @@ public class HeatControl extends BendingActiveAbility {
 	private ItemStack getCooked(ItemStack in) {
 		ItemStack cooked = new ItemStack(Material.AIR);
 		switch (in.getType()) {
-			case RAW_BEEF:
+			case BEEF:
 				cooked.setType(Material.COOKED_BEEF);
 				cooked.setAmount(1);
 				break;
-			case RAW_FISH:
-				cooked.setType(Material.COOKED_FISH);
-				cooked.setData(in.getData());
+			case SALMON:
+				cooked.setType(Material.COOKED_SALMON);
 				cooked.setAmount(1);
 				break;
-			case RAW_CHICKEN:
+			case COD:
+				cooked.setType(Material.COOKED_COD);
+				cooked.setAmount(1);
+				break;
+			case CHICKEN:
 				cooked.setType(Material.COOKED_CHICKEN);
 				cooked.setAmount(1);
 				break;
-			case PORK:
-				cooked.setType(Material.GRILLED_PORK);
+			case PORKCHOP:
+				cooked.setType(Material.COOKED_PORKCHOP);
 				cooked.setAmount(1);
 				break;
-			case POTATO_ITEM:
+			case POTATO:
 			case POISONOUS_POTATO:
 				cooked.setType(Material.BAKED_POTATO);
 				cooked.setAmount(1);
@@ -213,7 +226,6 @@ public class HeatControl extends BendingActiveAbility {
 	}
 
 	// Copy from Melt (now deleted)
-	@SuppressWarnings("deprecation")
 	public static void melt(Player player, Block block) {
 		RegisteredAbility register = AbilityManager.getManager().getRegisteredAbility(PhaseChange.NAME);
 		if (ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())) {
@@ -237,7 +249,6 @@ public class HeatControl extends BendingActiveAbility {
 				PhaseChange.thawThenRemove(block);
 			} else {
 				block.setType(Material.WATER);
-				block.setData(FULL);
 			}
 		}
 	}
@@ -247,7 +258,7 @@ public class HeatControl extends BendingActiveAbility {
 		if (ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())) {
 			return;
 		}
-		if (BlockTools.isWater(block) && !TempBlock.isTempBlock(block) && !TempBlock.isTempBlock(block) && ! TempBlock.isTouchingTempBlock(block)) {
+		if (block.getType() == Material.WATER && !TempBlock.isTempBlock(block) && !TempBlock.isTempBlock(block) && ! TempBlock.isTouchingTempBlock(block)) {
 			block.setType(Material.AIR);
 			block.getWorld().playEffect(block.getLocation(), Effect.SMOKE, 1);
 		}

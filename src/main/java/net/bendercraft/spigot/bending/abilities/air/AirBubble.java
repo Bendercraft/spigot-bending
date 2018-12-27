@@ -30,7 +30,6 @@ public class AirBubble extends Bubble {
 		}
 
 		this.pushedMaterials.add(Material.WATER);
-		this.pushedMaterials.add(Material.STATIONARY_WATER);
 	}
 
 	@Override

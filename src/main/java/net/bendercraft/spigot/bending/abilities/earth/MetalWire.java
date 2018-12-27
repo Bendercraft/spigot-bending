@@ -11,6 +11,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import com.google.common.collect.Sets;
@@ -50,7 +52,10 @@ public class MetalWire {
 				int slot = player.getInventory().getHeldItemSlot();
 				ItemStack rod = player.getInventory().getItem(slot);
 				if (rod != null && rod.getType() == Material.FISHING_ROD) {
-					rod.setDurability((short) (rod.getDurability() - 2));
+					ItemMeta meta = rod.getItemMeta();
+					Damageable metaDamageable = (Damageable) meta;
+					metaDamageable.setDamage(metaDamageable.getDamage() - 2);
+					rod.setItemMeta(meta);
 					player.getInventory().setItem(slot, rod);
 				}
 			}

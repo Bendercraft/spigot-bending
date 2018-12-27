@@ -7,6 +7,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -156,7 +157,6 @@ public class AirSlice extends BendingActiveAbility {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void progress() {
 		if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
@@ -184,8 +184,9 @@ public class AirSlice extends BendingActiveAbility {
 					}
 				}
 				if (BlockTools.isSolid(block) || block.isLiquid()) {
-					if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !TempBlock.isTempBlock(block))) {
-						if (block.getData() == FULL) {
+					if (block.getType() == Material.LAVA && !TempBlock.isTempBlock(block)) {
+						Levelled data = (Levelled) block.getBlockData();
+						if (data.getLevel() == data.getMaximumLevel()) {
 							block.setType(Material.OBSIDIAN);
 						} else {
 							block.setType(Material.COBBLESTONE);

@@ -21,7 +21,6 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
-import net.bendercraft.spigot.bending.utils.BlockTools;
 
 @ABendingAbility(name = FireJet.NAME, element = BendingElement.FIRE, shift=false)
 public class FireJet extends BendingActiveAbility {
@@ -107,8 +106,8 @@ public class FireJet extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if ((BlockTools.isWater(player.getLocation().getBlock()) 
-				|| (System.currentTimeMillis() > (startedTime + duration)))) {
+		if (player.getLocation().getBlock().getType() == Material.WATER 
+				|| System.currentTimeMillis() > (startedTime + duration)) {
 			return false;
 		}
 		

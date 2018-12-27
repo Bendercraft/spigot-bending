@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -46,21 +47,6 @@ public class AirSwipe extends BendingActiveAbility {
 	public final static String NAME = "AirSwipe";
 	
 	private static int ID = Integer.MIN_VALUE;
-	private static List<Material> breakables = new ArrayList<Material>();
-	static {
-		breakables.add(Material.SAPLING);
-		breakables.add(Material.DEAD_BUSH);
-		breakables.add(Material.LONG_GRASS);
-		breakables.add(Material.DOUBLE_PLANT);
-		breakables.add(Material.YELLOW_FLOWER);
-		breakables.add(Material.RED_ROSE);
-		breakables.add(Material.BROWN_MUSHROOM);
-		breakables.add(Material.RED_MUSHROOM);
-		breakables.add(Material.CROPS);
-		breakables.add(Material.CACTUS);
-		breakables.add(Material.SUGAR_CANE);
-		breakables.add(Material.VINE);
-	};
 
 	@ConfigurationParameter("Base-Damage")
 	private static int DAMAGE = 5;
@@ -241,7 +227,6 @@ public class AirSwipe extends BendingActiveAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private boolean advanceSwipe() {
 		this.affectedEntities.clear();
 
@@ -295,8 +280,9 @@ public class AirSwipe extends BendingActiveAbility {
 				} else {
 					toRemove.add(direction);
 				}
-				if ((block.getType() == Material.LAVA) || ((block.getType() == Material.STATIONARY_LAVA) && !TempBlock.isTempBlock(block))) {
-					if (block.getData() == BlockTools.FULL) {
+				if (block.getType() == Material.LAVA && !TempBlock.isTempBlock(block)) {
+					Levelled data = (Levelled) block.getBlockData();
+					if (data.getLevel() == data.getMaximumLevel()) {
 						block.setType(Material.OBSIDIAN);
 					} else {
 						block.setType(Material.COBBLESTONE);
@@ -326,7 +312,7 @@ public class AirSwipe extends BendingActiveAbility {
 	}
 
 	private boolean isBlockBreakable(Block block) {
-		if (breakables.contains(block.getType())) {
+		if(BlockTools.isPlant(block)) {
 			return true;
 		}
 		return false;

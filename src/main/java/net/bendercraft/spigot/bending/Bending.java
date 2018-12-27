@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,9 +48,13 @@ public class Bending extends JavaPlugin {
 	
 	private Logger abilityLogger;
 
+	public NamespacedKey key;
+
 	@Override
 	public void onEnable() {
 		instance = this;
+		
+		this.key = new NamespacedKey(this, getDescription().getName());
 		
 		abilityLogger = Logger.getLogger("Bending Ability");
 		abilityLogger.setUseParentHandlers(false);

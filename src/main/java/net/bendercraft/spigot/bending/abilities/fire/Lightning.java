@@ -3,9 +3,11 @@ package net.bendercraft.spigot.bending.abilities.fire;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import org.bukkit.Effect;
+
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -79,7 +81,6 @@ public class Lightning extends BendingActiveAbility {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	private void strike() {
 		bender.fire.consume(NAME, POWER);
 		
@@ -100,17 +101,18 @@ public class Lightning extends BendingActiveAbility {
 			direction = direction.normalize();
 			for(double j=0 ; j < distance ; j += 0.1) {
 				Location loc = locations.get(i).clone().add(direction.clone().multiply(j));
-				float red = 0x80;
-				float green = 0xf2;
-				float blue = 0xff;
-				loc.getWorld().spigot().playEffect(loc, Effect.COLOURED_DUST, 0, 0, (float) red/ 255, (float) green/ 255, (float) blue/ 255, 1, 0, 30);
+				int red = 0x80;
+				int green = 0xf2;
+				int blue = 0xff;
+				DustOptions data = new Particle.DustOptions(Color.fromRGB(red, green, blue), 1);
+				loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, data);
 			}
 		}
-		player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_LIGHTNING_THUNDER, 1.0f, 0.0f);
+		player.getWorld().playSound(player.getEyeLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 0.0f);
 		if(redirectLocation != null) {
-			redirectLocation.getWorld().playSound(redirectLocation, Sound.ENTITY_LIGHTNING_THUNDER, 1.0f, 0.0f);
+			redirectLocation.getWorld().playSound(redirectLocation, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0f, 0.0f);
 		}
-		targetLocation.getWorld().playSound(targetLocation, Sound.ENTITY_LIGHTNING_IMPACT, 1.0f, 0.0f);
+		targetLocation.getWorld().playSound(targetLocation, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1.0f, 0.0f);
 		
 		// Damage !
 		for(LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(targetLocation, RADIUS)) {

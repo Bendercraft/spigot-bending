@@ -1,5 +1,6 @@
 package net.bendercraft.spigot.bending.abilities.water;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -10,7 +11,6 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPassiveAbility;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
-import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
@@ -56,7 +56,7 @@ public class FastSwimming extends BendingPassiveAbility {
 
 	@Override
 	public void progress() {
-		if (BlockTools.isWater(player.getLocation().getBlock()) && !TempBlock.isTempBlock(player.getLocation().getBlock())) {
+		if (player.getLocation().getBlock().getType() == Material.WATER && !TempBlock.isTempBlock(player.getLocation().getBlock())) {
 			swimFast();
 		}
 	}

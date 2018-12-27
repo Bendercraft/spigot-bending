@@ -52,8 +52,7 @@ public class LavaSpin extends BendingActiveAbility {
 	public static double REACH = 15;
 	
 	
-	private static byte level = 0x0;
-	private static Material MATERIAL_REST = Material.COBBLE_WALL;
+	private static Material MATERIAL_REST = Material.COBBLESTONE_WALL;
 	private static Material MATERIAL_RESTLESS = Material.LAVA;
 	
 	private List<LivingEntity> affecteds;
@@ -115,10 +114,8 @@ public class LavaSpin extends BendingActiveAbility {
 		block.revertBlock();
 		if(current.getBlock().getType() == Material.AIR || BlockTools.isPlant(current.getBlock())) {
 			if(lava) {
-				//block = new TempBlock(current.getBlock(), MATERIAL_RESTLESS, level);
-				block = TempBlock.makeTemporary(this, current.getBlock(), MATERIAL_RESTLESS, level, false);
+				block = TempBlock.makeTemporary(this, current.getBlock(), MATERIAL_RESTLESS, false);
 			} else {
-				//block = new TempBlock(current.getBlock(), MATERIAL_REST);
 				block = TempBlock.makeTemporary(this, current.getBlock(), MATERIAL_REST, false);
 			}
 		} else {

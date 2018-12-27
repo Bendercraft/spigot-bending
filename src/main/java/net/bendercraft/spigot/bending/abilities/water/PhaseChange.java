@@ -58,7 +58,6 @@ public class PhaseChange extends BendingActiveAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
@@ -93,7 +92,7 @@ public class PhaseChange extends BendingActiveAbility {
 								owner.melted.remove(b);
 							}
 						} else {
-							frozens.add(TempBlock.makeTemporary(this, block, Material.ICE, block.getData(), true));
+							frozens.add(TempBlock.makeTemporary(this, block, Material.ICE, block.getBlockData(), true));
 						}
 					}
 				}
@@ -105,7 +104,6 @@ public class PhaseChange extends BendingActiveAbility {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean sneak() {
 		if(getState() == BendingAbilityState.START) {
@@ -135,7 +133,7 @@ public class PhaseChange extends BendingActiveAbility {
 					} else if(TempBlock.isTempBlock(block)) {
 						TempBlock.get(block).revertBlock();
 					} else {
-						melted.add(TempBlock.makeTemporary(this, block, Material.WATER, block.getData(), true));
+						melted.add(TempBlock.makeTemporary(this, block, Material.WATER, block.getBlockData(), true));
 					}
 				}
 			}
@@ -150,7 +148,7 @@ public class PhaseChange extends BendingActiveAbility {
 		if (ProtectionManager.isLocationProtectedFromBending(player, AbilityManager.getManager().getRegisteredAbility(NAME), block.getLocation())) {
 			return false;
 		}
-		if ((block.getType() == Material.WATER) || (block.getType() == Material.STATIONARY_WATER)) {
+		if (block.getType() == Material.WATER) {
 			if (!TempBlock.isTempBlock(block) || isMelted(block)) {
 				return true;
 			}

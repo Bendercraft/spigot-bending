@@ -14,6 +14,7 @@ import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
 @ABendingAbility(name = Illumination.NAME, element = BendingElement.FIRE, shift=false)
@@ -43,17 +44,16 @@ public class Illumination extends BendingActiveAbility {
 		Block standingblock = player.getLocation().getBlock();
 		Block standblock = standingblock.getRelative(BlockFace.DOWN);
 		
-		if ((FireStream.isIgnitable(player, standingblock) 
-				&& (standblock.getType() != Material.LEAVES)) 
-				&& (block == null) && !isIlluminated(standblock)) {
+		if (FireStream.isIgnitable(player, standingblock)
+				&& !BlockTools.isLeaf(standblock)
+				&& block == null && !isIlluminated(standblock)) {
 			block = TempBlock.makeTemporary(this, standingblock, Material.TORCH, false);
 		} else if (FireStream.isIgnitable(this.player, standingblock) 
 				&& (standblock.getType() == Material.DIRT
 					|| standblock.getType() == Material.STONE
 					|| standblock.getType() == Material.GRASS
 					|| standblock.getType() == Material.COBBLESTONE
-					|| standblock.getType() == Material.HARD_CLAY
-					|| standblock.getType() == Material.STAINED_CLAY
+					|| standblock.getType() == Material.CLAY
 					|| standblock.getType() == Material.SANDSTONE
 					|| standblock.getType() == Material.RED_SANDSTONE)
 				&& !block.equals(standblock) 

@@ -58,7 +58,7 @@ public class Suffocate extends BendingActiveAbility {
 
 		this.time = this.startedTime;
 
-		this.temp = new ItemStack(Material.STAINED_GLASS, 1, (byte) 0x0);
+		this.temp = new ItemStack(Material.WHITE_STAINED_GLASS, 1);
 		List<String> lore = new LinkedList<String>();
 		lore.add(LORE_NAME);
 		ItemMeta meta = this.temp.getItemMeta();

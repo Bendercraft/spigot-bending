@@ -80,7 +80,7 @@ public class BendingEntityListener implements Listener {
 		if(event.getCause() == DamageCause.ENTITY_ATTACK 
 				&& event.getDamager() instanceof Player) {
 			Player attacker = (Player) event.getDamager();
-			if(attacker.getInventory().getItemInMainHand().getType() == Material.GOLD_SWORD) {
+			if(attacker.getInventory().getItemInMainHand().getType() == Material.GOLDEN_SWORD) {
 				BendingPlayer bender = BendingPlayer.getBendingPlayer(attacker);
 				if(bender != null 
 						&& FireBlade.isFireBlading(attacker) 
@@ -110,10 +110,10 @@ public class BendingEntityListener implements Listener {
 			&& event.getDamager() instanceof Player) {
 			Player attacker = (Player) event.getDamager();
 			if(attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_SWORD
-					|| attacker.getInventory().getItemInMainHand().getType() == Material.GOLD_SWORD
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.GOLDEN_SWORD
 					|| attacker.getInventory().getItemInMainHand().getType() == Material.IRON_SWORD
 					|| attacker.getInventory().getItemInMainHand().getType() == Material.STONE_SWORD
-					|| attacker.getInventory().getItemInMainHand().getType() == Material.WOOD_SWORD) {
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.WOODEN_SWORD) {
 				BendingPlayer bender = BendingPlayer.getBendingPlayer(attacker);
 				if(bender == null || !bender.hasAffinity(BendingAffinity.SWORD)) {
 					event.setDamage(event.getDamage()*0.5);
@@ -128,7 +128,7 @@ public class BendingEntityListener implements Listener {
 			if(attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_AXE
 					|| attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_HOE
 					|| attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_PICKAXE
-					|| attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_SPADE) {
+					|| attacker.getInventory().getItemInMainHand().getType() == Material.DIAMOND_SHOVEL) {
 				event.setDamage(event.getDamage()*0.3);
 			}
 		}

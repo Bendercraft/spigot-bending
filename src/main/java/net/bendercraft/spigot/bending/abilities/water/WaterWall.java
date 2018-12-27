@@ -172,8 +172,7 @@ public class WaterWall extends BendingActiveAbility {
 			Vector vector = location.getDirection().clone().normalize();
 			block = location.clone().add(vector.clone().multiply(2)).getBlock();
 			if (Drainbending.canBeSource(block)) {
-				//drainedBlock = new TempBlock(block, Material.STATIONARY_WATER, (byte) 0x0);
-				drainedBlock = TempBlock.makeTemporary(this, block, Material.STATIONARY_WATER, false);
+				drainedBlock = TempBlock.makeTemporary(this, block, Material.WATER, false);
 				sourceblock = block;
 				focusBlock();
 				// Radius is thirded for Drainbending
@@ -302,7 +301,6 @@ public class WaterWall extends BendingActiveAbility {
 				Set<Material> transparentForSelection = new HashSet<Material>();
 				transparentForSelection.add(Material.AIR);
 				transparentForSelection.add(Material.WATER);
-				transparentForSelection.add(Material.STATIONARY_WATER);
 				transparentForSelection.add(Material.SNOW);
 				transparentForSelection.add(Material.ICE);
 				Location loc = EntityTools.getTargetedLocation(player, (int) RANGE, transparentForSelection);

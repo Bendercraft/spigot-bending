@@ -52,7 +52,7 @@ public class FireBlade extends BendingActiveAbility {
 	@Override
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
-			blade = new ItemStack(Material.GOLD_SWORD);
+			blade = new ItemStack(Material.GOLDEN_SWORD);
 			ItemMeta meta = blade.getItemMeta();
 			meta.setLore(Arrays.asList(LORE_NAME));
 			blade.setItemMeta(meta);

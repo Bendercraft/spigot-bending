@@ -14,6 +14,7 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
+import org.bukkit.block.data.Rotatable;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -42,6 +43,7 @@ import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 
+@SuppressWarnings("deprecation")
 @ABendingAbility(name = C4.NAME, affinity = BendingAffinity.CHI)
 public class C4 extends BendingActiveAbility {
 	public final static String NAME = "C4";
@@ -224,7 +226,7 @@ public class C4 extends BendingActiveAbility {
 			return;
 		}
 
-		if(!hidden && bomb != null && bomb.getBlock().getType() != Material.SKULL) {
+		if(!hidden && bomb != null && bomb.getBlock().getType() != Material.SKELETON_SKULL) {
 			remove();
 			return;
 		}
@@ -248,32 +250,15 @@ public class C4 extends BendingActiveAbility {
 		remove();
 	}
 
-	@SuppressWarnings("deprecation")
 	private void generateC4(Block block, BlockFace face) {
-		byte facing = 0x1;
-		switch (face) {
-			case SOUTH:
-				facing = 0x3;
-				break;
-			case NORTH:
-				facing = 0x2;
-				break;
-			case WEST:
-				facing = 0x4;
-				break;
-			case EAST:
-				facing = 0x5;
-				break;
-			default:
-				facing = 0x1;
-				break;
-		}
+		Rotatable data = (Rotatable) Material.SKELETON_SKULL.createBlockData();
+		data.setRotation(face.getOppositeFace());
 		if(bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
 			hidden = true;
 			player.sendBlockChange(block.getLocation(), Material.TNT, (byte) 0x0);
 		} else {
 			hidden = false;
-			bomb = TempBlock.makeTemporary(this, block, Material.SKULL, facing, false);
+			bomb = TempBlock.makeTemporary(this, block, Material.SKELETON_SKULL, data, false);
 			Skull skull = (Skull) bomb.getBlock().getState();
 			skull.setSkullType(SkullType.PLAYER);
 			skull.setOwner("MHF_TNT");
@@ -346,7 +331,6 @@ public class C4 extends BendingActiveAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void removeBlock(Block block) {
 		if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtect.getInstance().getAPI();
@@ -370,7 +354,7 @@ public class C4 extends BendingActiveAbility {
 	}
 
 	public static Object isCFour(Block block) {
-		if (block.getType() != Material.SKULL) {
+		if (block.getType() != Material.SKELETON_SKULL) {
 			return null;
 		}
 

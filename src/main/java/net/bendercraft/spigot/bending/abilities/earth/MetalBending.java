@@ -6,9 +6,10 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Openable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 
 import net.bendercraft.spigot.bending.abilities.*;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
@@ -24,7 +25,7 @@ public class MetalBending extends BendingActiveAbility {
 
 	private static Map<Material, Integer> metals = new HashMap<Material, Integer>();
 	static {
-		metals.put(Material.IRON_SPADE, 1);
+		metals.put(Material.IRON_SHOVEL, 1);
 		metals.put(Material.IRON_ORE, 1);
 		metals.put(Material.IRON_BLOCK, 9);
 		metals.put(Material.IRON_DOOR, 6);
@@ -40,9 +41,9 @@ public class MetalBending extends BendingActiveAbility {
 		metals.put(Material.ANVIL, 31);
 		metals.put(Material.HOPPER, 5);
 		metals.put(Material.CAULDRON, 7);
-		metals.put(Material.RAILS, 6);
+		metals.put(Material.RAIL, 6);
 		metals.put(Material.TRIPWIRE, 1);
-		metals.put(Material.IRON_PLATE, 2);
+		metals.put(Material.IRON_TRAPDOOR, 2);
 	}
 
 	private long time;
@@ -66,26 +67,21 @@ public class MetalBending extends BendingActiveAbility {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static void use(Player pl, Block bl) {
 		// Don't really like it, magic value
 		if (EntityTools.isBender(pl, BendingElement.EARTH) 
 				&& NAME.equals(EntityTools.getBendingAbility(pl))) {
 			if (EntityTools.canBend(pl, NAME)) {
-				if (bl.getType() == Material.IRON_DOOR_BLOCK) {
-					if (bl.getData() >= 8) {
-						bl = bl.getRelative(BlockFace.DOWN);
-					}
-					if (bl.getType() == Material.IRON_DOOR_BLOCK) {
-						RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(NAME);
-						if (!ProtectionManager.isLocationProtectedFromBending(pl, registered, bl.getLocation())) {
-							if (bl.getData() < 4) {
-								bl.setData((byte) (bl.getData() + 4));
-								bl.getWorld().playSound(bl.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1.0f, 1.0f);
-							} else {
-								bl.setData((byte) (bl.getData() - 4));
-								bl.getWorld().playSound(bl.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1.0f, 1.0f);
-							}
+				if (bl.getType() == Material.IRON_DOOR) {
+					Openable data = (Openable) bl.getBlockData();
+					RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(NAME);
+					if (!ProtectionManager.isLocationProtectedFromBending(pl, registered, bl.getLocation())) {
+						if (data.isOpen()) {
+							data.setOpen(false);
+							bl.getWorld().playSound(bl.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1.0f, 1.0f);
+						} else {
+							data.setOpen(true);
+							bl.getWorld().playSound(bl.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1.0f, 1.0f);
 						}
 					}
 				}
@@ -130,7 +126,11 @@ public class MetalBending extends BendingActiveAbility {
 		int max = items.getType().getMaxDurability();
 		int nb = metals.get(items.getType());
 		if (max > 0) {
-			int cur = max - items.getDurability();
+			int cur = max;
+			if(items.hasItemMeta() && items.getItemMeta() instanceof Damageable) {
+				Damageable meta = (Damageable) items.getItemMeta();
+				cur -= meta.getDamage();
+			}
 			player.sendMessage(cur + "/" + max);
 			double prc = (double) cur / max;
 

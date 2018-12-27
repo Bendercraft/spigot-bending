@@ -89,7 +89,7 @@ public class LavaFlow extends BendingActiveAbility {
 			}
 			List<Block> test = BlockTools.getBlocksOnPlane(block.getLocation(), AREA);
 			for(Block temp : test) {
-				if(temp.getType() == Material.LAVA || temp.getType() == Material.STATIONARY_LAVA) {
+				if(temp.getType() == Material.LAVA) {
 					if(!TempBlock.isTempBlock(block) || LavaTrain.getLavaTrain(block) != null) {
 						streams.add(temp.getLocation());
 					}
