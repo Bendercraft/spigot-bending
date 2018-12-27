@@ -3,17 +3,20 @@ package net.bendercraft.spigot.bending.integrations.worldguard;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.RegionQuery;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.flags.registry.SimpleFlagRegistry;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.AbilityManager;
@@ -67,7 +70,8 @@ public class WorldGuardProtection implements Listener {
     
     private List<StateFlag> all;
 
-    private WorldGuardPlugin worldguard = null;
+    private WorldGuardPlugin worldguardPlugin = null;
+    private WorldGuard worldguard = null;
 	private Bending plugin;
 	private File folder;
 	
@@ -82,11 +86,12 @@ public class WorldGuardProtection implements Listener {
         //Get available plugins
         PluginManager pm = Bukkit.getServer().getPluginManager();
 
-        Plugin worlguard = pm.getPlugin("WorldGuard");
-        if ((worlguard != null) && (worlguard.isEnabled())) {
+        Plugin worldguardPlugin = pm.getPlugin("WorldGuard");
+        if ((worldguardPlugin != null) && (worldguardPlugin.isEnabled())) {
         	folder = new File(plugin.getDataFolder(), "flags");
         	folder.mkdirs();
-            worldguard = (WorldGuardPlugin) worlguard;
+            this.worldguardPlugin = (WorldGuardPlugin) worldguardPlugin;
+            this.worldguard = WorldGuard.getInstance();
 			plugin.getServer().getPluginManager().registerEvents(this, plugin);
             generateFlags();
             addFlags();
@@ -160,9 +165,10 @@ public class WorldGuardProtection implements Listener {
             return false;
         }
 
-        com.sk89q.worldguard.LocalPlayer localPlayer = worldguard.wrapPlayer(player);
-        RegionManager manager = worldguard.getRegionManager(location.getWorld());
-        ApplicableRegionSet regions = manager.getApplicableRegions(location);
+        com.sk89q.worldguard.LocalPlayer localPlayer = worldguardPlugin.wrapPlayer(player);
+        RegionContainer regionContainer = worldguard.getPlatform().getRegionContainer();
+		RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(location.getWorld()));
+        ApplicableRegionSet regions = regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ()));
 
         State state = regions.queryState(localPlayer, perksBending);
 
@@ -178,9 +184,10 @@ public class WorldGuardProtection implements Listener {
             return false;
         }
 
-        com.sk89q.worldguard.LocalPlayer localPlayer = worldguard.wrapPlayer(player);
-        RegionManager manager = worldguard.getRegionManager(location.getWorld());
-        ApplicableRegionSet regions = manager.getApplicableRegions(location);
+        com.sk89q.worldguard.LocalPlayer localPlayer = worldguardPlugin.wrapPlayer(player);
+        RegionContainer regionContainer = worldguard.getPlatform().getRegionContainer();
+		RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(location.getWorld()));
+        ApplicableRegionSet regions = regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ()));
 
         StateFlag.State state = regions.queryState(localPlayer, abilityFlags.get(ability));
         if (state != null) {
@@ -231,14 +238,14 @@ public class WorldGuardProtection implements Listener {
             return true;
         }
 
-        com.sk89q.worldguard.LocalPlayer localPlayer = worldguard.wrapPlayer(player);
+        com.sk89q.worldguard.LocalPlayer localPlayer = worldguardPlugin.wrapPlayer(player);
         for (Location location : new Location[] { loc, player.getLocation() }) {
             if (!player.isOnline()) {
                 return true;
             }
-            RegionContainer container = worldguard.getRegionContainer();
-            RegionQuery query = container.createQuery();
-            if (!query.testState(location, localPlayer, DefaultFlag.OTHER_EXPLOSION)) {
+            RegionContainer regionContainer = worldguard.getPlatform().getRegionContainer();
+            RegionQuery query = regionContainer.createQuery();
+            if (!query.testState(BukkitAdapter.adapt(location), localPlayer, Flags.OTHER_EXPLOSION)) {
                 return true;
             }
         }
@@ -255,9 +262,10 @@ public class WorldGuardProtection implements Listener {
             return false;
         }
 
-        com.sk89q.worldguard.LocalPlayer localPlayer = worldguard.wrapPlayer(player);
-        RegionManager manager = worldguard.getRegionManager(location.getWorld());
-        ApplicableRegionSet regions = manager.getApplicableRegions(location);
+        com.sk89q.worldguard.LocalPlayer localPlayer = worldguardPlugin.wrapPlayer(player);
+        RegionContainer regionContainer = worldguard.getPlatform().getRegionContainer();
+		RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(location.getWorld()));
+        ApplicableRegionSet regions = regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ()));
         StateFlag.State state = regions.queryState(localPlayer, passivesBending);
         if (state != null) {
             return state != StateFlag.State.ALLOW;
@@ -276,8 +284,9 @@ public class WorldGuardProtection implements Listener {
     	try {
     		fr = new FileReader(getFile(world));
     		List<StoredFlags> flags = Arrays.asList(gson.fromJson(fr, StoredFlags[].class));
-    		RegionManager rgm = worldguard.getRegionManager(world);
-    		for(Entry<String, ProtectedRegion> entry : rgm.getRegions().entrySet()) {
+    		RegionContainer regionContainer = worldguard.getPlatform().getRegionContainer();
+    		RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world));
+    		for(Entry<String, ProtectedRegion> entry : regionManager.getRegions().entrySet()) {
     			for(StoredFlags storedFlag : flags) {
     				if(storedFlag.region.equals(entry.getKey())) {
     					try {
@@ -300,8 +309,9 @@ public class WorldGuardProtection implements Listener {
     
     public void saveFlags(World world) {
     	List<StoredFlags> flags = new ArrayList<StoredFlags>();
-    	RegionManager rgm = worldguard.getRegionManager(world);
-    	for(Entry<String, ProtectedRegion> entry : rgm.getRegions().entrySet()) {
+    	RegionContainer regionContainer = worldguard.getPlatform().getRegionContainer();
+		RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world));
+    	for(Entry<String, ProtectedRegion> entry : regionManager.getRegions().entrySet()) {
     		for(Entry<Flag<?>, Object> entryFlags : entry.getValue().getFlags().entrySet()) {
     			Optional<StateFlag> test = all.stream().filter(x -> x.getName().equals(entryFlags.getKey().getName())).findAny();
     			if(test.isPresent()) {
