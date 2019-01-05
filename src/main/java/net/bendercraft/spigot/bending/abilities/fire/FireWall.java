@@ -2,9 +2,10 @@ package net.bendercraft.spigot.bending.abilities.fire;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.bukkit.Effect;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -28,8 +29,9 @@ import net.bendercraft.spigot.bending.utils.ProtectionManager;
 public class FireWall extends BendingActiveAbility {
 	public final static String NAME = "FireWall";
 
-	private static double maxangle = 50;
-	private static long interval = 250;
+	private static final double PARTICLE_SPEED   = 1.0 / 32.0;
+	private static final double MAX_ANGLE        = 50.0;
+	private static       long   DISPLAY_INTERVAL = 450L;
 
 	@ConfigurationParameter("Range")
 	private static int RANGE = 4;
@@ -58,7 +60,7 @@ public class FireWall extends BendingActiveAbility {
 	private Location origin;
 	private long time;
 	private int damagetick = 0, intervaltick = 0;
-	private List<Block> blocks = new LinkedList<Block>();
+	private List<Block> blocks = new LinkedList<>();
 
 	private int damage;
 	private long duration;
@@ -118,7 +120,7 @@ public class FireWall extends BendingActiveAbility {
 			Vector compare = direction.clone();
 			compare.setY(0);
 
-			if (Math.abs(direction.angle(compare)) > Math.toRadians(maxangle)) {
+			if (Math.abs(direction.angle(compare)) > Math.toRadians(MAX_ANGLE)) {
 				return false;
 			}
 
@@ -138,7 +140,7 @@ public class FireWall extends BendingActiveAbility {
 			return;
 		}
 
-		if ((this.time - this.startedTime) > (this.intervaltick * interval)) {
+		if ((this.time - this.startedTime) > (this.intervaltick * DISPLAY_INTERVAL)) {
 			this.intervaltick++;
 			display();
 		}
@@ -216,7 +218,8 @@ public class FireWall extends BendingActiveAbility {
 
 	private void display() {
 		for (Block block : this.blocks) {
-			block.getWorld().playEffect(block.getLocation(), Effect.MOBSPAWNER_FLAMES, 0, 15);
+			Location location = block.getLocation();
+			location.getWorld().spawnParticle(Particle.FLAME, location, 7, 0.25, 0.25, 0.25, PARTICLE_SPEED, null, true);
 		}
 	}
 
