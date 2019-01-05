@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
@@ -415,8 +416,33 @@ public class BlockTools {
 		return blocks;
 	}
 
+	public static List<Location> getLocationBetweenRanges(final Location center, double minRadius, double maxRadius) {
+		List<Location> blocks = new LinkedList<>();
+
+		final World world = center.getWorld();
+		final int r = (int) maxRadius + 4;
+
+		int xorg = center.getBlockX();
+		int yorg = center.getBlockY();
+		int zorg = center.getBlockZ();
+
+		for (int x = xorg - r; x <= (xorg + r); x++) {
+			for (int y = yorg - r; y <= (yorg + r); y++) {
+				for (int z = zorg - r; z <= (zorg + r); z++) {
+					Block block = world.getBlockAt(x, y, z);
+					Location location = block.getLocation();
+					final double distance = location.distance(center);
+					if (minRadius <= distance && distance <= maxRadius) {
+						blocks.add(location);
+					}
+				}
+			}
+		}
+		return blocks;
+	}
+
 	public static List<Block> getBlocksAroundPoint(Location location, double radius) {
-		List<Block> blocks = new LinkedList<Block>();
+		List<Block> blocks = new LinkedList<>();
 
 		int xorg = location.getBlockX();
 		int yorg = location.getBlockY();

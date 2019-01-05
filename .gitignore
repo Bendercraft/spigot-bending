@@ -12,3 +12,4 @@ build.xml
 /.sonar/
 /.idea/
 *.jar
+/out/

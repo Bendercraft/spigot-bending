@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -79,13 +80,15 @@ public class SmokeBomb extends BendingActiveAbility {
 			this.cooldown -= 500;
 		}
 		this.ticksRemaining = duration * 20;
-		this.locs = new ArrayList<Location>();
-		this.targets = new ArrayList<LivingEntity>();
+		this.locs = new ArrayList<>();
+		this.targets = new ArrayList<>();
 
-		List<Block> blocks = BlockTools.getBlocksAroundPoint(this.origin, RADIUS);
-		for (Block block : blocks) {
-			this.locs.add(block.getLocation());
+		final double maxParticulesRadius = RADIUS;
+		double minParticlesRadius = maxParticulesRadius - 2.0D;
+		if (minParticlesRadius < 0) {
+			minParticlesRadius = 0;
 		}
+		this.locs = BlockTools.getLocationBetweenRanges(this.origin, minParticlesRadius, maxParticulesRadius);
 	}
 
 	@Override
@@ -156,9 +159,9 @@ public class SmokeBomb extends BendingActiveAbility {
 			}
 		}
 
-		if ((this.ticksRemaining % 16) == 0) {
+		if ((this.ticksRemaining % 20) == 0) {
 			for (Location loc : this.locs) {
-				loc.getWorld().playEffect(loc, Effect.SMOKE, 1, 15);
+				loc.getWorld().spawnParticle(Particle.SMOKE_NORMAL, loc, 1, 0, 0, 0, 0, null, true);
 			}
 		}
 
