@@ -77,13 +77,10 @@ public class TempBlock {
 		
 		instances.put(temp.block, temp);
 		if(temp.ability != null) {
-			List<TempBlock> temps = temporaries.get(temp.ability);
-			if(temps == null) {
-				temps = new LinkedList<TempBlock>();
-				temporaries.put(temp.ability, temps);
-			}
+			List<TempBlock> temps = temporaries.computeIfAbsent(temp.ability, k -> new LinkedList<>());
 			temps.add(temp);
-		} else {
+		}
+		else {
 			globals.add(temp);
 		}
 		

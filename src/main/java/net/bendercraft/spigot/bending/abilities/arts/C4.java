@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.SkullType;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -99,12 +98,12 @@ public class C4 extends BendingActiveAbility {
 			this.radius += 1;
 		}
 		
-		loadBlockByDir(player.getEyeLocation(), player.getEyeLocation().getDirection());
+		loadBlockByDirection(player.getEyeLocation(), player.getEyeLocation().getDirection());
 	}
 	
 	public void setArrow(Arrow arrow) {
 		this.arrow = arrow;
-		loadBlockByDir(arrow.getLocation(), arrow.getVelocity().normalize());
+		loadBlockByDirection(arrow.getLocation(), arrow.getVelocity().normalize());
 	}
 
 	@Override
@@ -148,7 +147,7 @@ public class C4 extends BendingActiveAbility {
 		return true;
 	}
 
-	private void loadBlockByDir(Location source, Vector direction) {
+	private void loadBlockByDirection(Location source, Vector direction) {
 		BlockIterator bi = null;
 		hitBlock = player.getEyeLocation().getBlock();
 		Block previousBlock = player.getEyeLocation().getBlock();
@@ -212,6 +211,10 @@ public class C4 extends BendingActiveAbility {
 		if ((held.getType() == Material.LEVER) || (held.getType() == Material.BOW)) {
 			return true;
 		}
+		held = player.getInventory().getItemInOffHand();
+		if (Material.LEVER == held.getType()) {
+			return true;
+		}
 		return false;
 	}
 
@@ -226,7 +229,7 @@ public class C4 extends BendingActiveAbility {
 			return;
 		}
 
-		if(!hidden && bomb != null && bomb.getBlock().getType() != Material.SKELETON_SKULL) {
+		if(!hidden && bomb != null && bomb.getBlock().getType() != Material.PLAYER_HEAD) {
 			remove();
 			return;
 		}
@@ -251,16 +254,18 @@ public class C4 extends BendingActiveAbility {
 	}
 
 	private void generateC4(Block block, BlockFace face) {
-		Rotatable data = (Rotatable) Material.SKELETON_SKULL.createBlockData();
-		data.setRotation(face.getOppositeFace());
+		Rotatable data = (Rotatable) Material.PLAYER_HEAD.createBlockData();
+		//data.setRotation(face.getOppositeFace());
 		if(bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
 			hidden = true;
 			player.sendBlockChange(block.getLocation(), Material.TNT, (byte) 0x0);
-		} else {
+		}
+		else {
 			hidden = false;
-			bomb = TempBlock.makeTemporary(this, block, Material.SKELETON_SKULL, data, false);
+			bomb = TempBlock.makeTemporary(this, block, Material.PLAYER_HEAD, data, false);
 			Skull skull = (Skull) bomb.getBlock().getState();
-			skull.setSkullType(SkullType.PLAYER);
+			//skull.setType(Material.PLAYER_HEAD);
+			//skull.setSkullType(SkullType.PLAYER);
 			skull.setOwner("MHF_TNT");
 			skull.update();
 			bomb.getBlock().getDrops().clear();
@@ -272,7 +277,7 @@ public class C4 extends BendingActiveAbility {
 	private void explode() {
 		boolean obsidian = false;
 
-		List<Block> affecteds = new LinkedList<Block>();
+		List<Block> affecteds = new LinkedList<>();
 		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
 			if (block.getType() == Material.OBSIDIAN) {
 				obsidian = true;
@@ -354,7 +359,7 @@ public class C4 extends BendingActiveAbility {
 	}
 
 	public static Object isCFour(Block block) {
-		if (block.getType() != Material.SKELETON_SKULL) {
+		if (block.getType() != Material.PLAYER_HEAD) {
 			return null;
 		}
 
