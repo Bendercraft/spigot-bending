@@ -6,7 +6,7 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -23,7 +23,7 @@ public class MetalBending extends BendingActiveAbility {
 	@ConfigurationParameter("Melt-Time")
 	private static long MELT_TIME = 2000;
 
-	private static Map<Material, Integer> metals = new HashMap<Material, Integer>();
+	private static Map<Material, Integer> metals = new HashMap<>();
 	static {
 		metals.put(Material.IRON_SHOVEL, 1);
 		metals.put(Material.IRON_ORE, 1);
@@ -67,22 +67,26 @@ public class MetalBending extends BendingActiveAbility {
 		return false;
 	}
 
-	public static void use(Player pl, Block bl) {
+	public static void use(Player player, Block block) {
 		// Don't really like it, magic value
-		if (EntityTools.isBender(pl, BendingElement.EARTH) 
-				&& NAME.equals(EntityTools.getBendingAbility(pl))) {
-			if (EntityTools.canBend(pl, NAME)) {
-				if (bl.getType() == Material.IRON_DOOR) {
-					Openable data = (Openable) bl.getBlockData();
+		if (EntityTools.isBender(player, BendingElement.EARTH)
+				&& NAME.equals(EntityTools.getBendingAbility(player))) {
+			if (EntityTools.canBend(player, NAME)) {
+				if (block.getType() == Material.IRON_DOOR) {
 					RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(NAME);
-					if (!ProtectionManager.isLocationProtectedFromBending(pl, registered, bl.getLocation())) {
+					if (!ProtectionManager.isLocationProtectedFromBending(player, registered, block.getLocation())) {
+						Door data = (Door) block.getBlockData();
+
 						if (data.isOpen()) {
 							data.setOpen(false);
-							bl.getWorld().playSound(bl.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1.0f, 1.0f);
-						} else {
-							data.setOpen(true);
-							bl.getWorld().playSound(bl.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1.0f, 1.0f);
+							block.getWorld().playSound(block.getLocation(), Sound.BLOCK_IRON_DOOR_CLOSE, 1.0f, 1.0f);
 						}
+						else {
+							data.setOpen(true);
+							block.getWorld().playSound(block.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1.0f, 1.0f);
+						}
+
+						block.setBlockData(data);
 					}
 				}
 			}

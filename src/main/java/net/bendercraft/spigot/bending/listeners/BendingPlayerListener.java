@@ -31,6 +31,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -83,7 +84,7 @@ public class BendingPlayerListener implements Listener {
 	 * We need to prevent bending from such case (not really practicable).
 	 * It is safe to reset this every tick, because event are sync to main thread and are not spread among 2 ticks.
 	 */
-	private Set<UUID> interact = new HashSet<UUID>();
+	private Set<UUID> interact = new HashSet<>();
 
 	public BendingPlayerListener(Bending bending) {
 		this.plugin = bending;
@@ -142,7 +143,9 @@ public class BendingPlayerListener implements Listener {
 			return;
 		}
 
-		MetalBending.use(player, event.getClickedBlock());
+		if (EquipmentSlot.HAND.equals(event.getHand())) {
+			MetalBending.use(player, event.getClickedBlock());
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
