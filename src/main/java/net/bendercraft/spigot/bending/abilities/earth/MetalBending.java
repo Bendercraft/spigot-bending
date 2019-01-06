@@ -102,7 +102,7 @@ public class MetalBending extends BendingActiveAbility {
 		if(!super.canTick()) {
 			return false;
 		}
-		if (!player.isSneaking() || !EntityTools.getBendingAbility(player).equals(NAME)) {
+		if (!player.isSneaking() || !NAME.equals(EntityTools.getBendingAbility(player))) {
 			return false;
 		}
 		return true;
