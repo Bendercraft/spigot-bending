@@ -80,7 +80,7 @@ public class EarthBlast extends BendingActiveAbility {
 	private UUID uuid = UUID.randomUUID();
 	
 	private Location location; // For accurate advance
-	private List<TempBlock> current = new LinkedList<TempBlock>(); // To revert each time we change, also holds source selection if not yet thrown
+	private List<TempBlock> current = new LinkedList<>(); // To revert each time we change, also holds source selection if not yet thrown
 	
 	private Material type; // What type of block is this earhblast made of ?
 	
@@ -142,7 +142,7 @@ public class EarthBlast extends BendingActiveAbility {
 		if(!BlockTools.isEarthbendable(player, block)) {
 			return;
 		}
-		
+
 		if(type == null) {
 			type = block.getType();
 			if(type == Material.SAND) {
