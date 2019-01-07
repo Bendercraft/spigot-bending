@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import net.bendercraft.spigot.bending.abilities.*;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
-import org.bukkit.block.data.Rotatable;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -21,17 +19,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import net.bendercraft.spigot.bending.Bending;
-import net.bendercraft.spigot.bending.abilities.ABendingAbility;
-import net.bendercraft.spigot.bending.abilities.AbilityManager;
-import net.bendercraft.spigot.bending.abilities.BendingAbility;
-import net.bendercraft.spigot.bending.abilities.BendingAbilityState;
-import net.bendercraft.spigot.bending.abilities.BendingActiveAbility;
-import net.bendercraft.spigot.bending.abilities.BendingAffinity;
-import net.bendercraft.spigot.bending.abilities.BendingPerk;
-import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
 import net.bendercraft.spigot.bending.utils.BlockTools;
@@ -42,10 +33,20 @@ import net.bendercraft.spigot.bending.utils.TempBlock;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 
-@SuppressWarnings("deprecation")
+
 @ABendingAbility(name = C4.NAME, affinity = BendingAffinity.CHI)
 public class C4 extends BendingActiveAbility {
-	public final static String NAME = "C4";
+	public static final String NAME = "C4";
+
+	private static final OfflinePlayer SKULL_OWNER;
+	static {
+		final String SKIN_PLAYER_ID = "55e73380-a973-4a52-9bb5-1efa5256125c"; //MHF_TNT2
+		final UUID SKIN_PLAYER_UUID = UUID.fromString(SKIN_PLAYER_ID);
+		//final GameProfile profile = new GameProfile(SKIN_PLAYER_UUID, "MHF_TNT2");
+
+		//profile.getProperties().put("textures", new Property("textures","dc75cd6f9c713e9bf43fea963990d142fc0d252974ebe04b2d882166cbb6d294"));
+		SKULL_OWNER = Bukkit.getServer().getOfflinePlayer(SKIN_PLAYER_UUID);
+	}
 
 	@ConfigurationParameter("Radius")
 	private static double RADIUS = 3;
@@ -63,10 +64,19 @@ public class C4 extends BendingActiveAbility {
 	private static int MAX_BOMBS = 2;
 
 	@ConfigurationParameter("Max-Range")
-	private static int MAX_RANGE = 3;
+	private static int MAX_RANGE = 4;
+
+	@ConfigurationParameter("Max-Detonation-Range")
+	private static double MAX_DETONATION_RANGE = 128.0f;
+
+	@ConfigurationParameter("Sound-Interval")
+	private static int SOUND_INTERVAL = 1500;
 
 	@ConfigurationParameter("Max-Duration")
 	private static long MAX_DURATION = 1000 * 60 * 10;
+
+	@ConfigurationParameter("Max-Duration-Offrange")
+	private static long MAX_DURATION_OFFRANGE = (30+60) * 1000;
 	
 	@ConfigurationParameter("Parastick-Enhance-Factor")
 	private static double PARASTICK_ENHANCE_FACTOR = 3.0;
@@ -79,6 +89,9 @@ public class C4 extends BendingActiveAbility {
 	private Location location;
 	private Block hitBlock = null;
 	private BlockFace hitFace = null;
+	private Material headType = null;
+
+	private long lastTimeBiped;
 	
 	private Arrow arrow;
 
@@ -97,8 +110,10 @@ public class C4 extends BendingActiveAbility {
 		if(bender.hasPerk(BendingPerk.MASTER_STRAIGHTSHOTCD_C4RADIUS_NEBULARCD)) {
 			this.radius += 1;
 		}
-		
-		loadBlockByDirection(player.getEyeLocation(), player.getEyeLocation().getDirection());
+
+		lastTimeBiped = startedTime;
+
+		loadPlayerTargetedBlock();
 	}
 	
 	public void setArrow(Arrow arrow) {
@@ -111,22 +126,26 @@ public class C4 extends BendingActiveAbility {
 		if (!super.canBeInitialized()) {
 			return false;
 		}
-		
+		if (location == null) {
+			return false;
+		}
+		Block block = location.getBlock();
 		if(arrow != null) {
 			if (ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
 				return false;
 			}
-			if (!BlockTools.isFluid(location.getBlock()) && !BlockTools.isPlant(location.getBlock())) {
+			if (!BlockTools.isFluid(block) && !BlockTools.isPlant(block)) {
 				return false;
 			}
-		} else {
+		}
+		else {
 			if (!hasDetonator(player)) {
 				return false;
 			}
 			if (ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
 				return false;
 			}
-			if (!BlockTools.isFluid(location.getBlock()) && !BlockTools.isPlant(location.getBlock())) {
+			if (!BlockTools.isFluid(block) && !BlockTools.isPlant(block)) {
 				return false;
 			}
 		}
@@ -147,8 +166,19 @@ public class C4 extends BendingActiveAbility {
 		return true;
 	}
 
+	private void loadPlayerTargetedBlock() {
+		RayTraceResult rayTraceResult = player.rayTraceBlocks(MAX_RANGE);
+		if (rayTraceResult != null) {
+			hitBlock = rayTraceResult.getHitBlock();
+			if (hitBlock != null) {
+				hitFace = rayTraceResult.getHitBlockFace();
+				location = hitBlock.getRelative(hitFace).getLocation();
+			}
+		}
+	}
+
 	private void loadBlockByDirection(Location source, Vector direction) {
-		BlockIterator bi = null;
+		BlockIterator bi;
 		hitBlock = player.getEyeLocation().getBlock();
 		Block previousBlock = player.getEyeLocation().getBlock();
 
@@ -201,6 +231,11 @@ public class C4 extends BendingActiveAbility {
 			return false;
 		}
 
+		double distance = player.getLocation().distance(location);
+		if (distance > MAX_DETONATION_RANGE) {
+			return false;
+		}
+
 		activate();
 
 		return false;
@@ -219,19 +254,48 @@ public class C4 extends BendingActiveAbility {
 	}
 
 	@Override
+	public boolean canTick() {
+		if (!super.canTick()) {
+			return false;
+		}
+
+		if (bomb == null && !hidden) {
+			return false;
+		}
+
+		if (!hidden && bomb.getBlock().getType() != headType) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public void progress() {
 		if(!isState(BendingAbilityState.PROGRESSING)) {
 			return;
 		}
 
-		if(bomb == null && !hidden) {
+		Location playerLocation = player.getLocation();
+		if (!playerLocation.getWorld().equals(location.getWorld())) {
 			remove();
 			return;
 		}
 
-		if(!hidden && bomb != null && bomb.getBlock().getType() != Material.PLAYER_HEAD) {
-			remove();
-			return;
+		long now = System.currentTimeMillis();
+		double distance = playerLocation.distance(location);
+		if (distance < MAX_DETONATION_RANGE) {
+			if (now - lastTimeBiped >= SOUND_INTERVAL) {
+				player.playSound(playerLocation, Sound.BLOCK_LEVER_CLICK, (float)(1-(distance/MAX_DETONATION_RANGE)), 1.0f);
+				lastTimeBiped = now;
+			}
+		}
+		else {
+			if (now - lastTimeBiped > MAX_DURATION_OFFRANGE) {
+				bender.cooldown(NAME, cooldown/2);
+				remove();
+				return;
+			}
 		}
 
 		if(bomb != null && bomb.getBlock().getDrops() != null) {
@@ -249,29 +313,49 @@ public class C4 extends BendingActiveAbility {
 
 		explode();
 
-		bender.cooldown(NAME, cooldown);
+		if (!bender.isOnCooldown(NAME)) {
+			bender.cooldown(NAME, cooldown);
+		}
+
 		remove();
 	}
 
 	private void generateC4(Block block, BlockFace face) {
-		Rotatable data = (Rotatable) Material.PLAYER_HEAD.createBlockData();
-		//data.setRotation(face.getOppositeFace());
-		if(bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
+
+		if (bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
 			hidden = true;
-			player.sendBlockChange(block.getLocation(), Material.TNT, (byte) 0x0);
+			player.sendBlockChange(block.getLocation(), Material.TNT.createBlockData());
 		}
 		else {
 			hidden = false;
-			bomb = TempBlock.makeTemporary(this, block, Material.PLAYER_HEAD, data, false);
-			Skull skull = (Skull) bomb.getBlock().getState();
-			//skull.setType(Material.PLAYER_HEAD);
-			//skull.setSkullType(SkullType.PLAYER);
-			skull.setOwner("MHF_TNT");
+
+			chooseHeadType(face);
+
+			final BlockData data = headType.createBlockData();
+			if (Material.PLAYER_WALL_HEAD == headType) {
+				Directional directionable = (Directional) data;
+				directionable.setFacing(face);
+			}
+
+			bomb = TempBlock.makeTemporary(this, block, headType, data, false);
+			Block b = bomb.getBlock();
+			Skull skull = (Skull) b.getState();
+			//skull.setOwningPlayer(SKULL_OWNER);
+			skull.setOwner("MHF_TNT2");
 			skull.update();
-			bomb.getBlock().getDrops().clear();
+			b.getDrops().clear();
 		}
 		
 		location.getWorld().playSound(location, Sound.BLOCK_GRAVEL_STEP, 10, 1);
+	}
+
+	private void chooseHeadType(BlockFace face) {
+		if (!(BlockFace.UP == face || BlockFace.DOWN == face)) {
+			headType = Material.PLAYER_WALL_HEAD;
+		}
+		else {
+			headType = Material.PLAYER_HEAD;
+		}
 	}
 
 	private void explode() {
@@ -282,7 +366,7 @@ public class C4 extends BendingActiveAbility {
 			if (block.getType() == Material.OBSIDIAN) {
 				obsidian = true;
 			}
-			if (!obsidian || (obsidian && (location.distance(block.getLocation()) < (radius / 2.0)))) {
+			if (!obsidian || (location.distance(block.getLocation()) < (radius / 2.0))) {
 				if (!ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation()) && !ProtectionManager.isLocationProtectedFromExplosion(player, NAME, block.getLocation())) {
 					affecteds.add(block);
 				}
@@ -298,7 +382,7 @@ public class C4 extends BendingActiveAbility {
 						block.setType(Material.AIR);
 						block.getWorld().spawn(block.getLocation().add(0.5, 0.5, 0.5), TNTPrimed.class);
 					} else {
-						List<Block> adjacent = new LinkedList<Block>();
+						List<Block> adjacent = new LinkedList<>();
 						adjacent.add(block.getRelative(BlockFace.NORTH));
 						adjacent.add(block.getRelative(BlockFace.SOUTH));
 						adjacent.add(block.getRelative(BlockFace.EAST));
@@ -339,7 +423,7 @@ public class C4 extends BendingActiveAbility {
 	private void removeBlock(Block block) {
 		if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtect.getInstance().getAPI();
-			cp.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getData());
+			cp.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getBlockData());
 		}
 		double rand = Math.random();
 		if (rand < 0.5) {
@@ -359,13 +443,14 @@ public class C4 extends BendingActiveAbility {
 	}
 
 	public static Object isCFour(Block block) {
-		if (block.getType() != Material.PLAYER_HEAD) {
+		Material type = block.getType();
+		if (type != Material.PLAYER_HEAD && type != Material.PLAYER_WALL_HEAD) {
 			return null;
 		}
 
 		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 		for (Object obj : instances.keySet()) {
-			if (((C4) instances.get(obj)).bomb.equals(block)) {
+			if (((C4) instances.get(obj)).bomb.getBlock().equals(block)) {
 				return obj;
 			}
 		}
