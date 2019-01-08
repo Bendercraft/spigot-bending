@@ -83,8 +83,8 @@ public class AirSwipe extends BendingActiveAbility {
 	private Location origin;
 	private int damage = DAMAGE;
 	private int id;
-	private Map<Vector, Location> elements = new HashMap<Vector, Location>();
-	private List<Entity> affectedEntities = new ArrayList<Entity>();
+	private Map<Vector, Location> elements = new HashMap<>();
+	private List<Entity> affectedEntities = new ArrayList<>();
 
 	private double range;
 	private int arc;
@@ -232,7 +232,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 		// Basically, AirSwipe is just a set of smoke effect on some location
 		// called "elements"
-		Map<Vector, Location> toAdd = new HashMap<Vector, Location>();
+		Map<Vector, Location> toAdd = new HashMap<>();
 
 		for (Entry<Vector, Location> entry : this.elements.entrySet()) {
 			Vector direction = entry.getKey();
@@ -251,7 +251,7 @@ public class AirSwipe extends BendingActiveAbility {
 		}
 		this.elements.clear();
 		this.elements.putAll(toAdd);
-		List<Vector> toRemove = new LinkedList<Vector>();
+		List<Vector> toRemove = new LinkedList<>();
 		for (Entry<Vector, Location> entry : this.elements.entrySet()) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
@@ -259,21 +259,24 @@ public class AirSwipe extends BendingActiveAbility {
 
 			double radius = FireBlast.AFFECTING_RADIUS;
 			Player source = this.player;
-			if (EarthBlast.annihilateBlasts(location, radius, source) || WaterManipulation.annihilateBlasts(location, radius, source) || FireBlast.annihilateBlasts(location, radius, source)) {
+			if (EarthBlast.annihilateBlasts(location, radius, source)
+				|| WaterManipulation.annihilateBlasts(location, radius, source)
+				|| FireBlast.annihilateBlasts(location, radius, source)) {
 				toRemove.add(direction);
 				this.damage = 0;
 				continue;
 			}
 
-			Block block = location.getBlock();
-			for (Block testblock : BlockTools.getBlocksAroundPoint(location, AFFECTING_RADIUS)) {
-				if (testblock.getType() == Material.FIRE) {
-					testblock.setType(Material.AIR);
+			for (Block testedBlock : BlockTools.getBlocksAroundPoint(location, AFFECTING_RADIUS)) {
+				if (testedBlock.getType() == Material.FIRE) {
+					testedBlock.setType(Material.AIR);
 				}
-				if (isBlockBreakable(testblock)) {
-					BlockTools.breakBlock(testblock);
+				if (isBlockBreakable(testedBlock)) {
+					BlockTools.breakBlock(testedBlock);
 				}
 			}
+
+			Block block = location.getBlock();
 			if (block.getType() != Material.AIR) {
 				if (isBlockBreakable(block)) {
 					BlockTools.breakBlock(block);

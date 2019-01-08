@@ -67,7 +67,7 @@ public class AirSpout extends BendingActiveAbility {
 	}
 
 	public static List<Player> getPlayers() {
-		List<Player> players = new ArrayList<Player>();
+		List<Player> players = new ArrayList<>();
 		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(NAME);
 
 		if ((instances == null) || instances.isEmpty()) {
@@ -141,7 +141,7 @@ public class AirSpout extends BendingActiveAbility {
 			if (dy > height) {
 				dy = height;
 			}
-			Integer[] directions = { 0, 1, 2, 3, 5, 6, 7, 8 };
+			final Integer[] directions = { 0, 1, 2, 3, 5, 6, 7, 8 };
 			int index = this.angle;
 
 			this.angle++;

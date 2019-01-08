@@ -32,9 +32,9 @@ import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
 import net.bendercraft.spigot.bending.controller.Settings;
 
 public class BlockTools {
-	private static List<Block> tempnophysics = new LinkedList<Block>();
+	private static List<Block> tempnophysics = new LinkedList<>();
 	
-	private static Set<Material> leafIds = new HashSet<Material>();
+	private static Set<Material> leafIds = new HashSet<>();
 	static {
 		leafIds.add(Material.ACACIA_LEAVES);
 		leafIds.add(Material.BIRCH_LEAVES);
@@ -44,7 +44,7 @@ public class BlockTools {
 		leafIds.add(Material.SPRUCE_LEAVES);
 	}
 	
-	private static Set<Material> plantIds = new HashSet<Material>();
+	private static Set<Material> plantIds = new HashSet<>();
 	static {
 		plantIds.addAll(leafIds);
 		plantIds.add(Material.ACACIA_SAPLING);
@@ -73,9 +73,6 @@ public class BlockTools {
 		plantIds.add(Material.WHITE_TULIP);
 		plantIds.add(Material.OXEYE_DAISY);
 		
-		plantIds.add(Material.BROWN_MUSHROOM);
-		plantIds.add(Material.RED_MUSHROOM);
-		
 		plantIds.add(Material.WHEAT);
 		plantIds.add(Material.CACTUS);
 		plantIds.add(Material.SUGAR_CANE);
@@ -92,7 +89,7 @@ public class BlockTools {
 		plantIds.add(Material.SUNFLOWER);
 	}
 
-	private static Set<Material> transparentEarthbending = new HashSet<Material>();
+	private static Set<Material> transparentEarthbending = new HashSet<>();
 	static {
 		transparentEarthbending.addAll(leafIds);
 		
@@ -116,10 +113,11 @@ public class BlockTools {
 		transparentEarthbending.add(Material.VINE);
 	}
 
-	private static Set<Material> nonOpaque = new HashSet<Material>();
+	private static Set<Material> nonOpaque = new HashSet<>();
 	static {
 		nonOpaque.addAll(leafIds);
-		
+
+		nonOpaque.add(Material.VOID_AIR);
 		nonOpaque.add(Material.AIR);
 		nonOpaque.add(Material.WATER);
 		nonOpaque.add(Material.LAVA);
