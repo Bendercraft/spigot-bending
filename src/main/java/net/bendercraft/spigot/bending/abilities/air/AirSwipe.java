@@ -315,7 +315,7 @@ public class AirSwipe extends BendingActiveAbility {
 	}
 
 	private boolean isBlockBreakable(Block block) {
-		if(BlockTools.isPlant(block)) {
+		if(BlockTools.isPlant(block) && !BlockTools.isLeaf(block)) {
 			return true;
 		}
 		return false;

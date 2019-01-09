@@ -65,7 +65,7 @@ public class AirBlast extends BendingActiveAbility {
 	private UUID id = UUID.randomUUID();
 	private double speedfactor;
 	private double range;
-	private double pushfactor = PUSH_FACTOR;
+	private double pushfactor;
 	private boolean otherOrigin = false;
 
 	public AirBlast(RegisteredAbility register, Player player) {

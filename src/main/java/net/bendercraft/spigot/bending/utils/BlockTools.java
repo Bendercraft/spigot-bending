@@ -34,64 +34,81 @@ import net.bendercraft.spigot.bending.controller.Settings;
 public class BlockTools {
 	private static List<Block> tempnophysics = new LinkedList<>();
 	
-	private static Set<Material> leafIds = new HashSet<>();
+	private static final Set<Material> LEAVES = new HashSet<>();
 	static {
-		leafIds.add(Material.ACACIA_LEAVES);
-		leafIds.add(Material.BIRCH_LEAVES);
-		leafIds.add(Material.DARK_OAK_LEAVES);
-		leafIds.add(Material.JUNGLE_LEAVES);
-		leafIds.add(Material.OAK_LEAVES);
-		leafIds.add(Material.SPRUCE_LEAVES);
+		LEAVES.add(Material.ACACIA_LEAVES);
+		LEAVES.add(Material.BIRCH_LEAVES);
+		LEAVES.add(Material.DARK_OAK_LEAVES);
+		LEAVES.add(Material.JUNGLE_LEAVES);
+		LEAVES.add(Material.OAK_LEAVES);
+		LEAVES.add(Material.SPRUCE_LEAVES);
+	}
+
+	private static final Set<Material> SAPLINGS = new HashSet<>();
+	static {
+		SAPLINGS.add(Material.ACACIA_SAPLING);
+		SAPLINGS.add(Material.BIRCH_SAPLING);
+		SAPLINGS.add(Material.DARK_OAK_SAPLING);
+		SAPLINGS.add(Material.JUNGLE_SAPLING);
+		SAPLINGS.add(Material.OAK_SAPLING);
+	}
+
+	private static final Set<Material> FRUITS = new HashSet<>();
+	static {
+		FRUITS.add(Material.PUMPKIN);
+		FRUITS.add(Material.MELON);
+	}
+
+	private static final Set<Material> FLOWERS = new HashSet<>();
+	static {
+		FLOWERS.add(Material.ROSE_BUSH);
+		FLOWERS.add(Material.PEONY);
+		FLOWERS.add(Material.LILAC);
+		FLOWERS.add(Material.SUNFLOWER);
+		FLOWERS.add(Material.DANDELION);
+		FLOWERS.add(Material.DANDELION_YELLOW);
+		FLOWERS.add(Material.POPPY);
+		FLOWERS.add(Material.BLUE_ORCHID);
+		FLOWERS.add(Material.ALLIUM);
+		FLOWERS.add(Material.AZURE_BLUET);
+		FLOWERS.add(Material.RED_TULIP);
+		FLOWERS.add(Material.ORANGE_TULIP);
+		FLOWERS.add(Material.PINK_TULIP);
+		FLOWERS.add(Material.WHITE_TULIP);
+		FLOWERS.add(Material.OXEYE_DAISY);
 	}
 	
-	private static Set<Material> plantIds = new HashSet<>();
+	private static Set<Material> PLANTS = new HashSet<>();
 	static {
-		plantIds.addAll(leafIds);
-		plantIds.add(Material.ACACIA_SAPLING);
-		plantIds.add(Material.BIRCH_SAPLING);
-		plantIds.add(Material.DARK_OAK_SAPLING);
-		plantIds.add(Material.JUNGLE_SAPLING);
-		plantIds.add(Material.OAK_SAPLING);
+		PLANTS.addAll(LEAVES);
+
+		PLANTS.addAll(SAPLINGS);
+
+		PLANTS.addAll(FRUITS);
+
+		PLANTS.addAll(FLOWERS);
+
+		PLANTS.add(Material.LILY_PAD);
+		PLANTS.add(Material.TALL_GRASS);
+		PLANTS.add(Material.FERN);
+		PLANTS.add(Material.DEAD_BUSH);
+
 		
-		plantIds.add(Material.TALL_GRASS);
-		plantIds.add(Material.FERN);
-		plantIds.add(Material.LILAC);
-		plantIds.add(Material.PEONY);
-		plantIds.add(Material.ROSE_BUSH);
-		plantIds.add(Material.DEAD_BUSH);
-		
-		plantIds.add(Material.DANDELION);
-		plantIds.add(Material.DANDELION_YELLOW);
-		plantIds.add(Material.ROSE_RED);
-		plantIds.add(Material.POPPY);
-		plantIds.add(Material.BLUE_ORCHID);
-		plantIds.add(Material.ALLIUM);
-		plantIds.add(Material.AZURE_BLUET);
-		plantIds.add(Material.RED_TULIP);
-		plantIds.add(Material.ORANGE_TULIP);
-		plantIds.add(Material.PINK_TULIP);
-		plantIds.add(Material.WHITE_TULIP);
-		plantIds.add(Material.OXEYE_DAISY);
-		
-		plantIds.add(Material.WHEAT);
-		plantIds.add(Material.CACTUS);
-		plantIds.add(Material.SUGAR_CANE);
-		plantIds.add(Material.PUMPKIN);
-		plantIds.add(Material.BROWN_MUSHROOM);
-		plantIds.add(Material.RED_MUSHROOM);
-		plantIds.add(Material.MELON);
-		plantIds.add(Material.PUMPKIN_STEM);
-		plantIds.add(Material.MELON_STEM);
-		plantIds.add(Material.VINE);
-		plantIds.add(Material.LILY_PAD);
-		plantIds.add(Material.CARROT);
-		plantIds.add(Material.POTATO);
-		plantIds.add(Material.SUNFLOWER);
+		PLANTS.add(Material.WHEAT);
+		PLANTS.add(Material.CACTUS);
+		PLANTS.add(Material.SUGAR_CANE);
+		PLANTS.add(Material.BROWN_MUSHROOM);
+		PLANTS.add(Material.RED_MUSHROOM);
+		PLANTS.add(Material.PUMPKIN_STEM);
+		PLANTS.add(Material.MELON_STEM);
+		PLANTS.add(Material.VINE);
+		PLANTS.add(Material.CARROT);
+		PLANTS.add(Material.POTATO);
 	}
 
 	private static Set<Material> transparentEarthbending = new HashSet<>();
 	static {
-		transparentEarthbending.addAll(leafIds);
+		transparentEarthbending.addAll(LEAVES);
 		
 		transparentEarthbending.add(Material.AIR);
 		transparentEarthbending.add(Material.WATER);
@@ -113,9 +130,22 @@ public class BlockTools {
 		transparentEarthbending.add(Material.VINE);
 	}
 
+	private static final Set<Material> PLATES = new HashSet<>();
+	static {
+		PLATES.add(Material.STONE_PRESSURE_PLATE);
+		PLATES.add(Material.ACACIA_PRESSURE_PLATE);
+		PLATES.add(Material.BIRCH_PRESSURE_PLATE);
+		PLATES.add(Material.DARK_OAK_PRESSURE_PLATE);
+		PLATES.add(Material.JUNGLE_PRESSURE_PLATE);
+		PLATES.add(Material.OAK_PRESSURE_PLATE);
+		PLATES.add(Material.SPRUCE_PRESSURE_PLATE);
+	}
+
 	private static Set<Material> nonOpaque = new HashSet<>();
 	static {
-		nonOpaque.addAll(leafIds);
+		nonOpaque.addAll(LEAVES);
+
+		nonOpaque.addAll(PLATES);
 
 		nonOpaque.add(Material.VOID_AIR);
 		nonOpaque.add(Material.AIR);
@@ -140,13 +170,7 @@ public class BlockTools {
 		nonOpaque.add(Material.RAIL);
 		nonOpaque.add(Material.WALL_SIGN);
 		nonOpaque.add(Material.LEVER);
-		nonOpaque.add(Material.STONE_PRESSURE_PLATE);
-		nonOpaque.add(Material.ACACIA_PRESSURE_PLATE);
-		nonOpaque.add(Material.BIRCH_PRESSURE_PLATE);
-		nonOpaque.add(Material.DARK_OAK_PRESSURE_PLATE);
-		nonOpaque.add(Material.JUNGLE_PRESSURE_PLATE);
-		nonOpaque.add(Material.OAK_PRESSURE_PLATE);
-		nonOpaque.add(Material.SPRUCE_PRESSURE_PLATE);
+
 		nonOpaque.add(Material.REDSTONE_TORCH);
 		nonOpaque.add(Material.STONE_BUTTON);
 		nonOpaque.add(Material.SNOW);
@@ -165,27 +189,21 @@ public class BlockTools {
 
 	}
 
-	private static Set<Material> ironBendables = new HashSet<Material>();
-
+	private static final Set<Material> IRON_BENDABLES = new HashSet<>();
 	static {
-		ironBendables.add(Material.IRON_BLOCK);
-		ironBendables.add(Material.IRON_ORE);
-		ironBendables.add(Material.ANVIL);
-		ironBendables.add(Material.IRON_BARS);
-		ironBendables.add(Material.HOPPER);
-		ironBendables.add(Material.CAULDRON);
+		IRON_BENDABLES.add(Material.IRON_BLOCK);
+		IRON_BENDABLES.add(Material.IRON_ORE);
+		IRON_BENDABLES.add(Material.ANVIL);
+		IRON_BENDABLES.add(Material.IRON_BARS);
+		IRON_BENDABLES.add(Material.HOPPER);
+		IRON_BENDABLES.add(Material.CAULDRON);
 	}
 	
 	private BlockTools() {
-		
 	}
 
 	public static Set<Material> getTransparentEarthbending() {
-		Set<Material> set = new HashSet<Material>();
-		for (Material i : transparentEarthbending) {
-			set.add(i);
-		}
-		return set;
+		return new HashSet<>(transparentEarthbending);
 	}
 
 	public static boolean isTransparentToEarthbending(Player player, Block block) {
@@ -283,7 +301,7 @@ public class BlockTools {
 			return false;
 		}
 
-		if (!ironBendables.contains(m)) {
+		if (!IRON_BENDABLES.contains(m)) {
 			return false;
 		}
 
@@ -302,16 +320,30 @@ public class BlockTools {
 		}
 		return maxlength;
 	}
+
+	public static boolean isFruit(Block block) {
+		if (FRUITS.contains(block.getType())) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isFlower(Block block) {
+		if (FLOWERS.contains(block.getType())) {
+			return true;
+		}
+		return false;
+	}
 	
 	public static boolean isLeaf(Block block) {
-		if (leafIds.contains(block.getType())) {
+		if (LEAVES.contains(block.getType())) {
 			return true;
 		}
 		return false;
 	}
 
 	public static boolean isPlant(Block block) {
-		if (plantIds.contains(block.getType())) {
+		if (PLANTS.contains(block.getType())) {
 			return true;
 		}
 		return false;
