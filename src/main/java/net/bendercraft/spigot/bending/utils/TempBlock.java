@@ -17,9 +17,9 @@ import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 
 public class TempBlock {
-	private static Map<Block, TempBlock> instances = new HashMap<Block, TempBlock>();
-	private static Map<BendingAbility, List<TempBlock>> temporaries = new HashMap<BendingAbility, List<TempBlock>>();
-	private static List<TempBlock> globals = Collections.synchronizedList(new LinkedList<TempBlock>());
+	private static Map<Block, TempBlock> instances = new HashMap<>();
+	private static Map<BendingAbility, List<TempBlock>> temporaries = new HashMap<>();
+	private static List<TempBlock> globals = Collections.synchronizedList(new LinkedList<>());
 
 	private Block block;
 	private BlockState state;
@@ -46,7 +46,7 @@ public class TempBlock {
 
 	private static TempBlock make(BendingAbility ability, long duration, Block block, Material newType, BlockData newData, boolean bendAllowed) {
 		// Reuse current on if existing
-		TempBlock temp = null;
+		TempBlock temp;
 		if (instances.containsKey(block)) {
 			temp = instances.remove(block);
 			if(temp.ability != null) {
@@ -55,10 +55,12 @@ public class TempBlock {
 				if(temps.isEmpty()) {
 					temporaries.remove(temp.ability);
 				}
-			} else {
+			}
+			else {
 				globals.remove(temp);
 			}
-		} else {
+		}
+		else {
 			temp = new TempBlock(block);
 		}
 		
@@ -154,7 +156,7 @@ public class TempBlock {
 	public static void clean(BendingAbility ability) {
 		List<TempBlock> temps = temporaries.get(ability);
 		if(temps != null) {
-			List<TempBlock> copy = new LinkedList<TempBlock>(temps);
+			List<TempBlock> copy = new LinkedList<>(temps);
 			copy.forEach(t -> t.revertBlock());
 			Bending.getInstance().getLogger().warning("Ability "+ability.getName()+" did not cleaned up its TempBlock >:(");
 		}

@@ -3,6 +3,7 @@ package net.bendercraft.spigot.bending.abilities.water;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,7 +20,6 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
-import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
@@ -44,8 +44,8 @@ public class PhaseChange extends BendingActiveAbility {
 	@ConfigurationParameter("Cooldown-Shift")
 	public static long COOLDOWN_SHIFT = 5000;
 
-	private List<TempBlock> frozens = new LinkedList<TempBlock>();
-	private List<TempBlock> melted = new LinkedList<TempBlock>();
+	private List<TempBlock> frozens = new LinkedList<>();
+	private List<TempBlock> melted = new LinkedList<>();
 
 	private int radius;
 
@@ -67,34 +67,36 @@ public class PhaseChange extends BendingActiveAbility {
 		if (bender.isOnCooldown(NAME)) {
 			return false;
 		}
+
 		if(player.isSneaking()) {
 			if(!bender.isOnCooldown(NAME_SHIFT)) {
 				int balance = bender.water.getBalance();
 				bender.water.setBalance(0);
 				bender.cooldown(NAME_SHIFT, COOLDOWN_SHIFT*Math.abs(balance));
 			}
-		} else {
+		}
+		else {
 			//Freeze
 			int range = RANGE;
 			if (AvatarState.isAvatarState(player)) {
 				range = AvatarState.getValue(range);
 			}
-			Location location = EntityTools.getTargetedLocation(player, range);
-			int y = (int) location.getY();
-			for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-				if (block.getLocation().getY() >= (y - DEPTH)) {
-					if(isFreezable(player, block)) {
-						PhaseChange owner = get(block);
-						if(owner != null) {
-							TempBlock b = TempBlock.get(block);
-							if(b != null) {
-								b.revertBlock();
-								owner.melted.remove(b);
-							}
-						} else {
-							frozens.add(TempBlock.makeTemporary(this, block, Material.ICE, block.getBlockData(), true));
-						}
+			Block targetBlock = player.getTargetBlockExact(range, FluidCollisionMode.ALWAYS);
+			Location location = targetBlock.getLocation();
+			final int y = (int) location.getY();
+			final int minimumLevel = y - DEPTH;
+			List<Block> freezableBlocks = BlockTools.getBlocksAroundPoint(location, radius, (block) -> block.getLocation().getY() >= minimumLevel && isFreezable(player, block));
+			for (Block block : freezableBlocks) {
+				PhaseChange owner = get(block);
+				if(owner != null) {
+					TempBlock b = TempBlock.get(block);
+					if(b != null) {
+						b.revertBlock();
+						owner.melted.remove(b);
 					}
+				}
+				else {
+					frozens.add(TempBlock.makeTemporary(this, block, Material.ICE, Material.ICE.createBlockData(), true));
 				}
 			}
 			if(!frozens.isEmpty()) {
@@ -118,26 +120,29 @@ public class PhaseChange extends BendingActiveAbility {
 		if (AvatarState.isAvatarState(player)) {
 			range = AvatarState.getValue(range);
 		}
-		Location location = EntityTools.getTargetedLocation(player, range);
-		int y = (int) location.getY();
-		for (Block block : BlockTools.getBlocksAroundPoint(location, radius)) {
-			if (block.getLocation().getY() >= (y - DEPTH)) {
-				if(isThawable(player, block)) {
-					PhaseChange owner = get(block);
-					if(owner != null) {
-						TempBlock b = TempBlock.get(block);
-						if(b != null) {
-							b.revertBlock();
-							owner.frozens.remove(b);
-						}
-					} else if(TempBlock.isTempBlock(block)) {
-						TempBlock.get(block).revertBlock();
-					} else {
-						melted.add(TempBlock.makeTemporary(this, block, Material.WATER, block.getBlockData(), true));
-					}
+
+		Block targetBlock = player.getTargetBlockExact(range);
+		Location location = targetBlock.getLocation();
+		final int y = (int) location.getY();
+		final int minimumLevel = y - DEPTH;
+		List<Block> thawableBlocks = BlockTools.getBlocksAroundPoint(location, radius, (block) -> block.getLocation().getY() >= minimumLevel && isThawable(player, block));
+		for (Block block : thawableBlocks) {
+			PhaseChange owner = get(block);
+			if(owner != null) {
+				TempBlock b = TempBlock.get(block);
+				if(b != null) {
+					b.revertBlock();
+					owner.frozens.remove(b);
 				}
 			}
+			else if(TempBlock.isTempBlock(block)) {
+				TempBlock.get(block).revertBlock();
+			}
+			else {
+				melted.add(TempBlock.makeTemporary(this, block, Material.WATER, Material.WATER.createBlockData(), true));
+			}
 		}
+
 		if(!melted.isEmpty()) {
 			bender.cooldown(NAME, COOLDOWN);
 		}

@@ -15,10 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.*;
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.earth.EarthCore;
 import net.bendercraft.spigot.bending.abilities.fire.FirePower;
@@ -32,24 +29,24 @@ public class BendingPlayer {
 	
 	public static final String OBJECTIVE_STATUS = "status";
 	
-	private static final Map<UUID, BendingPlayer> cache = new HashMap<UUID, BendingPlayer>();
+	private static final Map<UUID, BendingPlayer> cache = new HashMap<>();
 
 	private UUID player;
 
 	private String currentDeck;
-	private Map<String, Map<Integer, String>> decks = new HashMap<String, Map<Integer, String>>();
+	private Map<String, Map<Integer, String>> decks;
 
-	private List<BendingElement> bendings = new LinkedList<BendingElement>();
-	private List<BendingAffinity> affinities = new LinkedList<BendingAffinity>();
-	private Map<String, BendingPerk> perks = new HashMap<String, BendingPerk>();
-	private List<String> abilities = new LinkedList<String>();
+	private List<BendingElement> bendings;
+	private List<BendingAffinity> affinities;
+	private Map<String, BendingPerk> perks;
+	private List<String> abilities = new LinkedList<>();
 
-	private Map<String, BendingAbilityCooldown> cooldowns = new HashMap<String, BendingAbilityCooldown>();
+	private Map<String, BendingAbilityCooldown> cooldowns = new HashMap<>();
 
 	private long paralyzeTime = 0;
 	private long slowTime = 0;
 
-	private long lastTime = System.currentTimeMillis();
+	private long lastTime;
 	
 	private boolean usingScoreboard;
 	
@@ -64,7 +61,7 @@ public class BendingPlayer {
 
 		this.bendings = data.getBendings();
 		this.affinities = data.getAffinities();
-		this.perks = new HashMap<String, BendingPerk>();
+		this.perks = new HashMap<>();
 		for(BendingPerk perk : data.getPerks()) {
 			this.perks.put(perk.name, perk);
 		}
@@ -74,7 +71,7 @@ public class BendingPlayer {
 		this.currentDeck = data.getCurrentDeck();
 		
 		if(this.decks.isEmpty()) {
-			this.decks.put("default", new HashMap<Integer, String>());
+			this.decks.put("default", new HashMap<>());
 		}
 		if(this.currentDeck == null) {
 			this.currentDeck = decks.keySet().iterator().next();
@@ -141,7 +138,7 @@ public class BendingPlayer {
 			return;
 		}
 		Collection<BendingPerk> olds = bender.perks.values();
-		bender.perks = new HashMap<String, BendingPerk>();
+		bender.perks = new HashMap<>();
 		for(BendingPerk perk : data.getPerks()) {
 			bender.perks.put(perk.name, perk);
 		}
@@ -177,7 +174,7 @@ public class BendingPlayer {
 	}
 	
 	public List<BendingPerk> getPerks() {
-		return new LinkedList<BendingPerk>(this.perks.values());
+		return new LinkedList<>(this.perks.values());
 	}
 
 	public boolean isOnGlobalCooldown() {
@@ -216,7 +213,7 @@ public class BendingPlayer {
 	public Map<String, BendingAbilityCooldown> getCooldowns() {
 		long now = System.currentTimeMillis();
 		
-		List<String> toRemove = new LinkedList<String>();
+		List<String> toRemove = new LinkedList<>();
 		for(Entry<String, BendingAbilityCooldown> entry : cooldowns.entrySet()) {
 			if(entry.getValue().timeLeft(now) <= 0) {
 				toRemove.add(entry.getKey());
@@ -245,7 +242,7 @@ public class BendingPlayer {
 	}
 
 	public boolean hasAffinity(BendingElement element) {
-		return this.affinities.stream().filter(a -> a.getElement() == element).findAny().isPresent();
+		return this.affinities.stream().anyMatch(a -> a.getElement() == element);
 	}
 	
 	public boolean hasAffinity(BendingAffinity affinity) {
@@ -299,7 +296,7 @@ public class BendingPlayer {
 	}
 
 	public void clearAffinity(BendingElement element) {
-		List<BendingAffinity> toRemove = new LinkedList<BendingAffinity>();
+		List<BendingAffinity> toRemove = new LinkedList<>();
 		for (BendingAffinity spe : this.affinities) {
 			if (spe.getElement().equals(element)) {
 				toRemove.add(spe);
@@ -318,7 +315,7 @@ public class BendingPlayer {
 	}
 
 	public void clearAbilities() {
-		decks.put(currentDeck, new HashMap<Integer, String>());
+		decks.put(currentDeck, new HashMap<>());
 		MySQLDB.save(player, serialize());
 	}
 
@@ -372,16 +369,16 @@ public class BendingPlayer {
 		Bending.getInstance().getLogger().warning("Player "+getPlayer().getName()+" had conflicting scoreboard.");
 		setUsingScoreboard(false);
 		if(scoreboard != null) {
-			scoreboard.getTeams().forEach(t->t.unregister());
-			scoreboard.getObjectives().forEach(o->o.unregister());
+			scoreboard.getTeams().forEach(Team::unregister);
+			scoreboard.getObjectives().forEach(Objective::unregister);
 			scoreboard = null;
 		}
 	}
 	
 	public void unloadScoreboard() {
 		if(!isUsingScoreboard() && scoreboard != null) {
-			scoreboard.getTeams().forEach(t->t.unregister());
-			scoreboard.getObjectives().forEach(o->o.unregister());
+			scoreboard.getTeams().forEach(Team::unregister);
+			scoreboard.getObjectives().forEach(Objective::unregister);
 			ScoreboardManager manager = Bukkit.getScoreboardManager();
 			getPlayer().setScoreboard(manager.getNewScoreboard());
 			scoreboard = null;
@@ -411,11 +408,7 @@ public class BendingPlayer {
 	}
 
 	public List<BendingElement> getBendingTypes() {
-		List<BendingElement> list = new ArrayList<BendingElement>();
-		for (BendingElement index : this.bendings) {
-			list.add(index);
-		}
-		return list;
+		return new ArrayList<>(this.bendings);
 	}
 
 	public boolean canBeParalyzed() {
@@ -495,12 +488,12 @@ public class BendingPlayer {
 	
 	public BendingPlayerData serialize() {
 		BendingPlayerData result = new BendingPlayerData();
-		result.setBendings(new LinkedList<BendingElement>(this.bendings));
-		result.setAffinities(new LinkedList<BendingAffinity>(this.affinities));
+		result.setBendings(new LinkedList<>(this.bendings));
+		result.setAffinities(new LinkedList<>(this.affinities));
 		result.setPlayer(this.player);
 		result.setDecks(this.decks);
-		result.setPerks(new LinkedList<BendingPerk>(this.perks.values()));
-		result.setAbilities(new LinkedList<String>(this.abilities));
+		result.setPerks(new LinkedList<>(this.perks.values()));
+		result.setAbilities(new LinkedList<>(this.abilities));
 		result.setCurrentDeck(this.currentDeck);
 		return result;
 	}

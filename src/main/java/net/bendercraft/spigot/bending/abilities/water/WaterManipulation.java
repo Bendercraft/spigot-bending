@@ -362,11 +362,11 @@ public class WaterManipulation extends BendingActiveAbility {
 	
 	public Location getTargetLocation(Player player) {
 		Entity target = EntityTools.getTargetedEntity(player, range);
-		Location result = null;
+		Location result;
 		if (target == null || ProtectionManager.isEntityProtected(target)) {
 			result = EntityTools.getTargetedLocation(player, range, BlockTools.getTransparentEarthBending());
 		} else {
-			result = ((LivingEntity) target).getLocation();
+			result = target.getLocation();
 		}
 		return result;
 	}
@@ -433,7 +433,7 @@ public class WaterManipulation extends BendingActiveAbility {
 	}
 
 	private static void block(Player player) {
-		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
+		List<WaterManipulation> toBreak = new LinkedList<>();
 		RegisteredAbility registered = AbilityManager.getManager().getRegisteredAbility(NAME);
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
@@ -488,7 +488,7 @@ public class WaterManipulation extends BendingActiveAbility {
 
 	public static boolean annihilateBlasts(Location location, double radius, Player source) {
 		boolean broke = false;
-		List<WaterManipulation> toBreak = new LinkedList<WaterManipulation>();
+		List<WaterManipulation> toBreak = new LinkedList<>();
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			WaterManipulation manip = (WaterManipulation) ab;
 			if (manip.location != null && 

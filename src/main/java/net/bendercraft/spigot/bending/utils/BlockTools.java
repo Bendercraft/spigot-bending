@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -425,7 +426,7 @@ public class BlockTools {
 	}
 
 	public static boolean adjacentToFrozenBlock(Block block) {
-		BlockFace[] faces = { BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH };
+		final BlockFace[] faces = { BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH };
 		boolean adjacent = false;
 		for (BlockFace face : faces) {
 			if (PhaseChange.isFrozen(block.getRelative(face))) {
@@ -436,7 +437,7 @@ public class BlockTools {
 	}
 
 	public static List<Block> getBlocksOnPlane(Location location, int radius) {
-		List<Block> blocks = new LinkedList<Block>();
+		List<Block> blocks = new LinkedList<>();
 
 		for (int x = -radius; x <= radius; x++) {
 			for (int y = -radius; y <= radius; y++) {
@@ -447,7 +448,7 @@ public class BlockTools {
 	}
 
 	public static List<Location> getLocationBetweenRanges(final Location center, double minRadius, double maxRadius) {
-		List<Location> blocks = new LinkedList<>();
+		final List<Location> blocks = new LinkedList<>();
 
 		final World world = center.getWorld();
 		final int r = (int) maxRadius + 4;
@@ -471,25 +472,32 @@ public class BlockTools {
 		return blocks;
 	}
 
-	public static List<Block> getBlocksAroundPoint(Location location, double radius) {
+	public static List<Block> getBlocksAroundPoint(final Location location, final double radius) {
+		return getBlocksAroundPoint(location, radius, (block) -> true);
+	}
+
+	public static List<Block> getBlocksAroundPoint(final Location location, double radius, final Predicate<Block> filter) {
 		List<Block> blocks = new LinkedList<>();
 
-		int xorg = location.getBlockX();
-		int yorg = location.getBlockY();
-		int zorg = location.getBlockZ();
+		final int xorg = location.getBlockX();
+		final int yorg = location.getBlockY();
+		final int zorg = location.getBlockZ();
 
-		int r = (int) radius + 4;
+		final int r = (int) radius + 2;
 
 		for (int x = xorg - r; x <= (xorg + r); x++) {
 			for (int y = yorg - r; y <= (yorg + r); y++) {
 				for (int z = zorg - r; z <= (zorg + r); z++) {
 					Block block = location.getWorld().getBlockAt(x, y, z);
 					if (block.getLocation().distance(location) <= radius) {
-						blocks.add(block);
+						if (filter.test(block)) {
+							blocks.add(block);
+						}
 					}
 				}
 			}
 		}
+
 		return blocks;
 	}
 
@@ -521,7 +529,7 @@ public class BlockTools {
 
 			Location location = block.getLocation();
 
-			List<Block> blocks = new LinkedList<Block>();
+			List<Block> blocks = new LinkedList<>();
 			for (double j = -2; j <= chainLength; j++) {
 				Block checkblock = location.clone().add(negnorm.clone().multiply(j)).getBlock();
 				if (!tempnophysics.contains(checkblock)) {
