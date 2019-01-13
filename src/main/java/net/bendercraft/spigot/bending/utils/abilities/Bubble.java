@@ -1,12 +1,7 @@
 package net.bendercraft.spigot.bending.utils.abilities;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,20 +27,16 @@ public abstract class Bubble extends BendingActiveAbility {
 
 	protected Map<Block, TempBlock> origins;
 
-	protected Set<Material> pushedMaterials;
-
 	public Bubble(RegisteredAbility register, Player player) {
 		super(register, player);
 		this.lastLocation = player.getLocation();
-		this.origins = new HashMap<Block, TempBlock>();
-		this.pushedMaterials = new HashSet<Material>();
+		this.origins = new HashMap<>();
 	}
 
 	@Override
 	public void progress() {
-		if (AirBubble.NAME.equals(EntityTools.getBendingAbility(player))
-				|| WaterBubble.NAME.equals(EntityTools.getBendingAbility(player))) {
-			pushWater();
+		if (getName().equals(EntityTools.getBendingAbility(player))) {
+			pushLiquids();
 		}
 		else {
 			remove();
@@ -76,49 +67,38 @@ public abstract class Bubble extends BendingActiveAbility {
 		return false;
 	}
 
-	private void pushWater() {
+	private void pushLiquids() {
 		Location location = this.player.getLocation();
 
 		// Do not bother entering this loop if player location has not been
 		// modified
 		if (!BlockTools.locationEquals(this.lastLocation, location)) {
 
-			List<Block> toRemove = new LinkedList<Block>();
-			for (Entry<Block, TempBlock> entry : this.origins.entrySet()) {
-				if (!blockInBubble(entry.getKey())) {
-					toRemove.add(entry.getKey());
-				}
-			}
+			resetOldBlocks();
 
-			for (Block block : toRemove) {
-				if ((block.getType() == Material.AIR) || this.pushedMaterials.contains(block.getType())) {
-					origins.get(block).revertBlock();
-				}
-				origins.remove(block);
-			}
+			pushNewBlocks();
 
-			for (Block block : BlockTools.getBlocksAroundPoint(location, this.radius)) {
-				if (this.origins.containsKey(block)) {
-					continue;
-				}
-				if (ProtectionManager.isLocationProtectedFromBending(this.player, register, block.getLocation())) {
-					continue;
-				}
-				if (this.pushedMaterials.contains(block.getType())) {
-					if (!TempBlock.isTempBlock(block) || TempBlock.get(block).isBendAllowed()) {
-						//this.origins.put(block, new TempBlock(block, Material.AIR, (byte) 0x0));
-						this.origins.put(block, TempBlock.makeTemporary(this, block, Material.AIR, true));
-					}
-				}
-			}
 			this.lastLocation = this.player.getLocation();
+		}
+	}
+
+	protected abstract void pushNewBlocks();
+
+	private void resetOldBlocks() {
+		Iterator<Entry<Block, TempBlock>> originsIterator = this.origins.entrySet().iterator();
+		while (originsIterator.hasNext()) {
+			Entry<Block, TempBlock> entry = originsIterator.next();
+			if (!blockInBubble(entry.getKey())) {
+				entry.getValue().revertBlock();
+				originsIterator.remove();
+			}
 		}
 	}
 
 	public static boolean canFlowTo(Block block) {
 		Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(AirBubble.NAME);
 		if (instances == null) {
-			instances = new HashMap<Object, BendingAbility>();
+			instances = new HashMap<>();
 		}
 		Map<Object, BendingAbility> insts = AbilityManager.getManager().getInstances(WaterBubble.NAME);
 
@@ -142,9 +122,7 @@ public abstract class Bubble extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		for (Entry<Block, TempBlock> entry : this.origins.entrySet()) {
-			if ((entry.getKey().getType() == Material.AIR) || entry.getKey().isLiquid()) {
-				entry.getValue().revertBlock();
-			}
+			entry.getValue().revertBlock();
 		}
 	}
 

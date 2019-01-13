@@ -78,6 +78,24 @@ public class BlockTools {
 		FLOWERS.add(Material.WHITE_TULIP);
 		FLOWERS.add(Material.OXEYE_DAISY);
 	}
+
+	private static final Set<Material> SEA_PLANTS = new HashSet<>();
+	static {
+		SEA_PLANTS.add(Material.SEA_PICKLE);
+		SEA_PLANTS.add(Material.SEAGRASS);
+		SEA_PLANTS.add(Material.TALL_SEAGRASS);
+		SEA_PLANTS.add(Material.KELP_PLANT);
+		SEA_PLANTS.add(Material.BRAIN_CORAL);
+		SEA_PLANTS.add(Material.BUBBLE_CORAL);
+		SEA_PLANTS.add(Material.DEAD_BRAIN_CORAL);
+		SEA_PLANTS.add(Material.DEAD_BUBBLE_CORAL);
+		SEA_PLANTS.add(Material.DEAD_FIRE_CORAL);
+		SEA_PLANTS.add(Material.DEAD_HORN_CORAL);
+		SEA_PLANTS.add(Material.DEAD_TUBE_CORAL);
+		SEA_PLANTS.add(Material.FIRE_CORAL);
+		SEA_PLANTS.add(Material.HORN_CORAL);
+		SEA_PLANTS.add(Material.TUBE_CORAL);
+	}
 	
 	private static Set<Material> PLANTS = new HashSet<>();
 	static {
@@ -335,6 +353,14 @@ public class BlockTools {
 		}
 		return false;
 	}
+
+	public static boolean isSeaPlant(Material type) {
+		return (SEA_PLANTS.contains(type));
+	}
+
+	public static boolean isSeaPlant(Block block) {
+		return isSeaPlant(block.getType());
+	}
 	
 	public static boolean isLeaf(Block block) {
 		if (LEAVES.contains(block.getType())) {
@@ -473,10 +499,10 @@ public class BlockTools {
 	}
 
 	public static List<Block> getBlocksAroundPoint(final Location location, final double radius) {
-		return getBlocksAroundPoint(location, radius, (block) -> true);
+		return getFilteredBlocksAroundPoint(location, radius, (block) -> true);
 	}
 
-	public static List<Block> getBlocksAroundPoint(final Location location, double radius, final Predicate<Block> filter) {
+	public static List<Block> getFilteredBlocksAroundPoint(final Location location, double radius, final Predicate<Block> filter) {
 		List<Block> blocks = new LinkedList<>();
 
 		final int xorg = location.getBlockX();

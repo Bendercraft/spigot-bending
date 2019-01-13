@@ -85,7 +85,7 @@ public class PhaseChange extends BendingActiveAbility {
 			Location location = targetBlock.getLocation();
 			final int y = (int) location.getY();
 			final int minimumLevel = y - DEPTH;
-			List<Block> freezableBlocks = BlockTools.getBlocksAroundPoint(location, radius, (block) -> block.getLocation().getY() >= minimumLevel && isFreezable(player, block));
+			List<Block> freezableBlocks = BlockTools.getFilteredBlocksAroundPoint(location, radius, (block) -> block.getLocation().getY() >= minimumLevel && isFreezable(player, block));
 			for (Block block : freezableBlocks) {
 				PhaseChange owner = get(block);
 				if(owner != null) {
@@ -125,7 +125,7 @@ public class PhaseChange extends BendingActiveAbility {
 		Location location = targetBlock.getLocation();
 		final int y = (int) location.getY();
 		final int minimumLevel = y - DEPTH;
-		List<Block> thawableBlocks = BlockTools.getBlocksAroundPoint(location, radius, (block) -> block.getLocation().getY() >= minimumLevel && isThawable(player, block));
+		List<Block> thawableBlocks = BlockTools.getFilteredBlocksAroundPoint(location, radius, (block) -> block.getLocation().getY() >= minimumLevel && isThawable(player, block));
 		for (Block block : thawableBlocks) {
 			PhaseChange owner = get(block);
 			if(owner != null) {
