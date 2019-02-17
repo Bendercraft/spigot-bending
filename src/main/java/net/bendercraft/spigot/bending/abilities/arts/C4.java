@@ -38,14 +38,12 @@ import net.coreprotect.CoreProtectAPI;
 public class C4 extends BendingActiveAbility {
 	public static final String NAME = "C4";
 
-	private static final OfflinePlayer SKULL_OWNER;
 	static {
 		final String SKIN_PLAYER_ID = "55e73380-a973-4a52-9bb5-1efa5256125c"; //MHF_TNT2
 		final UUID SKIN_PLAYER_UUID = UUID.fromString(SKIN_PLAYER_ID);
 		//final GameProfile profile = new GameProfile(SKIN_PLAYER_UUID, "MHF_TNT2");
 
-		//profile.getProperties().put("textures", new Property("textures","dc75cd6f9c713e9bf43fea963990d142fc0d252974ebe04b2d882166cbb6d294"));
-		SKULL_OWNER = Bukkit.getServer().getOfflinePlayer(SKIN_PLAYER_UUID);
+		Bukkit.getServer().getOfflinePlayer(SKIN_PLAYER_UUID);
 	}
 
 	@ConfigurationParameter("Radius")
@@ -320,6 +318,7 @@ public class C4 extends BendingActiveAbility {
 		remove();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void generateC4(Block block, BlockFace face) {
 
 		if (bender.hasPerk(BendingPerk.MASTER_SMOKE_HIDE_SHIELD)) {
@@ -340,7 +339,6 @@ public class C4 extends BendingActiveAbility {
 			bomb = TempBlock.makeTemporary(this, block, headType, data, false);
 			Block b = bomb.getBlock();
 			Skull skull = (Skull) b.getState();
-			//skull.setOwningPlayer(SKULL_OWNER);
 			skull.setOwner("MHF_TNT2");
 			skull.update();
 			b.getDrops().clear();

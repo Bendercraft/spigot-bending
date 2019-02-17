@@ -1,10 +1,11 @@
 package net.bendercraft.spigot.bending.utils.abilities;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -17,7 +18,6 @@ import net.bendercraft.spigot.bending.abilities.air.AirBubble;
 import net.bendercraft.spigot.bending.abilities.water.WaterBubble;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
-import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
 public abstract class Bubble extends BendingActiveAbility {
