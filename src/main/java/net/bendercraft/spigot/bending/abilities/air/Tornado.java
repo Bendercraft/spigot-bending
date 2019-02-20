@@ -1,12 +1,11 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMap;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMaps;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -58,9 +57,9 @@ public class Tornado extends BendingActiveAbility {
 	private double height = 2;
 	private double radius = (this.height / HEIGHT) * RADIUS;
 
-	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
-	private Location origin;
-	private Location base;
+	private Int2IntMap angles = new Int2IntOpenHashMap();
+	private Location   origin;
+	private Location   base;
 
 	private FlyingPlayer flying;
 
@@ -123,11 +122,11 @@ public class Tornado extends BendingActiveAbility {
 				affect(entity, timefactor);
 			}
 
-			Map<Integer, Integer> toAdd = new HashMap<Integer, Integer>();
-			for (Entry<Integer, Integer> entry : this.angles.entrySet()) {
-				int i = entry.getKey();
+			Int2IntMap toAdd = new Int2IntOpenHashMap();
+			for (Int2IntMap.Entry entry : Int2IntMaps.fastIterable(this.angles)) {
+				int i = entry.getIntKey();
 				double x, y, z;
-				double angle = entry.getValue();
+				double angle = entry.getIntValue();
 				angle = Math.toRadians(angle);
 				double factor;
 
@@ -142,7 +141,7 @@ public class Tornado extends BendingActiveAbility {
 					this.origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
 				}
 
-				toAdd.put(i, this.angles.get(i) + (25 * (int) speedfactor));
+				toAdd.put(i, entry.getIntValue() + (25 * (int) speedfactor));
 			}
 			this.angles.putAll(toAdd);
 		}

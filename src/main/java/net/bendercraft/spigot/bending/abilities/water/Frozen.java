@@ -18,14 +18,14 @@ import net.bendercraft.spigot.bending.utils.ProtectionManager;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
 public class Frozen {
-	private static List<Frozen> instances = new LinkedList<Frozen>();
+	private static List<Frozen> instances = new LinkedList<>();
 	
 	public static int DURATION = 60000;
 	public static int STEP = 20;
 	public static int DEPTH = 8;
 	
 	private Player player;
-	private Map<Integer, List<Block>> expands = new HashMap<Integer, List<Block>>();
+	private Map<Integer, List<Block>> expands = new HashMap<>();
 	private int iteration = 0;
 	private long time;
 	private long interval = (long) (1000. / 8);
@@ -60,7 +60,7 @@ public class Frozen {
 			}
 			int distance = (int) location.distance(block.getLocation());
 			if(!expands.containsKey(distance)) {
-				expands.put(distance, new LinkedList<Block>());
+				expands.put(distance, new LinkedList<>());
 			}
 			expands.get(distance).add(block);
 		}

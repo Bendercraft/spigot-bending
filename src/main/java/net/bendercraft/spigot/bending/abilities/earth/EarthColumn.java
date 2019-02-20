@@ -8,6 +8,8 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -18,7 +20,7 @@ import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.utils.BlockTools;
 
 public class EarthColumn {
-	private static Map<Integer, EarthColumn> instances = new HashMap<Integer, EarthColumn>();
+	private static Int2ObjectMap<EarthColumn> instances = new Int2ObjectOpenHashMap<>();
 
 	@ConfigurationParameter("Height")
 	public static int HEIGHT = 6;
@@ -38,8 +40,7 @@ public class EarthColumn {
 
 	private static int ID = Integer.MIN_VALUE;
 
-	private static Map<Block, Block> alreadyDoneBlocks = new HashMap<Block, Block>();
-	private static Map<Block, Integer> baseBlocks = new HashMap<Block, Integer>();
+	private static Map<Block, Block> alreadyDoneBlocks = new HashMap<>();
 
 	private Location origin;
 	private Location location;
@@ -49,7 +50,7 @@ public class EarthColumn {
 	private int id;
 	private long time;
 	private int height = HEIGHT;
-	private List<Block> affectedBlocks = new ArrayList<Block>();
+	private List<Block> affectedBlocks = new ArrayList<>();
 	private final RegisteredAbility earthRegister;
 
 	public EarthColumn() {
@@ -165,7 +166,6 @@ public class EarthColumn {
 				for (Block block : affectedBlocks) {
 					alreadyDoneBlocks.put(block, block);
 				}
-				baseBlocks.put(location.clone().add(direction.clone().multiply(-1 * (distance - 1))).getBlock(), (distance - 1));
 
 				return false;
 			}
@@ -191,8 +191,6 @@ public class EarthColumn {
 	}
 
 	public static void resetBlock(Block block) {
-		if (alreadyDoneBlocks.containsKey(block)) {
-			alreadyDoneBlocks.remove(block);
-		}
+		alreadyDoneBlocks.remove(block);
 	}
 }

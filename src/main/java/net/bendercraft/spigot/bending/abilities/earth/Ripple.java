@@ -32,8 +32,8 @@ public class Ripple {
 	private Vector direction;
 	private Location origin, location;
 
-	private List<Location> locations = new LinkedList<Location>();
-	private List<Entity> entities = new LinkedList<Entity>();
+	private List<Location> locations = new LinkedList<>();
+	private List<Entity> entities = new LinkedList<>();
 
 	private Block block1, block2, block3, block4;
 	private int step = 0;
@@ -41,7 +41,7 @@ public class Ripple {
 	
 	private BendingAbility ability;
 
-	private Map<Integer[], Block> blocks = new HashMap<Integer[], Block>();
+	private Map<Integer[], Block> blocks = new HashMap<>();
 	private double radius;
 	private double damage;
 

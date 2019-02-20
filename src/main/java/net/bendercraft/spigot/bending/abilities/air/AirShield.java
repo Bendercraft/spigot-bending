@@ -1,11 +1,12 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMap;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMaps;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.FallingBlock;
@@ -43,11 +44,11 @@ public class AirShield extends BendingActiveAbility {
 	@ConfigurationParameter("Max-Duration")
 	private static long MAX_DURATION = 300000;
 
-	private int numberOfStreams = (int) (.75 * MAX_RADIUS);
-	private double radius = 2;
-	private double maxRadius = MAX_RADIUS;
-	private double speedfactor;
-	private Map<Integer, Integer> angles = new HashMap<Integer, Integer>();
+	private int        numberOfStreams = (int) (.75 * MAX_RADIUS);
+	private double     radius          = 2;
+	private double     maxRadius       = MAX_RADIUS;
+	private double     speedfactor;
+	private Int2IntMap angles          = new Int2IntOpenHashMap();
 	
 	private long cooldown;
 	private long duration;
@@ -92,7 +93,8 @@ public class AirShield extends BendingActiveAbility {
 		if (AvatarState.isAvatarState(this.player)) {
 			if (getState() == BendingAbilityState.START) {
 				setState(BendingAbilityState.PROGRESSING);
-			} else if (getState() == BendingAbilityState.PROGRESSING) {
+			}
+			else if (getState() == BendingAbilityState.PROGRESSING) {
 				remove();
 			}
 		}
@@ -141,10 +143,10 @@ public class AirShield extends BendingActiveAbility {
 			affect(entity);
 		}
 
-		Set<Integer> keys = this.angles.keySet();
-		for (int i : keys) {
+		for (Int2IntMap.Entry entry : Int2IntMaps.fastIterable(this.angles)) {
+			final int i = entry.getIntKey();
 			double x, y, z;
-			double angle = this.angles.get(i);
+			double angle = entry.getIntValue();
 			angle = Math.toRadians(angle);
 
 			double factor = this.radius / maxRadius;
@@ -161,7 +163,7 @@ public class AirShield extends BendingActiveAbility {
 				origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
 			}
 
-			this.angles.put(i, this.angles.get(i) + (int) (10 * this.speedfactor));
+			this.angles.put(i, entry.getIntValue() + (int) (10 * this.speedfactor));
 		}
 
 		if (this.radius < maxRadius) {

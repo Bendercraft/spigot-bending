@@ -43,7 +43,7 @@ public class TremorSense extends BendingActiveAbility {
 
     public TremorSense(RegisteredAbility register, Player player) {
         super(register, player);
-        entities = new HashMap<Integer, LivingEntity>();
+        entities = new HashMap<>();
     }
 
 	@Override
