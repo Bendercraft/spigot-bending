@@ -68,8 +68,8 @@ public class DamageTools {
 			}
 
 			//((LivingEntity) entity).damage(damage, player); // This is garbish - spigot do not let us decide damage in the end
-			Map<DamageModifier, Double> modifiers = new EnumMap<DamageModifier, Double>(DamageModifier.class);
-	        Map<DamageModifier, Function<? super Double, Double>> modifierFunctions = new EnumMap<DamageModifier, Function<? super Double, Double>>(DamageModifier.class);
+			Map<DamageModifier, Double> modifiers = new EnumMap<>(DamageModifier.class);
+	        Map<DamageModifier, Function<? super Double, Double>> modifierFunctions = new EnumMap<>(DamageModifier.class);
 	        
 	        modifiers.put(DamageModifier.BASE, damage);
 	        modifierFunctions.put(DamageModifier.BASE, ZERO);

@@ -280,10 +280,12 @@ public class WaterManipulation extends BendingActiveAbility {
 		if(settingup) {
 			if (location.distance(firstDestination) < 0.6) {
 				settingup = false; // We got there !
-			} else {
+			}
+			else {
 				location = location.add(firstDirection);
 			}
-		} else {
+		}
+		else {
 			location = location.add(targetDirection);
 		}
 		
@@ -354,7 +356,8 @@ public class WaterManipulation extends BendingActiveAbility {
 	private void hit() {
 		if(freeze) {
 			bender.water.ice();
-		} else {
+		}
+		else {
 			bender.water.liquid();
 		}
 		waterReturn = new WaterReturn(player, location.getBlock(), this);
