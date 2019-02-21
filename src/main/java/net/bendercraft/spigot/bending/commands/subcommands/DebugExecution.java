@@ -23,12 +23,7 @@ public class DebugExecution extends BendingCommand {
 	@Override
 	public boolean execute(CommandSender sender, List<String> args) {
 		List<BendingAbility> runnings = AbilityManager.getManager().getRunnings();
-		Collections.sort(runnings, new Comparator<BendingAbility>() {
-			@Override
-			public int compare(BendingAbility o1, BendingAbility o2) {
-				return (int) (o1.getStartedTime() - o2.getStartedTime());
-			}
-		});
+		runnings.sort((o1, o2) -> (int) (o1.getStartedTime() - o2.getStartedTime()));
 
 		long now = System.currentTimeMillis();
 		sender.sendMessage("Total temp block : "+ChatColor.GOLD+TempBlock.count());

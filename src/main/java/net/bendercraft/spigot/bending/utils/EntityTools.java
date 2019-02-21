@@ -245,7 +245,7 @@ public class EntityTools {
 	public static List<Entity> getEntitiesAroundPoint(Location location, double radius) {
 
 		List<Entity> entities = location.getWorld().getEntities();
-		List<Entity> list = new LinkedList<Entity>();
+		List<Entity> list = new LinkedList<>();
 
 		for (Entity entity : entities) {
 			if ((entity.getWorld() == location.getWorld()) && (entity.getLocation().distance(location) < radius)) {
@@ -256,7 +256,7 @@ public class EntityTools {
 	}
 
 	public static List<LivingEntity> getLivingEntitiesAroundPoint(Location location, double radius) {
-		List<LivingEntity> list = new LinkedList<LivingEntity>();
+		List<LivingEntity> list = new LinkedList<>();
 
 		for (LivingEntity le : location.getWorld().getLivingEntities()) {
 			if ((le.getWorld() == location.getWorld()) && (le.getLocation().distance(location) < radius)) {
@@ -314,7 +314,7 @@ public class EntityTools {
 	}
 
 	public static LivingEntity getTargetedEntity(Player player, double range) {
-		return getTargetedEntity(player, range, new LinkedList<Entity>());
+		return getTargetedEntity(player, range, new LinkedList<>());
 	}
 
 	public static LivingEntity getTargetedEntity(Player player, double range, List<Entity> avoid) {
@@ -351,7 +351,7 @@ public class EntityTools {
 	}
 
 	public static LivingEntity getNearestLivingEntity(Location location, double radius) {
-		return getNearestLivingEntity(location, radius, Collections.<LivingEntity> emptyList());
+		return getNearestLivingEntity(location, radius, Collections.emptyList());
 	}
 
 	public static LivingEntity getNearestLivingEntity(Location location, double radius, LivingEntity exclude) {

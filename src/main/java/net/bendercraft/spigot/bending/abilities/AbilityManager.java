@@ -92,9 +92,9 @@ public class AbilityManager {
 	private Map<String, Map<Object, BendingAbility>> runnings;
 
 	private AbilityManager() {
-		this.runnings = new HashMap<String, Map<Object, BendingAbility>>();
-		this.binds = new HashMap<String, RegisteredAbility>();
-		this.reverseBinds = new HashMap<Class<? extends BendingAbility>, String>();
+		this.runnings = new HashMap<>();
+		this.binds = new HashMap<>();
+		this.reverseBinds = new HashMap<>();
 	}
 	
 	public static AbilityManager getManager() {
@@ -105,15 +105,14 @@ public class AbilityManager {
 	}
 
 	public void progressAllAbilities() {
-		Iterator<Map<Object, BendingAbility>> it = runnings.values().iterator();
-		while(it.hasNext()) {
-			Map<Object, BendingAbility> abilities = it.next();
+		for (Map<Object, BendingAbility> abilities : runnings.values()) {
 			Iterator<BendingAbility> it2 = abilities.values().iterator();
-			while(it2.hasNext()) {
+			while (it2.hasNext()) {
 				BendingAbility ability = it2.next();
-				if(ability.getState().equals(BendingAbilityState.ENDED)) {
+				if (ability.getState().equals(BendingAbilityState.ENDED)) {
 					it2.remove();
-				} else {
+				}
+				else {
 					ability.tick();
 				}
 			}
@@ -121,12 +120,12 @@ public class AbilityManager {
 	}
 
 	public void stopAllAbilities() {
-		runnings.values().forEach(abilities -> abilities.values().forEach(ability -> ability.remove()));
+		runnings.values().forEach(abilities -> abilities.values().forEach(BendingAbility::remove));
 		clearAllAbilities();
 	}
 
 	private void clearAllAbilities() {
-		runnings.values().forEach(x -> x.clear());
+		runnings.values().forEach(Map::clear);
 		runnings.clear();
 	}
 
@@ -139,12 +138,9 @@ public class AbilityManager {
 			return null; // Invalid bind
 		}
 		try {
-			BendingActiveAbility ab = (BendingActiveAbility) contructor.newInstance(ability, player);
-			if (ab == null) {
-				Bending.getInstance().getLogger().warning("Invalid class for ability " + ability.getName());
-			}
-			return ab;
-		} catch (Exception e) {
+			return (BendingActiveAbility) contructor.newInstance(ability, player);
+		}
+		catch (Exception e) {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Invalid constructor for ability " + ability.getName(), e);
 		}
 		return null;
@@ -164,11 +160,7 @@ public class AbilityManager {
 			return;
 		}
 		String name = getName(instance);
-		Map<Object, BendingAbility> map = runnings.get(name);
-		if(map == null) {
-			map = new HashMap<Object, BendingAbility>();
-			runnings.put(name, map);
-		}
+		Map<Object, BendingAbility> map = runnings.computeIfAbsent(name, k -> new HashMap<>());
 		map.put(instance.getIdentifier(), instance);
 		Bending.getInstance().getAbilityLogger().info("Player "+instance.getPlayer().getName()+" started "+instance.getName()+" at "+instance.getPlayer().getLocation().toString());
 		Bending.callEvent(new BendingAbilityEvent(instance));
@@ -177,7 +169,7 @@ public class AbilityManager {
 	public Map<Object, BendingAbility> getInstances(String name) {
 		Map<Object, BendingAbility> result = runnings.get(name.toLowerCase());
 		if(result == null) {
-			result = new HashMap<Object, BendingAbility>();
+			result = new HashMap<>();
 		}
 		return result;
 	}
@@ -290,7 +282,8 @@ public class AbilityManager {
 			Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but not annoted ! Aborting this registration...");
 			return;
 		}
-		if ((annotation.name() == null) || annotation.name().isEmpty()) {
+
+		if (annotation.name().isEmpty()) {
 			Bending.getInstance().getLogger().severe("Trying to register ability : " + ability + " but name is null or empty ! Aborting this registration...");
 			return;
 		}
@@ -378,7 +371,7 @@ public class AbilityManager {
 	}
 	
 	public List<BendingAbility> getRunnings() {
-		List<BendingAbility> result = new LinkedList<BendingAbility>();
+		List<BendingAbility> result = new LinkedList<>();
 		for(Map<Object, BendingAbility> abilities : this.runnings.values()) {
 			result.addAll(abilities.values());
 		}

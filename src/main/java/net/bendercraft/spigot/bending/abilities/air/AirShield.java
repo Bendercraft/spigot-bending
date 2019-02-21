@@ -2,8 +2,8 @@ package net.bendercraft.spigot.bending.abilities.air;
 
 import java.util.Map;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
+import com.sun.org.apache.regexp.internal.RE;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMap;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -44,7 +44,7 @@ public class AirShield extends BendingActiveAbility {
 	@ConfigurationParameter("Max-Duration")
 	private static long MAX_DURATION = 300000;
 
-	private int        numberOfStreams = (int) (.75 * MAX_RADIUS);
+	private int        numberOfStreams = (int) (1.20 * MAX_RADIUS);
 	private double     radius          = 2;
 	private double     maxRadius       = MAX_RADIUS;
 	private double     speedfactor;
@@ -133,6 +133,10 @@ public class AirShield extends BendingActiveAbility {
 		return true;
 	}
 
+	private static final double RED_COMPONENT = 200/255.0;
+	private static final double GREEN_COMPONENT = 250/255.0;
+	private static final double BLUE_COMPONENT = 250/255.0;
+
 	@Override
 	public void progress() {
 		Location origin = this.player.getLocation();
@@ -143,6 +147,7 @@ public class AirShield extends BendingActiveAbility {
 			affect(entity);
 		}
 
+		World world = origin.getWorld();
 		for (Int2IntMap.Entry entry : Int2IntMaps.fastIterable(this.angles)) {
 			final int i = entry.getIntKey();
 			double x, y, z;
@@ -158,9 +163,9 @@ public class AirShield extends BendingActiveAbility {
 			x = origin.getX() + (this.radius * Math.cos(angle) * f);
 			z = origin.getZ() + (this.radius * Math.sin(angle) * f);
 
-			Location effect = new Location(origin.getWorld(), x, y, z);
+			Location effect = new Location(world, x, y, z);
 			if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, effect)) {
-				origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
+				world.spawnParticle(Particle.SPELL_MOB, effect, 0, RED_COMPONENT, GREEN_COMPONENT, BLUE_COMPONENT, 1, null, false);
 			}
 
 			this.angles.put(i, entry.getIntValue() + (int) (10 * this.speedfactor));
