@@ -1,8 +1,6 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMap;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -50,7 +48,7 @@ public class Tornado extends BendingActiveAbility {
 	@ConfigurationParameter("Player-Push-Factor")
 	private static double PC_PUSH = 3.0;
 
-	private static int numberOfStreams = (int) (.2 * HEIGHT);
+	private static int numberOfStreams = (int) (0.375 * HEIGHT);
 
 	private static double speedfactor = 1;
 
@@ -122,6 +120,7 @@ public class Tornado extends BendingActiveAbility {
 				affect(entity, timefactor);
 			}
 
+			World world = this.origin.getWorld();
 			Int2IntMap toAdd = new Int2IntOpenHashMap();
 			for (Int2IntMap.Entry entry : Int2IntMaps.fastIterable(this.angles)) {
 				int i = entry.getIntKey();
@@ -136,9 +135,9 @@ public class Tornado extends BendingActiveAbility {
 				x = this.origin.getX() + (timefactor * factor * this.radius * Math.cos(angle));
 				z = this.origin.getZ() + (timefactor * factor * this.radius * Math.sin(angle));
 
-				Location effect = new Location(this.origin.getWorld(), x, y, z);
-				if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, effect)) {
-					this.origin.getWorld().playEffect(effect, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
+				Location effectLocation = new Location(world, x, y, z);
+				if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, effectLocation)) {
+					world.spawnParticle(Particle.CLOUD, effectLocation, 1, 0.25, 0.25, 0.25, 0, null, true);
 				}
 
 				toAdd.put(i, entry.getIntValue() + (25 * (int) speedfactor));

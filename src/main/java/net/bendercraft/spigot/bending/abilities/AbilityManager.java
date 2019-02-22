@@ -345,7 +345,7 @@ public class AbilityManager {
 		configDir.mkdirs();
 		File configFile = new File(configDir, "abilities_config.json");
 
-		Map<String, Field> fields = new TreeMap<String, Field>();
+		Map<String, Field> fields = new TreeMap<>();
 		for (RegisteredAbility ab : this.binds.values()) {
 			for (Field f : ab.getAbility().getDeclaredFields()) {
 				if (Modifier.isStatic(f.getModifiers())) {

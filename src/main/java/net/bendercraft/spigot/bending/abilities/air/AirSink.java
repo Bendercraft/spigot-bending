@@ -1,7 +1,8 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -92,12 +93,13 @@ public class AirSink extends BendingActiveAbility {
 			
 			if(noDisplayTick <= 0) {
 				// Compute particles
+				World world = origin.getWorld();
 				for(double theta = 0 ; theta < 360 ; theta+=36) {
 					for(double phi = 0 ; phi < 360 ; phi+=36) {
 						double x = particleDistance * Math.cos(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
 						double y = particleDistance * Math.sin(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
 						double z = particleDistance * Math.cos(Math.toRadians(phi));
-						origin.getWorld().playEffect(origin.clone().add(x,y,z), Effect.SMOKE, 4, (int) RANGE);
+						world.spawnParticle(Particle.CLOUD, origin.clone().add(x, y, z), 1, 0.5, 0.5, 0.5, 0, null, true);
 					}
 				}
 				particleDistance -= 1;
