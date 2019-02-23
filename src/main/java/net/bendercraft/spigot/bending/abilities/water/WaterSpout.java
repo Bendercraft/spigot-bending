@@ -7,6 +7,9 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
+import org.bukkit.craftbukkit.v1_13_R2.block.data.CraftLevelled;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -59,7 +62,7 @@ public class WaterSpout extends BendingActiveAbility {
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
 			if (canWaterSpout(this.player)) {
-				this.blocks = new LinkedList<TempBlock>();
+				this.blocks = new LinkedList<>();
 				this.flying = FlyingPlayer.addFlyingPlayer(this.player, this, getMaxMillis(), true);
 				if (this.flying != null) {
 					spout();
@@ -124,9 +127,12 @@ public class WaterSpout extends BendingActiveAbility {
 				cardinalPoint = 7;
 			}
 
+
 			loc = loc.add(vectors[cardinalPoint]);
 			if (loc.getBlock().getType().equals(Material.AIR)) {
-				blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.WATER, false));
+				Levelled levelled = (Levelled) Material.WATER.createBlockData();
+				levelled.setLevel(10);
+				blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.WATER, levelled,  false));
 			}
 
 		}

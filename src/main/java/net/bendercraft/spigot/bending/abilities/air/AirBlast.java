@@ -3,9 +3,7 @@ package net.bendercraft.spigot.bending.abilities.air;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
@@ -159,7 +157,7 @@ public class AirBlast extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		if (getState() == BendingAbilityState.PREPARING) {
-			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) SELECT_RANGE);
+			this.player.spawnParticle(Particle.SMOKE_NORMAL, this.origin, 1, 0, 0, 0, 0);
 			return;
 		}
 
@@ -201,8 +199,9 @@ public class AirBlast extends BendingActiveAbility {
 		advanceLocation();
 	}
 
+	private static final Particle.DustOptions DISPLAY = new Particle.DustOptions(Color.fromRGB(220,250,250),2.5f);
 	private void advanceLocation() {
-		this.location.getWorld().playEffect(this.location, Effect.SMOKE, 4, (int) this.range);
+		this.location.getWorld().spawnParticle(Particle.REDSTONE, this.location, 1, 0.125, 0.125, 0.125, 0, DISPLAY, true);
 		this.location = this.location.add(this.direction.clone().multiply(this.speedfactor));
 	}
 

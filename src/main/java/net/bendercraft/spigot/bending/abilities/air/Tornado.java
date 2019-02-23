@@ -48,7 +48,7 @@ public class Tornado extends BendingActiveAbility {
 	@ConfigurationParameter("Player-Push-Factor")
 	private static double PC_PUSH = 3.0;
 
-	private static int numberOfStreams = (int) (0.375 * HEIGHT);
+	private static int numberOfStreams = (int) (0.3 * HEIGHT);
 
 	private static double speedfactor = 1;
 
@@ -106,6 +106,7 @@ public class Tornado extends BendingActiveAbility {
 		return true;
 	}
 
+	private static final Color TORNADO_COLOR = Color.fromRGB(230, 250, 250);
 	@Override
 	public void progress() {
 		origin = base.clone();
@@ -134,10 +135,10 @@ public class Tornado extends BendingActiveAbility {
 
 				x = this.origin.getX() + (timefactor * factor * this.radius * Math.cos(angle));
 				z = this.origin.getZ() + (timefactor * factor * this.radius * Math.sin(angle));
-
+				Particle.DustOptions display = new Particle.DustOptions(TORNADO_COLOR, (float) (1.0f +(factor * 4.5f)));
 				Location effectLocation = new Location(world, x, y, z);
 				if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, effectLocation)) {
-					world.spawnParticle(Particle.CLOUD, effectLocation, 1, 0.25, 0.25, 0.25, 0, null, true);
+					world.spawnParticle(Particle.REDSTONE, effectLocation, 1, 0.25, 0.25, 0.25, 0, display, true);
 				}
 
 				toAdd.put(i, entry.getIntValue() + (25 * (int) speedfactor));

@@ -1,5 +1,6 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -81,6 +82,8 @@ public class AirSink extends BendingActiveAbility {
 		return true;
 	}
 
+	private static final Color AIRSINK_COLOR = Color.fromRGB(230, 250, 250);
+
 	@Override
 	public void progress() {
 		if ((System.currentTimeMillis() - time) >= interval) {
@@ -94,12 +97,13 @@ public class AirSink extends BendingActiveAbility {
 			if(noDisplayTick <= 0) {
 				// Compute particles
 				World world = origin.getWorld();
+				Particle.DustOptions display = new Particle.DustOptions(AIRSINK_COLOR, (float) (1.0f + (particleDistance / RADIUS)*3.0f));
 				for(double theta = 0 ; theta < 360 ; theta+=36) {
 					for(double phi = 0 ; phi < 360 ; phi+=36) {
 						double x = particleDistance * Math.cos(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
 						double y = particleDistance * Math.sin(Math.toRadians(theta)) * Math.sin(Math.toRadians(phi));
 						double z = particleDistance * Math.cos(Math.toRadians(phi));
-						world.spawnParticle(Particle.CLOUD, origin.clone().add(x, y, z), 1, 0.5, 0.5, 0.5, 0, null, true);
+						world.spawnParticle(Particle.REDSTONE, origin.clone().add(x, y, z), 1, 0.5, 0.5, 0.5, 0, display, true);
 					}
 				}
 				particleDistance -= 1;
