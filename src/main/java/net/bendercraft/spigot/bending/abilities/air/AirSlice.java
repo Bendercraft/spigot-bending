@@ -3,9 +3,7 @@ package net.bendercraft.spigot.bending.abilities.air;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
@@ -60,7 +58,7 @@ public class AirSlice extends BendingActiveAbility {
 	private Vector direction = null;
 
 	private Location origin = null;
-	private List<Location> onGoing = new LinkedList<Location>();
+	private List<Location> onGoing = new LinkedList<>();
 	
 	private double distance;
 	private double range;
@@ -138,7 +136,8 @@ public class AirSlice extends BendingActiveAbility {
 				return false;
 			}
 			setState(BendingAbilityState.PREPARING);
-		} else if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
+		}
+		else if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
 			this.second = EntityTools.getTargetedLocation(this.player, SELECT_RANGE, BlockTools.getNonOpaque());
 			if(this.second != null && this.second.distance(this.first) > distance) {
 				this.second = null;
@@ -157,14 +156,16 @@ public class AirSlice extends BendingActiveAbility {
 		return false;
 	}
 
+	private static final Particle.DustOptions DISPLAY = new Particle.DustOptions(Color.fromRGB(220,250,250),2.0f);
+
 	@Override
 	public void progress() {
 		if(getState() == BendingAbilityState.PREPARING || getState() == BendingAbilityState.PREPARED) {
 			if(this.first != null) {
-				this.first.getWorld().playEffect(this.first, Effect.SMOKE, 4, (int) SELECT_RANGE+4);
+				this.player.spawnParticle(Particle.SMOKE_NORMAL, this.first, 1, 0, 0, 0, 0);
 			}
 			if(this.second != null) {
-				this.second.getWorld().playEffect(this.second, Effect.SMOKE, 4, (int) SELECT_RANGE+4);
+				this.player.spawnParticle(Particle.SMOKE_NORMAL, this.second, 1, 0, 0, 0, 0);
 			}
 		} else if(getState() == BendingAbilityState.PROGRESSING) {
 			if(this.direction == null || this.origin == null || this.onGoing.isEmpty()) {
@@ -174,7 +175,8 @@ public class AirSlice extends BendingActiveAbility {
 
 			double speedfactor = speed * (Bending.getInstance().getManager().getTimestep() / 1000.);
 
-			List<Location> toRemove = new LinkedList<Location>();
+			final World world = this.origin.getWorld();
+			List<Location> toRemove = new LinkedList<>();
 			for(Location location : this.onGoing) {
 				Block block = location.getBlock();
 				for (Block testblock : BlockTools.getBlocksAroundPoint(location, AFFECT_RADIUS)) {
@@ -199,7 +201,7 @@ public class AirSlice extends BendingActiveAbility {
 				for (Entity entity : EntityTools.getEntitiesAroundPoint(location, AFFECT_RADIUS)) {
 					affect(location, entity);
 				}
-				location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) range+4);
+				world.spawnParticle(Particle.REDSTONE, location, 1, 0.125, 0.125, 0.125, 0, DISPLAY, true);
 				location.add(this.direction.clone().multiply(speedfactor));
 
 				if (location.distance(this.origin) > range) {
