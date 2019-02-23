@@ -10,6 +10,10 @@ import java.util.Map.Entry;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.ObjectIterator;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -44,6 +48,8 @@ public class AirSwipe extends BendingActiveAbility {
 	public final static String NAME = "AirSwipe";
 	
 	private static int ID = Integer.MIN_VALUE;
+
+	private static final Particle.DustOptions DISPLAY = new Particle.DustOptions(Color.fromRGB(220,250,250),1.5f);
 
 	@ConfigurationParameter("Base-Damage")
 	private static int DAMAGE = 5;
@@ -80,7 +86,7 @@ public class AirSwipe extends BendingActiveAbility {
 	private Location origin;
 	private int damage = DAMAGE;
 	private int id;
-	private Map<Vector, Location> elements = new HashMap<>();
+	private Object2ObjectMap<Vector, Location> elements = new Object2ObjectOpenHashMap<>();
 	private List<Entity> affectedEntities = new ArrayList<>();
 
 	private double range;
@@ -224,15 +230,13 @@ public class AirSwipe extends BendingActiveAbility {
 		}
 	}
 
-	private static final Particle.DustOptions DISPLAY = new Particle.DustOptions(Color.fromRGB(220,250,250),1.5f);
 	private boolean advanceSwipe() {
 		this.affectedEntities.clear();
 
 		// Basically, AirSwipe is just a set of smoke effect on some location
 		// called "elements"
-		Map<Vector, Location> toAdd = new HashMap<>();
-
-		for (Entry<Vector, Location> entry : this.elements.entrySet()) {
+		Object2ObjectMap<Vector, Location> newElements = new Object2ObjectOpenHashMap<>();
+		for (Entry<Vector, Location> entry : Object2ObjectMaps.fastIterable(this.elements)) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
 			if ((direction != null) && (location != null)) {
@@ -242,16 +246,18 @@ public class AirSwipe extends BendingActiveAbility {
 				if ((newlocation.distance(this.origin) <= this.range) && !ProtectionManager.isLocationProtectedFromBending(this.player, register, newlocation)) {
 					// If new location is still valid, we add it
 					if (!BlockTools.isSolid(newlocation.getBlock()) || BlockTools.isPlant(newlocation.getBlock())) {
-						toAdd.put(direction, newlocation);
+						newElements.put(direction, newlocation);
 					}
 				}
 			}
 		}
-		this.elements.clear();
-		this.elements.putAll(toAdd);
-		List<Vector> toRemove = new LinkedList<>();
-		World world = this.origin.getWorld();
-		for (Entry<Vector, Location> entry : this.elements.entrySet()) {
+
+		this.elements = newElements;
+
+		final World world = this.origin.getWorld();
+		ObjectIterator<Object2ObjectMap.Entry<Vector, Location>> elementIterator = Object2ObjectMaps.fastIterator(this.elements);
+		while (elementIterator.hasNext()) {
+			Object2ObjectMap.Entry<Vector, Location> entry = elementIterator.next();
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
 			PluginTools.removeSpouts(location, this.player);
@@ -259,9 +265,9 @@ public class AirSwipe extends BendingActiveAbility {
 			double radius = FireBlast.AFFECTING_RADIUS;
 			Player source = this.player;
 			if (EarthBlast.annihilateBlasts(location, radius, source)
-				|| WaterManipulation.annihilateBlasts(location, radius, source)
-				|| FireBlast.annihilateBlasts(location, radius, source)) {
-				toRemove.add(direction);
+					|| WaterManipulation.annihilateBlasts(location, radius, source)
+					|| FireBlast.annihilateBlasts(location, radius, source)) {
+				elementIterator.remove();
 				this.damage = 0;
 				continue;
 			}
@@ -279,8 +285,9 @@ public class AirSwipe extends BendingActiveAbility {
 			if (block.getType() != Material.AIR) {
 				if (isBlockBreakable(block)) {
 					BlockTools.breakBlock(block);
-				} else {
-					toRemove.add(direction);
+				}
+				else {
+					elementIterator.remove();
 				}
 				if (block.getType() == Material.LAVA && !TempBlock.isTempBlock(block)) {
 					Levelled data = (Levelled) block.getBlockData();
@@ -298,14 +305,10 @@ public class AirSwipe extends BendingActiveAbility {
 				PluginTools.removeSpouts(location, this.player);
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, AFFECTING_RADIUS)) {
 					if(affect(entity, direction)) {
-						toRemove.add(direction);
+						elementIterator.remove();
 					}
 				}
 			}
-		}
-
-		for (Vector direction : toRemove) {
-			this.elements.remove(direction);
 		}
 
 		if (this.elements.isEmpty()) {
