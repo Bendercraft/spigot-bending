@@ -122,29 +122,31 @@ public class PhaseChange extends BendingActiveAbility {
 		}
 
 		Block targetBlock = player.getTargetBlockExact(range);
-		Location location = targetBlock.getLocation();
-		final int y = (int) location.getY();
-		final int minimumLevel = y - DEPTH;
-		List<Block> thawableBlocks = BlockTools.getFilteredBlocksAroundPoint(location, radius, (block) -> block.getLocation().getY() >= minimumLevel && isThawable(player, block));
-		for (Block block : thawableBlocks) {
-			PhaseChange owner = get(block);
-			if(owner != null) {
-				TempBlock b = TempBlock.get(block);
-				if(b != null) {
-					b.revertBlock();
-					owner.frozens.remove(b);
+		if (targetBlock != null) {
+			Location location = targetBlock.getLocation();
+			final int y = (int) location.getY();
+			final int minimumLevel = y - DEPTH;
+			List<Block> thawableBlocks = BlockTools.getFilteredBlocksAroundPoint(location, radius, (block) -> block.getLocation().getY() >= minimumLevel && isThawable(player, block));
+			for (Block block : thawableBlocks) {
+				PhaseChange owner = get(block);
+				if(owner != null) {
+					TempBlock b = TempBlock.get(block);
+					if(b != null) {
+						b.revertBlock();
+						owner.frozens.remove(b);
+					}
+				}
+				else if(TempBlock.isTempBlock(block)) {
+					TempBlock.get(block).revertBlock();
+				}
+				else {
+					melted.add(TempBlock.makeTemporary(this, block, Material.WATER, Material.WATER.createBlockData(), true));
 				}
 			}
-			else if(TempBlock.isTempBlock(block)) {
-				TempBlock.get(block).revertBlock();
-			}
-			else {
-				melted.add(TempBlock.makeTemporary(this, block, Material.WATER, Material.WATER.createBlockData(), true));
-			}
-		}
 
-		if(!melted.isEmpty()) {
-			bender.cooldown(NAME, COOLDOWN);
+			if(!melted.isEmpty()) {
+				bender.cooldown(NAME, COOLDOWN);
+			}
 		}
 		return false;
 	}
