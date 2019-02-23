@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
@@ -188,7 +185,7 @@ public class AirSwipe extends BendingActiveAbility {
 		if (getState().equals(BendingAbilityState.PREPARING)) {
 			if (this.player.isSneaking()) {
 				Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
-				player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
+				player.spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 				if (now >= (this.startedTime + chargeTime)) {
 					setState(BendingAbilityState.PREPARED);
 					this.damage *= chargeFactor;
@@ -200,7 +197,7 @@ public class AirSwipe extends BendingActiveAbility {
 
 		if (getState().equals(BendingAbilityState.PREPARED)) {
 			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
-			player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
+			player.spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
 		}
 
 		if (getState().equals(BendingAbilityState.PROGRESSING)) {
@@ -227,6 +224,7 @@ public class AirSwipe extends BendingActiveAbility {
 		}
 	}
 
+	private static final Particle.DustOptions DISPLAY = new Particle.DustOptions(Color.fromRGB(220,250,250),1.5f);
 	private boolean advanceSwipe() {
 		this.affectedEntities.clear();
 
@@ -252,6 +250,7 @@ public class AirSwipe extends BendingActiveAbility {
 		this.elements.clear();
 		this.elements.putAll(toAdd);
 		List<Vector> toRemove = new LinkedList<>();
+		World world = this.origin.getWorld();
 		for (Entry<Vector, Location> entry : this.elements.entrySet()) {
 			Vector direction = entry.getKey();
 			Location location = entry.getValue();
@@ -291,8 +290,9 @@ public class AirSwipe extends BendingActiveAbility {
 						block.setType(Material.COBBLESTONE);
 					}
 				}
-			} else {
-				location.getWorld().playEffect(location, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
+			}
+			else {
+				world.spawnParticle(Particle.REDSTONE, location, 1, 0.125, 0.125, 0.125, 0, DISPLAY, true);
 
 				// Check affected people
 				PluginTools.removeSpouts(location, this.player);

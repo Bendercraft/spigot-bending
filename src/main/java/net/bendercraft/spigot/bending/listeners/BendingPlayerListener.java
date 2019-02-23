@@ -398,8 +398,8 @@ public class BendingPlayerListener implements Listener {
 			String ability = bender.getAbility();
 
 			if (event.getCause() == DamageCause.FALL) {
-				BendingPassiveAbility ab = null;
-				if (bender != null && bender.isBender(BendingElement.EARTH)) {
+				BendingPassiveAbility ab;
+				if (bender.isBender(BendingElement.EARTH)) {
 					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
 					if (ab.start()) {
 						AbilityManager.getManager().addInstance(ab);
@@ -417,8 +417,7 @@ public class BendingPlayerListener implements Listener {
 					}
 				}
 
-				if (bender != null 
-						&& bender.isBender(BendingElement.AIR) 
+				if (bender.isBender(BendingElement.AIR)
 						&& EntityTools.canBendPassive(player, BendingElement.AIR)) {
 					if (AirBurst.NAME.equals(ability)) {
 						BendingActiveAbility burst = AbilityManager.getManager().buildAbility(AirBurst.NAME, player);
