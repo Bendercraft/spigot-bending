@@ -2,8 +2,10 @@ package net.bendercraft.spigot.bending.abilities.air;
 
 import java.util.UUID;
 
+import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -178,7 +180,7 @@ public class AirSuction extends BendingActiveAbility {
 					|| this.origin.distance(this.player.getEyeLocation()) > SELECT_RANGE) {
 				remove();
 			}
-			this.origin.getWorld().playEffect(this.origin, Effect.SMOKE, 4, (int) SELECT_RANGE);
+			this.player.spawnParticle(Particle.SMOKE_NORMAL, this.origin, 1, 0, 0, 0, 0);
 			return;
 		}
 		
@@ -205,8 +207,9 @@ public class AirSuction extends BendingActiveAbility {
 		this.bender.cooldown(AirSuction.NAME, cooldown);
 	}
 
+	private static final Particle.DustOptions DISPLAY = new Particle.DustOptions(Color.fromRGB(220, 250, 250), 2.5f);
 	private void advanceLocation() {
-		this.location.getWorld().playEffect(this.location, Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
+		this.location.getWorld().spawnParticle(Particle.REDSTONE, this.location, 1, 0.125, 0.125, 0.125, 0, DISPLAY, true);
 		this.location = this.location.add(this.direction.clone().multiply(this.speedfactor));
 	}
 

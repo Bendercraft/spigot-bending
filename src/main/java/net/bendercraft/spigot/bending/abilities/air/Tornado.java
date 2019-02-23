@@ -135,9 +135,10 @@ public class Tornado extends BendingActiveAbility {
 
 				x = this.origin.getX() + (timefactor * factor * this.radius * Math.cos(angle));
 				z = this.origin.getZ() + (timefactor * factor * this.radius * Math.sin(angle));
-				Particle.DustOptions display = new Particle.DustOptions(TORNADO_COLOR, (float) (1.0f +(factor * 4.5f)));
+
 				Location effectLocation = new Location(world, x, y, z);
 				if (!ProtectionManager.isLocationProtectedFromBending(this.player, register, effectLocation)) {
+					Particle.DustOptions display = new Particle.DustOptions(TORNADO_COLOR, (float) (1.0f +(factor * 4.5f)));
 					world.spawnParticle(Particle.REDSTONE, effectLocation, 1, 0.25, 0.25, 0.25, 0, display, true);
 				}
 
