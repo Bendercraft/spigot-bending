@@ -1,13 +1,14 @@
 package net.bendercraft.spigot.bending.abilities.air;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.DoubleList;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -28,15 +29,17 @@ import net.bendercraft.spigot.bending.utils.EntityTools;
 public class AirScooter extends BendingActiveAbility {
 	public final static String NAME = "AirScooter";
 
+	private static final int PARTICLE_AMOUNT = 5;
+
 	@ConfigurationParameter("Speed")
 	private static double SPEED = 0.675;
 
 	private static final long INTERVAL = 100;
 	private static final double SCOOTER_RADIUS = 1;
 
-	private Block floorBlock;
-	private long time;
-	private List<Double> angles = new LinkedList<Double>();
+	private Block      floorBlock;
+	private long       time;
+	private DoubleList angles = new DoubleArrayList(PARTICLE_AMOUNT);
 
 	private double speed;
 
@@ -44,7 +47,7 @@ public class AirScooter extends BendingActiveAbility {
 		super(register, player);
 
 		this.time = this.startedTime;
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < PARTICLE_AMOUNT; i++) {
 			this.angles.add((double) (60 * i));
 		}
 
@@ -137,17 +140,21 @@ public class AirScooter extends BendingActiveAbility {
 		this.player.setVelocity(velocity);
 	}
 
+	private static final double RED_COMPONENT = 200/255.0;
+	private static final double GREEN_COMPONENT = 250/255.0;
+	private static final double BLUE_COMPONENT = 250/255.0;
 	private void spinScooter() {
 		Location origin = this.player.getLocation().clone();
 		origin.add(0, -SCOOTER_RADIUS, 0);
-		for (int i = 0; i < 5; i++) {
-			double x = Math.cos(Math.toRadians(this.angles.get(i))) * SCOOTER_RADIUS;
+
+		final World world = origin.getWorld();
+		for (int i = 0; i < PARTICLE_AMOUNT; i++) {
+			double angle = this.angles.getDouble(i);
+			double x = Math.cos(Math.toRadians(angle)) * SCOOTER_RADIUS;
 			double y = ((((double) i) / 2) * SCOOTER_RADIUS) - SCOOTER_RADIUS;
-			double z = Math.sin(Math.toRadians(this.angles.get(i))) * SCOOTER_RADIUS;
-			this.player.getWorld().playEffect(origin.clone().add(x, y, z), Effect.SMOKE, 4, (int) AirBlast.DEFAULT_RANGE);
-		}
-		for (int i = 0; i < 5; i++) {
-			this.angles.set(i, this.angles.get(i) + 10);
+			double z = Math.sin(Math.toRadians(angle)) * SCOOTER_RADIUS;
+			world.spawnParticle(Particle.SPELL_MOB, origin.clone().add(x, y, z), 0, RED_COMPONENT, GREEN_COMPONENT, BLUE_COMPONENT, 1, null, false);
+			this.angles.set(i, angle + 10.0);
 		}
 	}
 
