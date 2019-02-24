@@ -213,7 +213,8 @@ public class BendingDenyItem implements Listener {
 			}
 		}
 		
-		if(item.getType() == Material.GOLDEN_APPLE 
+		if(item.getType() == Material.GOLDEN_APPLE
+				|| item.getType() == Material.ENCHANTED_GOLDEN_APPLE
 				|| item.getType() == Material.DIAMOND_SWORD
 				|| item.getType() == Material.DIAMOND_BOOTS
 				|| item.getType() == Material.DIAMOND_CHESTPLATE
