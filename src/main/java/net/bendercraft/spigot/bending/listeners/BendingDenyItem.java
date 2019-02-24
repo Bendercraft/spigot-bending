@@ -41,9 +41,9 @@ public class BendingDenyItem implements Listener {
 	private List<PotionEffectType> deniedPotions;
 	
 	public BendingDenyItem() {
-		enderpearls = new HashMap<UUID, Long>();
-		deniedEnchantments = new HashMap<Enchantment, Integer>();
-		deniedPotions = new LinkedList<PotionEffectType>();
+		enderpearls = new HashMap<>();
+		deniedEnchantments = new HashMap<>();
+		deniedPotions = new LinkedList<>();
 		
 		deniedEnchantments.put(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
 		deniedEnchantments.put(Enchantment.PROTECTION_FIRE, 0);

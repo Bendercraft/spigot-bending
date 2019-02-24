@@ -2,10 +2,8 @@ package net.bendercraft.spigot.bending.abilities.air;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
@@ -32,6 +30,8 @@ import net.bendercraft.spigot.bending.utils.TempBlock;
 @ABendingAbility(name = AirBurst.NAME, element = BendingElement.AIR)
 public class AirBurst extends BendingActiveAbility {
 	public final static String NAME = "AirBurst";
+
+	private static final Particle.DustOptions DISPLAY = new Particle.DustOptions(Color.fromRGB(220, 250, 250), 1.5f);
 	
 	@ConfigurationParameter("Charge-Time")
 	public static long DEFAULT_CHARGETIME = 1750;
@@ -79,7 +79,7 @@ public class AirBurst extends BendingActiveAbility {
 			this.cooldown -= 500;
 		}
 		
-		blasts = new LinkedList<BurstBlast>();
+		blasts = new LinkedList<>();
 		chargetime = DEFAULT_CHARGETIME;
 	}
 	
@@ -132,15 +132,15 @@ public class AirBurst extends BendingActiveAbility {
 				setState(BendingAbilityState.PREPARED);
 			}
 			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
-			player.getWorld().spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
+			player.spawnParticle(Particle.SPELL, loc, 1, 0, 0, 0, 0);
 		} else if(isState(BendingAbilityState.PREPARED)) {
 			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
-			player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
+			player.spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
 			if (!this.player.isSneaking()) {
 				sphereBurst();
 			}
 		} else if(isState(BendingAbilityState.PROGRESSING)) {
-			List<BurstBlast> toRemove = new LinkedList<BurstBlast>();
+			List<BurstBlast> toRemove = new LinkedList<>();
 			for(BurstBlast blast : blasts) {
 				if(!blast.progress()) {
 					toRemove.add(blast);
@@ -325,7 +325,7 @@ public class AirBurst extends BendingActiveAbility {
 		}
 
 		private void advanceLocation() {
-			this.location.getWorld().playEffect(this.location, Effect.SMOKE, 4, (int) this.range);
+			this.location.getWorld().spawnParticle(Particle.REDSTONE, this.location, 1, 0.125, 0.125, 0.125, 0, DISPLAY, true);
 			this.location = this.location.add(this.direction.clone().multiply(this.speedfactor));
 		}
 
