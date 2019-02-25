@@ -44,33 +44,22 @@ public class BendingDenyItem implements Listener {
 		enderpearls = new HashMap<>();
 		deniedEnchantments = new HashMap<>();
 		deniedPotions = new LinkedList<>();
-		
-		deniedEnchantments.put(Enchantment.PROTECTION_ENVIRONMENTAL, 3);
-		deniedEnchantments.put(Enchantment.PROTECTION_FIRE, 0);
-		deniedEnchantments.put(Enchantment.PROTECTION_EXPLOSIONS, 4);
-		deniedEnchantments.put(Enchantment.PROTECTION_PROJECTILE, 4);
-		deniedEnchantments.put(Enchantment.OXYGEN, 3);
-		deniedEnchantments.put(Enchantment.WATER_WORKER, 1);
-		deniedEnchantments.put(Enchantment.THORNS, 1);
-		deniedEnchantments.put(Enchantment.DAMAGE_ALL, 2);
-		deniedEnchantments.put(Enchantment.DAMAGE_UNDEAD, 5);
-		deniedEnchantments.put(Enchantment.DAMAGE_ARTHROPODS, 5);
-		deniedEnchantments.put(Enchantment.KNOCKBACK, 1);
-		deniedEnchantments.put(Enchantment.FIRE_ASPECT, 0);
-		deniedEnchantments.put(Enchantment.LOOT_BONUS_MOBS, 3);
-		deniedEnchantments.put(Enchantment.DIG_SPEED, 5);
-		deniedEnchantments.put(Enchantment.SILK_TOUCH, 1);
-		deniedEnchantments.put(Enchantment.DURABILITY, 3);
-		deniedEnchantments.put(Enchantment.LOOT_BONUS_BLOCKS, 3);
-		deniedEnchantments.put(Enchantment.ARROW_DAMAGE, 0);
-		deniedEnchantments.put(Enchantment.ARROW_KNOCKBACK, 0);
-		deniedEnchantments.put(Enchantment.ARROW_FIRE, 0);
-		deniedEnchantments.put(Enchantment.ARROW_INFINITE, 0);
-		deniedEnchantments.put(Enchantment.LUCK, 3);
-		deniedEnchantments.put(Enchantment.LURE, 3);
-		deniedEnchantments.put(Enchantment.MENDING, 1);
-		deniedEnchantments.put(Enchantment.FROST_WALKER, 0);
-		deniedEnchantments.put(Enchantment.SWEEPING_EDGE, 0);
+
+		deniedEnchantments.put(Enchantment.PROTECTION_ENVIRONMENTAL, 3); // ID : protection
+		deniedEnchantments.put(Enchantment.PROTECTION_FIRE, 0); // ID : fire_protection
+		deniedEnchantments.put(Enchantment.THORNS, 1); // ID : thorns
+		deniedEnchantments.put(Enchantment.DAMAGE_ALL, 2); // ID : sharpness
+		deniedEnchantments.put(Enchantment.KNOCKBACK, 1); // ID : knockback
+		deniedEnchantments.put(Enchantment.FIRE_ASPECT, 0); // ID : fire_aspect
+		deniedEnchantments.put(Enchantment.ARROW_DAMAGE, 0); // ID : power
+		deniedEnchantments.put(Enchantment.ARROW_KNOCKBACK, 0); // ID : punch
+		deniedEnchantments.put(Enchantment.ARROW_FIRE, 0); // ID : flame
+		deniedEnchantments.put(Enchantment.ARROW_INFINITE, 0); // ID : infinity
+		deniedEnchantments.put(Enchantment.FROST_WALKER, 0); // ID : frost_walker
+		deniedEnchantments.put(Enchantment.SWEEPING_EDGE, 0); // ID : sweeping
+		deniedEnchantments.put(Enchantment.RIPTIDE, 0); // ID : riptide
+		deniedEnchantments.put(Enchantment.CHANNELING, 0); // ID : channeling
+		deniedEnchantments.put(Enchantment.LOYALTY, 0); // ID : loyalty
 		
 		deniedPotions.add(PotionEffectType.INCREASE_DAMAGE);
 		deniedPotions.add(PotionEffectType.FIRE_RESISTANCE);
