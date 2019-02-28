@@ -54,6 +54,9 @@ public class ChooseExecution extends BendingCommand {
 		}
 
 		BendingPlayer bender = BendingPlayer.getBendingPlayer(target);
+		if (bender == null) {
+			return false;
+		}
 		if (bender.isBender()) {
 			if (!other) {
 				if (!sender.hasPermission("bending.command.rechoose")) {

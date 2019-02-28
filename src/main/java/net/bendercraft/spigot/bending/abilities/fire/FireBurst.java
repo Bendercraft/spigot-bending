@@ -130,7 +130,7 @@ public class FireBurst extends BendingActiveAbility {
 			this.rangeSphere *= 1.1;
 		}
 		
-		this.blasts = new LinkedList<BurstBlast>();
+		this.blasts = new LinkedList<>();
 	}
 	
 	@Override
@@ -200,7 +200,7 @@ public class FireBurst extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		if(getState() == BendingAbilityState.PROGRESSING) {
-			List<BurstBlast> toRemove = new LinkedList<BurstBlast>();
+			List<BurstBlast> toRemove = new LinkedList<>();
 			for(BurstBlast blast : blasts) {
 				if(!blast.progress()) {
 					toRemove.add(blast);
@@ -283,6 +283,9 @@ public class FireBurst extends BendingActiveAbility {
 	}
 	
 	public static class BurstBlast {
+
+		private static final double PARTICLE_SPEED   = 1.0 / 48.0;
+
 		private Player player;
 		private Location location;
 		private Location origin;
@@ -333,7 +336,7 @@ public class FireBurst extends BendingActiveAbility {
 				}
 			}
 
-			this.location.getWorld().playEffect(this.location, Effect.MOBSPAWNER_FLAMES, 0, (int) this.range);
+			location.getWorld().spawnParticle(Particle.FLAME, location, 2, 0.75, 0.75, 0.75, PARTICLE_SPEED, null, true);
 			this.location = this.location.add(this.direction.clone().multiply(this.speedfactor));
 			
 			return true;

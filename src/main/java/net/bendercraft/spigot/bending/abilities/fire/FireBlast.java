@@ -1,10 +1,7 @@
 package net.bendercraft.spigot.bending.abilities.fire;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -40,6 +37,8 @@ import net.bendercraft.spigot.bending.utils.ProtectionManager;
 @ABendingAbility(name = FireBlast.NAME, element = BendingElement.FIRE)
 public class FireBlast extends BendingActiveAbility {
 	public final static String NAME = "FireBlast";
+
+	private static final double PARTICLE_SPEED   = 1.0 / 48.0;
 	
 	private static int ID = Integer.MIN_VALUE;
 
@@ -83,7 +82,6 @@ public class FireBlast extends BendingActiveAbility {
 	private static double CHARGE_RANGE_FACTOR = 1.2;
 
 	private Location location;
-	private List<Block> safe;
 	private Location origin;
 	private Vector direction;
 	private int id;
@@ -102,7 +100,6 @@ public class FireBlast extends BendingActiveAbility {
 	public FireBlast(RegisteredAbility register, Player player) {
 		super(register, player);
 
-		this.safe = new LinkedList<Block>();
 		this.speedfactor = SPEED * (Bending.getInstance().getManager().getTimestep() / 1000.);
 		this.location = this.player.getEyeLocation();
 		this.id = ID++;
@@ -272,14 +269,15 @@ public class FireBlast extends BendingActiveAbility {
 				}
 			}
 
-			this.location.getWorld().playEffect(this.location, Effect.MOBSPAWNER_FLAMES, 0, (int) this.range);
+			location.getWorld().spawnParticle(Particle.FLAME, location, 7, 0.25, 0.25, 0.25, PARTICLE_SPEED, null, true);
+			//this.location.getWorld().playEffect(this.location, Effect.MOBSPAWNER_FLAMES, 0, (int) this.range);
 			this.location = this.location.add(this.direction.clone().multiply(this.speedfactor));
 		}
 	}
 
 	private void ignite(Location location) {
 		for (Block block : BlockTools.getBlocksAroundPoint(location, AFFECTING_RADIUS)) {
-			if (FireStream.isIgnitable(this.player, block) && !this.safe.contains(block)) {
+			if (FireStream.isIgnitable(this.player, block)) {
 				block.setType(Material.FIRE);
 				if (DISSIPATES) {
 					FireStream.addIgnitedBlock(block, this.player, DISSIPATE);
@@ -359,10 +357,6 @@ public class FireBlast extends BendingActiveAbility {
 	@Override
 	public void stop() {
 		
-	}
-
-	public static boolean removeOneAroundPoint(Location location2, double aFFECTING_RADIUS2, Player player) {
-		return false;
 	}
 
 }
