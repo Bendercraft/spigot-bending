@@ -1,7 +1,5 @@
 package net.bendercraft.spigot.bending.commands.subcommands;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
