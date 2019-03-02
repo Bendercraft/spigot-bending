@@ -172,6 +172,7 @@ public class BlockTools {
 		nonOpaque.add(Material.POWERED_RAIL);
 		nonOpaque.add(Material.DETECTOR_RAIL);
 		nonOpaque.add(Material.COBWEB);
+		nonOpaque.add(Material.GRASS);
 		nonOpaque.add(Material.TALL_GRASS); // Not sure here, previously ID 31
 		nonOpaque.add(Material.ROSE_BUSH);
 		nonOpaque.add(Material.DEAD_BUSH);
