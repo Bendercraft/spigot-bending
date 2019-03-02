@@ -55,9 +55,6 @@ public class LavaTrain extends BendingActiveAbility {
 	@ConfigurationParameter("Max-Duration")
 	public static long DURATION = 20000; // ms
 
-	@ConfigurationParameter("Cooldown-Factor")
-	public static double COOLDOWN_FACTOR = 1;
-
 	private static Material FAST_MATERIAL = Material.MAGMA_BLOCK;
 	private static Material SLOW_MATERIAL = Material.LAVA;
 
@@ -186,7 +183,7 @@ public class LavaTrain extends BendingActiveAbility {
 			affected.revertBlock();
 		}
 		this.affecteds.clear();
-		this.bender.cooldown(NAME, (long)(DURATION * COOLDOWN_FACTOR * cooldownFactor));
+		this.bender.cooldown(NAME, (long)(DURATION * cooldownFactor));
 	}
 
 	public static LavaTrain getLavaTrain(Block b) {
