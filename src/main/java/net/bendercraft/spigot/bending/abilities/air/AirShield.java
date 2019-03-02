@@ -2,7 +2,6 @@ package net.bendercraft.spigot.bending.abilities.air;
 
 import java.util.Map;
 
-import com.sun.org.apache.regexp.internal.RE;
 import org.bukkit.*;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMap;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.Int2IntMaps;
