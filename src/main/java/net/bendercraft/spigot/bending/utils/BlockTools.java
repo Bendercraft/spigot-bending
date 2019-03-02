@@ -26,7 +26,6 @@ import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.earth.EarthPassive;
 import net.bendercraft.spigot.bending.abilities.earth.EarthWall;
-import net.bendercraft.spigot.bending.abilities.earth.LavaTrain;
 import net.bendercraft.spigot.bending.abilities.earth.MetalBending;
 import net.bendercraft.spigot.bending.abilities.water.PhaseChange;
 import net.bendercraft.spigot.bending.abilities.water.WaterManipulation;
@@ -218,6 +217,12 @@ public class BlockTools {
 		IRON_BENDABLES.add(Material.CAULDRON);
 	}
 	
+	private static final Set<Material> LAVA_BENDABLES = new HashSet<>();
+	static {
+		LAVA_BENDABLES.add(Material.LAVA);
+		LAVA_BENDABLES.add(Material.MAGMA_BLOCK);
+	}
+	
 	private BlockTools() {
 	}
 
@@ -306,9 +311,7 @@ public class BlockTools {
 			return true;
 		}
 
-		if (EntityTools.isSpecialized(player, BendingAffinity.LAVA) 
-				&& (block.getType() == Material.OBSIDIAN) 
-				&& ((EarthWall.NAME.equals(ability.getName())) || (LavaTrain.NAME.equals(ability.getName())))) {
+		if (isLavaBendable(player, block.getType())) {
 			return true;
 		}
 
@@ -321,6 +324,18 @@ public class BlockTools {
 		}
 
 		if (!IRON_BENDABLES.contains(m)) {
+			return false;
+		}
+
+		return true;
+	}
+	
+	public static boolean isLavaBendable(Player p, Material m) {
+		if (!EntityTools.isSpecialized(p, BendingAffinity.LAVA)) {
+			return false;
+		}
+
+		if (!LAVA_BENDABLES.contains(m)) {
 			return false;
 		}
 

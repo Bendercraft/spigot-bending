@@ -156,16 +156,20 @@ public class EarthBlast extends BendingActiveAbility {
 			damageBonus = BONUS_DAMAGE_SAND;
 		} else if (block.getType() == Material.STONE) {
 			current.add(TempBlock.makeTemporary(this, block, Material.COBBLESTONE, false));
-		} else if (EntityTools.canBend(this.player, MetalBending.NAME) && BlockTools.isIronBendable(player, type)) {
+		} else if (BlockTools.isIronBendable(player, block.getType())) {
 			if (block.getType() == Material.IRON_BLOCK) {
 				current.add(TempBlock.makeTemporary(this, block, Material.IRON_ORE, false));
 			} else {
 				current.add(TempBlock.makeTemporary(this, block, Material.IRON_BLOCK, false));
 			}
 			damageBonus = BONUS_DAMAGE_IRON;
-		} else if (EntityTools.canBend(this.player, LavaTrain.NAME) && (type == Material.OBSIDIAN)) {
+		} else if (BlockTools.isLavaBendable(player, block.getType())) {
+			if (block.getType() == Material.OBSIDIAN) {
+				current.add(TempBlock.makeTemporary(this, block, Material.BEDROCK, false));
+			} else {
+				current.add(TempBlock.makeTemporary(this, block, Material.OBSIDIAN, false));
+			}
 			damageBonus = BONUS_DAMAGE_IRON;
-			current.add(TempBlock.makeTemporary(this, block, Material.BEDROCK, false));
 		} else {
 			current.add(TempBlock.makeTemporary(this, block, Material.STONE, false));
 		}
