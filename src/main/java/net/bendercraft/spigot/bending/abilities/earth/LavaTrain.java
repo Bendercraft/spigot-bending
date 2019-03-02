@@ -56,13 +56,18 @@ public class LavaTrain extends BendingActiveAbility {
 	public static long DURATION = 20000; // ms
 
 	@ConfigurationParameter("Cooldown-Factor")
-	public static int COOLDOWN_FACTOR = 2;
+	public static double COOLDOWN_FACTOR = 1;
+
+	private static Material FAST_MATERIAL = Material.MAGMA_BLOCK;
+	private static Material SLOW_MATERIAL = Material.LAVA;
 
 	private Location origin;
 	private Block safePoint;
 	private Location current;
 	private Vector direction;
 	private long interval;
+	private Material material;
+	private double cooldownFactor;
 
 	private Map<Block, TempBlock> affecteds = new HashMap<Block, TempBlock>();
 
@@ -77,7 +82,11 @@ public class LavaTrain extends BendingActiveAbility {
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
 			if (!this.player.isSneaking()) {
-				return false;
+				this.material = FAST_MATERIAL;
+				this.cooldownFactor = 0.5;
+			} else {
+				this.material = SLOW_MATERIAL;
+				this.cooldownFactor = 1.5;
 			}
 			this.safePoint = this.player.getLocation().getBlock();
 			this.time = this.startedTime;
@@ -162,11 +171,8 @@ public class LavaTrain extends BendingActiveAbility {
 
 			for (Block potentialsBlock : potentialsBlocks) {
 				if (BlockTools.isEarthbendable(this.player, register, potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
-					// Do not let block behind bender to be bend, this whill be
-					// stupid
 					if (!safe.contains(potentialsBlock)) {
-						//this.affecteds.put(potentialsBlock, new TempBlock(potentialsBlock, Material.LAVA));
-						this.affecteds.put(potentialsBlock, TempBlock.makeTemporary(this, potentialsBlock, Material.LAVA, false));
+						this.affecteds.put(potentialsBlock, TempBlock.makeTemporary(this, potentialsBlock, this.material, false));
 						potentialsBlock.getWorld().playSound(potentialsBlock.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
 					}
 				}
@@ -180,7 +186,7 @@ public class LavaTrain extends BendingActiveAbility {
 			affected.revertBlock();
 		}
 		this.affecteds.clear();
-		this.bender.cooldown(NAME, DURATION * COOLDOWN_FACTOR);
+		this.bender.cooldown(NAME, (long)(DURATION * COOLDOWN_FACTOR * cooldownFactor));
 	}
 
 	public static LavaTrain getLavaTrain(Block b) {
