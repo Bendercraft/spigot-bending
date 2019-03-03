@@ -107,11 +107,16 @@ public class BlockTools {
 		PLANTS.addAll(FLOWERS);
 
 		PLANTS.add(Material.LILY_PAD);
+		
 		PLANTS.add(Material.GRASS);
 		PLANTS.add(Material.TALL_GRASS);
+		
 		PLANTS.add(Material.FERN);
 		PLANTS.add(Material.LARGE_FERN);
+		
+		
 		PLANTS.add(Material.DEAD_BUSH);
+		PLANTS.add(Material.ROSE_BUSH);
 
 		
 		PLANTS.add(Material.WHEAT);
@@ -128,29 +133,15 @@ public class BlockTools {
 
 	private static Set<Material> transparentEarthbending = new HashSet<>();
 	static {
-		transparentEarthbending.addAll(LEAVES);
+		transparentEarthbending.addAll(PLANTS);
 		
 		transparentEarthbending.add(Material.AIR);
 		transparentEarthbending.add(Material.WATER);
 		transparentEarthbending.add(Material.LAVA);
 		transparentEarthbending.add(Material.COBWEB);
-		transparentEarthbending.add(Material.GRASS);
-		transparentEarthbending.add(Material.TALL_GRASS);
-		transparentEarthbending.add(Material.FERN);
-		transparentEarthbending.add(Material.LARGE_FERN);
-		transparentEarthbending.add(Material.ROSE_BUSH);
-		transparentEarthbending.add(Material.DEAD_BUSH);
-		transparentEarthbending.add(Material.DANDELION);
-		transparentEarthbending.add(Material.DANDELION_YELLOW);
-		transparentEarthbending.add(Material.ROSE_RED);
-		transparentEarthbending.add(Material.BROWN_MUSHROOM);
-		transparentEarthbending.add(Material.RED_MUSHROOM);
 		transparentEarthbending.add(Material.TORCH);
 		transparentEarthbending.add(Material.FIRE);
-		transparentEarthbending.add(Material.WHEAT);
 		transparentEarthbending.add(Material.SNOW);
-		transparentEarthbending.add(Material.SUGAR_CANE);
-		transparentEarthbending.add(Material.VINE);
 	}
 
 	private static final Set<Material> PLATES = new HashSet<>();
@@ -169,6 +160,8 @@ public class BlockTools {
 		nonOpaque.addAll(LEAVES);
 
 		nonOpaque.addAll(PLATES);
+		
+		nonOpaque.addAll(PLANTS);
 
 		nonOpaque.add(Material.VOID_AIR);
 		nonOpaque.add(Material.AIR);
@@ -177,18 +170,6 @@ public class BlockTools {
 		nonOpaque.add(Material.POWERED_RAIL);
 		nonOpaque.add(Material.DETECTOR_RAIL);
 		nonOpaque.add(Material.COBWEB);
-		nonOpaque.add(Material.GRASS);
-		nonOpaque.add(Material.TALL_GRASS);
-		nonOpaque.add(Material.FERN);
-		nonOpaque.add(Material.LARGE_FERN);
-		nonOpaque.add(Material.ROSE_BUSH);
-		nonOpaque.add(Material.DEAD_BUSH);
-		nonOpaque.add(Material.DANDELION);
-		nonOpaque.add(Material.DANDELION_YELLOW);
-		nonOpaque.add(Material.ROSE_RED);
-		nonOpaque.add(Material.POPPY);
-		nonOpaque.add(Material.BROWN_MUSHROOM);
-		nonOpaque.add(Material.RED_MUSHROOM);
 		nonOpaque.add(Material.TORCH);
 		nonOpaque.add(Material.FIRE);
 		nonOpaque.add(Material.REDSTONE_WIRE);
@@ -206,8 +187,6 @@ public class BlockTools {
 		nonOpaque.add(Material.REPEATER);
 		nonOpaque.add(Material.PUMPKIN_STEM);
 		nonOpaque.add(Material.MELON_STEM);
-		nonOpaque.add(Material.VINE);
-		nonOpaque.add(Material.LILY_PAD);
 		nonOpaque.add(Material.NETHER_WART);
 		nonOpaque.add(Material.COCOA);
 		nonOpaque.add(Material.TRIPWIRE_HOOK);
