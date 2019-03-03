@@ -1,6 +1,7 @@
 package net.bendercraft.spigot.bending.abilities;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.bukkit.entity.Player;
 
@@ -166,5 +167,18 @@ public abstract class BendingAbility {
 	
 	public RegisteredAbility getRegister() {
 		return this.register;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) { return true; }
+		if (o == null || getClass() != o.getClass()) { return false; }
+		BendingAbility that = (BendingAbility) o;
+		return player.getUniqueId().equals(that.player.getUniqueId()) && register.equals(that.register);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(player.getUniqueId(), register);
 	}
 }

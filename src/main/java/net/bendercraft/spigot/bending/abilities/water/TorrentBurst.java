@@ -1,13 +1,18 @@
 package net.bendercraft.spigot.bending.abilities.water;
 
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.Double2ObjectArrayMap;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.Double2ObjectMaps;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.*;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.ObjectIterator;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -27,16 +32,16 @@ public class TorrentBurst {
 	private static double defaultfactor = 1.5;
 	private static long interval = Torrent.interval;
 
-	private Player                             player;
-	private long                               time;
-	private Location                           origin;
-	private double                             radius           = dr;
-	private double                             maxradius        = defaultmaxradius;
-	private double                             factor           = defaultfactor;
-	private Int2ObjectMap<Int2DoubleMap> heights          = new Int2ObjectOpenHashMap<>();
-	private List<TempBlock>                    blocks           = new LinkedList<>();
-	private List<Entity>                       affectedEntities = new LinkedList<>();
-	private BendingAbility                     parent;
+	private static int MAX_HEIGHT = 3;
+
+	private Player                       player;
+	private long                         time;
+	private Location                     origin;
+	private double                       radius           = dr;
+	private double                       maxradius        = defaultmaxradius;
+	private double                       factor           = defaultfactor;
+	private Double2ObjectMap<IntList>    angles           = new Double2ObjectArrayMap<>();
+	private BendingAbility               parent;
 
 	public TorrentBurst(Player player, double radius, BendingAbility parent) {
 		this.parent = parent;
@@ -48,15 +53,13 @@ public class TorrentBurst {
 	}
 
 	private void initializeHeightsMap() {
-		for (int i = -1; i <= 1; i++) {
-			Int2DoubleMap angles = new Int2DoubleOpenHashMap();
-			double dtheta = Math.toDegrees(1 / (maxradius + 2));
-			int j = 0;
-			for (double theta = 0; theta < 360; theta += dtheta) {
-				angles.put(j, theta);
-				j++;
+		final double drad = 1/(maxradius+2);
+		for (double rad = 0; rad < (2*Math.PI); rad += drad) {
+			IntList heights = new IntArrayList(MAX_HEIGHT);
+			for (int i = -(MAX_HEIGHT/2); i <= (MAX_HEIGHT/2); i++) {
+				heights.add(i);
 			}
-			heights.put(i, angles);
+			this.angles.put(rad, heights);
 		}
 	}
 
@@ -80,68 +83,53 @@ public class TorrentBurst {
 	}
 
 	private boolean formBurst() {
-		for (TempBlock tempBlock : blocks) {
-			tempBlock.revertBlock();
-		}
+		TempBlock.revertForAbility(parent, false);
 
-		blocks.clear();
+		List<Entity> entitiesList = EntityTools.getEntitiesAroundPoint(origin, radius + 2, (e) -> !player.equals(e) && !ProtectionManager.isEntityProtected(e));
 
-		affectedEntities.clear();
+		ObjectSet<Location> torrentLocations = new ObjectArraySet<>((int)(radius * Math.PI * 2)+1);
 
-		List<Entity> indexlist = EntityTools.getEntitiesAroundPoint(origin, radius + 2);
+		ObjectIterator<Double2ObjectMap.Entry<IntList>> anglesIterator = Double2ObjectMaps.fastIterator(angles);
+		while(anglesIterator.hasNext()) {
+			Double2ObjectMap.Entry<IntList> entry = anglesIterator.next();
+			final double angle = entry.getDoubleKey();
+			final double dx = Math.cos(angle) * radius;
+			final double dz = Math.sin(angle) * radius;
 
-		List<Block> torrentblocks = new LinkedList<>();
+			IntList heightList = entry.getValue();
+			IntListIterator heightIterator = heightList.iterator();
+			while(heightIterator.hasNext()){
+				final int height = heightIterator.nextInt();
+				Location location = origin.clone().add(dx, height, dz);
 
-		indexlist.remove(player);
-
-		final ObjectIterator<Int2ObjectMap.Entry<Int2DoubleMap>> heightsIterator = Int2ObjectMaps.fastIterator(heights);
-		while(heightsIterator.hasNext()) {
-			Int2ObjectMap.Entry<Int2DoubleMap> entry = heightsIterator.next();
-			int id = entry.getIntKey();
-
-			Int2DoubleMap angles = entry.getValue();
-			ObjectIterator<Int2DoubleMap.Entry> anglesIterator = Int2DoubleMaps.fastIterator(angles);
-			while(anglesIterator.hasNext()) {
-				Int2DoubleMap.Entry entryAngle = anglesIterator.next();
-				double angle = entryAngle.getDoubleValue();
-				double theta = Math.toRadians(angle);
-				double dx = Math.cos(theta) * radius;
-				double dy = id;
-				double dz = Math.sin(theta) * radius;
-				Location location = origin.clone().add(dx, dy, dz);
-				Block block = location.getBlock();
-				if (torrentblocks.contains(block)) {
+				final boolean added = torrentLocations.add(location);
+				if (!added) {
 					continue;
 				}
-
+				Block block = location.getBlock();
 				if (BlockTools.isTransparentToEarthbending(player, parent.getRegister(), block)) {
-					TempBlock tempBlock = TempBlock.makeTemporary(parent, block, Material.WATER, false);
-					blocks.add(tempBlock);
-					torrentblocks.add(block);
+					TempBlock.makeTemporary(parent, block, Material.WATER, false);
 				}
 				else {
-					anglesIterator.remove();
+					heightIterator.remove();
 					continue;
 				}
-				for (Entity entity : indexlist) {
-					if (ProtectionManager.isEntityProtected(entity)) {
-						continue;
-					}
-					if (!affectedEntities.contains(entity)) {
-						if (entity.getLocation().distance(location) <= 2) {
-							affectedEntities.add(entity);
-							affect(entity);
-						}
+
+				Iterator<Entity> entityIterator = entitiesList.iterator();
+				while (entityIterator.hasNext()) {
+					Entity entity = entityIterator.next();
+					if (entity.getLocation().distance(location) <= 2) {
+						affect(entity);
+						entityIterator.remove();
 					}
 				}
 			}
 
-			if (angles.isEmpty()) {
-				heightsIterator.remove();
+			if (heightList.isEmpty()) {
+				anglesIterator.remove();
 			}
 		}
-
-		if (heights.isEmpty()) {
+		if (angles.isEmpty()) {
 			return false;
 		}
 
@@ -161,8 +149,6 @@ public class TorrentBurst {
 	}
 
 	public void remove() {
-		for (TempBlock block : blocks) {
-			block.revertBlock();
-		}
+		TempBlock.revertForAbility(parent, false);
 	}
 }

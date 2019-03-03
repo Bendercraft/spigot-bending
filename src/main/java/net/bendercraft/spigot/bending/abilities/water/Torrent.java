@@ -3,9 +3,9 @@ package net.bendercraft.spigot.bending.abilities.water;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -64,10 +64,10 @@ public class Torrent extends BendingActiveAbility {
 	private double angle = 20;
 	private int layer = 0;
 
-	private List<TempBlock> blocks = new ArrayList<TempBlock>();
-	private List<TempBlock> launchblocks = new ArrayList<TempBlock>();
+	private List<TempBlock> blocks = new ArrayList<>();
+	private List<TempBlock> launchblocks = new ArrayList<>();
 
-	private List<Entity> hurtentities = new ArrayList<Entity>();
+	private List<Entity> hurtentities = new ArrayList<>();
 
 	private boolean sourceselected = false;
 	private boolean settingup = false;
@@ -211,11 +211,11 @@ public class Torrent extends BendingActiveAbility {
 					} else if (!BlockTools.adjacentToThreeOrMoreSources(this.sourceblock)) {
 						this.sourceblock.setType(Material.AIR);
 					}
-					//this.source = new TempBlock(this.sourceblock, Material.WATER, full);
 					this.source = TempBlock.makeTemporary(this, sourceblock, Material.WATER, false);
 					this.location = this.sourceblock.getLocation();
-				} else {
-					sourceblock.getWorld().playEffect(sourceblock.getLocation(), Effect.SMOKE, 4, 20);
+				}
+				else {
+					this.player.spawnParticle(Particle.BUBBLE_COLUMN_UP, sourceblock.getLocation(), 1, 0.125, 0.125, .125, 1./32.);
 					return;
 				}
 			}
@@ -270,7 +270,6 @@ public class Torrent extends BendingActiveAbility {
 							remove();
 							return;
 						}
-						//this.source = new TempBlock(this.location.getBlock(), Material.WATER, full);
 						this.source = TempBlock.makeTemporary(this, this.location.getBlock(), Material.WATER, false);
 					}
 				}
@@ -336,7 +335,7 @@ public class Torrent extends BendingActiveAbility {
 			clearRing();
 
 			Location loc = this.player.getEyeLocation();
-			ArrayList<Block> doneblocks = new ArrayList<Block>();
+			ArrayList<Block> doneblocks = new ArrayList<>();
 			for (double theta = this.startangle; theta < (this.angle + this.startangle); theta += 20) {
 				double phi = Math.toRadians(theta);
 				double dx = Math.cos(phi) * radius;
@@ -349,7 +348,6 @@ public class Torrent extends BendingActiveAbility {
 				Block block = blockloc.getBlock();
 				if (!doneblocks.contains(block) && !ProtectionManager.isLocationProtectedFromBending(this.player, register, blockloc)) {
 					if (BlockTools.isTransparentToEarthbending(this.player, block) && !block.isLiquid()) {
-						//this.launchblocks.add(new TempBlock(block, Material.WATER, full));
 						this.launchblocks.add(TempBlock.makeTemporary(this, block, Material.WATER, false));
 						doneblocks.add(block);
 					} else if (!BlockTools.isTransparentToEarthbending(this.player, block)) {
@@ -370,10 +368,10 @@ public class Torrent extends BendingActiveAbility {
 			targetloc = target.getLocation();
 		}
 
-		ArrayList<TempBlock> newblocks = new ArrayList<TempBlock>();
+		ArrayList<TempBlock> newblocks = new ArrayList<>();
 
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(this.player.getLocation(), this.range + 5);
-		List<Entity> affectedentities = new ArrayList<Entity>();
+		List<Entity> affectedentities = new ArrayList<>();
 
 		Block realblock = this.launchblocks.get(0).getBlock();
 
@@ -383,14 +381,12 @@ public class Torrent extends BendingActiveAbility {
 			targetloc = this.location.clone().add(dir.clone().multiply(10));
 		}
 
-		// Tools.verbose(layer);
 		if (this.layer == 0) {
 			this.location = this.location.clone().add(dir);
 		}
 
 		Block b = this.location.getBlock();
 
-		// player.sendBlockChange(location, 20, (byte) 0);
 
 		if ((this.location.distance(this.player.getLocation()) > this.range) || ProtectionManager.isLocationProtectedFromBending(this.player, register, this.location)) {
 			if (this.layer < maxlayer) {
@@ -477,9 +473,9 @@ public class Torrent extends BendingActiveAbility {
 		clearRing();
 		this.startangle += 30;
 		Location loc = this.player.getEyeLocation();
-		ArrayList<Block> doneBlocks = new ArrayList<Block>();
+		ArrayList<Block> doneBlocks = new ArrayList<>();
 		List<LivingEntity> entities = EntityTools.getLivingEntitiesAroundPoint(loc, radius + 2);
-		List<Entity> affectedEntities = new ArrayList<Entity>();
+		List<Entity> affectedEntities = new ArrayList<>();
 		for (double theta = this.startangle; theta < (this.angle + this.startangle); theta += 20) {
 			double phi = Math.toRadians(theta);
 			double dx = Math.cos(phi) * radius;

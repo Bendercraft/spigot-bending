@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -30,13 +32,13 @@ import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
 import net.bendercraft.spigot.bending.abilities.water.Drainbending;
 
 public class EntityTools {
-	private static Map<Player, Long> blockedChis = new HashMap<Player, Long>();
-	private static Map<Player, Long> grabedPlayers = new HashMap<Player, Long>();
-	private static List<UUID> toggledBending = new LinkedList<UUID>();
-	private static List<UUID> affToggledBenders = new LinkedList<UUID>();
+	private static Map<Player, Long> blockedChis = new HashMap<>();
+	private static Map<Player, Long> grabedPlayers = new HashMap<>();
+	private static List<UUID> toggledBending = new LinkedList<>();
+	private static List<UUID> affToggledBenders = new LinkedList<>();
 
 	// Tornados, Metalwire,...
-	public static final Map<UUID, Long> fallImmunity = new HashMap<UUID, Long>();
+	public static final Map<UUID, Long> fallImmunity = new HashMap<>();
 
 	public static boolean isBender(Player player, BendingElement type) {
 		BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
@@ -255,6 +257,14 @@ public class EntityTools {
 		return list;
 	}
 
+	public static List<Entity> getEntitiesAroundPoint(final Location location, final double radius, final Predicate<Entity> filter) {
+		final World world = location.getWorld();
+		return world.getEntities().stream()
+			 .filter(entity -> entity.getLocation().distance(location) < radius)
+			 .filter(filter)
+			 .collect(Collectors.toList());
+	}
+
 	public static List<LivingEntity> getLivingEntitiesAroundPoint(Location location, double radius) {
 		List<LivingEntity> list = new LinkedList<>();
 
@@ -296,7 +306,7 @@ public class EntityTools {
 	/**
 	 * 
 	 * @param player Player to start from (uses eye location)
-	 * @param originselectrange maximum distance before returning
+	 * @param range maximum distance before returning
 	 * @param nonOpaque2 block to go ignore if encountered while iterating
 	 * @return a block, never null
 	 */

@@ -15,10 +15,14 @@ import org.bukkit.block.data.BlockData;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+
 
 public class TempBlock {
 	private static Map<Block, TempBlock> instances = new HashMap<>();
-	private static Map<BendingAbility, List<TempBlock>> temporaries = new HashMap<>();
+	private static Reference2ObjectMap<BendingAbility, List<TempBlock>> temporaries = new Reference2ObjectOpenHashMap<>();
+	//private static Map<BendingAbility, List<TempBlock>> temporaries = new HashMap<>();
 	private static List<TempBlock> globals = Collections.synchronizedList(new LinkedList<>());
 
 	private Block block;
@@ -95,8 +99,12 @@ public class TempBlock {
 	}
 
 	public void revertBlock() {
-		state.update(true);
-		
+		revertBlock(true);
+	}
+
+	public void revertBlock(final boolean applyPhysics) {
+		state.update(true, applyPhysics);
+
 		if(ability != null) {
 			List<TempBlock> temps = temporaries.get(ability);
 			if(temps != null) {
@@ -109,6 +117,22 @@ public class TempBlock {
 			globals.remove(this);
 		}
 		instances.remove(block);
+	}
+
+	public static void revertForAbility(final BendingAbility ability) {
+		revertForAbility(ability, true);
+	}
+
+	public static void revertForAbility(final BendingAbility ability, final boolean applyPhysics) {
+		if (ability != null) {
+			List<TempBlock> tempBlocks = temporaries.remove(ability);
+			if (tempBlocks != null && !tempBlocks.isEmpty()) {
+				for (TempBlock tempBlock : tempBlocks) {
+					tempBlock.state.update(true, applyPhysics);
+					instances.remove(tempBlock.block);
+				}
+			}
+		}
 	}
 
 	public BlockState getState() {
@@ -169,7 +193,7 @@ public class TempBlock {
 	public static void removeAll() {
 		temporaries.clear();
 		globals.clear();
-		List<TempBlock> toRevert = new LinkedList<TempBlock>(instances.values());
+		List<TempBlock> toRevert = new LinkedList<>(instances.values());
 		toRevert.forEach(t -> t.revertBlock());
 	}
 
@@ -183,7 +207,7 @@ public class TempBlock {
 		public void run() {
 			// Clean up globals
 			long now = System.currentTimeMillis();
-			List<TempBlock> reverts = new LinkedList<TempBlock>();
+			List<TempBlock> reverts = new LinkedList<>();
 			for(TempBlock temp : globals) {
 				if(temp.started + temp.duration < now) {
 					reverts.add(temp);
