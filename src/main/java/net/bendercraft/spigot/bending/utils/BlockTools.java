@@ -110,6 +110,7 @@ public class BlockTools {
 		PLANTS.add(Material.GRASS);
 		PLANTS.add(Material.TALL_GRASS);
 		PLANTS.add(Material.FERN);
+		PLANTS.add(Material.LARGE_FERN);
 		PLANTS.add(Material.DEAD_BUSH);
 
 		
@@ -135,6 +136,8 @@ public class BlockTools {
 		transparentEarthbending.add(Material.COBWEB);
 		transparentEarthbending.add(Material.GRASS);
 		transparentEarthbending.add(Material.TALL_GRASS);
+		transparentEarthbending.add(Material.FERN);
+		transparentEarthbending.add(Material.LARGE_FERN);
 		transparentEarthbending.add(Material.ROSE_BUSH);
 		transparentEarthbending.add(Material.DEAD_BUSH);
 		transparentEarthbending.add(Material.DANDELION);
@@ -175,7 +178,9 @@ public class BlockTools {
 		nonOpaque.add(Material.DETECTOR_RAIL);
 		nonOpaque.add(Material.COBWEB);
 		nonOpaque.add(Material.GRASS);
-		nonOpaque.add(Material.TALL_GRASS); // Not sure here, previously ID 31
+		nonOpaque.add(Material.TALL_GRASS);
+		nonOpaque.add(Material.FERN);
+		nonOpaque.add(Material.LARGE_FERN);
 		nonOpaque.add(Material.ROSE_BUSH);
 		nonOpaque.add(Material.DEAD_BUSH);
 		nonOpaque.add(Material.DANDELION);
