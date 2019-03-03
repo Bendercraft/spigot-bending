@@ -107,6 +107,7 @@ public class BlockTools {
 		PLANTS.addAll(FLOWERS);
 
 		PLANTS.add(Material.LILY_PAD);
+		PLANTS.add(Material.GRASS);
 		PLANTS.add(Material.TALL_GRASS);
 		PLANTS.add(Material.FERN);
 		PLANTS.add(Material.DEAD_BUSH);
@@ -132,6 +133,7 @@ public class BlockTools {
 		transparentEarthbending.add(Material.WATER);
 		transparentEarthbending.add(Material.LAVA);
 		transparentEarthbending.add(Material.COBWEB);
+		transparentEarthbending.add(Material.GRASS);
 		transparentEarthbending.add(Material.TALL_GRASS);
 		transparentEarthbending.add(Material.ROSE_BUSH);
 		transparentEarthbending.add(Material.DEAD_BUSH);
