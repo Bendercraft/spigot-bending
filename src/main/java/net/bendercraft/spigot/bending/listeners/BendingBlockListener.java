@@ -75,7 +75,7 @@ public class BendingBlockListener implements Listener {
 			return;
 		}
 		if (!event.isCancelled()) {
-			event.setCancelled(!TempBlock.isTempBlock(block));
+			event.setCancelled(TempBlock.isTempBlock(block));
 		}
 		if (!event.isCancelled()) {
 			event.setCancelled(PhaseChange.isFrozen(block));
