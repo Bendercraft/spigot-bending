@@ -169,29 +169,25 @@ public class BendingDenyItem implements Listener {
 		if(bender.getPlayer().hasPermission("bending.denyitem.bypass")) {
 			return;
 		}
-		for(Entry<Enchantment, Integer> entry : deniedEnchantments.entrySet()) {
+		for(Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
 			Enchantment enchantment = entry.getKey();
 			int level = entry.getValue();
-			if(enchantment == Enchantment.ARROW_INFINITE && bender.hasAffinity(BendingAffinity.BOW)) {
+			Integer authorizedLevel = deniedEnchantments.get(enchantment);
+			if (authorizedLevel == null) { //This enchantment is not restricted
 				continue;
 			}
-			if(enchantment == Enchantment.ARROW_KNOCKBACK && bender.hasAffinity(BendingAffinity.BOW)) {
+			if (enchantment == Enchantment.ARROW_INFINITE && bender.hasAffinity(BendingAffinity.BOW)) {
 				continue;
 			}
-			if(!item.containsEnchantment(enchantment)) {
+			if (enchantment == Enchantment.ARROW_KNOCKBACK && bender.hasAffinity(BendingAffinity.BOW)) {
 				continue;
 			}
-			if(level == 0) {
+			if (authorizedLevel == 0) {
 				item.removeEnchantment(enchantment);
 				continue;
 			}
-			try {
-				if(item.getEnchantmentLevel(enchantment) > level) {
-					item.removeEnchantment(enchantment);
-					item.addUnsafeEnchantment(enchantment, level);
-				}
-			} catch(IllegalArgumentException e) {
-				Bending.getInstance().getLogger().severe("Player "+bender.getPlayer().getName()+" had item "+item.getType()+" with enchant "+enchantment.getName()+" but... NOPE :o");
+			if (level > authorizedLevel) {
+				item.addUnsafeEnchantment(enchantment, level);//If this item stack already contained the given enchantment (at any level), it will be replaced. We use the unsafe version to also restrict enchantments on unusual items.
 			}
 		}
 		
