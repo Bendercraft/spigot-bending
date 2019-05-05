@@ -1,6 +1,8 @@
 package net.bendercraft.spigot.bending.abilities;
 
 import java.lang.reflect.Constructor;
+import java.util.Objects;
+
 
 public class RegisteredAbility {
 
@@ -62,5 +64,18 @@ public class RegisteredAbility {
 
 	public boolean canBeUsedWithTools() {
 		return useWithTools;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) { return true; }
+		if (o == null || getClass() != o.getClass()) { return false; }
+		RegisteredAbility that = (RegisteredAbility) o;
+		return ability.equals(that.ability) && name.equals(that.name) && element == that.element && affinity == that.affinity;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(ability);
 	}
 }
