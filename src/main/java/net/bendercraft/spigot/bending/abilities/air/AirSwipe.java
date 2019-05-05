@@ -300,9 +300,11 @@ public class AirSwipe extends BendingActiveAbility {
 
 				// Check affected people
 				PluginTools.removeSpouts(location, this.player);
+				boolean hasBeenRemoved = false;
 				for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(location, AFFECTING_RADIUS)) {
-					if(affect(entity, direction)) {
+					if(affect(entity, direction) && !hasBeenRemoved) {
 						elementIterator.remove();
+						hasBeenRemoved = true;
 					}
 				}
 			}
