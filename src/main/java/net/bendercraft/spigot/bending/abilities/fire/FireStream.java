@@ -93,7 +93,7 @@ public class FireStream {
 		}
 
 		if (block.getRelative(BlockFace.DOWN).getType().isSolid()
-				&& (BlockTools.isPlant(block) || block.getType() == Material.AIR)) {
+				&& (BlockTools.isPlant(block) || BlockTools.isAir(block))) {
 			return true;
 		}
 

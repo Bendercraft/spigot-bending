@@ -173,7 +173,7 @@ public class OctopusForm extends BendingActiveAbility {
 		if(ProtectionManager.isLocationProtectedFromBending(player, register, block.getLocation())) {
 			return false;
 		}
-		if(block.getType() != Material.AIR && !BlockTools.isWaterBased(block)) {
+		if(!BlockTools.isAir(block) && !BlockTools.isWaterBased(block)) {
 			return false;
 		}
 		return true;
@@ -350,7 +350,7 @@ public class OctopusForm extends BendingActiveAbility {
 			if (ProtectionManager.isLocationProtectedFromBending(parent.getPlayer(), parent.register, block.getLocation())) {
 				return false;
 			}
-			if(block.getType() != Material.AIR && !BlockTools.isWaterBased(block)) {
+			if(!BlockTools.isAir(block) && !BlockTools.isWaterBased(block)) {
 				return false;
 			}
 			Material material = Material.WATER;

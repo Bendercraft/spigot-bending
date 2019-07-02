@@ -20,6 +20,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
 import net.bendercraft.spigot.bending.event.BendingHitEvent;
+import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.ProtectionManager;
 
@@ -114,7 +115,7 @@ public class Tornado extends BendingActiveAbility {
 		double timefactor = this.height / HEIGHT;
 		this.radius = timefactor * RADIUS;
 
-		if (this.origin.getBlock().getType() != Material.AIR) {
+		if (!BlockTools.isAir(this.origin.getBlock())) {
 			this.origin.setY(this.origin.getY() - ((1. / 10.) * this.height));
 
 			for (LivingEntity entity : EntityTools.getLivingEntitiesAroundPoint(this.origin, this.height)) {

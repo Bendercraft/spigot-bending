@@ -336,7 +336,7 @@ public class EarthBlast extends BendingActiveAbility {
 				
 				current.add(TempBlock.makeTemporary(this, block, type, false));
 				for(Block temp : BlockTools.getBlocksAroundPoint(location, radius)) {
-					if(temp.getType() == Material.AIR) {
+					if(BlockTools.isAir(temp)) {
 						current.add(TempBlock.makeTemporary(this, temp, type, false));
 					}
 				}

@@ -124,7 +124,7 @@ public class LavaFlow extends BendingActiveAbility {
 				List<Location> futurStreams = new LinkedList<Location>();
 				for(Location loc : streams) {
 					loc = loc.add(0, 1, 0);
-					if(loc.getBlock().getType() == Material.AIR) {
+					if(BlockTools.isAir(loc.getBlock())) {
 						futurStreams.add(loc);
 						blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.LAVA, false));
 					}
@@ -149,7 +149,7 @@ public class LavaFlow extends BendingActiveAbility {
 				List<Location> futurStreams = new LinkedList<Location>();
 				for(Location loc : streams) {
 					loc = loc.add(direction);
-					if(loc.getBlock().getType() == Material.AIR || (TempBlock.isTempBlock(loc.getBlock()) && blocks.contains(TempBlock.get(loc.getBlock())))) {
+					if(BlockTools.isAir(loc.getBlock()) || (TempBlock.isTempBlock(loc.getBlock()) && blocks.contains(TempBlock.get(loc.getBlock())))) {
 						futurStreams.add(loc);
 						blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.LAVA, false));
 					}

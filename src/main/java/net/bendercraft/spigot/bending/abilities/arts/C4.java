@@ -205,7 +205,7 @@ public class C4 extends BendingActiveAbility {
 			return true;
 		}
 		
-		if(location.getBlock().getType() != Material.AIR) {
+		if(!BlockTools.isAir(location.getBlock())) {
 			return false;
 		}
 

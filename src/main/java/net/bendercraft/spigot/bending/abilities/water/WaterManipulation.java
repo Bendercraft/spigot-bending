@@ -293,7 +293,7 @@ public class WaterManipulation extends BendingActiveAbility {
 		Block block = location.getBlock();
 		if (BlockTools.isTransparentToEarthbending(player, block) && !block.isLiquid()) {
 			BlockTools.breakBlock(block); // DESTROY FLOWERSSSS
-		} else if (block.getType() != Material.AIR && block.getType() != Material.WATER) {
+		} else if (!BlockTools.isAir(block) && block.getType() != Material.WATER) {
 			hit();
 			return;
 		}

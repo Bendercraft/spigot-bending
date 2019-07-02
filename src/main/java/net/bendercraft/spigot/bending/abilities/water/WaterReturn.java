@@ -155,7 +155,7 @@ public class WaterReturn {
 		if (TempBlock.isTempBlock(block)) {
 			return false;
 		}
-		return block.getType() == Material.AIR;
+		return BlockTools.isAir(block);
 	}
 	
 	private static int getWaterBottle(Inventory inventory) {

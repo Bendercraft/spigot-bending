@@ -171,7 +171,7 @@ public class FireWall extends BendingActiveAbility {
 				location = location.add(orth2.clone().multiply(j));
 				if (!ProtectionManager.isLocationProtectedFromBending(player, register, location)) {
 					Block block = location.getBlock();
-					if(block.getType() != Material.AIR) {
+					if(!BlockTools.isAir(block)) {
 						if(expandUp) {
 							expandUp = false;
 							j = 0;

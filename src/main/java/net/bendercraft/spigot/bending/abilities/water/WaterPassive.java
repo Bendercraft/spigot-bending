@@ -31,7 +31,7 @@ public class WaterPassive extends BendingPassiveAbility {
 		Block block = this.player.getLocation().getBlock();
 		Block fallblock = block.getRelative(BlockFace.DOWN);
 
-		if (fallblock.getType() == Material.AIR) {
+		if (BlockTools.isAir(fallblock)) {
 			return true;
 		}
 

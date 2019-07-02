@@ -282,12 +282,12 @@ public class Wave {
 				List<Block> blocks = new LinkedList<Block>();
 
 				if (!ProtectionManager.isLocationProtectedFromBending(this.player, parent.getRegister(), this.location) 
-						&& (blockl.getType() == Material.AIR || blockl.getType() == Material.FIRE || BlockTools.isPlant(blockl) || BlockTools.isWaterbendable(blockl, this.player))) {
+						&& (BlockTools.isAir(blockl) || blockl.getType() == Material.FIRE || BlockTools.isPlant(blockl) || BlockTools.isWaterbendable(blockl, this.player))) {
 					for (double i = 0; i <= this.radius; i += .5) {
 						for (double angle = 0; angle < 360; angle += 10) {
 							Vector vec = Tools.getOrthogonalVector(this.targetdirection, angle, i);
 							Block block = this.location.clone().add(vec).getBlock();
-							if ((!blocks.contains(block) && ((block.getType() == Material.AIR) || (block.getType() == Material.FIRE))) || BlockTools.isWaterbendable(block, this.player)) {
+							if ((!blocks.contains(block) && ((BlockTools.isAir(block)) || (block.getType() == Material.FIRE))) || BlockTools.isWaterbendable(block, this.player)) {
 								blocks.add(block);
 								FireBlast.removeFireBlastsAroundPoint(block.getLocation(), 2);
 							}
@@ -438,7 +438,7 @@ public class Wave {
 			if (TempBlock.isTempBlock(block)) {
 				continue;
 			}
-			if ((block.getType() == Material.AIR) || (block.getType() == Material.SNOW)) {
+			if ((BlockTools.isAir(block)) || (block.getType() == Material.SNOW)) {
 				TempBlock.makeTemporary(parent, block, Material.ICE, true);
 				this.frozenblocks.put(block, block);
 			}

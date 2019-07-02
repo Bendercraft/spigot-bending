@@ -116,7 +116,7 @@ public class WaterWhip extends BendingActiveAbility {
 				Vector direction = new Vector(randoms[0], randoms[1], randoms[2]).normalize();
 				for(int j=1 ; j < ICE_HEIGHT ; j++) {
 					Location loc = dot.point.clone().add(direction.clone().multiply(j));
-					if(!BlockTools.isWaterBased(loc.getBlock()) && loc.getBlock().getType() != Material.AIR) {
+					if(!BlockTools.isWaterBased(loc.getBlock()) && !BlockTools.isAir(loc.getBlock())) {
 						break;
 					}
 					TempBlock.makeGlobal(ICE, loc.getBlock(), Material.ICE, false);
@@ -173,7 +173,7 @@ public class WaterWhip extends BendingActiveAbility {
 					double j = 0;
 					while(j < distance && !broken) {
 						Block block = dot.point.clone().add(temp.clone().multiply(j)).getBlock();
-						if(!BlockTools.isWaterBased(block) && block.getType() != Material.AIR) {
+						if(!BlockTools.isWaterBased(block) && !BlockTools.isAir(block)) {
 							broken = true;
 						}
 						if(!broken) {

@@ -279,7 +279,7 @@ public class AirSwipe extends BendingActiveAbility {
 			}
 
 			Block block = location.getBlock();
-			if (block.getType() != Material.AIR) {
+			if (!BlockTools.isAir(block)) {
 				if (isBlockBreakable(block)) {
 					BlockTools.breakBlock(block);
 				}

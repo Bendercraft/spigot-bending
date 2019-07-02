@@ -112,7 +112,7 @@ public class LavaSpin extends BendingActiveAbility {
 	private boolean move(Vector direction) {
 		current = current.add(direction.normalize());
 		block.revertBlock();
-		if(current.getBlock().getType() == Material.AIR || BlockTools.isPlant(current.getBlock())) {
+		if(BlockTools.isAir(current.getBlock()) || BlockTools.isPlant(current.getBlock())) {
 			if(lava) {
 				block = TempBlock.makeTemporary(this, current.getBlock(), MATERIAL_RESTLESS, false);
 			} else {

@@ -33,7 +33,14 @@ import net.bendercraft.spigot.bending.controller.Settings;
 
 public class BlockTools {
 	private static List<Block> tempnophysics = new LinkedList<>();
-	
+
+	private static final Set<Material> AIRS = new HashSet<>();
+	static {
+		AIRS.add(Material.AIR);
+		AIRS.add(Material.VOID_AIR);
+		AIRS.add(Material.CAVE_AIR);
+	}
+
 	private static final Set<Material> LEAVES = new HashSet<>();
 	static {
 		LEAVES.add(Material.ACACIA_LEAVES);
@@ -134,8 +141,8 @@ public class BlockTools {
 	private static Set<Material> transparentEarthbending = new HashSet<>();
 	static {
 		transparentEarthbending.addAll(PLANTS);
-		
-		transparentEarthbending.add(Material.AIR);
+		transparentEarthbending.addAll(AIRS);
+
 		transparentEarthbending.add(Material.WATER);
 		transparentEarthbending.add(Material.LAVA);
 		transparentEarthbending.add(Material.COBWEB);
@@ -163,8 +170,8 @@ public class BlockTools {
 		
 		nonOpaque.addAll(PLANTS);
 
-		nonOpaque.add(Material.VOID_AIR);
-		nonOpaque.add(Material.AIR);
+		nonOpaque.addAll(AIRS);
+
 		nonOpaque.add(Material.WATER);
 		nonOpaque.add(Material.LAVA);
 		nonOpaque.add(Material.POWERED_RAIL);
@@ -248,11 +255,15 @@ public class BlockTools {
 		for (double i = 0; i <= max; i++) {
 			loc = location1.clone().add(direction.clone().multiply(i));
 			Material type = loc.getBlock().getType();
-			if ((type != Material.AIR) && !transparentEarthbending.contains(type)) {
+			if (!AIRS.contains(type) && !transparentEarthbending.contains(type)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public static boolean isAir(Block block) {
+		return AIRS.contains(block.getType());
 	}
 
 	public static boolean isSolid(Block block) {
@@ -391,7 +402,7 @@ public class BlockTools {
 			return false;
 		}
 
-		if (block.getType() == Material.WATER || block.getType() == Material.LAVA || (block.getType() == Material.AIR)) {
+		if (block.getType() == Material.WATER || block.getType() == Material.LAVA || AIRS.contains(block.getType())) {
 			return true;
 		}
 		return false;
@@ -596,9 +607,9 @@ public class BlockTools {
 
 				if (up) {
 					Block topblock = affectedblock.getRelative(BlockFace.UP);
-					if (topblock.getType() != Material.AIR) {
+					if (!AIRS.contains(topblock.getType())) {
 						breakBlock(affectedblock);
-					} else if (!affectedblock.isLiquid() && (affectedblock.getType() != Material.AIR)) {
+					} else if (!affectedblock.isLiquid() && !AIRS.contains(affectedblock.getType())) {
 						moveEarthBlock(affectedblock, topblock);
 					}
 				} else {
@@ -613,7 +624,7 @@ public class BlockTools {
 					if (!isEarthbendable(player, affectedblock)) {
 						// verbose(affectedblock.getType());
 						if (down) {
-							if (isTransparentToEarthbending(player, affectedblock) && !affectedblock.isLiquid() && (affectedblock.getType() != Material.AIR)) {
+							if (isTransparentToEarthbending(player, affectedblock) && !affectedblock.isLiquid() && !AIRS.contains(affectedblock.getType())) {
 								moveEarthBlock(affectedblock, block);
 							}
 						}
@@ -764,4 +775,6 @@ public class BlockTools {
 	public static Set<Material> getNonOpaque() {
 		return nonOpaque;
 	}
+
+	public static Set<Material> getAirs() { return AIRS; }
 }

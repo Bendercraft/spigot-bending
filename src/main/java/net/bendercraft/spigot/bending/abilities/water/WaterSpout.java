@@ -117,7 +117,7 @@ public class WaterSpout extends BendingActiveAbility {
 		location = block.getLocation();
 		for (int i = 0, cardinalPoint = currentCardinalPoint / SPEED; i < (height + 1); i++, cardinalPoint--) {
 			Location loc = location.clone().add(0, -i, 0);
-			if (!TempBlock.isTempBlock(loc.getBlock()) && loc.getBlock().getType().equals(Material.AIR)) {
+			if (!TempBlock.isTempBlock(loc.getBlock()) && BlockTools.isAir(loc.getBlock())) {
 				blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.WATER, false));
 			}
 
@@ -127,7 +127,7 @@ public class WaterSpout extends BendingActiveAbility {
 
 
 			loc = loc.add(vectors[cardinalPoint]);
-			if (loc.getBlock().getType().equals(Material.AIR)) {
+			if (BlockTools.isAir(loc.getBlock())) {
 				Levelled levelled = (Levelled) Material.WATER.createBlockData();
 				levelled.setLevel(10);
 				blocks.add(TempBlock.makeTemporary(this, loc.getBlock(), Material.WATER, levelled,  false));
@@ -144,7 +144,7 @@ public class WaterSpout extends BendingActiveAbility {
 
 	private int spoutableWaterHeight(Location location) {
 		Location loc = location.clone();
-		if (loc.getBlock().getType() != Material.AIR && !BlockTools.isWaterBased(loc.getBlock())) {
+		if (!BlockTools.isAir(loc.getBlock()) && !BlockTools.isWaterBased(loc.getBlock())) {
 			return -1;
 		}
 		loc = loc.add(0, 1, 0);
@@ -154,7 +154,7 @@ public class WaterSpout extends BendingActiveAbility {
 				return -1;
 			}
 			Block block = locToTest.getBlock();
-			if (!block.getType().equals(Material.AIR)) {
+			if (!BlockTools.isAir(block)) {
 				if (BlockTools.isWaterBased(block) && (!TempBlock.isTempBlock(block) || TempBlock.get(block).isBendAllowed())) {
 					return i + 1; // Valid source !
 				} else {
@@ -230,7 +230,7 @@ public class WaterSpout extends BendingActiveAbility {
 			return true;
 		}
 		int cpt = 0;
-		while ((loc.getBlock().getType() == Material.AIR 
+		while ((BlockTools.isAir(loc.getBlock())
 					|| loc.getBlock().getType() == Material.WATER) 
 				&& (loc.getBlockY() > 0) 
 				&& (cpt <= height)) {

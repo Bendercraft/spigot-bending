@@ -208,7 +208,7 @@ public class IceSpike extends BendingActiveAbility {
 			Block block = current.getBlock();
 			if (BlockTools.isTransparentToEarthbending(parent.getPlayer(), block) && !block.isLiquid()) {
 				BlockTools.breakBlock(block); // DESTROY FLOWERSSSS
-			} else if (!(block.getType() == Material.AIR || BlockTools.isWaterBased(block))) {
+			} else if (!(BlockTools.isAir(block) || BlockTools.isWaterBased(block))) {
 				return false;
 			}
 			

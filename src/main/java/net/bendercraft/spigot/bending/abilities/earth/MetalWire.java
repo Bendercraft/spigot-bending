@@ -71,7 +71,7 @@ public class MetalWire {
 	public static void launchHook(Player player, FishHook hook) {
 		// Would prefer it more accurate
 		instances.put(player, hook);
-		Block b = player.getTargetBlock(Sets.newHashSet(Material.AIR), 30);
+		Block b = player.getTargetBlock(BlockTools.getAirs(), 30);
 		if (b != null) {
 			hook.setVelocity(Tools.getVectorForPoints(hook.getLocation(), b.getLocation()));
 		}

@@ -1,12 +1,12 @@
 package net.bendercraft.spigot.bending.abilities.water;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
+import net.bendercraft.spigot.bending.utils.BlockTools;
 import net.bendercraft.spigot.bending.utils.EntityTools;
 import net.bendercraft.spigot.bending.utils.TempBlock;
 
@@ -38,6 +38,6 @@ public class Drainbending {
 		if (TempBlock.isTempBlock(block)) {
 			return false;
 		}
-		return block.getType() == Material.AIR;
+		return BlockTools.isAir(block);
 	}
 }

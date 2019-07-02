@@ -299,7 +299,7 @@ public class WaterWall extends BendingActiveAbility {
 			if (forming) {
 				List<Block> blocks = new LinkedList<Block>();
 				Set<Material> transparentForSelection = new HashSet<Material>();
-				transparentForSelection.add(Material.AIR);
+				transparentForSelection.addAll(BlockTools.getAirs());
 				transparentForSelection.add(Material.WATER);
 				transparentForSelection.add(Material.SNOW);
 				transparentForSelection.add(Material.ICE);
@@ -317,7 +317,7 @@ public class WaterWall extends BendingActiveAbility {
 							continue;
 						if (wallblocks.containsKey(block)) {
 							blocks.add(block);
-						} else if (!blocks.contains(block) && (block.getType() == Material.AIR || block.getType() == Material.FIRE || BlockTools.isWaterbendable(block, player))) {
+						} else if (!blocks.contains(block) && (BlockTools.isAir(block) || block.getType() == Material.FIRE || BlockTools.isWaterbendable(block, player))) {
 							wallblocks.put(block, player);
 							addWallBlock(block);
 
@@ -356,7 +356,7 @@ public class WaterWall extends BendingActiveAbility {
 				location = location.clone().add(direction);
 				block = location.getBlock();
 			}
-			if (block.getType() != Material.AIR) {
+			if (!BlockTools.isAir(block)) {
 				breakBlock();
 				returnWater();
 				return;

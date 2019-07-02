@@ -277,7 +277,7 @@ public class EntityTools {
 	}
 
 	public static Location getTargetedLocation(Player player, double range) {
-		return getTargetedLocation(player, range, Collections.singleton(Material.AIR));
+		return getTargetedLocation(player, range, BlockTools.getAirs());
 	}
 
 	public static Location getTargetedLocation(Player player, double originselectrange, Set<Material> nonOpaque2) {
@@ -300,7 +300,7 @@ public class EntityTools {
 	}
 
 	public static Block getTargetBlock(Player player, double range) {
-		return getTargetBlock(player, range, Collections.singleton(Material.AIR));
+		return getTargetBlock(player, range, BlockTools.getAirs());
 	}
 
 	/**

@@ -21,6 +21,7 @@ import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.controller.ConfigurationParameter;
 import net.bendercraft.spigot.bending.controller.FlyingPlayer;
+import net.bendercraft.spigot.bending.utils.BlockTools;
 
 @ABendingAbility(name = FireJet.NAME, element = BendingElement.FIRE, shift=false)
 public class FireJet extends BendingActiveAbility {
@@ -80,7 +81,7 @@ public class FireJet extends BendingActiveAbility {
 	public boolean swing() {
 		if(getState() == BendingAbilityState.START) {
 			Block block = player.getLocation().getBlock();
-			if (FireStream.isIgnitable(player, block) || (block.getType() == Material.AIR) || AvatarState.isAvatarState(player)) {
+			if (FireStream.isIgnitable(player, block) || (BlockTools.isAir(block)) || AvatarState.isAvatarState(player)) {
 				FlyingPlayer.addFlyingPlayer(player, this, getMaxMillis(), false);
 				player.setVelocity(player.getEyeLocation().getDirection().clone().normalize().multiply(factor));
 				bender.fire.consume(NAME, POWER_ACTIVATION);
