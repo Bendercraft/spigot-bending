@@ -8,6 +8,7 @@ import java.util.Map;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -239,7 +240,7 @@ public class Wave {
 			}
 
 			if (!this.progressing) {
-				this.sourceblock.getWorld().playEffect(this.location, Effect.SMOKE, 4, (int) this.range);
+				this.player.spawnParticle(Particle.SMOKE_NORMAL, location.clone().add(0.5, 0, 0.5), 2, 0, 0, 0, 0);
 				return true;
 			}
 

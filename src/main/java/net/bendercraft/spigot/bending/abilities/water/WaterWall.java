@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -292,7 +292,7 @@ public class WaterWall extends BendingActiveAbility {
 			}
 
 			if (!progressing) {
-				sourceblock.getWorld().playEffect(location, Effect.SMOKE, 4, (int) RANGE);
+				this.player.spawnParticle(Particle.SMOKE_NORMAL, location.clone().add(0.5, 0, 0.5), 2, 0, 0, 0, 0);
 				return;
 			}
 
