@@ -282,7 +282,7 @@ public class Wave {
 				List<Block> blocks = new LinkedList<Block>();
 
 				if (!ProtectionManager.isLocationProtectedFromBending(this.player, parent.getRegister(), this.location) 
-						&& (BlockTools.isAir(blockl) || blockl.getType() == Material.FIRE || BlockTools.isPlant(blockl) || BlockTools.isWaterbendable(blockl, this.player))) {
+						&& (BlockTools.isAir(blockl) || this.wave.containsKey(blockl) || blockl.getType() == Material.FIRE || BlockTools.isPlant(blockl) || BlockTools.isWaterbendable(blockl, this.player))) {
 					for (double i = 0; i <= this.radius; i += .5) {
 						for (double angle = 0; angle < 360; angle += 10) {
 							Vector vec = Tools.getOrthogonalVector(this.targetdirection, angle, i);
