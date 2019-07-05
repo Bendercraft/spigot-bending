@@ -338,7 +338,7 @@ public class WaterWall extends BendingActiveAbility {
 				return;
 			}
 
-			if (sourceblock.getLocation().distance(firstdestination) < .5 && settingup) {
+			if (sourceblock.getLocation().distance(firstdestination) < 1.0 && settingup) {
 				settingup = false;
 			}
 
