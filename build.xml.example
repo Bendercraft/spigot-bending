@@ -28,7 +28,8 @@
     </target>
     <target name="deploy" depends="compile">
           <zip destfile="${outputDir}/${jarname}.jar">
-            <fileset dir="${outputDir}"/>
+                <fileset dir="libs" includes="fastutil-8.2.*.jar" />
+                <fileset dir="${outputDir}"/>
                 <fileset dir="${rscDir}">
                     <include name="plugin.yml" />
                     <include name="messages.properties" />
