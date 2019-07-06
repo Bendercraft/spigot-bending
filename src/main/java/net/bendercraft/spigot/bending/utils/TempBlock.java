@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,8 +17,6 @@ import org.bukkit.block.data.BlockData;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 
 public class TempBlock {

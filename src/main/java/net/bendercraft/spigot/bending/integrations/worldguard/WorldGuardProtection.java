@@ -24,7 +24,6 @@ import net.bendercraft.spigot.bending.abilities.BendingAffinity;
 import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.RegisteredAbility;
 
-import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -107,21 +106,21 @@ public class WorldGuardProtection implements Listener {
         speBending = new StateFlag("bending-spe", false);
         perksBending = new StateFlag("bending-perks", false);
 
-        elementFlags = new HashMap<BendingElement, StateFlag>();
+        elementFlags = new HashMap<>();
         for (BendingElement element : BendingElement.values()) {
             if (element != BendingElement.NONE) {
                 elementFlags.put(element, new StateFlag("bending-"+element.name().toLowerCase(), false));
             }
         }
 
-        affinityFlags = new HashMap<BendingAffinity, StateFlag>();
+        affinityFlags = new HashMap<>();
         for (BendingAffinity affinity : BendingAffinity.values()) {
             if (affinity != BendingAffinity.NONE) {
                 affinityFlags.put(affinity, new StateFlag("bending-"+affinity.name().toLowerCase(), false));
             }
         }
 
-        abilityFlags = new HashMap<RegisteredAbility, StateFlag>();
+        abilityFlags = new HashMap<>();
         for (RegisteredAbility ability : AbilityManager.getManager().getRegisteredAbilities()) {
             abilityFlags.put(ability, new StateFlag("bending-"+ability.getName().toLowerCase(), false));
         }
@@ -280,10 +279,10 @@ public class WorldGuardProtection implements Listener {
 	}
     
     public void loadFlags(World world) {
-    	FileReader fr = null;
-    	try {
-    		fr = new FileReader(getFile(world));
-    		List<StoredFlags> flags = Arrays.asList(gson.fromJson(fr, StoredFlags[].class));
+
+    	try (FileReader fr = new FileReader(getFile(world))){
+
+    		StoredFlags[] flags = gson.fromJson(fr, StoredFlags[].class);
     		RegionContainer regionContainer = worldguard.getPlatform().getRegionContainer();
     		RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world));
     		for(Entry<String, ProtectedRegion> entry : regionManager.getRegions().entrySet()) {
@@ -298,17 +297,17 @@ public class WorldGuardProtection implements Listener {
     				}
     			}
     		}
-		} catch (JsonSyntaxException | JsonIOException e) {
+		}
+    	catch (JsonSyntaxException | JsonIOException e) {
 			plugin.getLogger().log(Level.SEVERE, "Flags file problem", e);
-		} catch (FileNotFoundException e) {
+		}
+    	catch (IOException e) {
 			// Quiet please !
-		} finally {
-			IOUtils.closeQuietly(fr);
 		}
     }
     
     public void saveFlags(World world) {
-    	List<StoredFlags> flags = new ArrayList<StoredFlags>();
+    	List<StoredFlags> flags = new ArrayList<>();
     	RegionContainer regionContainer = worldguard.getPlatform().getRegionContainer();
 		RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(world));
     	for(Entry<String, ProtectedRegion> entry : regionManager.getRegions().entrySet()) {
@@ -323,17 +322,14 @@ public class WorldGuardProtection implements Listener {
     			}
     		}
     	}
-    	FileWriter fw = null;
-    	try {
-    		fw = new FileWriter(getFile(world));
+
+    	try (FileWriter fw = new FileWriter(getFile(world));) {
 			gson.toJson(flags, fw);
-		} catch (JsonIOException | IOException e) {
-			plugin.getLogger().log(Level.SEVERE, "Could not save flags", e);
-		} finally {
-			if(fw != null) {
-				IOUtils.closeQuietly(fw);
-			}
 		}
+    	catch (JsonIOException | IOException e) {
+			plugin.getLogger().log(Level.SEVERE, "Could not save flags", e);
+		}
+
     }
     
     @EventHandler
@@ -363,12 +359,7 @@ public class WorldGuardProtection implements Listener {
     			&& (args[0].equals("/rg") || args[0].equals("/region"))
     			&& args[1].equals("flag")) {
     		final World w = e.getPlayer().getWorld();
-    		plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
-				@Override
-				public void run() {
-					saveFlags(w);
-				}
-			}, 10);
+    		plugin.getServer().getScheduler().runTaskLater(plugin, () -> saveFlags(w), 10);
     	}
     }
     

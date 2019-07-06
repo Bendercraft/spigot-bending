@@ -2,13 +2,13 @@ package net.bendercraft.spigot.bending.abilities.air;
 
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.DoubleList;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;

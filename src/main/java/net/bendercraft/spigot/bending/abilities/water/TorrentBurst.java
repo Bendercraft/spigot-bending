@@ -3,16 +3,18 @@ package net.bendercraft.spigot.bending.abilities.water;
 import java.util.Iterator;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.doubles.Double2ObjectArrayMap;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectMaps;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntListIterator;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.Double2ObjectArrayMap;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.Double2ObjectMap;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.doubles.Double2ObjectMaps;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.ints.*;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.ObjectArraySet;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.ObjectIterator;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -40,7 +42,7 @@ public class TorrentBurst {
 	private double                       radius           = dr;
 	private double                       maxradius        = defaultmaxradius;
 	private double                       factor           = defaultfactor;
-	private Double2ObjectMap<IntList>    angles           = new Double2ObjectArrayMap<>();
+	private Double2ObjectMap<IntList> angles           = new Double2ObjectArrayMap<>();
 	private BendingAbility               parent;
 
 	public TorrentBurst(Player player, double radius, BendingAbility parent) {

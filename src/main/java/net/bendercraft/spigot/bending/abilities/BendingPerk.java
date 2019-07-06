@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.apache.commons.io.IOUtils;
-
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
@@ -203,7 +201,7 @@ public class BendingPerk {
 	public static final BendingPerk MASTER_SMOKE_HIDE_SHIELD = new BendingPerk("MASTER_SMOKE_HIDE_SHIELD", BendingElement.MASTER,  Arrays.asList(Arrays.asList("MASTER_BLANKPOINTDAMAGE_PARASTICKCD_NEBULARRANGE")));
 	
 
-	public static final Map<BendingElement, Integer> POINTS = new HashMap<BendingElement, Integer>();
+	public static final Map<BendingElement, Integer> POINTS = new HashMap<>();
 	static {
 		POINTS.put(BendingElement.FIRE, 20);
 		POINTS.put(BendingElement.AIR, 16);
@@ -213,7 +211,7 @@ public class BendingPerk {
 		POINTS.put(BendingElement.ENERGY, 0);
 	}
 	
-	private static final Map<String, BendingPerk> all = new HashMap<String, BendingPerk>();
+	private static final Map<String, BendingPerk> all = new HashMap<>();
 	private static final Gson mapper = new Gson();
 	
 	public List<List<String>> requires;
@@ -224,7 +222,7 @@ public class BendingPerk {
 	public BendingPerk(String name, BendingElement element, List<List<String>> requires) {
 		this.name = name.toLowerCase();
 		this.element = element;
-		List<List<String>> temp = new LinkedList<List<String>>();
+		List<List<String>> temp = new LinkedList<>();
 		requires.forEach(l -> temp.add(ImmutableList.copyOf(l)));
 		this.requires = ImmutableList.copyOf(temp);
 	}
@@ -274,21 +272,17 @@ public class BendingPerk {
 		// Compute json model
 		SkillTree tree = new SkillTree();
 		tree.setPoints(POINTS);
-		List<BendingPerk> skills = new ArrayList<BendingPerk>(all.values());
+		List<BendingPerk> skills = new ArrayList<>(all.values());
 		tree.setSkills(skills);
 		
-		FileWriter writer = null;
-		try {
-			File model = new File(Bending.getInstance().getDataFolder(), "skills.json");
-			writer = new FileWriter(model, false);
+
+		File model = new File(Bending.getInstance().getDataFolder(), "skills.json");
+		try (FileWriter writer = new FileWriter(model, false)){
 			mapper.toJson(tree, writer);
-			writer.close();
-		} catch (Exception e) {
-			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not save skills model ", e);
-		} finally {
-			IOUtils.closeQuietly(writer);
 		}
-		
+		catch (Exception e) {
+			Bending.getInstance().getLogger().log(Level.SEVERE, "Could not save skills model ", e);
+		}
 	}
 
 	public static BendingPerk valueOf(String string) {

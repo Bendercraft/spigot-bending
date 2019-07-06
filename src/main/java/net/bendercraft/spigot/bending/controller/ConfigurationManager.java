@@ -8,8 +8,6 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.apache.commons.io.IOUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -28,9 +26,7 @@ public abstract class ConfigurationManager {
 			Bending.getInstance().getLogger().log(Level.SEVERE, "Couldn't create default config file", e);
 		}
 		if (configFile.exists()) {
-			FileWriter writer = null;
-			try {
-				writer = new FileWriter(configFile);
+			try (FileWriter writer = new FileWriter(configFile)){
 				JsonObject root = new JsonObject();
 				for (String path : fields.keySet()) {
 					Field f = fields.get(path);
@@ -65,11 +61,9 @@ public abstract class ConfigurationManager {
 					}
 				}
 				gson.toJson(root, writer);
-			} catch (IOException e) {
-				Bending.getInstance().getLogger().log(Level.SEVERE, "Error while writing default config file data", e);
 			}
-			if (writer != null) {
-				IOUtils.closeQuietly(writer);
+			catch (IOException e) {
+				Bending.getInstance().getLogger().log(Level.SEVERE, "Error while writing default config file data", e);
 			}
 		}
 	}
@@ -79,9 +73,8 @@ public abstract class ConfigurationManager {
 
 		// Load groups
 		if (configFile.exists()) {
-			FileReader reader = null;
-			try {
-				reader = new FileReader(configFile);
+
+			try (FileReader reader = new FileReader(configFile)) {
 				JsonObject config = gson.fromJson(reader, JsonObject.class);
 
 				for (String path : fields.keySet()) {
@@ -121,13 +114,13 @@ public abstract class ConfigurationManager {
 						}
 					}
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Bending.getInstance().getLogger().log(Level.SEVERE, "Error while loading config file data", e);
 			}
-			if (reader != null) {
-				IOUtils.closeQuietly(reader);
-			}
-		} else {
+
+		}
+		else {
 			Bending.getInstance().getLogger().warning("Config file is missing, should be at " + configFile.getPath());
 			File defaultConfigFile = new File(configFile.getParentFile(), configFile.getName() + ".default");
 			generateDefaultConfigFile(defaultConfigFile, fields);
@@ -147,6 +140,6 @@ public abstract class ConfigurationManager {
 	}
 
 	private static String getLastKey(String whole) {
-		return whole.substring(whole.lastIndexOf(".") + 1, whole.length());
+		return whole.substring(whole.lastIndexOf(".") + 1);
 	}
 }

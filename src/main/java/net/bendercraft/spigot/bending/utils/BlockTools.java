@@ -73,7 +73,6 @@ public class BlockTools {
 		FLOWERS.add(Material.LILAC);
 		FLOWERS.add(Material.SUNFLOWER);
 		FLOWERS.add(Material.DANDELION);
-		FLOWERS.add(Material.DANDELION_YELLOW);
 		FLOWERS.add(Material.POPPY);
 		FLOWERS.add(Material.BLUE_ORCHID);
 		FLOWERS.add(Material.ALLIUM);
@@ -182,7 +181,18 @@ public class BlockTools {
 		nonOpaque.add(Material.REDSTONE_WIRE);
 		nonOpaque.add(Material.WHEAT);
 		nonOpaque.add(Material.RAIL);
-		nonOpaque.add(Material.WALL_SIGN);
+		nonOpaque.add(Material.SPRUCE_SIGN);
+		nonOpaque.add(Material.SPRUCE_WALL_SIGN);
+		nonOpaque.add(Material.OAK_SIGN);
+		nonOpaque.add(Material.OAK_WALL_SIGN);
+		nonOpaque.add(Material.JUNGLE_SIGN);
+		nonOpaque.add(Material.JUNGLE_WALL_SIGN);
+		nonOpaque.add(Material.DARK_OAK_SIGN);
+		nonOpaque.add(Material.DARK_OAK_WALL_SIGN);
+		nonOpaque.add(Material.ACACIA_SIGN);
+		nonOpaque.add(Material.ACACIA_WALL_SIGN);
+		nonOpaque.add(Material.BIRCH_SIGN);
+		nonOpaque.add(Material.BIRCH_WALL_SIGN);
 		nonOpaque.add(Material.LEVER);
 
 		nonOpaque.add(Material.REDSTONE_TORCH);
