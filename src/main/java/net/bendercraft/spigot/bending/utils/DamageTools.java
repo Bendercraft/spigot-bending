@@ -97,7 +97,7 @@ public class DamageTools {
 				t.getHandle().setHealth((float) (previousHealth - finalDamage));
 				t.getHandle().getCombatTracker().trackDamage(DamageSource.GENERIC, previousHealth, (float) finalDamage);
 				
-				// See EntityLiving#damageEntity from NMS to get effect ID and standard hurt ticks
+				// See EntityLiving#damageEntity(DamageSource damagesource, float f) from NMS to get effect ID and standard hurt ticks
 				t.getHandle().lastDamage = (float) finalDamage;
 				t.getHandle().lastDamager = ((CraftPlayer)(attacker.getPlayer())).getHandle();
 				try {
