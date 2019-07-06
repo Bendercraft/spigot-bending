@@ -54,10 +54,12 @@ public class BlockTools {
 	private static final Set<Material> SAPLINGS = new HashSet<>();
 	static {
 		SAPLINGS.add(Material.ACACIA_SAPLING);
+		SAPLINGS.add(Material.BAMBOO_SAPLING);
 		SAPLINGS.add(Material.BIRCH_SAPLING);
 		SAPLINGS.add(Material.DARK_OAK_SAPLING);
 		SAPLINGS.add(Material.JUNGLE_SAPLING);
 		SAPLINGS.add(Material.OAK_SAPLING);
+		SAPLINGS.add(Material.SPRUCE_SAPLING);
 	}
 
 	private static final Set<Material> FRUITS = new HashSet<>();
@@ -82,6 +84,10 @@ public class BlockTools {
 		FLOWERS.add(Material.PINK_TULIP);
 		FLOWERS.add(Material.WHITE_TULIP);
 		FLOWERS.add(Material.OXEYE_DAISY);
+		FLOWERS.add(Material.CORNFLOWER);
+		FLOWERS.add(Material.LILY_OF_THE_VALLEY);
+		FLOWERS.add(Material.WITHER_ROSE);
+		FLOWERS.add(Material.CHORUS_FLOWER);
 	}
 
 	private static final Set<Material> SEA_PLANTS = new HashSet<>();
@@ -91,15 +97,25 @@ public class BlockTools {
 		SEA_PLANTS.add(Material.TALL_SEAGRASS);
 		SEA_PLANTS.add(Material.KELP_PLANT);
 		SEA_PLANTS.add(Material.BRAIN_CORAL);
-		SEA_PLANTS.add(Material.BUBBLE_CORAL);
+		SEA_PLANTS.add(Material.BRAIN_CORAL_FAN);
+		SEA_PLANTS.add(Material.BRAIN_CORAL_WALL_FAN);
 		SEA_PLANTS.add(Material.DEAD_BRAIN_CORAL);
+		SEA_PLANTS.add(Material.BUBBLE_CORAL);
+		SEA_PLANTS.add(Material.BUBBLE_CORAL_FAN);
+		SEA_PLANTS.add(Material.BUBBLE_CORAL_WALL_FAN);
 		SEA_PLANTS.add(Material.DEAD_BUBBLE_CORAL);
-		SEA_PLANTS.add(Material.DEAD_FIRE_CORAL);
-		SEA_PLANTS.add(Material.DEAD_HORN_CORAL);
-		SEA_PLANTS.add(Material.DEAD_TUBE_CORAL);
 		SEA_PLANTS.add(Material.FIRE_CORAL);
+		SEA_PLANTS.add(Material.FIRE_CORAL_FAN);
+		SEA_PLANTS.add(Material.FIRE_CORAL_WALL_FAN);
+		SEA_PLANTS.add(Material.DEAD_FIRE_CORAL);
 		SEA_PLANTS.add(Material.HORN_CORAL);
+		SEA_PLANTS.add(Material.HORN_CORAL_FAN);
+		SEA_PLANTS.add(Material.HORN_CORAL_WALL_FAN);
+		SEA_PLANTS.add(Material.DEAD_HORN_CORAL);
 		SEA_PLANTS.add(Material.TUBE_CORAL);
+		SEA_PLANTS.add(Material.TUBE_CORAL_FAN);
+		SEA_PLANTS.add(Material.TUBE_CORAL_WALL_FAN);
+		SEA_PLANTS.add(Material.DEAD_TUBE_CORAL);
 	}
 	
 	private static Set<Material> PLANTS = new HashSet<>();
@@ -119,22 +135,25 @@ public class BlockTools {
 		
 		PLANTS.add(Material.FERN);
 		PLANTS.add(Material.LARGE_FERN);
-		
-		
-		PLANTS.add(Material.DEAD_BUSH);
-		PLANTS.add(Material.ROSE_BUSH);
 
+		PLANTS.add(Material.DEAD_BUSH);
+		PLANTS.add(Material.SWEET_BERRY_BUSH);
 		
 		PLANTS.add(Material.WHEAT);
 		PLANTS.add(Material.CACTUS);
+		PLANTS.add(Material.COCOA);
 		PLANTS.add(Material.SUGAR_CANE);
+		PLANTS.add(Material.BAMBOO);
 		PLANTS.add(Material.BROWN_MUSHROOM);
 		PLANTS.add(Material.RED_MUSHROOM);
 		PLANTS.add(Material.PUMPKIN_STEM);
 		PLANTS.add(Material.MELON_STEM);
 		PLANTS.add(Material.VINE);
-		PLANTS.add(Material.CARROT);
-		PLANTS.add(Material.POTATO);
+		PLANTS.add(Material.CARROTS);
+		PLANTS.add(Material.POTATOES);
+		PLANTS.add(Material.BEETROOTS);
+		PLANTS.add(Material.CHORUS_PLANT);
+		PLANTS.add(Material.NETHER_WART);
 	}
 
 	private static Set<Material> transparentEarthbending = new HashSet<>();
@@ -159,6 +178,8 @@ public class BlockTools {
 		PLATES.add(Material.JUNGLE_PRESSURE_PLATE);
 		PLATES.add(Material.OAK_PRESSURE_PLATE);
 		PLATES.add(Material.SPRUCE_PRESSURE_PLATE);
+		PLATES.add(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
+		PLATES.add(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
 	}
 
 	private static Set<Material> nonOpaque = new HashSet<>();
@@ -179,7 +200,6 @@ public class BlockTools {
 		nonOpaque.add(Material.TORCH);
 		nonOpaque.add(Material.FIRE);
 		nonOpaque.add(Material.REDSTONE_WIRE);
-		nonOpaque.add(Material.WHEAT);
 		nonOpaque.add(Material.RAIL);
 		nonOpaque.add(Material.SPRUCE_SIGN);
 		nonOpaque.add(Material.SPRUCE_WALL_SIGN);
@@ -198,14 +218,9 @@ public class BlockTools {
 		nonOpaque.add(Material.REDSTONE_TORCH);
 		nonOpaque.add(Material.STONE_BUTTON);
 		nonOpaque.add(Material.SNOW);
-		nonOpaque.add(Material.SUGAR_CANE);
 		nonOpaque.add(Material.NETHER_PORTAL);
 		nonOpaque.add(Material.END_PORTAL);
 		nonOpaque.add(Material.REPEATER);
-		nonOpaque.add(Material.PUMPKIN_STEM);
-		nonOpaque.add(Material.MELON_STEM);
-		nonOpaque.add(Material.NETHER_WART);
-		nonOpaque.add(Material.COCOA);
 		nonOpaque.add(Material.TRIPWIRE_HOOK);
 		nonOpaque.add(Material.TRIPWIRE);
 
