@@ -99,7 +99,7 @@ public class HeatControl extends BendingActiveAbility {
 				block.setType(Material.AIR);
 			} else if (block.getType() == Material.LAVA) {
 				Levelled data = (Levelled) block.getBlockData();
-				if (data.getLevel() == data.getMaximumLevel()) {
+				if (data.getLevel() == 0) {// Zero correspond to a full lava source block.
 					block.setType(Material.OBSIDIAN);
 				} else {
 					block.setType(Material.COBBLESTONE);
