@@ -69,8 +69,11 @@ public class AirBubble extends Bubble {
 			TempBlock tempBlock = TempBlock.get(block);
 			if (tempBlock == null || tempBlock.isBendAllowed()) {
 				Material type = block.getType();
-				if (Material.WATER == type || Material.BUBBLE_COLUMN == type || Material.KELP == type || Material.KELP_PLANT == type) {
+				if (Material.WATER == type || Material.BUBBLE_COLUMN == type) {
 					this.origins.put(block, TempBlock.makeTemporary(this, block, Material.AIR,true));
+				}
+				else if (Material.KELP == type || Material.KELP_PLANT == type) {
+					this.origins.put(block, TempBlock.makeTemporary(this, block, Material.JUNGLE_SAPLING,true));
 				}
 				else if (Material.SEAGRASS == type) {
 					this.origins.put(block, TempBlock.makeTemporary(this, block, Material.GRASS, true));
