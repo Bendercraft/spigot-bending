@@ -240,6 +240,7 @@ public class BlockTools {
 	static {
 		LAVA_BENDABLES.add(Material.LAVA);
 		LAVA_BENDABLES.add(Material.MAGMA_BLOCK);
+		LAVA_BENDABLES.add(Material.OBSIDIAN);
 	}
 	
 	private BlockTools() {
