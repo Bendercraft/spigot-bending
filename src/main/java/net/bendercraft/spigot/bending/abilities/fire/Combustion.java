@@ -298,11 +298,10 @@ public class Combustion extends BendingActiveAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void removeBlock(Block block) {
 		if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
 			CoreProtectAPI cp = CoreProtect.getInstance().getAPI();
-			cp.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getData());
+			cp.logRemoval(player.getName(), block.getLocation(), block.getType(), block.getBlockData());
 		}
 		block.getDrops().clear();
 		block.breakNaturally();

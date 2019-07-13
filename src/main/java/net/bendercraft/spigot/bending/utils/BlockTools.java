@@ -310,20 +310,12 @@ public class BlockTools {
 		return isEarthbendable(player, AbilityManager.getManager().getRegisteredAbility(EarthWall.NAME), block);
 	}
 
-	@SuppressWarnings("deprecation")
 	public static boolean isEarthbendable(Player player, RegisteredAbility ability, Block block) {
 		if (ProtectionManager.isLocationProtectedFromBending(player, ability, block.getLocation())) {
 			return false;
 		}
 
 		Material material = block.getType();
-
-		if (material == Material.STONE) {
-			byte data = block.getData();
-			if (data == 0x2 || data == 0x4 || data == 0x6) {
-				return false;
-			}
-		}
 
 		for (String s : Settings.getEarthBendablesBlocksNames()) {
 			if (material == Material.getMaterial(s)) {

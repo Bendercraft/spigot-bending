@@ -7,6 +7,7 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Player;
 
 import net.bendercraft.spigot.bending.abilities.ABendingAbility;
@@ -257,17 +258,17 @@ public class PhaseChange extends BendingActiveAbility {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public boolean isBlockLevel(Block block, Byte level) {
+	public boolean isBlockLevel(Block block, int level) {
 		for(TempBlock b : frozens) {
 			if(b.getBlock().getLocation().equals(block.getLocation())) {
-				return b.getBlock().getState().getRawData() == level;
+				Levelled data = (Levelled) b.getBlock().getBlockData();
+				return data.getLevel() == level;
 			}
 		}
 		return false;
 	}
 
-	public static boolean isLevel(Block block, byte level) {
+	public static boolean isLevel(Block block, int level) {
 		for (BendingAbility ab : AbilityManager.getManager().getInstances(NAME).values()) {
 			PhaseChange fm = (PhaseChange) ab;
 			if (fm.isBlockLevel(block, level)) {
