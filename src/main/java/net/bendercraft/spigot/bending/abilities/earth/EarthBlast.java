@@ -236,15 +236,18 @@ public class EarthBlast extends BendingActiveAbility {
 				|| current.get(0).getBlock().getWorld() != player.getWorld()) {
 			return;
 		}
-		
+
 		time = System.currentTimeMillis();
+
 		LivingEntity target = EntityTools.getTargetedEntity(player, getRange());
 		destination = EntityTools.getTargetBlock(player, getRange(), BlockTools.getTransparentEarthbending()).getLocation();
-		if (target == null) {
-			firstDestination = location.clone();
-			firstDestination.setY(destination.getY());
+
+		firstDestination = location.clone();
+		if(destination.getY() - location.getY() <= 2){
+			firstDestination.setY(location.getY() + 2);
+		} else if (target == null){
+			firstDestination.setY(destination.getBlockY());
 		} else {
-			firstDestination = location.clone();
 			firstDestination.setY(target.getEyeLocation().getY());
 			destination = Tools.getPointOnLine(firstDestination, destination, getRange());
 		}
@@ -390,12 +393,12 @@ public class EarthBlast extends BendingActiveAbility {
 	}
 	
 	private Location getTargetLocation(Player player) {
-		Entity target = EntityTools.getTargetedEntity(player, getRange());
+		LivingEntity target = EntityTools.getTargetedEntity(player, getRange());
 		Location location;
-		if (target == null) {
-			location = EntityTools.getTargetedLocation(player, getRange());
+		if (target == null || ProtectionManager.isEntityProtected(target)) {
+			location = EntityTools.getTargetedLocation(player, getRange(), BlockTools.getTransparentEarthBending());
 		} else {
-			location = ((LivingEntity) target).getEyeLocation();
+			location =  target.getEyeLocation();
 		}
 		return location;
 	}
