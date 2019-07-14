@@ -268,9 +268,9 @@ public class EntityTools {
 	public static List<LivingEntity> getLivingEntitiesAroundPoint(Location location, double radius) {
 		List<LivingEntity> list = new LinkedList<>();
 
-		for (LivingEntity le : location.getWorld().getLivingEntities()) {
-			if ((le.getWorld() == location.getWorld()) && (le.getLocation().distance(location) < radius)) {
-				list.add(le);
+		for (Entity e : location.getWorld().getNearbyEntities(location, radius, radius, radius)) {
+			if (e instanceof LivingEntity) {
+				list.add((LivingEntity)e);
 			}
 		}
 		return list;
