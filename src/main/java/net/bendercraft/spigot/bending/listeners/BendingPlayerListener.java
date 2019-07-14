@@ -448,11 +448,12 @@ public class BendingPlayerListener implements Listener {
 				if (!event.isCancelled() 
 						&& bender.isBender(BendingElement.MASTER)
 						&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
-					event.setDamage((int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.)));
-					if (event.getEntity().getFallDistance() < 10) {
+					int damage = (int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.));
+					if (event.getEntity().getFallDistance() < 10 || damage == 0) {
 						event.setCancelled(true);
 						return;
 					}
+					event.setDamage(damage);
 				}
 
 				if (!event.isCancelled() && EntityTools.isFallImmune(player)) {
