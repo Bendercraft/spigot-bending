@@ -376,7 +376,7 @@ public class BendingPlayer {
 	}
 	
 	public void unloadScoreboard() {
-		if(!isUsingScoreboard() && scoreboard != null) {
+		if(isUsingScoreboard() && scoreboard != null) {
 			scoreboard.getTeams().forEach(Team::unregister);
 			scoreboard.getObjectives().forEach(Objective::unregister);
 			ScoreboardManager manager = Bukkit.getScoreboardManager();
