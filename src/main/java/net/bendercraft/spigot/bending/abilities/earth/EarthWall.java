@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -135,8 +136,9 @@ public class EarthWall extends BendingActiveAbility {
 				orth = orth.normalize();
 				
 				World world = selection.get(0).getWorld();
+				Location center = selection.get(0).getLocation().add(0.5, 0, 0.5);
 				for (int i = -halfwidth; i <= halfwidth; i++) {
-					Block block = world.getBlockAt(selection.get(0).getLocation().add(orth.clone().multiply((double) i)));
+					Block block = world.getBlockAt(center.clone().add(orth.clone().multiply(i)));
 					selection.add(block);
 				}
 			}
