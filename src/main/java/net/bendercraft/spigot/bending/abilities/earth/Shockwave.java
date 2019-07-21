@@ -120,7 +120,7 @@ public class Shockwave extends BendingActiveAbility {
 	@Override
 	public void progress() {
 		if (isState(BendingAbilityState.PREPARING)) {
-			if (!player.isSneaking()) {
+			if (!player.isSneaking() || !BlockTools.isEarthbendable(player, player.getLocation().add(0, -1, 0).getBlock())) {
 				remove();
 				return;
 			}
