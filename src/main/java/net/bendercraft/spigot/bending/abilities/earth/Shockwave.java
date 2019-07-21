@@ -93,7 +93,18 @@ public class Shockwave extends BendingActiveAbility {
 		}
 		return false;
 	}
-	
+
+	@Override
+	public boolean fall() {
+		if (!isState(BendingAbilityState.START)
+			|| player.getFallDistance() < fallThresold
+			|| !BlockTools.isEarthbendable(player, player.getLocation().add(0, -1, 0).getBlock())){
+			return false;
+		}
+		areaWave();
+		return true;
+	}
+
 	@Override
 	public boolean canTick() {
 		if(!super.canTick()) {
@@ -122,15 +133,8 @@ public class Shockwave extends BendingActiveAbility {
 			Location loc = player.getEyeLocation().add(player.getEyeLocation().getDirection()).add(0, 0.5, 0);
 			player.getWorld().spawnParticle(Particle.CRIT_MAGIC, loc, 1, 0, 0, 0, 0);
 
-			if (!player.isSneaking() || (player.getFallDistance() < fallThresold && !BlockTools.isEarthbendable(player, player.getLocation().add(0, -1, 0).getBlock()))) {
-				// Area - either because unsneak or falling
-				double dtheta = 360. / (2 * Math.PI * radius/2) - 1;
-				for (double theta = 0; theta < 360; theta += dtheta) {
-					double rtheta = Math.toRadians(theta);
-					Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
-					ripples.add(new Ripple(player, this, vector.normalize(), radius/2, damage));
-				}
-				setState(BendingAbilityState.PROGRESSING);
+			if (!player.isSneaking()) {
+				areaWave();
 			}
 		} else if (isState(BendingAbilityState.PROGRESSING)) {
 			List<Ripple> toRemove = new LinkedList<Ripple>();
@@ -147,6 +151,17 @@ public class Shockwave extends BendingActiveAbility {
 		} else {
 			remove();
 		}
+	}
+
+	private void areaWave() {
+		// Area - either because unsneak or falling
+		double dtheta = 360. / (2 * Math.PI * radius/2) - 1;
+		for (double theta = 0; theta < 360; theta += dtheta) {
+			double rtheta = Math.toRadians(theta);
+			Vector vector = new Vector(Math.cos(rtheta), 0, Math.sin(rtheta));
+			ripples.add(new Ripple(player, this, vector.normalize(), radius/2, damage));
+		}
+		setState(BendingAbilityState.PROGRESSING);
 	}
 
 	@Override

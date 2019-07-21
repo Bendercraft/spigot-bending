@@ -60,6 +60,7 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthPassive;
 import net.bendercraft.spigot.bending.abilities.earth.LavaTrain;
 import net.bendercraft.spigot.bending.abilities.earth.MetalBending;
 import net.bendercraft.spigot.bending.abilities.earth.MetalWire;
+import net.bendercraft.spigot.bending.abilities.earth.Shockwave;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarShield;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
@@ -400,6 +401,15 @@ public class BendingPlayerListener implements Listener {
 			if (event.getCause() == DamageCause.FALL) {
 				BendingPassiveAbility ab;
 				if (bender.isBender(BendingElement.EARTH)) {
+					if(Shockwave.NAME.equals(ability)){
+						BendingActiveAbility wave = AbilityManager.getManager().buildAbility(Shockwave.NAME, player);
+						if (wave.canBeInitialized()) {
+							wave.fall();
+							if(wave.getState() != BendingAbilityState.START && wave.getState() != BendingAbilityState.ENDED) {
+								AbilityManager.getManager().addInstance(wave);
+							}
+						}
+					}
 					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
 					if (ab.start()) {
 						AbilityManager.getManager().addInstance(ab);
