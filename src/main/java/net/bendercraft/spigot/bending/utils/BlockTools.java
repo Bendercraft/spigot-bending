@@ -315,6 +315,10 @@ public class BlockTools {
 			return false;
 		}
 
+		if (TempBlock.isTempBlock(block) && !TempBlock.get(block).isBendAllowed()) {
+			return false;
+		}
+
 		Material material = block.getType();
 
 		for (String s : Settings.getEarthBendablesBlocksNames()) {

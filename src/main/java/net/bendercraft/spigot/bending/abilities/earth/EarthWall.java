@@ -102,7 +102,7 @@ public class EarthWall extends BendingActiveAbility {
 	
 	private void addSelection() {
 		Block target = EntityTools.getTargetBlock(player, range, BlockTools.getTransparentEarthbending());
-		if(target != null && !TempBlock.isTempBlock(target) && !selection.contains(target) && BlockTools.isEarthbendable(player, target)) {
+		if(target != null && !selection.contains(target) && BlockTools.isEarthbendable(player, target)) {
 			selection.add(target);
 			selected.add(TempBlock.makeTemporary(this, target, Material.COBBLESTONE, false));
 		}
