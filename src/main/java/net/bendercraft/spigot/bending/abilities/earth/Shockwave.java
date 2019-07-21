@@ -68,7 +68,7 @@ public class Shockwave extends BendingActiveAbility {
 		if(bender.hasPerk(BendingPerk.EARTH_SHOCKWAVE_ANGLE)) {
 			angle += 10;
 		}
-		angle = Math.toRadians(angle);
+		this.angle = Math.toRadians(angle);
 	}
 
 	@Override
