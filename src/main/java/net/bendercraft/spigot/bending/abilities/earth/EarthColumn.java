@@ -7,6 +7,7 @@ import java.util.Map;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.bendercraft.spigot.bending.controller.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,7 +41,7 @@ public class EarthColumn {
 
 	private static int ID = Integer.MIN_VALUE;
 
-	private static Map<Block, Block> alreadyDoneBlocks = new HashMap<>();
+	private static Map<Block, Long> alreadyDoneBlocks = new HashMap<>();
 
 	private Location origin;
 	private Location location;
@@ -164,7 +165,7 @@ public class EarthColumn {
 			time = System.currentTimeMillis();
 			if (!moveEarth()) {
 				for (Block block : affectedBlocks) {
-					alreadyDoneBlocks.put(block, block);
+					alreadyDoneBlocks.put(block, time);
 				}
 
 				return false;
@@ -192,5 +193,15 @@ public class EarthColumn {
 
 	public static void resetBlock(Block block) {
 		alreadyDoneBlocks.remove(block);
+	}
+
+
+	public static class BlocksCleanup implements Runnable {
+		@Override
+		public void run() {
+			// Clean old alreadyDoneBlocks
+			long now = System.currentTimeMillis();
+			alreadyDoneBlocks.entrySet().removeIf(entry -> entry.getValue() + Settings.REVERSE_TIME < now);
+		}
 	}
 }

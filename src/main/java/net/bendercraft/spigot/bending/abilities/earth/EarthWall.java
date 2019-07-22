@@ -189,6 +189,7 @@ public class EarthWall extends BendingActiveAbility {
 			while(it.hasNext()) {
 				EarthColumn column = it.next();
 				if (!column.progress()) {
+					column.remove();
 					it.remove();
 				}
 			}

@@ -1,5 +1,6 @@
 package net.bendercraft.spigot.bending;
 
+import net.bendercraft.spigot.bending.abilities.earth.EarthColumn;
 import net.bendercraft.spigot.bending.listeners.*;
 
 import java.io.File;
@@ -109,6 +110,7 @@ public class Bending extends JavaPlugin {
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, this.manager, 0, 1);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new TempBlock.QueueRevert(), 20*1, 20*5);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new EarthColumn.BlocksCleanup(), 20*1, 20*5);
 		getServer().getScheduler().runTaskTimerAsynchronously(this, new MySQLDB.SaveTask(), 20*30, 20*30);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new MySQLDB.UpdateTask(), 20*45, 20*30);
 
