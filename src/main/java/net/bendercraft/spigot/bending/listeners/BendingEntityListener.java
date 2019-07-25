@@ -2,6 +2,7 @@ package net.bendercraft.spigot.bending.listeners;
 
 import java.util.logging.Level;
 
+import net.bendercraft.spigot.bending.event.BendingDamageEvent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -145,6 +146,17 @@ public class BendingEntityListener implements Listener {
 		if(event.getDamager() instanceof Player && EarthArmor.hasEarthArmor((Player) event.getDamager())) {
 			EarthArmor ea = (EarthArmor) AbilityManager.getManager().getInstances(EarthArmor.NAME).get(event.getDamager());
 			event.setDamage(event.getDamage() * (1-ea.getDamageReduction()));
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onBendingDamage(BendingDamageEvent event) {
+		if(event.getAbility() != null) {
+			// Earth patience bonus
+			if (event.getAbility().getBender().earth.hasBonus()) {
+				event.setDamage(event.getDamage() + event.getAbility().getBender().earth.getBonus());
+			}
+			event.getAbility().getBender().earth.damageDone();
 		}
 	}
 

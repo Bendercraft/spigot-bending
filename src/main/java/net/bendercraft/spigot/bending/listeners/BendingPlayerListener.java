@@ -358,12 +358,6 @@ public class BendingPlayerListener implements Listener {
 			
 			
 			if(event.getAbility() != null) {
-				// Earth patience bonus
-				if(event.getAbility().getBender().earth.hasBonus()) {
-					event.setDamage(event.getDamage() + event.getAbility().getBender().earth.getBonus());
-				}
-				event.getAbility().getBender().earth.damageDone();
-				
 				// HealingWater buff
 				HealingWaters hw = HealingWaters.hasBuff(event.getAbility().getBender().getPlayer());
 				if(hw != null) {
