@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 
 import net.bendercraft.spigot.bending.Bending;
@@ -72,6 +73,13 @@ public class TempBlock {
 		temp.ability = ability;
 		temp.started = System.currentTimeMillis();
 		temp.duration = duration;
+
+		if(block.getState() instanceof Container
+			&& block.getType() != newType) {
+			//Mandatory condition to avoid Containers' content to be dropped when setType() is called (Causing a duplication bug when the TempBlock is reverted)
+			//Remove this when SPIGOT-3725 is resolved : hub.spigotmc.org/jira/projects/SPIGOT/issues/SPIGOT-3725
+			((Container) block.getState()).getInventory().clear();
+		}
 
 		temp.block.setType(newType, false);
 		if(newData != null) {
