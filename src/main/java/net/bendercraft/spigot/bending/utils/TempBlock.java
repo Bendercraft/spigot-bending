@@ -112,6 +112,7 @@ public class TempBlock {
 
 	public void revertBlock(final boolean applyPhysics) {
 		if(instances.containsKey(block)) {
+			updateContainerState();
 			state.update(true, applyPhysics);
 
 			if(ability != null) {
@@ -138,9 +139,22 @@ public class TempBlock {
 			List<TempBlock> tempBlocks = temporaries.remove(ability);
 			if (tempBlocks != null && !tempBlocks.isEmpty()) {
 				for (TempBlock tempBlock : tempBlocks) {
+					tempBlock.updateContainerState();
 					tempBlock.state.update(true, applyPhysics);
 					instances.remove(tempBlock.block);
 				}
+			}
+		}
+	}
+
+	private void updateContainerState(){
+		// When reverting TempBlock, be careful of containers' items to avoid duplication.
+		if(state instanceof Container
+				&& block.getState() instanceof Container) {
+			try {
+				((Container) state).getSnapshotInventory().setContents(((Container) block.getState()).getInventory().getContents());
+			} catch (IllegalArgumentException e) {
+				Bending.getInstance().getLogger().warning("Cannot prevent possible duplication on Container :"+block.getLocation());
 			}
 		}
 	}
