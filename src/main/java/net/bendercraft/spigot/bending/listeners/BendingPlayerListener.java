@@ -60,6 +60,7 @@ import net.bendercraft.spigot.bending.abilities.earth.EarthPassive;
 import net.bendercraft.spigot.bending.abilities.earth.LavaTrain;
 import net.bendercraft.spigot.bending.abilities.earth.MetalBending;
 import net.bendercraft.spigot.bending.abilities.earth.MetalWire;
+import net.bendercraft.spigot.bending.abilities.earth.Shockwave;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarShield;
 import net.bendercraft.spigot.bending.abilities.fire.Enflamed;
 import net.bendercraft.spigot.bending.abilities.water.Bloodbending;
@@ -357,12 +358,6 @@ public class BendingPlayerListener implements Listener {
 			
 			
 			if(event.getAbility() != null) {
-				// Earth patience bonus
-				if(event.getAbility().getBender().earth.hasBonus()) {
-					event.setDamage(event.getDamage() + event.getAbility().getBender().earth.getBonus());
-				}
-				event.getAbility().getBender().earth.damageDone();
-				
 				// HealingWater buff
 				HealingWaters hw = HealingWaters.hasBuff(event.getAbility().getBender().getPlayer());
 				if(hw != null) {
@@ -400,6 +395,15 @@ public class BendingPlayerListener implements Listener {
 			if (event.getCause() == DamageCause.FALL) {
 				BendingPassiveAbility ab;
 				if (bender.isBender(BendingElement.EARTH)) {
+					if(Shockwave.NAME.equals(ability)){
+						BendingActiveAbility wave = AbilityManager.getManager().buildAbility(Shockwave.NAME, player);
+						if (wave.canBeInitialized()) {
+							wave.fall();
+							if(wave.getState() != BendingAbilityState.START && wave.getState() != BendingAbilityState.ENDED) {
+								AbilityManager.getManager().addInstance(wave);
+							}
+						}
+					}
 					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
 					if (ab.start()) {
 						AbilityManager.getManager().addInstance(ab);
@@ -448,11 +452,12 @@ public class BendingPlayerListener implements Listener {
 				if (!event.isCancelled() 
 						&& bender.isBender(BendingElement.MASTER)
 						&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
-					event.setDamage((int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.)));
-					if (event.getEntity().getFallDistance() < 10) {
+					int damage = (int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.));
+					if (event.getEntity().getFallDistance() < 10 || damage == 0) {
 						event.setCancelled(true);
 						return;
 					}
+					event.setDamage(damage);
 				}
 
 				if (!event.isCancelled() && EntityTools.isFallImmune(player)) {

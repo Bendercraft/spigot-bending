@@ -92,7 +92,7 @@ public class Ripple {
 		if(origin == null) {
 			return false; //TODO problem
 		}
-		if (!BlockTools.isEarthbendable(player, origin.getBlock())) {
+		if (!BlockTools.isEarthbendable(player, origin.getBlock()) && !EarthPassive.isPassiveSand(origin.getBlock())) {
 			return false;
 		}
 		blocks.clear();

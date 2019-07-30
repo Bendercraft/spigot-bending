@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 import org.bukkit.block.data.BlockData;
 
 import net.bendercraft.spigot.bending.Bending;
@@ -72,7 +73,14 @@ public class TempBlock {
 		temp.ability = ability;
 		temp.started = System.currentTimeMillis();
 		temp.duration = duration;
-		
+
+		if(block.getState() instanceof Container
+			&& block.getType() != newType) {
+			//Mandatory condition to avoid Containers' content to be dropped when setType() is called (Causing a duplication bug when the TempBlock is reverted)
+			//Remove this when SPIGOT-3725 is resolved : hub.spigotmc.org/jira/projects/SPIGOT/issues/SPIGOT-3725
+			((Container) block.getState()).getInventory().clear();
+		}
+
 		temp.block.setType(newType, false);
 		if(newData != null) {
 			temp.block.setBlockData(newData);
@@ -103,20 +111,23 @@ public class TempBlock {
 	}
 
 	public void revertBlock(final boolean applyPhysics) {
-		state.update(true, applyPhysics);
+		if(instances.containsKey(block)) {
+			updateContainerState();
+			state.update(true, applyPhysics);
 
-		if(ability != null) {
-			List<TempBlock> temps = temporaries.get(ability);
-			if(temps != null) {
-				temps.remove(this);
-				if(temps.isEmpty()) {
-					temporaries.remove(ability);
+			if(ability != null) {
+				List<TempBlock> temps = temporaries.get(ability);
+				if(temps != null) {
+					temps.remove(this);
+					if(temps.isEmpty()) {
+						temporaries.remove(ability);
+					}
 				}
+			} else {
+				globals.remove(this);
 			}
-		} else {
-			globals.remove(this);
+			instances.remove(block);
 		}
-		instances.remove(block);
 	}
 
 	public static void revertForAbility(final BendingAbility ability) {
@@ -128,9 +139,22 @@ public class TempBlock {
 			List<TempBlock> tempBlocks = temporaries.remove(ability);
 			if (tempBlocks != null && !tempBlocks.isEmpty()) {
 				for (TempBlock tempBlock : tempBlocks) {
+					tempBlock.updateContainerState();
 					tempBlock.state.update(true, applyPhysics);
 					instances.remove(tempBlock.block);
 				}
+			}
+		}
+	}
+
+	private void updateContainerState(){
+		// When reverting TempBlock, be careful of containers' items to avoid duplication.
+		if(state instanceof Container
+				&& block.getState() instanceof Container) {
+			try {
+				((Container) state).getSnapshotInventory().setContents(((Container) block.getState()).getInventory().getContents());
+			} catch (IllegalArgumentException e) {
+				Bending.getInstance().getLogger().warning("Cannot prevent possible duplication on Container :"+block.getLocation());
 			}
 		}
 	}

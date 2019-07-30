@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
@@ -116,12 +117,18 @@ public class WaterReturn {
 		if (inventory.contains(Material.GLASS_BOTTLE)) {
 			int index = inventory.first(Material.GLASS_BOTTLE);
 			ItemStack item = inventory.getItem(index);
+
+			ItemStack filledBottle = new ItemStack(Material.POTION);
+			PotionMeta filledBottleMeta = (PotionMeta) filledBottle.getItemMeta();
+			filledBottleMeta.setBasePotionData(new PotionData(PotionType.WATER));
+			filledBottle.setItemMeta(filledBottleMeta);
+
 			if (item.getAmount() == 1) {
-				inventory.setItem(index, new ItemStack(Material.POTION));
+				inventory.setItem(index, filledBottle);
 			} else {
 				item.setAmount(item.getAmount() - 1);
 				inventory.setItem(index, item);
-				Map<Integer, ItemStack> leftover = inventory.addItem(new ItemStack(Material.POTION));
+				Map<Integer, ItemStack> leftover = inventory.addItem(filledBottle);
 				for (int left : leftover.keySet()) {
 					player.getWorld().dropItemNaturally(player.getLocation(), leftover.get(left));
 				}

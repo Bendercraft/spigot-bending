@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -114,20 +116,18 @@ public class BendingDenyItem implements Listener {
 	@EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		sanitize(BendingPlayer.getBendingPlayer(event.getPlayer()), event.getItem());
-		
 		//Ender pearl ?
-		if(event.getItem() != null 
-				&& event.getItem().getType() == Material.ENDER_PEARL
-				&& event.getAction() != Action.LEFT_CLICK_AIR
-				&& event.getAction() != Action.LEFT_CLICK_BLOCK) {
+		if(event.hasItem()
+				&& event.getMaterial() == Material.ENDER_PEARL
+				&& (event.getAction() == Action.RIGHT_CLICK_AIR
+					|| event.getAction() == Action.RIGHT_CLICK_BLOCK)){
 			long now = System.currentTimeMillis();
-			
 			if(enderpearls.containsKey(event.getPlayer().getUniqueId())) {
 				if(enderpearls.get(event.getPlayer().getUniqueId()) + Settings.ENDERPEARL_COOLDOWN > now) {
-					event.setCancelled(true);
+					event.setUseItemInHand(Event.Result.DENY);
 				}
 			}
-			if(!event.isCancelled()) {
+			if(event.useItemInHand() != Event.Result.DENY) {
 				enderpearls.put(event.getPlayer().getUniqueId(), now);
 			}
 		}
@@ -160,8 +160,7 @@ public class BendingDenyItem implements Listener {
 			sanitize(bender, itemstack);
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	private void sanitize(BendingPlayer bender, ItemStack item) {
 		if(item == null || bender == null || bender.getPlayer() == null) {
 			return;
@@ -220,21 +219,21 @@ public class BendingDenyItem implements Listener {
 		}
 		
 		// Firebender might keep golden sword for FireBlade
-		if(bender == null || !bender.isBender(BendingElement.FIRE)) {
+		if(!bender.isBender(BendingElement.FIRE)) {
 			if(item.getType() == Material.GOLDEN_SWORD) {
 				removeItem(bender.getPlayer(), item);
 			}
 		}
 		
 		// Airbender might keep elytra
-		if(bender == null || !bender.isBender(BendingElement.AIR)) {
+		if(!bender.isBender(BendingElement.AIR)) {
 			if(item.getType() == Material.ELYTRA) {
 				removeItem(bender.getPlayer(), item);
 			}
 		}
 		
 		// Swordman might keep extra shield & iron sword
-		if(bender == null || !bender.hasAffinity(BendingAffinity.SWORD)) {
+		if(!bender.hasAffinity(BendingAffinity.SWORD)) {
 			if(item.getType() == Material.SHIELD 
 					|| item.getType() == Material.IRON_SWORD) {
 				removeItem(bender.getPlayer(), item);
@@ -242,7 +241,7 @@ public class BendingDenyItem implements Listener {
 		}
 		
 		// Remove bow generated from bowman
-		if(bender == null || !bender.hasAffinity(BendingAffinity.BOW)) {
+		if(!bender.hasAffinity(BendingAffinity.BOW)) {
 			if(item.getType() == Material.BOW
 					&& item.getItemMeta() != null 
 					&& item.getItemMeta().hasLore() 
@@ -252,7 +251,7 @@ public class BendingDenyItem implements Listener {
 		}
 		
 		// Remove arrow generated from bowman
-		if(bender == null || !bender.hasAffinity(BendingAffinity.BOW)) {
+		if(!bender.hasAffinity(BendingAffinity.BOW)) {
 			if(item.getType() == Material.ARROW
 					&& item.getItemMeta() != null 
 					&& item.getItemMeta().hasLore() 
@@ -262,7 +261,7 @@ public class BendingDenyItem implements Listener {
 		}
 		
 		// Metal bender might keep iron armors
-		if(bender == null || !bender.hasAffinity(BendingAffinity.METAL) || !EarthArmor.hasEarthArmor(bender.getPlayer())) {
+		if(!bender.hasAffinity(BendingAffinity.METAL) || !EarthArmor.hasEarthArmor(bender.getPlayer())) {
 			if(item.getType() == Material.IRON_BOOTS 
 					|| item.getType() == Material.IRON_CHESTPLATE
 					|| item.getType() == Material.IRON_HELMET
@@ -272,7 +271,7 @@ public class BendingDenyItem implements Listener {
 		}
 		
 		//EarthBender with EarthArmor in progress might keep leather armor with "EartArmor" on it
-		if(bender == null || !bender.isBender(BendingElement.EARTH) || !EarthArmor.hasEarthArmor(bender.getPlayer())) {
+		if(!bender.isBender(BendingElement.EARTH) || !EarthArmor.hasEarthArmor(bender.getPlayer())) {
 			if(item.getType() == Material.LEATHER_BOOTS 
 					|| item.getType() == Material.LEATHER_CHESTPLATE
 					|| item.getType() == Material.LEATHER_HELMET

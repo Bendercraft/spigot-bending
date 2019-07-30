@@ -232,19 +232,12 @@ public class FireBlast extends BendingActiveAbility {
 			}
 			Block block = this.location.getBlock();
 			if (BlockTools.isSolid(block) || block.isLiquid()) {
-				if (((block.getType() == Material.FURNACE) || (block.getType() == Material.FURNACE)) && POWER_FURNACE) {
-					BlockState state = block.getState();
-					Furnace furnace = (Furnace) state;
+				if ((block.getType() == Material.FURNACE || block.getType() == Material.SMOKER || block.getType() == Material.BLAST_FURNACE) && POWER_FURNACE) {
+					Furnace furnace = (Furnace) block.getState();
 					FurnaceInventory inv = furnace.getInventory();
-					if (inv.getFuel() == null) {
-						ItemStack temp = inv.getSmelting();
-						ItemStack tempfuel = new ItemStack(Material.OAK_SAPLING, 1);
-						ItemStack tempsmelt = new ItemStack(Material.COBBLESTONE);
-						inv.setFuel(tempfuel);
-						inv.setSmelting(tempsmelt);
-						state.update(true);
-						inv.setSmelting(temp);
-						state.update(true);
+					if (inv.getFuel() == null && furnace.getBurnTime() < (short)200) {
+						furnace.setBurnTime((short)200); //200 ticks.
+						furnace.update();
 					}
 				} else if (FireStream.isIgnitable(this.player, block.getRelative(BlockFace.UP))) {
 					ignite(this.location);

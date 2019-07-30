@@ -89,8 +89,7 @@ public class WaterWall extends BendingActiveAbility {
 				setState(BendingAbilityState.PREPARED);
 			}
 		} else if (getState() == BendingAbilityState.PREPARED) {
-			if (wave == null) {
-				moveWater(); // Build wall
+			if (wave == null && moveWater()) {// Build wall
 				setState(BendingAbilityState.PROGRESSING);
 				bender.water.ice();
 			} else {
@@ -203,7 +202,7 @@ public class WaterWall extends BendingActiveAbility {
 		location = sourceblock.getLocation();
 	}
 
-	public void moveWater() {
+	public boolean moveWater() {
 		if (sourceblock != null) {
 			targetdestination = EntityTools.getTargetedLocation(player, RANGE, BlockTools.getTransparentEarthbending());
 			// targetdestination = Tools.getTargetBlock(player, range,
@@ -212,6 +211,7 @@ public class WaterWall extends BendingActiveAbility {
 			if (targetdestination.distance(location) <= 1.1) {
 				progressing = false;
 				targetdestination = null;
+				return false;
 			} else {
 				progressing = true;
 				settingup = true;
@@ -222,9 +222,11 @@ public class WaterWall extends BendingActiveAbility {
 					sourceblock.setType(Material.AIR);
 				}
 				addWater(sourceblock);
+				return true;
 			}
 
 		}
+		return false;
 	}
 
 	private Location getToEyeLevel() {

@@ -167,7 +167,7 @@ public class LavaTrain extends BendingActiveAbility {
 			}
 
 			for (Block potentialsBlock : potentialsBlocks) {
-				if (BlockTools.isEarthbendable(this.player, register, potentialsBlock) && !TempBlock.isTempBlock(potentialsBlock)) {
+				if (BlockTools.isEarthbendable(this.player, register, potentialsBlock)) {
 					if (!safe.contains(potentialsBlock)) {
 						this.affecteds.put(potentialsBlock, TempBlock.makeTemporary(this, potentialsBlock, this.material, false));
 						potentialsBlock.getWorld().playSound(potentialsBlock.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1.0f, 1.0f);
