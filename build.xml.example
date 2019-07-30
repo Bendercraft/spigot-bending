@@ -27,14 +27,15 @@
         </javac>
     </target>
     <target name="deploy" depends="compile">
-          <zip destfile="${outputDir}/${jarname}.jar">
-                <fileset dir="libs" includes="fastutil-8.2.*.jar" />
-                <fileset dir="${outputDir}"/>
-                <fileset dir="${rscDir}">
-                    <include name="plugin.yml" />
-                    <include name="messages.properties" />
-                </fileset>
-          </zip>
+          <jar destfile="${outputDir}/${jarname}.jar"
+               basedir="${outputDir}">
+              <fileset dir="${outputDir}" includes="**/*.class" />
+              <zipgroupfileset dir="${libdir}" includes="fastutil-8.2.*.jar" />
+              <fileset dir="${rscDir}">
+                  <include name="plugin.yml" />
+                  <include name="messages.properties" />
+              </fileset>
+          </jar>
     	  <copy file="${outputDir}/${jarname}.jar" tofile="${dist}/plugins/${jarname}.jar"/>
     </target>
     <target name="run" depends="deploy">
