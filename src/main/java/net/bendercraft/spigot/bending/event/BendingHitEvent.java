@@ -1,10 +1,9 @@
 package net.bendercraft.spigot.bending.event;
 
 import org.bukkit.entity.Entity;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.sk89q.worldedit.event.Cancellable;
 
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 
