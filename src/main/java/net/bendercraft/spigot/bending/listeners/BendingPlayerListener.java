@@ -390,82 +390,13 @@ public class BendingPlayerListener implements Listener {
 		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			BendingPlayer bender = BendingPlayer.getBendingPlayer(player);
+			if (bender == null) {
+				return;
+			}
 			String ability = bender.getAbility();
 
-			if (event.getCause() == DamageCause.FALL) {
-				BendingPassiveAbility ab;
-				if (bender.isBender(BendingElement.EARTH)) {
-					if(Shockwave.NAME.equals(ability)){
-						BendingActiveAbility wave = AbilityManager.getManager().buildAbility(Shockwave.NAME, player);
-						if (wave.canBeInitialized()) {
-							wave.fall();
-							if(wave.getState() != BendingAbilityState.START && wave.getState() != BendingAbilityState.ENDED) {
-								AbilityManager.getManager().addInstance(wave);
-							}
-						}
-					}
-					ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
-					if (ab.start()) {
-						AbilityManager.getManager().addInstance(ab);
-						player.setFallDistance(0);
-						event.setDamage(0);
-						event.setCancelled(true);
-						return;
-					}
+			if (handleFallDamageEvent(event, player, bender, ability)) { return; }
 
-					if (MetalWire.hasNoFallDamage(player)) {
-						player.setFallDistance(0);
-						event.setDamage(0);
-						event.setCancelled(true);
-						return;
-					}
-				}
-
-				if (bender.isBender(BendingElement.AIR)
-						&& EntityTools.canBendPassive(player, BendingElement.AIR)) {
-					if (AirBurst.NAME.equals(ability)) {
-						BendingActiveAbility burst = AbilityManager.getManager().buildAbility(AirBurst.NAME, player);
-						if (burst.canBeInitialized()) {
-							burst.fall();
-							if(burst.getState() != BendingAbilityState.START && burst.getState() != BendingAbilityState.ENDED) {
-								AbilityManager.getManager().addInstance(burst);
-							}
-						}
-					}
-					player.setFallDistance(0);
-					event.setDamage(0);
-					event.setCancelled(true);
-					return;
-				}
-
-				if (!event.isCancelled() && EntityTools.isBender(player, BendingElement.WATER)) {
-					ab = new WaterPassive(AbilityManager.getManager().getRegisteredAbility(WaterPassive.NAME), player);
-					AbilityManager.getManager().addInstance(ab);
-					if (ab.start()) {
-						player.setFallDistance(0);
-						event.setDamage(0);
-						event.setCancelled(true);
-						return;
-					}
-				}
-
-				if (!event.isCancelled() 
-						&& bender.isBender(BendingElement.MASTER)
-						&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
-					int damage = (int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.));
-					if (event.getEntity().getFallDistance() < 10 || damage == 0) {
-						event.setCancelled(true);
-						return;
-					}
-					event.setDamage(damage);
-				}
-
-				if (!event.isCancelled() && EntityTools.isFallImmune(player)) {
-					event.setCancelled(true);
-					return;
-				}
-			}
-			
 			if (EntityTools.canBendPassive(player, BendingElement.FIRE) && EntityTools.isBender(player, BendingElement.FIRE) && ((event.getCause() == DamageCause.FIRE) || (event.getCause() == DamageCause.FIRE_TICK))) {
 				event.setCancelled(!Enflamed.canBurn(player));
 			}
@@ -474,17 +405,92 @@ public class BendingPlayerListener implements Listener {
 				event.setDamage(0);
 				event.setCancelled(true);
 			}
-			
-			if(bender != null) {
-				Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(AvatarShield.NAME);
-				if(instances.containsKey(player)) {
-					AvatarShield ab = (AvatarShield) instances.get(player);
-					if(ab.hit()) {
-						event.setCancelled(true);
-					}
+
+			Map<Object, BendingAbility> instances = AbilityManager.getManager().getInstances(AvatarShield.NAME);
+			if(instances.containsKey(player)) {
+				AvatarShield ab = (AvatarShield) instances.get(player);
+				if(ab.hit()) {
+					event.setCancelled(true);
 				}
 			}
 		}
+	}
+
+	private boolean handleFallDamageEvent(EntityDamageEvent event, Player player, BendingPlayer bender, String ability) {
+		if (event.getCause() == DamageCause.FALL) {
+			BendingPassiveAbility ab;
+			if (bender.isBender(BendingElement.EARTH)) {
+				if(Shockwave.NAME.equals(ability)){
+					BendingActiveAbility wave = AbilityManager.getManager().buildAbility(Shockwave.NAME, player);
+					if (wave.canBeInitialized()) {
+						wave.fall();
+						if(wave.getState() != BendingAbilityState.START && wave.getState() != BendingAbilityState.ENDED) {
+							AbilityManager.getManager().addInstance(wave);
+						}
+					}
+				}
+				ab = new EarthPassive(AbilityManager.getManager().getRegisteredAbility(EarthPassive.NAME), player);
+				if (ab.start()) {
+					AbilityManager.getManager().addInstance(ab);
+					player.setFallDistance(0);
+					event.setDamage(0);
+					event.setCancelled(true);
+					return true;
+				}
+
+				if (MetalWire.hasNoFallDamage(player)) {
+					player.setFallDistance(0);
+					event.setDamage(0);
+					event.setCancelled(true);
+					return true;
+				}
+			}
+
+			if (bender.isBender(BendingElement.AIR)
+					&& EntityTools.canBendPassive(player, BendingElement.AIR)) {
+				if (AirBurst.NAME.equals(ability)) {
+					BendingActiveAbility burst = AbilityManager.getManager().buildAbility(AirBurst.NAME, player);
+					if (burst.canBeInitialized()) {
+						burst.fall();
+						if(burst.getState() != BendingAbilityState.START && burst.getState() != BendingAbilityState.ENDED) {
+							AbilityManager.getManager().addInstance(burst);
+						}
+					}
+				}
+				player.setFallDistance(0);
+				event.setDamage(0);
+				event.setCancelled(true);
+				return true;
+			}
+
+			if (!event.isCancelled() && EntityTools.isBender(player, BendingElement.WATER)) {
+				ab = new WaterPassive(AbilityManager.getManager().getRegisteredAbility(WaterPassive.NAME), player);
+				AbilityManager.getManager().addInstance(ab);
+				if (ab.start()) {
+					player.setFallDistance(0);
+					event.setDamage(0);
+					event.setCancelled(true);
+					return true;
+				}
+			}
+
+			if (!event.isCancelled()
+					&& bender.isBender(BendingElement.MASTER)
+					&& EntityTools.canBendPassive(player, BendingElement.MASTER)) {
+				int damage = (int) (event.getDamage() * (Settings.MASTER_FALL_REDUCTION / 100.));
+				if (event.getEntity().getFallDistance() < 10 || damage == 0) {
+					event.setCancelled(true);
+					return true;
+				}
+				event.setDamage(damage);
+			}
+
+			if (!event.isCancelled() && EntityTools.isFallImmune(player)) {
+				event.setCancelled(true);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
