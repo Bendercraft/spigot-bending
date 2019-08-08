@@ -62,7 +62,23 @@ public class Supply extends BendingActiveAbility {
 	public void progress() {
 		
 	}
-	
+
+	public static boolean isBow(ItemStack item) {
+		return item != null
+				&& item.getType() == Material.BOW
+				&& item.getItemMeta() != null
+				&& item.getItemMeta().hasLore()
+				&& item.getItemMeta().getLore().contains(LORE_BOW);
+	}
+
+	public static boolean isArrow(ItemStack item) {
+		return item != null
+				&& item.getType() == Material.ARROW
+				&& item.getItemMeta() != null
+				&& item.getItemMeta().hasLore()
+				&& item.getItemMeta().getLore().contains(LORE_ARROW);
+	}
+
 	@Override
 	public Object getIdentifier() {
 		return this.player;

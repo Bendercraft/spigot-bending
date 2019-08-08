@@ -247,10 +247,7 @@ public class BendingDenyItem implements Listener {
 		
 		// Remove bow generated from bowman
 		if(!bender.hasAffinity(BendingAffinity.BOW)) {
-			if(type == Material.BOW
-					&& item.getItemMeta() != null 
-					&& item.getItemMeta().hasLore() 
-					&& item.getItemMeta().getLore().contains(Supply.LORE_BOW)) {
+			if(Supply.isBow(item)) {
 				removeItem(bender.getPlayer(), item);
 				return;
 			}
@@ -258,10 +255,7 @@ public class BendingDenyItem implements Listener {
 		
 		// Remove arrow generated from bowman
 		if(!bender.hasAffinity(BendingAffinity.BOW)) {
-			if(type == Material.ARROW
-					&& item.getItemMeta() != null 
-					&& item.getItemMeta().hasLore() 
-					&& item.getItemMeta().getLore().contains(Supply.LORE_ARROW)) {
+			if(Supply.isArrow(item)) {
 				removeItem(bender.getPlayer(), item);
 				return;
 			}
