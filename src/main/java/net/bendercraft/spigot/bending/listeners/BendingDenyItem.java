@@ -33,6 +33,7 @@ import net.bendercraft.spigot.bending.abilities.BendingElement;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.arts.Supply;
 import net.bendercraft.spigot.bending.abilities.earth.EarthArmor;
+import net.bendercraft.spigot.bending.abilities.fire.FireBlade;
 import net.bendercraft.spigot.bending.controller.Settings;
 
 public class BendingDenyItem implements Listener {
@@ -220,7 +221,7 @@ public class BendingDenyItem implements Listener {
 		}
 		
 		// Firebender might keep golden sword for FireBlade
-		if(!bender.isBender(BendingElement.FIRE)) {
+		if(!bender.isBender(BendingElement.FIRE) || !FireBlade.isFireBlading(bender.getPlayer())) {
 			if(type == Material.GOLDEN_SWORD) {
 				removeItem(bender.getPlayer(), item);
 				return;
