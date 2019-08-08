@@ -122,12 +122,10 @@ public class BendingDenyItem implements Listener {
 				&& (event.getAction() == Action.RIGHT_CLICK_AIR
 					|| event.getAction() == Action.RIGHT_CLICK_BLOCK)){
 			long now = System.currentTimeMillis();
-			if(enderpearls.containsKey(event.getPlayer().getUniqueId())) {
-				if(enderpearls.get(event.getPlayer().getUniqueId()) + Settings.ENDERPEARL_COOLDOWN > now) {
-					event.setUseItemInHand(Event.Result.DENY);
-				}
-			}
-			if(event.useItemInHand() != Event.Result.DENY) {
+			Long lastUse = enderpearls.get(event.getPlayer().getUniqueId());
+			if(lastUse != null && lastUse + Settings.ENDERPEARL_COOLDOWN > now) {
+				event.setUseItemInHand(Event.Result.DENY);
+			} else {
 				enderpearls.put(event.getPlayer().getUniqueId(), now);
 			}
 		}
@@ -170,7 +168,6 @@ public class BendingDenyItem implements Listener {
 		}
 		for(Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
 			Enchantment enchantment = entry.getKey();
-			int level = entry.getValue();
 			Integer authorizedLevel = deniedEnchantments.get(enchantment);
 			if (authorizedLevel == null) { //This enchantment is not restricted
 				continue;
@@ -185,99 +182,110 @@ public class BendingDenyItem implements Listener {
 				item.removeEnchantment(enchantment);
 				continue;
 			}
+			int level = entry.getValue();
 			if (level > authorizedLevel) {
-				item.addUnsafeEnchantment(enchantment, level);//If this item stack already contained the given enchantment (at any level), it will be replaced. We use the unsafe version to also restrict enchantments on unusual items.
+				item.addUnsafeEnchantment(enchantment, authorizedLevel);//If this item stack already contained the given enchantment (at any level), it will be replaced. We use the unsafe version to also restrict enchantments on unusual items.
 			}
 		}
-		
-		if(item.getType() == Material.POTION) {
+
+		Material type = item.getType();
+		if(type == Material.POTION) {
 			PotionMeta meta = (PotionMeta) item.getItemMeta();
 			if(deniedPotions.contains(meta.getBasePotionData().getType().getEffectType())) {
 				removeItem(bender.getPlayer(), item);
+				return;
 			}
 		}
 		
-		if(item.getType() == Material.GOLDEN_APPLE
-				|| item.getType() == Material.ENCHANTED_GOLDEN_APPLE
-				|| item.getType() == Material.DIAMOND_SWORD
-				|| item.getType() == Material.DIAMOND_BOOTS
-				|| item.getType() == Material.DIAMOND_CHESTPLATE
-				|| item.getType() == Material.DIAMOND_HELMET
-				|| item.getType() == Material.DIAMOND_LEGGINGS
-				|| item.getType() == Material.GOLDEN_BOOTS
-				|| item.getType() == Material.GOLDEN_CHESTPLATE
-				|| item.getType() == Material.GOLDEN_HELMET
-				|| item.getType() == Material.GOLDEN_LEGGINGS
-				|| item.getType() == Material.CHAINMAIL_BOOTS
-				|| item.getType() == Material.CHAINMAIL_CHESTPLATE
-				|| item.getType() == Material.CHAINMAIL_HELMET
-				|| item.getType() == Material.CHAINMAIL_LEGGINGS
-				|| item.getType() == Material.SPECTRAL_ARROW
-				|| item.getType() == Material.TIPPED_ARROW
-				|| item.getType() == Material.TOTEM_OF_UNDYING) {
+		if(type == Material.GOLDEN_APPLE
+				|| type == Material.ENCHANTED_GOLDEN_APPLE
+				|| type == Material.DIAMOND_SWORD
+				|| type == Material.DIAMOND_BOOTS
+				|| type == Material.DIAMOND_CHESTPLATE
+				|| type == Material.DIAMOND_HELMET
+				|| type == Material.DIAMOND_LEGGINGS
+				|| type == Material.GOLDEN_BOOTS
+				|| type == Material.GOLDEN_CHESTPLATE
+				|| type == Material.GOLDEN_HELMET
+				|| type == Material.GOLDEN_LEGGINGS
+				|| type == Material.CHAINMAIL_BOOTS
+				|| type == Material.CHAINMAIL_CHESTPLATE
+				|| type == Material.CHAINMAIL_HELMET
+				|| type == Material.CHAINMAIL_LEGGINGS
+				|| type == Material.SPECTRAL_ARROW
+				|| type == Material.TIPPED_ARROW
+				|| type == Material.TOTEM_OF_UNDYING) {
 			removeItem(bender.getPlayer(), item);
+			return;
 		}
 		
 		// Firebender might keep golden sword for FireBlade
 		if(!bender.isBender(BendingElement.FIRE)) {
-			if(item.getType() == Material.GOLDEN_SWORD) {
+			if(type == Material.GOLDEN_SWORD) {
 				removeItem(bender.getPlayer(), item);
+				return;
 			}
 		}
 		
 		// Airbender might keep elytra
 		if(!bender.isBender(BendingElement.AIR)) {
-			if(item.getType() == Material.ELYTRA) {
+			if(type == Material.ELYTRA) {
 				removeItem(bender.getPlayer(), item);
+				return;
 			}
 		}
 		
 		// Swordman might keep extra shield & iron sword
 		if(!bender.hasAffinity(BendingAffinity.SWORD)) {
-			if(item.getType() == Material.SHIELD 
-					|| item.getType() == Material.IRON_SWORD) {
+			if(type == Material.SHIELD
+					|| type == Material.IRON_SWORD) {
 				removeItem(bender.getPlayer(), item);
+				return;
 			}
 		}
 		
 		// Remove bow generated from bowman
 		if(!bender.hasAffinity(BendingAffinity.BOW)) {
-			if(item.getType() == Material.BOW
+			if(type == Material.BOW
 					&& item.getItemMeta() != null 
 					&& item.getItemMeta().hasLore() 
 					&& item.getItemMeta().getLore().contains(Supply.LORE_BOW)) {
 				removeItem(bender.getPlayer(), item);
+				return;
 			}
 		}
 		
 		// Remove arrow generated from bowman
 		if(!bender.hasAffinity(BendingAffinity.BOW)) {
-			if(item.getType() == Material.ARROW
+			if(type == Material.ARROW
 					&& item.getItemMeta() != null 
 					&& item.getItemMeta().hasLore() 
 					&& item.getItemMeta().getLore().contains(Supply.LORE_ARROW)) {
 				removeItem(bender.getPlayer(), item);
+				return;
 			}
 		}
 		
 		// Metal bender might keep iron armors
 		if(!bender.hasAffinity(BendingAffinity.METAL) || !EarthArmor.hasEarthArmor(bender.getPlayer())) {
-			if(item.getType() == Material.IRON_BOOTS 
-					|| item.getType() == Material.IRON_CHESTPLATE
-					|| item.getType() == Material.IRON_HELMET
-					|| item.getType() == Material.IRON_LEGGINGS) {
+			if(type == Material.IRON_BOOTS
+					|| type == Material.IRON_CHESTPLATE
+					|| type == Material.IRON_HELMET
+					|| type == Material.IRON_LEGGINGS) {
 				removeItem(bender.getPlayer(), item);
+				return;
 			}
 		}
 		
 		//EarthBender with EarthArmor in progress might keep leather armor with "EartArmor" on it
 		if(!bender.isBender(BendingElement.EARTH) || !EarthArmor.hasEarthArmor(bender.getPlayer())) {
-			if(item.getType() == Material.LEATHER_BOOTS 
-					|| item.getType() == Material.LEATHER_CHESTPLATE
-					|| item.getType() == Material.LEATHER_HELMET
-					|| item.getType() == Material.LEATHER_LEGGINGS) {
+			if(type == Material.LEATHER_BOOTS
+					|| type == Material.LEATHER_CHESTPLATE
+					|| type == Material.LEATHER_HELMET
+					|| type == Material.LEATHER_LEGGINGS) {
 				if(EarthArmor.isArmor(item)) {
 					removeItem(bender.getPlayer(), item);
+					return;
 				}
 			}
 		}
