@@ -83,6 +83,9 @@ public class PhaseChange extends BendingActiveAbility {
 				range = AvatarState.getValue(range);
 			}
 			Block targetBlock = player.getTargetBlockExact(range, FluidCollisionMode.ALWAYS);
+			if (targetBlock == null) {
+				return false;
+			}
 			Location location = targetBlock.getLocation();
 			final int y = (int) location.getY();
 			final int minimumLevel = y - DEPTH;
