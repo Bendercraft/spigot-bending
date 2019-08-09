@@ -245,17 +245,10 @@ public class BendingDenyItem implements Listener {
 			}
 		}
 		
-		// Remove bow generated from bowman
+		// Remove bow and arrow generated from bowman
 		if(!bender.hasAffinity(BendingAffinity.BOW)) {
-			if(Supply.isBow(item)) {
-				removeItem(bender.getPlayer(), item);
-				return;
-			}
-		}
-		
-		// Remove arrow generated from bowman
-		if(!bender.hasAffinity(BendingAffinity.BOW)) {
-			if(Supply.isArrow(item)) {
+			if(Supply.isBow(item)
+				|| Supply.isArrow(item)) {
 				removeItem(bender.getPlayer(), item);
 				return;
 			}
