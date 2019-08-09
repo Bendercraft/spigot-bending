@@ -173,10 +173,10 @@ public class BendingDenyItem implements Listener {
 			if (authorizedLevel == null) { //This enchantment is not restricted
 				continue;
 			}
-			if (enchantment == Enchantment.ARROW_INFINITE && bender.hasAffinity(BendingAffinity.BOW)) {
+			if (enchantment.equals(Enchantment.ARROW_INFINITE) && bender.hasAffinity(BendingAffinity.BOW)) {
 				continue;
 			}
-			if (enchantment == Enchantment.ARROW_KNOCKBACK && bender.hasAffinity(BendingAffinity.BOW)) {
+			if (enchantment.equals(Enchantment.ARROW_KNOCKBACK) && bender.hasAffinity(BendingAffinity.BOW)) {
 				continue;
 			}
 			if (authorizedLevel == 0) {
