@@ -18,6 +18,8 @@ import org.bukkit.block.data.BlockData;
 
 import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 
 public class TempBlock {
@@ -112,8 +114,7 @@ public class TempBlock {
 
 	public void revertBlock(final boolean applyPhysics) {
 		if(instances.containsKey(block)) {
-			updateContainerState();
-			state.update(true, applyPhysics);
+			restoreOldState(applyPhysics);
 
 			if(ability != null) {
 				List<TempBlock> temps = temporaries.get(ability);
@@ -139,24 +140,42 @@ public class TempBlock {
 			List<TempBlock> tempBlocks = temporaries.remove(ability);
 			if (tempBlocks != null && !tempBlocks.isEmpty()) {
 				for (TempBlock tempBlock : tempBlocks) {
-					tempBlock.updateContainerState();
-					tempBlock.state.update(true, applyPhysics);
+					tempBlock.restoreOldState(applyPhysics);
 					instances.remove(tempBlock.block);
 				}
 			}
 		}
 	}
 
-	private void updateContainerState(){
+	private void restoreOldState(final boolean applyPhysics){
+		if(updateContainerState()) {
+			state.update(true, applyPhysics);
+		}
+	}
+
+	private boolean updateContainerState(){
 		// When reverting TempBlock, be careful of containers' items to avoid duplication.
 		if(state instanceof Container
 				&& block.getState() instanceof Container) {
+			ItemStack[] newContent = ((Container) block.getState()).getInventory().getContents();
+			Inventory snapshot = ((Container) state).getSnapshotInventory();
 			try {
-				((Container) state).getSnapshotInventory().setContents(((Container) block.getState()).getInventory().getContents());
+				snapshot.setContents(newContent);
+			} catch (NullPointerException e) {
+				/* Seems to happen when manipulating loot chests (like in shipwrecks) that had
+				never been opened before being a TempBlock. In this case, due to a NPE inside
+				NMS code, we cannot update the previous contents to match the new contents
+				before restoring the old state of the block.
+				As the players could have taken what's inside while the chest was a TempBlock,
+				we choose to not revert the previous state of the TempBlock by returning false.
+				*/
+				return false;
 			} catch (IllegalArgumentException e) {
+				// Will only happen if one day a TempBlock is a bigger Container than its previous type stored in this.state.
 				Bending.getInstance().getLogger().warning("Cannot prevent possible duplication on Container :"+block.getLocation());
 			}
 		}
+		return true;
 	}
 
 	public BlockState getState() {
