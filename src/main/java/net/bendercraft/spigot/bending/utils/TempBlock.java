@@ -20,6 +20,7 @@ import net.bendercraft.spigot.bending.Bending;
 import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.loot.Lootable;
 
 
 public class TempBlock {
@@ -29,7 +30,7 @@ public class TempBlock {
 	private static List<TempBlock> globals = Collections.synchronizedList(new LinkedList<>());
 
 	private Block block;
-	private BlockState state;
+	private BlockState savedState;
 	private boolean bendAllowed;
 	private BendingAbility ability;
 	private long started;
@@ -87,8 +88,8 @@ public class TempBlock {
 		if(newData != null) {
 			temp.block.setBlockData(newData);
 		}
-		if (temp.state.getType() == Material.FIRE) {
-			temp.state.setType(Material.AIR);
+		if (temp.savedState.getType() == Material.FIRE) {
+			temp.savedState.setType(Material.AIR);
 		}
 		
 		instances.put(temp.block, temp);
@@ -105,7 +106,7 @@ public class TempBlock {
 
 	private TempBlock(Block block) {
 		this.block = block;
-		this.state = block.getState();
+		this.savedState = block.getState();
 	}
 
 	public void revertBlock() {
@@ -114,7 +115,7 @@ public class TempBlock {
 
 	public void revertBlock(final boolean applyPhysics) {
 		if(instances.containsKey(block)) {
-			restoreOldState(applyPhysics);
+			restoreSavedState(applyPhysics);
 
 			if(ability != null) {
 				List<TempBlock> temps = temporaries.get(ability);
@@ -140,46 +141,62 @@ public class TempBlock {
 			List<TempBlock> tempBlocks = temporaries.remove(ability);
 			if (tempBlocks != null && !tempBlocks.isEmpty()) {
 				for (TempBlock tempBlock : tempBlocks) {
-					tempBlock.restoreOldState(applyPhysics);
+					tempBlock.restoreSavedState(applyPhysics);
 					instances.remove(tempBlock.block);
 				}
 			}
 		}
 	}
 
-	private void restoreOldState(final boolean applyPhysics){
+	private void restoreSavedState(final boolean applyPhysics){
 		if(updateContainerState()) {
-			state.update(true, applyPhysics);
+			savedState.update(true, applyPhysics);
 		}
 	}
 
 	private boolean updateContainerState(){
-		// When reverting TempBlock, be careful of containers' items to avoid duplication.
-		if(state instanceof Container
-				&& block.getState() instanceof Container) {
-			ItemStack[] newContent = ((Container) block.getState()).getInventory().getContents();
-			Inventory snapshot = ((Container) state).getSnapshotInventory();
-			try {
-				snapshot.setContents(newContent);
-			} catch (NullPointerException e) {
-				/* Seems to happen when manipulating loot chests (like in shipwrecks) that had
-				never been opened before being a TempBlock. In this case, due to a NPE inside
-				NMS code, we cannot update the previous contents to match the new contents
-				before restoring the old state of the block.
+		// When reverting TempBlock, this method handles containers' items to avoid duplication.
+		if (!(savedState instanceof Container)
+				|| !(block.getState() instanceof Container)) {
+			// Normal blocks.
+			return true;
+		}
+		// This block was a Container before and while it was a TempBlock.
+		if (savedState instanceof Lootable
+			&& ((Lootable) savedState).getLootTable() != null) {
+			// This Container was previously an unopened loot container.
+
+			if (block.getState() instanceof Lootable
+					&& ((Lootable) block.getState()).getLootTable() == null) {
+				/* This loot container has been opened while being a TempBlock.
+				In this precise case, due to a NPE inside NMS code, we cannot update the previous
+				contents to match the new contents before restoring the saved state of the block.
 				As the players could have taken what's inside while the chest was a TempBlock,
-				we choose to not revert the previous state of the TempBlock by returning false.
+				we choose to not revert the saved state of the TempBlock by returning false.
+				We will avoid duplication, but not reverting a TempBlock can cause bugs in the future.
 				*/
 				return false;
-			} catch (IllegalArgumentException e) {
-				// Will only happen if one day a TempBlock is a bigger Container than its previous type stored in this.state.
-				Bending.getInstance().getLogger().warning("Cannot prevent possible duplication on Container :"+block.getLocation());
 			}
+			/* This loot container has not been opened while being a TempBlock.
+			Thus, it still has never been opened. In this case, we do not want to mess with
+			its contents, as calling setContents will apparently lead to an empty container
+			on its first opening.
+			 */
+			return true;
+		}
+
+		// Normal container.
+		// Before restoring its saved state, we will first update it with the new contents
+		// that the players could have put/taken inside.
+		ItemStack[] newContent = ((Container) block.getState()).getInventory().getContents();
+		Inventory snapshot = ((Container) savedState).getSnapshotInventory();
+		try {
+			snapshot.setContents(newContent);
+		} catch (IllegalArgumentException e) {
+			// Will only happen if one day a TempBlock is a bigger Container than its previous type stored in this.state.
+			Bending.getInstance().getLogger().warning("Cannot prevent possible duplication on Container :"+block.getLocation());
 		}
 		return true;
-	}
-
-	public BlockState getState() {
-		return this.state;
 	}
 	
 	public boolean isBendAllowed() {
