@@ -29,7 +29,6 @@
     <target name="deploy" depends="compile">
           <jar destfile="${outputDir}/${jarname}.jar"
                basedir="${outputDir}">
-              <fileset dir="${outputDir}" includes="**/*.class" />
               <zipgroupfileset dir="${libdir}" includes="fastutil-8.2.*.jar" />
               <fileset dir="${rscDir}">
                   <include name="plugin.yml" />

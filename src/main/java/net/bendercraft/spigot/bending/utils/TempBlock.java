@@ -170,9 +170,9 @@ public class TempBlock {
 					&& ((Lootable) block.getState()).getLootTable() == null) {
 				/* This loot container has been opened while being a TempBlock.
 				In this precise case, due to a NPE inside NMS code, we cannot update the previous
-				contents to match the new contents before restoring the saved state of the block.
-				As the players could have taken what's inside while the chest was a TempBlock,
-				we choose to not revert the saved state of the TempBlock by returning false.
+				contents to match the new contents before restoring the saved state.
+				As the players could have taken what's inside while the container was a TempBlock,
+				we choose to not revert the saved state by returning false.
 				We will avoid duplication, but not reverting a TempBlock can cause bugs in the future.
 				*/
 				return false;
@@ -193,7 +193,7 @@ public class TempBlock {
 		try {
 			snapshot.setContents(newContent);
 		} catch (IllegalArgumentException e) {
-			// Will only happen if one day a TempBlock is a bigger Container than its previous type stored in this.state.
+			// Will only happen if one day a TempBlock is a bigger Container than its previous savedState.
 			Bending.getInstance().getLogger().warning("Cannot prevent possible duplication on Container :"+block.getLocation());
 		}
 		return true;
