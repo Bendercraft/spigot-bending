@@ -190,7 +190,9 @@ public class BendingDenyItem implements Listener {
 		}
 
 		Material type = item.getType();
-		if(type == Material.POTION) {
+		if(type == Material.POTION
+			|| type == Material.SPLASH_POTION
+			|| type == Material.LINGERING_POTION) {
 			PotionMeta meta = (PotionMeta) item.getItemMeta();
 			if(deniedPotions.contains(meta.getBasePotionData().getType().getEffectType())) {
 				removeItem(bender.getPlayer(), item);
