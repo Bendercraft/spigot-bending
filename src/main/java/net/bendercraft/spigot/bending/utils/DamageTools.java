@@ -5,8 +5,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
@@ -19,9 +19,9 @@ import net.bendercraft.spigot.bending.abilities.BendingAbility;
 import net.bendercraft.spigot.bending.abilities.BendingPlayer;
 import net.bendercraft.spigot.bending.abilities.energy.AvatarState;
 import net.bendercraft.spigot.bending.event.BendingDamageEvent;
-import net.minecraft.server.v1_14_R1.DamageSource;
-import net.minecraft.server.v1_14_R1.EntityLiving;
-import net.minecraft.server.v1_14_R1.MathHelper;
+import net.minecraft.server.v1_15_R1.DamageSource;
+import net.minecraft.server.v1_15_R1.EntityLiving;
+import net.minecraft.server.v1_15_R1.MathHelper;
 
 @SuppressWarnings("deprecation")
 public class DamageTools {
@@ -114,10 +114,10 @@ public class DamageTools {
 				t.getHandle().world.broadcastEntityEffect(t.getHandle(), (byte)33);
 				// Knockback
 				if (t.getHandle().lastDamager != null) {
-                    double d0 = t.getHandle().lastDamager.locX - t.getHandle().locX;
+                    double d0 = t.getHandle().lastDamager.getPositionVector().getX() - t.getHandle().getPositionVector().getX();
 
                     double d1;
-                    for (d1 = t.getHandle().lastDamager.locZ - t.getHandle().locZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D) {
+                    for (d1 = t.getHandle().lastDamager.getPositionVector().getZ() - t.getHandle().getPositionVector().getZ(); d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D) {
                         d0 = (Math.random() - Math.random()) * 0.01D;
                     }
 

@@ -1,8 +1,8 @@
 name: Bending
 main: net.bendercraft.spigot.bending.Bending
 authors: [Noko, Koudja]
-version: 7.1.0
-api-version: 1.14
+version: 7.3.0
+api-version: 1.15
 depend: [ProtocolLib]
 softdepend: [WorldGuard,WGCustomFlags,WorldEdit,CoreProtect,Citizens,Factions]
 commands:

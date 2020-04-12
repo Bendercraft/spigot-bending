@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+    }
+}
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+    maven {
+        url "https://hub.spigotmc.org/nexus/content/repositories/snapshots"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/groups/public"
+    }
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+group = "net.bendercraft.spigot.bending"
+version = project.property("version")
+sourceCompatibility = 1.8
+
+dependencies {
+    shadow files('libs/fastutil-8.2.3.jar')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+}
+
+shadowJar {
+    classifier = ''
+    configurations = [project.configurations.shadow]
+}

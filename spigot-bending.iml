@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/libs/ProtocolLib.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/CoreProtect-2.17.3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/Citizens-2.0.25-b1692.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/Denizen-1.0.5-b1674-REL.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/Sentinel-1.9.2-b260.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/worldedit-bukkit-7.0.0-SNAPSHOT-dist.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/worldguard-legacy-7.0.0-SNAPSHOT-dist.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/libs/spigot-1.14.3.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src/main/java" expected_position="0" />
+      <src_folder value="file://$MODULE_DIR$/src/main/resources" expected_position="1" />
+    </src_description>
+  </component>
+</module>
