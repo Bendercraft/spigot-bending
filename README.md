@@ -1,6 +1,9 @@
 # Spigot-bending
 Spigot plugins allowings players to bend elements at their will. Based on "Avatar" franchise. This plugin is officially hosted and used on "Bendercraft _.net_ ", french community of the franchise.
 
+## Warning
+We dropped the development of this plugin
+
 ## Features
  - Allow players to choose their element, either once or whenever they want
  - Choose if player unlocks gradually their abilities by using the ones they start with, or if they know everything before hands using permissions
@@ -13,5 +16,11 @@ Spigot plugins allowings players to bend elements at their will. Based on "Avata
  - Allow your Citizens NPC to be "bendable" by adding a new trait to them
  
 ## Build & install
-We currently use "Ant" to generate our JAR file. A build config has been provided under "build.xml.example". With it, you just need to execute ant with target "deploy".
-An another target: "sonar" is provided in case you want your plugin to perform static analysis by a SonarQube instance.
+We used gradle to generate our JAR file.
+To be able to effectively use it, you need to find and download the libraries listed in `/libs/PUT-HERE` and put them in the /libs folder.
+Once the libraries are set, you need to run the command (in the plugin root folder) : 
+```bash
+./gradlew build
+```
+The resulting .jar can be put in the /plugins/ folder of your minecraft server alongside the libraries.
+Note that you need a mysql database to store the plugin's data.
